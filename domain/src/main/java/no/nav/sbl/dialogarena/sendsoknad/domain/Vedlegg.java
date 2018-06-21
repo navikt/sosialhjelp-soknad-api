@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -40,8 +41,10 @@ public class Vedlegg {
     private String aarsak;
     private String filnavn;
     private String mimetype;
+    private String sha512;
 
     public Vedlegg() {
+        this.sha512 = "";
     }
 
     public Vedlegg(Long soknadId, Long faktumId, String skjemaNummer, Status innsendingsvalg) {
@@ -49,6 +52,7 @@ public class Vedlegg {
         this.faktumId = faktumId;
         this.skjemaNummer = skjemaNummer;
         this.innsendingsvalg = innsendingsvalg;
+        this.sha512 = "";
     }
 
     public Vedlegg medVedleggId(Long vedleggId) {
@@ -139,6 +143,12 @@ public class Vedlegg {
     public Vedlegg medOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
         this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
         return this;
+    }
+
+
+
+    public String getSha512() {
+        return sha512;
     }
 
     public String getAarsak() {
@@ -296,6 +306,7 @@ public class Vedlegg {
                 .append(this.aarsak, rhs.aarsak)
                 .append(this.filnavn, rhs.filnavn)
                 .append(this.mimetype, rhs.mimetype)
+                .append(this.sha512, rhs.sha512)
                 .isEquals();
     }
 
@@ -320,6 +331,7 @@ public class Vedlegg {
                 .append(aarsak)
                 .append(filnavn)
                 .append(mimetype)
+                .append(sha512)
                 .toHashCode();
     }
 
@@ -344,6 +356,7 @@ public class Vedlegg {
                 .append("aarsak", aarsak)
                 .append("filnavn", filnavn)
                 .append("mimetype", mimetype)
+                .append("sha512", sha512)
                 .toString();
     }
 
@@ -352,6 +365,7 @@ public class Vedlegg {
         this.innsendingsvalg = Status.LastetOpp;
         this.antallSider = antallSider;
         this.storrelse = (long) doc.length;
+        this.sha512 = ServiceUtils.getSha512FromByteArray(doc);
     }
 
     public void fjernInnhold() {
@@ -359,6 +373,7 @@ public class Vedlegg {
         this.innsendingsvalg = VedleggKreves;
         this.antallSider = 0;
         this.storrelse = 0L;
+        this.sha512 = "";
     }
 
     public void leggTilURL(String nokkel, String url) {
@@ -383,6 +398,7 @@ public class Vedlegg {
 
     public void setData(byte[] data) {
         this.data = data != null ? data.clone() : null;
+        this.sha512 = ServiceUtils.getSha512FromByteArray(data);
     }
 
     public void oppdatertInnsendtStatus() {
@@ -393,7 +409,7 @@ public class Vedlegg {
         }
     }
 
-    public boolean erNyttVedlegg(){
+    public boolean erNyttVedlegg() {
         return vedleggId == null;
     }
 
@@ -429,6 +445,7 @@ public class Vedlegg {
         VedleggAlleredeSendt(7);
 
         private int prioritet;
+
         private Status(int prioritet) {
             this.prioritet = prioritet;
         }
