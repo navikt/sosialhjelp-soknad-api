@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,30 +16,54 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class SosialhjelpVedleggTilJsonTest {
 
-    WebSoknad soknad = new WebSoknad()
-            .medFaktum(new Faktum().medKey("belop1").medFaktumId(1L))
-            .medFaktum(new Faktum().medKey("proxy1-1").medFaktumId(2L).medParrentFaktumId(1L))
-            .medFaktum(new Faktum().medKey("proxy1-2").medFaktumId(3L).medParrentFaktumId(1L))
-            .medFaktum(new Faktum().medKey("belop2").medFaktumId(4L))
-            .medFaktum(new Faktum().medKey("proxy2-1").medFaktumId(5L).medParrentFaktumId(4L))
-            .medFaktum(new Faktum().medKey("belop3").medFaktumId(6L))
-            .medFaktum(new Faktum().medKey("proxy2-1").medFaktumId(7L).medParrentFaktumId(6L))
-            .medVedlegg(
-                    new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("BARN")
-                            .medFaktumId(2L).medFilnavn("fil1.png").medInnsendingsvalg(Vedlegg.Status.LastetOpp),
-                    new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("BARN")
-                            .medFaktumId(3L).medFilnavn("fil2.png").medInnsendingsvalg(Vedlegg.Status.LastetOpp),
-                    new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("ANNET")
-                            .medFaktumId(5L).medFilnavn("fil3.png").medInnsendingsvalg(Vedlegg.Status.LastetOpp),
-                    new Vedlegg().medSkjemaNummer("V2").medSkjemanummerTillegg("YOYO")
-                            .medFaktumId(7L).medFilnavn("fil4.png").medInnsendingsvalg(Vedlegg.Status.SendesSenere)
-            );
+    private WebSoknad soknad;
+    private String pathToDir;
+    private byte[] data;
+    private Path dokument;
+
+    @Before
+    public void setup() {
+
+        soknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("belop1").medFaktumId(1L))
+                .medFaktum(new Faktum().medKey("proxy1-1").medFaktumId(2L).medParrentFaktumId(1L))
+                .medFaktum(new Faktum().medKey("proxy1-2").medFaktumId(3L).medParrentFaktumId(1L))
+                .medFaktum(new Faktum().medKey("belop2").medFaktumId(4L))
+                .medFaktum(new Faktum().medKey("proxy2-1").medFaktumId(5L).medParrentFaktumId(4L))
+                .medFaktum(new Faktum().medKey("belop3").medFaktumId(6L))
+                .medFaktum(new Faktum().medKey("proxy2-1").medFaktumId(7L).medParrentFaktumId(6L))
+                .medVedlegg(
+                        new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("BARN")
+                                .medFaktumId(2L).medFilnavn("fil1.png").medInnsendingsvalg(Vedlegg.Status.LastetOpp),
+                        new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("BARN")
+                                .medFaktumId(3L).medFilnavn("fil2.png").medInnsendingsvalg(Vedlegg.Status.LastetOpp),
+                        new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("ANNET")
+                                .medFaktumId(5L).medFilnavn("fil3.png").medInnsendingsvalg(Vedlegg.Status.LastetOpp),
+                        new Vedlegg().medSkjemaNummer("V2").medSkjemanummerTillegg("YOYO")
+                                .medFaktumId(7L).medFilnavn("fil4.png").medInnsendingsvalg(Vedlegg.Status.SendesSenere)
+                );
+
+
+        pathToDir = "src/test/java/no/nav/sbl/dialogarena/sendsoknad/domain";
+        data = null;
+
+        dokument = Paths.get(pathToDir + "/soknad.pdf");
+
+        try {
+            data = Files.readAllBytes(dokument);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Test
     public void gruppererFiler() {
@@ -66,31 +90,33 @@ public class SosialhjelpVedleggTilJsonTest {
     }
 
     @Test
-    public void testSha512() {
+    // Tom data skal gi tom streng som sha
+    public void testTomDataSkalGiTomStrengSomSha512() {
 
-        String pathToDir = "src/test/java/no/nav/sbl/dialogarena/sendsoknad/domain";
-        byte[] data = null;
-
-        Path dokument = Paths.get(pathToDir + "/soknad.pdf");
-
-        try {
-            data = Files.readAllBytes(dokument);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Vedlegg vedlegg1 = new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("BARN")
+        Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("BARN")
                 .medFaktumId(2L).medFilnavn("fil1.png").medInnsendingsvalg(Vedlegg.Status.LastetOpp);
 
-        // Tom data skal gi tom streng som sha
-        Assert.assertTrue(vedlegg1.getSha512().equals(""));
+        assertThat(vedlegg.getSha512(), isEmptyString());
+
+    }
+
+    @Test
+    // Vedleggsklassen skal generere riktig sha512 basert på fildata'ene
+    public void testVedleggsklassenSkalGenerereRiktigSha512BasertPaaFildataene() {
 
         String sha1 = ServiceUtils.getSha512FromByteArray(data);
-        Vedlegg vedlegg2 = new Vedlegg().medData(data);
-        String sha2 = vedlegg2.getSha512();
+        Vedlegg vedlegg = new Vedlegg().medData(data);
+        String sha2 = vedlegg.getSha512();
 
-        // Vedleggsklassen skal generere riktig sha512 basert på fildata'ene
-        Assert.assertEquals(sha1, sha2);
+        assertEquals(sha1, sha2);
+
+    }
+
+    @Test
+    // Json-objektet sin streng-representasjon skal inneholde shaen
+    public void testJsonObjektetSinStrengRepresentasjonSkalInneholdeShaen() {
+
+        String sha = ServiceUtils.getSha512FromByteArray(data);
 
         WebSoknad soknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("belop1").medFaktumId(1L))
@@ -111,7 +137,7 @@ public class SosialhjelpVedleggTilJsonTest {
         String json = new String(representasjon.getContent());
 
         // Json-objektet sin streng-representasjon skal inneholde shaen
-        Assert.assertTrue(json.contains(sha1));
+        assertTrue(json.contains(sha));
 
     }
 }
