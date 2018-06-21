@@ -49,6 +49,7 @@ public class AlternativRepresentasjonRessurs {
                 .map(AlternativRepresentasjon::getContent)
                 .orElseThrow(() -> new NotFoundException(String.format("Ingen alternativ representasjon for [%s] funnet (%s)", behandlingsId, soknad.getSoknadPrefix())));
     }
+
     @Deprecated
     @GET
     @Path("/json/{behandlingsId}")
@@ -62,6 +63,24 @@ public class AlternativRepresentasjonRessurs {
         return representasjoner.stream()
                 .filter(r -> r.getRepresentasjonsType().equals(AlternativRepresentasjonType.JSON))
                 .filter(r -> !r.getFilnavn().contains("vedlegg"))
+                .findFirst()
+                .map(AlternativRepresentasjon::getContent)
+                .orElseThrow(() -> new NotFoundException(String.format("Ingen alternativ representasjon for [%s] funnet (%s)", behandlingsId, soknad.getSoknadPrefix())));
+    }
+
+    @Deprecated
+    @GET
+    @Path("/vedlegg/{behandlingsId}")
+    @Produces(APPLICATION_JSON)
+    @SjekkTilgangTilSoknad
+    public byte[] jsonRepresentasjonForVedlegg(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        erRessursAktiv("jsonRepresentasjonForVedlegg");
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        List<AlternativRepresentasjon> representasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
+
+        return representasjoner.stream()
+                .filter(r -> r.getRepresentasjonsType().equals(AlternativRepresentasjonType.JSON))
+                .filter(r -> r.getFilnavn().contains("vedlegg"))
                 .findFirst()
                 .map(AlternativRepresentasjon::getContent)
                 .orElseThrow(() -> new NotFoundException(String.format("Ingen alternativ representasjon for [%s] funnet (%s)", behandlingsId, soknad.getSoknadPrefix())));

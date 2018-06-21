@@ -72,7 +72,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisHarInnsendteDokumenter - Sjekker om søknaden har ett eller flere innsendte dokumenter
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
-* hvisIngenArbeidsforhold - Sjekk om søker har noen arbeidsforhold.
+* hvisIngenArbeidsforhold - Sjekk at søker ikke har noe arbeidsforhold.
 * hvisIngenSynligeBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om alle er skjult.
 * hvisIngenSynligeBarneFaktaForGruppe - For gruppe-template brukt for sosialhjelp, der vi ønsker utvidet definisjon av hva som er synlige barnefakta mtp utvidet søknad
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)

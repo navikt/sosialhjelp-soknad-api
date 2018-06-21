@@ -81,6 +81,7 @@ public class VeraPDFTest {
 
         Assert.assertFalse("File is not a valid PDF/A " + result.getPDFAFlavour().toString() + "!", result.isCompliant());
     }
+
     @Test
     public void testVeraPDUtenVannmerkePDFA1A() {
 
@@ -104,7 +105,10 @@ public class VeraPDFTest {
 
             for (TestAssertion testAssertion : testAssertions) {
 
-                System.out.println("Test Assertion : " + testAssertion.getMessage());
+                if (testAssertion.getStatus() == TestAssertion.Status.FAILED) {
+                    System.out.println("Test Assertion : " + testAssertion.getMessage());
+
+                }
             }
 
             System.out.println("\n\nProfile details : " + profileDetails.getName());
