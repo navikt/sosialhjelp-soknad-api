@@ -23,7 +23,7 @@ public class HTMLLinkParser {
 
     }
 
-    public static ArrayList<HtmlLink> extractHTMLLinks(final String html) {
+    private static ArrayList<HtmlLink> extractHTMLLinks(final String html) {
 
         ArrayList<HtmlLink> result = new ArrayList<>();
 

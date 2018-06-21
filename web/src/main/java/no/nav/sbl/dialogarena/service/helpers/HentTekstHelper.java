@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.service.HandlebarsUtils;
+import no.nav.sbl.dialogarena.utils.UrlUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -40,6 +41,8 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
         final String bundleName = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getBundleName();
 
         String tekst = this.cmsTekst.getCmsTekst(key, options.params, soknad.getSoknadPrefix(), bundleName, toLocale(sprak));
+
+        tekst = UrlUtils.removeUrls(tekst);
         return tekst != null ? tekst : "";
     }
 }
