@@ -90,5 +90,7 @@ fasitResources:
     resourceType: webservicegateway
   - alias: soknadsosialhjelp.featuretoggles
     resourceType: applicationProperties
+  - alias: soknadsosialhjelp.properties
+    resourceType: applicationProperties
   - alias: openam
     resourceType: openam
