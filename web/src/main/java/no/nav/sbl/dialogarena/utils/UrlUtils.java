@@ -31,7 +31,7 @@ public class UrlUtils {
     }
 
 
-    public static String removeUrls(String html) {
+    public static String endreHyperLenkerTilTekst(String html) {
 
         if (html == null || html.isEmpty()) {
             return html;

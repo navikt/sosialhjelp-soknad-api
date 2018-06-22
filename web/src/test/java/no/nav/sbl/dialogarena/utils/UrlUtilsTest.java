@@ -43,7 +43,7 @@ public class UrlUtilsTest {
 
         tekst1 = tekst1 + tekst1;
 
-        tekst1 = UrlUtils.removeUrls(tekst1);
+        tekst1 = UrlUtils.endreHyperLenkerTilTekst(tekst1);
 
         tekst1 = tekst1.trim(); // Fjerner siste whitespace
 
