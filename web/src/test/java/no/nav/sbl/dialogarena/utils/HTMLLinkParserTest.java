@@ -29,14 +29,14 @@ public class HTMLLinkParserTest {
 
 
 
-        ArrayList<HTMLLinkParser.HtmlLink> links = htmlLinkExtractor.getLinks(html);
+        ArrayList<HTMLLinkParser.HTMLLenke> links = htmlLinkExtractor.hentLenker(html);
 
         assertTrue(links.size() != 0);
 
         for (int i = 0; i < links.size(); i++) {
-            HTMLLinkParser.HtmlLink htmlLinks = links.get(i);
+            HTMLLinkParser.HTMLLenke htmlLinks = links.get(i);
 
-            assertEquals(htmlLinks.getLink(), TEST_LINK);
+            assertEquals(htmlLinks.getLenke(), TEST_LINK);
         }
     }
 }

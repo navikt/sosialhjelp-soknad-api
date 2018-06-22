@@ -6,85 +6,85 @@ import java.util.regex.Pattern;
 
 public class HTMLLinkParser {
 
-    public static Pattern patternTag, patternLink;
-    private static Matcher matcherTag, matcherLink;
+    public static Pattern patternTag, patternLenke;
+    private static Matcher matcherTag, matcherLenke;
 
     public static final String HTML_A_TAG_PATTERN = "(?i)<a([^>]+)>(.+?)</a>";
     private static final String HTML_A_HREF_TAG_PATTERN =
             "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 
 
-    public static ArrayList<HTMLLinkParser.HtmlLink> getLinks(final String html) {
+    public static ArrayList<HTMLLenke> hentLenker(final String html) {
         patternTag = Pattern.compile(HTML_A_TAG_PATTERN);
-        patternLink = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
+        patternLenke = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
 
 
-        return HTMLLinkParser.extractHTMLLinks(html);
+        return HTMLLinkParser.ekstraherHTMLLenker(html);
 
     }
 
-    private static ArrayList<HtmlLink> extractHTMLLinks(final String html) {
+    private static ArrayList<HTMLLenke> ekstraherHTMLLenker(final String html) {
 
-        ArrayList<HtmlLink> result = new ArrayList<>();
+        ArrayList<HTMLLenke> resultat = new ArrayList<>();
 
         matcherTag = patternTag.matcher(html);
 
         while (matcherTag.find()) {
 
             String href = matcherTag.group(1); // href
-            String linkText = matcherTag.group(2); // link text
+            String linkText = matcherTag.group(2); // lenke text
 
-            matcherLink = patternLink.matcher(href);
+            matcherLenke = patternLenke.matcher(href);
 
-            while (matcherLink.find()) {
+            while (matcherLenke.find()) {
 
-                String link = matcherLink.group(1); // link
-                HtmlLink htmlLink = new HtmlLink();
-                htmlLink.setLink(link);
-                htmlLink.setLinkText(linkText);
+                String link = matcherLenke.group(1); // lenke
+                HTMLLenke htmlLink = new HTMLLenke();
+                htmlLink.setLenke(link);
+                htmlLink.setLenkeTekst(linkText);
 
-                result.add(htmlLink);
+                resultat.add(htmlLink);
 
             }
 
         }
 
-        return result;
+        return resultat;
 
     }
 
-    static class HtmlLink {
+    static class HTMLLenke {
 
-        private String link;
-        private String linkText;
+        private String lenke;
+        private String lenkeTekst;
 
 
         @Override
         public String toString() {
-            return new StringBuffer().append(this.linkText)
-                    .append("(").append(this.link).append(")").toString().trim();
+            return new StringBuffer().append(this.lenkeTekst)
+                    .append("(").append(this.lenke).append(")").toString().trim();
         }
 
-        public String getLink() {
-            return link;
+        public String getLenke() {
+            return lenke;
         }
 
-        public void setLink(String link) {
-            this.link = replaceInvalidChar(link);
+        public void setLenke(String lenke) {
+            this.lenke = erstattInvalideTegn(lenke);
         }
 
-        public String getLinkText() {
-            return linkText;
+        public String getLenkeTekst() {
+            return lenkeTekst;
         }
 
-        public void setLinkText(String linkText) {
-            this.linkText = linkText;
+        public void setLenkeTekst(String lenkeTekst) {
+            this.lenkeTekst = lenkeTekst;
         }
 
-        private String replaceInvalidChar(String link) {
-            link = link.replaceAll("'", "");
-            link = link.replaceAll("\"", "");
-            return link;
+        private String erstattInvalideTegn(String lenke) {
+            lenke = lenke.replaceAll("'", "");
+            lenke = lenke.replaceAll("\"", "");
+            return lenke;
         }
 
     }
