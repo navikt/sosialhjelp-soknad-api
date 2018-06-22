@@ -3,9 +3,12 @@ package no.nav.sbl.dialogarena.utils;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class UrlUtilsTest {
 
@@ -35,4 +38,36 @@ public class UrlUtilsTest {
         assertThat(UrlUtils.getEttersendelseUrl(REQUEST_URL, null), equalTo("https://tjenester.nav.no/dialoginnsending/ettersending/null"));
     }
 
+    @Test
+    public void testEndreHyperLenkerTilTekst() {
+
+        String tekst1 = "Her skal du oppgi hva du har av inntekter og utgifter. Feltene under er basert på opplysninger du har gitt underveis i søknaden. Det er viktig at du, så langt det er mulig, fyller ut alle opplysninger om den økonomiske situasjonen din og dokumenterer opplysningene skriftlig. Har du vedlegg på papir kan du skanne dem eller <a href=\"https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-av-vedleggene-med-mobilen\" target=\"_blank\">ta bilde av vedleggene med mobiltelefonen din</a>. Du har mulighet til å laste opp vedlegg etter søknaden er sendt. Du kan også sende dokumentasjonen i posten eller levere den på NAV-kontoret ditt. ";
+
+        tekst1 = tekst1 + tekst1;
+
+        tekst1 = UrlUtils.endreHyperLenkerTilTekst(tekst1);
+
+        tekst1 = tekst1.trim(); // Fjerner siste whitespace
+
+        String tekst2 = "Her skal du oppgi hva du har av inntekter og utgifter. Feltene under er basert på opplysninger du har gitt underveis i søknaden. Det er viktig at du, så langt det er mulig, fyller ut alle opplysninger om den økonomiske situasjonen din og dokumenterer opplysningene skriftlig. Har du vedlegg på papir kan du skanne dem eller ta bilde av vedleggene med mobiltelefonen din(https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-a<br />v-vedleggene-med-mobilen). Du har mulighet til å laste opp vedlegg etter søknaden er sendt. Du kan også sende dokumentasjonen i posten eller levere den på NAV-kontoret ditt. Her skal du oppgi hva du har av inntekter og utgifter. Feltene under er basert på opplysninger du har gitt underveis i søknaden. Det er viktig at du, så langt det er mulig, fyller ut alle opplysninger om den økonomiske situasjonen din og dokumenterer opplysningene skriftlig. Har du vedlegg på papir kan du skanne dem eller ta bilde av vedleggene med mobiltelefonen din(https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-a<br />v-vedleggene-med-mobilen). Du har mulighet til å laste opp vedlegg etter søknaden er sendt. Du kan også sende dokumentasjonen i posten eller levere den på NAV-kontoret ditt.";
+
+        assertEquals(tekst2, tekst1);
+
+    }
+
+    @Test
+    public void testSplitByNumber() {
+
+        String langUrL = "https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-av-vedleggene-med-mobilen";
+
+
+        String[] strings = UrlUtils.splittLinjeEtterAntallTegn(langUrL, 50);
+
+        langUrL = Arrays.stream(strings).collect(Collectors.joining("<br />"));
+
+        assertTrue(langUrL.contains("<br />"));
+    }
+
 }
+
+
