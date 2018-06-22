@@ -37,12 +37,12 @@ public class UrlUtils {
             return html;
         }
 
-        Pattern p = Pattern.compile(HTMLLinkParser.HTML_A_TAG_PATTERN, Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile(HTMLLenkeParser.HTML_A_TAG_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(html);
 
 
         while (m.find()) {
-            ArrayList<HTMLLinkParser.HTMLLenke> lenker = HTMLLinkParser.hentLenker(m.group());
+            ArrayList<HTMLLenkeParser.HTMLLenke> lenker = HTMLLenkeParser.hentLenker(m.group());
 
             if (lenker != null && lenker.get(0) != null) {
                 html = html.replace(m.group(), lenker.get(0).toString()).trim();
