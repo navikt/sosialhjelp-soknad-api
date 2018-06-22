@@ -56,8 +56,8 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: virksomhet:Kodeverk_v2
     resourceType: webserviceendpoint
-  - alias: innlogging.navnetjeneste
-    resourceType: baseurl
+#  - alias: innlogging.navnetjeneste
+#    resourceType: baseurl
   - alias: saksoversikt.link
     resourceType: baseurl
   - alias: dittnav.link
