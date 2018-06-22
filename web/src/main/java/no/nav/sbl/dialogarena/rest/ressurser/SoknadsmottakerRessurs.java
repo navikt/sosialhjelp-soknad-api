@@ -7,10 +7,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 
 import org.slf4j.Logger;
@@ -43,10 +40,10 @@ public class SoknadsmottakerRessurs {
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public NavEnhetFrontend hentSoknadsmottaker(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+    public NavEnhetFrontend hentSoknadsmottaker(@PathParam("behandlingsId") String behandlingsId, @QueryParam("valg") String valg, @Context HttpServletResponse response) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final AdresseForslag adresseForslag = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
+        final AdresseForslag adresseForslag = soknadsmottakerService.finnAdresseFraSoknad(webSoknad, valg);
         if (adresseForslag == null) {
             return null;
         }

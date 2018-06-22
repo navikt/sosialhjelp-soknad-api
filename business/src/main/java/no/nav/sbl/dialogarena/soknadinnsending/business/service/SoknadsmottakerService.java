@@ -20,7 +20,11 @@ public class SoknadsmottakerService {
     private AdresseSokService adresseSokService;
 
     public AdresseForslag finnAdresseFraSoknad(final WebSoknad webSoknad) {
-        final Faktum adresseFaktum = hentAdresseFaktum(webSoknad);
+        return finnAdresseFraSoknad(webSoknad, null);
+    }
+
+    public AdresseForslag finnAdresseFraSoknad(final WebSoknad webSoknad, String valg) {
+        final Faktum adresseFaktum = hentAdresseFaktum(webSoknad, valg);
         if (adresseFaktum == null) {
             return null;
         }
@@ -54,11 +58,21 @@ public class SoknadsmottakerService {
     }
 
     Faktum hentAdresseFaktum(final WebSoknad webSoknad) {
+        return hentAdresseFaktum(webSoknad, null);
+    }
+
+    Faktum hentAdresseFaktum(final WebSoknad webSoknad, final String valg) {
         if (webSoknad == null) {
             logger.warn("Søknaden er null");
             return null;
         }
-        final String adressevalg = webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg");
+        final String adressevalg;
+        if (valg != null && !"".equals(valg.trim())) {
+            adressevalg = valg;
+        } else {
+            adressevalg = webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg");
+        }
+
         if ("folkeregistrert".equals(adressevalg)) {
             return webSoknad.getFaktumMedKey("kontakt.system.folkeregistrert.adresse");
         } else if ("midlertidig".equals(adressevalg)) {
