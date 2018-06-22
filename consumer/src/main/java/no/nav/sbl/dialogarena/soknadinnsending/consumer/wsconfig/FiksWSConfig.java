@@ -17,7 +17,7 @@ public class FiksWSConfig {
 
     public static final String FIKS_KEY = "start.fiks.withmock";
 
-    @Value("${fiks.svarut.url}")
+    @Value("#{environment.EKSTERN_KS_SVARUT_V1_ENDPOINTURL}")
     private String fiksEndpoint;
 
     private ServiceBuilder<ForsendelsesServiceV9>.PortTypeBuilder<ForsendelsesServiceV9> factory() {
