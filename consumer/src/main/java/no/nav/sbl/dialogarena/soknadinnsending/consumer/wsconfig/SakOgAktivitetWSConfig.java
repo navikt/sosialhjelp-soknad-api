@@ -16,7 +16,7 @@ import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class SakOgAktivitetWSConfig {
-    public static final String SAKOGAKTIVITET_KEY = "start.sakogaktivitet.withmock";
+    public static final String SAKOGAKTIVITET_KEY = "START_SAKOGAKTIVITET_WITHMOCK";
     @Value("${soknad.webservice.arena.sakogaktivitet.url}")
     private String sakOgAktivitetEndpoint;
 
