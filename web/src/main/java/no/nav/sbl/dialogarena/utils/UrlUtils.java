@@ -42,10 +42,10 @@ public class UrlUtils {
 
 
         while (m.find()) {
-            ArrayList<HTMLLinkParser.HtmlLink> links = HTMLLinkParser.getLinks(m.group());
+            ArrayList<HTMLLinkParser.HTMLLenke> lenker = HTMLLinkParser.hentLenker(m.group());
 
-            if (links != null && links.get(0) != null) {
-                html = html.replace(m.group(), links.get(0).toString()).trim();
+            if (lenker != null && lenker.get(0) != null) {
+                html = html.replace(m.group(), lenker.get(0).toString()).trim();
             }
 
         }
