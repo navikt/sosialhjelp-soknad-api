@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static org.apache.commons.lang3.LocaleUtils.*;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 @Component
 public class HentTekstHelper extends RegistryAwareHelper<String> {
@@ -42,7 +42,11 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
 
         String tekst = this.cmsTekst.getCmsTekst(key, options.params, soknad.getSoknadPrefix(), bundleName, toLocale(sprak));
 
-        tekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
+        String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
+
+        if (tekst != null && !tekst.equals(nyTekst)) {
+            tekst = nyTekst;
+        }
         return tekst != null ? tekst : "";
     }
 }
