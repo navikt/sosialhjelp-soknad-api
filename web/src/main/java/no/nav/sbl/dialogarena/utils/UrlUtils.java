@@ -43,7 +43,10 @@ public class UrlUtils {
 
         while (m.find()) {
             ArrayList<HTMLLinkParser.HtmlLink> links = HTMLLinkParser.getLinks(m.group());
-            html = html.replace(m.group(), links.get(0).toString()).trim();
+
+            if (links != null && links.get(0) != null) {
+                html = html.replace(m.group(), links.get(0).toString()).trim();
+            }
 
         }
         return html;
