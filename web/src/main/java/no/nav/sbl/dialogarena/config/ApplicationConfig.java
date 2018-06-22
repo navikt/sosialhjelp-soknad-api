@@ -23,9 +23,9 @@ public class ApplicationConfig {
 
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
-    @Value("${dokumentinnsending.smtpServer.port}")
+    @Value("#{environment.DOKUMENTINNSENDING_SMTPSERVER_PORT}")
     private String smtpServerPort;
-    @Value("${dokumentinnsending.smtpServer.host}")
+    @Value("#{environment.DOKUMENTINNSENDING_SMTPSERVER_HOST}")
     private String smtpServerHost;
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
