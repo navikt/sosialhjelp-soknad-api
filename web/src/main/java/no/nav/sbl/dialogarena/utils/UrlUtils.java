@@ -33,6 +33,10 @@ public class UrlUtils {
 
     public static String removeUrls(String html) {
 
+        if (html == null || html.isEmpty()) {
+            return html;
+        }
+
         Pattern p = Pattern.compile(HTMLLinkParser.HTML_A_TAG_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(html);
 
