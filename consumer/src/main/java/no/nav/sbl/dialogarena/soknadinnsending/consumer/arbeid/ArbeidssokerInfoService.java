@@ -23,13 +23,13 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class ArbeidssokerInfoService {
-    @Value("#{environment.ARBEID_REST_URL}")
+    @Value("${arbeid.rest.url}")
     private String sblArbeidBaseUrl;
 
-    @Value("#{environment.ARBEIDSERVICE_USERNAME}")
+    @Value("${arbeidservice.username}")
     private String username;
 
-    @Value("#{environment.ARBEIDSERVICE_PASSWORD}")
+    @Value("${arbeidservice.password}")
     private String password;
 
     private static final String ukjent = "UKJENT";

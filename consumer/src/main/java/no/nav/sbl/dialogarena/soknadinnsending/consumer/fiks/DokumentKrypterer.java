@@ -71,7 +71,7 @@ public class DokumentKrypterer {
     }
 
     private X509Certificate lagFiksCertificate() {
-        String nokkelFil = System.getenv("FIKS_NOKKELFIL");
+        String nokkelFil = System.getProperty("fiks.nokkelfil");
 
         if (nokkelFil == null) {
             throw new IllegalStateException("Propertien 'fiks.nokkelfil' mangler, må settes i Fasit");
