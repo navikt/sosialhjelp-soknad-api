@@ -42,7 +42,7 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
 
         String tekst = this.cmsTekst.getCmsTekst(key, options.params, soknad.getSoknadPrefix(), bundleName, toLocale(sprak));
 
-        tekst = UrlUtils.removeUrls(tekst);
+        tekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
         return tekst != null ? tekst : "";
     }
 }
