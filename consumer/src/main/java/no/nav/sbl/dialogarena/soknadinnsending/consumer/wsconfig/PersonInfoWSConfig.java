@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.System.getProperty;
+import static java.lang.System.getenv;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
@@ -34,7 +35,7 @@ public class PersonInfoWSConfig {
 
     public static final String PERSONINFO_KEY = "start.personinfo.withmock";
 
-    @Value("${soknad.webservice.arena.personinfo.url}")
+    @Value("#{environment.ARENA_PERSONINFOSERVICE_URL}")
     private String endpoint;
 
     @Bean
@@ -52,12 +53,12 @@ public class PersonInfoWSConfig {
         Map<String, Object> map = new HashMap<>();
         map.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
         map.put(WSHandlerConstants.PASSWORD_TYPE, "PasswordText");
-        map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
+        map.put(WSHandlerConstants.USER, getenv("ARENA_PERSONINFOSERVICE_USERNAME"));
         CallbackHandler passwordCallbackHandler = new CallbackHandler() {
             @Override
             public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
                 WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
-                callback.setPassword(getProperty("arena.personInfoService.password"));
+                callback.setPassword(getenv("ARENA_PERSONINFOSERVICE_PASSWORD"));
             }
         };
         map.put(WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler);
