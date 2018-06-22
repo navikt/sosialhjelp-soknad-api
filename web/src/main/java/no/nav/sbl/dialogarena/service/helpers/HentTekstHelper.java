@@ -6,12 +6,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.service.HandlebarsUtils;
+import no.nav.sbl.dialogarena.utils.UrlUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static org.apache.commons.lang3.LocaleUtils.*;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 @Component
 public class HentTekstHelper extends RegistryAwareHelper<String> {
@@ -40,6 +41,12 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
         final String bundleName = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getBundleName();
 
         String tekst = this.cmsTekst.getCmsTekst(key, options.params, soknad.getSoknadPrefix(), bundleName, toLocale(sprak));
+
+        String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
+
+        if (tekst != null && !tekst.equals(nyTekst)) {
+            tekst = nyTekst;
+        }
         return tekst != null ? tekst : "";
     }
 }
