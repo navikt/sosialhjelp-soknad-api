@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HTMLLinkParser {
+public class HTMLLenkeParser {
 
     public static Pattern patternTag, patternLenke;
     private static Matcher matcherTag, matcherLenke;
@@ -19,7 +19,7 @@ public class HTMLLinkParser {
         patternLenke = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
 
 
-        return HTMLLinkParser.ekstraherHTMLLenker(html);
+        return HTMLLenkeParser.ekstraherHTMLLenker(html);
 
     }
 
