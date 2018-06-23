@@ -49,11 +49,11 @@ public class UrlUtils {
             if (lenker != null && lenker.get(0) != null) {
 
                 HTMLLenkeParser.HTMLLenke lenke = lenker.get(0);
-                int length = 80;
+               /* int length = 80;
                 if (lenke.getLenke().length() > length) {
                     String[] tekststrenger = UrlUtils.splittLinjeEtterAntallTegn(lenke.getLenke(), length);
                     lenke.setLenke((Arrays.stream(tekststrenger).collect(Collectors.joining("<br />"))));
-                }
+                }*/
 
                 html = html.replace(m.group(), lenke.toString()).trim();
             }
