@@ -67,8 +67,6 @@ public class SoknadsosialhjelpServer {
         if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
-            //readEnvironmentClassProperties();
-            //readEnvironmentProperties();
             System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         } else {
             log.info("Running with DEVELOPER (local) setup.");
@@ -102,22 +100,6 @@ public class SoknadsosialhjelpServer {
             return null;
         }
         return env;
-    }
-    
-    private void readEnvironmentClassProperties() throws IOException {
-        final String env = determineEnvironment();
-        if (env.startsWith("p")) {
-            return;
-        }
-        final String envClass = env.substring(0, 1);
-        setFrom("environment/" + envClass + "/environment.properties");
-        log.info("Lastet inn oppsett for miljøområde: " + envClass);
-    }
-
-    private void readEnvironmentProperties() throws IOException {
-        final String env = determineEnvironment();
-        setFrom("environment/" + env + "/environment.properties", false);
-        log.info("Lastet inn oppsett for miljø: " + env);
     }
     
     public static void setFrom(String resource) throws IOException {
