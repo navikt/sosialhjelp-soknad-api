@@ -67,8 +67,8 @@ public class SoknadsosialhjelpServer {
         if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
-            readEnvironmentClassProperties();
-            readEnvironmentProperties();
+            //readEnvironmentClassProperties();
+            //readEnvironmentProperties();
             System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         } else {
             log.info("Running with DEVELOPER (local) setup.");
