@@ -1,8 +1,11 @@
 package no.nav.sbl.dialogarena.utils;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -27,8 +30,6 @@ public class HTMLLenkeParserTest {
                 "\n" + "abc hmmmm <A target='_blank' HREF=\"" + TEST_LENKE + "\">NAV</A>" +
                 "\n" + "abc hmmmm <a HREF=" + TEST_LENKE + ">NAV</a>";
 
-
-
         ArrayList<HTMLLenkeParser.HTMLLenke> lenker = htmlLenkeParser.hentLenker(html);
 
         assertTrue(lenker.size() != 0);
@@ -38,5 +39,17 @@ public class HTMLLenkeParserTest {
 
             assertEquals(htmlLenker.getLenke(), TEST_LENKE);
         }
+    }
+    @Test
+    public void testSplitByNumber() {
+
+        String langUrL = "https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-av-vedleggene-med-mobilen";
+
+
+        String[] strings = HTMLLenkeParser.splittLinjeEtterAntallTegn(langUrL, 50);
+
+        langUrL = Arrays.stream(strings).collect(Collectors.joining("<br />"));
+
+        Assert.assertTrue(langUrL.contains("<br />"));
     }
 }
