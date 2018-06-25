@@ -39,7 +39,6 @@ public class UrlUtilsTest {
     }
 
     @Test
-
     public void testEndreHyperLenkerTilTekst() {
 
         String tekst1 = "Her skal du oppgi hva du har av inntekter og utgifter. Feltene under er basert på opplysninger du har gitt underveis i søknaden. Det er viktig at du, så langt det er mulig, fyller ut alle opplysninger om den økonomiske situasjonen din og dokumenterer opplysningene skriftlig. Har du vedlegg på papir kan du skanne dem eller <a href=\"https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-av-vedleggene-med-mobilen\" target=\"_blank\">ta bilde av vedleggene med mobiltelefonen din</a>. Du har mulighet til å laste opp vedlegg etter søknaden er sendt. Du kan også sende dokumentasjonen i posten eller levere den på NAV-kontoret ditt. ";
@@ -57,20 +56,6 @@ public class UrlUtilsTest {
         assertEquals(tekst2, tekst1);
 
     }
-
-    @Test
-    public void testSplitByNumber() {
-
-        String langUrL = "https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-av-vedleggene-med-mobilen";
-
-
-        String[] strings = UrlUtils.splittLinjeEtterAntallTegn(langUrL, 50);
-
-        langUrL = Arrays.stream(strings).collect(Collectors.joining("<br />"));
-
-        assertTrue(langUrL.contains("<br />"));
-    }
-
 }
 
 

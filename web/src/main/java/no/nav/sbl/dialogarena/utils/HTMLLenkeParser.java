@@ -1,8 +1,10 @@
 package no.nav.sbl.dialogarena.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class HTMLLenkeParser {
 
@@ -15,12 +17,16 @@ public class HTMLLenkeParser {
 
 
     public static ArrayList<HTMLLenke> hentLenker(final String html) {
+
         patternTag = Pattern.compile(HTML_A_TAG_PATTERN);
         patternLenke = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
 
-
         return HTMLLenkeParser.ekstraherHTMLLenker(html);
 
+    }
+
+    public static String[] splittLinjeEtterAntallTegn(String linje, int antallTegn) {
+        return (antallTegn < 1 || linje == null) ? null : linje.split("(?<=\\G.{" + antallTegn + "})");
     }
 
     private static ArrayList<HTMLLenke> ekstraherHTMLLenker(final String html) {
@@ -61,8 +67,15 @@ public class HTMLLenkeParser {
 
         @Override
         public String toString() {
+
+            int length = 80;
+            if (this.getLenke().length() > length) {
+                String[] tekststrenger = splittLinjeEtterAntallTegn(this.getLenke(), length);
+                this.setLenke((Arrays.stream(tekststrenger).collect(Collectors.joining("<br />"))));
+
+            }
             return new StringBuffer().append(this.lenkeTekst)
-                    .append("(").append(this.lenke).append(")").toString().trim();
+                    .append("\n(").append(this.lenke).append(")").toString().trim();
         }
 
         public String getLenke() {
@@ -86,6 +99,5 @@ public class HTMLLenkeParser {
             lenke = lenke.replaceAll("\"", "");
             return lenke;
         }
-
     }
 }
