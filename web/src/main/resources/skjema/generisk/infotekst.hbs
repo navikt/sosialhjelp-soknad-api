@@ -1,5 +1,9 @@
 {{#if @root.utvidetSoknad}}
 <div class="hjelpeInfotekst">
+
+    {{{ hentTekst "forstesiden.bekreftInfoModal.title" }}}
+    {{{ hentTekst "soknadsosialhjelp.forstesiden.bekreftInfoModal.body" }}}
+
     {{#hvisTekstFinnes (concat key ".hjelpetekst.tekst")}}
         <h{{niva}}>{{{ hentTekst "hjelpetekst.oppsummering.tittel" }}}</h{{niva}}>
         <div>        {{{ hentTekst (concat key ".hjelpetekst.tittel") }}}</div>
