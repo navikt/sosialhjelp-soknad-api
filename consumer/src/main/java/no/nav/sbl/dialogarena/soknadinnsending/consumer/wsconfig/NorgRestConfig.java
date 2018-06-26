@@ -22,7 +22,7 @@ public class NorgRestConfig {
     @Bean
     public NorgConsumer norgConsumer() {
         NorgConsumer prod = new NorgConsumerImpl(RestUtils.createClient(), endpoint);
-        NorgConsumer mock = new NorgConsumerMock().norgMock();
+        NorgConsumer mock = new NorgConsumerMock();
         return createSwitcher(prod, mock, NORG_KEY, NorgConsumer.class);
     }
 }
