@@ -33,11 +33,7 @@
         <h1>{{ hentTekst "skjema.tittel" }}</h1>
         {{> skjema/dagpenger/personalia }}
     </div>
-
-   <h2>{{{ hentTekst "forstesiden.bekreftInfoModal.title" }}}</h2>
-    {{{ hentTekst "soknadsosialhjelp.forstesiden.bekreftInfoModal.body" }}}
-
-    <div>
+     <div>
         {{#if @root.utvidetSoknad}}
             <div class="personalia">
                 {{> skjema/dagpenger/personaliaBolk}}
