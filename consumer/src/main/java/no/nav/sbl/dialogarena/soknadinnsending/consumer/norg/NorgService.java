@@ -8,6 +8,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinformasjon
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -21,6 +23,8 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinfo
 @Service
 public class NorgService {
 
+    private static final Logger logger = LoggerFactory.getLogger(NorgService.class);
+
     @Inject
     private NorgConsumer norgConsumer;
 
@@ -30,6 +34,10 @@ public class NorgService {
         }
 
         RsNorgEnhet rsNorgEnhet = norgConsumer.finnEnhetForGeografiskTilknytning(gt);
+        if (rsNorgEnhet == null) {
+            logger.warn("Kunne ikke finne NorgEnhet for gt: " + gt);
+            return null;
+        }
 
         NavEnhet enhet = new NavEnhet();
         enhet.enhetNr = rsNorgEnhet.enhetNr;

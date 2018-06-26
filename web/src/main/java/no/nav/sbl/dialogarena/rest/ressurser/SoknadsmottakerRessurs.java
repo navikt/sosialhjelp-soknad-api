@@ -48,6 +48,9 @@ public class SoknadsmottakerRessurs {
             return null;
         }
         final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+        if (navEnhet == null) {
+            return null;
+        }
 
         return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
     }
