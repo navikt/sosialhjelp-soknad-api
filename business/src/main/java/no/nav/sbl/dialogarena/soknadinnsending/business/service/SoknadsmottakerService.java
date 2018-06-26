@@ -1,16 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Map;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 
 @Component
 public class SoknadsmottakerService {
@@ -19,38 +23,72 @@ public class SoknadsmottakerService {
     @Inject
     private AdresseSokService adresseSokService;
 
-    public AdresseForslag finnAdresseFraSoknad(final WebSoknad webSoknad) {
+    public List<AdresseForslag> finnAdresseFraSoknad(final WebSoknad webSoknad) {
         final Faktum adresseFaktum = hentAdresseFaktum(webSoknad);
         if (adresseFaktum == null) {
-            return null;
+            return Collections.emptyList();
         }
+        
         final Map<String, String> adresse = adresseFaktum.getProperties();
-        if (adresse == null || adresse.isEmpty()) {
-            return null;
-        }
+        return soknadsmottakerGitt(adresse);
+    }
 
-        final String type = adresse.get("type");
-        if (type == null) {
-            return null;
+    
+    private List<AdresseForslag> soknadsmottakerGitt(final Map<String, String> adresse) {
+        if (adresse == null || adresse.isEmpty()) {
+            return Collections.emptyList();
         }
+        
+        final String type = adresse.get("type");
+        if (type == null || type.trim().equals("")) {
+            return Collections.emptyList();
+        }
+        
         if ("matrikkeladresse".equals(type)) {
             final String kommunenummer = adresse.get("kommunenummer");
-            if (kommunenummer == null) {
-                return null;
+            if (kommunenummer == null || kommunenummer.trim().equals("")) {
+                return Collections.emptyList();
             }
-            final AdresseForslag adresseForslag = new AdresseForslag();
-            adresseForslag.kommunenummer = kommunenummer;
-            adresseForslag.geografiskTilknytning = kommunenummer;
-            return adresseForslag;
+            
+            return adresseSokService.sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenummer));
         } else {
-            final String sokestreng = lagSokestreng(adresse);
-            final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(sokestreng);
-            if (adresser == null || adresser.size() != 1) {
-                logger.warn("Fant ikke entydig adresse for søkekriterier {}", sokestreng);
-                return null;
+            final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
+                        .withAdresse(nullIfEmpty(adresse.get("gatenavn")))
+                        .withHusnummer(nullIfEmpty(adresse.get("husnummer")))
+                        .withHusbokstav(nullIfEmpty(adresse.get("husbokstav")))
+                        .withPostnummer(nullIfEmpty(adresse.get("postnummer")))
+                        .withPoststed(nullIfEmpty(adresse.get("poststed")))
+                    );
+            
+            if (adresser.size() <= 1) {
+                return adresser;
             }
-            return adresser.get(0);
+            
+            if (hasIkkeUnikGate(adresser)) {
+                return Collections.emptyList();
+            }
+
+            return adresser;
         }
+    }
+    
+    private boolean hasIkkeUnikGate(List<AdresseForslag> adresser) {
+        final AdresseForslag forste = adresser.get(0);
+        if (forste.adresse == null || forste.postnummer == null || forste.poststed == null) {
+            return true;
+        }
+        return adresser.stream().anyMatch(af -> {
+            return !forste.adresse.equals(af.adresse)
+                    && !forste.postnummer.equals(af.postnummer)
+                    && !forste.poststed.equals(af.poststed);
+        });
+    }
+
+    private static String nullIfEmpty(String s) {
+        if (s != null && s.trim().equals("")) {
+            return null;
+        }
+        return s;
     }
 
     Faktum hentAdresseFaktum(final WebSoknad webSoknad) {
@@ -68,20 +106,5 @@ public class SoknadsmottakerService {
         } else {
             return null;
         }
-    }
-
-    private static String emptyIfNull(String s) {
-        return (s != null) ? s : "";
-    }
-    private String lagSokestreng(final Map<String, String> adresse) {
-        // TODO: Denne metoden er midlertidig og skal fjernes før produksjon (søk bør gjøres strukturert). 
-
-        final String gatenavn = emptyIfNull(adresse.get("gatenavn"));
-        final String husnummer = emptyIfNull(adresse.get("husnummer"));
-        final String husbokstav = emptyIfNull(adresse.get("husbokstav"));
-        final String postnummer = emptyIfNull(adresse.get("postnummer"));
-        final String poststed = emptyIfNull(adresse.get("poststed"));
-        
-        return ((gatenavn + " " + husnummer + husbokstav).trim() + ", " + postnummer + " " + poststed).trim();
     }
 }

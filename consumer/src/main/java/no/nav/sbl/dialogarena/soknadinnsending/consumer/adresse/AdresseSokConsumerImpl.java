@@ -41,6 +41,12 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
         try {
             response = request.get();
+            
+            if (logger.isDebugEnabled()) {
+                response.bufferEntity();
+                logger.debug("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
+            }
+            
             if (response.getStatus() == 200) {
                 return createAdressesokRespons(sokedata, response);
             } else if (response.getStatus() == 404) {
@@ -103,6 +109,9 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         }
         if (sokedata.kommunenummer != null) {
             b = b.queryParam("kommunenr", sokedata.kommunenummer);
+        }
+        if (sokedata.husnummer != null) {
+            b = b.queryParam("husnr", sokedata.husnummer);
         }
         if (isNotEmpty(apiKey)) {
             return b.request()

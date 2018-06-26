@@ -3,7 +3,9 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getFeaturesForEnhet;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -43,16 +45,15 @@ public class SoknadsmottakerRessurs {
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public NavEnhetFrontend hentSoknadsmottaker(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+    public List<NavEnhetFrontend> hentSoknadsmottaker(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final AdresseForslag adresseForslag = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
-        if (adresseForslag == null) {
-            return null;
-        }
-        final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-
-        return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
+        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
+        
+        return adresseForslagene.stream().map((adresseForslag) -> {
+            final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
+        }).collect(Collectors.toList());
     }
 
     NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {

@@ -1,23 +1,27 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadsmottakerServiceTest {
@@ -48,7 +52,7 @@ public class SoknadsmottakerServiceTest {
     private SoknadsmottakerService soknadsmottakerService;
 
     @Test
-    public void hentAdresseFaktumGirFokeregistrertAdresseHvisTypeErFolkeregistrert() {
+    public void hentAdresseFaktumGirFolkeregistrertAdresseHvisTypeErFolkeregistrert() {
         WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("folkeregistrert"))
                 .medFaktum(lagFaktumForFolkeregistrertGateadresse());
@@ -92,13 +96,15 @@ public class SoknadsmottakerServiceTest {
 
     @Test
     public void finnAdresseFraSoknadGirRiktigAdresseForMidlertidigGateadresse() {
-        when(adresseSokService.sokEtterAdresser(anyString())).thenReturn(lagAdresseForslagListeMedEtInnslag());
+        when(adresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
         WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("midlertidig"))
                 .medFaktum(lagFaktumForMidlertidigGateadresse());
 
-        AdresseForslag adresseForslag = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
+        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
+        assertThat(adresseForslagene.size(), is(1));
 
+        final AdresseForslag adresseForslag = adresseForslagene.get(0);
         assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
         assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
         assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
@@ -108,34 +114,39 @@ public class SoknadsmottakerServiceTest {
 
     @Test
     public void finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertMatrikkeladresse() {
+        when(adresseSokService.sokEtterNavKontor(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
         WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("folkeregistrert"))
                 .medFaktum(lagFaktumForFolkeregistrertMatrikkeladresse());
 
-        AdresseForslag adresseForslag = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
+        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
+        assertThat(adresseForslagene.size(), is(1));
 
-        assertThat(adresseForslag.geografiskTilknytning, is(KOMMUNENUMMER));
+        final AdresseForslag adresseForslag = adresseForslagene.get(0);
+
+        assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
         assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
+        assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
         assertThat(adresseForslag.postnummer, is(nullValue()));
     }
 
     @Test
-    public void finnAdresseFraSoknadReturnererNullHvisAdressesokGirFlereResultater() {
+    public void finnAdresseFraSoknadReturnererTomListeHvisAdressesokGirFlereResultater() {
         when(adresseSokService.sokEtterAdresser(anyString())).thenReturn(lagAdresseForslagListeMedFlereInnslag());
         WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("soknad"))
                 .medFaktum(lagFaktumForSoknadGateadresse());
 
-        AdresseForslag adresseForslag = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
+        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
 
-        assertThat(adresseForslag, is(nullValue()));
+        assertThat(adresseForslagene, is(empty()));
     }
 
     @Test
-    public void finnAdresseFraSoknadReturnererNullHvisAdresseFaktumMangler() {
-        AdresseForslag adresseForslag = soknadsmottakerService.finnAdresseFraSoknad(new WebSoknad());
+    public void finnAdresseFraSoknadReturnererTomListeHvisAdresseFaktumMangler() {
+        List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(new WebSoknad());
 
-        assertThat(adresseForslag, is(nullValue()));
+        assertThat(adresseForslagene, is(empty()));
     }
 
     private Faktum lagFaktumForFolkeregistrertGateadresse() {
