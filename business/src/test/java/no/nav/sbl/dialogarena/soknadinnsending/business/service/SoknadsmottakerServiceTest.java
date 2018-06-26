@@ -9,6 +9,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -127,12 +128,15 @@ public class SoknadsmottakerServiceTest {
         assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
         assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
         assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
-        assertThat(adresseForslag.postnummer, is(nullValue()));
     }
 
     @Test
     public void finnAdresseFraSoknadReturnererTomListeHvisAdressesokGirFlereResultater() {
-        when(adresseSokService.sokEtterAdresser(anyString())).thenReturn(lagAdresseForslagListeMedFlereInnslag());
+        when(adresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
+            lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
+            lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Bar")
+        ));
+        
         WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("soknad"))
                 .medFaktum(lagFaktumForSoknadGateadresse());
@@ -140,6 +144,22 @@ public class SoknadsmottakerServiceTest {
         final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
 
         assertThat(adresseForslagene, is(empty()));
+    }
+    
+    @Test
+    public void finnAdresseFraSoknadKanGiFlereNavKontor() {
+        when(adresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
+            lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
+            lagAdresseForslag(KOMMUNENUMMER2, KOMMUNENAVN2, "Foo")
+        ));
+        
+        WebSoknad webSoknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("soknad"))
+                .medFaktum(lagFaktumForSoknadGateadresse());
+
+        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
+
+        assertThat(adresseForslagene.size(), is(2));
     }
 
     @Test
@@ -206,13 +226,20 @@ public class SoknadsmottakerServiceTest {
         adresseForslagListe.add(lagAdresseForslag(KOMMUNENUMMER2, KOMMUNENAVN2));
         return adresseForslagListe;
     }
-
+    
     private AdresseForslag lagAdresseForslag(String kommunenummer, String kommunenavn) {
+        return lagAdresseForslag(kommunenummer, kommunenavn, "Gateveien");
+    }
+    
+    private AdresseForslag lagAdresseForslag(String kommunenummer, String kommunenavn, String adresse) {
         AdresseForslag adresseForslag = new AdresseForslag();
         adresseForslag.geografiskTilknytning = GEOGRAFISK_TILKNYTNING;
         adresseForslag.kommunenummer = kommunenummer;
         adresseForslag.bydel = BYDEL;
         adresseForslag.kommunenavn = kommunenavn;
+        adresseForslag.adresse = adresse;
+        adresseForslag.postnummer = "0030";
+        adresseForslag.poststed = "Mocka";
         adresseForslag.type = GATEADRESSE;
         return adresseForslag;
     }
