@@ -21,7 +21,7 @@
         <fitnesse.port>9977</fitnesse.port>
 
         <!-- Teksterversjoner oppdateres gjennom å kjøre "mvn versions:update-properties" for dette prosjektet (kun "web"). -->
-        <version.tekster.soknadsosialhjelp>1.0.622.299</version.tekster.soknadsosialhjelp>
+        <version.tekster.soknadsosialhjelp>1.0.633.300</version.tekster.soknadsosialhjelp>
         <version.tekster.soknaddagpenger>1.1.234.22</version.tekster.soknaddagpenger>
         <version.tekster.soknadaap>1.0.167.32</version.tekster.soknadaap>
         <version.tekster.soknadbilstonad>1.0.22.20</version.tekster.soknadbilstonad>
