@@ -37,11 +37,19 @@ public class UtbetalingBolk implements BolkService {
 
         List<Faktum> fakta = new ArrayList<>();
 
-        fakta.add(lagHarUtbetalingerFaktum(!utbetalinger.isEmpty()));
+        if (utbetalinger == null) {
+            fakta.add(new Faktum()
+                    .medSoknadId(soknadId)
+                    .medType(SYSTEMREGISTRERT)
+                    .medKey("utbetalinger.feilet")
+                    .medValue("true"));
+        } else {
+            fakta.add(lagHarUtbetalingerFaktum(!utbetalinger.isEmpty()));
 
-        fakta.addAll(utbetalinger.stream()
-                .map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling))
-                .collect(Collectors.toList()));
+            fakta.addAll(utbetalinger.stream()
+                    .map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling))
+                    .collect(Collectors.toList()));
+        }
 
         return fakta;
     }
