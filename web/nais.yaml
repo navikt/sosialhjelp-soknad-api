@@ -56,8 +56,6 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: virksomhet:Kodeverk_v2
     resourceType: webserviceendpoint
-  - alias: innlogging.navnetjeneste
-    resourceType: baseurl
   - alias: saksoversikt.link
     resourceType: baseurl
   - alias: dittnav.link
@@ -68,29 +66,17 @@ fasitResources:
     resourceType: baseurl
   - alias: soknadinnsending.link
     resourceType: baseurl
+  - alias: soknad.brukerprofil
+    resourceType: baseurl
   - alias: arbeid.rest
     resourceType: baseurl
   - alias: ekstern:ks_svarut_v1
     resourceType: webserviceendpoint
-#  - alias: soknad.skjemaveileder
-#    resourceType: baseurl
-#  - alias: soknad.alderspensjon
-#    resourceType: baseurl
-#  - alias: soknad.reelarbeidsoker
-#    resourceType: baseurl
-#  - alias: soknad.dagpengerbrosjyre
-#    resourceType: baseurl
-#  - alias: soknad.brukerprofil
-#    resourceType: baseurl
-#  - alias: soknad.sluttaarsak
-#    resourceType: baseurl
-#  - alias: soknad.lonnskravskjema
-#    resourceType: baseurl
-#  - alias: soknad.permitteringsskjema
-#    resourceType: baseurl
   - alias: arena.personinfoservice
     resourceType: baseurl
   - alias: dineutbetalinger.link
+    resourceType: baseurl
+  - alias: securityTokenService
     resourceType: baseurl
   - alias: dokumentinnsending.smtpServer
     resourceType: smtpserver
@@ -98,32 +84,11 @@ fasitResources:
     resourceType: credential
   - alias: arbeidservice
     resourceType: credential
-#  - alias: suspender
-#    resourceType: credential
-
-# TODO:
-# For sendsoknad, skru tilbake til: <applicationCertificate alias="srvSendsoknad"/>
-# ... alle utkommenterte linjer i nais-oppsettet over.
-#
-# Kan trolig ignoreres for DigiSos:
-# <applicationProperties alias="soknad.ettersending.properties"/>
-# <applicationProperties alias="soknad.properties"/>
-# <applicationProperties alias="soknad.featuretoggles"/>
-#
-#
-# TODO - ANNET OPPSETT FRA app_config:
-#    <serverOptions>
-#        <cron description="Slett tmp-filer" schedule="0 2 * * *" command="find /tmp/ -name 'gs_*' -mtime +5 -delete"/>
-#        <cron description="Slett app-tmp-filer" schedule="0 2 * * *" command="find /app/sendsoknad/temp/java-tmp/ -name 'rep*tmp' -mtime +5 -delete"/>
-#        <memoryParameters resourceAlias="brukerdialog-memparams"/>
-#    </serverOptions>
-#
-#    <security serviceUserResourceAlias="srvSendsoknad">
-#        <logins>
-#            <openAm>
-#                <contextRoot>sendsoknad</contextRoot>
-#            </openAm>
-#        </logins>
-#    </security>
-#
-#    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="25" />
+  - alias: servicegateway
+    resourceType: webservicegateway
+  - alias: soknadsosialhjelp.featuretoggles
+    resourceType: applicationProperties
+  - alias: soknadsosialhjelp.properties
+    resourceType: applicationProperties
+  - alias: openam
+    resourceType: openam
