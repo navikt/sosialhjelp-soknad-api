@@ -56,8 +56,6 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: virksomhet:Kodeverk_v2
     resourceType: webserviceendpoint
-  - alias: innlogging.navnetjeneste
-    resourceType: baseurl
   - alias: saksoversikt.link
     resourceType: baseurl
   - alias: dittnav.link
@@ -68,6 +66,8 @@ fasitResources:
     resourceType: baseurl
   - alias: soknadinnsending.link
     resourceType: baseurl
+  - alias: soknad.brukerprofil
+    resourceType: baseurl
   - alias: arbeid.rest
     resourceType: baseurl
   - alias: ekstern:ks_svarut_v1
@@ -76,12 +76,22 @@ fasitResources:
     resourceType: baseurl
   - alias: dineutbetalinger.link
     resourceType: baseurl
+  - alias: securityTokenService
+    resourceType: baseurl
   - alias: dokumentinnsending.smtpServer
     resourceType: smtpserver
   - alias: arena.personInfoService
     resourceType: credential
   - alias: arbeidservice
     resourceType: credential
+  - alias: servicegateway
+    resourceType: webservicegateway
+  - alias: soknadsosialhjelp.featuretoggles
+    resourceType: applicationProperties
+  - alias: soknadsosialhjelp.properties
+    resourceType: applicationProperties
+  - alias: openam
+    resourceType: openam
   - alias: tpsws.api.v1
     resourceType: restservice
   - alias: soknadsosialhjelp-server-tpsws.api.v1-apiKey
