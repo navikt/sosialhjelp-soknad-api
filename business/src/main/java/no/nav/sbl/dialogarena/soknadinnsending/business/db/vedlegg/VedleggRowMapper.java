@@ -47,6 +47,7 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 .medOpprinneligInnsendingsvalg(opprinneligInnsendingsvalg)
                 .medAarsak(rs.getString("aarsak"))
                 .medFilnavn(rs.getString("filnavn"))
+                .medSha512(rs.getString("sha512"))
                 .medMimetype(rs.getString("mimetype"));
 
         String skjemanummerFraDb = rs.getString("skjemaNummer");

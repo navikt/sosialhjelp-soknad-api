@@ -65,7 +65,8 @@ public class DatabaseTestContext {
     }
 
     private static void createNonJpaTables(DataSource dataSource) {
-        try (Connection conn = dataSource.getConnection(); Statement st = conn.createStatement()) {
+
+       try (Connection conn = dataSource.getConnection(); Statement st = conn.createStatement()) {
             st.execute("drop table HENVENDELSE if exists");
             st.execute("create table HENVENDELSE (henvendelse_id bigint, behandlingsid varchar(255), behandlingskjedeId varchar(255), traad varchar(255), type varchar(255), opprettetdato timestamp, " +
                     "lestdato timestamp, sistendretdato timestamp, tema varchar(255), aktor varchar(255), status varchar(255), behandlingsresultat varchar(2048), sensitiv integer)");
@@ -82,7 +83,7 @@ public class DatabaseTestContext {
                     "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null, delstegstatus varchar(255), sistlagret timestamp, journalforendeEnhet varchar(255))");
             st.execute("alter table SOKNAD add batch_status varchar(255) default 'LEDIG'");
             st.execute("drop table VEDLEGG if exists");
-            st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint, skjemaNummer varchar(36), aarsak varchar(200), navn varchar(255) not null,innsendingsvalg varchar(255) not null , opprinneliginnsendingsvalg varchar(255), antallsider bigint, fillagerReferanse varchar(36), storrelse bigint not null, " +
+            st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint, skjemaNummer varchar(36), aarsak varchar(200), navn varchar(255) not null,innsendingsvalg varchar(255) not null , opprinneliginnsendingsvalg varchar(255), antallsider bigint, fillagerReferanse varchar(36), sha512 varchar(256), storrelse bigint not null, " +
                     " opprettetdato timestamp , data blob, mimetype varchar(200), filnavn varchar(200))");
             st.execute("create table SOKNADBRUKERDATA (soknadbrukerdata_id bigint not null, soknad_id bigint not null, key varchar(255) not null, value varchar(2000), " +
                     "type varchar(255), sistendret timestamp not null, PARRENT_FAKTUM bigint)");
