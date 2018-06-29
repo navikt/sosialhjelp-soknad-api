@@ -88,9 +88,11 @@
             <li>
                 <ul class="svar-liste">
                     <h3>Bekreftet av bruker med følgende informasjonstekst</h3>
-                    <li>
-                        {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
-                    </li>
+                    <li>{{{ hentTekst "oppsummering.bekreftOpplysninger" }}}</li>
+                    <li>{{{ hentTekstForGDPRInfo
+                            "soknadsosialhjelp.forstesiden.bekreftInfoModal.body" }}}</li>
+                    <li>{{{ hentTekstForGDPRInfo "soknasosialhjelp.oppsummering.hvorsendes" }}}</li>
+
                 </ul>
             </li>
         </ul>
