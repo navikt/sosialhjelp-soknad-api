@@ -51,7 +51,7 @@ public class UtbetalingService {
                 );
     }
 
-    private List<Utbetaling> mapTilUtbetalinger(WSHentUtbetalingsinformasjonResponse wsUtbetalinger) {
+    List<Utbetaling> mapTilUtbetalinger(WSHentUtbetalingsinformasjonResponse wsUtbetalinger) {
         if (wsUtbetalinger.getUtbetalingListe() == null) {
             return new ArrayList<>();
         }
@@ -76,7 +76,7 @@ public class UtbetalingService {
         utbetaling.bilagsNummer = ytelse.getBilagsnummer();
 
         WSPeriode wsPeriode = ytelse.getYtelsesperiode();
-        if (wsPeriode != null && wsPeriode.getFom() != null && wsPeriode.getTom() != null) {
+        if (wsPeriode != null) {
             utbetaling.periodeFom = tilLocalDate(wsPeriode.getFom());
             utbetaling.periodeTom = tilLocalDate(wsPeriode.getTom());
         }
@@ -107,10 +107,16 @@ public class UtbetalingService {
 
 
     private DateTime tilDateTime(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
         return new DateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), 0, 0);
     }
 
     private LocalDate tilLocalDate(DateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
         return LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth());
     }
 
