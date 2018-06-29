@@ -4,7 +4,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -57,12 +58,11 @@ public class UtbetalingServiceTest {
         komplettYtelse = lagKomplettWsYtelse(wsPerson);
     }
 
-    @Ignore("Venter på avklaring om hva som er riktig oppførsel i dette tilfellet, merges ikke før dette er avklart")
     @Test
     public void mapTilUtbetalingerGodtarWSUtbetalingUtenYtelseliste() {
         List<Utbetaling> utbetalinger = utbetalingService.mapTilUtbetalinger(lagWSHentUtbetalingsinformasjonResponseUtenYtelseliste(wsPerson));
 
-        assertThat(utbetalinger.size(), is(1));
+        assertThat(utbetalinger.size(), is(0));
     }
 
     @Test
