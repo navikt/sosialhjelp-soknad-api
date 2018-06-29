@@ -3,20 +3,23 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling;
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
-import org.junit.Before;
-import org.junit.Test;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock.dato;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UtbetalingServiceTest {
-
     private static final String YTELSESTYPE = "Onkel Skrue penger";
     private static final double NETTO = 60000.0;
     private static final double BRUTTO = 3880.0;
@@ -24,6 +27,16 @@ public class UtbetalingServiceTest {
     private static final double TREKK = -500.0;
     private static final String BILAGSNR = "568269566";
     private static final int YEAR = 2018;
+    private static final int MONTH = 2;
+    private static final int FOM_DATE = 1;
+    private static final int TOM_DATE = 28;
+    private static final int UTBETALT_DAG = 27;
+    private static final String KOMPONENTTYPE = "Pengesekk";
+    private static final double KOMPONENTBELOP = 50000.0;
+    private static final String SATSTYPE = "Dag";
+    private static final double SATSBELOP = 5000.0;
+    private static final double SATSANTALL = 10.0;
+
     @Mock
     private UtbetalingV1 utbetalingV1;
 
@@ -44,9 +57,18 @@ public class UtbetalingServiceTest {
         komplettYtelse = lagKomplettWsYtelse(wsPerson);
     }
 
+    @Ignore("Venter på avklaring om hva som er riktig oppførsel i dette tilfellet, merges ikke før dette er avklart")
+    @Test
+    public void mapTilUtbetalingerGodtarWSUtbetalingUtenYtelseliste() {
+        List<Utbetaling> utbetalinger = utbetalingService.mapTilUtbetalinger(lagWSHentUtbetalingsinformasjonResponseUtenYtelseliste(wsPerson));
+
+        assertThat(utbetalinger.size(), is(1));
+    }
+
     @Test
     public void ytelseTilUtbetalingMapperMaksimalWSUtbetalingerRiktig() {
         Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(komplettUtbetaling, komplettYtelse);
+        Utbetaling.Komponent komponent = utbetaling.komponenter.get(1);
 
         assertThat(utbetaling.type, is(YTELSESTYPE));
         assertThat(utbetaling.netto, is(NETTO));
@@ -55,6 +77,56 @@ public class UtbetalingServiceTest {
         assertThat(utbetaling.andreTrekk, is(TREKK));
         assertThat(utbetaling.bilagsNummer, is(BILAGSNR));
         assertThat(utbetaling.periodeFom.getYear(), is(YEAR));
+        assertThat(utbetaling.periodeFom.getMonthValue(), is(MONTH));
+        assertThat(utbetaling.periodeFom.getDayOfMonth(), is(FOM_DATE));
+        assertThat(utbetaling.periodeTom.getDayOfMonth(), is(TOM_DATE));
+        assertThat(utbetaling.erUtbetalt, is(true));
+        assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(UTBETALT_DAG));
+
+        assertThat(komponent.type, is(KOMPONENTTYPE));
+        assertThat(komponent.belop, is(KOMPONENTBELOP));
+        assertThat(komponent.satsType, is(SATSTYPE));
+        assertThat(komponent.satsBelop, is(SATSBELOP));
+        assertThat(komponent.satsAntall, is(SATSANTALL));
+    }
+
+    @Test
+    public void ytelseTilUtbetalingMapperMinimalWSUtbetalingRiktig() {
+        Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(lagMinimalWSUtbetaling(wsPerson), lagMinimalWsYtelseMedYtelseskomponentliste(wsPerson));
+        Utbetaling.Komponent komponent = utbetaling.komponenter.get(0);
+
+        assertThat(utbetaling.type, is(YTELSESTYPE));
+        assertThat(utbetaling.netto, is(0.0));
+        assertThat(utbetaling.brutto, is(0.0));
+        assertThat(utbetaling.skatteTrekk, is(0.0));
+        assertThat(utbetaling.andreTrekk, is(0.0));
+        assertThat(utbetaling.bilagsNummer, is(nullValue()));
+        assertThat(utbetaling.periodeFom.getYear(), is(YEAR));
+        assertThat(utbetaling.periodeFom.getMonthValue(), is(MONTH));
+        assertThat(utbetaling.periodeFom.getDayOfMonth(), is(FOM_DATE));
+        assertThat(utbetaling.periodeTom, is(nullValue()));
+        assertThat(utbetaling.erUtbetalt, is(false));
+        assertThat(utbetaling.utbetalingsDato, is(nullValue()));
+
+        assertThat(komponent.type, is(KOMPONENTTYPE));
+        assertThat(komponent.belop, is(0.0));
+        assertThat(komponent.satsType, is(nullValue()));
+        assertThat(komponent.satsBelop, is(0.0));
+        assertThat(komponent.satsAntall, is(0.0));
+    }
+
+    private WSHentUtbetalingsinformasjonResponse lagWSHentUtbetalingsinformasjonResponseUtenYtelseliste(WSPerson wsPerson) {
+        List<WSUtbetaling> wsUtbetalinger = new ArrayList<>();
+        wsUtbetalinger.add(lagMinimalWSUtbetalingUtenYtelsesliste(wsPerson));
+        return new WSHentUtbetalingsinformasjonResponse().withUtbetalingListe(wsUtbetalinger);
+    }
+
+    private WSUtbetaling lagMinimalWSUtbetalingUtenYtelsesliste(WSPerson wsPerson) {
+        return new WSUtbetaling()
+                .withPosteringsdato(dato(YEAR, MONTH, 21))
+                .withUtbetaltTil(wsPerson)
+                .withUtbetalingsmetode("Norsk bankkonto")
+                .withUtbetalingsstatus("Utbetalt");
     }
 
     private WSUtbetaling lagKomplettWSUtbetaling(WSPerson wsPerson) {
@@ -62,12 +134,12 @@ public class UtbetalingServiceTest {
                 .withKontotype("Norsk bankkonto")
                 .withKontonummer("32902095534");
         return new WSUtbetaling()
-                .withPosteringsdato(dato(YEAR, 2, 21))
+                .withPosteringsdato(dato(YEAR, MONTH, 21))
                 .withUtbetaltTil(wsPerson)
                 .withUtbetalingNettobeloep(3880.0)
                 .withYtelseListe(lagKomplettWsYtelse(wsPerson))
-                .withUtbetalingsdato(dato(YEAR, 2, 27))
-                .withForfallsdato(dato(YEAR, 2, 28))
+                .withUtbetalingsdato(dato(YEAR, MONTH, UTBETALT_DAG))
+                .withForfallsdato(dato(YEAR, MONTH, 28))
                 .withUtbetaltTilKonto(bankkonto)
                 .withUtbetalingsmelding(null)
                 .withUtbetalingsmetode("Norsk bankkonto")
@@ -80,18 +152,19 @@ public class UtbetalingServiceTest {
         return new WSYtelse()
                 .withYtelsestype(new WSYtelsestyper().withValue(YTELSESTYPE))
                 .withYtelsesperiode(new WSPeriode()
-                        .withFom(dato(YEAR, 2, 1))
-                        .withTom(dato(YEAR, 2, 28)))
-                .withYtelseskomponentListe(new WSYtelseskomponent()
+                        .withFom(dato(YEAR, MONTH, FOM_DATE))
+                        .withTom(dato(YEAR, MONTH, TOM_DATE)))
+                .withYtelseskomponentListe(
+                        new WSYtelseskomponent()
                                 .withYtelseskomponenttype("Sjekk")
                                 .withSatsbeloep(0.0)
                                 .withYtelseskomponentbeloep(10000.37),
                         new WSYtelseskomponent()
-                                .withYtelseskomponenttype("Pengesekk")
-                                .withSatstype("Dag")
-                                .withSatsbeloep(5000.0)
-                                .withSatsantall(10.0)
-                                .withYtelseskomponentbeloep(50000.0))
+                                .withYtelseskomponenttype(KOMPONENTTYPE)
+                                .withSatstype(SATSTYPE)
+                                .withSatsbeloep(SATSBELOP)
+                                .withSatsantall(SATSANTALL)
+                                .withYtelseskomponentbeloep(KOMPONENTBELOP))
                 .withYtelseskomponentersum(BRUTTO)
                 .withTrekksum(TREKK)
                 .withSkattsum(SKATT)
@@ -99,6 +172,26 @@ public class UtbetalingServiceTest {
                 .withBilagsnummer(BILAGSNR)
                 .withRettighetshaver(person)
                 .withRefundertForOrg(dummyOrg);
+    }
+
+    private WSUtbetaling lagMinimalWSUtbetaling(WSPerson wsPerson) {
+        return new WSUtbetaling()
+                .withPosteringsdato(dato(YEAR, MONTH, 21))
+                .withUtbetaltTil(wsPerson)
+                .withYtelseListe(lagMinimalWsYtelseMedYtelseskomponentliste(wsPerson))
+                .withUtbetalingsmetode("Norsk bankkonto")
+                .withUtbetalingsstatus("Utbetalt");
+    }
+
+    private WSYtelse lagMinimalWsYtelseMedYtelseskomponentliste(WSPerson person) {
+        return new WSYtelse()
+                .withYtelsestype(new WSYtelsestyper().withValue(YTELSESTYPE))
+                .withYtelsesperiode(new WSPeriode()
+                        .withFom(dato(YEAR, MONTH, FOM_DATE)))
+                .withYtelseskomponentListe(
+                        new WSYtelseskomponent()
+                                .withYtelseskomponenttype(KOMPONENTTYPE))
+                .withRettighetshaver(person);
     }
 
 }
