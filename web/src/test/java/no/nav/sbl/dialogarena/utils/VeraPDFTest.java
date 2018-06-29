@@ -81,6 +81,7 @@ public class VeraPDFTest {
 
         Assert.assertFalse("File is not a valid PDF/A " + result.getPDFAFlavour().toString() + "!", result.isCompliant());
     }
+
     @Test
     public void testVeraPDUtenVannmerkePDFA1A() {
 
@@ -90,6 +91,26 @@ public class VeraPDFTest {
         result = runPDFTest(pdfUtenVannmerkeFile, validator);
 
         Assert.assertFalse("File is not a valid PDF/A " + result.getPDFAFlavour().toString() + "!", result.isCompliant());
+    }
+
+
+
+    @Test
+    public void testPDFSomFeiler() {
+        flavour = PDFAFlavour.fromString("1b");
+        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, logResult);
+
+        result = runPDFTest(new File(Paths.get(pathToDir + "/soknadSomFeiler.pdf").toString()), validator);
+
+        for (TestAssertion testAssertion : result.getTestAssertions()) {
+            if (testAssertion.getStatus() == TestAssertion.Status.FAILED) {
+                System.out.println(testAssertion.getStatus() +  " : " + testAssertion.getMessage());
+            }
+        }
+
+
+        Assert.assertTrue("File should be a valid PDF/A " + result.getPDFAFlavour().toString() + "!", result.isCompliant());
+
     }
 
     private ValidationResult runPDFTest(File pdf, PDFAValidator validator) {
@@ -104,7 +125,10 @@ public class VeraPDFTest {
 
             for (TestAssertion testAssertion : testAssertions) {
 
-                System.out.println("Test Assertion : " + testAssertion.getMessage());
+                if (testAssertion.getStatus() == TestAssertion.Status.FAILED) {
+                    System.out.println("Test Assertion : " + testAssertion.getMessage());
+
+                }
             }
 
             System.out.println("\n\nProfile details : " + profileDetails.getName());
@@ -121,4 +145,6 @@ public class VeraPDFTest {
         }
         return result;
     }
+
+
 }

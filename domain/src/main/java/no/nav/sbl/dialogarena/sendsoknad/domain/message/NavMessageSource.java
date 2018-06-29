@@ -52,7 +52,12 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
 
         if(properties == null){
             log.warn("Finner ikke tekster for {} for språkbundle {}.", fileTuple, locale.getLanguage());
-            return hentRemoteEllerLocal(fileTuple, new Locale("nb", "NO"));
+            final Locale noLocale = new Locale("nb", "NO");
+            if (locale.equals(noLocale)) {
+                throw new IllegalStateException("Kunne ikke laste tekster. Avbryter.");
+            } else {
+                return hentRemoteEllerLocal(fileTuple, noLocale);
+            }
         }
 
         return properties;
