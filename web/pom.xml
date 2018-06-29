@@ -27,10 +27,10 @@
         <version.tekster.soknadbilstonad>1.0.22.20</version.tekster.soknadbilstonad>
         <version.tekster.soknad-aap-utland>1.0.3.1</version.tekster.soknad-aap-utland>
         <version.tekster.soknadforeldrepenger>1.1.630.73-SD-38-tvilling-trilling-SNAPSHOT</version.tekster.soknadforeldrepenger>
-        <version.tekster.sendsoknad>1.0.9.11</version.tekster.sendsoknad> 
-        <version.tekster.soknadrefusjondagligreise>1.0.4.5</version.tekster.soknadrefusjondagligreise>
-        <version.tekster.soknadtilleggsstonader>1.0.18.15</version.tekster.soknadtilleggsstonader>
-        <version.tekster.soknadtiltakspenger>1.0.9.9</version.tekster.soknadtiltakspenger>
+        <version.tekster.sendsoknad>1.0.23.23</version.tekster.sendsoknad> 
+        <version.tekster.soknadrefusjondagligreise>1.0.6.6</version.tekster.soknadrefusjondagligreise>
+        <version.tekster.soknadtilleggsstonader>1.0.22.18</version.tekster.soknadtilleggsstonader>
+        <version.tekster.soknadtiltakspenger>1.0.20.15</version.tekster.soknadtiltakspenger>
     </properties>
 
     <dependencies>

@@ -33,8 +33,7 @@
         <h1>{{ hentTekst "skjema.tittel" }}</h1>
         {{> skjema/dagpenger/personalia }}
     </div>
-
-    <div>
+     <div>
         {{#if @root.utvidetSoknad}}
             <div class="personalia">
                 {{> skjema/dagpenger/personaliaBolk}}
@@ -43,6 +42,13 @@
         {{#each bolker}}
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
+                {{#hvisLik navn "arbeidbolk"}}
+                    <h3>{{{hentTekst "arbeidsforhold.sporsmal"}}}</h3>
+                    <p>{{{hentTekst "arbeidsforhold.infotekst"}}}</p>
+                    {{#hvisIngenArbeidsforhold}}
+                        <p>{{{hentTekst "arbeidsforhold.ingen"}}}</p>
+                    {{/hvisIngenArbeidsforhold}}
+                {{/hvisLik}}
 
                 {{#hvisLik navn "opplysningerBolk"}}
                     {{{hentTekst "opplysninger.informasjon"}}}
@@ -71,7 +77,6 @@
                     {{/hvisIngenSynligeBarneFakta}}
                 </ul>
                 {{#hvisLik navn "opplysningerBolk"}}
-
                     {{> skjema/sosialhjelp/vedlegg}}
                 {{/hvisLik}}
             </div>
