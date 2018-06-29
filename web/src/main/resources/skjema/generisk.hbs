@@ -48,14 +48,17 @@
                     {{{hentTekst "opplysninger.informasjon"}}}
                 {{/hvisLik}}
 
-                {{#if @root.utvidetSoknad}}
-                    <div class="hjelpeInfotekst">
-                        {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
-                            <h3>Ingress:</h3>
-                            <div>{{{ hentTekst (concat (toLowerCase navn) ".informasjon") }}}</div>
-                        {{/hvisTekstFinnes}}
-                    </div>
-                {{/if}}
+                {{#hvisUlik soknad.skjemaNummer "NAV 35-18.01"}}
+                    {{#if @root.utvidetSoknad}}
+                        <div class="hjelpeInfotekst">
+                            {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
+                                <h3>Ingress:</h3>
+                                <div>{{{ hentTekst
+                                        (concat (toLowerCase navn) ".informasjon") }}}</div>
+                            {{/hvisTekstFinnes}}
+                        </div>
+                    {{/if}}
+                {{/hvisUlik}}
 
                 <ul class="fakta-liste">
                     {{#variabel "niva" "3"}}
@@ -82,12 +85,12 @@
         <ul class="fakta-liste">
             <li>
                 <ul class="svar-liste">
-                    <h3>Bekreftet av bruker med følgende informasjonstekst</h3>
-                    <li>{{{ hentTekst "oppsummering.bekreftOpplysninger" }}}</li>
+                    <li>{{{ hentTekstForGDPRInfo "soknasosialhjelp.oppsummering.hvorsendes" }}}</li>
                     <li>{{{ hentTekstForGDPRInfo
                             "soknadsosialhjelp.forstesiden.bekreftInfoModal.body" }}}</li>
-                    <li>{{{ hentTekstForGDPRInfo "soknasosialhjelp.oppsummering.hvorsendes" }}}</li>
 
+                    <h3>Bekreftet av bruker med følgende informasjonstekst</h3>
+                    <li>{{{ hentTekst "oppsummering.bekreftOpplysninger" }}}</li>
                 </ul>
             </li>
         </ul>
