@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.UnderBehandling;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedlegg;
 
@@ -87,8 +88,10 @@ public class VedleggRessurs {
         }
 
         List<Vedlegg> res = new ArrayList<>();
+
         for (FormDataBodyPart file : files) {
             byte[] in = getByteArray(file);
+
             Vedlegg vedlegg = new Vedlegg()
                     .medVedleggId(null)
                     .medSoknadId(soknad.getSoknadId())
@@ -132,5 +135,4 @@ public class VedleggRessurs {
 
         return totalStorrelse > MAKS_TOTAL_FILSTORRELSE;
     }
-
 }

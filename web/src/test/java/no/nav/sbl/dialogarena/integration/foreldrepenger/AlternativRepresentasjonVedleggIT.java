@@ -16,10 +16,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Skjemanummer.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -44,11 +41,11 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
                 .nyttFaktum("ekstraVedlegg").withValue("true").opprett()
                 .faktum("arbeidsforhold.yrkesaktiv").withValue("false").utforEndring()
                 .nyttFaktum("arbeidsforhold")
-                    .withValue("true")
-                    .withProperty("stillingstype", "variabel")
-                    .withProperty("ansatt", "true")
-                    .withParentFaktum("arbeidsforhold.yrkesaktiv")
-                    .opprett()
+                .withValue("true")
+                .withProperty("stillingstype", "variabel")
+                .withProperty("ansatt", "true")
+                .withParentFaktum("arbeidsforhold.yrkesaktiv")
+                .opprett()
                 .hentPaakrevdeVedlegg()
                 .vedlegg(N6).withInnsendingsValg(Status.LastetOpp).utforEndring().hentPaakrevdeVedlegg()
                 .vedlegg(M6).withInnsendingsValg(Status.VedleggAlleredeSendt).utforEndring().hentPaakrevdeVedlegg()
@@ -83,6 +80,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
             }
         });
     }
+
 
     @Test
     public void yrkesaktivArbeidsForholdEDAG() {
@@ -188,11 +186,11 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .nyttFaktum("perioder.opphold").withValue("true").opprett()
                 .nyttFaktum("perioder.tidsrom.utsettelse")
-                    .withParentFaktum("perioder.opphold")
-                    .withValue("true")
-                    .withProperty("ferie", "true")
-                    .withProperty("type", "ferie")
-                    .opprett()
+                .withParentFaktum("perioder.opphold")
+                .withValue("true")
+                .withProperty("ferie", "true")
+                .withProperty("type", "ferie")
+                .opprett()
                 .hentPaakrevdeVedlegg()
                 .vedlegg(Z6).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
@@ -205,10 +203,10 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
     public void perioderMorsaktivitetStudier() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .nyttFaktum("perioder.morsaktivitet").withValue("true")
-                    .withValue("true")
-                    .withProperty("type", "studier")
-                    .withProperty("studier", "true")
-                    .opprett()
+                .withValue("true")
+                .withProperty("type", "studier")
+                .withProperty("studier", "true")
+                .opprett()
                 .hentPaakrevdeVedlegg()
                 .vedlegg(O9).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
