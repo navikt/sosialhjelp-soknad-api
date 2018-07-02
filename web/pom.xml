@@ -25,13 +25,13 @@
 
         <!-- Teksterversjoner oppdateres gjennom å kjøre "mvn versions:update-properties" for dette prosjektet (kun "web"). -->
         <version.tekster.soknadsosialhjelp>1.0.640.304</version.tekster.soknadsosialhjelp>
-        <version.tekster.soknaddagpenger>1.1.234.22</version.tekster.soknaddagpenger>
-        <version.tekster.soknadaap>1.0.167.32</version.tekster.soknadaap>
-        <version.tekster.soknadbilstonad>1.0.22.20</version.tekster.soknadbilstonad>
+        <version.tekster.soknaddagpenger>1.1.241.29</version.tekster.soknaddagpenger>
+        <version.tekster.soknadaap>1.0.214.78</version.tekster.soknadaap>
+        <version.tekster.soknadbilstonad>1.0.27.24</version.tekster.soknadbilstonad>
         <version.tekster.soknad-aap-utland>1.0.3.1</version.tekster.soknad-aap-utland>
         <version.tekster.soknadforeldrepenger>1.1.630.73-SD-38-tvilling-trilling-SNAPSHOT
         </version.tekster.soknadforeldrepenger>
-        <version.tekster.sendsoknad>1.0.23.23</version.tekster.sendsoknad>
+        <version.tekster.sendsoknad>1.0.26.25</version.tekster.sendsoknad>
         <version.tekster.soknadrefusjondagligreise>1.0.6.6
         </version.tekster.soknadrefusjondagligreise>
         <version.tekster.soknadtilleggsstonader>1.0.22.18</version.tekster.soknadtilleggsstonader>

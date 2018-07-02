@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.service.HandlebarsUtils;
+import no.nav.sbl.dialogarena.utils.UrlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -92,7 +93,7 @@ public class HentTekstForGDPRInfoHelper extends RegistryAwareHelper<String> {
 
             tekst = erstattTekst(new String[]{"{navkontor}", "{navkontor:NAV-kontoret ditt}", "{navkontor:oppholdskommunen}"}, tekst, navenhet);
 
-            return tekst;
+            return UrlUtils.endreHyperLenkerTilTekst(tekst);
         }
     }
 
