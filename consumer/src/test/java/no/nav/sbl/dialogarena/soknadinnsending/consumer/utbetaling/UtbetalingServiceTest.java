@@ -44,8 +44,6 @@ public class UtbetalingServiceTest {
     @InjectMocks
     private UtbetalingService utbetalingService;
 
-    private WSUtbetaling komplettUtbetaling;
-    private WSYtelse komplettYtelse;
     private WSPerson wsPerson;
 
     @Before
@@ -53,9 +51,6 @@ public class UtbetalingServiceTest {
         wsPerson = new WSPerson()
                 .withAktoerId("12345678910")
                 .withNavn("Dummy");
-
-        komplettUtbetaling = lagKomplettWSUtbetaling(wsPerson);
-        komplettYtelse = lagKomplettWsYtelse(wsPerson);
     }
 
     @Test
@@ -67,7 +62,7 @@ public class UtbetalingServiceTest {
 
     @Test
     public void ytelseTilUtbetalingMapperMaksimalWSUtbetalingerRiktig() {
-        Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(komplettUtbetaling, komplettYtelse);
+        Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(lagKomplettWSUtbetaling(wsPerson), lagKomplettWsYtelse(wsPerson));
         Utbetaling.Komponent komponent = utbetaling.komponenter.get(1);
 
         assertThat(utbetaling.type, is(YTELSESTYPE));
