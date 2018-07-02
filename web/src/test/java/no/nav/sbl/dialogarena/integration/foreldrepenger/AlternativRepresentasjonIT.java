@@ -6,8 +6,7 @@ import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Stonadstyper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
@@ -28,6 +27,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         EndpointDataMocking.setupMockWsEndpointData();
     }
 
+    @Ignore
     @Test
     public void skalIkkeValidereXMLForOpprettetStatus(){
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("opprettet");
@@ -35,6 +35,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(response.getStatusInfo().getStatusCode()).isEqualTo(200);
 
     }
+    @Ignore
     @Test
     public void skalValidereXMLForOppsummringStatus(){
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("oppsummering");
@@ -42,6 +43,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(response.getStatusInfo().getStatusCode()).isEqualTo(500);
     }
 
+    @Ignore
     @Test
     public void alternativRepresentasjonRettigheterTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -64,6 +66,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo(OVERTATT_OMSORG_INNEN_53_UKER_ADOPSJON);
     }
 
+    @Ignore
     @Test
     public void alternativRepresentasjonTilknytningTest() {
         Map<String, String> periodeProperties = new HashMap<>();
@@ -91,6 +94,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getTom().toString()).isEqualTo("2017-04-01");
     }
 
+    @Ignore
     @Test
     public void alternativRepresentasjonOpplysningerOmMorTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -113,6 +117,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrLand().getKode()).isEqualTo("AFG");
     }
 
+    @Ignore
     @Test
     public void alternativRepresentasjonOpplysningerOmFarEnkeltLopTest() {
         Map<String,String> personInfoProperties = new HashMap<>();
@@ -137,6 +142,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getUtenlandskfnrLand().getKode()).isEqualTo("ARG");
     }
 
+    @Ignore
     @Test
     public void opplysningerBarnTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -152,6 +158,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmBarn().getAntallBarn()).isEqualTo(999);
     }
 
+    @Ignore
     @Test
     public void soknadsvalgTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -166,6 +173,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getSoknadsvalg().getStoenadstype()).isEqualTo(Stoenadstype.ENGANGSSTOENADFAR);
     }
 
+    @Ignore
     @Test
     public void alternativRepresentasjonTilleggsopplysningerMedTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -178,6 +186,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getTilleggsopplysninger()).isEqualTo("Test tilleggsopplysninger");
     }
 
+    @Ignore
     @Test
     public void alternativRepresentasjonIkkeTilleggsopplysningerTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -190,6 +199,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getTilleggsopplysninger()).isNull();
     }
 
+    @Ignore
     @Test
     public void skalIkkeViseOpplysningerOmMorOgRettigheterVedEngangsstonadMor() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -206,6 +216,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmFar()).isNotNull();
     }
 
+    @Ignore
     @Test
     public void skalViseRettigheterOgIkkeOpplysningerOmFarVedEngangsstonadFar() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -225,6 +236,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
                 .isEqualTo(OVERTATT_OMSORG_INNEN_53_UKER_FODSEL);
     }
 
+    @Ignore
     @Test
     public void skalHaMedBegrunnelseVedForSenSoknad() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)

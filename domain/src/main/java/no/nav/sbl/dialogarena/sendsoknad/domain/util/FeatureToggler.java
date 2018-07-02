@@ -3,12 +3,12 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 public class FeatureToggler {
 
     public static boolean erFeatureAktiv(Toggle toggle) {
-        return Boolean.valueOf(System.getProperty(toggle.getPropertyNavn(), "false"));
+        return Boolean.valueOf(System.getenv(toggle.getPropertyNavn()));
     }
 
     public enum Toggle {
-        RESSURS_ALTERNATIVREPRESENTASJON("soknad.alternativrepresentasjon.ressurs.enabled", "Skrur på en ressurs for å hente ut alternativrepresetasjon på en url for testformål"),
-        RESSURS_FULLOPPSUMERING("soknad.fulloppsummering.ressurs.enabled", "Skrur på ressurs for fulloppsummering");
+        RESSURS_ALTERNATIVREPRESENTASJON("SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED", "Skrur på en ressurs for å hente ut alternativrepresetasjon på en url for testformål"),
+        RESSURS_FULLOPPSUMERING("SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED", "Skrur på ressurs for fulloppsummering");
 
         private String propertyNavn;
         private String beskrivelse;

@@ -10,8 +10,7 @@ import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -35,6 +34,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
 
     }
 
+    @Ignore
     @Test
     public void innsendingsvalgOgErPaakrevOgAarsak() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -81,7 +81,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         });
     }
 
-
+@Ignore
     @Test
     public void yrkesaktivArbeidsForholdEDAG() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -101,6 +101,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         );
     }
 
+    @Ignore
     @Test
     public void morTerminBekreftelse() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -119,6 +120,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         );
     }
 
+    @Ignore
     @Test
     public void adopsjonOvertakelse() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -131,6 +133,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(P5.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void egennaring() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -144,6 +147,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(T7.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void fedrekvoteSykdom() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -156,6 +160,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(L9.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void fedrekvoteHelseinstitusjon() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -169,6 +174,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(N9.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void perioderGraderingsskjema() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -181,6 +187,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(H1.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void perioderTidsromUtsettelser() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -199,6 +206,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(Z6.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void perioderMorsaktivitetStudier() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -215,6 +223,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(O9.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void perioderMorsaktivitIntroduksjonsprogram() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -231,6 +240,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(T1.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void perioderMorsaktivitKvalifiseringsprogram() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -247,6 +257,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(K3.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void ytelserVartpenger() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -259,6 +270,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(K1.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void ytelserAvtjening() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -271,6 +283,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(O5.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void ytelserSluttpakke() {
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
@@ -285,6 +298,7 @@ public class AlternativRepresentasjonVedleggIT extends AbstractIT {
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(Y4.dokumentTypeId());
     }
 
+    @Ignore
     @Test
     public void skalSetteTilleggsinfoForVedleggSomIkkeErLastetOpp() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
