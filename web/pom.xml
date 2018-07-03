@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,20 +19,23 @@
     <properties>
         <jetty.port>8080</jetty.port>
         <!-- Lagrer IT-info til enhetstestfil -->
-        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec</sonar.jacoco.reportPath>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec
+        </sonar.jacoco.reportPath>
         <fitnesse.port>9977</fitnesse.port>
 
         <!-- Teksterversjoner oppdateres gjennom å kjøre "mvn versions:update-properties" for dette prosjektet (kun "web"). -->
-        <version.tekster.soknadsosialhjelp>1.0.616.288</version.tekster.soknadsosialhjelp>
-        <version.tekster.soknaddagpenger>1.1.237.25</version.tekster.soknaddagpenger>
-        <version.tekster.soknadaap>1.0.183.48</version.tekster.soknadaap>
-        <version.tekster.soknadbilstonad>1.0.24.22</version.tekster.soknadbilstonad>
+        <version.tekster.soknadsosialhjelp>1.0.640.304</version.tekster.soknadsosialhjelp>
+        <version.tekster.soknaddagpenger>1.1.241.29</version.tekster.soknaddagpenger>
+        <version.tekster.soknadaap>1.0.214.78</version.tekster.soknadaap>
+        <version.tekster.soknadbilstonad>1.0.27.24</version.tekster.soknadbilstonad>
         <version.tekster.soknad-aap-utland>1.0.3.1</version.tekster.soknad-aap-utland>
-        <version.tekster.soknadforeldrepenger>1.1.630.73-SD-38-tvilling-trilling-SNAPSHOT</version.tekster.soknadforeldrepenger>
-        <version.tekster.sendsoknad>1.0.17.18</version.tekster.sendsoknad> 
-        <version.tekster.soknadrefusjondagligreise>1.0.4.5</version.tekster.soknadrefusjondagligreise>
-        <version.tekster.soknadtilleggsstonader>1.0.20.17</version.tekster.soknadtilleggsstonader>
-        <version.tekster.soknadtiltakspenger>1.0.15.14</version.tekster.soknadtiltakspenger>
+        <version.tekster.soknadforeldrepenger>1.1.630.73-SD-38-tvilling-trilling-SNAPSHOT
+        </version.tekster.soknadforeldrepenger>
+        <version.tekster.sendsoknad>1.0.26.25</version.tekster.sendsoknad>
+        <version.tekster.soknadrefusjondagligreise>1.0.6.6
+        </version.tekster.soknadrefusjondagligreise>
+        <version.tekster.soknadtilleggsstonader>1.0.22.18</version.tekster.soknadtilleggsstonader>
+        <version.tekster.soknadtiltakspenger>1.0.20.15</version.tekster.soknadtiltakspenger>
     </properties>
 
     <dependencies>
@@ -105,7 +110,7 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -347,7 +352,7 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>4.10</version>
             <scope>runtime</scope>
-          </dependency>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
@@ -438,7 +443,7 @@
             <artifactId>jetty-jaas</artifactId>
             <scope>compile</scope>
             <version>9.4.8.***REMOVED***21</version>
-                 </dependency>
+        </dependency>
         <!--
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -604,15 +609,15 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-         </dependency>
+        </dependency>
         <dependency>
             <groupId>org.verapdf</groupId>
             <artifactId>validation-model</artifactId>
             <version>1.4.5</version>
         </dependency>
         <dependency>
-        <groupId>org.apache.pdfbox</groupId>
-        <artifactId>preflight</artifactId>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>preflight</artifactId>
         </dependency>
         <dependency>
             <groupId>org.verapdf</groupId>
@@ -655,10 +660,16 @@
                 <artifactId>appassembler-maven-plugin</artifactId>
                 <version>1.10</version>
                 <configuration>
-                    <extraJvmArguments>-Djavax.net.ssl.trustStore=${NAV_TRUSTSTORE_PATH} -Djavax.net.ssl.trustStorePassword=${NAV_TRUSTSTORE_PASSWORD} -Djavax.net.ssl.keyStore=${SRVSOKNADSOSIALHJELP_KEYSTORE} -Djavax.net.ssl.keyStorePassword=${SRVSOKNADSOSIALHJELP_PASSWORD} -Xmx1024M -Xms1024M</extraJvmArguments>
+                    <extraJvmArguments>-Djavax.net.ssl.trustStore=${NAV_TRUSTSTORE_PATH}
+                        -Djavax.net.ssl.trustStorePassword=${NAV_TRUSTSTORE_PASSWORD}
+                        -Djavax.net.ssl.keyStore=${SRVSOKNADSOSIALHJELP_KEYSTORE}
+                        -Djavax.net.ssl.keyStorePassword=${SRVSOKNADSOSIALHJELP_PASSWORD} -Xmx1024M
+                        -Xms1024M
+                    </extraJvmArguments>
                     <programs>
                         <program>
-                            <mainClass>no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer</mainClass>
+                            <mainClass>no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer
+                            </mainClass>
                             <id>app</id>
                         </program>
                     </programs>
@@ -696,7 +707,8 @@
                         </goals>
                         <configuration>
                             <usedDependencies>
-                                <usedDependency>org.apache.httpcomponents:httpclient</usedDependency>
+                                <usedDependency>org.apache.httpcomponents:httpclient
+                                </usedDependency>
                             </usedDependencies>
                         </configuration>
                     </execution>
@@ -779,10 +791,11 @@
                                     <overWrite>false</overWrite>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/appassembler</outputDirectory>
+                            <outputDirectory>${project.build.directory}/appassembler
+                            </outputDirectory>
                             <includes>tekster/**/*</includes>
                         </configuration>
-                   </execution>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -834,8 +847,10 @@
                                 <executable>java</executable>
                                 <arguments>
                                     <argument>-cp</argument>
-                                    <classpath />
-                                    <argument>no.nav.sbl.dialogarena.dokumentinnsending.StartJettyWeb</argument>
+                                    <classpath/>
+                                    <argument>
+                                        no.nav.sbl.dialogarena.dokumentinnsending.StartJettyWeb
+                                    </argument>
                                     <argument>-restart-server</argument>
                                     <argument>-port</argument>
                                     <argument>${jetty.port}</argument>
