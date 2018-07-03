@@ -22,7 +22,7 @@ public class AvbrytAutomatiskSheduler {
 
     private static final Logger logger = getLogger(AvbrytAutomatiskSheduler.class);
 
-    private static final String KLOKKEN_FIRE_OM_NATTEN = "0 0 4 * * *";
+    private static final String KLOKKEN_FIRE_OM_NATTEN = "0 0 11 * * *";
     private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
     private static final int DAGER_GAMMELT = 7 * 2;
 
