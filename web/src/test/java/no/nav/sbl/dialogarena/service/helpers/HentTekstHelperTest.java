@@ -64,4 +64,5 @@ public class HentTekstHelperTest {
         verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix", "bundlename", toLocale("nb_NO"));
     }
 
+
 }

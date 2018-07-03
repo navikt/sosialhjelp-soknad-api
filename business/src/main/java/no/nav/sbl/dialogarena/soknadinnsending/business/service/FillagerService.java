@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+
 @Component
 public class FillagerService {
 
@@ -24,8 +25,12 @@ public class FillagerService {
 
     public void lagreFil(String behandlingsId, String uid, String fnr, InputStream fil) {
         logger.info("Skal lagre fil til fillager for behandlingsId {}. UUID: {}", behandlingsId, uid);
+
         try {
-            fillagerRepository.lagreFil(new Fil(behandlingsId, uid, IOUtils.toByteArray(fil), fnr));
+
+            byte[] bytes = IOUtils.toByteArray(fil);
+            fillagerRepository.lagreFil(new Fil(behandlingsId, uid, bytes, fnr));
+
         } catch (Exception e) {
             logger.error("Kunne ikke lagre fil med uuid {}", uid, e);
             throw new AlleredeHandtertException();

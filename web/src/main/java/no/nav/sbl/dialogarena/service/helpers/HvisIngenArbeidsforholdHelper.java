@@ -22,7 +22,7 @@ public class HvisIngenArbeidsforholdHelper extends RegistryAwareHelper<Object> {
 
     @Override
     public String getBeskrivelse() {
-        return "Sjekk om søker ikke har noen arbeidsforhold.";
+        return "Sjekk at søker ikke har noe arbeidsforhold.";
     }
 
     @Override

@@ -49,6 +49,7 @@ public class AlternativRepresentasjonRessurs {
                 .map(AlternativRepresentasjon::getContent)
                 .orElseThrow(() -> new NotFoundException(String.format("Ingen alternativ representasjon for [%s] funnet (%s)", behandlingsId, soknad.getSoknadPrefix())));
     }
+
     @Deprecated
     @GET
     @Path("/json/{behandlingsId}")

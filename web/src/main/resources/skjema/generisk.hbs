@@ -33,8 +33,7 @@
         <h1>{{ hentTekst "skjema.tittel" }}</h1>
         {{> skjema/dagpenger/personalia }}
     </div>
-
-    <div>
+     <div>
         {{#if @root.utvidetSoknad}}
             <div class="personalia">
                 {{> skjema/dagpenger/personaliaBolk}}
@@ -54,15 +53,6 @@
                 {{#hvisLik navn "opplysningerBolk"}}
                     {{{hentTekst "opplysninger.informasjon"}}}
                 {{/hvisLik}}
-
-                {{#if @root.utvidetSoknad}}
-                    <div class="hjelpeInfotekst">
-                        {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
-                            <h3>Ingress:</h3>
-                            <div>{{{ hentTekst (concat (toLowerCase navn) ".informasjon") }}}</div>
-                        {{/hvisTekstFinnes}}
-                    </div>
-                {{/if}}
 
                 <ul class="fakta-liste">
                     {{#variabel "niva" "3"}}
@@ -88,10 +78,12 @@
         <ul class="fakta-liste">
             <li>
                 <ul class="svar-liste">
+                    <li>{{{ hentTekstForGDPRInfo "soknasosialhjelp.oppsummering.hvorsendes" }}}</li>
+                    <li>{{{ hentTekstForGDPRInfo
+                            "soknadsosialhjelp.forstesiden.bekreftInfoModal.body" }}}</li>
+
                     <h3>Bekreftet av bruker med følgende informasjonstekst</h3>
-                    <li>
-                        {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
-                    </li>
+                    <li>{{{ hentTekst "oppsummering.bekreftOpplysninger" }}}</li>
                 </ul>
             </li>
         </ul>

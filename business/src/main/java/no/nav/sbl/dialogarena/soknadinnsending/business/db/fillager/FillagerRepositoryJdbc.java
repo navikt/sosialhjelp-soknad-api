@@ -17,8 +17,7 @@ public class FillagerRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
             rs.getString("behandlingsid"),
             rs.getString("uuid"),
             rs.getBytes("data"),
-            rs.getString("eier")
-    );
+            rs.getString("eier"));
 
     @Inject
     public void setDS(DataSource ds) {
@@ -45,6 +44,7 @@ public class FillagerRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
                         ps.setString(2, fil.uuid);
                         ps.setBytes(3, fil.data);
                         ps.setString(4, fil.eier);
+
                     });
         }
 
