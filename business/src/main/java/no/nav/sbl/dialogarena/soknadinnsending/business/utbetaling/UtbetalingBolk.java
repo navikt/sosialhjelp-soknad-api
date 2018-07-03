@@ -37,11 +37,19 @@ public class UtbetalingBolk implements BolkService {
 
         List<Faktum> fakta = new ArrayList<>();
 
-        fakta.add(lagHarUtbetalingerFaktum(!utbetalinger.isEmpty()));
+        if (utbetalinger == null) {
+            fakta.add(new Faktum()
+                    .medSoknadId(soknadId)
+                    .medType(SYSTEMREGISTRERT)
+                    .medKey("utbetalinger.feilet")
+                    .medValue("true"));
+        } else {
+            fakta.add(lagHarUtbetalingerFaktum(!utbetalinger.isEmpty()));
 
-        fakta.addAll(utbetalinger.stream()
-                .map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling))
-                .collect(Collectors.toList()));
+            fakta.addAll(utbetalinger.stream()
+                    .map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling))
+                    .collect(Collectors.toList()));
+        }
 
         return fakta;
     }
@@ -67,20 +75,22 @@ public class UtbetalingBolk implements BolkService {
                 .medSystemProperty("andreTrekk", formatTall(utbetaling.andreTrekk))
                 .medSystemProperty("periodeFom", utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .medSystemProperty("periodeTom", utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
-                .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato.toString())
+                .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato != null ? utbetaling.utbetalingsDato.toString() : null)
                 .medSystemProperty("erUtbetalt", utbetaling.erUtbetalt + "")
-                .medSystemProperty("komponenter", utbetaling.komponenter.size() + "");
+                .medSystemProperty("komponenter", utbetaling.komponenter != null ? utbetaling.komponenter.size() + "" : "");
 
-        for (int i = 0; i < utbetaling.komponenter.size(); i++) {
-            Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
-            String komponentNavn = "komponent_" + i + "_";
-            faktum
-                    .medSystemProperty(komponentNavn + "type", komponent.type)
-                    .medSystemProperty(komponentNavn + "belop", formatTall(komponent.belop))
-                    .medSystemProperty(komponentNavn + "satsType", komponent.satsType)
-                    .medSystemProperty(komponentNavn + "satsBelop", formatTall(komponent.satsBelop))
-                    .medSystemProperty(komponentNavn + "satsAntall", formatTall(komponent.satsAntall));
+        if (utbetaling.komponenter != null) {
+            for (int i = 0; i < utbetaling.komponenter.size(); i++) {
+                Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
+                String komponentNavn = "komponent_" + i + "_";
+                faktum
+                        .medSystemProperty(komponentNavn + "type", komponent.type)
+                        .medSystemProperty(komponentNavn + "belop", formatTall(komponent.belop))
+                        .medSystemProperty(komponentNavn + "satsType", komponent.satsType)
+                        .medSystemProperty(komponentNavn + "satsBelop", formatTall(komponent.satsBelop))
+                        .medSystemProperty(komponentNavn + "satsAntall", formatTall(komponent.satsAntall));
 
+            }
         }
         return faktum;
     }

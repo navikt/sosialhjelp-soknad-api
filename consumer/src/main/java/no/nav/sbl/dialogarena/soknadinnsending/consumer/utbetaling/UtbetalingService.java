@@ -1,9 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonIkkeTilgang;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPeriodeIkkeGyldig;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonRequest;
@@ -33,9 +30,9 @@ public class UtbetalingService {
         try {
             WSHentUtbetalingsinformasjonResponse wsUtbetalinger = utbetalingV1.hentUtbetalingsinformasjon(lagHentUtbetalingRequest(brukerFnr, fom, tom));
             return mapTilUtbetalinger(wsUtbetalinger);
-        } catch (HentUtbetalingsinformasjonPeriodeIkkeGyldig | HentUtbetalingsinformasjonPersonIkkeFunnet | HentUtbetalingsinformasjonIkkeTilgang e) {
+        } catch (Exception e) {
             logger.error("Kunne ikke hente utbetalinger for {}", brukerFnr, e);
-            return new ArrayList<>(); // TODO håndtere?
+            return null;
         }
 
     }
@@ -54,7 +51,7 @@ public class UtbetalingService {
                 );
     }
 
-    private List<Utbetaling> mapTilUtbetalinger(WSHentUtbetalingsinformasjonResponse wsUtbetalinger) {
+    List<Utbetaling> mapTilUtbetalinger(WSHentUtbetalingsinformasjonResponse wsUtbetalinger) {
         if (wsUtbetalinger.getUtbetalingListe() == null) {
             return new ArrayList<>();
         }
@@ -68,7 +65,7 @@ public class UtbetalingService {
     }
 
 
-    private Utbetaling ytelseTilUtbetaling(WSUtbetaling wsUtbetaling, WSYtelse ytelse) {
+    Utbetaling ytelseTilUtbetaling(WSUtbetaling wsUtbetaling, WSYtelse ytelse) {
         Utbetaling utbetaling = new Utbetaling();
 
         utbetaling.type = ytelse.getYtelsestype() != null ? ytelse.getYtelsestype().getValue() : "";
@@ -79,7 +76,7 @@ public class UtbetalingService {
         utbetaling.bilagsNummer = ytelse.getBilagsnummer();
 
         WSPeriode wsPeriode = ytelse.getYtelsesperiode();
-        if (wsPeriode != null && wsPeriode.getFom() != null && wsPeriode.getTom() != null) {
+        if (wsPeriode != null) {
             utbetaling.periodeFom = tilLocalDate(wsPeriode.getFom());
             utbetaling.periodeTom = tilLocalDate(wsPeriode.getTom());
         }
@@ -110,10 +107,16 @@ public class UtbetalingService {
 
 
     private DateTime tilDateTime(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
         return new DateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), 0, 0);
     }
 
     private LocalDate tilLocalDate(DateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
         return LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth());
     }
 

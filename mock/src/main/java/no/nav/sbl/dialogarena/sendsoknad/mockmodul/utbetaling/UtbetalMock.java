@@ -126,7 +126,7 @@ public class UtbetalMock implements UtbetalingV1 {
                 );
     }
 
-    private DateTime dato(int y, int m, int d) {
+    public static DateTime dato(int y, int m, int d) {
         return new DateTime(y, m, d, 0, 0, DateTimeZone.UTC);
     }
 }

@@ -23,6 +23,12 @@
     </faktum>
 
     <faktum>
+        <id>utbetalinger.feilet</id>
+        <panel>inntektBolk</panel>
+        <type>hidden</type>
+    </faktum>
+
+    <faktum>
         <id>utbetalinger.utbetaling</id>
         <flereTillatt>true</flereTillatt>
         <erSystemFaktum>true</erSystemFaktum>
