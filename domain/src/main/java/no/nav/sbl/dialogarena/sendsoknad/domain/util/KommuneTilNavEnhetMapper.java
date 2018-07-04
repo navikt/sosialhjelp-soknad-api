@@ -42,6 +42,8 @@ public class KommuneTilNavEnhetMapper {
             .put("1203", "910230530")
             .put("1205", "910230514")
             .put("1206", "910230514")
+            .put("5701", "910230646") // NAV Falkenborg, Trondheim kommune
+            .put("5702", "910230611") // NAV Lerkendal, Trondheim kommunne
             .build();
     private static final Map<String, Map<String, Boolean>> FEATURES_FOR_ENHET = new HashMap<>();
 
