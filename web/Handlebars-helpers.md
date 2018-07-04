@@ -65,6 +65,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
+* hentTekstForGDPRInfo - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere. Formatterer tekst med variabel input (riktig NAV-kontor)
 * hentTekstMedFaktumParameter - Henter tekst fra cms for en gitt key, med verdien til et faktum som parameter. Faktumet hentes basert på key
 * hvisFaktumstrukturHarInfotekster - Sjekker om man har definert infotekster på faktumstrukturen for faktum på context
 * hvisFlereErTrue - Finner alle fakta med key som begynner med teksten som sendes inn og teller om antallet med verdien true er større enn tallet som sendes inn.
@@ -368,6 +369,14 @@ må ha et faktum i context, f. eks. via
 ```
 {{hentTekst "min.key" "param1" "param2"}}
 {{hentTekst "min.key.uten.params"}}
+```
+
+
+##### hentTekstForGDPRInfo
+
+```
+{{hentTekstForGDPRInfo "min.key" "param1" "param2"}}
+{{hentTekstForGDPRInfo "min.key.uten.params"}}
 ```
 
 
