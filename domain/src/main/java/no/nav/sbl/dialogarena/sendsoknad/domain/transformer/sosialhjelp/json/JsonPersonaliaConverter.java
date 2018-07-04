@@ -127,7 +127,7 @@ public final class JsonPersonaliaConverter {
 
         final String kontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer");
         if (erIkkeTom(kontonummer)) {
-            String kontonummerKunTall = kontonummer.replaceAll("\\.", "");
+            String kontonummerKunTall = kontonummer.replace(".", "").replace(" ", "");
             jsonKontonummer.setVerdi(kontonummerKunTall);
         }
     }

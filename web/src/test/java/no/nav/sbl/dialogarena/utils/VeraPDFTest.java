@@ -93,6 +93,26 @@ public class VeraPDFTest {
         Assert.assertFalse("File is not a valid PDF/A " + result.getPDFAFlavour().toString() + "!", result.isCompliant());
     }
 
+
+
+    @Test
+    public void testPDFSomFeiler() {
+        flavour = PDFAFlavour.fromString("1b");
+        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, logResult);
+
+        result = runPDFTest(new File(Paths.get(pathToDir + "/soknadSomFeiler.pdf").toString()), validator);
+
+        for (TestAssertion testAssertion : result.getTestAssertions()) {
+            if (testAssertion.getStatus() == TestAssertion.Status.FAILED) {
+                System.out.println(testAssertion.getStatus() +  " : " + testAssertion.getMessage());
+            }
+        }
+
+
+        Assert.assertTrue("File should be a valid PDF/A " + result.getPDFAFlavour().toString() + "!", result.isCompliant());
+
+    }
+
     private ValidationResult runPDFTest(File pdf, PDFAValidator validator) {
         try {
             parser = Foundries.defaultInstance().createParser(new FileInputStream(pdf), flavour);
@@ -125,4 +145,6 @@ public class VeraPDFTest {
         }
         return result;
     }
+
+
 }
