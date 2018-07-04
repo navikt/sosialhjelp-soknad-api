@@ -11,10 +11,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.HJELPETEKST;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.INFOTEKST;
-
-import static java.util.stream.Collectors.toList;
 
 @XmlType(propOrder = {})
 public class FaktumStruktur implements Serializable, StrukturConfigurable {
@@ -289,10 +288,10 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     }
 
     private Predicate<TekstStruktur> tekstStrukturOppfyllerConstraints(final WebSoknad soknad, final Faktum faktum){
-        return tekstStruktur -> tekstStruktur.getConstraints()
-                .stream()
-                .allMatch(constraint ->
-                        ForventningsSjekker.sjekkForventning(constraint.getExpression(), getConstraintFaktum(constraint, soknad, faktum)));
+        return tekstStruktur -> {
+            List<Constraint> constraints = tekstStruktur.getConstraints();
+            return constraints == null || constraints.stream().allMatch(constraint -> ForventningsSjekker.sjekkForventning(constraint.getExpression(), getConstraintFaktum(constraint, soknad, faktum)));
+        };
 
     }
 
