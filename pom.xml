@@ -9,6 +9,7 @@
     </parent>
 
     <modules>
+        <module>tekster</module>
         <module>config</module>
         <module>business</module>
         <module>domain</module>

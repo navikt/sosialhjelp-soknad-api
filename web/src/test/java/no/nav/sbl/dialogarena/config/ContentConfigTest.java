@@ -40,7 +40,7 @@ public class ContentConfigTest extends ApplicationContextTest {
     @Test
     public void skalReturnereRettAntallBundles(){
         NavMessageSource source = contentConfig.navMessageSource();
-        Map<String, NavMessageSource.FileTuple> basenames = source.getBasenames();
+        Map<String, String> basenames = source.getBasenames();
         assertThat(basenames).hasSize(9);
     }
 

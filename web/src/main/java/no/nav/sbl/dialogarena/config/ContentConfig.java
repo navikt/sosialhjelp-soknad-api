@@ -1,9 +1,8 @@
 package no.nav.sbl.dialogarena.config;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.inject.Inject;
-import java.io.File;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 
 
 @Configuration
@@ -61,9 +61,7 @@ public class ContentConfig {
     }
 
     private NavMessageSource.Bundle getBundle(String bundleName) {
-        NavMessageSource.Bundle dialogBundle;
-        final String remoteFile = new File(System.getProperty(getPropertyKey(bundleName))).toURI().toString() + delstiTilbundlefilPaaDisk + "/" + bundleName;
-        dialogBundle = new NavMessageSource.Bundle(bundleName, remoteFile, null);
+        NavMessageSource.Bundle dialogBundle = new NavMessageSource.Bundle(bundleName, "classpath:" + bundleName);
         return dialogBundle;
     }
 }
