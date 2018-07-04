@@ -115,6 +115,11 @@ public class Vedlegg {
         return this;
     }
 
+    public Vedlegg medSha512(String sha512) {
+        this.sha512 = sha512;
+        return this;
+    }
+
     public Vedlegg medOpprettetDato(Long opprettetDato) {
         setOpprettetDato(opprettetDato);
         return this;
@@ -144,7 +149,6 @@ public class Vedlegg {
         this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
         return this;
     }
-
 
 
     public String getSha512() {
