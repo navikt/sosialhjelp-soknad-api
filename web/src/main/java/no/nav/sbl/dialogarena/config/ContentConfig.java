@@ -53,7 +53,7 @@ public class ContentConfig {
     }
 
     private NavMessageSource.Bundle getBundle(String bundleName) {
-        NavMessageSource.Bundle dialogBundle = new NavMessageSource.Bundle(bundleName, "classpath:" + bundleName);
+        NavMessageSource.Bundle dialogBundle = new NavMessageSource.Bundle(bundleName, bundleName);
         return dialogBundle;
     }
 }
