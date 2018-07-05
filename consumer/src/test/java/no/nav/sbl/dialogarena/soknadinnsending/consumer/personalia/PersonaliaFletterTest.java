@@ -1,38 +1,41 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
-import no.nav.modig.core.exception.*;
-import no.nav.sbl.dialogarena.kodeverk.*;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.EpostService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.*;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.*;
-import no.nav.tjeneste.virksomhet.person.v1.*;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
+import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.joda.time.*;
-import org.joda.time.format.*;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.*;
-import org.junit.runner.*;
-import org.mockito.*;
-import org.mockito.runners.*;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.xml.datatype.*;
-import javax.xml.ws.*;
-import java.math.*;
-import java.util.*;
+import javax.xml.ws.WebServiceException;
+import java.math.BigInteger;
+import java.util.List;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
+import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class PersonaliaFletterTest {
@@ -41,6 +44,10 @@ public class PersonaliaFletterTest {
     private static final String BARN_IDENT = "01010091736";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
+    private static final String PARTNER_IDENT = "01010091740";
+    private static final String PARTNER_FORNAVN = "Kristin";
+    private static final String PARTNER_ETTERNAVN = "Partner";
+    private static final String PARTNER_SAMMENSATT_NAVN = "Kristin Partner";
 
     private static final String ET_FORNAVN = "Ola";
     private static final String ET_MELLOMNAVN = "Johan";
@@ -185,6 +192,7 @@ public class PersonaliaFletterTest {
 
         assertThat(personalia.getStatsborgerskap(), is("DNK"));
         assertThat(personalia.getEpost(), is(""));
+        assertThat(personalia.getEktefelle(), is(nullValue()));
     }
 
 
@@ -363,6 +371,123 @@ public class PersonaliaFletterTest {
         when(personMock.hentKjerneinformasjon(any(String.class))).thenThrow(new WebServiceException());
 
         personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
+    }
+
+    @Test
+    public void finnEktefelleSetterRiktigInfoForRegistrertPartnerUtenDiskresjonskodeOgSammeAdresse() {
+        mockGyldigPersonMedPartner("REPA", "REPA", false, "", true);
+
+        Ektefelle registrertPartner = personaliaFletter.finnEktefelle(person);
+
+        assertThat(registrertPartner.getFnr(), is(PARTNER_IDENT));
+        assertThat(registrertPartner.getNavn(), is(PARTNER_SAMMENSATT_NAVN));
+        assertThat(registrertPartner.getFodselsdato().getYear(), is(1988));
+        assertThat(registrertPartner.getFodselsdato().getMonthOfYear(), is(10));
+        assertThat(registrertPartner.getFodselsdato().getDayOfMonth(), is(18));
+        assertThat(registrertPartner.erFolkeregistrertsammen(), is(true));
+        assertThat(registrertPartner.harIkketilgangtilektefelle(), is(false));
+    }
+
+    @Test
+    public void finnEktefelleSetterRiktigInfoForEktefelleUtenDiskresjonskodeOgUlikFolkeregistrertAdresse() {
+        mockGyldigPersonMedPartner("GIFT", "EKTE", false, "", false);
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.getFnr(), is(PARTNER_IDENT));
+        assertThat(ektefelle.getNavn(), is(PARTNER_SAMMENSATT_NAVN));
+        assertThat(ektefelle.getFodselsdato().getYear(), is(1988));
+        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(10));
+        assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(18));
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
+        assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
+    }
+
+    @Test
+    public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodeSPSF() {
+        mockGyldigPersonMedPartner("GIFT", "EKTE", true, "SPSF", false);
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.getFnr(), nullValue());
+        assertThat(ektefelle.getNavn(), isEmptyString());
+        assertThat(ektefelle.getFodselsdato(), nullValue());
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
+        assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));
+    }
+
+    @Test
+    public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodeSPFO() {
+        mockGyldigPersonMedPartner("GIFT", "EKTE", true, "SPFO", false);
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.getFnr(), nullValue());
+        assertThat(ektefelle.getNavn(), isEmptyString());
+        assertThat(ektefelle.getFodselsdato(), nullValue());
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
+        assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));
+    }
+
+    @Test
+    public void finnEktefelleSetterRiktigInfoForEktefelleMedDiskresjonskodeUFBOgUlikFolkeregistrertAdresse() {
+        mockGyldigPersonMedPartner("GIFT", "EKTE", true, "UFB", false);
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.getFnr(), is(PARTNER_IDENT));
+        assertThat(ektefelle.getNavn(), is(PARTNER_SAMMENSATT_NAVN));
+        assertThat(ektefelle.getFodselsdato().getYear(), is(1988));
+        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(10));
+        assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(18));
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
+        assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
+    }
+
+    @Test
+    public void mapTilPersonaliaSetterRiktigSivilstatusForGiftSoker() {
+        mockGyldigPersonMedPartner("GIFT", "EKTE", false, "", true);
+
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
+
+        assertThat(personalia.getEktefelle(), notNullValue());
+        assertThat(personalia.getSivilstatus(), is("GIFT"));
+    }
+
+    @Test
+    public void mapTilPersonaliaSetterRiktigSivilstatusForGLADSoker() {
+        mockGyldigPersonMedPartner("GLAD", "EKTE", false, "", false);
+
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
+
+        assertThat(personalia.getEktefelle(), notNullValue());
+        assertThat(personalia.getEktefelle().erFolkeregistrertsammen(), is(false));
+        assertThat(personalia.getSivilstatus(), is("GLAD"));
+    }
+
+    private void mockGyldigPersonMedPartner(String sivilstatus, String relasjonstype, boolean partnerHarDiskresjonskode, String diskresjonskode, boolean harSammeFolkeregistrerteAdresse) {
+        Person partner = genererPersonMedGyldigIdentOgNavn(PARTNER_IDENT, PARTNER_FORNAVN, PARTNER_ETTERNAVN);
+        partner.setFoedselsdato(fodseldato(1988, 10, 18));
+        if (partnerHarDiskresjonskode) {
+            Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
+            diskresjonskoder.setValue(diskresjonskode);
+            partner.setDiskresjonskode(diskresjonskoder);
+        }
+
+        Familierelasjon familierelasjon = new Familierelasjon();
+        familierelasjon.setTilPerson(partner);
+        familierelasjon.setHarSammeBosted(harSammeFolkeregistrerteAdresse);
+        Familierelasjoner familierelasjoner = new Familierelasjoner();
+        familierelasjoner.setValue(relasjonstype);
+        familierelasjon.setTilRolle(familierelasjoner);
+
+        Sivilstander sivilstander = new Sivilstander();
+        sivilstander.setValue(sivilstatus);
+        Sivilstand sivilstand = new Sivilstand();
+        sivilstand.setSivilstand(sivilstander);
+        person.setSivilstand(sivilstand);
+
+        person.getHarFraRolleI().add(familierelasjon);
     }
 
     private void mockGyldigPersonMedMidlertidigUtenlandskAdresse(int adresselinjer) {
@@ -584,6 +709,7 @@ public class PersonaliaFletterTest {
         personnavn.setFornavn(fornavn);
         personnavn.setMellomnavn("");
         personnavn.setEtternavn(etternavn);
+        personnavn.setSammensattNavn(fornavn + " " + etternavn);
         xmlPerson.setPersonnavn(personnavn);
 
         NorskIdent norskIdent = new NorskIdent();
