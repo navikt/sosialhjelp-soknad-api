@@ -132,9 +132,9 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void skalHenteTeksterForAapViaBundleSoknadaap() {
-        ressurs.hentTekster("AAP", null);
-        verify(messageSource).getBundleFor("soknadaap", norskBokmaal);
+    public void skalHenteTeksterForSoknadsosialhjelpViaBundle() {
+        ressurs.hentTekster("soknadsosialhjelp", null);
+        verify(messageSource).getBundleFor("soknadsosialhjelp", norskBokmaal);
     }
 
     @Test
