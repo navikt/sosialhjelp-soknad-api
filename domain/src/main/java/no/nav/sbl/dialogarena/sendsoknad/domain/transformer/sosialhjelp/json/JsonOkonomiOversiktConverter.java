@@ -220,7 +220,7 @@ public class JsonOkonomiOversiktConverter {
     }
 
     private static String getTittel(String key, NavMessageSource navMessageSource) {
-        Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
+        Properties properties = navMessageSource.getBundleFor("soknadsosialhjelp", new Locale("nb", "NO"));
 
         return properties.getProperty("json.okonomi." + key);
 
