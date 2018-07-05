@@ -42,6 +42,44 @@
     </faktum>
 
     <faktum>
+        <id>system.familie.sivilstatus</id>
+        <type>radio</type>
+        <panel>familieBolk</panel>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>system.familie.sivilstatus.gift.ektefelle</id>
+        <type>composite</type>
+        <dependOn>system.familie.sivilstatus</dependOn>
+        <dependOnValues>
+            <value>gift</value>
+        </dependOnValues>
+        <properties>
+            <property>
+                <id>navn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fodselsdato</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fnr</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>folkeregistrertsammen</id>
+                <type>bool</type>
+            </property>
+            <property>
+                <id>ikketilgangtilektefelle</id>
+                <type>bool</type>
+            </property>
+        </properties>
+        <optional>true</optional>
+    </faktum>
+
+    <faktum>
         <id>familie.barn</id>
         <type>bool</type>
         <panel>familieBolk</panel>
