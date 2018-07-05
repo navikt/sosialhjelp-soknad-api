@@ -1,0 +1,1 @@
+The time limit is {0} days to send the documents after you sent the application ({1})
