@@ -82,9 +82,13 @@ public class UtbetalingService {
         }
 
         utbetaling.erUtbetalt = wsUtbetaling.getUtbetalingsdato() != null;
-        utbetaling.utbetalingsDato = wsUtbetaling.getUtbetalingsdato() != null ?
-                tilLocalDate(wsUtbetaling.getUtbetalingsdato()) :
-                tilLocalDate(wsUtbetaling.getForfallsdato());
+        if (utbetaling.erUtbetalt) {
+            utbetaling.utbetalingsDato = tilLocalDate(wsUtbetaling.getUtbetalingsdato());
+        } else if (wsUtbetaling.getForfallsdato() != null) {
+            utbetaling.utbetalingsDato = tilLocalDate(wsUtbetaling.getForfallsdato());
+        } else {
+            utbetaling.utbetalingsDato = tilLocalDate(wsUtbetaling.getPosteringsdato());
+        }
 
         if (ytelse.getYtelseskomponentListe() != null) {
             utbetaling.komponenter = ytelse.getYtelseskomponentListe().stream()
