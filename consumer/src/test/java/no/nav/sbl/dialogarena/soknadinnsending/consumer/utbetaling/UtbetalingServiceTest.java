@@ -30,13 +30,15 @@ public class UtbetalingServiceTest {
     private static final int YEAR = 2018;
     private static final int MONTH = 2;
     private static final int FOM_DATE = 1;
-    private static final int TOM_DATE = 28;
+    private static final int TOM_DATE = 23;
     private static final int UTBETALT_DAG = 27;
     private static final String KOMPONENTTYPE = "Pengesekk";
     private static final double KOMPONENTBELOP = 50000.0;
     private static final String SATSTYPE = "Dag";
     private static final double SATSBELOP = 5000.0;
     private static final double SATSANTALL = 10.0;
+    private static final int POSTERINGSDAG = 21;
+    private static final int FORFALLSDAG = 28;
 
     @Mock
     private UtbetalingV1 utbetalingV1;
@@ -101,13 +103,21 @@ public class UtbetalingServiceTest {
         assertThat(utbetaling.periodeFom.getDayOfMonth(), is(FOM_DATE));
         assertThat(utbetaling.periodeTom, is(nullValue()));
         assertThat(utbetaling.erUtbetalt, is(false));
-        assertThat(utbetaling.utbetalingsDato, is(nullValue()));
+        assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(POSTERINGSDAG));
 
         assertThat(komponent.type, is(KOMPONENTTYPE));
         assertThat(komponent.belop, is(0.0));
-        assertThat(komponent.satsType, is(nullValue()));
+        assertThat(komponent.satsType, nullValue());
         assertThat(komponent.satsBelop, is(0.0));
         assertThat(komponent.satsAntall, is(0.0));
+    }
+
+    @Test
+    public void ytelseTilUtbetalingBrukerForfallsdatoForUtbetalingSomIkkeErUtbetaltHvisDenErSatt() {
+        Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(lagWSUtbetalingSomIkkeErUtbetalt(wsPerson), lagKomplettWsYtelse(wsPerson));
+
+        assertThat(utbetaling.erUtbetalt, is(false));
+        assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(FORFALLSDAG));
     }
 
     private WSHentUtbetalingsinformasjonResponse lagWSHentUtbetalingsinformasjonResponseUtenYtelseliste(WSPerson wsPerson) {
@@ -116,9 +126,25 @@ public class UtbetalingServiceTest {
         return new WSHentUtbetalingsinformasjonResponse().withUtbetalingListe(wsUtbetalinger);
     }
 
+    private WSUtbetaling lagWSUtbetalingSomIkkeErUtbetalt(WSPerson wsPerson) {
+        WSBankkonto bankkonto = new WSBankkonto()
+                .withKontotype("Norsk bankkonto")
+                .withKontonummer("32902095534");
+        return new WSUtbetaling()
+                .withPosteringsdato(dato(YEAR, MONTH, POSTERINGSDAG))
+                .withUtbetaltTil(wsPerson)
+                .withUtbetalingNettobeloep(3880.0)
+                .withYtelseListe(lagKomplettWsYtelse(wsPerson))
+                .withForfallsdato(dato(YEAR, MONTH, FORFALLSDAG))
+                .withUtbetaltTilKonto(bankkonto)
+                .withUtbetalingsmelding(null)
+                .withUtbetalingsmetode("Norsk bankkonto")
+                .withUtbetalingsstatus("Ikke utbetalt");
+    }
+
     private WSUtbetaling lagMinimalWSUtbetalingUtenYtelsesliste(WSPerson wsPerson) {
         return new WSUtbetaling()
-                .withPosteringsdato(dato(YEAR, MONTH, 21))
+                .withPosteringsdato(dato(YEAR, MONTH, POSTERINGSDAG))
                 .withUtbetaltTil(wsPerson)
                 .withUtbetalingsmetode("Norsk bankkonto")
                 .withUtbetalingsstatus("Utbetalt");
@@ -129,12 +155,12 @@ public class UtbetalingServiceTest {
                 .withKontotype("Norsk bankkonto")
                 .withKontonummer("32902095534");
         return new WSUtbetaling()
-                .withPosteringsdato(dato(YEAR, MONTH, 21))
+                .withPosteringsdato(dato(YEAR, MONTH, POSTERINGSDAG))
                 .withUtbetaltTil(wsPerson)
                 .withUtbetalingNettobeloep(3880.0)
                 .withYtelseListe(lagKomplettWsYtelse(wsPerson))
                 .withUtbetalingsdato(dato(YEAR, MONTH, UTBETALT_DAG))
-                .withForfallsdato(dato(YEAR, MONTH, 28))
+                .withForfallsdato(dato(YEAR, MONTH, FORFALLSDAG))
                 .withUtbetaltTilKonto(bankkonto)
                 .withUtbetalingsmelding(null)
                 .withUtbetalingsmetode("Norsk bankkonto")
@@ -171,7 +197,7 @@ public class UtbetalingServiceTest {
 
     private WSUtbetaling lagMinimalWSUtbetaling(WSPerson wsPerson) {
         return new WSUtbetaling()
-                .withPosteringsdato(dato(YEAR, MONTH, 21))
+                .withPosteringsdato(dato(YEAR, MONTH, POSTERINGSDAG))
                 .withUtbetaltTil(wsPerson)
                 .withYtelseListe(lagMinimalWsYtelseMedYtelseskomponentliste(wsPerson))
                 .withUtbetalingsmetode("Norsk bankkonto")
