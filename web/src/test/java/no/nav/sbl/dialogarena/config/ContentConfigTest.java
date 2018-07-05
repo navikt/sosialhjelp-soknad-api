@@ -1,9 +1,13 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import org.assertj.core.api.Condition;
-import org.glassfish.jersey.jaxb.internal.XmlJaxbElementProvider;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,13 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContentConfigTest extends ApplicationContextTest {
@@ -41,7 +40,7 @@ public class ContentConfigTest extends ApplicationContextTest {
     public void skalReturnereRettAntallBundles(){
         NavMessageSource source = contentConfig.navMessageSource();
         Map<String, String> basenames = source.getBasenames();
-        assertThat(basenames).hasSize(9);
+        assertThat(basenames).hasSize(1);
     }
 
 }

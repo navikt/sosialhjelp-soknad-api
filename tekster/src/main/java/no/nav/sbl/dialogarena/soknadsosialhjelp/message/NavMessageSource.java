@@ -2,8 +2,6 @@ package no.nav.sbl.dialogarena.soknadsosialhjelp.message;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,7 +44,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     
     private Properties hentProperties(String propertiesFile, Locale locale) {
         final String localFile = calculateFilenameForLocale(propertiesFile, locale);
-        final Properties properties = getProperties("classpath:/" + localFile).getProperties();
+        final Properties properties = getProperties(localFile).getProperties();
 
         if (properties != null) {
             return properties;
