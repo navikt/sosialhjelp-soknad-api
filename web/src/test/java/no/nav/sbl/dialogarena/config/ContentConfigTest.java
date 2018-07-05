@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.assertj.core.api.Condition;
 import org.glassfish.jersey.jaxb.internal.XmlJaxbElementProvider;
 import org.junit.Before;

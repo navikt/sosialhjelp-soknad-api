@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

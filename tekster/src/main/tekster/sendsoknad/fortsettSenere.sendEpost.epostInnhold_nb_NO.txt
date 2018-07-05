@@ -1,0 +1,1 @@
+Du har valgt å fortsette innsending av søknaden senere. Det kan du gjøre fra denne lenken: {0} . Søknaden er ikke sendt til NAV. Søknader du har begynt på, men ikke sendt inn, blir automatisk slettet hvis du ikke har gjort noe med dem på mer enn åtte uker. Med vennlig hilsen NAV

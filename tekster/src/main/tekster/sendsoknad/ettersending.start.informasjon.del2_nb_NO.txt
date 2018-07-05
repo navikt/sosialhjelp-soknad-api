@@ -1,0 +1,1 @@
+Vedlegg som andre sender for deg (lege, arbeidsgiver) vises ikke i kvitteringsoversikten.

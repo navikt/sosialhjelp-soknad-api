@@ -1,0 +1,1 @@
+  You have chosen to continue completion of the application later. You can do this from this link: {0}. The application is not sent to NAV. Kind regards NAV   
