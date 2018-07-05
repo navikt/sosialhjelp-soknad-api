@@ -34,10 +34,6 @@ public class ContentConfig {
         int index = 0;
 
         for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
-            String property = System.getProperty(getPropertyKey(kravdialogInformasjon.getBundleName()));
-            if( property == null ) {
-                throw new RuntimeException("Property: " + getPropertyKey(kravdialogInformasjon.getBundleName()) + " finnes ikke");
-            }
             bundles[index++] = getBundle(kravdialogInformasjon.getBundleName());
         }
 
@@ -54,10 +50,6 @@ public class ContentConfig {
     @Scheduled(fixedRate = FEM_MINUTTER)
     private void slettCache() {
         navMessageSource().clearCache();
-    }
-
-    private String getPropertyKey(String bundleName) {
-        return "folder." + bundleName + ".path";
     }
 
     private NavMessageSource.Bundle getBundle(String bundleName) {
