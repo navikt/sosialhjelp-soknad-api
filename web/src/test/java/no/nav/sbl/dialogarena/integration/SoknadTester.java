@@ -1,20 +1,24 @@
 package no.nav.sbl.dialogarena.integration;
 
 
-import no.nav.sbl.dialogarena.rest.SoknadApplication;
-import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
-import no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Skjemanummer;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.assertj.core.api.AbstractObjectAssert;
-import org.assertj.core.groups.Tuple;
-import org.glassfish.jersey.test.JerseyTest;
+import static java.util.stream.Collectors.toList;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_HTML_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_XML;
+import static javax.ws.rs.core.MediaType.TEXT_XML_TYPE;
+import static javax.ws.rs.core.MediaType.WILDCARD_TYPE;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static org.apache.http.HttpStatus.SC_NO_CONTENT;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
@@ -24,19 +28,21 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
 
-import static java.util.stream.Collectors.toList;
-import static javax.ws.rs.core.MediaType.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static org.apache.http.HttpStatus.SC_NO_CONTENT;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.assertj.core.api.AbstractObjectAssert;
+import org.assertj.core.groups.Tuple;
+import org.glassfish.jersey.test.JerseyTest;
+
+import no.nav.sbl.dialogarena.rest.SoknadApplication;
+import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
+import no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 public class SoknadTester extends JerseyTest {
     private final String skjemaNummer;
@@ -266,10 +272,6 @@ public class SoknadTester extends JerseyTest {
         public VedleggTester skalIkkeKreveNoenVedlegg() {
             assertThat(soknad.getVedlegg()).isEmpty();
             return this;
-        }
-
-        public VedleggTester vedlegg(Skjemanummer skjemanummer) {
-            return vedlegg(skjemanummer.toString());
         }
 
         public VedleggTester vedlegg(String skjemaNummer) {
