@@ -1,0 +1,1 @@
+Feltet kan berre innehalde tal eller desimaltal indikert med anten punktum eller komma.

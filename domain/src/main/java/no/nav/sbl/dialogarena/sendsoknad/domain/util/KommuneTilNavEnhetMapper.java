@@ -79,13 +79,14 @@ public class KommuneTilNavEnhetMapper {
     }
 
 
-    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219"));
+    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219", "5001"));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
 
     private static final Map<String, String> TEST_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
+            .put("trondheim", "Trondheim")
             .build();
 
     private static final Map<String, String> PROD_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
@@ -119,6 +120,11 @@ public class KommuneTilNavEnhetMapper {
             .put("sagene", new NavEnhet("Sagene", "oslo", "910565338"))
             .put("nordstrand", new NavEnhet("Nordstrand", "oslo", "910309935"))
             .put("sondreNordstrand", new NavEnhet("Søndre Nordstrand", "oslo", "910723499"))
+            
+            // Trondheim
+            .put("falkenborg", new NavEnhet("Falkenborg", "trondheim", "910230646"))
+            .put("lerkendal", new NavEnhet("Lerkendal", "trondheim", "910230611"))
+            
             .build();
 
     private static final Map<String, NavEnhet> PROD_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
