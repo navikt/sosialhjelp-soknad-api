@@ -1,22 +1,21 @@
 package no.nav.sbl.dialogarena.integration.security;
 
 
-import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
-import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
-import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlandetInformasjon;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import javax.ws.rs.core.Response;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
+import no.nav.sbl.dialogarena.integration.SoknadTester;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 
 public class SoknadRessursEndpointIT extends AbstractSecurityIT {
     public static final String ANNEN_BRUKER = "12345679811";
-    private String skjemanummer = new AAPUtlandetInformasjon().getSkjemanummer().get(0);
+    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
 
     @Before

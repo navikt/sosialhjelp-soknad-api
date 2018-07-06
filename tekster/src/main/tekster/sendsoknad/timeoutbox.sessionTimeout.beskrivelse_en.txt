@@ -1,0 +1,1 @@
+Your session will expire in ${timer} minutes. If you do not do anything, you will be logged out. To continue, please click "Continue"

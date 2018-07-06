@@ -1,38 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
-import no.nav.metrics.Timer;
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.FilData;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.ByteArrayInputStream;
-import java.util.*;
-import java.util.function.Predicate;
-
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
@@ -44,6 +11,52 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sa
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
 import static org.slf4j.LoggerFactory.getLogger;
+
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.FilData;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 
 
 @Component
@@ -72,9 +85,6 @@ public class SoknadDataFletter {
     private WebSoknadConfig config;
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-
-    @Inject
-    private StartDatoUtil startDatoUtil;
 
     @Inject
     private NavMessageSource messageSource;
@@ -289,72 +299,8 @@ public class SoknadDataFletter {
             soknad = populerSoknadMedData(populerSystemfakta, soknad);
         }
 
-        return erForbiUtfyllingssteget(soknad) ? sjekkDatoVerdierOgOppdaterDelstegStatus(soknad) : soknad;
-    }
-
-    private boolean erForbiUtfyllingssteget(WebSoknad soknad) {
-        return !(soknad.getDelstegStatus() == DelstegStatus.OPPRETTET ||
-                soknad.getDelstegStatus() == DelstegStatus.UTFYLLING);
-    }
-
-    public WebSoknad sjekkDatoVerdierOgOppdaterDelstegStatus(WebSoknad soknad) {
-        SoknadTilleggsstonader soknadTilleggsstonader = new SoknadTilleggsstonader();
-        DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
-
-        if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
-            soknad.getFakta().stream()
-                    .filter(erFaktumViVetFeiler(soknad))
-                    .forEach(faktum -> {
-                        try {
-                            faktum.getProperties().entrySet().stream()
-                                    .filter(isDatoProperty)
-                                    .forEach(property -> {
-                                        if (property.getValue() == null) {
-                                            throw new IllegalArgumentException("Invalid format: value = null");
-                                        }
-                                        formaterer.parseLocalDate(property.getValue());
-                                    });
-                        } catch (IllegalArgumentException e) {
-                            soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
-
-                            logger.warn("catch IllegalArgumentException " + e.getMessage()
-                                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() + " har ikke gyldig dato-property for faktum " + faktum.getKey()
-                                    + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
-
-                            Event event = MetricsFactory.createEvent("stofo.korruptdato");
-                            event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
-                            event.report();
-                        }
-                    });
-        }
         return soknad;
     }
-
-    private Predicate<Faktum> erFaktumViVetFeiler(WebSoknad soknad) {
-        List<String> faktumFeilerKeys = new ArrayList<>();
-        boolean harValgtFlereReisesamlinger = soknad.getValueForFaktum("informasjonsside.stonad.reisesamling").equals("true") &&
-                soknad.getValueForFaktum("reise.samling.fleresamlinger").equalsIgnoreCase("flere");
-        boolean harValgtDagligReise = soknad.getValueForFaktum("informasjonsside.stonad.reiseaktivitet").equals("true");
-        boolean harValgtBostotte = soknad.getValueForFaktum("informasjonsside.stonad.bostotte").equals("true");
-
-        if (harValgtFlereReisesamlinger) {
-            faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
-        }
-        if (harValgtDagligReise) {
-            faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
-        }
-        if (harValgtBostotte) {
-            faktumFeilerKeys.add("bostotte.samling");
-        }
-        return faktum -> faktumFeilerKeys.contains(faktum.getKey());
-    }
-
-    private Predicate<Map.Entry<String, String>> isDatoProperty = property -> {
-        List<String> datoKeys = new ArrayList<>();
-        datoKeys.add("tom");
-        datoKeys.add("fom");
-        return datoKeys.contains(property.getKey());
-    };
 
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
         soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
@@ -404,8 +350,6 @@ public class SoknadDataFletter {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
-
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
 
     }

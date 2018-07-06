@@ -1,0 +1,1 @@
+Økta di går ut om ${timer} minutt. Dersom du ikkje gjer noko, blir du logga ut. Ver vennleg og trykk på «Hald fram» for å halde fram.

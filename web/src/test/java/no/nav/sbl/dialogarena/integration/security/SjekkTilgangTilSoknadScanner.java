@@ -1,8 +1,12 @@
 package no.nav.sbl.dialogarena.integration.security;
 
 
-import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -10,11 +14,8 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 
 public class SjekkTilgangTilSoknadScanner {
 
@@ -43,7 +44,7 @@ public class SjekkTilgangTilSoknadScanner {
         Set<Class<? extends AbstractSecurityIT>> subTypesOf = testResourceReflections.getSubTypesOf(AbstractSecurityIT.class);
 
         Set<String> classnamesForTest = new HashSet<>();
-        for (Class clazz : subTypesOf){
+        for (Class<?> clazz : subTypesOf){
             classnamesForTest.add(clazz.getSimpleName());
         }
         //Fjern testklasse som er fanget opp med reflection
