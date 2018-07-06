@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.aktivitetbetalingsplan.AktivitetBetalingsplanBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.SosialhjelpArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.AvbrytAutomatiskSheduler;
@@ -14,8 +16,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp.SosialhjelpKontaktBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Import;
         AktivitetService.class,
         MaalgrupperService.class,
         PersonaliaBolk.class,
-        AktivitetBetalingsplanBolk.class,
         BarnBolk.class,
         ConsumerConfig.class,
         ArbeidsforholdBolk.class,

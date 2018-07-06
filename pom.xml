@@ -9,6 +9,7 @@
     </parent>
 
     <modules>
+        <module>tekster</module>
         <module>config</module>
         <module>business</module>
         <module>domain</module>
@@ -66,6 +67,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>soknadsosialhjelp-tekster</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-consumer</artifactId>
