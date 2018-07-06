@@ -30,6 +30,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
@@ -81,6 +82,10 @@ public class PersonaliaFletterTest {
 
     private static final String NORGE = "Norge";
     private static final String NORGE_KODE = "NOR";
+    private static final String SIVILSTATUS_REPA = "REPA";
+    private static final String SIVILSTATUS_GIFT = "GIFT";
+    private static final String SIVILSTATUS_GLAD = "GLAD";
+    private static final String SIVILSTATUS_UGIF = "UGIF";
 
     @Mock
     private PersonService personMock;
@@ -375,7 +380,7 @@ public class PersonaliaFletterTest {
 
     @Test
     public void finnEktefelleSetterRiktigInfoForRegistrertPartnerUtenDiskresjonskodeOgSammeAdresse() {
-        mockGyldigPersonMedPartner("REPA", "REPA", false, "", true);
+        mockGyldigPersonMedPartner(SIVILSTATUS_REPA, RELASJON_REGISTRERT_PARTNER, false, "", true);
 
         Ektefelle registrertPartner = personaliaFletter.finnEktefelle(person);
 
@@ -390,7 +395,7 @@ public class PersonaliaFletterTest {
 
     @Test
     public void finnEktefelleSetterRiktigInfoForEktefelleUtenDiskresjonskodeOgUlikFolkeregistrertAdresse() {
-        mockGyldigPersonMedPartner("GIFT", "EKTE", false, "", false);
+        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, false, "", false);
 
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
@@ -405,7 +410,7 @@ public class PersonaliaFletterTest {
 
     @Test
     public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodeSPSF() {
-        mockGyldigPersonMedPartner("GIFT", "EKTE", true, "SPSF", false);
+        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, KODE_6, false);
 
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
@@ -418,7 +423,7 @@ public class PersonaliaFletterTest {
 
     @Test
     public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodeSPFO() {
-        mockGyldigPersonMedPartner("GIFT", "EKTE", true, "SPFO", false);
+        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, KODE_7, false);
 
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
@@ -431,7 +436,7 @@ public class PersonaliaFletterTest {
 
     @Test
     public void finnEktefelleSetterRiktigInfoForEktefelleMedDiskresjonskodeUFBOgUlikFolkeregistrertAdresse() {
-        mockGyldigPersonMedPartner("GIFT", "EKTE", true, "UFB", false);
+        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, "UFB", false);
 
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
@@ -445,24 +450,46 @@ public class PersonaliaFletterTest {
     }
 
     @Test
-    public void mapTilPersonaliaSetterRiktigSivilstatusForGiftSoker() {
-        mockGyldigPersonMedPartner("GIFT", "EKTE", false, "", true);
+    public void mapTilPersonaliaSetterSivilstatusGiftForGiftSoker() {
+        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, false, "", true);
 
         Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         assertThat(personalia.getEktefelle(), notNullValue());
-        assertThat(personalia.getSivilstatus(), is("GIFT"));
+        assertThat(personalia.getSivilstatus(), is("gift"));
     }
 
     @Test
-    public void mapTilPersonaliaSetterRiktigSivilstatusForGLADSoker() {
-        mockGyldigPersonMedPartner("GLAD", "EKTE", false, "", false);
+    public void mapTilPersonaliaSetterSivilstatusGiftForGLADSoker() {
+        mockGyldigPersonMedPartner(SIVILSTATUS_GLAD, RELASJON_EKTEFELLE, false, "", false);
 
         Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         assertThat(personalia.getEktefelle(), notNullValue());
         assertThat(personalia.getEktefelle().erFolkeregistrertsammen(), is(false));
-        assertThat(personalia.getSivilstatus(), is("GLAD"));
+        assertThat(personalia.getSivilstatus(), is("gift"));
+    }
+
+    @Test
+    public void mapTilPersonaliaSetterSivilstatusGiftForSokerMedRegistrertPartner() {
+        mockGyldigPersonMedPartner(SIVILSTATUS_REPA, RELASJON_REGISTRERT_PARTNER, false, "", true);
+
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
+
+        assertThat(personalia.getSivilstatus(), is("gift"));
+    }
+
+    @Test
+    public void mapTilPersonaliaSetterSivilstatusUgiftForUgiftSoker() {
+        Sivilstander sivilstander = new Sivilstander();
+        sivilstander.setValue(SIVILSTATUS_UGIF);
+        Sivilstand sivilstand = new Sivilstand();
+        sivilstand.setSivilstand(sivilstander);
+        person.setSivilstand(sivilstand);
+
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
+
+        assertThat(personalia.getSivilstatus(), is("ugift"));
     }
 
     private void mockGyldigPersonMedPartner(String sivilstatus, String relasjonstype, boolean partnerHarDiskresjonskode, String diskresjonskode, boolean harSammeFolkeregistrerteAdresse) {

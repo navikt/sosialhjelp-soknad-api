@@ -37,7 +37,6 @@ public class Personalia {
     public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
     public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGyldigTil";
     public static final String SEKUNDARADRESSE_LANDKODE = "sekundarAdresseLandkode";
-    public static final String SIVILSTATUS_KEY = "sivilstatus";
 
     private String fnr;
     private LocalDate fodselsdato;

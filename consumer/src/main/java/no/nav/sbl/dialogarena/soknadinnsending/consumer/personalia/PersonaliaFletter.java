@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
+import com.google.common.collect.ImmutableMap;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
@@ -31,6 +32,7 @@ import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -41,6 +43,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class PersonaliaFletter {
 
+    static final String RELASJON_EKTEFELLE = "EKTE";
+    static final String RELASJON_REGISTRERT_PARTNER = "REPA";
+    static final String KODE_6 = "SPSF";
+    static final String KODE_7 = "SPFO";
     private static final Logger logger = getLogger(PersonaliaFletter.class);
 
     @Inject
@@ -58,6 +64,19 @@ public class PersonaliaFletter {
 
     private static final String KJONN_MANN = "m";
     private static final String KJONN_KVINNE = "k";
+    private static final Map<String, String> MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<String, String>()
+            .put("GIFT", "gift")
+            .put("GLAD", "gift")
+            .put("REPA", "gift")
+            .put("SAMB", "samboer")
+            .put("UGIF", "ugift")
+            .put("ENKE", "enke")
+            .put("GJPA", "enke")
+            .put("SEPA", "separert")
+            .put("SEPR", "separert")
+            .put("SKIL", "skilt")
+            .put("SKPA", "skilt").build();
+
 
     public Personalia mapTilPersonalia(String fodselsnummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
@@ -116,7 +135,7 @@ public class PersonaliaFletter {
         if (xmlPerson.getSivilstand() == null || xmlPerson.getSivilstand().getSivilstand() == null) {
             return null;
         }
-        return xmlPerson.getSivilstand().getSivilstand().getValue();
+        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(xmlPerson.getSivilstand().getSivilstand().getValue());
     }
 
     Ektefelle finnEktefelle(Person xmlPerson) {
@@ -126,11 +145,11 @@ public class PersonaliaFletter {
         }
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
-            if ("EKTE".equals(familierelasjonType.getValue()) || "REPA".equals(familierelasjonType.getValue())) {
+            if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
                 Person xmlEktefelle = familierelasjon.getTilPerson();
-                if (xmlEktefelle.getDiskresjonskode() != null && ("SPSF".equals(xmlEktefelle.getDiskresjonskode().getValue()) || "SPFO".equals(xmlEktefelle.getDiskresjonskode().getValue()))) {
+                if (xmlEktefelle.getDiskresjonskode() != null && (KODE_6.equals(xmlEktefelle.getDiskresjonskode().getValue()) || KODE_7.equals(xmlEktefelle.getDiskresjonskode().getValue()))) {
                     return new Ektefelle()
-                            . withNavn("")
+                            .withNavn("")
                             .withIkketilgangtilektefelle(true);
                 }
                 return new Ektefelle()
