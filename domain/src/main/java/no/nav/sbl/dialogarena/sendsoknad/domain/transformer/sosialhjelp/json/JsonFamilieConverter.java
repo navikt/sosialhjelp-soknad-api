@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.valueOf;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.*;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
@@ -58,7 +58,9 @@ public final class JsonFamilieConverter {
 
         if (status == GIFT) {
             final Map<String, String> ektefelle = getEktefelleproperties(webSoknad, "system.familie.sivilstatus.gift.ektefelle");
-
+            jsonSivilstatus.setEktefelle(tilSystemregistrertJsonEktefelle(ektefelle));
+            jsonSivilstatus.setFolkeregistrertMedEktefelle(valueOf(ektefelle.get("folkeregistrertsammen")));
+            jsonSivilstatus.setEktefelleHarDiskresjonskode(valueOf(ektefelle.get("ikketilgangtilektefelle")));
         }
 
         return jsonSivilstatus;
@@ -75,11 +77,11 @@ public final class JsonFamilieConverter {
 
         if (status == GIFT) {
             final Map<String, String> ektefelle = getEktefelleproperties(webSoknad, "familie.sivilstatus.gift.ektefelle");
-            jsonSivilstatus.setEktefelle(tilJsonEktefelle(ektefelle));
+            jsonSivilstatus.setEktefelle(tilBrukerregistrertJsonEktefelle(ektefelle));
 
             final String borSammenMed = ektefelle.get("borsammen");
             if (JsonUtils.erIkkeTom(borSammenMed)) {
-                jsonSivilstatus.setBorSammenMed(Boolean.valueOf(borSammenMed));
+                jsonSivilstatus.setBorSammenMed(valueOf(borSammenMed));
             }
 
             final String borIkkeSammenMedBegrunnelse = ektefelle.get("ikkesammenbeskrivelse");
@@ -99,7 +101,20 @@ public final class JsonFamilieConverter {
         return faktum.getProperties();
     }
 
-    private static JsonEktefelle tilJsonEktefelle(Map<String, String> ektefelle) {
+    private static JsonEktefelle tilSystemregistrertJsonEktefelle(Map<String, String> ektefelle) {
+        final JsonEktefelle jsonEktefelle = new JsonEktefelle();
+        jsonEktefelle.setNavn(new JsonNavn()
+                .withFornavn(xxxFornavnFraNavn(ektefelle.get("navn")))
+                .withMellomnavn("")
+                .withEtternavn(xxxEtternavnFraNavn(ektefelle.get("navn")))
+        );
+        jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fodselsdato")));
+        jsonEktefelle.setPersonIdentifikator(ektefelle.get("fnr"));
+
+        return jsonEktefelle;
+    }
+
+    private static JsonEktefelle tilBrukerregistrertJsonEktefelle(Map<String, String> ektefelle) {
         final JsonEktefelle jsonEktefelle = new JsonEktefelle();
         jsonEktefelle.setNavn(new JsonNavn()
                 .withFornavn(xxxFornavnFraNavn(ektefelle.get("navn")))
