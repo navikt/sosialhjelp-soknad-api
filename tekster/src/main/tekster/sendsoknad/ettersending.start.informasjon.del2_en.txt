@@ -1,0 +1,1 @@
+Attachments which others send for you (doctor, employer) cannot be seen in the overview of receipts.
