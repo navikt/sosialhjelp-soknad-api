@@ -275,17 +275,6 @@
             <artifactId>digg</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>no.nav.meldinger.virksomhet</groupId>
-            <artifactId>nav-virksomhet-soeknadsskjema-v1-meldingsdefinisjon</artifactId>
-            <classifier>jaxb</classifier>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.meldinger.virksomhet</groupId>
-            <artifactId>nav-virksomhet-paaloepteUtgifter-v1-meldingsdefinisjon</artifactId>
-            <classifier>jaxb</classifier>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
