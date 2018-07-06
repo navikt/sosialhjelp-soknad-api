@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
+import com.google.common.collect.ImmutableMap;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.PersonaliaBuilder;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AdresseTransform;
@@ -21,9 +21,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinform
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -32,6 +30,9 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -42,6 +43,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class PersonaliaFletter {
 
+    static final String RELASJON_EKTEFELLE = "EKTE";
+    static final String RELASJON_REGISTRERT_PARTNER = "REPA";
+    static final String KODE_6 = "SPSF";
+    static final String KODE_7 = "SPFO";
     private static final Logger logger = getLogger(PersonaliaFletter.class);
 
     @Inject
@@ -59,6 +64,19 @@ public class PersonaliaFletter {
 
     private static final String KJONN_MANN = "m";
     private static final String KJONN_KVINNE = "k";
+    private static final Map<String, String> MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<String, String>()
+            .put("GIFT", "gift")
+            .put("GLAD", "gift")
+            .put("REPA", "gift")
+            .put("SAMB", "samboer")
+            .put("UGIF", "ugift")
+            .put("ENKE", "enke")
+            .put("GJPA", "enke")
+            .put("SEPA", "separert")
+            .put("SEPR", "separert")
+            .put("SKIL", "skilt")
+            .put("SKPA", "skilt").build();
+
 
     public Personalia mapTilPersonalia(String fodselsnummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
@@ -108,7 +126,41 @@ public class PersonaliaFletter {
                 .erUtenlandskBankkonto(erUtenlandskKonto(xmlBruker))
                 .utenlandskKontoBanknavn(finnUtenlandsKontoNavn(xmlBruker))
                 .utenlandskKontoLand(finnUtenlandskKontoLand(xmlBruker, kodeverk))
+                .sivilstatus(finnSivilstatus(xmlPerson))
+                .ektefelle(finnEktefelle(xmlPerson))
                 .build();
+    }
+
+    private String finnSivilstatus(Person xmlPerson) {
+        if (xmlPerson.getSivilstand() == null || xmlPerson.getSivilstand().getSivilstand() == null) {
+            return null;
+        }
+        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(xmlPerson.getSivilstand().getSivilstand().getValue());
+    }
+
+    Ektefelle finnEktefelle(Person xmlPerson) {
+        List<Familierelasjon> familierelasjoner = xmlPerson.getHarFraRolleI();
+        if (familierelasjoner.isEmpty()) {
+            return null;
+        }
+        for (Familierelasjon familierelasjon : familierelasjoner) {
+            Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
+            if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
+                Person xmlEktefelle = familierelasjon.getTilPerson();
+                if (xmlEktefelle.getDiskresjonskode() != null && (KODE_6.equals(xmlEktefelle.getDiskresjonskode().getValue()) || KODE_7.equals(xmlEktefelle.getDiskresjonskode().getValue()))) {
+                    return new Ektefelle()
+                            .withNavn("")
+                            .withIkketilgangtilektefelle(true);
+                }
+                return new Ektefelle()
+                        .withNavn(xmlEktefelle.getPersonnavn().getSammensattNavn())
+                        .withFodselsdato(finnFodselsdato(xmlEktefelle))
+                        .withFnr(xmlEktefelle.getIdent().getIdent())
+                        .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted())
+                        .withIkketilgangtilektefelle(false);
+            }
+        }
+        return null;
     }
 
     private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
