@@ -1,0 +1,1 @@
+Organisasjonsnummeret må innehalde ni siffer.
