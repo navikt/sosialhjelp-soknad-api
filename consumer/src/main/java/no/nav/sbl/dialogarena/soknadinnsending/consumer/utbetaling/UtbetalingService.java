@@ -57,6 +57,7 @@ public class UtbetalingService {
         }
 
         return wsUtbetalinger.getUtbetalingListe().stream()
+                .filter(wsUtbetaling -> wsUtbetaling.getUtbetalingsdato() != null)
                 .flatMap(wsUtbetaling ->
                         wsUtbetaling.getYtelseListe()
                                 .stream()
@@ -81,14 +82,7 @@ public class UtbetalingService {
             utbetaling.periodeTom = tilLocalDate(wsPeriode.getTom());
         }
 
-        utbetaling.erUtbetalt = wsUtbetaling.getUtbetalingsdato() != null;
-        if (utbetaling.erUtbetalt) {
-            utbetaling.utbetalingsDato = tilLocalDate(wsUtbetaling.getUtbetalingsdato());
-        } else if (wsUtbetaling.getForfallsdato() != null) {
-            utbetaling.utbetalingsDato = tilLocalDate(wsUtbetaling.getForfallsdato());
-        } else {
-            utbetaling.utbetalingsDato = tilLocalDate(wsUtbetaling.getPosteringsdato());
-        }
+        utbetaling.utbetalingsDato = tilLocalDate(wsUtbetaling.getUtbetalingsdato());
 
         if (ytelse.getYtelseskomponentListe() != null) {
             utbetaling.komponenter = ytelse.getYtelseskomponentListe().stream()
