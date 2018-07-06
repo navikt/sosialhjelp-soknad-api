@@ -1,23 +1,38 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import org.apache.commons.lang3.LocaleUtils;
-import org.apache.commons.lang3.builder.*;
-import org.joda.time.DateTime;
-
-import javax.xml.bind.annotation.*;
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.function.Predicate;
-
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_ANNET_VEDLEGG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_LASTET_OPP;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerGjenopptakInformasjon.erDagpengerGjenopptak;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon.erDagpengerOrdinaer;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.joda.time.DateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -444,18 +459,6 @@ public class WebSoknad implements Serializable {
 
     public boolean erEttersending() {
         return delstegStatus != null && delstegStatus.erEttersending();
-    }
-
-    public boolean erDagpengeSoknad() {
-        return (erOrdinaerDagpengeSoknad() || erGjenopptak()) && !this.erEttersending();
-    }
-
-    public boolean erOrdinaerDagpengeSoknad() {
-        return this.skjemaNummer != null && erDagpengerOrdinaer(this.skjemaNummer);
-    }
-
-    public boolean erGjenopptak() {
-        return this.skjemaNummer != null && erDagpengerGjenopptak(this.skjemaNummer);
     }
 
     public boolean harAnnetVedleggSomIkkeErLastetOpp() {

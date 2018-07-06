@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 public class SoknadDataFletterTest {
 
     public static final String SKJEMA_NUMMER = "NAV 04-01.03";
-    private static final List<String> SKJEMANUMMER_TILLEGGSSTONAD = asList("NAV 11-12.12", "NAV 11-12.13");
     private static final Vedlegg KVITTERING_REF = new Vedlegg()
             .medFillagerReferanse("kvitteringRef")
             .medSkjemaNummer(Kodeverk.KVITTERING)
@@ -138,7 +138,7 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.ekstraMetadataService = ekstraMetadataService;
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
-        when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
+        when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(Collections.emptyList());
         when(config.hentStruktur(any(String.class))).thenReturn(new SoknadStruktur());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
         when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(new KravdialogInformasjonHolder().getSoknadsKonfigurasjoner().get(0));
@@ -245,11 +245,8 @@ public class SoknadDataFletterTest {
     @Test
     public void skalPopulereFraMetadataNaarSoknadIkkeFinnes() throws IOException {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg");
-        Vedlegg vedleggCheck = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg").medData(new byte[]{1, 2, 3});
         WebSoknad soknad = new WebSoknad().medBehandlingId("123").medskjemaNummer(SKJEMA_NUMMER).medId(11L)
                 .medVedlegg(asList(vedlegg)).medStatus(UNDER_ARBEID);
-        WebSoknad soknadCheck = new WebSoknad().medBehandlingId("123").medskjemaNummer(SKJEMA_NUMMER).medId(11L)
-                .medVedlegg(asList(vedleggCheck));
 
         when(migrasjonHandterer.handterMigrasjon(any(WebSoknad.class))).thenReturn(soknad);
 
@@ -268,7 +265,6 @@ public class SoknadDataFletterTest {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
-        DataHandler handler = mock(DataHandler.class);
         when(fillagerService.hentFil("uidHovedskjema"))
                 .thenReturn(baos.toByteArray());
         WebSoknad webSoknad = soknadServiceUtil.hentSoknad("123", true, false);
@@ -297,67 +293,6 @@ public class SoknadDataFletterTest {
         verify(personaliaBolk, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnBolk, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(arbeidsforholdBolk, never()).genererSystemFakta(anyString(), anyLong());
-    }
-
-    @Test
-    public void skalSetteDelstegTilUtfyllingVedUgyldigDatoVerdiForTilleggsStonader() {
-        WebSoknad soknad = new WebSoknad()
-                .medBehandlingId("123")
-                .medskjemaNummer(SKJEMANUMMER_TILLEGGSSTONAD.get(0))
-                .medId(1L)
-                .medFaktum(
-                        new Faktum()
-                            .medKey("informasjonsside.stonad.bostotte")
-                            .medValue("true")
-                )
-                .medFaktum(
-                        new Faktum()
-                                .medKey("bostotte.samling")
-                                .medProperty("fom", "NaN-aN-aN")
-                                .medProperty("tom", "NaN-aN-aN"));
-        soknad = soknadServiceUtil.sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
-        assertThat(soknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);
-    }
-
-    @Test
-    public void skalSetteDelstegTilUtfyllingVedNullVerdiForTilleggsStonader() {
-        WebSoknad soknad = new WebSoknad()
-                .medBehandlingId("123")
-                .medskjemaNummer(SKJEMANUMMER_TILLEGGSSTONAD.get(0))
-                .medId(1L)
-                .medFaktum(
-                        new Faktum()
-                                .medKey("informasjonsside.stonad.bostotte")
-                                .medValue("true")
-                )
-                .medFaktum(
-                        new Faktum()
-                                .medKey("bostotte.samling")
-                                .medProperty("fom", null)
-                                .medProperty("tom", null)
-                );
-        soknad = soknadServiceUtil.sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
-        assertThat(soknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);
-    }
-
-    @Test
-    public void skalIkkeSetteDelstegTilUtfyllingVedGyldigeDatoVerdierForTilleggsStonader() {
-        WebSoknad soknad = new WebSoknad()
-                .medBehandlingId("123")
-                .medskjemaNummer(SKJEMANUMMER_TILLEGGSSTONAD.get(0))
-                .medId(1L)
-                .medFaktum(
-                        new Faktum()
-                                .medKey("informasjonsside.stonad.bostotte")
-                                .medValue("true")
-                )
-                .medFaktum(
-                        new Faktum()
-                                .medKey("bostotte.samling")
-                                .medProperty("fom", "2017-01-01")
-                                .medProperty("tom", "2017-02-02"));
-        soknad = soknadServiceUtil.sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
-        assertThat(soknad.getDelstegStatus()).isNotEqualTo(DelstegStatus.UTFYLLING);
     }
 
     private static List<Vedlegg> mockHentVedleggForventninger(WebSoknad soknad) {
