@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.personalia;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import org.joda.time.LocalDate;
 
 public class PersonaliaBuilder {
@@ -23,6 +24,8 @@ public class PersonaliaBuilder {
     private Boolean erUtenlandskBankkonto;
     private String utenlandskKontoBanknavn;
     private String utenlandskKontoLand;
+    private String sivilstatus;
+    private Ektefelle ektefelle;
 
     public static PersonaliaBuilder with() {
         return new PersonaliaBuilder();
@@ -124,6 +127,16 @@ public class PersonaliaBuilder {
         return this;
     }
 
+    public PersonaliaBuilder sivilstatus(String sivilstatus) {
+        this.sivilstatus = sivilstatus;
+        return this;
+    }
+
+    public PersonaliaBuilder ektefelle(Ektefelle ektefelle) {
+        this.ektefelle = ektefelle;
+        return this;
+    }
+
     public Personalia build() {
         Personalia personalia = new Personalia();
 
@@ -146,6 +159,8 @@ public class PersonaliaBuilder {
         personalia.setErUtenlandskBankkonto(erUtenlandskBankkonto);
         personalia.setUtenlandskKontoBanknavn(utenlandskKontoBanknavn);
         personalia.setUtenlandskKontoLand(utenlandskKontoLand);
+        personalia.setSivilstatus(sivilstatus);
+        personalia.setEktefelle(ektefelle);
 
         return personalia;
     }
