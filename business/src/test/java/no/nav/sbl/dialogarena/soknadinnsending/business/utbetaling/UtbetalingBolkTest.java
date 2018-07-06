@@ -78,7 +78,6 @@ public class UtbetalingBolkTest {
         utbetaling.bilagsNummer = "568269505";
         utbetaling.periodeFom = LocalDate.of(2018, 2, 1);
         utbetaling.periodeFom = LocalDate.of(2018, 2, 28);
-        utbetaling.erUtbetalt = true;
         utbetaling.utbetalingsDato = LocalDate.of(2018, 2, 22);
 
         List<Utbetaling.Komponent> komponentliste = new ArrayList<>();
