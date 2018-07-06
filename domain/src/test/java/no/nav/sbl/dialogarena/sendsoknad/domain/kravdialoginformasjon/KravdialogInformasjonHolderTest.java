@@ -13,8 +13,8 @@ public class KravdialogInformasjonHolderTest {
     @Test
     public void skalHenteKonfigBasertPaaSkjemanummer() {
         KravdialogInformasjonHolder kravdialogInformasjonHolder = new KravdialogInformasjonHolder();
-        KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon("NAV 11-13.05");
-        assertThat(konfigurasjon.getSkjemanummer(), contains("NAV 11-13.05"));
+        KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon("NAV 35-18.01");
+        assertThat(konfigurasjon.getSkjemanummer(), contains("NAV 35-18.01"));
     }
 
     @Test(expected = ApplicationException.class)

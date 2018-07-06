@@ -1,0 +1,1 @@
+Du må skrive inn eit gyldig tal mellom {0} og {1}.

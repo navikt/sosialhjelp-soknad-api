@@ -22,95 +22,9 @@
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec
         </sonar.jacoco.reportPath>
         <fitnesse.port>9977</fitnesse.port>
-
-        <!-- Teksterversjoner oppdateres gjennom å kjøre "mvn versions:update-properties" for dette prosjektet (kun "web"). -->
-        <version.tekster.soknadsosialhjelp>1.0.640.304</version.tekster.soknadsosialhjelp>
-        <version.tekster.soknaddagpenger>1.1.241.29</version.tekster.soknaddagpenger>
-        <version.tekster.soknadaap>1.0.214.78</version.tekster.soknadaap>
-        <version.tekster.soknadbilstonad>1.0.27.24</version.tekster.soknadbilstonad>
-        <version.tekster.soknad-aap-utland>1.0.3.1</version.tekster.soknad-aap-utland>
-        <version.tekster.soknadforeldrepenger>1.1.630.73-SD-38-tvilling-trilling-SNAPSHOT
-        </version.tekster.soknadforeldrepenger>
-        <version.tekster.sendsoknad>1.0.26.25</version.tekster.sendsoknad>
-        <version.tekster.soknadrefusjondagligreise>1.0.6.6
-        </version.tekster.soknadrefusjondagligreise>
-        <version.tekster.soknadtilleggsstonader>1.0.22.18</version.tekster.soknadtilleggsstonader>
-        <version.tekster.soknadtiltakspenger>1.0.20.15</version.tekster.soknadtiltakspenger>
     </properties>
 
     <dependencies>
-        <!-- Disse dependency-ene ligger her for å kunne støtte bruk av "mvn versions:update-properties" -->
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknadsosialhjelp-tekster</artifactId>
-            <version>${version.tekster.soknadsosialhjelp}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknaddagpenger-tekster</artifactId>
-            <version>${version.tekster.soknaddagpenger}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknadaap-tekster</artifactId>
-            <version>${version.tekster.soknadaap}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknadbilstonad-tekster</artifactId>
-            <version>${version.tekster.soknadbilstonad}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknad-aap-utland-tekster</artifactId>
-            <version>${version.tekster.soknad-aap-utland}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknadforeldrepenger-tekster</artifactId>
-            <version>${version.tekster.soknadforeldrepenger}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>sendsoknad-tekster</artifactId>
-            <version>${version.tekster.sendsoknad}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknadrefusjondagligreise-tekster</artifactId>
-            <version>${version.tekster.soknadrefusjondagligreise}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknadtilleggsstonader-tekster</artifactId>
-            <version>${version.tekster.soknadtilleggsstonader}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>soknadtiltakspenger-tekster</artifactId>
-            <version>${version.tekster.soknadtiltakspenger}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -155,6 +69,10 @@
             <groupId>no.nav.tjenester.fim</groupId>
             <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
             <classifier>jaxws</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>soknadsosialhjelp-tekster</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -384,10 +302,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>soeknadsskjemaEngangsstoenad-v1-meldingsdefinisjon</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -710,90 +624,6 @@
                                 <usedDependency>org.apache.httpcomponents:httpclient
                                 </usedDependency>
                             </usedDependencies>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>unpack-tekster</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknadsosialhjelp-tekster</artifactId>
-                                    <version>${version.tekster.soknadsosialhjelp}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknaddagpenger-tekster</artifactId>
-                                    <version>${version.tekster.soknaddagpenger}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknadaap-tekster</artifactId>
-                                    <version>${version.tekster.soknadaap}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknadbilstonad-tekster</artifactId>
-                                    <version>${version.tekster.soknadbilstonad}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknad-aap-utland-tekster</artifactId>
-                                    <version>${version.tekster.soknad-aap-utland}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknadforeldrepenger-tekster</artifactId>
-                                    <version>${version.tekster.soknadforeldrepenger}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>sendsoknad-tekster</artifactId>
-                                    <version>${version.tekster.sendsoknad}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknadrefusjondagligreise-tekster</artifactId>
-                                    <version>${version.tekster.soknadrefusjondagligreise}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknadtilleggsstonader-tekster</artifactId>
-                                    <version>${version.tekster.soknadtilleggsstonader}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.sbl</groupId>
-                                    <artifactId>soknadtiltakspenger-tekster</artifactId>
-                                    <version>${version.tekster.soknadtiltakspenger}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/appassembler
-                            </outputDirectory>
-                            <includes>tekster/**/*</includes>
                         </configuration>
                     </execution>
                 </executions>
