@@ -8,7 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;

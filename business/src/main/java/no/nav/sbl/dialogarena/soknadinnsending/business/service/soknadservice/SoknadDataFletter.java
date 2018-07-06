@@ -6,7 +6,7 @@ import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;

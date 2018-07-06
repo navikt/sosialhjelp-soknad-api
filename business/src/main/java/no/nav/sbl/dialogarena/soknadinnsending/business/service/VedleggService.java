@@ -20,7 +20,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;

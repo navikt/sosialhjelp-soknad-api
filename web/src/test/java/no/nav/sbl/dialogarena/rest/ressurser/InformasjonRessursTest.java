@@ -5,7 +5,7 @@ import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
@@ -132,9 +132,9 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void skalHenteTeksterForAapViaBundleSoknadaap() {
-        ressurs.hentTekster("AAP", null);
-        verify(messageSource).getBundleFor("soknadaap", norskBokmaal);
+    public void skalHenteTeksterForSoknadsosialhjelpViaBundle() {
+        ressurs.hentTekster("soknadsosialhjelp", null);
+        verify(messageSource).getBundleFor("soknadsosialhjelp", norskBokmaal);
     }
 
     @Test
