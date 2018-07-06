@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.*;
+import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
+import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public final class JsonFamilieConverter {
@@ -33,20 +36,45 @@ public final class JsonFamilieConverter {
         return jsonFamilie;
     }
 
-    private static JsonSivilstatus tilJsonSivilstatus(WebSoknad webSoknad) {
-        final String sivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
-        if (erTom(sivilstatus)) {
+    static JsonSivilstatus tilJsonSivilstatus(WebSoknad webSoknad) {
+        final String brukerregistrertSivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
+        final String systemregistrertSivilstatus = webSoknad.getValueForFaktum("system.familie.sivilstatus");
+        if (erTom(systemregistrertSivilstatus) & erTom(brukerregistrertSivilstatus)) {
             return null;
+        } else if (!erTom(systemregistrertSivilstatus) & erTom(brukerregistrertSivilstatus)) {
+            return tilJsonSystemregistrertSivilstatus(webSoknad);
+        } else {
+            return tilJsonBrukerregistrertSivilstatus(webSoknad);
         }
+    }
 
+    private static JsonSivilstatus tilJsonSystemregistrertSivilstatus(WebSoknad webSoknad) {
+        String sivilstatus = webSoknad.getValueForFaktum("system.familie.sivilstatus");
         final JsonSivilstatus jsonSivilstatus = new JsonSivilstatus();
-        jsonSivilstatus.setKilde(JsonKilde.BRUKER);
+        jsonSivilstatus.setKilde(SYSTEM);
 
         final Status status = tilStatus(sivilstatus);
         jsonSivilstatus.setStatus(status);
 
-        if (status == Status.GIFT) {
-            final Map<String, String> ektefelle = getEktefelleproperties(webSoknad);
+        if (status == GIFT) {
+            final Map<String, String> ektefelle = getEktefelleproperties(webSoknad, "system.familie.sivilstatus.gift.ektefelle");
+
+        }
+
+        return jsonSivilstatus;
+    }
+
+    private static JsonSivilstatus tilJsonBrukerregistrertSivilstatus(WebSoknad webSoknad) {
+        final String sivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
+
+        final JsonSivilstatus jsonSivilstatus = new JsonSivilstatus();
+        jsonSivilstatus.setKilde(BRUKER);
+
+        final Status status = tilStatus(sivilstatus);
+        jsonSivilstatus.setStatus(status);
+
+        if (status == GIFT) {
+            final Map<String, String> ektefelle = getEktefelleproperties(webSoknad, "familie.sivilstatus.gift.ektefelle");
             jsonSivilstatus.setEktefelle(tilJsonEktefelle(ektefelle));
 
             final String borSammenMed = ektefelle.get("borsammen");
@@ -63,8 +91,8 @@ public final class JsonFamilieConverter {
         return jsonSivilstatus;
     }
 
-    private static Map<String, String> getEktefelleproperties(WebSoknad webSoknad) {
-        final Faktum faktum = webSoknad.getFaktumMedKey("familie.sivilstatus.gift.ektefelle");
+    private static Map<String, String> getEktefelleproperties(WebSoknad webSoknad, String faktumKey) {
+        final Faktum faktum = webSoknad.getFaktumMedKey(faktumKey);
         if (faktum == null) {
             return new HashMap<>();
         }
@@ -109,7 +137,7 @@ public final class JsonFamilieConverter {
         }
 
         return new JsonHarForsorgerplikt()
-                .withKilde(JsonKilde.BRUKER)
+                .withKilde(BRUKER)
                 .withVerdi(Boolean.parseBoolean(harBarn));
     }
 
@@ -149,7 +177,7 @@ public final class JsonFamilieConverter {
     private static JsonAnsvar faktumTilAnsvar(Faktum faktum) {
         Map<String, String> props = faktum.getProperties();
         JsonBarn barn = new JsonBarn()
-                .withKilde(JsonKilde.BRUKER)
+                .withKilde(BRUKER)
                 .withNavn(new JsonNavn()
                         .withFornavn(xxxFornavnFraNavn(props.get("navn")))
                         .withMellomnavn("")
