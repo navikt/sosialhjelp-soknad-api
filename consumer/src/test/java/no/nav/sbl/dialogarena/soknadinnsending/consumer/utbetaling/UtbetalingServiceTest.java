@@ -4,8 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -77,7 +76,6 @@ public class UtbetalingServiceTest {
         assertThat(utbetaling.periodeFom.getMonthValue(), is(MONTH));
         assertThat(utbetaling.periodeFom.getDayOfMonth(), is(FOM_DATE));
         assertThat(utbetaling.periodeTom.getDayOfMonth(), is(TOM_DATE));
-        assertThat(utbetaling.erUtbetalt, is(true));
         assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(UTBETALT_DAG));
 
         assertThat(komponent.type, is(KOMPONENTTYPE));
@@ -85,6 +83,13 @@ public class UtbetalingServiceTest {
         assertThat(komponent.satsType, is(SATSTYPE));
         assertThat(komponent.satsBelop, is(SATSBELOP));
         assertThat(komponent.satsAntall, is(SATSANTALL));
+    }
+
+    @Test
+    public void mapTilUtbetalingerIgnorererUtbetalingerSomIkkeErUtbetalt() {
+        List<Utbetaling> utbetalinger = utbetalingService.mapTilUtbetalinger(lagWSHentUtbetalingsinformasjonResponseUtenUtbetalingsdato(wsPerson));
+
+        assertThat(utbetalinger.size(), is(0));
     }
 
     @Test
@@ -102,8 +107,7 @@ public class UtbetalingServiceTest {
         assertThat(utbetaling.periodeFom.getMonthValue(), is(MONTH));
         assertThat(utbetaling.periodeFom.getDayOfMonth(), is(FOM_DATE));
         assertThat(utbetaling.periodeTom, is(nullValue()));
-        assertThat(utbetaling.erUtbetalt, is(false));
-        assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(POSTERINGSDAG));
+        assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(UTBETALT_DAG));
 
         assertThat(komponent.type, is(KOMPONENTTYPE));
         assertThat(komponent.belop, is(0.0));
@@ -112,17 +116,15 @@ public class UtbetalingServiceTest {
         assertThat(komponent.satsAntall, is(0.0));
     }
 
-    @Test
-    public void ytelseTilUtbetalingBrukerForfallsdatoForUtbetalingSomIkkeErUtbetaltHvisDenErSatt() {
-        Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(lagWSUtbetalingSomIkkeErUtbetalt(wsPerson), lagKomplettWsYtelse(wsPerson));
-
-        assertThat(utbetaling.erUtbetalt, is(false));
-        assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(FORFALLSDAG));
-    }
-
     private WSHentUtbetalingsinformasjonResponse lagWSHentUtbetalingsinformasjonResponseUtenYtelseliste(WSPerson wsPerson) {
         List<WSUtbetaling> wsUtbetalinger = new ArrayList<>();
-        wsUtbetalinger.add(lagMinimalWSUtbetalingUtenYtelsesliste(wsPerson));
+        wsUtbetalinger.add(lagWSUtbetalingUtenYtelsesliste(wsPerson));
+        return new WSHentUtbetalingsinformasjonResponse().withUtbetalingListe(wsUtbetalinger);
+    }
+
+    private WSHentUtbetalingsinformasjonResponse lagWSHentUtbetalingsinformasjonResponseUtenUtbetalingsdato(WSPerson wsPerson) {
+        List<WSUtbetaling> wsUtbetalinger = new ArrayList<>();
+        wsUtbetalinger.add(lagWSUtbetalingSomIkkeErUtbetalt(wsPerson));
         return new WSHentUtbetalingsinformasjonResponse().withUtbetalingListe(wsUtbetalinger);
     }
 
@@ -142,10 +144,11 @@ public class UtbetalingServiceTest {
                 .withUtbetalingsstatus("Ikke utbetalt");
     }
 
-    private WSUtbetaling lagMinimalWSUtbetalingUtenYtelsesliste(WSPerson wsPerson) {
+    private WSUtbetaling lagWSUtbetalingUtenYtelsesliste(WSPerson wsPerson) {
         return new WSUtbetaling()
                 .withPosteringsdato(dato(YEAR, MONTH, POSTERINGSDAG))
                 .withUtbetaltTil(wsPerson)
+                .withUtbetalingsdato(dato(YEAR, MONTH, UTBETALT_DAG))
                 .withUtbetalingsmetode("Norsk bankkonto")
                 .withUtbetalingsstatus("Utbetalt");
     }
@@ -199,6 +202,7 @@ public class UtbetalingServiceTest {
         return new WSUtbetaling()
                 .withPosteringsdato(dato(YEAR, MONTH, POSTERINGSDAG))
                 .withUtbetaltTil(wsPerson)
+                .withUtbetalingsdato(dato(YEAR, MONTH, UTBETALT_DAG))
                 .withYtelseListe(lagMinimalWsYtelseMedYtelseskomponentliste(wsPerson))
                 .withUtbetalingsmetode("Norsk bankkonto")
                 .withUtbetalingsstatus("Utbetalt");

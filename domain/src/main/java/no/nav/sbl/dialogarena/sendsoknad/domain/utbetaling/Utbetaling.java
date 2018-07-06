@@ -14,7 +14,6 @@ public class Utbetaling {
 
     public String bilagsNummer;
     public LocalDate utbetalingsDato;
-    public boolean erUtbetalt;
     public LocalDate periodeFom;
     public LocalDate periodeTom;
     public List<Komponent> komponenter = new ArrayList<>();
