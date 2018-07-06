@@ -1,16 +1,21 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import static java.lang.System.setProperty;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,19 +25,18 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static java.lang.System.setProperty;
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.*;
+import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FaktaServiceTest {
@@ -51,7 +55,7 @@ public class FaktaServiceTest {
     @Before
     public void before() {
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
+        when(soknadRepository.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(soknadRepository.hentSoknad(anyLong())).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
     }

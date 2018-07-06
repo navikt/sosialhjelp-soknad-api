@@ -1,14 +1,21 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.ARBEIDSGIVER_ERKONKURS;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.AVSKJEDIGET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.KONTRAKT_UTGAATT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.REDUSERT_ARBEIDSTID;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.SAGTOPP_AV_ARBEIDSGIVER;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.SAGTOPP_SELV;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 
 public class TransformersTest {
     @Test
@@ -28,7 +35,6 @@ public class TransformersTest {
         assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", SAGTOPP_AV_ARBEIDSGIVER)), is(equalTo(new LocalDate("2013-01-01"))));
         assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", SAGTOPP_SELV)), is(equalTo(new LocalDate("2013-01-01"))));
         assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", "tullball")), is(nullValue()));
-        assertThat(Transformers.DATO_TIL_PERMITTERING.apply(faktum.medProperty("type", DagpengerUtils.PERMITTERT)), is(equalTo(new LocalDate("2013-01-04"))));
     }
 
 }
