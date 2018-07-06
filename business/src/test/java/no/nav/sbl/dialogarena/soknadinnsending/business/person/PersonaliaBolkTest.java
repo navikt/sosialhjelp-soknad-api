@@ -49,8 +49,8 @@ public class PersonaliaBolkTest {
     private static final String ADRESSE_GYLDIG_FRA = "2010-01-01";
     private static final String ADRESSE_GYLDIG_TIL = "2017-01-01";
 
-    private static final String SIVILSTATUS_UGIFT = "UGIFT";
-    private static final String SIVILSTATUS_GIFT = "GIFT";
+    private static final String SIVILSTATUS_UGIFT = "ugift";
+    private static final String SIVILSTATUS_GIFT = "gift";
     private static final String PARTNER_FNR = "01010091740";
     private static final String PARTNER_NAVN = "Kristin Partner";
     private static final LocalDate PARTNER_FODSELSDATO = new LocalDate(1987, 6, 23);
@@ -108,7 +108,7 @@ public class PersonaliaBolkTest {
         Faktum faktum = fakta.get(0);
         Map<String, String> faktumProperties = faktum.getProperties();
 
-        assertThat(fakta.size(), is(1));
+        assertThat(fakta.size(), is(2));
         assertThat(faktum.getKey(), is("personalia"));
         assertThat(faktum.getSoknadId(), is(SOKNADID));
         assertThat(faktumProperties.get(FNR_KEY), is(FNR));
@@ -136,7 +136,7 @@ public class PersonaliaBolkTest {
         assertThat(faktumProperties.get(SEKUNDARADRESSE_TYPE_KEY), nullValue());
         assertThat(faktumProperties.get(SEKUNDARADRESSE_GYLDIGFRA_KEY), nullValue());
         assertThat(faktumProperties.get(SEKUNDARADRESSE_GYLDIGTIL_KEY), nullValue());
-        assertThat(faktumProperties.get(SIVILSTATUS_KEY), is(SIVILSTATUS_UGIFT));
+        assertThat(fakta.get(1).getValue(), is(SIVILSTATUS_UGIFT));
     }
 
     @Test
@@ -146,9 +146,11 @@ public class PersonaliaBolkTest {
 
         List<Faktum> fakta = personaliaBolk.genererPersonaliaFaktum(SOKNADID, personalia);
 
-        assertThat(fakta.size(), is(2));
+        assertThat(fakta.size(), is(3));
         assertThat(fakta.get(0).getKey(), is("personalia"));
-        assertThat(fakta.get(1).getKey(), is("system.familie.sivilstatus.gift.ektefelle"));
+        assertThat(fakta.get(1).getKey(), is("system.familie.sivilstatus"));
+        assertThat(fakta.get(1).getValue(), is("gift"));
+        assertThat(fakta.get(2).getKey(), is("system.familie.sivilstatus.gift.ektefelle"));
     }
 
     @Test
@@ -156,7 +158,7 @@ public class PersonaliaBolkTest {
         personalia.setSivilstatus(SIVILSTATUS_GIFT);
         personalia.setEktefelle(lagEktefelle());
 
-        Faktum faktum = personaliaBolk.genererSystemregistrertSivilstandFaktum(SOKNADID, personalia);
+        Faktum faktum = personaliaBolk.genererSystemregistrertEktefelleFaktum(SOKNADID, personalia);
         Map<String, String> faktumProperties = faktum.getProperties();
 
         assertThat(faktum.getKey(), is("system.familie.sivilstatus.gift.ektefelle"));

@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import java.util.*;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Service
 public class PersonaliaBolk implements BolkService {
@@ -63,16 +65,25 @@ public class PersonaliaBolk implements BolkService {
                 .medSystemProperty(SEKUNDARADRESSE_KEY, personalia.getSekundarAdresse().getAdresse())
                 .medSystemProperty(SEKUNDARADRESSE_TYPE_KEY, personalia.getSekundarAdresse().getAdressetype())
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra())
-                .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil())
-                .medSystemProperty(SIVILSTATUS_KEY, personalia.getSivilstatus()));
+                .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil()));
+
+        if (isNotEmpty(personalia.getSivilstatus())) {
+            fakta.add(genererSystemregistrertSivilstandFaktum(soknadId, personalia.getSivilstatus()));
+        }
 
         if (personalia.getEktefelle() != null) {
-            fakta.add(genererSystemregistrertSivilstandFaktum(soknadId, personalia));
+            fakta.add(genererSystemregistrertEktefelleFaktum(soknadId, personalia));
         }
         return fakta;
     }
 
-    Faktum genererSystemregistrertSivilstandFaktum(Long soknadId, Personalia personalia) {
+    private Faktum genererSystemregistrertSivilstandFaktum(Long soknadId, String sivilstatus) {
+        return new Faktum().medSoknadId(soknadId).medKey("system.familie.sivilstatus")
+                .medType(SYSTEMREGISTRERT)
+                .medValue(sivilstatus);
+    }
+
+    Faktum genererSystemregistrertEktefelleFaktum(Long soknadId, Personalia personalia) {
         Ektefelle ektefelle = personalia.getEktefelle();
         if (ektefelle == null) {
             return null;
