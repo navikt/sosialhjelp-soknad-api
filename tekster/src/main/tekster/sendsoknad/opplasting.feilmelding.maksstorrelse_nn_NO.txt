@@ -1,0 +1,1 @@
+Opplastinga feila fordi fila var for stor. Du kan berre laste opp filer som er mindre en 10 MB store.

@@ -1,22 +1,23 @@
 package no.nav.sbl.dialogarena.integration.security;
 
-import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
-import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
-import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
-import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+
+import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
+import no.nav.sbl.dialogarena.integration.SoknadTester;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 
 public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     private static final String ANNEN_BRUKER = "01010112345";
-    private String skjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(0);
+    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @Before
     public void setup() throws Exception {
