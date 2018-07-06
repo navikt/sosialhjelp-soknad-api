@@ -76,7 +76,6 @@ public class UtbetalingBolk implements BolkService {
                 .medSystemProperty("periodeFom", utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .medSystemProperty("periodeTom", utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
                 .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato != null ? utbetaling.utbetalingsDato.toString() : null)
-                .medSystemProperty("erUtbetalt", utbetaling.erUtbetalt + "")
                 .medSystemProperty("komponenter", utbetaling.komponenter != null ? utbetaling.komponenter.size() + "" : "");
 
         if (utbetaling.komponenter != null) {
