@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -69,33 +74,55 @@ public class FiksSender {
         if (environment == null || "p".equals(environment)) {
             return "";
         }
-        
+
         return environment + "-";
     }
 
     public Dokument fiksDokumentFraDokumentInfo(FiksData.DokumentInfo info, boolean skalKryptere) {
         byte[] filData = fillager.hentFil(info.uuid);
 
+        Path path = Paths.get(info.filnavn);
+        try {
+            Files.write(path, filData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         if (skalKryptere) {
             filData = dokumentKrypterer.krypterData(filData);
         }
 
         ByteDataSource dataSource = new ByteDataSource(filData);
-        dataSource.setName(info.filnavn);
+        dataSource.setName(FilnavnMapper.mapFilnavn(info.filnavn));
         dataSource.setContentType("application/octet-stream");
 
-        Dokument d =  new Dokument()
+        return new Dokument()
                 .withFilnavn(info.filnavn)
                 .withMimetype(info.mimetype != null ? info.mimetype : "application/pdf")
                 .withEkskluderesFraPrint(info.ekskluderesFraPrint)
                 .withData(new DataHandler(dataSource));
-
-        System.out.println("Filnavn : " + d.getFilnavn());
-
-        return d;
     }
 
     private boolean skalKryptere() {
         return !Boolean.valueOf(System.getProperty(KRYPTERING_DISABLED, "false"));
+    }
+
+    private static class FilnavnMapper {
+
+        private static HashMap<String, String> filnavnmapping = new HashMap<String, String>();
+
+        public FilnavnMapper() {
+
+            filnavnmapping.put("L7", "Brukerkvittering.pdf");
+        }
+
+        public static String mapFilnavn(String filnavn) {
+            if (filnavnmapping.containsKey(filnavn)) {
+                return filnavnmapping.get(filnavn);
+
+            } else {
+                return filnavn;
+            }
+        }
     }
 }
