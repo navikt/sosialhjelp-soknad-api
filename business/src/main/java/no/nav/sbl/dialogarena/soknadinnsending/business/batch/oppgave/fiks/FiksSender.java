@@ -84,11 +84,15 @@ public class FiksSender {
         dataSource.setName(info.filnavn);
         dataSource.setContentType("application/octet-stream");
 
-        return new Dokument()
+        Dokument d =  new Dokument()
                 .withFilnavn(info.filnavn)
                 .withMimetype(info.mimetype != null ? info.mimetype : "application/pdf")
                 .withEkskluderesFraPrint(info.ekskluderesFraPrint)
                 .withData(new DataHandler(dataSource));
+
+        System.out.println("Filnavn : " + d.getFilnavn());
+
+        return d;
     }
 
     private boolean skalKryptere() {
