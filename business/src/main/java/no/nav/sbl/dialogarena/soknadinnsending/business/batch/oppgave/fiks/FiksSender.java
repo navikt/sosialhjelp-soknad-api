@@ -71,7 +71,6 @@ public class FiksSender {
         if (environment == null || "p".equals(environment)) {
             return "";
         }
-
         return environment + "-";
     }
 
