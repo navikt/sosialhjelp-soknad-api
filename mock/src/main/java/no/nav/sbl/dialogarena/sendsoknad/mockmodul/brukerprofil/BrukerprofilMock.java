@@ -1,12 +1,13 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.TestPerson;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import org.joda.time.DateTime;
 
 import java.math.BigInteger;
 
 public class BrukerprofilMock {
-    private static final String FODSELSNUMMER = "***REMOVED***";
+    private static final String FODSELSNUMMER = TestPerson.FNRNUMMER;
     private static final String FORNAVN = "Donald";
     private static final String MELLOMNAVN = "D.";
     private static final String ETTERNAVN = "Mockmann";
@@ -36,6 +37,8 @@ public class BrukerprofilMock {
     public static final String POSTTYPE_NORSK = "BOSTEDSADRESSE";
     public static final String POSTTYPE_UTENLANDSK = "UTENLANDSK_ADRESSE";
 
+    public static final String SIVILSTATUS = "GIFT";
+
     public enum Adressetyper {INGEN, NORSK, UTENLANDSK;}
 
     private static BrukerprofilMock brukerprofilMock = new BrukerprofilMock();
@@ -49,17 +52,17 @@ public class BrukerprofilMock {
         return new XMLEPost().withIdentifikator(EPOST);
     }
 
-    private BrukerprofilMock(){
+    private BrukerprofilMock() {
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
         xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper());
 
         settPostadresse(xmlBruker, Adressetyper.NORSK);
         settSekundarAdresse(xmlBruker, Adressetyper.UTENLANDSK);
 
-        brukerprofilPortTypeMock.setPerson(xmlBruker);
+        brukerprofilPortTypeMock.setPerson((XMLBrukerMedSivilstatus) xmlBruker);
     }
 
-    public static BrukerprofilMock getInstance(){
+    public static BrukerprofilMock getInstance() {
         return brukerprofilMock;
     }
 
@@ -164,7 +167,11 @@ public class BrukerprofilMock {
     }
 
     private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn(boolean medMellomnavn) {
-        XMLBruker xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+        XMLBrukerMedSivilstatus xmlBrukerMedSivilstatus = new XMLBrukerMedSivilstatus();
+        xmlBrukerMedSivilstatus.setSivilstatus(SIVILSTATUS);
+
+        XMLBruker xmlBruker = xmlBrukerMedSivilstatus;
+        xmlBruker = xmlBruker.withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
         XMLPersonnavn personNavn = new XMLPersonnavn();
         personNavn.setFornavn(FORNAVN);
         if (medMellomnavn) {
