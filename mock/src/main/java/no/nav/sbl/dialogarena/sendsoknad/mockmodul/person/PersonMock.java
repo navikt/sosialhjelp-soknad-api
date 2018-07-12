@@ -37,7 +37,7 @@ public class PersonMock {
         sivilstander.setValue("GIFT");
 
         Sivilstand sivilstand = new Sivilstand();
-        sivilstand.setSivilstand(new Sivilstander());
+        sivilstand.setSivilstand(sivilstander);
 
         person.setSivilstand(sivilstand);
 
