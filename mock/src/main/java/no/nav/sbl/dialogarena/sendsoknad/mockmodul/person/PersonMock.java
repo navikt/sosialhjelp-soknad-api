@@ -33,6 +33,14 @@ public class PersonMock {
         familieRelasjoner.add(lagBarn("***REMOVED***", "Ole", "Mockmann"));
         familieRelasjoner.add(lagBarn("***REMOVED***", "Doffen", "Mockmann"));
 
+        Sivilstander sivilstander = new Sivilstander();
+        sivilstander.setValue("GIFT");
+
+        Sivilstand sivilstand = new Sivilstand();
+        sivilstand.setSivilstand(new Sivilstander());
+
+        person.setSivilstand(sivilstand);
+
         personPortTypeMock.setPerson(person);
     }
 
