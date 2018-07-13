@@ -12,12 +12,15 @@ public class PersonMock {
     private static PersonMock personMock = new PersonMock();
     private PersonPortTypeMock personPortTypeMock;
 
-    private PersonMock(){
+    private PersonMock() {
         personPortTypeMock = new PersonPortTypeMock();
 
         // Endre også i override-web.xml sin defaultFnr, da det er den som ligger på getSubjectHandler().getUid()
         Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "person", "mock");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
+
+        Person ektefelle = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Daisy", "Duck");
+        ektefelle.setFoedselsdato(fodseldato(1965, 7, 3));
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
         Landkoder landkoder = new Landkoder();
@@ -32,19 +35,15 @@ public class PersonMock {
         familieRelasjoner.add(lagBarn("***REMOVED***", "Dole", "Mockmann", doedsdato));
         familieRelasjoner.add(lagBarn("***REMOVED***", "Ole", "Mockmann"));
         familieRelasjoner.add(lagBarn("***REMOVED***", "Doffen", "Mockmann"));
+        familieRelasjoner.add(lagEktefelle(person, ektefelle));
 
-        Sivilstander sivilstander = new Sivilstander();
-        sivilstander.setValue("GIFT");
-
-        Sivilstand sivilstand = new Sivilstand();
-        sivilstand.setSivilstand(sivilstander);
-
-        person.setSivilstand(sivilstand);
+        // Bor sammen med kona
+        ektefelle.setBostedsadresse(person.getBostedsadresse());
 
         personPortTypeMock.setPerson(person);
     }
 
-    public static PersonMock getInstance(){
+    public static PersonMock getInstance() {
         return personMock;
     }
 
@@ -52,7 +51,32 @@ public class PersonMock {
         return personPortTypeMock;
     }
 
-    private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn){
+    private Familierelasjon lagEktefelle(Person hovedperson, Person ektefelle) {
+        Familierelasjon familierelasjon = new Familierelasjon();
+
+        familierelasjon.setTilPerson(ektefelle);
+        Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
+
+        // Er dette riktig?
+        familieRelasjonRolle.setValue("EKTEFELLE");
+
+        // Gjelder denne for begge?
+        familierelasjon.setTilRolle(familieRelasjonRolle);
+
+        Sivilstander sivilstander = new Sivilstander();
+        sivilstander.setValue("GIFT");
+        Sivilstand sivilstand = new Sivilstand();
+        sivilstand.setSivilstand(sivilstander);
+
+        hovedperson.setSivilstand(sivilstand);
+
+        // Må også gjøres?
+        ektefelle.setSivilstand(sivilstand);
+
+        return familierelasjon;
+    }
+
+    private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn) {
         Familierelasjon familierelasjon = new Familierelasjon();
         Person barn = genererPersonMedGyldigIdentOgNavn(fnr, fornavn, etternavn);
         familierelasjon.setTilPerson(barn);
@@ -62,7 +86,7 @@ public class PersonMock {
         return familierelasjon;
     }
 
-    private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn, Doedsdato doedsdato){
+    private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn, Doedsdato doedsdato) {
         Familierelasjon familierelasjon = lagBarn(fnr, fornavn, etternavn);
         familierelasjon.getTilPerson().setDoedsdato(doedsdato);
         return familierelasjon;
