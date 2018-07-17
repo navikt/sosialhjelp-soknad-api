@@ -2,8 +2,12 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
@@ -51,4 +55,24 @@ public class JsonFamilieConverterTest {
         assertThat(jsonSivilstatus.getKilde(), is(BRUKER));
     }
 
+    @Test
+    public void testJsonTilEktefelle() {
+
+        final WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("system.familie.sivilstatus").medValue("gift"));
+
+        Faktum faktum = new Faktum().medKey("system.familie.sivilstatus.gift.ektefelle");
+
+        Map<String, String> ektefelleproperties = new HashMap<String, String>();
+        ektefelleproperties.put("etternavn", "Duck");
+        ektefelleproperties.put("fornavn", "Daisy");
+        faktum.setProperties(ektefelleproperties);
+
+        webSoknad.leggTilFaktum(faktum);
+
+        JsonFamilie jsonFamilie = JsonFamilieConverter.tilFamilie(webSoknad);
+
+        System.out.println(new String(jsonFamilie.toString()));
+
+
+    }
 }

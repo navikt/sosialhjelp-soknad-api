@@ -15,7 +15,11 @@
         </dependOnValues>
         <properties>
             <property>
-                <id>navn</id>
+                <id>fornavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>etternavn</id>
                 <type>textbox</type>
             </property>
             <property>
@@ -56,7 +60,11 @@
         </dependOnValues>
         <properties>
             <property>
-                <id>navn</id>
+                <id>fornavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>etternavn</id>
                 <type>textbox</type>
             </property>
             <property>

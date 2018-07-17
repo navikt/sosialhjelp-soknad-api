@@ -104,9 +104,9 @@ public final class JsonFamilieConverter {
     private static JsonEktefelle tilSystemregistrertJsonEktefelle(Map<String, String> ektefelle) {
         final JsonEktefelle jsonEktefelle = new JsonEktefelle();
         jsonEktefelle.setNavn(new JsonNavn()
-                .withFornavn(xxxFornavnFraNavn(ektefelle.get("navn")))
+                .withFornavn(xxxFornavnFraNavn(ektefelle.get("fornavn")))
                 .withMellomnavn("")
-                .withEtternavn(xxxEtternavnFraNavn(ektefelle.get("navn")))
+                .withEtternavn(xxxEtternavnFraNavn(ektefelle.get("etternavn")))
         );
         jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fodselsdato")));
         jsonEktefelle.setPersonIdentifikator(ektefelle.get("fnr"));
@@ -194,9 +194,9 @@ public final class JsonFamilieConverter {
         JsonBarn barn = new JsonBarn()
                 .withKilde(BRUKER)
                 .withNavn(new JsonNavn()
-                        .withFornavn(xxxFornavnFraNavn(props.get("navn")))
+                        .withFornavn(xxxFornavnFraNavn(props.get("fornavn")))
                         .withMellomnavn("")
-                        .withEtternavn(xxxEtternavnFraNavn(props.get("navn")))
+                        .withEtternavn(xxxEtternavnFraNavn(props.get("etternavn")))
                 )
                 .withFodselsdato(tilJsonFodselsdato(props.get("fnr")))
                 .withPersonIdentifikator(tilJsonPersonidentifikator(props.get("fnr"), props.get("pnr")));
