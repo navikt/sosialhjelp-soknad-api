@@ -4,11 +4,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
 import static org.hamcrest.core.Is.is;
@@ -71,7 +73,8 @@ public class JsonFamilieConverterTest {
 
         JsonFamilie jsonFamilie = JsonFamilieConverter.tilFamilie(webSoknad);
 
-        System.out.println(new String(jsonFamilie.toString()));
+
+        assertTrue(jsonFamilie.toString().contains("Daisy"));
 
 
     }
