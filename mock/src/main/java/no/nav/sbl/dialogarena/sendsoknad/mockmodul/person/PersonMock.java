@@ -55,10 +55,10 @@ public class PersonMock {
         Familierelasjon familierelasjon = new Familierelasjon();
 
         familierelasjon.setTilPerson(ektefelle);
-        Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
+        familierelasjon.setHarSammeBosted(true);
 
-        // Er dette riktig?
-        familieRelasjonRolle.setValue("EKTEFELLE");
+        Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
+        familieRelasjonRolle.setValue("EKTE");
 
         // Gjelder denne for begge?
         familierelasjon.setTilRolle(familieRelasjonRolle);
@@ -99,6 +99,7 @@ public class PersonMock {
         personnavn.setFornavn(fornavn);
         personnavn.setMellomnavn("");
         personnavn.setEtternavn(etternavn);
+        personnavn.setSammensattNavn(fornavn + " " + etternavn);
         xmlPerson.setPersonnavn(personnavn);
 
         NorskIdent norskIdent = new NorskIdent();
