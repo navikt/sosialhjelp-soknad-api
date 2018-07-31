@@ -463,6 +463,15 @@ public class PersonaliaFletterTest {
     }
 
     @Test
+    public void finnEktefelleSetterFolkeregistrertSammenTilFalseForUtvandretEktefelle() {
+        mockGyldigPersonMedUtvandretEktefelle();
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
+    }
+
+    @Test
     public void mapTilPersonaliaSetterSivilstatusGiftForGiftSoker() {
         mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, false, "", true);
 
@@ -528,6 +537,22 @@ public class PersonaliaFletterTest {
         person.setSivilstand(sivilstand);
 
         person.getHarFraRolleI().add(familierelasjon);
+    }
+
+    private void mockGyldigPersonMedUtvandretEktefelle() {
+        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, false, "", true);
+
+        Personstatuser personstatuser = new Personstatuser();
+        personstatuser.setValue(UTVANDRET);
+        Personstatus personstatus = new Personstatus();
+        personstatus.setPersonstatus(personstatuser);
+
+        for (Familierelasjon familierelasjon : person.getHarFraRolleI()) {
+            if (RELASJON_EKTEFELLE.equals(familierelasjon.getTilRolle().getValue())) {
+                familierelasjon.getTilPerson().setPersonstatus(personstatus);
+                break;
+            }
+        }
     }
 
     private void mockGyldigPersonMedEktefelleUtenInfo() {
