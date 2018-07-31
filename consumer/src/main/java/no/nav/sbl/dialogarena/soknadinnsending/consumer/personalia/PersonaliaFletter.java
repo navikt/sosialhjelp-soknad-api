@@ -153,9 +153,9 @@ public class PersonaliaFletter {
                             .withIkketilgangtilektefelle(true);
                 }
                 return new Ektefelle()
-                        .withNavn(xmlEktefelle.getPersonnavn().getSammensattNavn())
+                        .withNavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getSammensattNavn() : null)
                         .withFodselsdato(finnFodselsdato(xmlEktefelle))
-                        .withFnr(xmlEktefelle.getIdent().getIdent())
+                        .withFnr(xmlEktefelle.getIdent() != null ? xmlEktefelle.getIdent().getIdent() : null)
                         .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted())
                         .withIkketilgangtilektefelle(false);
             }
@@ -222,6 +222,9 @@ public class PersonaliaFletter {
     }
 
     private static LocalDate finnFodselsdato(Person person) {
+        if (person.getFoedselsdato() == null || person.getFoedselsdato().getFoedselsdato() == null) {
+            return null;
+        }
         return new LocalDate(person.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
     }
 

@@ -91,7 +91,7 @@ public class PersonaliaBolk implements BolkService {
         return new Faktum().medSoknadId(soknadId).medKey("system.familie.sivilstatus.gift.ektefelle")
                 .medType(SYSTEMREGISTRERT)
                 .medSystemProperty("navn", ektefelle.getNavn())
-                .medSystemProperty("fodselsdato", ektefelle.getFodselsdato().toString())
+                .medSystemProperty("fodselsdato", ektefelle.getFodselsdato() != null ? ektefelle.getFodselsdato().toString() : null)
                 .medSystemProperty("fnr", ektefelle.getFnr())
                 .medSystemProperty("folkeregistrertsammen", ektefelle.erFolkeregistrertsammen() + "")
                 .medSystemProperty("ikketilgangtilektefelle", ektefelle.harIkketilgangtilektefelle() + "");

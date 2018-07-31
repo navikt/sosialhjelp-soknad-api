@@ -409,6 +409,19 @@ public class PersonaliaFletterTest {
     }
 
     @Test
+    public void finnEktefelleFeilerIkkeHvisInfoOmEktefelleMangler() {
+        mockGyldigPersonMedEktefelleUtenInfo();
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.getFnr(), nullValue());
+        assertThat(ektefelle.getNavn(), nullValue());
+        assertThat(ektefelle.getFodselsdato(), nullValue());
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
+        assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
+    }
+
+    @Test
     public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodeSPSF() {
         mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, KODE_6, false);
 
@@ -514,6 +527,24 @@ public class PersonaliaFletterTest {
         sivilstand.setSivilstand(sivilstander);
         person.setSivilstand(sivilstand);
 
+        person.getHarFraRolleI().add(familierelasjon);
+    }
+
+    private void mockGyldigPersonMedEktefelleUtenInfo() {
+        Person partner = new Person();
+
+        Familierelasjon familierelasjon = new Familierelasjon();
+        familierelasjon.setTilPerson(partner);
+        familierelasjon.setHarSammeBosted(false);
+        Familierelasjoner familierelasjoner = new Familierelasjoner();
+        familierelasjoner.setValue(RELASJON_EKTEFELLE);
+        familierelasjon.setTilRolle(familierelasjoner);
+
+        Sivilstander sivilstander = new Sivilstander();
+        sivilstander.setValue(SIVILSTATUS_GIFT);
+        Sivilstand sivilstand = new Sivilstand();
+        sivilstand.setSivilstand(sivilstander);
+        person.setSivilstand(sivilstand);
         person.getHarFraRolleI().add(familierelasjon);
     }
 
