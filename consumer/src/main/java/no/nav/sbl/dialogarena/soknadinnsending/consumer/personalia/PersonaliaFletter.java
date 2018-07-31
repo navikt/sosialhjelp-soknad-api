@@ -47,6 +47,7 @@ public class PersonaliaFletter {
     static final String RELASJON_REGISTRERT_PARTNER = "REPA";
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
+    static final String UTVANDRET = "UTVA";
     private static final Logger logger = getLogger(PersonaliaFletter.class);
 
     @Inject
@@ -152,15 +153,23 @@ public class PersonaliaFletter {
                             .withNavn("")
                             .withIkketilgangtilektefelle(true);
                 }
+                boolean ektefelleErUtvandret = ektefelleErUtvandret(xmlEktefelle);
                 return new Ektefelle()
                         .withNavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getSammensattNavn() : null)
                         .withFodselsdato(finnFodselsdato(xmlEktefelle))
                         .withFnr(xmlEktefelle.getIdent() != null ? xmlEktefelle.getIdent().getIdent() : null)
-                        .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted())
+                        .withFolkeregistrertsammen(ektefelleErUtvandret ? false : familierelasjon.isHarSammeBosted())
                         .withIkketilgangtilektefelle(false);
             }
         }
         return null;
+    }
+
+    private boolean ektefelleErUtvandret(Person xmlEktefelle) {
+        if (xmlEktefelle.getPersonstatus() == null || xmlEktefelle.getPersonstatus().getPersonstatus() == null) {
+            return false;
+        }
+        return UTVANDRET.equalsIgnoreCase(xmlEktefelle.getPersonstatus().getPersonstatus().getValue());
     }
 
     private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
