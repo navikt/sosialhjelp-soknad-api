@@ -46,7 +46,6 @@
         <type>radio</type>
         <panel>familieBolk</panel>
         <optional>true</optional>
-        <erSystemFaktum>true</erSystemFaktum>
     </faktum>
     <faktum>
         <id>system.familie.sivilstatus.gift.ektefelle</id>
@@ -78,7 +77,6 @@
             </property>
         </properties>
         <optional>true</optional>
-        <erSystemFaktum>true</erSystemFaktum>
     </faktum>
 
     <faktum>
