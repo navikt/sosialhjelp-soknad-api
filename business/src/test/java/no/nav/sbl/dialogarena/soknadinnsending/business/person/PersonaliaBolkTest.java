@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -171,6 +172,24 @@ public class PersonaliaBolkTest {
         assertThat(faktumProperties.get("ikketilgangtilektefelle"), is("false"));
     }
 
+    @Test
+    public void genererSystemregistrertSivilstandFaktumLagerFaktumMedRiktigeVerdierForEktefelleMedDiskresjonskode() {
+        personalia.setSivilstatus(SIVILSTATUS_GIFT);
+        personalia.setEktefelle(lagEktefelleMedDiskresjonskode());
+
+        Faktum faktum = personaliaBolk.genererSystemregistrertEktefelleFaktum(SOKNADID, personalia);
+        Map<String, String> faktumProperties = faktum.getProperties();
+
+        assertThat(faktum.getKey(), is("system.familie.sivilstatus.gift.ektefelle"));
+        assertThat(faktum.getType(), is(SYSTEMREGISTRERT));
+        assertThat(faktum.getSoknadId(), is(SOKNADID));
+        assertThat(faktumProperties.get("navn"), isEmptyString());
+        assertThat(faktumProperties.get("fodselsdato"), nullValue());
+        assertThat(faktumProperties.get("fnr"), nullValue());
+        assertThat(faktumProperties.get("folkeregistrertsammen"), is("false"));
+        assertThat(faktumProperties.get("ikketilgangtilektefelle"), is("true"));
+    }
+
     private Ektefelle lagEktefelle() {
         return new Ektefelle()
                 .withFnr(PARTNER_FNR)
@@ -178,5 +197,11 @@ public class PersonaliaBolkTest {
                 .withFodselsdato(PARTNER_FODSELSDATO)
                 .withFolkeregistrertsammen(true)
                 .withIkketilgangtilektefelle(false);
+    }
+
+    private Ektefelle lagEktefelleMedDiskresjonskode() {
+        return new Ektefelle()
+                .withNavn("")
+                .withIkketilgangtilektefelle(true);
     }
 }
