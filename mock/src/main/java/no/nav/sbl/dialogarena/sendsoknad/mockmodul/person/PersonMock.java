@@ -12,15 +12,15 @@ public class PersonMock {
     private static PersonMock personMock = new PersonMock();
     private PersonPortTypeMock personPortTypeMock;
 
+    static final String KODE_6 = "SPSF";
+    static final String KODE_7 = "SPFO";
+
     private PersonMock() {
         personPortTypeMock = new PersonPortTypeMock();
 
         // Endre også i override-web.xml sin defaultFnr, da det er den som ligger på getSubjectHandler().getUid()
         Person person = genererPersonMedGyldigIdentOgNavn("03076321565", "person", "mock");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
-
-        Person ektefelle = genererPersonMedGyldigIdentOgNavn("03076525425", "Daisy", "Duck");
-        ektefelle.setFoedselsdato(fodseldato(1965, 7, 3));
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
         Landkoder landkoder = new Landkoder();
@@ -35,10 +35,25 @@ public class PersonMock {
         familieRelasjoner.add(lagBarn("01010091736", "Dole", "Mockmann", doedsdato));
         familieRelasjoner.add(lagBarn("03060193877", "Ole", "Mockmann"));
         familieRelasjoner.add(lagBarn("03060194075", "Doffen", "Mockmann"));
-        familieRelasjoner.add(lagEktefelle(person, ektefelle));
 
-        // Bor sammen med kona
+        // Case: gift
+        Person ektefelle = genererPersonMedGyldigIdentOgNavn("03076525425", "Daisy", "Duck");
+        ektefelle.setFoedselsdato(fodseldato(1965, 7, 3));
+        ektefelle.setDiskresjonskode(new Diskresjonskoder());
+        familieRelasjoner.add(lagEktefelle(person, ektefelle));
         ektefelle.setBostedsadresse(person.getBostedsadresse());
+
+        // Case: gift, og ektefelle har kode 6
+         Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
+         diskresjonskoder.setValue(KODE_6);
+         ektefelle.setDiskresjonskode(diskresjonskoder);
+
+        // Case: ugift
+        // Sivilstander sivilstander = new Sivilstander();
+        // sivilstander.setValue("UGIF");
+        // Sivilstand sivilstand = new Sivilstand();
+        // sivilstand.setSivilstand(sivilstander);
+        // person.setSivilstand(sivilstand);
 
         personPortTypeMock.setPerson(person);
     }
@@ -51,6 +66,7 @@ public class PersonMock {
         return personPortTypeMock;
     }
 
+
     private Familierelasjon lagEktefelle(Person hovedperson, Person ektefelle) {
         Familierelasjon familierelasjon = new Familierelasjon();
 
@@ -60,6 +76,7 @@ public class PersonMock {
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
         familieRelasjonRolle.setValue("EKTE");
 
+        // Gjelder denne for begge?
         familierelasjon.setTilRolle(familieRelasjonRolle);
 
         Sivilstander sivilstander = new Sivilstander();
@@ -68,6 +85,9 @@ public class PersonMock {
         sivilstand.setSivilstand(sivilstander);
 
         hovedperson.setSivilstand(sivilstand);
+
+        // Må også gjøres?
+        ektefelle.setSivilstand(sivilstand);
 
         return familierelasjon;
     }
@@ -82,7 +102,7 @@ public class PersonMock {
         return familierelasjon;
     }
 
-    private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn, Doedsdato doedsdato) {
+    private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn, Doedsdato doedsdato){
         Familierelasjon familierelasjon = lagBarn(fnr, fornavn, etternavn);
         familierelasjon.getTilPerson().setDoedsdato(doedsdato);
         return familierelasjon;
