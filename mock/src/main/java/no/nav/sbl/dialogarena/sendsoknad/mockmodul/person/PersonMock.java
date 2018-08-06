@@ -12,8 +12,8 @@ public class PersonMock {
     private static PersonMock personMock = new PersonMock();
     private PersonPortTypeMock personPortTypeMock;
 
-    static final String KODE_6 = "SPSF";
-    static final String KODE_7 = "SPFO";
+    private static final String KODE_6 = "SPSF";
+    private static final String KODE_7 = "SPFO";
 
     private PersonMock() {
         personPortTypeMock = new PersonPortTypeMock();
@@ -37,16 +37,16 @@ public class PersonMock {
         familieRelasjoner.add(lagBarn("***REMOVED***", "Doffen", "Mockmann"));
 
         // Case: gift
-        Person ektefelle = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Daisy", "Duck");
-        ektefelle.setFoedselsdato(fodseldato(1965, 7, 3));
+        Person ektefelle = genererPersonMedGyldigIdentOgNavn("43076525425", "Daisy", "Duck");
+        ektefelle.setFoedselsdato(fodseldato(1965, 12, 24));
         ektefelle.setDiskresjonskode(new Diskresjonskoder());
         familieRelasjoner.add(lagEktefelle(person, ektefelle));
         ektefelle.setBostedsadresse(person.getBostedsadresse());
 
         // Case: gift, og ektefelle har kode 6
-         Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
-         diskresjonskoder.setValue(KODE_6);
-         ektefelle.setDiskresjonskode(diskresjonskoder);
+//        Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
+//        diskresjonskoder.setValue(KODE_6);
+//        ektefelle.setDiskresjonskode(diskresjonskoder);
 
         // Case: ugift
         // Sivilstander sivilstander = new Sivilstander();
@@ -102,7 +102,7 @@ public class PersonMock {
         return familierelasjon;
     }
 
-    private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn, Doedsdato doedsdato){
+    private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn, Doedsdato doedsdato) {
         Familierelasjon familierelasjon = lagBarn(fnr, fornavn, etternavn);
         familierelasjon.getTilPerson().setDoedsdato(doedsdato);
         return familierelasjon;
