@@ -75,8 +75,6 @@ public class PersonMock {
 
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
         familieRelasjonRolle.setValue("EKTE");
-
-        // Gjelder denne for begge?
         familierelasjon.setTilRolle(familieRelasjonRolle);
 
         Sivilstander sivilstander = new Sivilstander();
@@ -85,9 +83,6 @@ public class PersonMock {
         sivilstand.setSivilstand(sivilstander);
 
         hovedperson.setSivilstand(sivilstand);
-
-        // Må også gjøres?
-        ektefelle.setSivilstand(sivilstand);
 
         return familierelasjon;
     }
