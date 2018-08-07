@@ -53,7 +53,9 @@ public class PersonaliaBolkTest {
     private static final String SIVILSTATUS_UGIFT = "ugift";
     private static final String SIVILSTATUS_GIFT = "gift";
     private static final String PARTNER_FNR = "01010091740";
-    private static final String PARTNER_NAVN = "Kristin Partner";
+    private static final String PARTNER_FORNAVN = "Kristin";
+    private static final String PARTNER_MELLOMNAVN = "Mellomnavn";
+    private static final String PARTNER_ETTERNAVN = "Partner";
     private static final LocalDate PARTNER_FODSELSDATO = new LocalDate(1987, 6, 23);
     private static final String PARTNER_FODSELSDATO_TEKST = "1987-06-23";
 
@@ -165,7 +167,9 @@ public class PersonaliaBolkTest {
         assertThat(faktum.getKey(), is("system.familie.sivilstatus.gift.ektefelle"));
         assertThat(faktum.getType(), is(SYSTEMREGISTRERT));
         assertThat(faktum.getSoknadId(), is(SOKNADID));
-        assertThat(faktumProperties.get("navn"), is(PARTNER_NAVN));
+        assertThat(faktumProperties.get("fornavn"), is(PARTNER_FORNAVN));
+        assertThat(faktumProperties.get("mellomnavn"), is(PARTNER_MELLOMNAVN));
+        assertThat(faktumProperties.get("etternavn"), is(PARTNER_ETTERNAVN));
         assertThat(faktumProperties.get("fodselsdato"), is(PARTNER_FODSELSDATO_TEKST));
         assertThat(faktumProperties.get("fnr"), is(PARTNER_FNR));
         assertThat(faktumProperties.get("folkeregistrertsammen"), is("true"));
@@ -183,7 +187,9 @@ public class PersonaliaBolkTest {
         assertThat(faktum.getKey(), is("system.familie.sivilstatus.gift.ektefelle"));
         assertThat(faktum.getType(), is(SYSTEMREGISTRERT));
         assertThat(faktum.getSoknadId(), is(SOKNADID));
-        assertThat(faktumProperties.get("navn"), isEmptyString());
+        assertThat(faktumProperties.get("fornavn"), isEmptyString());
+        assertThat(faktumProperties.get("mellomnavn"), nullValue());
+        assertThat(faktumProperties.get("etternavn"), nullValue());
         assertThat(faktumProperties.get("fodselsdato"), nullValue());
         assertThat(faktumProperties.get("fnr"), nullValue());
         assertThat(faktumProperties.get("folkeregistrertsammen"), is("false"));
@@ -193,7 +199,9 @@ public class PersonaliaBolkTest {
     private Ektefelle lagEktefelle() {
         return new Ektefelle()
                 .withFnr(PARTNER_FNR)
-                .withNavn(PARTNER_NAVN)
+                .withFornavn(PARTNER_FORNAVN)
+                .withMellomnavn(PARTNER_MELLOMNAVN)
+                .withEtternavn(PARTNER_ETTERNAVN)
                 .withFodselsdato(PARTNER_FODSELSDATO)
                 .withFolkeregistrertsammen(true)
                 .withIkketilgangtilektefelle(false);
@@ -201,7 +209,7 @@ public class PersonaliaBolkTest {
 
     private Ektefelle lagEktefelleMedDiskresjonskode() {
         return new Ektefelle()
-                .withNavn("")
+                .withFornavn("")
                 .withIkketilgangtilektefelle(true);
     }
 }

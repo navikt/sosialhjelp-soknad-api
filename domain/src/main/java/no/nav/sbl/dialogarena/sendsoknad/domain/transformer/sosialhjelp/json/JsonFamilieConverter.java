@@ -8,9 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.valueOf;
@@ -18,6 +16,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.j
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public final class JsonFamilieConverter {
@@ -103,11 +102,7 @@ public final class JsonFamilieConverter {
 
     private static JsonEktefelle tilSystemregistrertJsonEktefelle(Map<String, String> ektefelle) {
         final JsonEktefelle jsonEktefelle = new JsonEktefelle();
-        jsonEktefelle.setNavn(new JsonNavn()
-                .withFornavn(xxxFornavnFraNavn(ektefelle.get("navn")))
-                .withMellomnavn("")
-                .withEtternavn(xxxEtternavnFraNavn(ektefelle.get("navn")))
-        );
+        jsonEktefelle.setNavn(mapEktefellesNavnTilJsonNavn(ektefelle));
         jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fodselsdato")));
         jsonEktefelle.setPersonIdentifikator(ektefelle.get("fnr"));
 
@@ -116,15 +111,26 @@ public final class JsonFamilieConverter {
 
     private static JsonEktefelle tilBrukerregistrertJsonEktefelle(Map<String, String> ektefelle) {
         final JsonEktefelle jsonEktefelle = new JsonEktefelle();
-        jsonEktefelle.setNavn(new JsonNavn()
-                .withFornavn(xxxFornavnFraNavn(ektefelle.get("navn")))
-                .withMellomnavn("")
-                .withEtternavn(xxxEtternavnFraNavn(ektefelle.get("navn")))
-        );
+        if (isEmpty(ektefelle.get("navn"))) {
+            jsonEktefelle.setNavn(mapEktefellesNavnTilJsonNavn(ektefelle));
+        } else {
+            jsonEktefelle.setNavn(new JsonNavn()
+                    .withFornavn(xxxFornavnFraNavn(ektefelle.get("navn")))
+                    .withMellomnavn("")
+                    .withEtternavn(xxxEtternavnFraNavn(ektefelle.get("navn")))
+            );
+        }
         jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fnr"))); // XXX: "Fødselsdato kan ikke hete "fnr" og må bytte navn.
         jsonEktefelle.setPersonIdentifikator(tilJsonPersonidentifikator(ektefelle.get("fnr"), ektefelle.get("pnr")));
 
         return jsonEktefelle;
+    }
+
+    private static JsonNavn mapEktefellesNavnTilJsonNavn(Map<String, String> ektefelle) {
+        return new JsonNavn()
+                .withFornavn(ektefelle.get("fornavn"))
+                .withMellomnavn(ektefelle.get("mellomnavn"))
+                .withEtternavn(ektefelle.get("etternavn"));
     }
 
 
