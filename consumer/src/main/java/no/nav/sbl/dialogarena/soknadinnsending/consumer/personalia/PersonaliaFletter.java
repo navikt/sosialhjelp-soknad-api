@@ -150,12 +150,14 @@ public class PersonaliaFletter {
                 Person xmlEktefelle = familierelasjon.getTilPerson();
                 if (xmlEktefelle.getDiskresjonskode() != null && (KODE_6.equals(xmlEktefelle.getDiskresjonskode().getValue()) || KODE_7.equals(xmlEktefelle.getDiskresjonskode().getValue()))) {
                     return new Ektefelle()
-                            .withNavn("")
+                            .withFornavn("")
                             .withIkketilgangtilektefelle(true);
                 }
                 boolean ektefelleErUtvandret = ektefelleErUtvandret(xmlEktefelle);
                 return new Ektefelle()
-                        .withNavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getSammensattNavn() : null)
+                        .withFornavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getFornavn() : null)
+                        .withMellomnavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getMellomnavn() : null)
+                        .withEtternavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getEtternavn() : null)
                         .withFodselsdato(finnFodselsdato(xmlEktefelle))
                         .withFnr(xmlEktefelle.getIdent() != null ? xmlEktefelle.getIdent().getIdent() : null)
                         .withFolkeregistrertsammen(ektefelleErUtvandret ? false : familierelasjon.isHarSammeBosted())

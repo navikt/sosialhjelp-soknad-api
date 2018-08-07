@@ -3,14 +3,24 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 import org.joda.time.LocalDate;
 
 public class Ektefelle {
-    private String navn;
+    private String fornavn;
+    private String mellomnavn;
+    private String etternavn;
     private LocalDate fodselsdato;
     private String fnr;
     private boolean folkeregistrertsammen;
     private boolean ikketilgangtilektefelle;
 
-    public String getNavn() {
-        return navn;
+    public String getFornavn() {
+        return fornavn;
+    }
+
+    public String getMellomnavn() {
+        return mellomnavn;
+    }
+
+    public String getEtternavn() {
+        return etternavn;
     }
 
     public LocalDate getFodselsdato() {
@@ -29,8 +39,18 @@ public class Ektefelle {
         return ikketilgangtilektefelle;
     }
 
-    public Ektefelle withNavn(String navn) {
-        this.navn = navn;
+    public Ektefelle withFornavn(String fornavn) {
+        this.fornavn = fornavn;
+        return this;
+    }
+
+    public Ektefelle withMellomnavn(String mellomnavn) {
+        this.mellomnavn = mellomnavn;
+        return this;
+    }
+
+    public Ektefelle withEtternavn(String etternavn) {
+        this.etternavn = etternavn;
         return this;
     }
 

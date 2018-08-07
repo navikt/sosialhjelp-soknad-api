@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -90,7 +89,9 @@ public class PersonaliaBolk implements BolkService {
         }
         return new Faktum().medSoknadId(soknadId).medKey("system.familie.sivilstatus.gift.ektefelle")
                 .medType(SYSTEMREGISTRERT)
-                .medSystemProperty("navn", ektefelle.getNavn())
+                .medSystemProperty("fornavn", ektefelle.getFornavn())
+                .medSystemProperty("mellomnavn", ektefelle.getMellomnavn())
+                .medSystemProperty("etternavn", ektefelle.getEtternavn())
                 .medSystemProperty("fodselsdato", ektefelle.getFodselsdato() != null ? ektefelle.getFodselsdato().toString() : null)
                 .medSystemProperty("fnr", ektefelle.getFnr())
                 .medSystemProperty("folkeregistrertsammen", ektefelle.erFolkeregistrertsammen() + "")
