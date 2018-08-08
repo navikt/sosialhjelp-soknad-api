@@ -47,6 +47,7 @@ public class PersonaliaFletter {
     static final String RELASJON_REGISTRERT_PARTNER = "REPA";
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
+    static final String UTVANDRET = "UTVA";
     private static final Logger logger = getLogger(PersonaliaFletter.class);
 
     @Inject
@@ -149,18 +150,27 @@ public class PersonaliaFletter {
                 Person xmlEktefelle = familierelasjon.getTilPerson();
                 if (xmlEktefelle.getDiskresjonskode() != null && (KODE_6.equals(xmlEktefelle.getDiskresjonskode().getValue()) || KODE_7.equals(xmlEktefelle.getDiskresjonskode().getValue()))) {
                     return new Ektefelle()
-                            .withNavn("")
                             .withIkketilgangtilektefelle(true);
                 }
+                boolean ektefelleErUtvandret = ektefelleErUtvandret(xmlEktefelle);
                 return new Ektefelle()
-                        .withNavn(xmlEktefelle.getPersonnavn().getSammensattNavn())
+                        .withFornavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getFornavn() : null)
+                        .withMellomnavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getMellomnavn() : null)
+                        .withEtternavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getEtternavn() : null)
                         .withFodselsdato(finnFodselsdato(xmlEktefelle))
-                        .withFnr(xmlEktefelle.getIdent().getIdent())
-                        .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted())
+                        .withFnr(xmlEktefelle.getIdent() != null ? xmlEktefelle.getIdent().getIdent() : null)
+                        .withFolkeregistrertsammen(ektefelleErUtvandret ? false : familierelasjon.isHarSammeBosted())
                         .withIkketilgangtilektefelle(false);
             }
         }
         return null;
+    }
+
+    private boolean ektefelleErUtvandret(Person xmlEktefelle) {
+        if (xmlEktefelle.getPersonstatus() == null || xmlEktefelle.getPersonstatus().getPersonstatus() == null) {
+            return false;
+        }
+        return UTVANDRET.equalsIgnoreCase(xmlEktefelle.getPersonstatus().getPersonstatus().getValue());
     }
 
     private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
@@ -222,6 +232,9 @@ public class PersonaliaFletter {
     }
 
     private static LocalDate finnFodselsdato(Person person) {
+        if (person.getFoedselsdato() == null || person.getFoedselsdato().getFoedselsdato() == null) {
+            return null;
+        }
         return new LocalDate(person.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
     }
 
