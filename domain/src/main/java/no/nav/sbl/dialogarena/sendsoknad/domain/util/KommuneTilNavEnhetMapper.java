@@ -182,15 +182,15 @@ public class KommuneTilNavEnhetMapper {
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219", "5001"));
 
-    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
+    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "0806", "1201", "0301", "1247"));
 
-    private static final Map<String, String> TEST_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
+    private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .put("trondheim", "Trondheim")
             .build();
 
-    private static final Map<String, String> PROD_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
+    private static final Map<String, String> PROD_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .build();
@@ -231,6 +231,7 @@ public class KommuneTilNavEnhetMapper {
     private static final Map<String, NavEnhet> PROD_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
             .put("horten",          new NavEnhet("Horten", null,                "974605171"))
             .put("askoy",           new NavEnhet("Askøy", null,                 "974600889"))
+            .put("skien",           new NavEnhet("Skien", null,                 "995509970"))
 
             .put("arna",            new NavEnhet("Arna", "bergen",              "976829786"))
             .put("bergenhus",       new NavEnhet("Bergenhus", "bergen",         "976830563"))
@@ -275,7 +276,7 @@ public class KommuneTilNavEnhetMapper {
     }
 
     public static Map<String, String> getKommunerMedBydeler() {
-        return isProduction() ? PROD_KOMMUNENAVN : TEST_KOMMUNENAVN;
+        return isProduction() ? PROD_KOMMUNER_MED_BYDELER : TEST_KOMMUNER_MED_BYDELER;
     }
 
     private static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
