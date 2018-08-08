@@ -1,1 +1,1 @@
-PDF filer kan ikke være signert.
+PDF-filer kan ikke være signert.

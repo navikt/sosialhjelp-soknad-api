@@ -1,1 +1,1 @@
-PDF filer kan ikke være kryptert.
+PDF-filer kan ikke være kryptert.
