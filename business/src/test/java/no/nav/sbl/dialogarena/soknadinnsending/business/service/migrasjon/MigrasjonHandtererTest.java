@@ -1,21 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.MigrasjonHandterer;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.FakeMigrasjon;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MigrasjonHandtererTest {
@@ -31,7 +25,7 @@ public class MigrasjonHandtererTest {
     @Before
     public void setup() {
         handterer.migrasjoner.add(new FakeMigrasjon());
-        innsendtSoknad = new WebSoknad().medId(1L).medskjemaNummer(SosialhjelpInformasjon.SKJEMANUMMER).medVersjon(1);
+        innsendtSoknad = new WebSoknad().medId(1L).medVersjon(1);
     }
 
     @Test
@@ -39,7 +33,6 @@ public class MigrasjonHandtererTest {
     public void migreringSkjerForFakeSoknadMedEnVersjonLavere() {
         WebSoknad migrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
 
-        assertThat(migrertSoknad.getskjemaNummer()).isEqualTo(SosialhjelpInformasjon.SKJEMANUMMER);
         assertThat(migrertSoknad.getVersjon()).isEqualTo(2);
         assertThat(migrertSoknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);
     }
@@ -61,13 +54,4 @@ public class MigrasjonHandtererTest {
         assertThat(ikkeMigrertSoknad.getVersjon()).isEqualTo(0);
         assertThat(ikkeMigrertSoknad.getDelstegStatus()).isNotEqualTo(DelstegStatus.UTFYLLING);
     }
-
-    @Test
-    public void sjekkAtMigreringIkkeSkjerForUkjentSkjemanummer() {
-        innsendtSoknad.medskjemaNummer("123HEIHEI");
-        WebSoknad migrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
-
-        assertThat(migrertSoknad.getskjemaNummer()).isEqualTo("123HEIHEI");
-    }
-
 }
