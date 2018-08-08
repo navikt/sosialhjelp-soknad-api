@@ -433,7 +433,7 @@ public class PersonaliaFletterTest {
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
         assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getFornavn(), isEmptyString());
+        assertThat(ektefelle.getFornavn(), nullValue());
         assertThat(ektefelle.getMellomnavn(), nullValue());
         assertThat(ektefelle.getEtternavn(), nullValue());
         assertThat(ektefelle.getFodselsdato(), nullValue());
@@ -448,7 +448,7 @@ public class PersonaliaFletterTest {
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
         assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getFornavn(), isEmptyString());
+        assertThat(ektefelle.getFornavn(), nullValue());
         assertThat(ektefelle.getFodselsdato(), nullValue());
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));

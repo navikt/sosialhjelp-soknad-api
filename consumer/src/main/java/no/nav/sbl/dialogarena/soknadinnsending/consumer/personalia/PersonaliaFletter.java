@@ -150,7 +150,6 @@ public class PersonaliaFletter {
                 Person xmlEktefelle = familierelasjon.getTilPerson();
                 if (xmlEktefelle.getDiskresjonskode() != null && (KODE_6.equals(xmlEktefelle.getDiskresjonskode().getValue()) || KODE_7.equals(xmlEktefelle.getDiskresjonskode().getValue()))) {
                     return new Ektefelle()
-                            .withFornavn("")
                             .withIkketilgangtilektefelle(true);
                 }
                 boolean ektefelleErUtvandret = ektefelleErUtvandret(xmlEktefelle);
