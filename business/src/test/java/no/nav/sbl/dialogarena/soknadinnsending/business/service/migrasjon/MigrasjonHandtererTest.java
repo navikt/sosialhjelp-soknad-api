@@ -1,7 +1,8 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service;
+package no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.MigrasjonHandterer;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
