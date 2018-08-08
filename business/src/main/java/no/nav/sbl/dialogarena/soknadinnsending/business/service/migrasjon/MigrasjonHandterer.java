@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import org.springframework.stereotype.Component;
 
@@ -24,21 +22,14 @@ public class MigrasjonHandterer{
 
         if(migrasjoner == null || migrasjoner.size() <= 0) return soknad;
 
-        Optional<Migrasjon> migrasjon = hentMigrasjonForSkjemanummerOgVersjon(migrertSoknad.getVersjon(), migrertSoknad.getskjemaNummer());
+        Optional<Migrasjon> migrasjon = hentMigrasjonForVersjon(migrertSoknad.getVersjon());
 
         if(migrasjon.isPresent()){
             migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
 
             hendelseRepository.registrerMigrertHendelse(migrertSoknad);
 
-            Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
-            String soknadTypePrefix;
-
-            KravdialogInformasjon kravdialogInformasjon = new KravdialogInformasjonHolder()
-                    .hentKonfigurasjon(migrertSoknad.getskjemaNummer());
-            soknadTypePrefix = kravdialogInformasjon.getSoknadTypePrefix();
-
-            metrikk.addTagToReport("soknadstype", soknadTypePrefix);
+            Event metrikk = MetricsFactory.createEvent("soknadsosialhjelp.skjemamigrasjon");
             metrikk.addTagToReport("skjemaversjon", String.valueOf(migrasjon.get().getTilVersjon()));
 
             metrikk.report();
@@ -52,10 +43,9 @@ public class MigrasjonHandterer{
         return migrasjonsListe;
     }
 
-    private Optional<Migrasjon> hentMigrasjonForSkjemanummerOgVersjon(Integer versjon, String skjemanummer) {
+    private Optional<Migrasjon> hentMigrasjonForVersjon(Integer versjon) {
         return migrasjoner.stream()
-                .filter(migrasjon -> migrasjon.getMigrasjonSkjemanummer().equalsIgnoreCase(skjemanummer))
-                .filter(migrasjon -> migrasjon.skalMigrere(versjon, skjemanummer))
+                .filter(migrasjon -> migrasjon.skalMigrere(versjon))
                 .findFirst();
     }
 }
