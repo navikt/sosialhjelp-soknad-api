@@ -47,6 +47,7 @@ public class PersonaliaFletterTest {
     private static final String BARN_ETTERNAVN = "Barnet";
     private static final String PARTNER_IDENT = "01010091740";
     private static final String PARTNER_FORNAVN = "Kristin";
+    private static final String PARTNER_MELLOMNAVN = "Mellomnavn";
     private static final String PARTNER_ETTERNAVN = "Partner";
     private static final String PARTNER_SAMMENSATT_NAVN = "Kristin Partner";
 
@@ -116,11 +117,11 @@ public class PersonaliaFletterTest {
         dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
 
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
-        person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
+        person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, "", ET_ETTERNAVN);
         person.setFoedselsdato(fodseldato(1983, 12, 16));
         List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
         Familierelasjon familierelasjon = new Familierelasjon();
-        Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT, BARN_FORNAVN, BARN_ETTERNAVN);
+        Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT, BARN_FORNAVN, "", BARN_ETTERNAVN);
 
         familierelasjon.setTilPerson(barn1);
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
@@ -385,7 +386,9 @@ public class PersonaliaFletterTest {
         Ektefelle registrertPartner = personaliaFletter.finnEktefelle(person);
 
         assertThat(registrertPartner.getFnr(), is(PARTNER_IDENT));
-        assertThat(registrertPartner.getNavn(), is(PARTNER_SAMMENSATT_NAVN));
+        assertThat(registrertPartner.getFornavn(), is(PARTNER_FORNAVN));
+        assertThat(registrertPartner.getMellomnavn(), is(PARTNER_MELLOMNAVN));
+        assertThat(registrertPartner.getEtternavn(), is(PARTNER_ETTERNAVN));
         assertThat(registrertPartner.getFodselsdato().getYear(), is(1988));
         assertThat(registrertPartner.getFodselsdato().getMonthOfYear(), is(10));
         assertThat(registrertPartner.getFodselsdato().getDayOfMonth(), is(18));
@@ -400,10 +403,25 @@ public class PersonaliaFletterTest {
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
         assertThat(ektefelle.getFnr(), is(PARTNER_IDENT));
-        assertThat(ektefelle.getNavn(), is(PARTNER_SAMMENSATT_NAVN));
+        assertThat(ektefelle.getFornavn(), is(PARTNER_FORNAVN));
+        assertThat(ektefelle.getMellomnavn(), is(PARTNER_MELLOMNAVN));
+        assertThat(ektefelle.getEtternavn(), is(PARTNER_ETTERNAVN));
         assertThat(ektefelle.getFodselsdato().getYear(), is(1988));
         assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(10));
         assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(18));
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
+        assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
+    }
+
+    @Test
+    public void finnEktefelleFeilerIkkeHvisInfoOmEktefelleMangler() {
+        mockGyldigPersonMedEktefelleUtenInfo();
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.getFnr(), nullValue());
+        assertThat(ektefelle.getFornavn(), nullValue());
+        assertThat(ektefelle.getFodselsdato(), nullValue());
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
     }
@@ -415,7 +433,9 @@ public class PersonaliaFletterTest {
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
         assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getNavn(), isEmptyString());
+        assertThat(ektefelle.getFornavn(), nullValue());
+        assertThat(ektefelle.getMellomnavn(), nullValue());
+        assertThat(ektefelle.getEtternavn(), nullValue());
         assertThat(ektefelle.getFodselsdato(), nullValue());
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));
@@ -428,7 +448,7 @@ public class PersonaliaFletterTest {
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
         assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getNavn(), isEmptyString());
+        assertThat(ektefelle.getFornavn(), nullValue());
         assertThat(ektefelle.getFodselsdato(), nullValue());
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));
@@ -441,12 +461,23 @@ public class PersonaliaFletterTest {
         Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
 
         assertThat(ektefelle.getFnr(), is(PARTNER_IDENT));
-        assertThat(ektefelle.getNavn(), is(PARTNER_SAMMENSATT_NAVN));
+        assertThat(ektefelle.getFornavn(), is(PARTNER_FORNAVN));
+        assertThat(ektefelle.getMellomnavn(), is(PARTNER_MELLOMNAVN));
+        assertThat(ektefelle.getEtternavn(), is(PARTNER_ETTERNAVN));
         assertThat(ektefelle.getFodselsdato().getYear(), is(1988));
         assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(10));
         assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(18));
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
+    }
+
+    @Test
+    public void finnEktefelleSetterFolkeregistrertSammenTilFalseForUtvandretEktefelle() {
+        mockGyldigPersonMedUtvandretEktefelle();
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
     }
 
     @Test
@@ -493,7 +524,7 @@ public class PersonaliaFletterTest {
     }
 
     private void mockGyldigPersonMedPartner(String sivilstatus, String relasjonstype, boolean partnerHarDiskresjonskode, String diskresjonskode, boolean harSammeFolkeregistrerteAdresse) {
-        Person partner = genererPersonMedGyldigIdentOgNavn(PARTNER_IDENT, PARTNER_FORNAVN, PARTNER_ETTERNAVN);
+        Person partner = genererPersonMedGyldigIdentOgNavn(PARTNER_IDENT, PARTNER_FORNAVN, PARTNER_MELLOMNAVN, PARTNER_ETTERNAVN);
         partner.setFoedselsdato(fodseldato(1988, 10, 18));
         if (partnerHarDiskresjonskode) {
             Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
@@ -514,6 +545,40 @@ public class PersonaliaFletterTest {
         sivilstand.setSivilstand(sivilstander);
         person.setSivilstand(sivilstand);
 
+        person.getHarFraRolleI().add(familierelasjon);
+    }
+
+    private void mockGyldigPersonMedUtvandretEktefelle() {
+        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, false, "", true);
+
+        Personstatuser personstatuser = new Personstatuser();
+        personstatuser.setValue(UTVANDRET);
+        Personstatus personstatus = new Personstatus();
+        personstatus.setPersonstatus(personstatuser);
+
+        for (Familierelasjon familierelasjon : person.getHarFraRolleI()) {
+            if (RELASJON_EKTEFELLE.equals(familierelasjon.getTilRolle().getValue())) {
+                familierelasjon.getTilPerson().setPersonstatus(personstatus);
+                break;
+            }
+        }
+    }
+
+    private void mockGyldigPersonMedEktefelleUtenInfo() {
+        Person partner = new Person();
+
+        Familierelasjon familierelasjon = new Familierelasjon();
+        familierelasjon.setTilPerson(partner);
+        familierelasjon.setHarSammeBosted(false);
+        Familierelasjoner familierelasjoner = new Familierelasjoner();
+        familierelasjoner.setValue(RELASJON_EKTEFELLE);
+        familierelasjon.setTilRolle(familierelasjoner);
+
+        Sivilstander sivilstander = new Sivilstander();
+        sivilstander.setValue(SIVILSTATUS_GIFT);
+        Sivilstand sivilstand = new Sivilstand();
+        sivilstand.setSivilstand(sivilstander);
+        person.setSivilstand(sivilstand);
         person.getHarFraRolleI().add(familierelasjon);
     }
 
@@ -729,12 +794,12 @@ public class PersonaliaFletterTest {
         return personNavn;
     }
 
-    private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String etternavn) {
+    private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String mellomnavn, String etternavn) {
         Person xmlPerson = new Person();
 
         Personnavn personnavn = new Personnavn();
         personnavn.setFornavn(fornavn);
-        personnavn.setMellomnavn("");
+        personnavn.setMellomnavn(mellomnavn);
         personnavn.setEtternavn(etternavn);
         personnavn.setSammensattNavn(fornavn + " " + etternavn);
         xmlPerson.setPersonnavn(personnavn);
