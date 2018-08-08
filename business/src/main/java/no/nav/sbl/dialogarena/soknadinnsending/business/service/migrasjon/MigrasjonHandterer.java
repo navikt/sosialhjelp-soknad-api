@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service;
+package no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
@@ -6,11 +6,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.*;
 
 @Component
