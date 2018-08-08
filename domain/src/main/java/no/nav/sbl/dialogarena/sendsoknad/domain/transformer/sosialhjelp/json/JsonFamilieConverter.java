@@ -128,9 +128,9 @@ public final class JsonFamilieConverter {
 
     private static JsonNavn mapEktefellesNavnTilJsonNavn(Map<String, String> ektefelle) {
         return new JsonNavn()
-                .withFornavn(ektefelle.get("fornavn"))
-                .withMellomnavn(ektefelle.get("mellomnavn"))
-                .withEtternavn(ektefelle.get("etternavn"));
+                .withFornavn(ektefelle.get("fornavn") != null ? ektefelle.get("fornavn") : "")
+                .withMellomnavn(ektefelle.get("mellomnavn") != null ? ektefelle.get("mellomnavn") : "")
+                .withEtternavn(ektefelle.get("etternavn") != null ? ektefelle.get("etternavn") : "");
     }
 
 

@@ -144,8 +144,8 @@ public class JsonFamilieConverterTest {
     private Faktum lagEktefelleMedDiskresjonskodeFaktum() {
         return new Faktum().medKey("system.familie.sivilstatus.gift.ektefelle")
                 .medSystemProperty("fornavn", "")
-                .medSystemProperty("mellomnavn", "")
-                .medSystemProperty("etternavn", "")
+                .medSystemProperty("mellomnavn", null)
+                .medSystemProperty("etternavn", null)
                 .medSystemProperty("fodselsdato", null)
                 .medSystemProperty("fnr", null)
                 .medSystemProperty("folkeregistrertsammen", "false")
