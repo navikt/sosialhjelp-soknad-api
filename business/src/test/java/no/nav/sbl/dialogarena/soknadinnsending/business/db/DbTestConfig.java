@@ -1,22 +1,26 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
+import java.time.Clock;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import no.digipost.time.ControllableClock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.time.Clock;
 
 @Configuration
 @Import(value = {DatabaseTestContext.class})
@@ -41,6 +45,10 @@ public class DbTestConfig {
     @Bean
     public VedleggRepository vedleggRepository() {
         return new VedleggRepositoryJdbc();
+    }
+    
+    @Bean SoknadMetadataRepository soknadMetadataRepository() {
+        return new SoknadMetadataRepositoryJdbc();
     }
 
     @Bean

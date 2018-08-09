@@ -1,5 +1,55 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
+
+    <faktum>
+        <id>navytelser</id>
+        <panel>inntektBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>utbetalinger</id>
+        <panel>inntektBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>utbetalinger.ingen</id>
+        <panel>inntektBolk</panel>
+        <type>textbox</type>
+        <constraints>
+            <constraint>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+
+    <faktum>
+        <id>utbetalinger.feilet</id>
+        <panel>inntektBolk</panel>
+        <type>hidden</type>
+    </faktum>
+
+    <faktum>
+        <id>utbetalinger.utbetaling</id>
+        <flereTillatt>true</flereTillatt>
+        <erSystemFaktum>true</erSystemFaktum>
+        <panel>inntektBolk</panel>
+        <type>composite</type>
+        <properties>
+            <property>
+                <id>type</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>utbetalingsDato</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>netto</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
     <faktum>
         <id>inntekt.bostotte</id>
         <type>bool</type>
