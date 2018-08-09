@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -66,9 +65,6 @@ public class AvbrytAutomatiskSheduler {
 
         while (soknad.isPresent()) {
             SoknadMetadata soknadMetadata = soknad.get();
-            if (!kanAvbrytes(soknadMetadata)) {
-                continue;
-            }
             soknadMetadata.status = AVBRUTT_AUTOMATISK;
             soknadMetadata.sistEndretDato = LocalDateTime.now();
             soknadMetadataRepository.oppdater(soknadMetadata);
@@ -89,10 +85,6 @@ public class AvbrytAutomatiskSheduler {
             soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
         }
 
-    }
-
-    private boolean kanAvbrytes(SoknadMetadata soknadMetadata) {
-        return soknadMetadata.status == UNDER_ARBEID;
     }
 
     private boolean harGaattForLangTid() {
