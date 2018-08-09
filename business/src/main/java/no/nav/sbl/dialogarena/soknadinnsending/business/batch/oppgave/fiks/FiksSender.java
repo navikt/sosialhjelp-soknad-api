@@ -77,7 +77,7 @@ public class FiksSender {
     public Dokument fiksDokumentFraDokumentInfo(FiksData.DokumentInfo info, boolean skalKryptere) {
         byte[] filData = fillager.hentFil(info.uuid);
 
-        String filnavn = FILNAVN_MAPPER.containsKey(info.filnavn) ? FILNAVN_MAPPER.get(info.filnavn) : info.filnavn;
+        final String filnavn = FILNAVN_MAPPER.containsKey(info.filnavn) ? FILNAVN_MAPPER.get(info.filnavn) : info.filnavn;
 
         if (skalKryptere) {
             filData = dokumentKrypterer.krypterData(filData);
