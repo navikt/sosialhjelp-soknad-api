@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
@@ -18,8 +19,7 @@ public final class JsonSoknadConverter {
         jsonSoknad.setData(tilData(inputSource));
         jsonSoknad.setKompatibilitet(Collections.emptyList());
 
-        // TODO: Generer driftsmelding:
-        jsonSoknad.setDriftsinformasjon("");
+        jsonSoknad.setDriftsinformasjon(settDriftsinformasjonForUtbetalingSystemfeil(inputSource.getWebSoknad()));
 
         return jsonSoknad;
     }
@@ -36,5 +36,13 @@ public final class JsonSoknadConverter {
                 .withBegrunnelse(JsonBegrunnelseConverter.tilBegrunnelse(webSoknad))
                 .withBosituasjon(JsonBosituasjonConverter.tilBosituasjon(webSoknad))
                 .withOkonomi(JsonOkonomiConverter.tilOkonomi(inputSource));
+    }
+
+    private static String settDriftsinformasjonForUtbetalingSystemfeil(WebSoknad webSoknad) {
+        final Faktum faktumMedKey = webSoknad.getFaktumMedKey("utbetalinger.feilet");
+        if (faktumMedKey != null && "true".equalsIgnoreCase(faktumMedKey.getValue())) {
+            return "Kunne ikke hente utbetalinger fra NAV";
+        }
+        return "";
     }
 }
