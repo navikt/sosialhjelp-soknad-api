@@ -2,14 +2,17 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.Detect;
+import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -208,14 +212,38 @@ public class VedleggOriginalFilerService {
         }
     }
 
+    private static void sjekkOmPdfErGyldig(byte[] data) {
+        PDDocument document;
+        try {
+            document = PDDocument.load(new ByteArrayInputStream(
+                    data));
+        } catch (IOException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e,
+                    "vedlegg.opplasting.feil.generell");
+        }
+        PdfDetector detector = new PdfDetector(document);
+        if (detector.pdfIsSigned()) {
+            throw new UgyldigOpplastingTypeException(
+                    "PDF kan ikke være signert.", null,
+                    "opplasting.feilmelding.pdf.signert");
+        } else if (detector.pdfIsEncrypted()) {
+            throw new UgyldigOpplastingTypeException(
+                    "PDF kan ikke være krypert.", null,
+                    "opplasting.feilmelding.pdf.krypert");
+        }
+    }
+
     public void validerFil(byte[] data) {
         if (!(Detect.isImage(data) || Detect.isPdf(data))) {
             throw new UgyldigOpplastingTypeException(
                     "Ugyldig filtype for opplasting", null,
                     "opplasting.feilmelding.feiltype");
         }
-
+        if (Detect.isPdf(data)) {
+            sjekkOmPdfErGyldig(data);
+        }
     }
+
 
     protected String lagFilnavn(String opplastetNavn, String mimetype, String uuid) {
         String filnavn = opplastetNavn;
