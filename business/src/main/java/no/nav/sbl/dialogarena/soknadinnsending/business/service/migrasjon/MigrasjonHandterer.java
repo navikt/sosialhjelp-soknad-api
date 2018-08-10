@@ -20,21 +20,28 @@ public class MigrasjonHandterer{
     public WebSoknad handterMigrasjon(WebSoknad soknad){
         WebSoknad migrertSoknad = soknad;
 
-        if(migrasjoner == null || migrasjoner.size() <= 0) return soknad;
+        if (migrasjoner == null || migrasjoner.size() <= 0) return soknad;
 
-        Optional<Migrasjon> migrasjon = hentMigrasjonForVersjon(migrertSoknad.getVersjon());
+        migrasjoner.sort(Comparator.comparingInt(Migrasjon::getTilVersjon));
 
-        if(migrasjon.isPresent()){
-            migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
+        final int nyesteVersjon = migrasjoner.get(migrasjoner.size() - 1).getTilVersjon();
 
-            hendelseRepository.registrerMigrertHendelse(migrertSoknad);
+        while (migrertSoknad.getVersjon() < nyesteVersjon) {
+            Optional<Migrasjon> migrasjon = hentMigrasjonForVersjon(migrertSoknad.getVersjon());
 
-            Event metrikk = MetricsFactory.createEvent("soknadsosialhjelp.skjemamigrasjon");
-            metrikk.addTagToReport("skjemaversjon", String.valueOf(migrasjon.get().getTilVersjon()));
+            if (migrasjon.isPresent()) {
+                migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
 
-            metrikk.report();
+                hendelseRepository.registrerMigrertHendelse(migrertSoknad);
+
+                Event metrikk = MetricsFactory.createEvent("soknadsosialhjelp.skjemamigrasjon");
+                metrikk.addTagToReport("skjemaversjon", String.valueOf(migrasjon.get().getTilVersjon()));
+
+                metrikk.report();
+            } else {
+                break;
+            }
         }
-
         return migrertSoknad;
     }
 

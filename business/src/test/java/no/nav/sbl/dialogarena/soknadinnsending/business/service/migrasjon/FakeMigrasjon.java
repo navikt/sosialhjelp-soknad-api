@@ -6,7 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 public class FakeMigrasjon extends Migrasjon {
 
     public FakeMigrasjon() {
-        super(2);
+        super(3);
     }
 
     @Override
