@@ -37,7 +37,7 @@ public class FiksWSConfig {
     }
 
     @Bean
-    Pingable arbeidPing() {
+    public Pingable forsendelsePing() {
         ForsendelsesServiceV9 selftestEndpoint = factory().withSystemSecurity().get();
         return new Pingable() {
             Ping.PingMetadata metadata = new Ping.PingMetadata(fiksEndpoint,"Fiks_v9", false);
