@@ -3,13 +3,16 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MigrasjonHandtererTest {
@@ -24,34 +27,45 @@ public class MigrasjonHandtererTest {
 
     @Before
     public void setup() {
-        handterer.migrasjoner.add(new FakeMigrasjon());
         innsendtSoknad = new WebSoknad().medId(1L).medVersjon(1);
     }
 
     @Test
-    @Ignore("Aktiveres straks det er en migrasjon på søknadsosialhjelp")
-    public void migreringSkjerForFakeSoknadMedEnVersjonLavere() {
+    public void migreringSkjerForSoknadMedEnVersjonLavere() {
         WebSoknad migrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
 
-        assertThat(migrertSoknad.getVersjon()).isEqualTo(2);
-        assertThat(migrertSoknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);
+        assertThat(migrertSoknad.getVersjon(), is(2));
     }
 
     @Test
-    public void migreringSkjerIkkeForFakeSoknadMedForSoknaderMedNyereVersjon() {
-        innsendtSoknad.medVersjon(3);
+    public void toMigreringerSkjerForSoknadMedToVersjonerLavere() {
+        handterer.migrasjoner.add(new FakeMigrasjon());
+
+        WebSoknad migrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
+
+        assertThat(migrertSoknad.getVersjon(), is(3));
+        assertThat(migrertSoknad.getDelstegStatus(), is(DelstegStatus.UTFYLLING));
+    }
+
+    @Test
+    public void migreringSkjerIkkeForSoknadMedNyereVersjon() {
+        handterer.migrasjoner.add(new FakeMigrasjon());
+        innsendtSoknad.medVersjon(4);
+
         WebSoknad ikkeMigrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
 
-        assertThat(ikkeMigrertSoknad.getVersjon()).isEqualTo(3);
-        assertThat(ikkeMigrertSoknad.getDelstegStatus()).isNotEqualTo(DelstegStatus.UTFYLLING);
+        assertThat(ikkeMigrertSoknad.getVersjon(), is(4));
+        assertThat(ikkeMigrertSoknad.getDelstegStatus(), not(DelstegStatus.UTFYLLING));
     }
 
     @Test
-    public void migreringSkjerIkkeForFakeSoknadMedVersjonerLavereEnnEn() {
+    public void migreringSkjerIkkeForSoknadMedVersjonerLavereEnnEn() {
+        handterer.migrasjoner.add(new FakeMigrasjon());
         innsendtSoknad.medVersjon(0);
+
         WebSoknad ikkeMigrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
 
-        assertThat(ikkeMigrertSoknad.getVersjon()).isEqualTo(0);
-        assertThat(ikkeMigrertSoknad.getDelstegStatus()).isNotEqualTo(DelstegStatus.UTFYLLING);
+        assertThat(ikkeMigrertSoknad.getVersjon(), is(0));
+        assertThat(ikkeMigrertSoknad.getDelstegStatus(), not(DelstegStatus.UTFYLLING));
     }
 }
