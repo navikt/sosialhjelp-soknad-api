@@ -40,6 +40,7 @@ public class MigrasjonHandterer{
 
     public static List<Migrasjon> migrasjoner() {
         List<Migrasjon> migrasjonsListe = new ArrayList<>();
+        migrasjonsListe.add(new BrukerregistrertEktefelleNavnMigrasjon());
         return migrasjonsListe;
     }
 
