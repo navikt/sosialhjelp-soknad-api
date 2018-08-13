@@ -37,8 +37,7 @@ public class PersonMock {
         familieRelasjoner.add(lagBarn("03060194075", "Doffen", "Mockmann"));
 
         // Case: gift
-        Person ektefelle = genererPersonMedGyldigIdentOgNavn("43076525425", "Daisy", "Duck");
-        ektefelle.setFoedselsdato(fodseldato(1965, 12, 24));
+        Person ektefelle = genererPersonMedGyldigIdentOgNavn("07127302639", "Daisy", "Duck");
         ektefelle.setDiskresjonskode(new Diskresjonskoder());
         familieRelasjoner.add(lagEktefelle(person, ektefelle));
         ektefelle.setBostedsadresse(person.getBostedsadresse());
@@ -113,8 +112,11 @@ public class PersonMock {
         personnavn.setSammensattNavn(fornavn + " " + etternavn);
         xmlPerson.setPersonnavn(personnavn);
 
+        Personidenter personidenter = new Personidenter();
+        personidenter.setValue("FNR");
         NorskIdent norskIdent = new NorskIdent();
         norskIdent.setIdent(ident);
+        norskIdent.setType(personidenter);
         xmlPerson.setIdent(norskIdent);
 
         return xmlPerson;

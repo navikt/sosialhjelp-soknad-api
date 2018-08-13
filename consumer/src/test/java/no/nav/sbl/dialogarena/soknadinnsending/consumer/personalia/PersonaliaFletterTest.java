@@ -45,11 +45,10 @@ public class PersonaliaFletterTest {
     private static final String BARN_IDENT = "01010091736";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
-    private static final String PARTNER_IDENT = "01010091740";
+    private static final String PARTNER_IDENT = "21095200912";
     private static final String PARTNER_FORNAVN = "Kristin";
     private static final String PARTNER_MELLOMNAVN = "Mellomnavn";
     private static final String PARTNER_ETTERNAVN = "Partner";
-    private static final String PARTNER_SAMMENSATT_NAVN = "Kristin Partner";
 
     private static final String ET_FORNAVN = "Ola";
     private static final String ET_MELLOMNAVN = "Johan";
@@ -87,6 +86,9 @@ public class PersonaliaFletterTest {
     private static final String SIVILSTATUS_GIFT = "GIFT";
     private static final String SIVILSTATUS_GLAD = "GLAD";
     private static final String SIVILSTATUS_UGIF = "UGIF";
+    private static final int PARTNER_FODSELSAR = 1952;
+    private static final int PARTNER_FODSELSMANED = 9;
+    private static final int PARTNER_FODSELSDAG = 21;
 
     @Mock
     private PersonService personMock;
@@ -389,9 +391,9 @@ public class PersonaliaFletterTest {
         assertThat(registrertPartner.getFornavn(), is(PARTNER_FORNAVN));
         assertThat(registrertPartner.getMellomnavn(), is(PARTNER_MELLOMNAVN));
         assertThat(registrertPartner.getEtternavn(), is(PARTNER_ETTERNAVN));
-        assertThat(registrertPartner.getFodselsdato().getYear(), is(1988));
-        assertThat(registrertPartner.getFodselsdato().getMonthOfYear(), is(10));
-        assertThat(registrertPartner.getFodselsdato().getDayOfMonth(), is(18));
+        assertThat(registrertPartner.getFodselsdato().getYear(), is(PARTNER_FODSELSAR));
+        assertThat(registrertPartner.getFodselsdato().getMonthOfYear(), is(PARTNER_FODSELSMANED));
+        assertThat(registrertPartner.getFodselsdato().getDayOfMonth(), is(PARTNER_FODSELSDAG));
         assertThat(registrertPartner.erFolkeregistrertsammen(), is(true));
         assertThat(registrertPartner.harIkketilgangtilektefelle(), is(false));
     }
@@ -406,9 +408,9 @@ public class PersonaliaFletterTest {
         assertThat(ektefelle.getFornavn(), is(PARTNER_FORNAVN));
         assertThat(ektefelle.getMellomnavn(), is(PARTNER_MELLOMNAVN));
         assertThat(ektefelle.getEtternavn(), is(PARTNER_ETTERNAVN));
-        assertThat(ektefelle.getFodselsdato().getYear(), is(1988));
-        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(10));
-        assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(18));
+        assertThat(ektefelle.getFodselsdato().getYear(), is(PARTNER_FODSELSAR));
+        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(PARTNER_FODSELSMANED));
+        assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(PARTNER_FODSELSDAG));
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
     }
@@ -464,9 +466,9 @@ public class PersonaliaFletterTest {
         assertThat(ektefelle.getFornavn(), is(PARTNER_FORNAVN));
         assertThat(ektefelle.getMellomnavn(), is(PARTNER_MELLOMNAVN));
         assertThat(ektefelle.getEtternavn(), is(PARTNER_ETTERNAVN));
-        assertThat(ektefelle.getFodselsdato().getYear(), is(1988));
-        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(10));
-        assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(18));
+        assertThat(ektefelle.getFodselsdato().getYear(), is(PARTNER_FODSELSAR));
+        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(PARTNER_FODSELSMANED));
+        assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(PARTNER_FODSELSDAG));
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
     }
@@ -525,7 +527,7 @@ public class PersonaliaFletterTest {
 
     private void mockGyldigPersonMedPartner(String sivilstatus, String relasjonstype, boolean partnerHarDiskresjonskode, String diskresjonskode, boolean harSammeFolkeregistrerteAdresse) {
         Person partner = genererPersonMedGyldigIdentOgNavn(PARTNER_IDENT, PARTNER_FORNAVN, PARTNER_MELLOMNAVN, PARTNER_ETTERNAVN);
-        partner.setFoedselsdato(fodseldato(1988, 10, 18));
+        partner.setFoedselsdato(fodseldato(PARTNER_FODSELSAR, PARTNER_FODSELSMANED, PARTNER_FODSELSDAG));
         if (partnerHarDiskresjonskode) {
             Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
             diskresjonskoder.setValue(diskresjonskode);
@@ -804,8 +806,11 @@ public class PersonaliaFletterTest {
         personnavn.setSammensattNavn(fornavn + " " + etternavn);
         xmlPerson.setPersonnavn(personnavn);
 
+        Personidenter personidenter = new Personidenter();
+        personidenter.setValue("FNR");
         NorskIdent norskIdent = new NorskIdent();
         norskIdent.setIdent(ident);
+        norskIdent.setType(personidenter);
         xmlPerson.setIdent(norskIdent);
 
         return xmlPerson;
