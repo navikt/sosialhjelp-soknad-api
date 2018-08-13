@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
+import com.google.common.collect.ImmutableMap;
 import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -69,23 +71,24 @@ public class FiksSender {
         if (environment == null || "p".equals(environment)) {
             return "";
         }
-        
         return environment + "-";
     }
 
     public Dokument fiksDokumentFraDokumentInfo(FiksData.DokumentInfo info, boolean skalKryptere) {
         byte[] filData = fillager.hentFil(info.uuid);
 
+        final String filnavn = FILNAVN_MAPPER.containsKey(info.filnavn) ? FILNAVN_MAPPER.get(info.filnavn) : info.filnavn;
+
         if (skalKryptere) {
             filData = dokumentKrypterer.krypterData(filData);
         }
 
         ByteDataSource dataSource = new ByteDataSource(filData);
-        dataSource.setName(info.filnavn);
+        dataSource.setName(filnavn);
         dataSource.setContentType("application/octet-stream");
 
         return new Dokument()
-                .withFilnavn(info.filnavn)
+                .withFilnavn(filnavn)
                 .withMimetype(info.mimetype != null ? info.mimetype : "application/pdf")
                 .withEkskluderesFraPrint(info.ekskluderesFraPrint)
                 .withData(new DataHandler(dataSource));
@@ -94,4 +97,8 @@ public class FiksSender {
     private boolean skalKryptere() {
         return !Boolean.valueOf(System.getProperty(KRYPTERING_DISABLED, "false"));
     }
+
+    private static final Map<String, String> FILNAVN_MAPPER = new ImmutableMap.Builder<String, String>()
+            .put("L7", "Brukerkvittering.pdf")
+            .build();
 }
