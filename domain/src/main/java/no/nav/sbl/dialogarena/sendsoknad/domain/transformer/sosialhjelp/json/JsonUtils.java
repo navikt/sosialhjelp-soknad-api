@@ -56,13 +56,20 @@ public final class JsonUtils {
     }
 
     public static Integer tilIntegerMedAvrunding(String s) {
+        Double d = tilDouble(s);
+        if (d == null) {
+            return null;
+        }
+        return (int) round(d);
+    }
+
+    public static Double tilDouble(String s) {
         if (erTom(s)) {
             return null;
         }
         s = s.replaceAll(",", ".");
         s = s.replaceAll("\u00A0", "");
-        double d = parseDouble(deleteWhitespace(s));
-        return (int) round(d);
+        return parseDouble(deleteWhitespace(s));
     }
 
     public static boolean erTom(String s) {

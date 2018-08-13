@@ -17,6 +17,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.tilDouble;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.tilIntegerMedAvrunding;
+
 public class JsonOkonomiOpplysningerConverter {
 
 
@@ -230,7 +233,15 @@ public class JsonOkonomiOpplysningerConverter {
                     .withKilde(JsonKilde.SYSTEM)
                     .withType("navytelse")
                     .withTittel(properties.get("type"))
-                    .withBelop(JsonUtils.tilIntegerMedAvrunding(properties.get("netto")))
+                    .withBelop(tilIntegerMedAvrunding(properties.get("netto")))
+                    .withNetto(tilDouble(properties.get("netto")))
+                    .withBrutto(tilDouble(properties.get("brutto")))
+                    .withSkattetrekk(tilDouble(properties.get("skatteTrekk")))
+                    .withAndreTrekk(tilDouble(properties.get("andreTrekk")))
+                    .withUtbetalingsdato(properties.get("utbetalingsDato"))
+                    .withPeriodeFom(properties.get("periodeFom"))
+                    .withPeriodeTom(properties.get("periodeTom"))
+                    //.withKomponenter(properties.get("komponenter"))
                     .withOverstyrtAvBruker(false);
         }).collect(Collectors.toList());
     }
