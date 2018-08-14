@@ -10,13 +10,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.AdresseTransform;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkonto;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoNorge;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoUtland;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
@@ -30,10 +25,10 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
-
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -157,7 +152,7 @@ public class PersonaliaFletter {
                         .withFornavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getFornavn() : null)
                         .withMellomnavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getMellomnavn() : null)
                         .withEtternavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getEtternavn() : null)
-                        .withFodselsdato(finnFodselsdato(xmlEktefelle))
+                        .withFodselsdato(finnFodselsdatoForEktefelle(xmlEktefelle))
                         .withFnr(xmlEktefelle.getIdent() != null ? xmlEktefelle.getIdent().getIdent() : null)
                         .withFolkeregistrertsammen(ektefelleErUtvandret ? false : familierelasjon.isHarSammeBosted())
                         .withIkketilgangtilektefelle(false);
@@ -171,6 +166,19 @@ public class PersonaliaFletter {
             return false;
         }
         return UTVANDRET.equalsIgnoreCase(xmlEktefelle.getPersonstatus().getPersonstatus().getValue());
+    }
+
+    private LocalDate finnFodselsdatoForEktefelle(Person ektefelle) {
+        if (ektefelle.getIdent() == null || ektefelle.getIdent().getType() == null) {
+            return null;
+        }
+        String identtype = ektefelle.getIdent().getType().getValue();
+        String ident = ektefelle.getIdent().getIdent();
+        if ("FNR".equalsIgnoreCase(identtype) && isNotEmpty(ident)) {
+            NavFodselsnummer fnr = new NavFodselsnummer(ektefelle.getIdent().getIdent());
+            return new LocalDate(fnr.getBirthYear() + "-" + fnr.getMonth() + "-" + fnr.getDayInMonth());
+        }
+        return null;
     }
 
     private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
