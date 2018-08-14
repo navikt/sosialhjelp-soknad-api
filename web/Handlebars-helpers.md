@@ -64,6 +64,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentNavEnhetNavn - Henter navnet på NAV enheten som bruker har valgt
 * hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
+* hentSvaralternativer - Henter svaralternativer fra cms, dersom det er flere valgmuligheter. Prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * hentTekstForGDPRInfo - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere. Formatterer tekst med variabel input (riktig NAV-kontor)
 * hentTekstMedFaktumParameter - Henter tekst fra cms for en gitt key, med verdien til et faktum som parameter. Faktumet hentes basert på key
@@ -362,6 +363,14 @@ må ha et faktum i context, f. eks. via
 
 ```
 {{hentSkjemanummer}}
+```
+
+
+##### hentSvaralternativer
+
+```
+{{hentSvaralternativer "min.key" "param1" "param2"}}
+{{hentSvaralternativer "mmannsin.key.uten.params"}}
 ```
 
 
