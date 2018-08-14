@@ -42,6 +42,8 @@ public class PersonaliaFletter {
     static final String RELASJON_REGISTRERT_PARTNER = "REPA";
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
+    static final String KODE_6_TALLFORM = "6";
+    static final String KODE_7_TALLFORM = "7";
     static final String UTVANDRET = "UTVA";
     private static final Logger logger = getLogger(PersonaliaFletter.class);
 
@@ -143,7 +145,7 @@ public class PersonaliaFletter {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
                 Person xmlEktefelle = familierelasjon.getTilPerson();
-                if (xmlEktefelle.getDiskresjonskode() != null && (KODE_6.equals(xmlEktefelle.getDiskresjonskode().getValue()) || KODE_7.equals(xmlEktefelle.getDiskresjonskode().getValue()))) {
+                if (ektefelleHarDiskresjonskode(xmlEktefelle)) {
                     return new Ektefelle()
                             .withIkketilgangtilektefelle(true);
                 }
@@ -159,6 +161,15 @@ public class PersonaliaFletter {
             }
         }
         return null;
+    }
+
+    boolean ektefelleHarDiskresjonskode(Person xmlEktefelle) {
+        if (xmlEktefelle.getDiskresjonskode() == null) {
+            return false;
+        }
+        final String diskresjonskode = xmlEktefelle.getDiskresjonskode().getValue();
+        return KODE_6_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_6.equalsIgnoreCase(diskresjonskode)
+                || KODE_7_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_7.equalsIgnoreCase(diskresjonskode);
     }
 
     private boolean ektefelleErUtvandret(Person xmlEktefelle) {
