@@ -121,6 +121,13 @@ public class JsonFamilieConverterTest {
         assertThat(jsonSivilstatus.getEktefelleHarDiskresjonskode(), is(true));
     }
 
+    @Test
+    public void tilJsonFodselsdatoEndrerIkkeDatoSomAlleredeErRiktigFormattert() {
+        String jsonFodselsdato = JsonFamilieConverter.tilJsonFodselsdato(FODSELSDATO_JSON);
+
+        assertThat(jsonFodselsdato, is(FODSELSDATO_JSON));
+    }
+
     private Faktum lagEktefelleFaktum() {
         return new Faktum().medKey("system.familie.sivilstatus.gift.ektefelle")
                 .medSystemProperty("fornavn", FORNAVN)
