@@ -457,6 +457,19 @@ public class PersonaliaFletterTest {
     }
 
     @Test
+    public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodePaTallform() {
+        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, KODE_6_TALLFORM, false);
+
+        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
+
+        assertThat(ektefelle.getFnr(), nullValue());
+        assertThat(ektefelle.getFornavn(), nullValue());
+        assertThat(ektefelle.getFodselsdato(), nullValue());
+        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
+        assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));
+    }
+
+    @Test
     public void finnEktefelleSetterRiktigInfoForEktefelleMedDiskresjonskodeUFBOgUlikFolkeregistrertAdresse() {
         mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, "UFB", false);
 
