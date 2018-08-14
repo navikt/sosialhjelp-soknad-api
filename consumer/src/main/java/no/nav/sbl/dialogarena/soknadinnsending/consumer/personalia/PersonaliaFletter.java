@@ -18,7 +18,6 @@ import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKon
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -153,7 +152,7 @@ public class PersonaliaFletter {
                         .withFornavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getFornavn() : null)
                         .withMellomnavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getMellomnavn() : null)
                         .withEtternavn(xmlEktefelle.getPersonnavn() != null ? xmlEktefelle.getPersonnavn().getEtternavn() : null)
-                        .withFodselsdato(finnFodselsdatoFraFnr(xmlEktefelle))
+                        .withFodselsdato(finnFodselsdatoForEktefelle(xmlEktefelle))
                         .withFnr(xmlEktefelle.getIdent() != null ? xmlEktefelle.getIdent().getIdent() : null)
                         .withFolkeregistrertsammen(ektefelleErUtvandret ? false : familierelasjon.isHarSammeBosted())
                         .withIkketilgangtilektefelle(false);
@@ -169,7 +168,7 @@ public class PersonaliaFletter {
         return UTVANDRET.equalsIgnoreCase(xmlEktefelle.getPersonstatus().getPersonstatus().getValue());
     }
 
-    private LocalDate finnFodselsdatoFraFnr(Person ektefelle) {
+    private LocalDate finnFodselsdatoForEktefelle(Person ektefelle) {
         if (ektefelle.getIdent() == null || ektefelle.getIdent().getType() == null) {
             return null;
         }
