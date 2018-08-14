@@ -241,9 +241,13 @@ public final class JsonFamilieConverter {
         return fodselsdato.substring(0, 4) + fodselsdato.substring(6) + personnummer;
     }
 
-    private static String tilJsonFodselsdato(String fodselsdato) {
+    static String tilJsonFodselsdato(String fodselsdato) {
         if (erTom(fodselsdato)) {
             return null;
+        }
+
+        if (fodselsdato.matches("\\d{4}[-]\\d{2}[-]\\d{2}")) {
+            return fodselsdato;
         }
 
         if (fodselsdato.length() != 8) {
