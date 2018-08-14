@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -67,5 +68,14 @@ public class MigrasjonHandtererTest {
 
         assertThat(ikkeMigrertSoknad.getVersjon(), is(0));
         assertThat(ikkeMigrertSoknad.getDelstegStatus(), not(DelstegStatus.UTFYLLING));
+    }
+
+    @Test
+    public void migreringFeilerIkkeHvisSoknadensVersjonErNull() {
+        innsendtSoknad = new WebSoknad().medId(1L);
+
+        WebSoknad migrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
+
+        assertThat(migrertSoknad.getVersjon(), nullValue());
     }
 }

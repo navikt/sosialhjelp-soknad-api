@@ -38,14 +38,13 @@ public class PersonMock {
 
         // Case: gift
         Person ektefelle = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Daisy", "Duck");
-        ektefelle.setDiskresjonskode(new Diskresjonskoder());
         familieRelasjoner.add(lagEktefelle(person, ektefelle));
         ektefelle.setBostedsadresse(person.getBostedsadresse());
 
         // Case: gift, og ektefelle har kode 6
         Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
         diskresjonskoder.setValue(KODE_6);
-        ektefelle.setDiskresjonskode(diskresjonskoder);
+        //ektefelle.setDiskresjonskode(diskresjonskoder);
 
         // Case: ugift
         // Sivilstander sivilstander = new Sivilstander();
