@@ -20,13 +20,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataHandler;
 import javax.xml.bind.JAXB;
 
 import org.joda.time.DateTime;
@@ -67,7 +65,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.MigrasjonHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 
