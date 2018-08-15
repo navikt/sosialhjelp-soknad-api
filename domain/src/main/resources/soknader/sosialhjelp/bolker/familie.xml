@@ -128,6 +128,18 @@
                 <type>textbox</type>
             </property>
             <property>
+                <id>fornavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>mellomnavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>etternavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
                 <id>fnr</id>
                 <type>textbox</type>
             </property>
