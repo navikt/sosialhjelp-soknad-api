@@ -124,18 +124,6 @@
         <flereTillatt>true</flereTillatt>
         <properties>
             <property>
-                <id>fornavn</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>mellomnavn</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>etternavn</id>
-                <type>textbox</type>
-            </property>
-            <property>
                 <id>navn</id>
                 <type>textbox</type>
             </property>
