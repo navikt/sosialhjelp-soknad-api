@@ -102,7 +102,7 @@ public final class JsonFamilieConverter {
 
     private static JsonEktefelle tilSystemregistrertJsonEktefelle(Map<String, String> ektefelle) {
         final JsonEktefelle jsonEktefelle = new JsonEktefelle();
-        jsonEktefelle.setNavn(mapEktefellesNavnTilJsonNavn(ektefelle));
+        jsonEktefelle.setNavn(mapNavnFraFaktumTilJsonNavn(ektefelle));
         jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fodselsdato")));
         jsonEktefelle.setPersonIdentifikator(ektefelle.get("fnr"));
 
@@ -112,7 +112,7 @@ public final class JsonFamilieConverter {
     private static JsonEktefelle tilBrukerregistrertJsonEktefelle(Map<String, String> ektefelle) {
         final JsonEktefelle jsonEktefelle = new JsonEktefelle();
         if (isEmpty(ektefelle.get("navn"))) {
-            jsonEktefelle.setNavn(mapEktefellesNavnTilJsonNavn(ektefelle));
+            jsonEktefelle.setNavn(mapNavnFraFaktumTilJsonNavn(ektefelle));
         } else {
             jsonEktefelle.setNavn(new JsonNavn()
                     .withFornavn(xxxFornavnFraNavn(ektefelle.get("navn")))
@@ -126,11 +126,11 @@ public final class JsonFamilieConverter {
         return jsonEktefelle;
     }
 
-    private static JsonNavn mapEktefellesNavnTilJsonNavn(Map<String, String> ektefelle) {
+    private static JsonNavn mapNavnFraFaktumTilJsonNavn(Map<String, String> faktumMedNavn) {
         return new JsonNavn()
-                .withFornavn(ektefelle.get("fornavn") != null ? ektefelle.get("fornavn") : "")
-                .withMellomnavn(ektefelle.get("mellomnavn") != null ? ektefelle.get("mellomnavn") : "")
-                .withEtternavn(ektefelle.get("etternavn") != null ? ektefelle.get("etternavn") : "");
+                .withFornavn(faktumMedNavn.get("fornavn") != null ? faktumMedNavn.get("fornavn") : "")
+                .withMellomnavn(faktumMedNavn.get("mellomnavn") != null ? faktumMedNavn.get("mellomnavn") : "")
+                .withEtternavn(faktumMedNavn.get("etternavn") != null ? faktumMedNavn.get("etternavn") : "");
     }
 
 
@@ -196,22 +196,25 @@ public final class JsonFamilieConverter {
     }
 
     private static JsonAnsvar faktumTilAnsvar(Faktum faktum) {
-        Map<String, String> props = faktum.getProperties();
-        JsonBarn barn = new JsonBarn()
+        Map<String, String> barn = faktum.getProperties();
+        JsonBarn jsonBarn = new JsonBarn()
                 .withKilde(BRUKER)
-                .withNavn(new JsonNavn()
-                        .withFornavn(xxxFornavnFraNavn(props.get("navn")))
-                        .withMellomnavn("")
-                        .withEtternavn(xxxEtternavnFraNavn(props.get("navn")))
-                )
-                .withFodselsdato(tilJsonFodselsdato(props.get("fnr")))
-                .withPersonIdentifikator(tilJsonPersonidentifikator(props.get("fnr"), props.get("pnr")));
+                .withFodselsdato(tilJsonFodselsdato(barn.get("fnr")))
+                .withPersonIdentifikator(tilJsonPersonidentifikator(barn.get("fnr"), barn.get("pnr")));
+        if (isEmpty(barn.get("navn"))) {
+            jsonBarn.setNavn(mapNavnFraFaktumTilJsonNavn(barn));
+        } else {
+            jsonBarn.setNavn(new JsonNavn()
+                    .withFornavn(xxxFornavnFraNavn(barn.get("navn")))
+                    .withMellomnavn("")
+                    .withEtternavn(xxxEtternavnFraNavn(barn.get("navn"))));
+        }
 
         JsonAnsvar ansvar = new JsonAnsvar()
-                .withBarn(barn);
+                .withBarn(jsonBarn);
 
-        if (erIkkeTom(props.get("borsammen"))) {
-            boolean borsammen = Boolean.parseBoolean(props.get("borsammen"));
+        if (erIkkeTom(barn.get("borsammen"))) {
+            boolean borsammen = Boolean.parseBoolean(barn.get("borsammen"));
             ansvar.withBorSammenMed(
                     new JsonBorSammenMed()
                             .withVerdi(borsammen)
@@ -219,10 +222,10 @@ public final class JsonFamilieConverter {
             );
 
             if (!borsammen) {
-                if (erIkkeTom(props.get("grad"))) {
+                if (erIkkeTom(barn.get("grad"))) {
                     ansvar.withSamvarsgrad(
                             new JsonSamvarsgrad()
-                                    .withVerdi(tilInteger(props.get("grad")))
+                                    .withVerdi(tilInteger(barn.get("grad")))
                                     .withKilde(JsonKildeBruker.BRUKER)
                     );
                 }
