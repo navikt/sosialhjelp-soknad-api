@@ -20,7 +20,7 @@ public class MigrasjonHandterer{
     public WebSoknad handterMigrasjon(WebSoknad soknad){
         WebSoknad migrertSoknad = soknad;
 
-        if (migrasjoner == null || migrasjoner.size() <= 0) return soknad;
+        if (migrasjoner == null || migrasjoner.size() <= 0 || migrertSoknad.getVersjon() == null) return soknad;
 
         migrasjoner.sort(Comparator.comparingInt(Migrasjon::getTilVersjon));
 
