@@ -51,6 +51,7 @@ public class BarnBolkTest {
     }
 
     private Barn lagBarn(String ident, String fornavn, String etternavn) {
-        return new Barn(SOKNAD_ID, null, "", ident, fornavn, "", etternavn);
+//        return new Barn(SOKNAD_ID, null, "", ident, fornavn, "", etternavn);
+        return new Barn();
     }
 }
