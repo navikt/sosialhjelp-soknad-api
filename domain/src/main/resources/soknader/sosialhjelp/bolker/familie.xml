@@ -3,6 +3,12 @@
     <faktum>
         <id>familie.sivilstatus</id>
         <type>radio</type>
+        <constraints>
+            <constraint>
+                <faktum>familie.sivilstatus.sivilstatusOverskrivesAvBruker</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
         <panel>familieBolk</panel>
         <optional>true</optional>
     </faktum>
@@ -54,13 +60,19 @@
     </faktum>
 
     <faktum>
+        <id>familie.sivilstatus.sivilstatusOverskrivesAvBruker</id>
+        <panel>familieBolk</panel>
+        <type>hidden</type>
+    </faktum>
+
+    <faktum>
         <id>system.familie.sivilstatus</id>
         <type>radio</type>
         <panel>familieBolk</panel>
         <constraints>
             <constraint>
-                <faktum>familie.sivilstatus</faktum>
-                <expression>value == 'null'</expression>
+                <faktum>familie.sivilstatus.sivilstatusOverskrivesAvBruker</faktum>
+                <expression>value != 'true'</expression>
             </constraint>
         </constraints>
         <optional>true</optional>

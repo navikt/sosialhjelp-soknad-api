@@ -72,14 +72,19 @@ public class PersonaliaBolk implements BolkService {
 
         if (personalia.getEktefelle() != null) {
             fakta.add(genererSystemregistrertEktefelleFaktum(soknadId, personalia));
+        } else {
+            fakta.add(new Faktum().medSoknadId(soknadId)
+                    .medKey("familie.sivilstatus.sivilstatusOverskrivesAvBruker")
+                    .medValue("true"));
         }
         return fakta;
     }
 
     private Faktum genererSystemregistrertSivilstandFaktum(Long soknadId, String sivilstatus) {
-        return new Faktum().medSoknadId(soknadId).medKey("system.familie.sivilstatus")
+        Faktum systemregistrertSivilstand = new Faktum().medSoknadId(soknadId).medKey("system.familie.sivilstatus")
                 .medType(SYSTEMREGISTRERT)
                 .medValue(sivilstatus);
+        return systemregistrertSivilstand;
     }
 
     Faktum genererSystemregistrertEktefelleFaktum(Long soknadId, Personalia personalia) {
