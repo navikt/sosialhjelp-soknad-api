@@ -30,11 +30,7 @@ public class BarnBolk implements BolkService {
                         .medSystemProperty("fornavn", barn.getFornavn())
                         .medSystemProperty("mellomnavn", barn.getMellomnavn())
                         .medSystemProperty("etternavn", barn.getEtternavn())
-                        .medSystemProperty("sammensattnavn", barn.getSammensattnavn())
                         .medSystemProperty("fnr", barn.getFnr())
-                        .medSystemProperty("kjonn", barn.getKjonn())
-                        .medSystemProperty("alder", barn.getAlder().toString())
-                        .medSystemProperty("land", barn.getLand())
                         .medUnikProperty("fnr")
                 ).collect(Collectors.toList());
     }

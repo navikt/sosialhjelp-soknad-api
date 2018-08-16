@@ -145,7 +145,7 @@ public class PersonaliaFletter {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
                 Person xmlEktefelle = familierelasjon.getTilPerson();
-                if (ektefelleHarDiskresjonskode(xmlEktefelle)) {
+                if (xmlPersonHarDiskresjonskode(xmlEktefelle)) {
                     return new Ektefelle()
                             .withIkketilgangtilektefelle(true);
                 }
@@ -163,11 +163,11 @@ public class PersonaliaFletter {
         return null;
     }
 
-    boolean ektefelleHarDiskresjonskode(Person xmlEktefelle) {
-        if (xmlEktefelle.getDiskresjonskode() == null) {
+    public static boolean xmlPersonHarDiskresjonskode(Person xmlPerson) {
+        if (xmlPerson.getDiskresjonskode() == null) {
             return false;
         }
-        final String diskresjonskode = xmlEktefelle.getDiskresjonskode().getValue();
+        final String diskresjonskode = xmlPerson.getDiskresjonskode().getValue();
         return KODE_6_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_6.equalsIgnoreCase(diskresjonskode)
                 || KODE_7_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_7.equalsIgnoreCase(diskresjonskode);
     }
