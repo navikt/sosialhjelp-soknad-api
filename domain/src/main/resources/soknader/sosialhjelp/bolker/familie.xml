@@ -16,7 +16,7 @@
         <properties>
             <property>
                 <id>navn</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>fornavn</id>
@@ -57,6 +57,12 @@
         <id>system.familie.sivilstatus</id>
         <type>radio</type>
         <panel>familieBolk</panel>
+        <constraints>
+            <constraint>
+                <faktum>familie.sivilstatus</faktum>
+                <expression>value == 'null'</expression>
+            </constraint>
+        </constraints>
         <optional>true</optional>
     </faktum>
     <faktum>
@@ -93,7 +99,7 @@
             </property>
             <property>
                 <id>ikketilgangtilektefelle</id>
-                <type>bool</type>
+                <type>hidden</type>
             </property>
         </properties>
         <optional>true</optional>
@@ -125,7 +131,7 @@
         <properties>
             <property>
                 <id>navn</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>fornavn</id>
