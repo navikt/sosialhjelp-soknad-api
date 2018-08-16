@@ -103,7 +103,7 @@
             </property>
             <property>
                 <id>fnr</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>folkeregistrertsammen</id>
