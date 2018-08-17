@@ -15,8 +15,6 @@ import static org.junit.Assert.assertThat;
 
 public class BrukerregistrertNavnMigrasjonTest {
 
-    private static final int FRA_VERSJON = 1;
-    private static final int TIL_VERSJON = 2;
     private static final String NAVN = "Fornavn Mellomnavn Etternavn";
     private static final String NAVN_2 = "Fornavn2 Mellomnavn2 Etternavn2";
     private static final String NAVN_3 = "Fornavn3 Mellomnavn3 Etternavn3";
@@ -36,14 +34,13 @@ public class BrukerregistrertNavnMigrasjonTest {
 
     @Before
     public void setUp() {
-        soknad = new WebSoknad().medId(1L).medVersjon(FRA_VERSJON);
+        soknad = new WebSoknad().medId(1L);
     }
 
     @Test
     public void migrerOppdatererKunVersjonForIkkeMigrertSoknadUtenEktefelleEllerBarn() {
-        WebSoknad migrertSoknad = migrasjon.migrer(FRA_VERSJON, soknad);
+        WebSoknad migrertSoknad = migrasjon.migrer(soknad);
 
-        assertThat(migrertSoknad.getVersjon(), is(TIL_VERSJON));
         assertThat(migrertSoknad.getFaktumMedKey("familie.sivilstatus.gift.ektefelle"), nullValue());
         assertThat(migrertSoknad.getFaktumMedKey("familie.barn.true.barn"), nullValue());
     }
@@ -52,10 +49,9 @@ public class BrukerregistrertNavnMigrasjonTest {
     public void migrerOppdatererKunVersjonForIkkeMigrertSoknadMedNavnPaNyttFormat() {
         soknad.medFaktum(lagEktefelleFaktumMedNavnPaNyttFormat());
 
-        WebSoknad migrertSoknad = migrasjon.migrer(FRA_VERSJON, soknad);
+        WebSoknad migrertSoknad = migrasjon.migrer(soknad);
         Map<String, String> migrertEktefelleProperties = migrertSoknad.getFaktumMedKey("familie.sivilstatus.gift.ektefelle").getProperties();
 
-        assertThat(migrertSoknad.getVersjon(), is(TIL_VERSJON));
         assertThat(migrertEktefelleProperties.get("navn"), nullValue());
         assertThat(migrertEktefelleProperties.get("fornavn"), is(FORNAVN));
         assertThat(migrertEktefelleProperties.get("mellomnavn"), is(MELLOMNAVN));
@@ -66,10 +62,9 @@ public class BrukerregistrertNavnMigrasjonTest {
     public void ikkeMigrertSoknadMedEktefelleMedNavnPaGammeltFormatMigreresRiktig() {
         soknad.medFaktum(lagEktefelleFaktumMedNavnPaGammeltFormat());
 
-        WebSoknad migrertSoknad = migrasjon.migrer(FRA_VERSJON, soknad);
+        WebSoknad migrertSoknad = migrasjon.migrer(soknad);
         Map<String, String> migrertEktefelleProperties = migrertSoknad.getFaktumMedKey("familie.sivilstatus.gift.ektefelle").getProperties();
 
-        assertThat(migrertSoknad.getVersjon(), is(TIL_VERSJON));
         assertThat(migrertEktefelleProperties.get("navn"), is(NAVN));
         assertThat(migrertEktefelleProperties.get("fornavn"), is(SAMMENSATT_FORNAVN));
         assertThat(migrertEktefelleProperties.get("mellomnavn"), isEmptyString());
@@ -80,10 +75,9 @@ public class BrukerregistrertNavnMigrasjonTest {
     public void ikkeMigrertSoknadMedBarnMedNavnPaGammeltFormatMigreresRiktig() {
         soknad.medFaktum(lagBarnFaktumMedNavnPaGammeltFormat(NAVN));
 
-        WebSoknad migrertSoknad = migrasjon.migrer(FRA_VERSJON, soknad);
+        WebSoknad migrertSoknad = migrasjon.migrer(soknad);
         Map<String, String> migrertBarnProperties = migrertSoknad.getFaktumMedKey("familie.barn.true.barn").getProperties();
 
-        assertThat(migrertSoknad.getVersjon(), is(TIL_VERSJON));
         assertThat(migrertBarnProperties.get("navn"), is(NAVN));
         assertThat(migrertBarnProperties.get("fornavn"), is(SAMMENSATT_FORNAVN));
         assertThat(migrertBarnProperties.get("mellomnavn"), isEmptyString());
@@ -96,13 +90,12 @@ public class BrukerregistrertNavnMigrasjonTest {
                 .medFaktum(lagBarnFaktumMedNavnPaGammeltFormat(NAVN_2))
                 .medFaktum(lagBarnFaktumMedNavnPaGammeltFormat(NAVN_3));
 
-        WebSoknad migrertSoknad = migrasjon.migrer(FRA_VERSJON, soknad);
+        WebSoknad migrertSoknad = migrasjon.migrer(soknad);
         Map<String, String> migrertEktefelleProperties = migrertSoknad.getFaktumMedKey("familie.sivilstatus.gift.ektefelle").getProperties();
         List<Faktum> migrertBarnFakta = migrertSoknad.getFaktaMedKey("familie.barn.true.barn");
         Map<String, String> migrertBarnProperties = migrertBarnFakta.get(0).getProperties();
         Map<String, String> migrertBarn2Properties = migrertBarnFakta.get(1).getProperties();
 
-        assertThat(migrertSoknad.getVersjon(), is(TIL_VERSJON));
         assertThat(migrertEktefelleProperties.get("navn"), is(NAVN));
         assertThat(migrertEktefelleProperties.get("fornavn"), is(SAMMENSATT_FORNAVN));
         assertThat(migrertEktefelleProperties.get("mellomnavn"), isEmptyString());
@@ -125,12 +118,11 @@ public class BrukerregistrertNavnMigrasjonTest {
         soknad.medFaktum(lagEktefelleFaktumMedNavnPaGammeltFormat())
                 .medFaktum(lagBarnFaktumMedNavnPaNyttFormat());
 
-        WebSoknad migrertSoknad = migrasjon.migrer(FRA_VERSJON, soknad);
+        WebSoknad migrertSoknad = migrasjon.migrer(soknad);
         Map<String, String> migrertEktefelleProperties = migrertSoknad.getFaktumMedKey("familie.sivilstatus.gift.ektefelle").getProperties();
         List<Faktum> migrertBarnFakta = migrertSoknad.getFaktaMedKey("familie.barn.true.barn");
         Map<String, String> migrertBarnProperties = migrertBarnFakta.get(0).getProperties();
 
-        assertThat(migrertSoknad.getVersjon(), is(TIL_VERSJON));
         assertThat(migrertEktefelleProperties.get("navn"), is(NAVN));
         assertThat(migrertEktefelleProperties.get("fornavn"), is(SAMMENSATT_FORNAVN));
         assertThat(migrertEktefelleProperties.get("mellomnavn"), isEmptyString());
