@@ -211,6 +211,9 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     }
 
     public boolean erSynlig(WebSoknad soknad, Faktum faktum) {
+        if (faktum == null) {
+            return false;
+        }
         return parentErAktiv(soknad, faktum)
                 && oppfyllerConstraints(soknad, faktum);
     }
