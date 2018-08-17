@@ -63,6 +63,7 @@
         <id>familie.sivilstatus.sivilstatusOverskrivesAvBruker</id>
         <panel>familieBolk</panel>
         <type>hidden</type>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
