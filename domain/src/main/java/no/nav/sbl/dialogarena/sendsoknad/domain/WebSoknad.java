@@ -304,7 +304,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKey(final String key) {
-        return getFakta().stream().filter(Objects::nonNull).filter(faktum -> faktum.getKey().equals(key)).collect(toList());
+        return getFakta().stream().filter(Objects::nonNull).filter(faktum -> key.equals(faktum.getKey())).collect(toList());
     }
 
     public Faktum getFaktumMedKey(final String key) {
@@ -370,7 +370,7 @@ public class WebSoknad implements Serializable {
 
     public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
         return getFakta().stream()
-                .filter(Objects::nonNull).filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
+                .filter(Objects::nonNull).filter(faktum -> key.equals(faktum.getKey()) && parentFaktumId.equals(faktum.getParrentFaktum()))
                 .collect(toList());
     }
 
