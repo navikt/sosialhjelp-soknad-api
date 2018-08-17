@@ -8,15 +8,9 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-public class BrukerregistrertNavnMigrasjon extends Migrasjon {
+public class BrukerregistrertNavnMigrasjon {
 
-    public BrukerregistrertNavnMigrasjon() {
-        super(2);
-    }
-
-    @Override
-    public WebSoknad migrer(Integer fraVersjon, WebSoknad soknad) {
-        soknad.medVersjon(tilVersjon);
+    public WebSoknad migrer(WebSoknad soknad) {
         migrerNavnForBrukerregistrertEktefelle(soknad);
         migrerNavnForBrukerregistrertBarn(soknad);
 
@@ -30,15 +24,17 @@ public class BrukerregistrertNavnMigrasjon extends Migrasjon {
 
     private void migrerNavnForBrukerregistrertBarn(WebSoknad soknad) {
         List<Faktum> brukerregistrertBarnFaktumListe = soknad.getFaktaMedKey("familie.barn.true.barn");
-        for (Faktum brukerregistrertBarnFaktum : brukerregistrertBarnFaktumListe) {
-            migrerNavnForFaktum(brukerregistrertBarnFaktum);
+        if (brukerregistrertBarnFaktumListe != null && !brukerregistrertBarnFaktumListe.isEmpty()) {
+            for (Faktum brukerregistrertBarnFaktum : brukerregistrertBarnFaktumListe) {
+                migrerNavnForFaktum(brukerregistrertBarnFaktum);
+            }
         }
     }
 
     private void migrerNavnForFaktum(Faktum faktum) {
         if (faktum != null) {
             Map<String, String> faktumProperties = faktum.getProperties();
-            if (faktumProperties != null && !isEmpty(faktumProperties.get("navn"))) {
+            if (faktumProperties != null && !isEmpty(faktumProperties.get("navn")) && isEmpty(faktumProperties.get("fornavn"))) {
                 String navn = faktumProperties.get("navn");
                 faktumProperties.put("fornavn", fornavnFraNavn(navn));
                 faktumProperties.put("mellomnavn", "");

@@ -298,6 +298,8 @@ public class SoknadDataFletter {
             soknad = populerSoknadMedData(populerSystemfakta, soknad);
         }
 
+        soknad = migrasjonHandterer.handterMigrasjon(soknad);
+
         return soknad;
     }
 
@@ -308,9 +310,6 @@ public class SoknadDataFletter {
                 .medStegliste(config.getStegliste(soknad.getSoknadId()))
                 .medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
-
-
-        soknad = migrasjonHandterer.handterMigrasjon(soknad);
 
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
