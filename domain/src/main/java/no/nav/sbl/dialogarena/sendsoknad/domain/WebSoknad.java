@@ -370,7 +370,7 @@ public class WebSoknad implements Serializable {
 
     public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
         return getFakta().stream()
-                .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
+                .filter(Objects::nonNull).filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
                 .collect(toList());
     }
 
@@ -555,7 +555,7 @@ public class WebSoknad implements Serializable {
     }
 
     public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
-        fakta = fakta.stream().filter(faktum -> {
+        fakta = fakta.stream().filter(Objects::nonNull).filter(faktum ->  {
             FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(faktum.getKey());
             return faktumStruktur == null || faktumStruktur.erSynlig(this, faktum);
         }).collect(toList());
