@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import org.junit.Assert;
 import org.junit.Before;
@@ -202,5 +203,19 @@ public class WebSoknadTest {
 
         WebSoknad webSoknad = new WebSoknad().medVedlegg(vedlegg);
         assertThat(webSoknad.finnVedleggSomMatcherForventning(forventning, faktumId), not(equalTo(vedlegg)));
+    }
+
+    @Test
+    public void fjernFaktaSomIkkeSkalVaereSynligISoknadenTaklerFaktumSomErNull() {
+        WebSoknad webSoknad = new WebSoknad().medFaktum(null);
+
+        webSoknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(new SoknadStruktur());
+    }
+
+    @Test
+    public void getFaktaMedKeyOgParentFaktumTaklerFaktumSomErNull() {
+        WebSoknad webSoknad = new WebSoknad().medFaktum(null);
+
+        webSoknad.getFaktaMedKeyOgParentFaktum("key", 1L);
     }
 }
