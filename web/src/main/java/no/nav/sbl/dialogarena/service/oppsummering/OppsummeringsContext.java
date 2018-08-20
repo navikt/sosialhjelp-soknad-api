@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class OppsummeringsContext {
     public final boolean utvidetSoknad;
@@ -31,16 +30,9 @@ public class OppsummeringsContext {
     }
 
     private List<OppsummeringsFaktum> hentOppsummeringForFaktum(final FaktumStruktur faktumStruktur, Faktum parent, final SoknadStruktur soknadStruktur, final WebSoknad soknad) {
-        List<Faktum> fakta = new ArrayList<>();
-        if (parent != null) {
-            if (faktumStruktur != null && !isEmpty(faktumStruktur.getId()) && parent.getFaktumId() != null) {
-                fakta = soknad.getFaktaMedKeyOgParentFaktum(faktumStruktur.getId(), parent.getFaktumId());
-            }
-        } else {
-            if (!isEmpty(faktumStruktur.getId())) {
-                fakta = soknad.getFaktaMedKey(faktumStruktur.getId());
-            }
-        }
+        List<Faktum> fakta = parent != null ?
+                soknad.getFaktaMedKeyOgParentFaktum(faktumStruktur.getId(), parent.getFaktumId()) :
+                soknad.getFaktaMedKey(faktumStruktur.getId());
         if (fakta.isEmpty()) {
             return new ArrayList<>();
         }
