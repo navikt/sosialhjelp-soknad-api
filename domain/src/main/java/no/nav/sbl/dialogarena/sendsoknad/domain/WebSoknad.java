@@ -304,7 +304,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKey(final String key) {
-        return getFakta().stream().filter(Objects::nonNull).filter(faktum -> faktum.getKey().equals(key)).collect(toList());
+        return getFakta().stream().filter(faktum -> faktum.getKey().equals(key)).collect(toList());
     }
 
     public Faktum getFaktumMedKey(final String key) {
@@ -337,26 +337,26 @@ public class WebSoknad implements Serializable {
      * @return liste over vedlegg som er lastet opp i nåværende behandling
      */
     public List<Vedlegg> getOpplastedeVedlegg() {
-        return getVedlegg().stream().filter(Objects::nonNull).filter(vedlegg -> vedlegg.getStorrelse() > 0).collect(toList());
+        return getVedlegg().stream().filter(vedlegg -> vedlegg.getStorrelse() > 0).collect(toList());
     }
 
     public List<Vedlegg> getInnsendteVedlegg() {
         return getVedlegg().stream()
-                .filter(Objects::nonNull).filter(vedlegg -> vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp))
+                .filter(vedlegg -> vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp))
                 .collect(toList());
     }
 
     public List<Vedlegg> getIkkeInnsendteVedlegg() {
         List<Vedlegg> paakrevdeVedlegg = hentPaakrevdeVedlegg();
         return paakrevdeVedlegg.stream()
-                .filter(Objects::nonNull).filter(vedlegg -> vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp)
+                .filter(vedlegg -> vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp)
                         && vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.IkkeVedlegg))
                 .collect(toList());
     }
 
     public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
         return getFakta().stream()
-                .filter(Objects::nonNull).filter(faktum -> faktum.getKey().equals(key)
+                .filter(faktum -> faktum.getKey().equals(key)
                         && faktum.getProperties().get(propertyKey) != null
                         && faktum.getProperties().get(propertyKey).equals("true"))
                 .collect(toList());
@@ -364,7 +364,7 @@ public class WebSoknad implements Serializable {
 
     public List<Faktum> getFaktaSomStarterMed(final String key) {
         return getFakta().stream()
-                .filter(Objects::nonNull).filter(faktum -> faktum.getKey().startsWith(key))
+                .filter(faktum -> faktum.getKey().startsWith(key))
                 .collect(toList());
     }
 
@@ -376,13 +376,13 @@ public class WebSoknad implements Serializable {
 
     public Faktum getFaktumMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
         return getFakta().stream()
-                .filter(Objects::nonNull).filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
+                .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
                 .findFirst().orElse(null);
     }
 
     public Faktum getFaktaMedKeyOgProperty(final String key, final String property, final String value) {
         return getFakta().stream()
-                .filter(Objects::nonNull).filter(faktum -> faktum.getKey().equals(key) && faktum.matcherUnikProperty(property, value))
+                .filter(faktum -> faktum.getKey().equals(key) && faktum.matcherUnikProperty(property, value))
                 .findFirst()
                 .orElse(null);
     }
@@ -506,7 +506,7 @@ public class WebSoknad implements Serializable {
 
     public Faktum finnFaktum(final Long faktumId) {
         return getFakta().stream()
-                .filter(Objects::nonNull).filter(faktum -> faktum.getFaktumId() != null
+                .filter(faktum -> faktum.getFaktumId() != null
                         && faktum.getFaktumId().equals(faktumId))
                 .findFirst().orElse(null);
     }
