@@ -22,7 +22,7 @@ public class HvisFaktumstrukturHarInfoteksterHelper extends RegistryAwareHelper<
         OppsummeringsFaktum oppsummeringsFaktum = getOppsummeringsFaktum(options.context);
         WebSoknad webSoknad = finnWebSoknad(options.context);
 
-        if (oppsummeringsFaktum != null && oppsummeringsFaktum.faktum != null) {
+        if (oppsummeringsFaktum != null) {
             List<TekstStruktur> infotekster = oppsummeringsFaktum.struktur.getInfotekster(webSoknad, oppsummeringsFaktum.faktum);
             if (infotekster == null || infotekster.isEmpty()) {
                 return options.inverse();
