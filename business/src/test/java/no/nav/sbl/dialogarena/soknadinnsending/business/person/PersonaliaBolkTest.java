@@ -111,7 +111,7 @@ public class PersonaliaBolkTest {
         Faktum faktum = fakta.get(0);
         Map<String, String> faktumProperties = faktum.getProperties();
 
-        assertThat(fakta.size(), is(2));
+        assertThat(fakta.size(), is(3));
         assertThat(faktum.getKey(), is("personalia"));
         assertThat(faktum.getSoknadId(), is(SOKNADID));
         assertThat(faktumProperties.get(FNR_KEY), is(FNR));
@@ -140,6 +140,7 @@ public class PersonaliaBolkTest {
         assertThat(faktumProperties.get(SEKUNDARADRESSE_GYLDIGFRA_KEY), nullValue());
         assertThat(faktumProperties.get(SEKUNDARADRESSE_GYLDIGTIL_KEY), nullValue());
         assertThat(fakta.get(1).getValue(), is(SIVILSTATUS_UGIFT));
+        assertThat(fakta.get(2).getValue(), is("true"));
     }
 
     @Test
@@ -149,11 +150,13 @@ public class PersonaliaBolkTest {
 
         List<Faktum> fakta = personaliaBolk.genererPersonaliaFaktum(SOKNADID, personalia);
 
-        assertThat(fakta.size(), is(3));
+        assertThat(fakta.size(), is(4));
         assertThat(fakta.get(0).getKey(), is("personalia"));
         assertThat(fakta.get(1).getKey(), is("system.familie.sivilstatus"));
         assertThat(fakta.get(1).getValue(), is("gift"));
         assertThat(fakta.get(2).getKey(), is("system.familie.sivilstatus.gift.ektefelle"));
+        assertThat(fakta.get(3).getKey(), is("familie.sivilstatus.sivilstatusOverskrivesAvBruker"));
+        assertThat(fakta.get(3).getValue(), is("false"));
     }
 
     @Test
