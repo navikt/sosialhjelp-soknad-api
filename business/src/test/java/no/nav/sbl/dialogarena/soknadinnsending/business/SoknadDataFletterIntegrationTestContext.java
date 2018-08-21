@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.MigrasjonHandterer;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
@@ -40,9 +39,6 @@ public class SoknadDataFletterIntegrationTestContext {
 
     @Bean
     public Clock clock(){ return Clock.systemDefaultZone(); }
-
-    @Bean
-    public MigrasjonHandterer migrasjonHandterer() {return new MigrasjonHandterer();}
 
     @Bean
     public SoknadDataFletter fletter() {
