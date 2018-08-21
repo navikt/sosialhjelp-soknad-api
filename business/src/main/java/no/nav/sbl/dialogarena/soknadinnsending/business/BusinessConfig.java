@@ -15,11 +15,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp.SosialhjelpKontaktBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
 
 @Configuration
 @Import({
@@ -32,6 +29,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         ConsumerConfig.class,
         ArbeidsforholdBolk.class,
         SosialhjelpArbeidsforholdBolk.class,
+        UtbetalingBolk.class,
         ServiceConfig.class,
         ServicesApplicationConfig.class,
         KravdialogInformasjonHolder.class,

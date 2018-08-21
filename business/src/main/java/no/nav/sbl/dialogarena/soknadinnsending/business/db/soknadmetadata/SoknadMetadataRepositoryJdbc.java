@@ -115,7 +115,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
 
         while (true) {
-            String select = "SELECT * FROM soknadmetadata WHERE sistendretdato < ? AND batchstatus = 'LEDIG' " + limit(1);
+            String select = "SELECT * FROM soknadmetadata WHERE sistendretdato < ? AND batchstatus = 'LEDIG' AND innsendingstatus = 'UNDER_ARBEID' " + limit(1);
             Optional<SoknadMetadata> resultat = getJdbcTemplate().query(select, soknadMetadataRowMapper, tidTilTimestamp(frist))
                     .stream().findFirst();
             if (!resultat.isPresent()) {
