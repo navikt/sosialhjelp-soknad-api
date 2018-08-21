@@ -72,6 +72,9 @@ public class PersonaliaBolk implements BolkService {
 
         if (personalia.getEktefelle() != null) {
             fakta.add(genererSystemregistrertEktefelleFaktum(soknadId, personalia));
+            fakta.add(new Faktum().medSoknadId(soknadId)
+                    .medKey("familie.sivilstatus.sivilstatusOverskrivesAvBruker")
+                    .medValue("false"));
         } else {
             fakta.add(new Faktum().medSoknadId(soknadId)
                     .medKey("familie.sivilstatus.sivilstatusOverskrivesAvBruker")

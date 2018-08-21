@@ -150,11 +150,13 @@ public class PersonaliaBolkTest {
 
         List<Faktum> fakta = personaliaBolk.genererPersonaliaFaktum(SOKNADID, personalia);
 
-        assertThat(fakta.size(), is(3));
+        assertThat(fakta.size(), is(4));
         assertThat(fakta.get(0).getKey(), is("personalia"));
         assertThat(fakta.get(1).getKey(), is("system.familie.sivilstatus"));
         assertThat(fakta.get(1).getValue(), is("gift"));
         assertThat(fakta.get(2).getKey(), is("system.familie.sivilstatus.gift.ektefelle"));
+        assertThat(fakta.get(3).getKey(), is("familie.sivilstatus.sivilstatusOverskrivesAvBruker"));
+        assertThat(fakta.get(3).getValue(), is("false"));
     }
 
     @Test
