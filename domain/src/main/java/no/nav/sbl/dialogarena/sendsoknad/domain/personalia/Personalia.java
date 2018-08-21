@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.personalia;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 import org.joda.time.LocalDate;
 
@@ -56,6 +57,8 @@ public class Personalia {
     private String utenlandskKontoBanknavn;
     private String utenlandskKontoLand;
     private String mobiltelefonnummer;
+    private String sivilstatus;
+    private Ektefelle ektefelle;
 
     public Personalia() {
     }
@@ -282,5 +285,21 @@ public class Personalia {
 
     public void setUtenlandskKontoLand(String utenlandskKontoLand) {
         this.utenlandskKontoLand = utenlandskKontoLand;
+    }
+
+    public String getSivilstatus() {
+        return sivilstatus;
+    }
+
+    public void setSivilstatus(String sivilstatus) {
+        this.sivilstatus = sivilstatus;
+    }
+
+    public Ektefelle getEktefelle() {
+        return ektefelle;
+    }
+
+    public void setEktefelle(Ektefelle ektefelle) {
+        this.ektefelle = ektefelle;
     }
 }

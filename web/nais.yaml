@@ -78,6 +78,8 @@ fasitResources:
     resourceType: baseurl
   - alias: securityTokenService
     resourceType: baseurl
+  - alias: Utbetaling_v1
+    resourceType: webserviceendpoint
   - alias: dokumentinnsending.smtpServer
     resourceType: smtpserver
   - alias: arena.personInfoService

@@ -52,6 +52,7 @@
         <lokalt.kodeverk>1.12.28</lokalt.kodeverk>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
+        <utbetaling.tjenestespesifikasjon.version>1.0.18</utbetaling.tjenestespesifikasjon.version>
         <ojdbc.version>11.2.0.3</ojdbc.version>
         <flying.saucer.version>9.0.4</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
@@ -305,7 +306,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>soeknadsskjemaSosialhjelp-v1-soknaddefinisjon</artifactId>
-                <version>1.0.2</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -327,6 +328,11 @@
                 <artifactId>nav-virksomhet-paaloepteUtgifter-v1-meldingsdefinisjon</artifactId>
                 <version>1.0.3</version>
                 <classifier>jaxb</classifier>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
+                <version>${utbetaling.tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>

@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,8 @@ import static java.lang.System.setProperty;
         PersonaliaFletter.class,
         DokumentKrypterer.class,
         AdresseSokService.class,
-        NorgService.class
+        NorgService.class,
+        UtbetalingService.class
 })
 
 public class ConsumerConfig {
@@ -51,7 +53,8 @@ public class ConsumerConfig {
             SakOgAktivitetWSConfig.class,
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
-            NorgRestConfig.class
+            NorgRestConfig.class,
+            UtbetalingWSConfig.class
     })
     public static class WsServices {
     }
