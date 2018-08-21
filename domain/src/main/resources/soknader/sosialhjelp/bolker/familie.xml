@@ -21,10 +21,6 @@
         </dependOnValues>
         <properties>
             <property>
-                <id>navn</id>
-                <type>hidden</type>
-            </property>
-            <property>
                 <id>fornavn</id>
                 <type>textbox</type>
             </property>
@@ -142,10 +138,6 @@
         <type>composite</type>
         <flereTillatt>true</flereTillatt>
         <properties>
-            <property>
-                <id>navn</id>
-                <type>hidden</type>
-            </property>
             <property>
                 <id>fornavn</id>
                 <type>textbox</type>
