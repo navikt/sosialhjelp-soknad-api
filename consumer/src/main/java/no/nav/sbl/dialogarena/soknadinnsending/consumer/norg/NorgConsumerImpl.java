@@ -33,6 +33,10 @@ public class NorgConsumerImpl implements NorgConsumer {
 
         try {
             response = request.get();
+            if (response.getStatus() != 200) {
+                logger.warn("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+                return null;
+            }
             return response.readEntity(RsNorgEnhet.class);
         } catch (NotFoundException e) {
             logger.warn("Fant ikke norgenhet for gt {}", geografiskTilknytning);
