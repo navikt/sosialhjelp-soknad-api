@@ -5,11 +5,16 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMa
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import org.slf4j.Logger;
@@ -50,12 +55,12 @@ public class SoknadsmottakerRessurs {
         return adresseForslagene.stream().map((adresseForslag) -> {
             final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
         if (navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet");
+            logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
         }
         return new NavEnhetFrontend()
