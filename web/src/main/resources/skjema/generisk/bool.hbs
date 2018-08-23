@@ -1,0 +1,36 @@
+{{> skjema/generisk/sporsmal}}
+{{> skjema/generisk/infotekst}}
+
+<ul class="svar-liste">
+    <li>
+        {{#hvisIkkeTom value}}
+            <span class="verdi verdi--radio">
+                {{ hentTekst (concat key "." value) }}
+                {{#if @root.utvidetSoknad}}
+                    {{#hvisLik key "dinsituasjon.studerer.true.grad"}}
+                        (Heltid/Deltid)
+                    {{else}}
+                        (Ja/Nei)
+                    {{/hvisLik}}
+                {{/if}}
+            </span>
+        {{else}}
+            <span class="verdi verdi--ikkeUtfylt">
+                {{#if optional}}
+                    <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                    {{#if @root.utvidetSoknad}}
+                        {{#hvisLik key "dinsituasjon.studerer.true.grad"}}
+                            (Heltid/Deltid)
+                        {{else}}
+                            (Ja/Nei)
+                        {{/hvisLik}}
+                    {{/if}}
+                {{/if}}
+            </span>
+        {{/hvisIkkeTom}}
+        {{> skjema/generisk/infotekstvalue}}
+    </li>
+</ul>
+
+{{> skjema/generisk/barnefakta}}
+{{> skjema/generisk/vedlegg}}
