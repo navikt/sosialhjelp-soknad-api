@@ -20,5 +20,7 @@
     {{> skjema/generisk/vedlegg}}
 {{/visCheckbox}}
 
-<h{{niva}}>Svaralternativer:</h{{niva}}>
-{{ hentTekst key }} (Avhuket Ja/Nei)
+{{#if @root.utvidetSoknad}}
+    <h{{niva}}>Svaralternativer:</h{{niva}}>
+    {{ hentTekst key }} (Avhuket Ja/Nei)
+{{/if}}
