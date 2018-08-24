@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktinfo;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.PersonaliaBuilder;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AdresseTransform;
@@ -13,8 +14,6 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -67,7 +66,7 @@ public class PersonaliaFletter {
         }
 
         XMLBruker xmlBruker = (XMLBruker) preferanserResponse.getPerson();
-        WSHentDigitalKontaktinformasjonResponse dkifResponse = epostService.hentInfoFraDKIF(fodselsnummer);
+        Kontaktinfo kontaktinfo = epostService.hentInfoFraDKIF(fodselsnummer);
 
         return PersonaliaBuilder.
                 with()
@@ -83,8 +82,8 @@ public class PersonaliaFletter {
                 .kjonn(person.getKjonn())
                 .sivilstatus(person.getSivilstatus())
                 .ektefelle(personService.hentEktefelle(fodselsnummer))
-                .epost(finnEpost(dkifResponse))
-                .mobiltelefon(finnMobiltelefonnummer(dkifResponse))
+                .epost(kontaktinfo.getEpostadresse())
+                .mobiltelefon(kontaktinfo.getMobilnummer())
                 .gjeldendeAdresse(finnGjeldendeAdresse(xmlBruker, kodeverk))
                 .sekundarAdresse(finnSekundarAdresse(xmlBruker, kodeverk))
                 .folkeregistrertAdresse(finnFolkeregistrertAdresse(xmlBruker, kodeverk))
@@ -142,22 +141,6 @@ public class PersonaliaFletter {
 
     private static Adresse finnSekundarAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
         return new AdresseTransform().mapSekundarAdresse(xmlBruker, kodeverk);
-    }
-
-    private static String finnMobiltelefonnummer(WSHentDigitalKontaktinformasjonResponse dkifResponse) {
-        WSKontaktinformasjon digitalKontaktinformasjon = dkifResponse.getDigitalKontaktinformasjon();
-        if (digitalKontaktinformasjon == null || digitalKontaktinformasjon.getMobiltelefonnummer() == null) {
-            return "";
-        }
-        return digitalKontaktinformasjon.getMobiltelefonnummer().getValue();
-    }
-    
-    private static String finnEpost(WSHentDigitalKontaktinformasjonResponse dkifResponse) {
-        WSKontaktinformasjon digitalKontaktinformasjon = dkifResponse.getDigitalKontaktinformasjon();
-        if (digitalKontaktinformasjon == null || digitalKontaktinformasjon.getEpostadresse() == null) {
-            return "";
-        }
-        return digitalKontaktinformasjon.getEpostadresse().getValue();
     }
 
     private XMLHentKontaktinformasjonOgPreferanserRequest lagXMLRequestPreferanser(String ident) {
