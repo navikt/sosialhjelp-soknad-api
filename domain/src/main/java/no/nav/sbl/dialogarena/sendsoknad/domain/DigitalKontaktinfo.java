@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-public class Kontaktinfo {
+public class DigitalKontaktinfo {
     private String epostadresse;
     private String mobilnummer;
 
@@ -12,12 +12,12 @@ public class Kontaktinfo {
         return mobilnummer;
     }
 
-    public Kontaktinfo withEpostadresse(String epostadresse) {
+    public DigitalKontaktinfo withEpostadresse(String epostadresse) {
         this.epostadresse = epostadresse;
         return this;
     }
 
-    public Kontaktinfo withMobilnummer(String mobilnummer) {
+    public DigitalKontaktinfo withMobilnummer(String mobilnummer) {
         this.mobilnummer = mobilnummer;
         return this;
     }

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktinfo;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
@@ -24,7 +24,7 @@ public class EpostService {
     private DigitalKontaktinformasjonV1 dkif;
 
     @Cacheable("dkifCache")
-    public Kontaktinfo hentInfoFraDKIF(String ident) {
+    public DigitalKontaktinfo hentInfoFraDKIF(String ident) {
         try {
             return mapResponsTilKontaktInfo(dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident)));
         }catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
@@ -35,15 +35,15 @@ public class EpostService {
             logger.info("Feil ved henting fra dkif: {}", e.getMessage());
         }
 
-        return new Kontaktinfo().withEpostadresse("").withMobilnummer("");
+        return new DigitalKontaktinfo().withEpostadresse("").withMobilnummer("");
     }
 
-    Kontaktinfo mapResponsTilKontaktInfo(WSHentDigitalKontaktinformasjonResponse response) {
+    DigitalKontaktinfo mapResponsTilKontaktInfo(WSHentDigitalKontaktinformasjonResponse response) {
         if (response == null || response.getDigitalKontaktinformasjon() == null) {
-            return new Kontaktinfo();
+            return new DigitalKontaktinfo();
         }
         WSKontaktinformasjon digitalKontaktinformasjon = response.getDigitalKontaktinformasjon();
-        return new Kontaktinfo()
+        return new DigitalKontaktinfo()
                 .withEpostadresse(digitalKontaktinformasjon.getEpostadresse() != null ?
                         digitalKontaktinformasjon.getEpostadresse().getValue() : "")
                 .withMobilnummer(digitalKontaktinformasjon.getMobiltelefonnummer() != null ?
