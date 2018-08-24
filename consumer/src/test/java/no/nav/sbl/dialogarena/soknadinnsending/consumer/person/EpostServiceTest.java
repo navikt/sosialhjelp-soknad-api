@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktinfo;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
@@ -37,19 +37,19 @@ public class EpostServiceTest {
                         .withEpostadresse(new WSEpostadresse().withValue(EPOST))
                         .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(MOBILNUMMER)));
 
-        Kontaktinfo kontaktinfo = epostService.mapResponsTilKontaktInfo(response);
+        DigitalKontaktinfo digitalKontaktinfo = epostService.mapResponsTilKontaktInfo(response);
 
-        assertThat(kontaktinfo.getEpostadresse(), is(EPOST));
-        assertThat(kontaktinfo.getMobilnummer(), is(MOBILNUMMER));
+        assertThat(digitalKontaktinfo.getEpostadresse(), is(EPOST));
+        assertThat(digitalKontaktinfo.getMobilnummer(), is(MOBILNUMMER));
     }
 
     @Test
     public void returnererTomEpostHvisDKIFErNede() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         when(dkif.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class))).thenThrow(new HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet());
 
-        Kontaktinfo kontaktinfo = epostService.hentInfoFraDKIF(FNR);
+        DigitalKontaktinfo digitalKontaktinfo = epostService.hentInfoFraDKIF(FNR);
 
-        assertThat(kontaktinfo.getEpostadresse(), isEmptyString());
-        assertThat(kontaktinfo.getMobilnummer(), isEmptyString());
+        assertThat(digitalKontaktinfo.getEpostadresse(), isEmptyString());
+        assertThat(digitalKontaktinfo.getMobilnummer(), isEmptyString());
     }
 }

@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktinfo;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.PersonaliaBuilder;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AdresseTransform;
@@ -66,7 +66,7 @@ public class PersonaliaFletter {
         }
 
         XMLBruker xmlBruker = (XMLBruker) preferanserResponse.getPerson();
-        Kontaktinfo kontaktinfo = epostService.hentInfoFraDKIF(fodselsnummer);
+        DigitalKontaktinfo digitalKontaktinfo = epostService.hentInfoFraDKIF(fodselsnummer);
 
         return PersonaliaBuilder.
                 with()
@@ -82,8 +82,8 @@ public class PersonaliaFletter {
                 .kjonn(person.getKjonn())
                 .sivilstatus(person.getSivilstatus())
                 .ektefelle(personService.hentEktefelle(fodselsnummer))
-                .epost(kontaktinfo.getEpostadresse())
-                .mobiltelefon(kontaktinfo.getMobilnummer())
+                .epost(digitalKontaktinfo.getEpostadresse())
+                .mobiltelefon(digitalKontaktinfo.getMobilnummer())
                 .gjeldendeAdresse(finnGjeldendeAdresse(xmlBruker, kodeverk))
                 .sekundarAdresse(finnSekundarAdresse(xmlBruker, kodeverk))
                 .folkeregistrertAdresse(finnFolkeregistrertAdresse(xmlBruker, kodeverk))
