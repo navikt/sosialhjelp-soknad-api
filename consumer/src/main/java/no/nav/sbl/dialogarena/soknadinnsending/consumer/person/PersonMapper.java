@@ -1,0 +1,166 @@
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
+
+import com.google.common.collect.ImmutableMap;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
+import org.joda.time.LocalDate;
+
+import java.util.Map;
+
+import static org.joda.time.Years.yearsBetween;
+
+public class PersonMapper {
+
+    static final String KODE_6 = "SPSF";
+    static final String KODE_7 = "SPFO";
+    static final String KODE_6_TALLFORM = "6";
+    static final String KODE_7_TALLFORM = "7";
+    static final String DOED = "DØD";
+    static final String UTVANDRET = "UTVA";
+
+    private static final Map<String, String> MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<String, String>()
+            .put("GIFT", "gift")
+            .put("GLAD", "gift")
+            .put("REPA", "gift")
+            .put("SAMB", "samboer")
+            .put("UGIF", "ugift")
+            .put("ENKE", "enke")
+            .put("GJPA", "enke")
+            .put("SEPA", "separert")
+            .put("SEPR", "separert")
+            .put("SKIL", "skilt")
+            .put("SKPA", "skilt").build();
+
+    static no.nav.sbl.dialogarena.sendsoknad.domain.Person mapXmlPersonTilPerson(Person xmlPerson) {
+        if (xmlPerson == null) {
+            return null;
+        }
+        return new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+                .withFornavn(finnFornavn(xmlPerson))
+                .withMellomnavn(finnMellomnavn(xmlPerson))
+                .withEtternavn(finnEtternavn(xmlPerson))
+                .withSammensattNavn(finnSammensattNavn(xmlPerson))
+                .withFnr(finnFnr(xmlPerson))
+                .withFodselsdato(finnFodselsdato(xmlPerson))
+                .withAlder(String.valueOf(finnAlder(finnFodselsdato(xmlPerson))))
+                .withKjonn(finnKjonn(xmlPerson).toLowerCase())
+                .withSivilstatus(finnSivilstatus(xmlPerson))
+                .withStatsborgerskap(finnStatsborgerskap(xmlPerson))
+                .withDiskresjonskode(finnDiskresjonskode(xmlPerson));
+    }
+
+    static boolean xmlPersonHarDiskresjonskode(Person xmlPerson) {
+        final String diskresjonskode = finnDiskresjonskode(xmlPerson);
+        return KODE_6_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_6.equalsIgnoreCase(diskresjonskode)
+                || KODE_7_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_7.equalsIgnoreCase(diskresjonskode);
+    }
+
+    private static String finnDiskresjonskode(Person xmlPerson) {
+        if (xmlPerson.getDiskresjonskode() == null) {
+            return null;
+        }
+        return xmlPerson.getDiskresjonskode().getValue();
+    }
+
+    static boolean erDoed(Person xmlPerson) {
+        String personstatus = finnPersonstatus(xmlPerson);
+        return xmlPerson.getDoedsdato() != null || (personstatus != null && DOED.equals(personstatus));
+    }
+
+    static boolean personErUtvandret(Person xmlPerson) {
+        if (xmlPerson.getPersonstatus() == null || xmlPerson.getPersonstatus().getPersonstatus() == null) {
+            return false;
+        }
+        return UTVANDRET.equalsIgnoreCase(finnPersonstatus(xmlPerson));
+    }
+
+    private static String finnPersonstatus(Person xmlPerson) {
+        Personstatus personstatus = xmlPerson.getPersonstatus();
+        if (personstatus != null && personstatus.getPersonstatus() != null) {
+            return personstatus.getPersonstatus().getValue();
+        }
+        return "";
+    }
+
+    private static String finnKjonn(Person xmlPerson) {
+        Kjoenn kjoenn = xmlPerson.getKjoenn();
+        if (kjoenn != null && kjoenn.getKjoenn() != null) {
+            return kjoenn.getKjoenn().getValue();
+        }
+        return "";
+    }
+
+    static boolean erMyndig(LocalDate fodselsdato) {
+        return finnAlder(fodselsdato) >= 18;
+    }
+
+    private static int finnAlder(LocalDate fodselsdato) {
+        if (fodselsdato != null) {
+            return yearsBetween(fodselsdato, new LocalDate()).getYears();
+        }
+        return 0;
+    }
+
+    static LocalDate finnFodselsdato(Person xmlPerson) {
+        if (xmlPerson.getFoedselsdato() == null || xmlPerson.getFoedselsdato().getFoedselsdato() == null) {
+            return null;
+        }
+        return new LocalDate(xmlPerson.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
+    }
+
+    static String finnSivilstatus(Person xmlPerson) {
+        if (xmlPerson.getSivilstand() == null || xmlPerson.getSivilstand().getSivilstand() == null) {
+            return null;
+        }
+        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(xmlPerson.getSivilstand().getSivilstand().getValue());
+    }
+
+    static String finnFornavn(Person xmlPerson) {
+        return fornavnExists(xmlPerson) ? xmlPerson.getPersonnavn().getFornavn() : "";
+    }
+
+    private static boolean fornavnExists(Person xmlPerson) {
+        return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getFornavn() != null;
+    }
+
+    static String finnMellomnavn(Person xmlPerson) {
+        return mellomnavnExists(xmlPerson) ? xmlPerson.getPersonnavn().getMellomnavn() : "";
+    }
+
+    private static boolean mellomnavnExists(Person xmlPerson) {
+        return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getMellomnavn() != null;
+    }
+
+    static String finnEtternavn(Person xmlPerson) {
+        return etternavnExists(xmlPerson) ? xmlPerson.getPersonnavn().getEtternavn() : "";
+    }
+
+    private static boolean etternavnExists(Person xmlPerson) {
+        return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getEtternavn() != null;
+    }
+
+    static String finnSammensattNavn(Person xmlPerson) {
+        if (fornavnExists(xmlPerson) && mellomnavnExists(xmlPerson)) {
+            return finnFornavn(xmlPerson) + " " + finnMellomnavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
+        } else if (fornavnExists(xmlPerson)) {
+            return finnFornavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
+        } else {
+            return finnEtternavn(xmlPerson);
+        }
+    }
+
+    static String finnFnr(Person xmlPerson) {
+        if (xmlPerson.getIdent() == null) {
+            return null;
+        }
+        return xmlPerson.getIdent().getIdent();
+    }
+
+    private static String finnStatsborgerskap(Person xmlPerson) {
+        if (xmlPerson.getStatsborgerskap() != null && xmlPerson.getStatsborgerskap().getLand() != null) {
+            Statsborgerskap statsborgerskap = xmlPerson.getStatsborgerskap();
+            return statsborgerskap.getLand().getValue();
+        } else {
+            return "NOR";
+        }
+    }
+}
