@@ -2,7 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
@@ -30,8 +31,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
@@ -45,10 +45,6 @@ public class PersonaliaFletterTest {
     private static final String BARN_IDENT = "01010091736";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
-    private static final String PARTNER_IDENT = "21095200912";
-    private static final String PARTNER_FORNAVN = "Kristin";
-    private static final String PARTNER_MELLOMNAVN = "Mellomnavn";
-    private static final String PARTNER_ETTERNAVN = "Partner";
 
     private static final String ET_FORNAVN = "Ola";
     private static final String ET_MELLOMNAVN = "Johan";
@@ -82,13 +78,6 @@ public class PersonaliaFletterTest {
 
     private static final String NORGE = "Norge";
     private static final String NORGE_KODE = "NOR";
-    private static final String SIVILSTATUS_REPA = "REPA";
-    private static final String SIVILSTATUS_GIFT = "GIFT";
-    private static final String SIVILSTATUS_GLAD = "GLAD";
-    private static final String SIVILSTATUS_UGIF = "UGIF";
-    private static final int PARTNER_FODSELSAR = 1952;
-    private static final int PARTNER_FODSELSMANED = 9;
-    private static final int PARTNER_FODSELSDAG = 21;
 
     @Mock
     private PersonService personMock;
@@ -379,222 +368,6 @@ public class PersonaliaFletterTest {
         when(personMock.hentKjerneinformasjon(any(String.class))).thenThrow(new WebServiceException());
 
         personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
-    }
-
-    @Test
-    public void finnEktefelleSetterRiktigInfoForRegistrertPartnerUtenDiskresjonskodeOgSammeAdresse() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_REPA, RELASJON_REGISTRERT_PARTNER, false, "", true);
-
-        Ektefelle registrertPartner = personaliaFletter.finnEktefelle(person);
-
-        assertThat(registrertPartner.getFnr(), is(PARTNER_IDENT));
-        assertThat(registrertPartner.getFornavn(), is(PARTNER_FORNAVN));
-        assertThat(registrertPartner.getMellomnavn(), is(PARTNER_MELLOMNAVN));
-        assertThat(registrertPartner.getEtternavn(), is(PARTNER_ETTERNAVN));
-        assertThat(registrertPartner.getFodselsdato().getYear(), is(PARTNER_FODSELSAR));
-        assertThat(registrertPartner.getFodselsdato().getMonthOfYear(), is(PARTNER_FODSELSMANED));
-        assertThat(registrertPartner.getFodselsdato().getDayOfMonth(), is(PARTNER_FODSELSDAG));
-        assertThat(registrertPartner.erFolkeregistrertsammen(), is(true));
-        assertThat(registrertPartner.harIkketilgangtilektefelle(), is(false));
-    }
-
-    @Test
-    public void finnEktefelleSetterRiktigInfoForEktefelleUtenDiskresjonskodeOgUlikFolkeregistrertAdresse() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, false, "", false);
-
-        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
-
-        assertThat(ektefelle.getFnr(), is(PARTNER_IDENT));
-        assertThat(ektefelle.getFornavn(), is(PARTNER_FORNAVN));
-        assertThat(ektefelle.getMellomnavn(), is(PARTNER_MELLOMNAVN));
-        assertThat(ektefelle.getEtternavn(), is(PARTNER_ETTERNAVN));
-        assertThat(ektefelle.getFodselsdato().getYear(), is(PARTNER_FODSELSAR));
-        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(PARTNER_FODSELSMANED));
-        assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(PARTNER_FODSELSDAG));
-        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
-        assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
-    }
-
-    @Test
-    public void finnEktefelleFeilerIkkeHvisInfoOmEktefelleMangler() {
-        mockGyldigPersonMedEktefelleUtenInfo();
-
-        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
-
-        assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getFornavn(), nullValue());
-        assertThat(ektefelle.getFodselsdato(), nullValue());
-        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
-        assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
-    }
-
-    @Test
-    public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodeSPSF() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, KODE_6, false);
-
-        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
-
-        assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getFornavn(), nullValue());
-        assertThat(ektefelle.getMellomnavn(), nullValue());
-        assertThat(ektefelle.getEtternavn(), nullValue());
-        assertThat(ektefelle.getFodselsdato(), nullValue());
-        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
-        assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));
-    }
-
-    @Test
-    public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodeSPFO() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, KODE_7, false);
-
-        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
-
-        assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getFornavn(), nullValue());
-        assertThat(ektefelle.getFodselsdato(), nullValue());
-        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
-        assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));
-    }
-
-    @Test
-    public void finnEktefelleViserIngenInfoForEktefelleMedDiskresjonskodePaTallform() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, KODE_6_TALLFORM, false);
-
-        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
-
-        assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getFornavn(), nullValue());
-        assertThat(ektefelle.getFodselsdato(), nullValue());
-        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
-        assertThat(ektefelle.harIkketilgangtilektefelle(), is(true));
-    }
-
-    @Test
-    public void finnEktefelleSetterRiktigInfoForEktefelleMedDiskresjonskodeUFBOgUlikFolkeregistrertAdresse() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, true, "UFB", false);
-
-        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
-
-        assertThat(ektefelle.getFnr(), is(PARTNER_IDENT));
-        assertThat(ektefelle.getFornavn(), is(PARTNER_FORNAVN));
-        assertThat(ektefelle.getMellomnavn(), is(PARTNER_MELLOMNAVN));
-        assertThat(ektefelle.getEtternavn(), is(PARTNER_ETTERNAVN));
-        assertThat(ektefelle.getFodselsdato().getYear(), is(PARTNER_FODSELSAR));
-        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(PARTNER_FODSELSMANED));
-        assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(PARTNER_FODSELSDAG));
-        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
-        assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
-    }
-
-    @Test
-    public void finnEktefelleSetterFolkeregistrertSammenTilFalseForUtvandretEktefelle() {
-        mockGyldigPersonMedUtvandretEktefelle();
-
-        Ektefelle ektefelle = personaliaFletter.finnEktefelle(person);
-
-        assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
-    }
-
-    @Test
-    public void mapTilPersonaliaSetterSivilstatusGiftForGiftSoker() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, false, "", true);
-
-        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
-
-        assertThat(personalia.getEktefelle(), notNullValue());
-        assertThat(personalia.getSivilstatus(), is("gift"));
-    }
-
-    @Test
-    public void mapTilPersonaliaSetterSivilstatusGiftForGLADSoker() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_GLAD, RELASJON_EKTEFELLE, false, "", false);
-
-        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
-
-        assertThat(personalia.getEktefelle(), notNullValue());
-        assertThat(personalia.getEktefelle().erFolkeregistrertsammen(), is(false));
-        assertThat(personalia.getSivilstatus(), is("gift"));
-    }
-
-    @Test
-    public void mapTilPersonaliaSetterSivilstatusGiftForSokerMedRegistrertPartner() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_REPA, RELASJON_REGISTRERT_PARTNER, false, "", true);
-
-        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
-
-        assertThat(personalia.getSivilstatus(), is("gift"));
-    }
-
-    @Test
-    public void mapTilPersonaliaSetterSivilstatusUgiftForUgiftSoker() {
-        Sivilstander sivilstander = new Sivilstander();
-        sivilstander.setValue(SIVILSTATUS_UGIF);
-        Sivilstand sivilstand = new Sivilstand();
-        sivilstand.setSivilstand(sivilstander);
-        person.setSivilstand(sivilstand);
-
-        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
-
-        assertThat(personalia.getSivilstatus(), is("ugift"));
-    }
-
-    private void mockGyldigPersonMedPartner(String sivilstatus, String relasjonstype, boolean partnerHarDiskresjonskode, String diskresjonskode, boolean harSammeFolkeregistrerteAdresse) {
-        Person partner = genererPersonMedGyldigIdentOgNavn(PARTNER_IDENT, PARTNER_FORNAVN, PARTNER_MELLOMNAVN, PARTNER_ETTERNAVN);
-        partner.setFoedselsdato(fodseldato(PARTNER_FODSELSAR, PARTNER_FODSELSMANED, PARTNER_FODSELSDAG));
-        if (partnerHarDiskresjonskode) {
-            Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
-            diskresjonskoder.setValue(diskresjonskode);
-            partner.setDiskresjonskode(diskresjonskoder);
-        }
-
-        Familierelasjon familierelasjon = new Familierelasjon();
-        familierelasjon.setTilPerson(partner);
-        familierelasjon.setHarSammeBosted(harSammeFolkeregistrerteAdresse);
-        Familierelasjoner familierelasjoner = new Familierelasjoner();
-        familierelasjoner.setValue(relasjonstype);
-        familierelasjon.setTilRolle(familierelasjoner);
-
-        Sivilstander sivilstander = new Sivilstander();
-        sivilstander.setValue(sivilstatus);
-        Sivilstand sivilstand = new Sivilstand();
-        sivilstand.setSivilstand(sivilstander);
-        person.setSivilstand(sivilstand);
-
-        person.getHarFraRolleI().add(familierelasjon);
-    }
-
-    private void mockGyldigPersonMedUtvandretEktefelle() {
-        mockGyldigPersonMedPartner(SIVILSTATUS_GIFT, RELASJON_EKTEFELLE, false, "", true);
-
-        Personstatuser personstatuser = new Personstatuser();
-        personstatuser.setValue(UTVANDRET);
-        Personstatus personstatus = new Personstatus();
-        personstatus.setPersonstatus(personstatuser);
-
-        for (Familierelasjon familierelasjon : person.getHarFraRolleI()) {
-            if (RELASJON_EKTEFELLE.equals(familierelasjon.getTilRolle().getValue())) {
-                familierelasjon.getTilPerson().setPersonstatus(personstatus);
-                break;
-            }
-        }
-    }
-
-    private void mockGyldigPersonMedEktefelleUtenInfo() {
-        Person partner = new Person();
-
-        Familierelasjon familierelasjon = new Familierelasjon();
-        familierelasjon.setTilPerson(partner);
-        familierelasjon.setHarSammeBosted(false);
-        Familierelasjoner familierelasjoner = new Familierelasjoner();
-        familierelasjoner.setValue(RELASJON_EKTEFELLE);
-        familierelasjon.setTilRolle(familierelasjoner);
-
-        Sivilstander sivilstander = new Sivilstander();
-        sivilstander.setValue(SIVILSTATUS_GIFT);
-        Sivilstand sivilstand = new Sivilstand();
-        sivilstand.setSivilstand(sivilstander);
-        person.setSivilstand(sivilstand);
-        person.getHarFraRolleI().add(familierelasjon);
     }
 
     private void mockGyldigPersonMedMidlertidigUtenlandskAdresse(int adresselinjer) {

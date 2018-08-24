@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-
 import org.joda.time.LocalDate;
 
-//@XmlRootElement
 public class Barn {
     private String fnr;
     private String fornavn;
@@ -12,6 +10,7 @@ public class Barn {
     private LocalDate fodselsdato;
     private boolean folkeregistrertsammen;
     private boolean ikkeTilgang;
+    private boolean utvandret;
 
     public String getFnr() {
         return fnr;
@@ -39,6 +38,10 @@ public class Barn {
 
     public boolean harIkkeTilgang() {
         return ikkeTilgang;
+    }
+
+    public boolean erUtvandret() {
+        return utvandret;
     }
 
     public Barn withFnr(String fnr) {
@@ -73,6 +76,11 @@ public class Barn {
 
     public Barn withIkkeTilgang(boolean ikkeTilgang) {
         this.ikkeTilgang = ikkeTilgang;
+        return this;
+    }
+
+    public Barn withUtvandret(boolean utvandret) {
+        this.utvandret = utvandret;
         return this;
     }
 }
