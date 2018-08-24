@@ -39,6 +39,7 @@ public class BarnBolkTest {
     }
 
 
+    @Ignore
     @SuppressWarnings("unchecked")
     @Test
     public void skalMappeBarnTilFaktum() {
