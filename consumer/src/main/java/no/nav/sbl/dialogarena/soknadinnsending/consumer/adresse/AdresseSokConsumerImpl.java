@@ -36,7 +36,16 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public AdressesokRespons sokAdresse(Sokedata sokedata) {
-        final Invocation.Builder request = lagRequest(sokedata);
+        final AdressesokRespons respons = sokAdresseCall(sokedata, "E");
+        if (!respons.adresseDataList.isEmpty()) {
+            return respons;
+        }
+        
+        return sokAdresseCall(sokedata, "F");
+    }
+    
+    private AdressesokRespons sokAdresseCall(Sokedata sokedata, String soketype) {
+        final Invocation.Builder request = lagRequest(sokedata, soketype);
         Response response = null;
 
         try {
@@ -91,14 +100,14 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         return s == null || s.trim().length() == 0;
     }
 
-    private Invocation.Builder lagRequest(Sokedata sokedata) {
+    private Invocation.Builder lagRequest(Sokedata sokedata, String soketype) {
         String consumerId = getSubjectHandler().getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
         final String maxretur = (sokedata.postnummer != null) ? "100" : "10";
         WebTarget b = client.target(endpoint + "adressesoek")
-                .queryParam("soketype", "E")
+                .queryParam("soketype", soketype)
                 .queryParam("alltidRetur", "true")
                 .queryParam("maxretur", maxretur);
         
