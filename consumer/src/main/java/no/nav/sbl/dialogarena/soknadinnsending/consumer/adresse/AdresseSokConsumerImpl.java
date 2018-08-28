@@ -96,10 +96,11 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
+        final String maxretur = (sokedata.postnummer != null) ? "100" : "10";
         WebTarget b = client.target(endpoint + "adressesoek")
                 .queryParam("soketype", "E")
                 .queryParam("alltidRetur", "true")
-                .queryParam("maxretur", "100");
+                .queryParam("maxretur", maxretur);
         
         if (sokedata.adresse != null && !sokedata.adresse.trim().equals("")) {
             b = b.queryParam("adresse", sokedata.adresse);
