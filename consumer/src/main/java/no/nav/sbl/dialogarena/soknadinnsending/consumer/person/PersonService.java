@@ -51,8 +51,8 @@ public class PersonService {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
             throw new IkkeFunnetException("fant ikke bruker: " + request.getIdent(), e);
         } catch (HentKjerneinformasjonSikkerhetsbegrensning e) {
-            logger.error("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
-            throw new SikkerhetsBegrensningException("Kunne ikke hente bruker: " + request.getIdent(), e);
+            logger.warn("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
+            throw new SikkerhetsBegrensningException("Kunne ikke hente bruker på grunn av manglende tilgang", e);
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS (Person-servicen).", e);
             throw new TjenesteUtilgjengeligException("Person", e);

@@ -1,6 +1,7 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
