@@ -13,7 +13,7 @@
     </faktum>
     <faktum>
         <id>soknadsmottaker</id>
-        <type>composite</type>
+        <type>hidden</type>
         <panel>soknadsmottakerBolk</panel>
         <properties>
             <property>
