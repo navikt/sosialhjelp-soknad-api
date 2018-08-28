@@ -53,7 +53,8 @@ public class SoknadsmottakerRessurs {
         final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad, valg);
         
         return adresseForslagene.stream().map((adresseForslag) -> {
-            final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+            final String gt = (adresseForslag.bydel != null) ? adresseForslag.bydel : adresseForslag.geografiskTilknytning;
+            final NavEnhet navEnhet = norgService.finnEnhetForGt(gt);
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
