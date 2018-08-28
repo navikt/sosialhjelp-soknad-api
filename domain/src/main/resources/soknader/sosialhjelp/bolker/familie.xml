@@ -3,6 +3,12 @@
     <faktum>
         <id>familie.sivilstatus</id>
         <type>radio</type>
+        <constraints>
+            <constraint>
+                <faktum>familie.sivilstatus.sivilstatusOverskrivesAvBruker</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
         <panel>familieBolk</panel>
         <optional>true</optional>
     </faktum>
@@ -14,10 +20,6 @@
             <value>gift</value>
         </dependOnValues>
         <properties>
-            <property>
-                <id>navn</id>
-                <type>textbox</type>
-            </property>
             <property>
                 <id>fornavn</id>
                 <type>textbox</type>
@@ -54,9 +56,22 @@
     </faktum>
 
     <faktum>
+        <id>familie.sivilstatus.sivilstatusOverskrivesAvBruker</id>
+        <panel>familieBolk</panel>
+        <type>hidden</type>
+        <optional>true</optional>
+    </faktum>
+
+    <faktum>
         <id>system.familie.sivilstatus</id>
         <type>radio</type>
         <panel>familieBolk</panel>
+        <constraints>
+            <constraint>
+                <faktum>familie.sivilstatus.sivilstatusOverskrivesAvBruker</faktum>
+                <expression>value != 'true'</expression>
+            </constraint>
+        </constraints>
         <optional>true</optional>
     </faktum>
     <faktum>
@@ -85,7 +100,7 @@
             </property>
             <property>
                 <id>fnr</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>folkeregistrertsammen</id>
@@ -93,7 +108,7 @@
             </property>
             <property>
                 <id>ikketilgangtilektefelle</id>
-                <type>bool</type>
+                <type>hidden</type>
             </property>
         </properties>
         <optional>true</optional>
@@ -123,10 +138,6 @@
         <type>composite</type>
         <flereTillatt>true</flereTillatt>
         <properties>
-            <property>
-                <id>navn</id>
-                <type>textbox</type>
-            </property>
             <property>
                 <id>fornavn</id>
                 <type>textbox</type>
