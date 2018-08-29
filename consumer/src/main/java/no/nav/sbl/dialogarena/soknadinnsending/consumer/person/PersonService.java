@@ -118,7 +118,7 @@ public class PersonService {
                                     .withEtternavn(finnEtternavn(xmlBarnMedMerInfo))
                                     .withFnr(finnFnr(xmlBarnMedMerInfo))
                                     .withFodselsdato(finnFodselsdato(xmlBarnMedMerInfo))
-                                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted())
+                                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
                                     .withUtvandret(personErUtvandret(xmlBarnMedMerInfo))
                                     .withIkkeTilgang(false));
                         }
