@@ -2,8 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status;
 import org.slf4j.Logger;
@@ -151,14 +150,14 @@ public final class JsonFamilieConverter {
     }
 
     private static JsonHarForsorgerplikt tilHarForsorgerPlikt(WebSoknad webSoknad) {
-        String harBarn = webSoknad.getValueForFaktum("familie.barn");
+        String harBarn = webSoknad.getValueForFaktum("system.familie.barn");
 
         if (erTom(harBarn)) {
             return null;
         }
 
         return new JsonHarForsorgerplikt()
-                .withKilde(BRUKER)
+                .withKilde(SYSTEM)
                 .withVerdi(Boolean.parseBoolean(harBarn));
     }
 
@@ -190,36 +189,29 @@ public final class JsonFamilieConverter {
     }
 
     private static List<JsonAnsvar> tilAnsvar(WebSoknad webSoknad) {
-        List<Faktum> barnefakta = webSoknad.getFaktaMedKey("familie.barn.true.barn");
+        List<Faktum> barnefakta = webSoknad.getFaktaMedKey("system.familie.barn.true.barn");
 
         return barnefakta.stream().map(JsonFamilieConverter::faktumTilAnsvar).collect(Collectors.toList());
     }
 
-    private static JsonAnsvar faktumTilAnsvar(Faktum faktum) {
+    static JsonAnsvar faktumTilAnsvar(Faktum faktum) {
         Map<String, String> barn = faktum.getProperties();
         JsonBarn jsonBarn = new JsonBarn()
-                .withKilde(BRUKER)
-                .withFodselsdato(tilJsonFodselsdato(barn.get("fnr")))
-                .withPersonIdentifikator(tilJsonPersonidentifikator(barn.get("fnr"), barn.get("pnr")));
-        if (isEmpty(barn.get("navn"))) {
-            jsonBarn.setNavn(mapNavnFraFaktumTilJsonNavn(barn));
-        } else {
-            jsonBarn.setNavn(new JsonNavn()
-                    .withFornavn(xxxFornavnFraNavn(barn.get("navn")))
-                    .withMellomnavn("")
-                    .withEtternavn(xxxEtternavnFraNavn(barn.get("navn"))));
-        }
+                .withKilde(SYSTEM)
+                .withNavn(mapNavnFraFaktumTilJsonNavn(barn))
+                .withFodselsdato(tilJsonFodselsdato(barn.get("fodselsdato")))
+                .withPersonIdentifikator(barn.get("fnr"))
+                .withHarDiskresjonskode(valueOf(barn.get("ikketilgangtilbarn")));
 
         JsonAnsvar ansvar = new JsonAnsvar()
                 .withBarn(jsonBarn);
 
-        if (erIkkeTom(barn.get("borsammen"))) {
-            boolean borsammen = Boolean.parseBoolean(barn.get("borsammen"));
-            ansvar.withBorSammenMed(
-                    new JsonBorSammenMed()
+        if (erIkkeTom(barn.get("folkeregistrertsammen"))) {
+            boolean borsammen = valueOf(barn.get("folkeregistrertsammen"));
+            ansvar.withErFolkeregistrertSammen(
+                    new JsonErFolkeregistrertSammen()
                             .withVerdi(borsammen)
-                            .withKilde(JsonKildeBruker.BRUKER)
-            );
+                            .withKilde(JsonKildeSystem.SYSTEM));
 
             if (!borsammen) {
                 if (erIkkeTom(barn.get("grad"))) {

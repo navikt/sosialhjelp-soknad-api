@@ -115,71 +115,13 @@
     </faktum>
 
     <faktum>
-        <id>familie.barn</id>
-        <type>bool</type>
-        <panel>familieBolk</panel>
-        <optional>true</optional>
-    </faktum>
-    <faktum>
-        <id>familie.barn.true.barnebidrag</id>
-        <dependOn>familie.barn</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-        <type>radio</type>
-        <optional>true</optional>
-    </faktum>
-    <faktum>
-        <id>familie.barn.true.barn</id>
-        <dependOn>familie.barn</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-        <type>composite</type>
-        <flereTillatt>true</flereTillatt>
-        <properties>
-            <property>
-                <id>fornavn</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>mellomnavn</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>etternavn</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>fnr</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>pnr</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>borsammen</id>
-                <type>bool</type>
-            </property>
-            <property>
-                <id>grad</id>
-                <type>textbox</type>
-                <constraints>
-                    <constraint>properties['borsammen'] == 'false'</constraint>
-                </constraints>
-            </property>
-        </properties>
-        <optional>true</optional>
-    </faktum>
-    <faktum>
         <id>system.familie.barn</id>
         <type>bool</type>
         <panel>familieBolk</panel>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>system.familie.barn.true.barnebidrag</id>
+        <id>familie.barn.true.barnebidrag</id>
         <dependOn>system.familie.barn</dependOn>
         <dependOnValues>
             <value>true</value>
