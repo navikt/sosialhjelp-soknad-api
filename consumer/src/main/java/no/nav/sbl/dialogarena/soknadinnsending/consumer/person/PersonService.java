@@ -104,7 +104,7 @@ public class PersonService {
                 Person xmlBarn = familierelasjon.getTilPerson();
                 if (xmlPersonHarDiskresjonskode(xmlBarn)) {
                     result.add(new Barn().withIkkeTilgang(true));
-                    break;
+                    continue;
                 }
 
                 if (xmlBarn.getIdent() != null && xmlBarn.getIdent().getIdent() != null) {

@@ -39,9 +39,9 @@ public class PersonMock {
         Familierelasjon barn = lagBarn(FNR_BARN, "Dole", "Mockmann", doedsdato);
         barn.getTilPerson().setFoedselsdato(fodseldato(2005, 1, 1));
         Familierelasjon barn2 = lagBarn(FNR_BARN2, "Ole", "Mockmann");
-        barn2.getTilPerson().setFoedselsdato(fodseldato(2010, 6, 3));
+        barn2.getTilPerson().setFoedselsdato(fodseldato(2017, 6, 3));
         Familierelasjon barn3 = lagBarn(FNR_BARN3, "Doffen", "Mockmann");
-        barn3.getTilPerson().setFoedselsdato(fodseldato(2010, 6, 3));
+        barn3.getTilPerson().setFoedselsdato(fodseldato(2016, 6, 3));
         familieRelasjoner.add(barn);
         familieRelasjoner.add(barn2);
         familieRelasjoner.add(barn3);

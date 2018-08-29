@@ -8,11 +8,11 @@ import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRespo
 import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock.*;
 
 public class PersonPortTypeMock implements PersonPortType {
-    Person person;
-    Person barn;
-    Person barn2;
-    Person barn3;
-    Person ektefelle;
+    private Person person;
+    private Person barn;
+    private Person barn2;
+    private Person barn3;
+    private Person ektefelle;
 
     @Override
     public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
@@ -24,7 +24,7 @@ public class PersonPortTypeMock implements PersonPortType {
             respons.setPerson(barn);
         } else if (FNR_BARN2.equals(request.getIdent())) {
             respons.setPerson(barn2);
-        } else if (FNR_BARN3.equals(respons.getPerson())) {
+        } else if (FNR_BARN3.equals(request.getIdent())) {
             respons.setPerson(barn3);
         } else {
             respons.setPerson(person);
