@@ -225,6 +225,10 @@
                 <type>bool</type>
             </property>
             <property>
+                <id>utvandret</id>
+                <type>bool</type>
+            </property>
+            <property>
                 <id>grad</id>
                 <type>textbox</type>
                 <constraints>
