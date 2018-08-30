@@ -1,5 +1,31 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.ByteArrayInputStream;
+import java.util.*;
+
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
@@ -11,52 +37,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sa
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
 import static org.slf4j.LoggerFactory.getLogger;
-
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import no.nav.metrics.MetricsFactory;
-import no.nav.metrics.Timer;
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.FilData;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 
 
 @Component
@@ -97,9 +77,6 @@ public class SoknadDataFletter {
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
-
-    @Inject
-    private MigrasjonHandterer migrasjonHandterer;
 
     private Map<String, BolkService> bolker;
 
@@ -309,9 +286,6 @@ public class SoknadDataFletter {
                 .medStegliste(config.getStegliste(soknad.getSoknadId()))
                 .medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
-
-
-        soknad = migrasjonHandterer.handterMigrasjon(soknad);
 
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
