@@ -221,6 +221,13 @@ public final class JsonFamilieConverter {
                                     .withKilde(JsonKildeBruker.BRUKER)
                     );
                 }
+            } else if (erIkkeTom(barn.get("deltbosted"))) {
+                boolean deltBosted = valueOf(barn.get("deltbosted"));
+                ansvar.withHarDeltBosted(
+                        new JsonHarDeltBosted()
+                                .withVerdi(deltBosted)
+                                .withKilde(JsonKildeBruker.BRUKER)
+                );
             }
         }
 
