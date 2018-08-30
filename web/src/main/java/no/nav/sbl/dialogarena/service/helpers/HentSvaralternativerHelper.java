@@ -86,7 +86,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
     protected void finnFaktaForSvarAlternativer(OppsummeringsFaktum oppsummeringsFaktum, List<OppsummeringsFaktum> faktaSomSkalSkrivesUt) {
 
-        if (oppsummeringsFaktum.barneFakta.isEmpty()) {
+        if (oppsummeringsFaktum.barneFakta == null || oppsummeringsFaktum.barneFakta.isEmpty()) {
             faktaSomSkalSkrivesUt.add(oppsummeringsFaktum);
 
         } else {
