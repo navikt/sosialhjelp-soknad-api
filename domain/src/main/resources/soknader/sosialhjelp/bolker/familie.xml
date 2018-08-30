@@ -171,6 +171,13 @@
                 <type>bool</type>
             </property>
             <property>
+                <id>deltbosted</id>
+                <type>bool</type>
+                <constraints>
+                    <constraint>properties['folkeregistrertsammen'] == 'true'</constraint>
+                </constraints>
+            </property>
+            <property>
                 <id>grad</id>
                 <type>textbox</type>
                 <constraints>

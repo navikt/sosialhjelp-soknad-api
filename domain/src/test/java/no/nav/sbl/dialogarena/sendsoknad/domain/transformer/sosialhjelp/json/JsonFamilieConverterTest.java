@@ -131,6 +131,7 @@ public class JsonFamilieConverterTest {
         JsonBarn jsonBarn = jsonAnsvar.getBarn();
 
         assertThat(jsonAnsvar.getBorSammenMed(), nullValue());
+        assertThat(jsonAnsvar.getHarDeltBosted(), nullValue());
         assertThat(jsonAnsvar.getErFolkeregistrertSammen().getVerdi(), is(false));
         assertThat(jsonAnsvar.getErFolkeregistrertSammen().getKilde(), is(JsonKildeSystem.SYSTEM));
         assertThat(jsonAnsvar.getSamvarsgrad().getVerdi(), is(GRAD));
@@ -162,6 +163,18 @@ public class JsonFamilieConverterTest {
         assertThat(jsonBarn.getFodselsdato(), nullValue());
         assertThat(jsonBarn.getHarDiskresjonskode(), is(true));
         assertThat(jsonBarn.getKilde(), is(SYSTEM));
+    }
+
+    @Test
+    public void faktumTilAnsvarSetterRiktigInformasjonForBarnMedDeltBosted() {
+        JsonAnsvar jsonAnsvar = faktumTilAnsvar(lagBarnMedSammeFolkeregistrertAdresseOgDeltBostedFaktum());
+
+        assertThat(jsonAnsvar.getBorSammenMed(), nullValue());
+        assertThat(jsonAnsvar.getSamvarsgrad(), nullValue());
+        assertThat(jsonAnsvar.getErFolkeregistrertSammen().getVerdi(), is(true));
+        assertThat(jsonAnsvar.getErFolkeregistrertSammen().getKilde(), is(JsonKildeSystem.SYSTEM));
+        assertThat(jsonAnsvar.getHarDeltBosted().getVerdi(), is(true));
+        assertThat(jsonAnsvar.getHarDeltBosted().getKilde(), is(JsonKildeBruker.BRUKER));
     }
 
     @Test
@@ -214,6 +227,20 @@ public class JsonFamilieConverterTest {
                 .medSystemProperty("folkeregistrertsammen", "false")
                 .medSystemProperty("utvandret", "false")
                 .medSystemProperty("grad", valueOf(GRAD));
+    }
+
+    private Faktum lagBarnMedSammeFolkeregistrertAdresseOgDeltBostedFaktum() {
+        return new Faktum().medKey("system.familie.barn.true.barn")
+                .medUnikProperty("fnr")
+                .medSystemProperty("fnr", FNR)
+                .medSystemProperty("fornavn", FORNAVN)
+                .medSystemProperty("mellomnavn", null)
+                .medSystemProperty("etternavn", ETTERNAVN)
+                .medSystemProperty("fodselsdato", FODSELSDATO)
+                .medSystemProperty("ikketilgangtilbarn", "false")
+                .medSystemProperty("folkeregistrertsammen", "true")
+                .medSystemProperty("utvandret", "false")
+                .medSystemProperty("deltbosted", "true");
     }
 
     private Faktum lagBarnMedDiskresjonskodeFaktum() {
