@@ -1,19 +1,10 @@
-FROM openjdk:8u181-jdk
-
-ENV LC_ALL="no_NB.UTF-8"
-ENV LANG="no_NB.UTF-8"
-ENV TZ="Europe/Oslo"
-
-# Please see https://blogs.oracle.com/java-platform-group/java-se-support-for-docker-cpu-and-memory-limits
-ENV DEFAULT_JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+FROM navikt/java:8
 
 WORKDIR /app
-
-EXPOSE 8080
 
 COPY . /app/
 RUN mkdir /app/data
 RUN mkdir /app/etc
 
-ENTRYPOINT /app/bin/app
+CMD ["/app/bin/app"]
 
