@@ -6,4 +6,5 @@ COPY . /app/
 RUN mkdir /app/data
 RUN mkdir /app/etc
 
-ENTRYPOINT /app/bin/app
+CMD ["/app/bin/app"]
+
