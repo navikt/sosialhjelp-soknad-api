@@ -206,11 +206,11 @@ public class JsonFamilieConverterTest {
 
     private Faktum lagEktefelleMedDiskresjonskodeFaktum() {
         return new Faktum().medKey("system.familie.sivilstatus.gift.ektefelle")
-                .medSystemProperty("fornavn", null)
-                .medSystemProperty("mellomnavn", null)
-                .medSystemProperty("etternavn", null)
-                .medSystemProperty("fodselsdato", null)
-                .medSystemProperty("fnr", null)
+                .medSystemProperty("fornavn", "Skal aldri vises")
+                .medSystemProperty("mellomnavn", "Skal aldri vises")
+                .medSystemProperty("etternavn", "Skal aldri vises")
+                .medSystemProperty("fodselsdato", "Skal aldri vises")
+                .medSystemProperty("fnr", "Skal aldri vises")
                 .medSystemProperty("folkeregistrertsammen", "false")
                 .medSystemProperty("ikketilgangtilektefelle", "true");
     }
@@ -246,11 +246,11 @@ public class JsonFamilieConverterTest {
     private Faktum lagBarnMedDiskresjonskodeFaktum() {
         return new Faktum().medKey("system.familie.barn.true.barn")
                 .medUnikProperty("fnr")
-                .medSystemProperty("fnr", null)
-                .medSystemProperty("fornavn", null)
-                .medSystemProperty("mellomnavn", null)
-                .medSystemProperty("etternavn", null)
-                .medSystemProperty("fodselsdato", null)
+                .medSystemProperty("fnr", "Skal aldri vises")
+                .medSystemProperty("fornavn", "Skal aldri vises")
+                .medSystemProperty("mellomnavn", "Skal aldri vises")
+                .medSystemProperty("etternavn", "Skal aldri vises")
+                .medSystemProperty("fodselsdato", "Skal aldri vises")
                 .medSystemProperty("ikketilgangtilbarn", "true")
                 .medSystemProperty("folkeregistrertsammen", "false")
                 .medSystemProperty("utvandret", "false");
