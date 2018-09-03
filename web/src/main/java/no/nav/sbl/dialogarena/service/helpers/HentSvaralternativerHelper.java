@@ -4,24 +4,33 @@ import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.service.HandlebarsUtils;
 import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsFaktum;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.UrlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 @Component
 public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
+
     @Inject
-    private CmsTekst cmsTekst;
+    private NavMessageSource navMessageSource;
+
+    private static final Logger LOG = LoggerFactory.getLogger(no.nav.sbl.dialogarena.service.helpers.HentSvaralternativerHelper.class);
+
 
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
@@ -33,7 +42,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
     @Override
     public String getBeskrivelse() {
-        return "Henter svaralternativer fra cms, dersom det er flere valgmuligheter. Prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.";
+        return "Henter svaralternativer, dersom det er flere valgmuligheter. Prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.";
     }
 
     @Override
@@ -70,7 +79,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
         for (OppsummeringsFaktum oppsummeringsFaktum : oppsummeringsFakta) {
 
-            String tekst = this.cmsTekst.getCmsTekst(oppsummeringsFaktum.key(), options.params, soknad.getSoknadPrefix(), bundleName, toLocale(sprak));
+            String tekst = hentTekst(oppsummeringsFaktum.key(), options.params, soknad.getSoknadPrefix(), bundleName, toLocale(sprak));
 
             String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
 
@@ -84,7 +93,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
         return stringBuilder;
     }
 
-    protected void finnFaktaForSvarAlternativer(OppsummeringsFaktum oppsummeringsFaktum, List<OppsummeringsFaktum> faktaSomSkalSkrivesUt) {
+    private void finnFaktaForSvarAlternativer(OppsummeringsFaktum oppsummeringsFaktum, List<OppsummeringsFaktum> faktaSomSkalSkrivesUt) {
 
         if (oppsummeringsFaktum.barneFakta == null || oppsummeringsFaktum.barneFakta.isEmpty()) {
             faktaSomSkalSkrivesUt.add(oppsummeringsFaktum);
@@ -94,6 +103,23 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
             for (OppsummeringsFaktum barnefakta : oppsummeringsFaktum.barneFakta) {
                 finnFaktaForSvarAlternativer(barnefakta, faktaSomSkalSkrivesUt);
             }
+        }
+    }
+
+    private String hentTekst(String key, Object[] parameters, String soknadTypePrefix, String bundleName, Locale locale) {
+        Properties bundle = navMessageSource.getBundleFor(bundleName, locale);
+
+        String tekst = bundle.getProperty(soknadTypePrefix + "." + key);
+
+        if (tekst == null) {
+            tekst = bundle.getProperty(key);
+        }
+
+        if (tekst == null) {
+            LOG.debug(String.format("Fant ikke tekst til oppsummering for nokkel %s i bundelen %s", key, bundleName));
+            return tekst;
+        } else {
+            return MessageFormat.format(tekst, parameters);
         }
     }
 }

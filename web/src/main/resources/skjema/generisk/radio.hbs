@@ -23,16 +23,7 @@
                     </strong>
                 </p>
             {{/hvisIkkeTom}}
-            {{#hvisLik key 'familie.barn.true.barnebidrag'}}
-                <p>
-                    <h{{niva}}>Svaralternativer:</h{{niva}}>
-                    <strong>
-                        1) Jeg betaler barnebidrag 2) Jeg mottar barnebidrag 3) Jeg betaler og
-                        mottar
-                        barnebidrag 4) Ingen av delene
-                    </strong>
-                </p>
-            {{/hvisLik}}
+            {{> skjema/generisk/customSvarAlternativer }}
         {{/if}}
         {{> skjema/generisk/infotekstvalue}}
         {{> skjema/generisk/barnefakta}}
