@@ -41,9 +41,6 @@ public class SoknadDataFletterIntegrationTestContext {
     public Clock clock(){ return Clock.systemDefaultZone(); }
 
     @Bean
-    public MigrasjonHandterer migrasjonHandterer() {return new MigrasjonHandterer();}
-
-    @Bean
     public SoknadDataFletter fletter() {
         return new SoknadDataFletter();
     }

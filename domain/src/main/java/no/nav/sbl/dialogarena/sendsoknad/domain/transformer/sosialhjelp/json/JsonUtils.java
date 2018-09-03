@@ -2,8 +2,13 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Math.round;
+import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 
 public final class JsonUtils {
 
@@ -46,7 +51,18 @@ public final class JsonUtils {
         if (erTom(s)) {
             return null;
         }
+
         return Integer.valueOf(s);
+    }
+
+    public static Integer tilIntegerMedAvrunding(String s) {
+        if (erTom(s)) {
+            return null;
+        }
+        s = s.replaceAll(",", ".");
+        s = s.replaceAll("\u00A0", "");
+        double d = parseDouble(deleteWhitespace(s));
+        return (int) round(d);
     }
 
     public static boolean erTom(String s) {
