@@ -100,6 +100,13 @@ public final class JsonFamilieConverter {
     }
 
     private static JsonEktefelle tilSystemregistrertJsonEktefelle(Map<String, String> ektefelle) {
+        final String ikketilgangtilektefelle = ektefelle.get("ikketilgangtilektefelle");
+        if (erIkkeTom(ikketilgangtilektefelle) && valueOf(ikketilgangtilektefelle)) {
+            return new JsonEktefelle().withNavn(new JsonNavn()
+                    .withFornavn("")
+                    .withMellomnavn("")
+                    .withEtternavn(""));
+        }
         final JsonEktefelle jsonEktefelle = new JsonEktefelle();
         jsonEktefelle.setNavn(mapNavnFraFaktumTilJsonNavn(ektefelle));
         jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fodselsdato")));
@@ -196,13 +203,22 @@ public final class JsonFamilieConverter {
 
     static JsonAnsvar faktumTilAnsvar(Faktum faktum) {
         Map<String, String> barn = faktum.getProperties();
-        JsonBarn jsonBarn = new JsonBarn()
-                .withKilde(SYSTEM)
-                .withNavn(mapNavnFraFaktumTilJsonNavn(barn))
-                .withFodselsdato(tilJsonFodselsdato(barn.get("fodselsdato")))
-                .withPersonIdentifikator(barn.get("fnr"))
-                .withHarDiskresjonskode(valueOf(barn.get("ikketilgangtilbarn")));
-
+        JsonBarn jsonBarn = new JsonBarn();
+        final String ikketilgangtilbarn = barn.get("ikketilgangtilbarn");
+        if (erIkkeTom(ikketilgangtilbarn) && valueOf(ikketilgangtilbarn)) {
+            jsonBarn.withKilde(SYSTEM)
+                    .withNavn(new JsonNavn()
+                            .withFornavn("")
+                            .withMellomnavn("")
+                            .withEtternavn(""))
+                    .withHarDiskresjonskode(true);
+        } else {
+            jsonBarn.withKilde(SYSTEM)
+                    .withNavn(mapNavnFraFaktumTilJsonNavn(barn))
+                    .withFodselsdato(tilJsonFodselsdato(barn.get("fodselsdato")))
+                    .withPersonIdentifikator(barn.get("fnr"))
+                    .withHarDiskresjonskode(false);
+        }
         JsonAnsvar ansvar = new JsonAnsvar()
                 .withBarn(jsonBarn);
 
