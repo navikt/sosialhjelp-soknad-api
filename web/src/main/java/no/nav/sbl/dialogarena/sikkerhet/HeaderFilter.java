@@ -14,6 +14,7 @@ public class HeaderFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         response.setHeader("X-Content-Type-Options", "nosniff");
         response.setHeader("X-XSS-Protection", "1; mode=block");
+        response.setHeader("Cache-Control", "private, max-age=0, no-cache, no-store");
         filterChain.doFilter(request, response);
     }
 }
