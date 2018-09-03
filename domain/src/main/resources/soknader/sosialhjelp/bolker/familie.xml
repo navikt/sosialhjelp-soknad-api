@@ -3,6 +3,12 @@
     <faktum>
         <id>familie.sivilstatus</id>
         <type>radio</type>
+        <constraints>
+            <constraint>
+                <faktum>familie.sivilstatus.sivilstatusOverskrivesAvBruker</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
         <panel>familieBolk</panel>
         <optional>true</optional>
     </faktum>
@@ -15,7 +21,15 @@
         </dependOnValues>
         <properties>
             <property>
-                <id>navn</id>
+                <id>fornavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>mellomnavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>etternavn</id>
                 <type>textbox</type>
             </property>
             <property>
@@ -36,6 +50,65 @@
                 <constraints>
                     <constraint>properties['borsammen'] == 'false'</constraint>
                 </constraints>
+            </property>
+        </properties>
+        <optional>true</optional>
+    </faktum>
+
+    <faktum>
+        <id>familie.sivilstatus.sivilstatusOverskrivesAvBruker</id>
+        <panel>familieBolk</panel>
+        <type>hidden</type>
+        <optional>true</optional>
+    </faktum>
+
+    <faktum>
+        <id>system.familie.sivilstatus</id>
+        <type>radio</type>
+        <panel>familieBolk</panel>
+        <constraints>
+            <constraint>
+                <faktum>familie.sivilstatus.sivilstatusOverskrivesAvBruker</faktum>
+                <expression>value != 'true'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>system.familie.sivilstatus.gift.ektefelle</id>
+        <type>composite</type>
+        <dependOn>system.familie.sivilstatus</dependOn>
+        <dependOnValues>
+            <value>gift</value>
+        </dependOnValues>
+        <properties>
+            <property>
+                <id>fornavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>mellomnavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>etternavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fodselsdato</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fnr</id>
+                <type>hidden</type>
+            </property>
+            <property>
+                <id>folkeregistrertsammen</id>
+                <type>bool</type>
+            </property>
+            <property>
+                <id>ikketilgangtilektefelle</id>
+                <type>hidden</type>
             </property>
         </properties>
         <optional>true</optional>
@@ -66,7 +139,15 @@
         <flereTillatt>true</flereTillatt>
         <properties>
             <property>
-                <id>navn</id>
+                <id>fornavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>mellomnavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>etternavn</id>
                 <type>textbox</type>
             </property>
             <property>

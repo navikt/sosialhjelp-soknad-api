@@ -17,6 +17,7 @@ public interface KravdialogInformasjon {
     String BOLK_PERSONALIA = "Personalia";
     String BOLK_BARN = "Barn";
     String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
+    String UTBETALING_BOLK = "UtbetalingBolk";
 
     Steg[] getStegliste();
 
