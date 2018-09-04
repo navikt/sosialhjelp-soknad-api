@@ -17,6 +17,8 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Service
 public class FiksSender {
 
+    static final String SOKNAD_TIL_NAV = "Søknad til NAV";
+    static final String ETTERSENDELSE_TIL_NAV = "Ettersendelse til NAV";
     public static String KRYPTERING_DISABLED = "feature.fiks.kryptering.disabled";
 
     @Inject
@@ -39,31 +41,39 @@ public class FiksSender {
                 .withPostnr("0000")
                 .withPoststed("Ikke send");
 
-        boolean skalKryptere = skalKryptere();
+        final boolean skalKryptere = skalKryptere();
 
-        Forsendelse forsendelse = new Forsendelse()
-                .withMottaker(new Adresse()
-                        .withDigitalAdresse(
-                                new OrganisasjonDigitalAdresse().withOrgnr(data.mottakerOrgNr))
-                        .withPostAdresse(fakeAdresse))
-                .withAvgivendeSystem("digisos_avsender")
-                .withForsendelseType("nav.digisos")
-                .withEksternref(environmentNameIfTest() + data.behandlingsId)
-                .withTittel("Søknad til NAV")
-                .withKunDigitalLevering(false)
-                .withPrintkonfigurasjon(fakePrintConfig)
-                .withKryptert(skalKryptere)
-                .withKrevNiva4Innlogging(skalKryptere)
-                .withSvarPaForsendelse(isEmpty(data.ettersendelsePa) ? null : data.ettersendelsePa) // For ettersendelser
-                .withDokumenter(data.dokumentInfoer.stream()
-                        .map(i -> fiksDokumentFraDokumentInfo(i, skalKryptere))
-                        .collect(toList()))
-                .withMetadataFraAvleverendeSystem(
-                        new NoarkMetadataFraAvleverendeSakssystem()
-                                .withDokumentetsDato(data.innsendtDato)
-                );
+        final Forsendelse forsendelse = opprettForsendelse(data, fakeAdresse, skalKryptere);
 
         return forsendelsesService.sendForsendelse(forsendelse);
+    }
+
+    Forsendelse opprettForsendelse(FiksData data, PostAdresse fakeAdresse, boolean skalKryptere) {
+        return new Forsendelse()
+                    .withMottaker(new Adresse()
+                            .withDigitalAdresse(
+                                    new OrganisasjonDigitalAdresse().withOrgnr(data.mottakerOrgNr))
+                            .withPostAdresse(fakeAdresse))
+                    .withAvgivendeSystem("digisos_avsender")
+                    .withForsendelseType("nav.digisos")
+                    .withEksternref(environmentNameIfTest() + data.behandlingsId)
+                    .withTittel(erNySoknad(data.ettersendelsePa) ? SOKNAD_TIL_NAV : ETTERSENDELSE_TIL_NAV)
+                    .withKunDigitalLevering(false)
+                    .withPrintkonfigurasjon(fakePrintConfig)
+                    .withKryptert(skalKryptere)
+                    .withKrevNiva4Innlogging(skalKryptere)
+                    .withSvarPaForsendelse(erNySoknad(data.ettersendelsePa) ? null : data.ettersendelsePa) // For ettersendelser
+                    .withDokumenter(data.dokumentInfoer.stream()
+                            .map(i -> fiksDokumentFraDokumentInfo(i, skalKryptere))
+                            .collect(toList()))
+                    .withMetadataFraAvleverendeSystem(
+                            new NoarkMetadataFraAvleverendeSakssystem()
+                                    .withDokumentetsDato(data.innsendtDato)
+                    );
+    }
+
+    private boolean erNySoknad(String ettersendelsePa) {
+        return isEmpty(ettersendelsePa);
     }
 
     private String environmentNameIfTest() {
