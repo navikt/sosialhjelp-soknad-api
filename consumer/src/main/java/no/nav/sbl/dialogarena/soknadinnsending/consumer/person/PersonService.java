@@ -86,24 +86,14 @@ public class PersonService {
     }
 
     List<Barn> hentBarnForPerson(HentKjerneinformasjonResponse response) {
-        if (response == null) {
-            return new ArrayList<>();
-        }
-        return finnBarn(response.getPerson());
-    }
-
-    List<Barn> finnBarn(Person xmlperson) {
-        List<Barn> result = new ArrayList<>();
-        List<Familierelasjon> familierelasjoner = xmlperson.getHarFraRolleI();
-        if (familierelasjoner == null || familierelasjoner.isEmpty()) {
-            return result;
-        }
+        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForBruker(response);
+        List<Barn> alleBarn = new ArrayList<>();
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_BARN.equals(familierelasjonType.getValue())) {
                 Person xmlBarn = familierelasjon.getTilPerson();
                 if (xmlPersonHarDiskresjonskode(xmlBarn)) {
-                    result.add(new Barn().withIkkeTilgang(true));
+                    alleBarn.add(new Barn().withIkkeTilgang(true));
                     continue;
                 }
 
@@ -112,7 +102,7 @@ public class PersonService {
                     if (barnResponse != null && barnResponse.getPerson() != null) {
                         Person xmlBarnMedMerInfo = barnResponse.getPerson();
                         if (!erMyndig(finnFodselsdato(xmlBarnMedMerInfo)) && !erDoed(xmlBarnMedMerInfo)) {
-                            result.add(new Barn()
+                            alleBarn.add(new Barn()
                                     .withFornavn(finnFornavn(xmlBarnMedMerInfo))
                                     .withMellomnavn(finnMellomnavn(xmlBarnMedMerInfo))
                                     .withEtternavn(finnEtternavn(xmlBarnMedMerInfo))
@@ -123,23 +113,16 @@ public class PersonService {
                                     .withIkkeTilgang(false));
                         }
                     } else {
-                        result.add(new Barn());
+                        alleBarn.add(new Barn());
                     }
                 }
             }
         }
-        return result;
+        return alleBarn;
     }
 
     Ektefelle finnEktefelleForPerson(HentKjerneinformasjonResponse response) {
-        if (response == null) {
-            return null;
-        }
-        Person xmlPerson = response.getPerson();
-        List<Familierelasjon> familierelasjoner = xmlPerson.getHarFraRolleI();
-        if (familierelasjoner == null || familierelasjoner.isEmpty()) {
-            return null;
-        }
+        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForBruker(response);
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
@@ -170,6 +153,19 @@ public class PersonService {
             }
         }
         return null;
+    }
+
+    private List<Familierelasjon> finnFamilierelasjonerForBruker(HentKjerneinformasjonResponse response) {
+        if (response == null || response.getPerson() == null) {
+            return new ArrayList<>();
+        }
+
+        Person xmlPerson = response.getPerson();
+        List<Familierelasjon> familierelasjoner = xmlPerson.getHarFraRolleI();
+        if (familierelasjoner == null || familierelasjoner.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return familierelasjoner;
     }
 
     private HentKjerneinformasjonRequest lagXMLRequestKjerneinformasjon(String fodselsnummer) {

@@ -101,7 +101,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void finnEktefelleFeilerIkkeHvisInfoOmEktefelleMangler() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+    public void finnEktefelleViserAtManErGiftSelvOmInfoMangler() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
         when(personPortType.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class)))
                 .thenReturn(lagHentKjerneinformasjonResponseForEktefelleUtenInfo());
 
