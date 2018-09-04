@@ -4,6 +4,12 @@
         <id>personalia.kommune</id>
         <type>textbox</type>
         <panel>personaliaBolk</panel>
+        <constraints>
+            <constraint>
+                <faktum>personalia.kommune</faktum>
+                <expression>value != '' and value != null</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>personalia.bydel</id>
