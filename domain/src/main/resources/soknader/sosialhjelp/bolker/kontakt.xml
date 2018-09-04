@@ -25,9 +25,15 @@
         <panel>personaliaBolk</panel>
         <type>composite</type>
         <constraints>
+            <!--
             <constraint>
                 <faktum>kontakt.adresse.brukerendrettoggle</faktum>
                 <expression>value != 'true'</expression>
+            </constraint>
+            -->
+            <constraint>
+                <faktum>kontakt.system.oppholdsadresse.valg</faktum>
+                <expression>value == 'midlertidig'</expression>
             </constraint>
         </constraints>
         <properties>
@@ -137,9 +143,15 @@
         <panel>personaliaBolk</panel>
         <type>composite</type>
         <constraints>
+            <!-- 
             <constraint>
                 <faktum>kontakt.adresse.brukerendrettoggle</faktum>
                 <expression>value == 'true'</expression>
+            </constraint>
+            -->
+            <constraint>
+                <faktum>kontakt.system.oppholdsadresse.valg</faktum>
+                <expression>value == 'soknad'</expression>
             </constraint>
         </constraints>
         <properties>
