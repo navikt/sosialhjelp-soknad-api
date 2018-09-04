@@ -14,8 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.*;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -91,33 +90,10 @@ public class PersonService {
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_BARN.equals(familierelasjonType.getValue())) {
-                Person xmlBarn = familierelasjon.getTilPerson();
-                if (xmlPersonHarDiskresjonskode(xmlBarn)) {
-                    alleBarn.add(new Barn().withIkkeTilgang(true));
-                    continue;
-                }
-
-                if (xmlBarn.getIdent() != null && xmlBarn.getIdent().getIdent() != null) {
-                    HentKjerneinformasjonResponse barnResponse = hentKjerneinformasjon(xmlBarn.getIdent().getIdent());
-                    if (barnResponse != null && barnResponse.getPerson() != null) {
-                        Person xmlBarnMedMerInfo = barnResponse.getPerson();
-                        if (!erMyndig(finnFodselsdato(xmlBarnMedMerInfo)) && !erDoed(xmlBarnMedMerInfo)) {
-                            alleBarn.add(new Barn()
-                                    .withFornavn(finnFornavn(xmlBarnMedMerInfo))
-                                    .withMellomnavn(finnMellomnavn(xmlBarnMedMerInfo))
-                                    .withEtternavn(finnEtternavn(xmlBarnMedMerInfo))
-                                    .withFnr(finnFnr(xmlBarnMedMerInfo))
-                                    .withFodselsdato(finnFodselsdato(xmlBarnMedMerInfo))
-                                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
-                                    .withUtvandret(personErUtvandret(xmlBarnMedMerInfo))
-                                    .withIkkeTilgang(false));
-                        }
-                    } else {
-                        alleBarn.add(new Barn());
-                    }
-                }
+                alleBarn.add(mapFamilierelasjonTilBarn(familierelasjon));
             }
         }
+        alleBarn.removeIf(Objects::isNull);
         return alleBarn;
     }
 
@@ -126,30 +102,7 @@ public class PersonService {
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
-                Person xmlEktefelle = familierelasjon.getTilPerson();
-                if (xmlPersonHarDiskresjonskode(xmlEktefelle)) {
-                    return new Ektefelle()
-                            .withIkketilgangtilektefelle(true);
-                }
-                if (xmlEktefelle.getIdent() != null && xmlEktefelle.getIdent().getIdent() != null) {
-                    HentKjerneinformasjonResponse ektefelleResponse = hentKjerneinformasjon(xmlEktefelle.getIdent().getIdent());
-
-                    if (ektefelleResponse != null && ektefelleResponse.getPerson() != null) {
-                        Person xmlEktefelleMedMerInfo = ektefelleResponse.getPerson();
-
-                        boolean ektefelleErUtvandret = personErUtvandret(xmlEktefelleMedMerInfo);
-                        return new Ektefelle()
-                                .withFornavn(finnFornavn(xmlEktefelleMedMerInfo))
-                                .withMellomnavn(finnMellomnavn(xmlEktefelleMedMerInfo))
-                                .withEtternavn(finnEtternavn(xmlEktefelleMedMerInfo))
-                                .withFodselsdato(finnFodselsdato(xmlEktefelleMedMerInfo))
-                                .withFnr(finnFnr(xmlEktefelleMedMerInfo))
-                                .withFolkeregistrertsammen(ektefelleErUtvandret ? false : familierelasjon.isHarSammeBosted())
-                                .withUtvandret(ektefelleErUtvandret)
-                                .withIkketilgangtilektefelle(false);
-                    }
-                }
-                return new Ektefelle();
+                return mapFamilierelasjonTilEktefelle(familierelasjon);
             }
         }
         return null;
@@ -159,7 +112,6 @@ public class PersonService {
         if (response == null || response.getPerson() == null) {
             return new ArrayList<>();
         }
-
         Person xmlPerson = response.getPerson();
         List<Familierelasjon> familierelasjoner = xmlPerson.getHarFraRolleI();
         if (familierelasjoner == null || familierelasjoner.isEmpty()) {
@@ -168,10 +120,63 @@ public class PersonService {
         return familierelasjoner;
     }
 
+    private Ektefelle mapFamilierelasjonTilEktefelle(Familierelasjon familierelasjon) {
+        Person xmlEktefelle = familierelasjon.getTilPerson();
+        if (xmlPersonHarDiskresjonskode(xmlEktefelle)) {
+            return new Ektefelle()
+                    .withIkketilgangtilektefelle(true);
+        }
+        if (xmlEktefelle.getIdent() != null && xmlEktefelle.getIdent().getIdent() != null) {
+            HentKjerneinformasjonResponse ektefelleResponse = hentKjerneinformasjon(xmlEktefelle.getIdent().getIdent());
+
+            if (ektefelleResponse != null && ektefelleResponse.getPerson() != null) {
+                Person xmlEktefelleMedMerInfo = ektefelleResponse.getPerson();
+                boolean ektefelleErUtvandret = personErUtvandret(xmlEktefelleMedMerInfo);
+                return new Ektefelle()
+                        .withFornavn(finnFornavn(xmlEktefelleMedMerInfo))
+                        .withMellomnavn(finnMellomnavn(xmlEktefelleMedMerInfo))
+                        .withEtternavn(finnEtternavn(xmlEktefelleMedMerInfo))
+                        .withFodselsdato(finnFodselsdato(xmlEktefelleMedMerInfo))
+                        .withFnr(finnFnr(xmlEktefelleMedMerInfo))
+                        .withFolkeregistrertsammen(ektefelleErUtvandret ? false : familierelasjon.isHarSammeBosted())
+                        .withUtvandret(ektefelleErUtvandret)
+                        .withIkketilgangtilektefelle(false);
+            }
+        }
+        return new Ektefelle();
+    }
+
+    private Barn mapFamilierelasjonTilBarn(Familierelasjon familierelasjon) {
+        Person xmlBarn = familierelasjon.getTilPerson();
+        if (xmlPersonHarDiskresjonskode(xmlBarn)) {
+            return new Barn().withIkkeTilgang(true);
+        }
+
+        if (xmlBarn.getIdent() != null && xmlBarn.getIdent().getIdent() != null) {
+            HentKjerneinformasjonResponse barnResponse = hentKjerneinformasjon(xmlBarn.getIdent().getIdent());
+            if (barnResponse != null && barnResponse.getPerson() != null) {
+                Person xmlBarnMedMerInfo = barnResponse.getPerson();
+                if (!erMyndig(finnFodselsdato(xmlBarnMedMerInfo)) && !erDoed(xmlBarnMedMerInfo)) {
+                    return new Barn()
+                            .withFornavn(finnFornavn(xmlBarnMedMerInfo))
+                            .withMellomnavn(finnMellomnavn(xmlBarnMedMerInfo))
+                            .withEtternavn(finnEtternavn(xmlBarnMedMerInfo))
+                            .withFnr(finnFnr(xmlBarnMedMerInfo))
+                            .withFodselsdato(finnFodselsdato(xmlBarnMedMerInfo))
+                            .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
+                            .withUtvandret(personErUtvandret(xmlBarnMedMerInfo))
+                            .withIkkeTilgang(false);
+                } else {
+                    return null;
+                }
+            }
+        }
+        return new Barn();
+    }
+
     private HentKjerneinformasjonRequest lagXMLRequestKjerneinformasjon(String fodselsnummer) {
         HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
         request.setIdent(fodselsnummer);
         return request;
     }
-
 }
