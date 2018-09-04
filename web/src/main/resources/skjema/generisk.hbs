@@ -34,11 +34,6 @@
         {{> skjema/dagpenger/personalia }}
     </div>
      <div>
-        {{#if @root.utvidetSoknad}}
-            <div class="personalia">
-                {{> skjema/dagpenger/personaliaBolk}}
-            </div>
-        {{/if}}
         {{#each bolker}}
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
