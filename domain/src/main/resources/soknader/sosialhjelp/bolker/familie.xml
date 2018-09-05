@@ -115,14 +115,14 @@
     </faktum>
 
     <faktum>
-        <id>familie.barn</id>
+        <id>system.familie.barn</id>
         <type>bool</type>
         <panel>familieBolk</panel>
         <optional>true</optional>
     </faktum>
     <faktum>
         <id>familie.barn.true.barnebidrag</id>
-        <dependOn>familie.barn</dependOn>
+        <dependOn>system.familie.barn</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -130,8 +130,8 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>familie.barn.true.barn</id>
-        <dependOn>familie.barn</dependOn>
+        <id>system.familie.barn.true.barn</id>
+        <dependOn>system.familie.barn</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -151,22 +151,37 @@
                 <type>textbox</type>
             </property>
             <property>
+                <id>fodselsdato</id>
+                <type>textbox</type>
+            </property>
+            <property>
                 <id>fnr</id>
                 <type>textbox</type>
             </property>
             <property>
-                <id>pnr</id>
-                <type>textbox</type>
+                <id>ikketilgangtilbarn</id>
+                <type>bool</type>
             </property>
             <property>
-                <id>borsammen</id>
+                <id>folkeregistrertsammen</id>
                 <type>bool</type>
+            </property>
+            <property>
+                <id>utvandret</id>
+                <type>bool</type>
+            </property>
+            <property>
+                <id>deltbosted</id>
+                <type>bool</type>
+                <constraints>
+                    <constraint>properties['folkeregistrertsammen'] == 'true'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>grad</id>
                 <type>textbox</type>
                 <constraints>
-                    <constraint>properties['borsammen'] == 'false'</constraint>
+                    <constraint>properties['folkeregistrertsammen'] == 'false'</constraint>
                 </constraints>
             </property>
         </properties>
