@@ -62,33 +62,4 @@ public class PersonTest {
 
         Assert.assertEquals(false, personalia.harUtenlandskAdresse());
     }
-
-    @Test
-    public void skalReturneGuttVedGuttePersonNummer() {
-        String dato = "060258";
-        String individisfferEnOgTo = "00";
-        String kjonnSiffer = "1";
-        String kontrollsiffer = "74";
-
-        String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
-        Barn barn = new Barn(1l, null, null, fnr, "", "", "svenskeby").withLand("Norge");
-
-        Assert.assertEquals("m", barn.getKjonn());
-        Assert.assertEquals("Norge", barn.getLand());
-
-    }
-
-    @Test
-    public void skalReturneJenteVedJentePersonNummer() {
-        String dato = "140571";
-        String individisfferEnOgTo = "32";
-        String kjonnSiffer = "8";
-        String kontrollsiffer = "42";
-
-        String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
-        Barn barn = new Barn(1l, null, null, fnr, "janne", "j", "jensen").withLand("Norge");
-
-        Assert.assertEquals("k", barn.getKjonn());
-
-    }
 }

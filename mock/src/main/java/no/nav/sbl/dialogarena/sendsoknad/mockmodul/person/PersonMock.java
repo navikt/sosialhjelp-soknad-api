@@ -9,6 +9,10 @@ import java.util.List;
 
 
 public class PersonMock {
+    static final String FNR_BARN = "***REMOVED***";
+    static final String FNR_BARN2 = "***REMOVED***";
+    static final String FNR_BARN3 = "***REMOVED***";
+    static final String FNR_EKTEFELLE = "***REMOVED***";
     private static PersonMock personMock = new PersonMock();
     private PersonPortTypeMock personPortTypeMock;
 
@@ -19,7 +23,7 @@ public class PersonMock {
         personPortTypeMock = new PersonPortTypeMock();
 
         // Endre også i override-web.xml sin defaultFnr, da det er den som ligger på getSubjectHandler().getUid()
-        Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "person", "mock");
+        Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Donald", "D.", "Mockmann");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
@@ -32,13 +36,20 @@ public class PersonMock {
 
         Doedsdato doedsdato = new Doedsdato();
         doedsdato.setDoedsdato(ServiceUtils.stringTilXmldato("2014-02-02"));
-        familieRelasjoner.add(lagBarn("***REMOVED***", "Dole", "Mockmann", doedsdato));
-        familieRelasjoner.add(lagBarn("***REMOVED***", "Ole", "Mockmann"));
-        familieRelasjoner.add(lagBarn("***REMOVED***", "Doffen", "Mockmann"));
+        Familierelasjon barn = lagBarn(FNR_BARN, "Dole", "Mockmann", doedsdato);
+        barn.getTilPerson().setFoedselsdato(fodseldato(2005, 1, 1));
+        Familierelasjon barn2 = lagBarn(FNR_BARN2, "Ole", "Mockmann");
+        barn2.getTilPerson().setFoedselsdato(fodseldato(2017, 6, 3));
+        Familierelasjon barn3 = lagBarn(FNR_BARN3, "Doffen", "Mockmann");
+        barn3.getTilPerson().setFoedselsdato(fodseldato(2016, 6, 3));
+        familieRelasjoner.add(barn);
+        familieRelasjoner.add(barn2);
+        familieRelasjoner.add(barn3);
 
         // Case: gift
-        Person ektefelle = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Daisy", "Duck");
+        Person ektefelle = genererPersonMedGyldigIdentOgNavn(FNR_EKTEFELLE, "Daisy", null, "Duck");
         familieRelasjoner.add(lagEktefelle(person, ektefelle));
+        ektefelle.setFoedselsdato(fodseldato(1973, 12, 7));
         ektefelle.setBostedsadresse(person.getBostedsadresse());
 
         // Case: gift, og ektefelle har kode 6
@@ -54,6 +65,10 @@ public class PersonMock {
         // person.setSivilstand(sivilstand);
 
         personPortTypeMock.setPerson(person);
+        personPortTypeMock.setEktefelle(ektefelle);
+        personPortTypeMock.setBarn(barn.getTilPerson());
+        personPortTypeMock.setBarn2(barn2.getTilPerson());
+        personPortTypeMock.setBarn3(barn3.getTilPerson());
     }
 
     public static PersonMock getInstance() {
@@ -87,7 +102,7 @@ public class PersonMock {
 
     private Familierelasjon lagBarn(String fnr, String fornavn, String etternavn) {
         Familierelasjon familierelasjon = new Familierelasjon();
-        Person barn = genererPersonMedGyldigIdentOgNavn(fnr, fornavn, etternavn);
+        Person barn = genererPersonMedGyldigIdentOgNavn(fnr, fornavn, null, etternavn);
         familierelasjon.setTilPerson(barn);
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
         familieRelasjonRolle.setValue("BARN");
@@ -101,14 +116,13 @@ public class PersonMock {
         return familierelasjon;
     }
 
-    private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String etternavn) {
+    private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String mellomnavn, String etternavn) {
         Person xmlPerson = new Person();
 
         Personnavn personnavn = new Personnavn();
         personnavn.setFornavn(fornavn);
-        personnavn.setMellomnavn("");
+        personnavn.setMellomnavn(mellomnavn);
         personnavn.setEtternavn(etternavn);
-        personnavn.setSammensattNavn(fornavn + " " + etternavn);
         xmlPerson.setPersonnavn(personnavn);
 
         Personidenter personidenter = new Personidenter();
