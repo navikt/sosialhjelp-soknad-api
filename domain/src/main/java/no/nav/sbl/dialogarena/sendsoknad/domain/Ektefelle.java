@@ -9,7 +9,6 @@ public class Ektefelle {
     private LocalDate fodselsdato;
     private String fnr;
     private boolean folkeregistrertsammen;
-    private boolean utvandret;
     private boolean ikketilgangtilektefelle;
 
     public String getFornavn() {
@@ -34,10 +33,6 @@ public class Ektefelle {
 
     public boolean erFolkeregistrertsammen() {
         return folkeregistrertsammen;
-    }
-
-    public boolean erUtvandret() {
-        return utvandret;
     }
 
     public boolean harIkketilgangtilektefelle() {
@@ -71,11 +66,6 @@ public class Ektefelle {
 
     public Ektefelle withFolkeregistrertsammen(boolean folkeregistrertsammen) {
         this.folkeregistrertsammen = folkeregistrertsammen;
-        return this;
-    }
-
-    public Ektefelle withUtvandret(boolean utvandret) {
-        this.utvandret = utvandret;
         return this;
     }
 
