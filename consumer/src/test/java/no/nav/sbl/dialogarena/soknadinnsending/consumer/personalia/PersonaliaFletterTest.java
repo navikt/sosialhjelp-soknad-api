@@ -64,7 +64,6 @@ public class PersonaliaFletterTest {
     @Before
     public void setup() {
         when(personServiceMock.hentPerson(anyString())).thenReturn(lagPerson());
-        when(personServiceMock.hentEktefelle(anyString())).thenReturn(new Ektefelle().withFnr(EKTEFELLE_IDENT));
         when(brukerprofilServiceMock.hentKontaktinformasjonOgPreferanser(anyString())).thenReturn(lagAdresserOgKontonummer());
         when(epostServiceMock.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withEpostadresse(EN_EPOST).withMobilnummer(MOBILNUMMER));
     }
@@ -128,7 +127,8 @@ public class PersonaliaFletterTest {
                 .withAlder(ALDER)
                 .withStatsborgerskap(STATSBORGERSKAP)
                 .withKjonn(KJONN)
-                .withSivilstatus(SIVILSTATUS);
+                .withSivilstatus(SIVILSTATUS)
+                .withEktefelle(new Ektefelle().withFnr(EKTEFELLE_IDENT));
     }
 
     private AdresserOgKontonummer lagAdresserOgKontonummer() {

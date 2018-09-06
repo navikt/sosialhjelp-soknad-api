@@ -167,10 +167,6 @@
                 <type>bool</type>
             </property>
             <property>
-                <id>utvandret</id>
-                <type>bool</type>
-            </property>
-            <property>
                 <id>deltbosted</id>
                 <type>bool</type>
                 <constraints>

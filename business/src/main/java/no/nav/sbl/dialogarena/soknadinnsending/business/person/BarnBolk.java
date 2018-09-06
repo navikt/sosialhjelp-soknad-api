@@ -54,7 +54,6 @@ public class BarnBolk implements BolkService {
                                 .medSystemProperty("fodselsdato", barn.getFodselsdato() != null ? barn.getFodselsdato().toString() : null)
                                 .medSystemProperty("ikketilgangtilbarn", barn.harIkkeTilgang() + "")
                                 .medSystemProperty("folkeregistrertsammen", barn.erFolkeregistrertsammen() + "")
-                                .medSystemProperty("utvandret", barn.erUtvandret() + "")
                 ).collect(Collectors.toList());
     }
 

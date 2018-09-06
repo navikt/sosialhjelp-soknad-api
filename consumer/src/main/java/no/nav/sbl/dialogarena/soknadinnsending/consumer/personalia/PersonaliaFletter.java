@@ -64,7 +64,7 @@ public class PersonaliaFletter {
                 .statsborgerskap(person.getStatsborgerskap())
                 .kjonn(person.getKjonn())
                 .sivilstatus(person.getSivilstatus())
-                .ektefelle(personService.hentEktefelle(fodselsnummer))
+                .ektefelle(person.getEktefelle())
                 .epost(digitalKontaktinfo.getEpostadresse())
                 .mobiltelefon(digitalKontaktinfo.getMobilnummer())
                 .gjeldendeAdresse(adresserOgKontonummer.getGjeldendeAdresse())
