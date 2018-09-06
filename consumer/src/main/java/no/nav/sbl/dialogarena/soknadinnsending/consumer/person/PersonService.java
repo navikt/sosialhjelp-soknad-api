@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.*;
 import no.nav.tjeneste.virksomhet.person.v1.*;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.slf4j.Logger;
@@ -14,9 +12,11 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnBarnForPerson;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.mapXmlPersonTilPerson;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
@@ -24,9 +24,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class PersonService {
 
     private static final Logger logger = getLogger(PersonService.class);
-    static final String RELASJON_EKTEFELLE = "EKTE";
-    static final String RELASJON_REGISTRERT_PARTNER = "REPA";
-    static final String RELASJON_BARN = "BARN";
 
     @Inject
     @Named("personEndpoint")
@@ -60,7 +57,10 @@ public class PersonService {
 
     public List<Barn> hentBarn(String fodselsnummer) {
         try {
-            return hentBarnForPerson(hentKjerneinformasjon(fodselsnummer));
+            HentKjerneinformasjonResponse response = hentKjerneinformasjon(fodselsnummer);
+            if (response != null && response.getPerson() != null) {
+                return finnBarnForPerson(response.getPerson());
+            }
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
         } catch (WebServiceException e) {
@@ -68,110 +68,9 @@ public class PersonService {
         }
         return new ArrayList<>();
     }
-
-    public Ektefelle hentEktefelle(String fodselsnummer) {
-        try {
-            return finnEktefelleForPerson(hentKjerneinformasjon(fodselsnummer));
-        } catch (IkkeFunnetException e) {
-            logger.warn("Ikke funnet person i TPS");
-        } catch (WebServiceException e) {
-            logger.error("Ingen kontakt med TPS.", e);
-        }
-        return null;
-    }
     
     public void ping() {
         personSelftestEndpoint.ping();
-    }
-
-    List<Barn> hentBarnForPerson(HentKjerneinformasjonResponse response) {
-        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForBruker(response);
-        List<Barn> alleBarn = new ArrayList<>();
-        for (Familierelasjon familierelasjon : familierelasjoner) {
-            Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
-            if (RELASJON_BARN.equals(familierelasjonType.getValue())) {
-                alleBarn.add(mapFamilierelasjonTilBarn(familierelasjon));
-            }
-        }
-        alleBarn.removeIf(Objects::isNull);
-        return alleBarn;
-    }
-
-    Ektefelle finnEktefelleForPerson(HentKjerneinformasjonResponse response) {
-        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForBruker(response);
-        for (Familierelasjon familierelasjon : familierelasjoner) {
-            Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
-            if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
-                return mapFamilierelasjonTilEktefelle(familierelasjon);
-            }
-        }
-        return null;
-    }
-
-    private List<Familierelasjon> finnFamilierelasjonerForBruker(HentKjerneinformasjonResponse response) {
-        if (response == null || response.getPerson() == null) {
-            return new ArrayList<>();
-        }
-        Person xmlPerson = response.getPerson();
-        List<Familierelasjon> familierelasjoner = xmlPerson.getHarFraRolleI();
-        if (familierelasjoner == null || familierelasjoner.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return familierelasjoner;
-    }
-
-    private Ektefelle mapFamilierelasjonTilEktefelle(Familierelasjon familierelasjon) {
-        Person xmlEktefelle = familierelasjon.getTilPerson();
-        if (xmlPersonHarDiskresjonskode(xmlEktefelle)) {
-            return new Ektefelle()
-                    .withIkketilgangtilektefelle(true);
-        }
-        if (xmlEktefelle.getIdent() != null && xmlEktefelle.getIdent().getIdent() != null) {
-            HentKjerneinformasjonResponse ektefelleResponse = hentKjerneinformasjon(xmlEktefelle.getIdent().getIdent());
-
-            if (ektefelleResponse != null && ektefelleResponse.getPerson() != null) {
-                Person xmlEktefelleMedMerInfo = ektefelleResponse.getPerson();
-                boolean ektefelleErUtvandret = personErUtvandret(xmlEktefelleMedMerInfo);
-                return new Ektefelle()
-                        .withFornavn(finnFornavn(xmlEktefelleMedMerInfo))
-                        .withMellomnavn(finnMellomnavn(xmlEktefelleMedMerInfo))
-                        .withEtternavn(finnEtternavn(xmlEktefelleMedMerInfo))
-                        .withFodselsdato(finnFodselsdato(xmlEktefelleMedMerInfo))
-                        .withFnr(finnFnr(xmlEktefelleMedMerInfo))
-                        .withFolkeregistrertsammen(ektefelleErUtvandret ? false : familierelasjon.isHarSammeBosted())
-                        .withUtvandret(ektefelleErUtvandret)
-                        .withIkketilgangtilektefelle(false);
-            }
-        }
-        return new Ektefelle();
-    }
-
-    private Barn mapFamilierelasjonTilBarn(Familierelasjon familierelasjon) {
-        Person xmlBarn = familierelasjon.getTilPerson();
-        if (xmlPersonHarDiskresjonskode(xmlBarn)) {
-            return new Barn().withIkkeTilgang(true);
-        }
-
-        if (xmlBarn.getIdent() != null && xmlBarn.getIdent().getIdent() != null) {
-            HentKjerneinformasjonResponse barnResponse = hentKjerneinformasjon(xmlBarn.getIdent().getIdent());
-            if (barnResponse != null && barnResponse.getPerson() != null) {
-                Person xmlBarnMedMerInfo = barnResponse.getPerson();
-                if (!erMyndig(finnFodselsdato(xmlBarnMedMerInfo)) && !erDoed(xmlBarnMedMerInfo)) {
-                    return new Barn()
-                            .withFornavn(finnFornavn(xmlBarnMedMerInfo))
-                            .withMellomnavn(finnMellomnavn(xmlBarnMedMerInfo))
-                            .withEtternavn(finnEtternavn(xmlBarnMedMerInfo))
-                            .withFnr(finnFnr(xmlBarnMedMerInfo))
-                            .withFodselsdato(finnFodselsdato(xmlBarnMedMerInfo))
-                            .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
-                            .withUtvandret(personErUtvandret(xmlBarnMedMerInfo))
-                            .withIkkeTilgang(false);
-                } else {
-                    return null;
-                }
-            }
-        }
-        return new Barn();
     }
 
     private HentKjerneinformasjonRequest lagXMLRequestKjerneinformasjon(String fodselsnummer) {

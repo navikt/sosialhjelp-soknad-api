@@ -86,7 +86,6 @@ public class BarnBolkTest {
         assertThat(barn.get("fodselsdato"), is(BARN_FODSELSDATO_TEKST));
         assertThat(barn.get("ikketilgangtilbarn"), is("false"));
         assertThat(barn.get("folkeregistrertsammen"), is("true"));
-        assertThat(barn.get("utvandret"), is("false"));
 
         assertThat(fakta.get(1).getKey(), is("system.familie.barn.true.barn"));
         assertThat(fakta.get(1).getUnikProperty(), is("fnr"));
@@ -97,7 +96,6 @@ public class BarnBolkTest {
         assertThat(barn2.get("fodselsdato"), is(BARN2_FODSELSDATO_TEKST));
         assertThat(barn2.get("ikketilgangtilbarn"), is("false"));
         assertThat(barn2.get("folkeregistrertsammen"), is("false"));
-        assertThat(barn2.get("utvandret"), is("true"));
     }
 
     @Test
@@ -123,7 +121,6 @@ public class BarnBolkTest {
         assertThat(barn.get("fodselsdato"), nullValue());
         assertThat(barn.get("ikketilgangtilbarn"), is("true"));
         assertThat(barn.get("folkeregistrertsammen"), is("false"));
-        assertThat(barn.get("utvandret"), is("false"));
     }
 
     private List<Barn> lagListeMedBarn(int antallBarn) {
@@ -134,7 +131,6 @@ public class BarnBolkTest {
                 .withEtternavn(BARN_ETTERNAVN)
                 .withFodselsdato(BARN_FODSELSDATO)
                 .withFolkeregistrertsammen(true)
-                .withUtvandret(false)
                 .withIkkeTilgang(false));
 
         if (antallBarn == 2) {
@@ -143,7 +139,6 @@ public class BarnBolkTest {
                     .withEtternavn(BARN2_ETTERNAVN)
                     .withFodselsdato(BARN2_FODSELSDATO)
                     .withFolkeregistrertsammen(false)
-                    .withUtvandret(true)
                     .withIkkeTilgang(false));
         }
         return barn;
