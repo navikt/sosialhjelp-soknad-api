@@ -14,6 +14,7 @@ public class Person {
     private String sivilstatus;
     private String diskresjonskode;
     private String statsborgerskap;
+    private Ektefelle ektefelle;
 
     public String getFornavn() {
         return fornavn;
@@ -57,6 +58,10 @@ public class Person {
 
     public String getStatsborgerskap() {
         return statsborgerskap;
+    }
+
+    public Ektefelle getEktefelle() {
+        return ektefelle;
     }
 
     public Person withFornavn(String fornavn) {
@@ -111,6 +116,11 @@ public class Person {
 
     public Person withStatsborgerskap(String statsborgerskap) {
         this.statsborgerskap = statsborgerskap;
+        return this;
+    }
+
+    public Person withEktefelle(Ektefelle ektefelle) {
+        this.ektefelle = ektefelle;
         return this;
     }
 }

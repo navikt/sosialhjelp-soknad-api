@@ -225,7 +225,6 @@ public class JsonFamilieConverterTest {
                 .medSystemProperty("fodselsdato", FODSELSDATO)
                 .medSystemProperty("ikketilgangtilbarn", "false")
                 .medSystemProperty("folkeregistrertsammen", "false")
-                .medSystemProperty("utvandret", "false")
                 .medSystemProperty("grad", valueOf(GRAD));
     }
 
@@ -239,7 +238,6 @@ public class JsonFamilieConverterTest {
                 .medSystemProperty("fodselsdato", FODSELSDATO)
                 .medSystemProperty("ikketilgangtilbarn", "false")
                 .medSystemProperty("folkeregistrertsammen", "true")
-                .medSystemProperty("utvandret", "false")
                 .medSystemProperty("deltbosted", "true");
     }
 
@@ -252,8 +250,7 @@ public class JsonFamilieConverterTest {
                 .medSystemProperty("etternavn", "Skal aldri vises")
                 .medSystemProperty("fodselsdato", "Skal aldri vises")
                 .medSystemProperty("ikketilgangtilbarn", "true")
-                .medSystemProperty("folkeregistrertsammen", "false")
-                .medSystemProperty("utvandret", "false");
+                .medSystemProperty("folkeregistrertsammen", "false");
     }
 
 }

@@ -65,10 +65,6 @@ public class PersonMock {
         // person.setSivilstand(sivilstand);
 
         personPortTypeMock.setPerson(person);
-        personPortTypeMock.setEktefelle(ektefelle);
-        personPortTypeMock.setBarn(barn.getTilPerson());
-        personPortTypeMock.setBarn2(barn2.getTilPerson());
-        personPortTypeMock.setBarn3(barn3.getTilPerson());
     }
 
     public static PersonMock getInstance() {
