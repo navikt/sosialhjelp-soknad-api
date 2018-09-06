@@ -55,7 +55,7 @@ public class PersonMapper {
     }
 
     static Ektefelle finnEktefelleForPerson(Person xmlPerson) {
-        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForBruker(xmlPerson);
+        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForPerson(xmlPerson);
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
@@ -65,7 +65,7 @@ public class PersonMapper {
         return null;
     }
 
-    private static List<Familierelasjon> finnFamilierelasjonerForBruker(Person xmlPerson) {
+    private static List<Familierelasjon> finnFamilierelasjonerForPerson(Person xmlPerson) {
         List<Familierelasjon> familierelasjoner = xmlPerson.getHarFraRolleI();
         if (familierelasjoner == null || familierelasjoner.isEmpty()) {
             return new ArrayList<>();
@@ -90,7 +90,7 @@ public class PersonMapper {
     }
 
     static List<Barn> finnBarnForPerson(Person xmlPerson) {
-        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForBruker(xmlPerson);
+        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForPerson(xmlPerson);
         List<Barn> alleBarn = new ArrayList<>();
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
