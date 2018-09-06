@@ -418,19 +418,12 @@ public class PersonMapperTest {
         Person person = new Person();
         Person relasjon = lagXmlPersonMedNavnOgIdent(FORNAVN, MELLOMNAVN, ETTERNAVN, FNR, personstatus);
         if (relasjonHarDiskresjonskode) {
-            Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
-            diskresjonskoder.setValue(diskresjonskode);
-            relasjon.setDiskresjonskode(diskresjonskoder);
+            relasjon.setDiskresjonskode(lagDiskresjonskode(diskresjonskode));
         }
 
         Familierelasjon familierelasjon = lagFamilierelasjon(relasjonstype, harSammeFolkeregistrerteAdresse, relasjon);
 
-        Sivilstander sivilstander = new Sivilstander();
-        sivilstander.setValue(sivilstatus);
-        Sivilstand sivilstand = new Sivilstand();
-        sivilstand.setSivilstand(sivilstander);
-        person.setSivilstand(sivilstand);
-
+        person.setSivilstand(lagSivilstand(sivilstatus));
         person.getHarFraRolleI().add(familierelasjon);
 
         return person;
@@ -459,12 +452,7 @@ public class PersonMapperTest {
     }
 
     private Person lagXmlPersonMedNavnOgIdent(String fornavn, String mellomnavn, String etternavn, String fnr, String personstatus) {
-        Person xmlPerson = new Person();
-        Personnavn navn = new Personnavn();
-        navn.setFornavn(fornavn);
-        navn.setMellomnavn(mellomnavn);
-        navn.setEtternavn(etternavn);
-        xmlPerson.setPersonnavn(navn);
+        Person xmlPerson = lagXmlPersonMedNavn(fornavn, mellomnavn, etternavn);
 
         Personidenter personidenter = new Personidenter();
         personidenter.setValue("FNR");
@@ -489,12 +477,7 @@ public class PersonMapperTest {
         Person partner = new Person();
         Familierelasjon familierelasjon = lagFamilierelasjon(RELASJON_EKTEFELLE, false, partner);
 
-        Sivilstander sivilstander = new Sivilstander();
-        sivilstander.setValue(SIVILSTATUS_GIFT);
-        Sivilstand sivilstand = new Sivilstand();
-        sivilstand.setSivilstand(sivilstander);
-
-        person.setSivilstand(sivilstand);
+        person.setSivilstand(lagSivilstand(SIVILSTATUS_GIFT));
         person.getHarFraRolleI().add(familierelasjon);
 
         return person;
