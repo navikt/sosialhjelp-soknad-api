@@ -12,7 +12,6 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon.UTBETALING_BOLK;
@@ -34,7 +33,6 @@ public class UtbetalingBolk implements BolkService {
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
         List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(30), LocalDate.now());
 
-
         List<Faktum> fakta = new ArrayList<>();
 
         if (utbetalinger == null) {
@@ -45,10 +43,9 @@ public class UtbetalingBolk implements BolkService {
                     .medValue("true"));
         } else {
             fakta.add(lagHarUtbetalingerFaktum(!utbetalinger.isEmpty()));
-
-            fakta.addAll(utbetalinger.stream()
-                    .map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling))
-                    .collect(Collectors.toList()));
+            for (Utbetaling utbetaling : utbetalinger) {
+                fakta.addAll(lagFaktumForUtbetaling(soknadId, utbetaling));
+            }
         }
 
         return fakta;
@@ -61,13 +58,16 @@ public class UtbetalingBolk implements BolkService {
                 .medValue(!harUtbetalinger + "");
     }
 
-    private Faktum lagFaktumForUtbetaling(Long soknadId, Utbetaling utbetaling) {
-        Faktum faktum = new Faktum()
+    private List<Faktum> lagFaktumForUtbetaling(Long soknadId, Utbetaling utbetaling) {
+        List<Faktum> utbetalingsfakta = new ArrayList<>();
+        String utbetalingsid = lagId(utbetaling);
+        utbetalingsfakta.add(new Faktum()
                 .medSoknadId(soknadId)
                 .medType(SYSTEMREGISTRERT)
                 .medKey("utbetalinger.utbetaling")
                 .medUnikProperty("id")
-                .medSystemProperty("id", lagId(utbetaling))
+                .medSystemProperty("id", utbetalingsid)
+                .medSystemProperty("utbetalingsid", utbetalingsid)
                 .medSystemProperty("type", utbetaling.type)
                 .medSystemProperty("netto", formatTall(utbetaling.netto))
                 .medSystemProperty("brutto", formatTall(utbetaling.brutto))
@@ -75,23 +75,26 @@ public class UtbetalingBolk implements BolkService {
                 .medSystemProperty("andreTrekk", formatTall(utbetaling.andreTrekk))
                 .medSystemProperty("periodeFom", utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .medSystemProperty("periodeTom", utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
-                .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato != null ? utbetaling.utbetalingsDato.toString() : null)
-                .medSystemProperty("komponenter", utbetaling.komponenter != null ? utbetaling.komponenter.size() + "" : "");
+                .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato != null ? utbetaling.utbetalingsDato.toString() : null));
 
         if (utbetaling.komponenter != null) {
             for (int i = 0; i < utbetaling.komponenter.size(); i++) {
                 Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
-                String komponentNavn = "komponent_" + i + "_";
-                faktum
-                        .medSystemProperty(komponentNavn + "type", komponent.type)
-                        .medSystemProperty(komponentNavn + "belop", formatTall(komponent.belop))
-                        .medSystemProperty(komponentNavn + "satsType", komponent.satsType)
-                        .medSystemProperty(komponentNavn + "satsBelop", formatTall(komponent.satsBelop))
-                        .medSystemProperty(komponentNavn + "satsAntall", formatTall(komponent.satsAntall));
-
+                utbetalingsfakta.add(new Faktum()
+                        .medSoknadId(soknadId)
+                        .medType(SYSTEMREGISTRERT)
+                        .medKey("utbetalinger.utbetaling.komponent")
+                        .medUnikProperty("id")
+                        .medSystemProperty("id", i + "")
+                        .medSystemProperty("utbetalingsid", utbetalingsid)
+                        .medSystemProperty("type", komponent.type)
+                        .medSystemProperty("belop", formatTall(komponent.belop))
+                        .medSystemProperty("satstype", komponent.satsType)
+                        .medSystemProperty("satsbelop", formatTall(komponent.satsBelop))
+                        .medSystemProperty("satsantall", formatTall(komponent.satsAntall)));
             }
         }
-        return faktum;
+        return utbetalingsfakta;
     }
 
     private String lagId(Utbetaling utbetaling) {
