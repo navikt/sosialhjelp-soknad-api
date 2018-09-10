@@ -8,10 +8,7 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,6 +16,7 @@ import java.util.stream.Stream;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.tilDouble;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.tilIntegerMedAvrunding;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class JsonOkonomiOpplysningerConverter {
 
@@ -82,7 +80,7 @@ public class JsonOkonomiOpplysningerConverter {
         key = "utgifter.barn";
         result.add(opplysningBekreftelse("barneutgifter", getTittel(key, navMessageSource), webSoknad.getFaktumMedKey(key)));
 
-        return result.stream().filter(r -> r != null).collect(Collectors.toList());
+        return result.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
     }
 
@@ -123,10 +121,9 @@ public class JsonOkonomiOpplysningerConverter {
                 webSoknad.getFaktaMedKey(key),
                 "netto"));
 
-        key = "utbetalinger.utbetaling";
-        result.addAll(opplysningUtbetalingFraNav(webSoknad.getFaktaMedKey(key)));
+        result.addAll(opplysningUtbetalingFraNav(webSoknad));
 
-        return result.stream().filter(r -> r != null).collect(Collectors.toList());
+        return result.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
     }
 
@@ -176,11 +173,11 @@ public class JsonOkonomiOpplysningerConverter {
                 webSoknad.getFaktaMedKey(key),
                 "utgift", "beskrivelse", true);
         result.addAll(andreUtgifter);
-        if (andreUtgifter.size() == 0 && harVedleg(webSoknad, "annet", "annet")) {
+        if (andreUtgifter.size() == 0 && harVedlegg(webSoknad, "annet", "annet")) {
             extracted(result, navMessageSource, key);
         }
 
-        return result.stream().filter(r -> r != null).collect(Collectors.toList());
+        return result.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
 
@@ -193,7 +190,7 @@ public class JsonOkonomiOpplysningerConverter {
                 .withOverstyrtAvBruker(false));
     }
     
-    private static boolean harVedleg(WebSoknad webSoknad, String skjemaNummer, String skjemanummmerTillegg) {
+    private static boolean harVedlegg(WebSoknad webSoknad, String skjemaNummer, String skjemanummmerTillegg) {
         return webSoknad.getVedlegg().stream().anyMatch(v ->
             skjemaNummer.equals(v.getSkjemaNummer())
             && skjemanummmerTillegg.equals(v.getSkjemanummerTillegg())
@@ -215,7 +212,7 @@ public class JsonOkonomiOpplysningerConverter {
 
 
     private static List<JsonOkonomiOpplysningUtbetaling> opplysningUtbetaling(String type, String tittel, List<Faktum> fakta, String belopNavn) {
-        return fakta.stream().filter(f -> f != null).map(faktum -> {
+        return fakta.stream().filter(Objects::nonNull).map(faktum -> {
             final Map<String, String> properties = faktum.getProperties();
             return new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.BRUKER)
@@ -226,8 +223,11 @@ public class JsonOkonomiOpplysningerConverter {
         }).collect(Collectors.toList());
     }
 
-    private static List<JsonOkonomiOpplysningUtbetaling> opplysningUtbetalingFraNav(List<Faktum> fakta) {
-        return fakta.stream().filter(f -> f != null).map(faktum -> {
+    static List<JsonOkonomiOpplysningUtbetaling> opplysningUtbetalingFraNav(WebSoknad webSoknad) {
+        List<Faktum> fakta = webSoknad.getFaktaMedKey("utbetalinger.utbetaling");
+        return fakta.stream()
+                .filter(Objects::nonNull)
+                .map(faktum -> {
             final Map<String, String> properties = faktum.getProperties();
             return new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
@@ -241,9 +241,28 @@ public class JsonOkonomiOpplysningerConverter {
                     .withUtbetalingsdato(properties.get("utbetalingsDato"))
                     .withPeriodeFom(properties.get("periodeFom"))
                     .withPeriodeTom(properties.get("periodeTom"))
-                    //.withKomponenter(properties.get("komponenter"))
+                    .withKomponenter(tilUtbetalingskomponentListe(webSoknad, properties.get("utbetalingsid")))
                     .withOverstyrtAvBruker(false);
         }).collect(Collectors.toList());
+    }
+
+    static List<JsonOkonomiOpplysningUtbetalingKomponent> tilUtbetalingskomponentListe(WebSoknad webSoknad, String utbetalingsid) {
+        List<Faktum> fakta = webSoknad.getFaktaMedKey("utbetalinger.utbetaling.komponent");
+        if (fakta == null || fakta.isEmpty() || isEmpty(utbetalingsid)) {
+            return new ArrayList<>();
+        }
+        return fakta.stream()
+                .filter(Objects::nonNull)
+                .filter(faktum -> utbetalingsid.equals(faktum.getProperties().get("utbetalingsid")))
+                .map(faktum -> {
+                    final Map<String, String> properties = faktum.getProperties();
+                    return new JsonOkonomiOpplysningUtbetalingKomponent()
+                            .withBelop(tilDouble(properties.get("belop")))
+                            .withType(properties.get("type"))
+                            .withSatsBelop(tilDouble(properties.get("satsbelop")))
+                            .withSatsType(properties.get("satstype"))
+                            .withSatsAntall(tilDouble(properties.get("satsantall")));
+                }).collect(Collectors.toList());
     }
 
     private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn) {
@@ -256,7 +275,7 @@ public class JsonOkonomiOpplysningerConverter {
     
     private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn, String tittelDelNavn, boolean kunHvisVerdiSatt) {
 
-        Stream<Faktum> stream = fakta.stream().filter(f -> f != null);
+        Stream<Faktum> stream = fakta.stream().filter(Objects::nonNull);
         if (kunHvisVerdiSatt) {
             stream = stream.filter(f -> {
                 final Map<String, String> properties = f.getProperties();
@@ -288,8 +307,5 @@ public class JsonOkonomiOpplysningerConverter {
         Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
 
         return properties.getProperty("json.okonomi." + key);
-
     }
-
-
 }
