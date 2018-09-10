@@ -116,7 +116,7 @@
 
     <faktum>
         <id>system.familie.barn</id>
-        <type>bool</type>
+        <type>hidden</type>
         <panel>familieBolk</panel>
         <optional>true</optional>
     </faktum>
@@ -131,11 +131,14 @@
     </faktum>
     <faktum>
         <id>system.familie.barn.true.barn</id>
-        <dependOn>system.familie.barn</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>system.familie.barn</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
         <type>composite</type>
+        <panel>familieBolk</panel>
         <flereTillatt>true</flereTillatt>
         <properties>
             <property>
@@ -156,11 +159,11 @@
             </property>
             <property>
                 <id>fnr</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>ikketilgangtilbarn</id>
-                <type>bool</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>folkeregistrertsammen</id>
