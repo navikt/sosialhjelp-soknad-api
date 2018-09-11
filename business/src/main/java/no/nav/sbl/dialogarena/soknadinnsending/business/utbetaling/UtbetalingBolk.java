@@ -71,11 +71,11 @@ public class UtbetalingBolk implements BolkService {
                 .medSystemProperty("type", utbetaling.type)
                 .medSystemProperty("netto", formatTall(utbetaling.netto))
                 .medSystemProperty("brutto", formatTall(utbetaling.brutto))
-                .medSystemProperty("skatteTrekk", formatTall(utbetaling.skatteTrekk))
-                .medSystemProperty("andreTrekk", formatTall(utbetaling.andreTrekk))
+                .medSystemProperty("skattetrekk", formatTall(utbetaling.skattetrekk))
+                .medSystemProperty("andretrekk", formatTall(utbetaling.andreTrekk))
                 .medSystemProperty("periodeFom", utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .medSystemProperty("periodeTom", utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
-                .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato != null ? utbetaling.utbetalingsDato.toString() : null));
+                .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsdato != null ? utbetaling.utbetalingsdato.toString() : null));
 
         if (utbetaling.komponenter != null) {
             for (int i = 0; i < utbetaling.komponenter.size(); i++) {
@@ -98,10 +98,10 @@ public class UtbetalingBolk implements BolkService {
     }
 
     private String lagId(Utbetaling utbetaling) {
-        String id = utbetaling.type + "|" + utbetaling.bilagsNummer;
+        String id = utbetaling.type + "|" + utbetaling.bilagsnummer;
 
-        if (utbetaling.utbetalingsDato != null) {
-            id += "|" + utbetaling.utbetalingsDato.toString();
+        if (utbetaling.utbetalingsdato != null) {
+            id += "|" + utbetaling.utbetalingsdato.toString();
         }
 
         return id;

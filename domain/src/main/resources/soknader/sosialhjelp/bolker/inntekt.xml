@@ -14,7 +14,7 @@
     <faktum>
         <id>utbetalinger.ingen</id>
         <panel>inntektBolk</panel>
-        <type>textbox</type>
+        <type>hidden</type>
         <constraints>
             <constraint>
                 <expression>value == 'true'</expression>
@@ -37,7 +37,7 @@
         <properties>
             <property>
                 <id>utbetalingsid</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>type</id>
@@ -56,20 +56,20 @@
                 <type>textbox</type>
             </property>
             <property>
-                <id>skatteTrekk</id>
+                <id>skattetrekk</id>
                 <type>textbox</type>
             </property>
             <property>
-                <id>andreTrekk</id>
+                <id>andretrekk</id>
                 <type>textbox</type>
             </property>
             <property>
                 <id>periodeFom</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>periodeTom</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
         </properties>
     </faktum>
@@ -78,8 +78,7 @@
         <flereTillatt>true</flereTillatt>
         <erSystemFaktum>true</erSystemFaktum>
         <panel>inntektBolk</panel>
-        <type>composite</type>
-        <dependOn>utbetalinger.utbetaling</dependOn>
+        <type>hidden</type>
         <properties>
             <property>
                 <id>utbetalingsid</id>

@@ -9,11 +9,11 @@ public class Utbetaling {
     public String type;
     public double netto;
     public double brutto;
-    public double skatteTrekk;
+    public double skattetrekk;
     public double andreTrekk;
 
-    public String bilagsNummer;
-    public LocalDate utbetalingsDato;
+    public String bilagsnummer;
+    public LocalDate utbetalingsdato;
     public LocalDate periodeFom;
     public LocalDate periodeTom;
     public List<Komponent> komponenter = new ArrayList<>();

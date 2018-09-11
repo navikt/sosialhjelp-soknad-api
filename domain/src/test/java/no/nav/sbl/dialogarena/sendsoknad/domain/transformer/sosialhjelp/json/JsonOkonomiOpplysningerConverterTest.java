@@ -124,8 +124,8 @@ public class JsonOkonomiOpplysningerConverterTest {
                 .medSystemProperty("type", type)
                 .medSystemProperty("netto", "3 880,40")
                 .medSystemProperty("brutto", "3 892,00")
-                .medSystemProperty("skatteTrekk", "-0,00")
-                .medSystemProperty("andreTrekk", "-250,00")
+                .medSystemProperty("skattetrekk", "-0,00")
+                .medSystemProperty("andretrekk", "-250,00")
                 .medSystemProperty("periodeFom", PERIODE_FOM)
                 .medSystemProperty("periodeTom", null)
                 .medSystemProperty("utbetalingsDato", UTBETALINGSDATO);
