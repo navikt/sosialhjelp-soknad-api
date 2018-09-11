@@ -27,7 +27,7 @@ public class JsonOkonomiOpplysningerConverterTest {
     private static final String PERIODE_FOM = "2018-02-28";
     private static final String KOMPONENTTYPE = "Arbeidstaker";
     private static final String SATSTYPE = "Dag";
-    private static final String SATSTYPE2 = "Ufo";
+    private static final String SATSTYPE2 = "Uke";
 
     @Test
     public void opplysningUtbetalingFraNavReturnererTomListeForSoknadUtenUtbetalinger() {

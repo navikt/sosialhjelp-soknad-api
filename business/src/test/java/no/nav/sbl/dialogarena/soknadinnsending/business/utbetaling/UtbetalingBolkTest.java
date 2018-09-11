@@ -72,7 +72,7 @@ public class UtbetalingBolkTest {
         assertThat(utbetalingKomponentProperties.get("type"), is("Arbeidstaker"));
         assertThat(utbetalingKomponentProperties.get("utbetalingsid"), is(UTBETALINGSID));
         assertThat(faktumListe.get(3).getKey(), is("utbetalinger.utbetaling.komponent"));
-        assertThat(utbetalingKomponent2Properties.get("satstype"), is("UFO"));
+        assertThat(utbetalingKomponent2Properties.get("satstype"), is("Uke"));
         assertThat(utbetalingKomponent2Properties.get("utbetalingsid"), is(UTBETALINGSID));
     }
 
@@ -102,7 +102,7 @@ public class UtbetalingBolkTest {
         Utbetaling.Komponent komponent2 = new Utbetaling.Komponent();
         komponent2.type = "Arbeidstaker";
         komponent2.belop = 5067.0;
-        komponent2.satsType = "UFO";
+        komponent2.satsType = "Uke";
         komponent2.satsBelop = 1181.0;
         komponent2.satsAntall = 20;
         komponentliste.add(komponent2);
