@@ -83,12 +83,12 @@ public class UtbetalingBolkTest {
         utbetaling.type = "Barnetrygd";
         utbetaling.netto = 3880.0;
         utbetaling.brutto = 3880.0;
-        utbetaling.skatteTrekk = -0.0;
+        utbetaling.skattetrekk = -0.0;
         utbetaling.andreTrekk = -0.0;
-        utbetaling.bilagsNummer = "568269505";
+        utbetaling.bilagsnummer = "568269505";
         utbetaling.periodeFom = LocalDate.of(2018, 2, 1);
         utbetaling.periodeFom = LocalDate.of(2018, 2, 28);
-        utbetaling.utbetalingsDato = LocalDate.of(2018, 2, 22);
+        utbetaling.utbetalingsdato = LocalDate.of(2018, 2, 22);
 
         List<Utbetaling.Komponent> komponentliste = new ArrayList<>();
         Utbetaling.Komponent komponent = new Utbetaling.Komponent();
