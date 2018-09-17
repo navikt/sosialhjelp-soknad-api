@@ -14,7 +14,7 @@
     <faktum>
         <id>utbetalinger.ingen</id>
         <panel>inntektBolk</panel>
-        <type>textbox</type>
+        <type>hidden</type>
         <constraints>
             <constraint>
                 <expression>value == 'true'</expression>
@@ -36,6 +36,10 @@
         <type>composite</type>
         <properties>
             <property>
+                <id>utbetalingsid</id>
+                <type>hidden</type>
+            </property>
+            <property>
                 <id>type</id>
                 <type>textbox</type>
             </property>
@@ -45,6 +49,59 @@
             </property>
             <property>
                 <id>netto</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>brutto</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>skattetrekk</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>andretrekk</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>periodeFom</id>
+                <type>hidden</type>
+            </property>
+            <property>
+                <id>periodeTom</id>
+                <type>hidden</type>
+            </property>
+        </properties>
+    </faktum>
+    <faktum>
+        <id>utbetalinger.utbetaling.komponent</id>
+        <flereTillatt>true</flereTillatt>
+        <erSystemFaktum>true</erSystemFaktum>
+        <panel>inntektBolk</panel>
+        <type>hidden</type>
+        <properties>
+            <property>
+                <id>utbetalingsid</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>type</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>belop</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>satstype</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>satsbelop</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>satsantall</id>
                 <type>textbox</type>
             </property>
         </properties>
