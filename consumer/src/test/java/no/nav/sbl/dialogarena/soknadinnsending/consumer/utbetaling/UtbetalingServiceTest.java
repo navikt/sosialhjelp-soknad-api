@@ -69,14 +69,14 @@ public class UtbetalingServiceTest {
         assertThat(utbetaling.type, is(YTELSESTYPE));
         assertThat(utbetaling.netto, is(NETTO));
         assertThat(utbetaling.brutto, is(BRUTTO));
-        assertThat(utbetaling.skatteTrekk, is(SKATT));
+        assertThat(utbetaling.skattetrekk, is(SKATT));
         assertThat(utbetaling.andreTrekk, is(TREKK));
-        assertThat(utbetaling.bilagsNummer, is(BILAGSNR));
+        assertThat(utbetaling.bilagsnummer, is(BILAGSNR));
         assertThat(utbetaling.periodeFom.getYear(), is(YEAR));
         assertThat(utbetaling.periodeFom.getMonthValue(), is(MONTH));
         assertThat(utbetaling.periodeFom.getDayOfMonth(), is(FOM_DATE));
         assertThat(utbetaling.periodeTom.getDayOfMonth(), is(TOM_DATE));
-        assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(UTBETALT_DAG));
+        assertThat(utbetaling.utbetalingsdato.getDayOfMonth(), is(UTBETALT_DAG));
 
         assertThat(komponent.type, is(KOMPONENTTYPE));
         assertThat(komponent.belop, is(KOMPONENTBELOP));
@@ -100,14 +100,14 @@ public class UtbetalingServiceTest {
         assertThat(utbetaling.type, is(YTELSESTYPE));
         assertThat(utbetaling.netto, is(0.0));
         assertThat(utbetaling.brutto, is(0.0));
-        assertThat(utbetaling.skatteTrekk, is(0.0));
+        assertThat(utbetaling.skattetrekk, is(0.0));
         assertThat(utbetaling.andreTrekk, is(0.0));
-        assertThat(utbetaling.bilagsNummer, is(nullValue()));
+        assertThat(utbetaling.bilagsnummer, is(nullValue()));
         assertThat(utbetaling.periodeFom.getYear(), is(YEAR));
         assertThat(utbetaling.periodeFom.getMonthValue(), is(MONTH));
         assertThat(utbetaling.periodeFom.getDayOfMonth(), is(FOM_DATE));
         assertThat(utbetaling.periodeTom, is(nullValue()));
-        assertThat(utbetaling.utbetalingsDato.getDayOfMonth(), is(UTBETALT_DAG));
+        assertThat(utbetaling.utbetalingsdato.getDayOfMonth(), is(UTBETALT_DAG));
 
         assertThat(komponent.type, is(KOMPONENTTYPE));
         assertThat(komponent.belop, is(0.0));

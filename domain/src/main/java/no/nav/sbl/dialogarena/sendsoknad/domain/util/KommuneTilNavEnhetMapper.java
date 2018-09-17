@@ -81,7 +81,7 @@ public class KommuneTilNavEnhetMapper {
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219", "5001"));
 
-    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "0806", "1201", "0301", "1247"));
+    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "0806", "1201", "0301", "1247", "5001"));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
@@ -92,6 +92,7 @@ public class KommuneTilNavEnhetMapper {
     private static final Map<String, String> PROD_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
+            .put("trondheim", "Trondheim")
             .build();
 
 
@@ -120,11 +121,11 @@ public class KommuneTilNavEnhetMapper {
             .put("sagene", new NavEnhet("Sagene", "oslo", "910565338"))
             .put("nordstrand", new NavEnhet("Nordstrand", "oslo", "910309935"))
             .put("sondreNordstrand", new NavEnhet("Søndre Nordstrand", "oslo", "910723499"))
-            
+
             // Trondheim
             .put("falkenborg", new NavEnhet("Falkenborg", "trondheim", "910230646"))
             .put("lerkendal", new NavEnhet("Lerkendal", "trondheim", "910230611"))
-            
+
             .build();
 
     private static final Map<String, NavEnhet> PROD_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
@@ -156,6 +157,9 @@ public class KommuneTilNavEnhetMapper {
             .put("ullern",          new NavEnhet("Ullern", "oslo",              "971022051"))
             .put("vestreaker",      new NavEnhet("Vestre Aker", "oslo",         "970145311"))
             .put("ostensjo",        new NavEnhet("Østensjø", "oslo",            "974778807"))
+            .put("falkenborg",      new NavEnhet("Falkenborg", "trondheim",     "892284792"))
+            .put("lerkendal",       new NavEnhet("Lerkendal", "trondheim",      "992284838"))
+
             .build();
 
     private static final Map<String, NavEnhet> mapper = velgMapperUtFraMiljo();
