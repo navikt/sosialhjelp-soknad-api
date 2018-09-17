@@ -157,8 +157,8 @@ public class KommuneTilNavEnhetMapper {
             .put("ullern",          new NavEnhet("Ullern", "oslo",              "971022051"))
             .put("vestreaker",      new NavEnhet("Vestre Aker", "oslo",         "970145311"))
             .put("ostensjo",        new NavEnhet("Østensjø", "oslo",            "974778807"))
-            .put("falkenborg", new NavEnhet("Falkenborg", "trondheim", "892284792"))
-            .put("lerkendal", new NavEnhet("Lerkendal", "trondheim", "992284838"))
+            .put("falkenborg",      new NavEnhet("Falkenborg", "trondheim", "892284792"))
+            .put("lerkendal",       new NavEnhet("Lerkendal", "trondheim", "992284838"))
 
             .build();
 
