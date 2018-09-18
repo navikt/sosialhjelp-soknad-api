@@ -36,10 +36,12 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public AdressesokRespons sokAdresse(Sokedata sokedata) {
+        /* I Q1 er det bedre ytelse med kun fonetisk søk (F).
         final AdressesokRespons respons = sokAdresseCall(sokedata, "E");
         if (!respons.adresseDataList.isEmpty()) {
             return respons;
         }
+        */
         
         return sokAdresseCall(sokedata, "F");
     }
