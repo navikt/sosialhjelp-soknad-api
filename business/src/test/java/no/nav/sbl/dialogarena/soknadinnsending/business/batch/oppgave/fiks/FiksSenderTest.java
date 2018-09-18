@@ -1,21 +1,22 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
-import no.ks.svarut.servicesv9.Forsendelse;
-import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
-import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
+import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksData.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static java.lang.System.clearProperty;
+import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender.ETTERSENDELSE_TIL_NAV;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender.SOKNAD_TIL_NAV;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -38,6 +39,8 @@ public class FiksSenderTest {
 
     @Before
     public void setUp() {
+        setProperty(FiksSender.KRYPTERING_DISABLED, "");
+
         when(forsendelsesService.sendForsendelse(any())).thenReturn("id1234");
         when(fillager.hentFil(any())).thenReturn(new byte[]{1, 2, 3});
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
@@ -53,8 +56,6 @@ public class FiksSenderTest {
 
     @Test
     public void senderMeldingTilFiks() {
-        System.setProperty(FiksSender.KRYPTERING_DISABLED, "");
-
         String fiksForsendelsesId = fiksSender.sendTilFiks(data);
         assertEquals("id1234", fiksForsendelsesId);
 
@@ -77,7 +78,7 @@ public class FiksSenderTest {
 
     @Test
     public void skalIkkeKryptere() {
-        System.setProperty(FiksSender.KRYPTERING_DISABLED, "true");
+        setProperty(FiksSender.KRYPTERING_DISABLED, "true");
 
         fiksSender.sendTilFiks(data);
 
@@ -88,5 +89,26 @@ public class FiksSenderTest {
         assertEquals(false, sendtForsendelse.isKryptert());
         assertEquals(false, sendtForsendelse.isKrevNiva4Innlogging());
         verify(dokumentKrypterer, times(0)).krypterData(any());
+    }
+
+    @Test
+    public void opprettForsendelseSetterRiktigTittelForNySoknad() {
+        Forsendelse forsendelse = fiksSender.opprettForsendelse(data, new PostAdresse(), true);
+
+        assertThat(forsendelse.getTittel(), is(SOKNAD_TIL_NAV));
+    }
+
+    @Test
+    public void opprettForsendelseSetterRiktigTittelForEttersendelse() {
+        data.ettersendelsePa = "12345";
+
+        Forsendelse forsendelse = fiksSender.opprettForsendelse(data, new PostAdresse(), true);
+
+        assertThat(forsendelse.getTittel(), is(ETTERSENDELSE_TIL_NAV));
+    }
+
+    @After
+    public void tearDown() {
+        clearProperty(FiksSender.KRYPTERING_DISABLED);
     }
 }
