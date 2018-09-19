@@ -58,7 +58,9 @@
                     {{#variabel "niva" "3"}}
                         {{#each fakta}}
                             {{> skjema/generisk/faktum }}
-                            {{> skjema/generisk/customSvarAlternativer }}
+                            {{#if @root.utvidetSoknad}}
+                                {{> skjema/generisk/customSvarAlternativer }}
+                            {{/if}}
                         {{/each}}
                     {{/variabel}}
 
