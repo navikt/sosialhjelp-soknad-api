@@ -17,6 +17,8 @@ target
 consumer/*.pdf
 test.pdf
 
+oracledb.properties
+
 web/handlebar.pdf
 
 # /web/FitNesseRoot/
