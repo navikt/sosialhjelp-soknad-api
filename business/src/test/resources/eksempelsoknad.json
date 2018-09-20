@@ -1,0 +1,256 @@
+{
+	"soknad": {
+		"version": "1.0.0",
+		"data": {
+			"personalia": {
+				"personIdentifikator": {
+					"kilde": "system",
+					"verdi": "12345678901"
+				},
+				"navn": {
+					"kilde": "system",
+					"fornavn": "Ola",
+					"mellomnavn": "Mellom",
+					"etternavn": "Nordmann"
+				},
+				"nordiskBorger": {
+					"kilde": "system",
+					"verdi": true
+				},
+				"statsborgerskap": {
+					"kilde": "system",
+					"verdi": "NOR"
+				},
+				"telefonnummer": {
+					"kilde": "system",
+					"verdi": "+4711122333"
+				},
+				"kontonummer": {
+					"kilde": "system",
+					"verdi": "12345678903"
+				},
+				"folkeregistrertAdresse": {
+					"kilde": "system",
+					"type": "gateadresse",
+					"landkode": "NOR",
+					"kommunenummer": "0219",
+					"bolignummer": "H0101",
+					"postnummer": "0598",
+					"poststed": "OSLO",
+					"gatenavn": "En vei",
+					"husnummer": "99",
+					"husbokstav": "B"
+				},
+				"oppholdsadresse": {
+					"kilde": "system",
+					"type": "matrikkeladresse",
+					"gaardsnummer": "1",
+					"bruksnummer": "1",
+					"festenummer": "1",
+					"seksjonsnummer": "1",
+					"undernummer": "1"
+				}
+			},
+			"arbeid": {
+				"forhold": [
+					{
+						"kilde": "system",
+						"arbeidsgivernavn": "Firmaet AS",
+						"fom": "2010-11-01",
+						"tom": "2017-12-01",
+						"stillingsprosent": 80,
+						"overstyrtAvBruker": false
+					},
+					{
+						"kilde": "system",
+						"arbeidsgivernavn": "Firmaet AS",
+						"fom": "2018-01-01",
+						"stillingsprosent": 0,
+						"stillingstype": "variabel",
+						"overstyrtAvBruker": false
+					},
+					{
+						"kilde": "system",
+						"arbeidsgivernavn": "Firmaet AS",
+						"fom": "2010-10-01",
+						"tom": "2017-13-01",
+						"stillingsprosent": 50,
+						"stillingstype": "fastOgVariabel",
+						"overstyrtAvBruker": false
+					}
+				],
+				"kommentarTilArbeidsforhold": {
+					"kilde": "bruker",
+					"verdi": "Det stemmer ikke at jeg fortsatt har en stilling hos Firmaet AS. Ansettelsesforholdet opphørte 15. januar."
+				}
+			},
+			"utdanning": {
+				"kilde": "bruker",
+				"erStudent": true,
+				"studentgrad": "heltid"
+			},
+			"familie": {
+				"sivilstatus": {
+					"kilde": "system",
+					"status": "gift",
+					"ektefelle": {
+						"navn": {
+							"fornavn": "Kari",
+							"mellomnavn": "K",
+							"etternavn": "Nordmann"
+						},
+						"fodselsdato": "1991-01-01",
+						"personIdentifikator": "12345678901"
+					},
+					"folkeregistrertMedEktefelle": false
+				},
+				"ektefelleHarDiskresjonskode": false,
+				"folkeregistrertMedEktefelleAvviksforklaring": {
+					"kilde": "bruker",
+					"verdi": "Vi er i ferd med å skilles."
+				},
+				"forsorgerplikt": {
+					"barnebidrag": {
+						"kilde": "bruker",
+						"verdi": "betaler"
+					},
+					"ansvar": [
+						{
+							"barn": {
+								"kilde": "system",
+								"navn": {
+									"fornavn": "Småen",
+									"mellomnavn": "",
+									"etternavn": "Nordmann"
+								},
+								"fodselsdato": "2010-01-01",
+								"personIdentifikator": "***REMOVED***",
+								"harDiskresjonskode": false
+							},
+							"erFolkeregistrertSammen": {
+								"kilde": "system",
+								"verdi": true
+							},
+							"HarDeltBosted": {
+								"kilde": "bruker",
+								"verdi": false
+							},
+							"samvarsgrad": {
+								"kilde": "bruker",
+								"verdi": 20
+							}
+						},
+						{
+							"barn": {
+								"kilde": "bruker",
+								"navn": {
+									"fornavn": "Småen",
+									"mellomnavn": "Den Andre",
+									"etternavn": "Nordmann"
+								},
+								"fodselsdato": "2011-01-01",
+								"personIdentifikator": "***REMOVED***"
+							},
+							"erFolkeregistrertSammen": {
+								"kilde": "system",
+								"verdi": true
+							},
+							"HarDeltBosted": {
+								"kilde": "bruker",
+								"verdi": true
+							},
+							"samvarsgrad": {
+								"kilde": "bruker",
+								"verdi": 50
+							}
+						}
+					]
+				}
+			},
+			"begrunnelse": {
+				"kilde": "bruker",
+				"hvorforSoke": "Jeg søker fordi...",
+				"hvaSokesOm": "Søker om penger til..."
+			},
+			"bosituasjon": {
+				"kilde": "bruker",
+				"botype": "venner",
+				"antallPersoner": 3
+			},
+			"okonomi": {
+				"opplysninger": {
+					"utbetaling": [
+						{
+							"kilde": "bruker",
+							"type": "utbytte",
+							"tittel": "Utbytte fra aksjer, obligasjoner eller fond",
+							"belop": 1337,
+							"overstyrtAvBruker": false
+						},
+						{
+							"kilde": "system",
+							"type": "navytelse",
+							"tittel": "Sykepenger",
+							"belop": 18201,
+							"overstyrtAvBruker": false,
+							"netto": 18201.0,
+							"brutto": 23620.0,
+							"skattetrekk": -5419.0,
+							"andreTrekk": -0.0,
+							"utbetalingsdato": "2018-02-22",
+							"periodeFom": "2018-02-01",
+							"periodeTom": "2018-02-28",
+							"komponenter": [
+								{
+									"type": "Arbeidstaker",
+									"belop": 23620.0,
+									"satsType": "Dag",
+									"satsAntall": 20.0,
+									"satsBelop": 1181.0
+								}
+							]
+						},
+						{
+							"kilde": "system",
+							"type": "navytelse",
+							"tittel": "Pensjon",
+							"belop": 14952,
+							"overstyrtAvBruker": false,
+							"netto": 14952.0,
+							"brutto": 18452.0,
+							"skattetrekk": -2500.0,
+							"andreTrekk": -1000.0,
+							"utbetalingsdato": "2018-02-22",
+							"periodeFom": "2018-02-01",
+							"periodeTom": "2018-02-28",
+							"komponenter": [
+								{
+									"type": "Grunnpensjon",
+									"belop": 7104.0,
+									"satsBelop": 0.0
+								},
+								{
+									"type": "Tilleggspensjon",
+									"belop": 11348.0,
+									"satsBelop": 0.0
+								}
+							]
+						}
+					],
+					"utgift": []
+				},
+				"oversikt": {
+					"inntekt": [],
+					"utgift": [],
+					"formue": []
+				}
+			}
+		},
+		"driftsinformasjon": "",
+		"kompatibilitet": []
+	},
+	"testinternal": {
+		"testStreng": "test 1",
+		"annenTestStreng": "test 2"
+	}
+}

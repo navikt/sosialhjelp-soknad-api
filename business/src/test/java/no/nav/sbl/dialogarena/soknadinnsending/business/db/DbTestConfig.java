@@ -6,6 +6,8 @@ import java.time.Clock;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepositoryJdbc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -35,6 +37,11 @@ public class DbTestConfig {
     @Bean
     public SoknadRepository soknadInnsendingRepository() {
         return new SoknadRepositoryJdbc();
+    }
+
+    @Bean
+    public FillagerRepository fillagerRepository() {
+        return new FillagerRepositoryJdbc();
     }
 
     @Bean
