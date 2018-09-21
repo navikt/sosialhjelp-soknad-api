@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -134,11 +135,12 @@ public class KallMotAdressesok {
                 try {
                     final Random r = new Random();
                     for (int i=0; i<100; i++) {
-                        MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, "test" + threadNum + "," + i);
+                        final String CALL_ID = "callId";
+                        MDC.put(CALL_ID, "test" + threadNum + "," + i);
                         final String tilfeldigGatenavn = gater.get(r.nextInt(gater.size()));
                         final String tilfeldigGatenavnFragment = tilfeldigGatenavn.substring(0, tallMellom(r, MINIMUM_FRAGMENT_LENGDE, tilfeldigGatenavn.length()));
                         app.testAdressekall(tilfeldigGatenavnFragment);
-                        MDCOperations.remove(MDCOperations.MDC_CALL_ID);
+                        MDC.remove(CALL_ID);
                         Thread.sleep(PAUSE_BETWEEN_CALLS);
                     }
                 } catch (InterruptedException e) {
