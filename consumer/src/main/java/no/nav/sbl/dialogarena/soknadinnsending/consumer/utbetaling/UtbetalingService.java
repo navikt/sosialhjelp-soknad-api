@@ -72,9 +72,9 @@ public class UtbetalingService {
         utbetaling.type = ytelse.getYtelsestype() != null ? ytelse.getYtelsestype().getValue() : "";
         utbetaling.netto = ytelse.getYtelseNettobeloep();
         utbetaling.brutto = ytelse.getYtelseskomponentersum();
-        utbetaling.skatteTrekk = ytelse.getSkattsum();
+        utbetaling.skattetrekk = ytelse.getSkattsum();
         utbetaling.andreTrekk = ytelse.getTrekksum();
-        utbetaling.bilagsNummer = ytelse.getBilagsnummer();
+        utbetaling.bilagsnummer = ytelse.getBilagsnummer();
 
         WSPeriode wsPeriode = ytelse.getYtelsesperiode();
         if (wsPeriode != null) {
@@ -82,7 +82,7 @@ public class UtbetalingService {
             utbetaling.periodeTom = tilLocalDate(wsPeriode.getTom());
         }
 
-        utbetaling.utbetalingsDato = tilLocalDate(wsUtbetaling.getUtbetalingsdato());
+        utbetaling.utbetalingsdato = tilLocalDate(wsUtbetaling.getUtbetalingsdato());
 
         if (ytelse.getYtelseskomponentListe() != null) {
             utbetaling.komponenter = ytelse.getYtelseskomponentListe().stream()
