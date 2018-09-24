@@ -14,6 +14,16 @@
                 {{/if}}
             </span>
         {{/hvisIkkeTom}}
+        {{#if @root.utvidetSoknad}}
+            {{#hvisIkkeTom (hentSvaralternativer key)}}
+                <p>
+                    <h{{niva}}>Svaralternativer:</h{{niva}}>
+                    <strong>
+                        {{hentSvaralternativer key}}
+                    </strong>
+                </p>
+            {{/hvisIkkeTom}}
+        {{/if}}
         {{> skjema/generisk/infotekstvalue}}
         {{> skjema/generisk/barnefakta}}
     </li>

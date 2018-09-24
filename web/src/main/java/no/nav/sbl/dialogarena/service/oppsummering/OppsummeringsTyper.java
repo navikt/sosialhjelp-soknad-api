@@ -19,7 +19,7 @@ public enum OppsummeringsTyper {
     radio("skjema/generisk/radio"),
     tekster("skjema/generisk/tekster"),
     string("skjema/generisk/default"),
-    bool("skjema/generisk/radio"),
+    bool("skjema/generisk/bool"),
     gruppe("skjema/generisk/gruppe"),
     inlineproperties("skjema/generisk/inlineproperties");
 
