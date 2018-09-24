@@ -1,4 +1,4 @@
-# For å gå mot en testdatabase når du kjører lokalt kan du lage en kopi av denne uten .default-endelsen og legge inn riktig passord.
+# For Ã¥ gÃ¥ mot en testdatabase nÃ¥r du kjÃ¸rer lokalt kan du lage en kopi av denne uten .default-endelsen og legge inn riktig passord.
 db.driverClassName=oracle.jdbc.driver.OracleDriver
 db.url=jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_t1
 db.username=soknadsosialhjelp
