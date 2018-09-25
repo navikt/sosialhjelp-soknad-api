@@ -64,12 +64,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentNavEnhetNavn - Henter navnet på NAV enheten som bruker har valgt
 * hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
+* hentSvaralternativer - Henter svaralternativer, dersom det er flere valgmuligheter. Prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * hentTekstForGDPRInfo - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere. Formatterer tekst med variabel input (riktig NAV-kontor)
 * hentTekstMedFaktumParameter - Henter tekst fra cms for en gitt key, med verdien til et faktum som parameter. Faktumet hentes basert på key
 * hvisFaktumstrukturHarInfotekster - Sjekker om man har definert infotekster på faktumstrukturen for faktum på context
 * hvisFlereErTrue - Finner alle fakta med key som begynner med teksten som sendes inn og teller om antallet med verdien true er større enn tallet som sendes inn.
-* hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 7 (fortrolig) eller 6 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisHarInnsendteDokumenter - Sjekker om søknaden har ett eller flere innsendte dokumenter
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
@@ -83,6 +84,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisNoenAvkryssetBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om noen er avkrysset.
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * hvisTekstFinnes - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
+* hvisTom - Helper for en tom variabel
 * hvisUlik - Sjekker om to strenger er ulike
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
@@ -364,6 +366,14 @@ må ha et faktum i context, f. eks. via
 ```
 
 
+##### hentSvaralternativer
+
+```
+{{hentSvaralternativer "min.key" "param1" "param2"}}
+{{hentSvaralternativer "mmannsin.key.uten.params"}}
+```
+
+
 ##### hentTekst
 
 ```
@@ -558,6 +568,17 @@ må ha et faktum i context, f. eks. via
 {{else}}
     false
 {{/hvisTekstFinnes}}
+```
+
+
+##### hvisTom
+
+```
+{{#hvisTom "verdi"}}
+    Verdien er tom
+{{else}}
+        Verdien er ikke tom
+{{/hvisTom}}
 ```
 
 

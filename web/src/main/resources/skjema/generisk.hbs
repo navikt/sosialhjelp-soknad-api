@@ -33,7 +33,7 @@
         <h1>{{ hentTekst "skjema.tittel" }}</h1>
         {{> skjema/dagpenger/personalia }}
     </div>
-     <div>
+    <div>
         {{#if @root.utvidetSoknad}}
             <div class="personalia">
                 {{> skjema/dagpenger/personaliaBolk}}
@@ -58,6 +58,9 @@
                     {{#variabel "niva" "3"}}
                         {{#each fakta}}
                             {{> skjema/generisk/faktum }}
+                            {{#if @root.utvidetSoknad}}
+                                {{> skjema/generisk/customSvarAlternativer }}
+                            {{/if}}
                         {{/each}}
                     {{/variabel}}
 

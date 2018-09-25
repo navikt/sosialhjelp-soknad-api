@@ -113,6 +113,11 @@
         </properties>
         <optional>true</optional>
     </faktum>
+    <faktum>
+        <id>system.familie.sivilstatus.informasjonspanel</id>
+        <panel>familieBolk</panel>
+        <type>textbox</type>
+    </faktum>
 
     <faktum>
         <id>system.familie.barn</id>
