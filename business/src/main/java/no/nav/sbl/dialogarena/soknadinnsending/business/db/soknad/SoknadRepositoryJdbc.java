@@ -320,7 +320,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         // Siden faktum-value er endret fra CLOB til Varchar må vi få med oss om det skulle oppstå tilfeller
         // hvor dette lager problemer. Logges som kritisk
         if (faktum.getValue() != null && faktum.getValue().length() > 500) {
-            logger.error("Prøver å opppdatere faktum med en value som overstiger 500 tegn. (Faktumkey: %s, Faktumtype: %s) ",
+            logger.error("Prøver å opppdatere faktum med en value som overstiger 500 tegn. (Faktumkey: {}, Faktumtype: {}) ",
                     faktum.getKey(), faktum.getTypeString());
             faktum.setValue(faktum.getValue().substring(0, 500));
         }
