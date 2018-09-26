@@ -70,7 +70,7 @@ public class SoknadsosialhjelpServer {
             System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         } else {
             log.info("Running with DEVELOPER (local) setup.");
-            configureLocalSecurity();
+            configureLocalEnvironment();
         }
     }
 
@@ -164,9 +164,9 @@ public class SoknadsosialhjelpServer {
         return props;
     }
 
-    private void configureLocalSecurity() throws IOException {
+    private void configureLocalEnvironment() throws IOException {
         setFrom("environment-test.properties");
-        updateJavaProperties(readProperties("oracledb.properties", true));
+        updateJavaProperties(readProperties("oracledb.properties", false));
     }
 
     private static DataSource buildDataSource() throws IOException {
