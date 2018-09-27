@@ -35,6 +35,21 @@ public interface AdresseSokConsumer {
         }
     }
     
+    enum Soketype {
+        FONETISK("F"),
+        EKSAKT("E");
+        
+        String tpsKode;
+        
+        Soketype(String tpsKode) {
+            this.tpsKode = tpsKode;
+        }
+        
+        public String toTpsKode() {
+            return tpsKode;
+        }
+    }
+    
     class Sokedata {
         public String adresse;
         public String husnummer;
@@ -43,6 +58,7 @@ public interface AdresseSokConsumer {
         public String poststed;
         
         public String kommunenummer;
+        public Soketype soketype = Soketype.FONETISK;
         
         public Sokedata withAdresse(String adresse) {
             this.adresse = adresse;
@@ -71,6 +87,14 @@ public interface AdresseSokConsumer {
         
         public Sokedata withKommunenummer(String kommunenummer) {
             this.kommunenummer = kommunenummer;
+            return this;
+        }
+        
+        public Sokedata withSoketype(Soketype soketype) {
+            if (soketype == null) {
+                throw new IllegalArgumentException("soketype == null");
+            }
+            this.soketype = soketype;
             return this;
         }
     }

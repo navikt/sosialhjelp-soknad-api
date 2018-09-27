@@ -43,7 +43,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         }
         */
         
-        return sokAdresseCall(sokedata, "F");
+        return sokAdresseCall(sokedata, sokedata.soketype.toTpsKode());
     }
     
     private AdressesokRespons sokAdresseCall(Sokedata sokedata, String soketype) {
