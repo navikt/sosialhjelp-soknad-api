@@ -14,6 +14,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Soketype;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 
 @Component
@@ -57,6 +58,7 @@ public class SoknadsmottakerService {
             return adresseSokService.sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenummer));
         } else {
             final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
+                        .withSoketype(Soketype.EKSAKT)
                         .withAdresse(nullIfEmpty(adresse.get("gatenavn")))
                         .withHusnummer(nullIfEmpty(adresse.get("husnummer")))
                         .withHusbokstav(nullIfEmpty(adresse.get("husbokstav")))
