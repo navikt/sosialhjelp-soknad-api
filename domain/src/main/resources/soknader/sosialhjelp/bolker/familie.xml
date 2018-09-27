@@ -147,6 +147,10 @@
         <flereTillatt>true</flereTillatt>
         <properties>
             <property>
+                <id>id</id>
+                <type>hidden</type>
+            </property>
+            <property>
                 <id>fornavn</id>
                 <type>textbox</type>
             </property>
