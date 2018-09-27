@@ -135,6 +135,18 @@
         <optional>true</optional>
     </faktum>
     <faktum>
+        <id>system.familie.barn.antall</id>
+        <type>textbox</type>
+        <constraints>
+            <constraint>
+                <faktum>system.familie.barn</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <panel>familieBolk</panel>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
         <id>system.familie.barn.true.barn</id>
         <constraints>
             <constraint>
@@ -153,18 +165,30 @@
             <property>
                 <id>fornavn</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>mellomnavn</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>etternavn</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>fodselsdato</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>fnr</id>
@@ -177,11 +201,15 @@
             <property>
                 <id>folkeregistrertsammen</id>
                 <type>bool</type>
+                <constraints>
+                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>deltbosted</id>
                 <type>bool</type>
                 <constraints>
+                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
                     <constraint>properties['folkeregistrertsammen'] == 'true'</constraint>
                 </constraints>
             </property>
@@ -189,6 +217,7 @@
                 <id>grad</id>
                 <type>textbox</type>
                 <constraints>
+                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
                     <constraint>properties['folkeregistrertsammen'] == 'false'</constraint>
                 </constraints>
             </property>
