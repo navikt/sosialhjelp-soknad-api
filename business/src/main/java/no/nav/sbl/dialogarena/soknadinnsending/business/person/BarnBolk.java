@@ -39,6 +39,9 @@ public class BarnBolk implements BolkService {
             fakta.add(new Faktum().medSoknadId(soknadId)
                     .medKey("system.familie.barn")
                     .medType(SYSTEMREGISTRERT).medValue("true"));
+            fakta.add(new Faktum().medSoknadId(soknadId)
+            .medKey("system.familie.barn.antall")
+            .medType(SYSTEMREGISTRERT).medValue(valueOf(barn.size())));
             fakta.addAll(genererSystemFaktaForBarn(barn, soknadId));
         }
         return fakta;

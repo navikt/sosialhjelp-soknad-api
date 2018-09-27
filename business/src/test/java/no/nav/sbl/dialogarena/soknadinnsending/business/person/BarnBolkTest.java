@@ -58,17 +58,22 @@ public class BarnBolkTest {
     }
 
     @Test
-    public void genererSystemFaktaLagerToFaktaForBarnForBrukerMedEtBarn() {
+    public void genererSystemFaktaLagerTreFaktaForBarnForBrukerMedEtBarn() {
         when(personServiceMock.hentBarn(anyString())).thenReturn(lagListeMedBarn(1));
 
         List<Faktum> fakta = barnBolk.genererSystemFakta(IDENT, SOKNAD_ID);
         Faktum harBarn = fakta.get(0);
+        Faktum antallBarn = fakta.get(1);
 
-        assertThat(fakta.size(), is(2));
+        assertThat(fakta.size(), is(3));
         assertThat(harBarn.getSoknadId(), is(SOKNAD_ID));
         assertThat(harBarn.getKey(), is("system.familie.barn"));
         assertThat(harBarn.getType(), is(SYSTEMREGISTRERT));
         assertThat(harBarn.getValue(), is("true"));
+        assertThat(antallBarn.getSoknadId(), is(SOKNAD_ID));
+        assertThat(antallBarn.getKey(), is("system.familie.barn.antall"));
+        assertThat(antallBarn.getType(), is(SYSTEMREGISTRERT));
+        assertThat(antallBarn.getValue(), is("1"));
     }
 
     @Test
