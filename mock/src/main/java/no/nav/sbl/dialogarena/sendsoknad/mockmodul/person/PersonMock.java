@@ -37,13 +37,10 @@ public class PersonMock {
         Doedsdato doedsdato = new Doedsdato();
         doedsdato.setDoedsdato(ServiceUtils.stringTilXmldato("2014-02-02"));
         Familierelasjon barn = lagBarn(FNR_BARN, "Dole", "Mockmann", doedsdato);
-        barn.getTilPerson().setFoedselsdato(fodseldato(2005, 1, 1));
         Familierelasjon barn2 = lagBarn(FNR_BARN2, "Ole", "Mockmann");
         barn2.setHarSammeBosted(true);
-        barn2.getTilPerson().setFoedselsdato(fodseldato(2017, 6, 3));
         Familierelasjon barn3 = lagBarn(FNR_BARN3, "Doffen", "Mockmann");
         barn3.setHarSammeBosted(false);
-        barn3.getTilPerson().setFoedselsdato(fodseldato(2016, 6, 3));
         familieRelasjoner.add(barn);
         familieRelasjoner.add(barn2);
         familieRelasjoner.add(barn3);
@@ -65,6 +62,10 @@ public class PersonMock {
         // Sivilstand sivilstand = new Sivilstand();
         // sivilstand.setSivilstand(sivilstander);
         // person.setSivilstand(sivilstand);
+
+        // Case: Barn har diskresjonskode
+        // barn2.getTilPerson().setDiskresjonskode(diskresjonskoder);
+        // barn3.getTilPerson().setDiskresjonskode(diskresjonskoder);
 
         personPortTypeMock.setPerson(person);
     }
