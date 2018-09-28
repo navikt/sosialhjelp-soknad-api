@@ -122,9 +122,11 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         if (sokedata.kommunenummer != null) {
             b = b.queryParam("kommunenr", sokedata.kommunenummer);
         }
+        /* Deaktiverer husnummer i søk grunnet dårlige registerdata:
         if (sokedata.husnummer != null) {
             b = b.queryParam("husnr", sokedata.husnummer);
         }
+        */
         if (isNotEmpty(apiKey)) {
             return b.request()
                     .header("Nav-Call-Id", callId)
