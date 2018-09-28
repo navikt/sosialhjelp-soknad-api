@@ -1,0 +1,15 @@
+package no.nav.sbl.sosialhjelp.vedlegg;
+
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+
+import java.util.List;
+
+public interface OpplastetVedleggRepository {
+
+    OpplastetVedlegg hentVedlegg(String uuid, String eier);
+    List<OpplastetVedlegg> hentVedleggForSoknad(Long soknadId, String eier);
+    String opprettVedlegg(OpplastetVedlegg opplastetVedlegg, String eier);
+    void slettVedlegg(String uuid, String eier);
+    void slettAlleVedleggForSoknad(Long soknadId, String eier);
+
+}
