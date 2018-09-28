@@ -152,8 +152,7 @@ public class JsonFamilieConverterTest {
         JsonBarn jsonBarn = jsonAnsvar.getBarn();
 
         assertThat(jsonAnsvar.getBorSammenMed(), nullValue());
-        assertThat(jsonAnsvar.getErFolkeregistrertSammen().getVerdi(), is(false));
-        assertThat(jsonAnsvar.getErFolkeregistrertSammen().getKilde(), is(JsonKildeSystem.SYSTEM));
+        assertThat(jsonAnsvar.getErFolkeregistrertSammen(), nullValue());
         assertThat(jsonAnsvar.getSamvarsgrad(), nullValue());
 
         assertThat(jsonBarn.getPersonIdentifikator(), nullValue());
@@ -217,7 +216,8 @@ public class JsonFamilieConverterTest {
 
     private Faktum lagBarnFaktum() {
         return new Faktum().medKey("system.familie.barn.true.barn")
-                .medUnikProperty("fnr")
+                .medUnikProperty("id")
+                .medSystemProperty("id", "1")
                 .medSystemProperty("fnr", FNR)
                 .medSystemProperty("fornavn", FORNAVN)
                 .medSystemProperty("mellomnavn", MELLOMNAVN)
@@ -230,7 +230,8 @@ public class JsonFamilieConverterTest {
 
     private Faktum lagBarnMedSammeFolkeregistrertAdresseOgDeltBostedFaktum() {
         return new Faktum().medKey("system.familie.barn.true.barn")
-                .medUnikProperty("fnr")
+                .medUnikProperty("id")
+                .medSystemProperty("id", "1")
                 .medSystemProperty("fnr", FNR)
                 .medSystemProperty("fornavn", FORNAVN)
                 .medSystemProperty("mellomnavn", null)
@@ -243,14 +244,15 @@ public class JsonFamilieConverterTest {
 
     private Faktum lagBarnMedDiskresjonskodeFaktum() {
         return new Faktum().medKey("system.familie.barn.true.barn")
-                .medUnikProperty("fnr")
+                .medUnikProperty("id")
+                .medSystemProperty("id", "1")
                 .medSystemProperty("fnr", "Skal aldri vises")
                 .medSystemProperty("fornavn", "Skal aldri vises")
                 .medSystemProperty("mellomnavn", "Skal aldri vises")
                 .medSystemProperty("etternavn", "Skal aldri vises")
                 .medSystemProperty("fodselsdato", "Skal aldri vises")
                 .medSystemProperty("ikketilgangtilbarn", "true")
-                .medSystemProperty("folkeregistrertsammen", "false");
+                .medSystemProperty("folkeregistrertsammen", "Skal aldri vises");
     }
 
 }

@@ -194,7 +194,7 @@ public class PersonMapperTest {
         assertThat(barn.getMellomnavn(), nullValue());
         assertThat(barn.getEtternavn(), nullValue());
         assertThat(barn.getFodselsdato(), nullValue());
-        assertThat(barn.erFolkeregistrertsammen(), is(false));
+        assertThat(barn.erFolkeregistrertsammen(), nullValue());
         assertThat(barn.harIkkeTilgang(), is(true));
     }
 

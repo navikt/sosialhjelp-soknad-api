@@ -129,7 +129,7 @@ public class BarnBolkTest {
         assertThat(barn.get("etternavn"), nullValue());
         assertThat(barn.get("fodselsdato"), nullValue());
         assertThat(barn.get("ikketilgangtilbarn"), is("true"));
-        assertThat(barn.get("folkeregistrertsammen"), is("false"));
+        assertThat(barn.get("folkeregistrertsammen"), nullValue());
     }
 
     private List<Barn> lagListeMedBarn(int antallBarn) {

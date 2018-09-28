@@ -209,7 +209,6 @@
                 <id>deltbosted</id>
                 <type>bool</type>
                 <constraints>
-                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
                     <constraint>properties['folkeregistrertsammen'] == 'true'</constraint>
                 </constraints>
             </property>
@@ -217,7 +216,6 @@
                 <id>grad</id>
                 <type>textbox</type>
                 <constraints>
-                    <constraint>properties['ikketilgangtilbarn'] != 'true'</constraint>
                     <constraint>properties['folkeregistrertsammen'] == 'false'</constraint>
                 </constraints>
             </property>

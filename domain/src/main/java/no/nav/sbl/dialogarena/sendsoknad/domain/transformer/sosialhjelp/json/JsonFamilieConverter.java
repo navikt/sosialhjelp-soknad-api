@@ -205,7 +205,8 @@ public final class JsonFamilieConverter {
         Map<String, String> barn = faktum.getProperties();
         JsonBarn jsonBarn = new JsonBarn();
         final String ikketilgangtilbarn = barn.get("ikketilgangtilbarn");
-        if (erIkkeTom(ikketilgangtilbarn) && valueOf(ikketilgangtilbarn)) {
+        final boolean barnHarDiskresjonskode = erIkkeTom(ikketilgangtilbarn) && valueOf(ikketilgangtilbarn);
+        if (barnHarDiskresjonskode) {
             jsonBarn.withKilde(SYSTEM)
                     .withNavn(new JsonNavn()
                             .withFornavn("")
@@ -222,7 +223,7 @@ public final class JsonFamilieConverter {
         JsonAnsvar ansvar = new JsonAnsvar()
                 .withBarn(jsonBarn);
 
-        if (erIkkeTom(barn.get("folkeregistrertsammen"))) {
+        if (!barnHarDiskresjonskode && erIkkeTom(barn.get("folkeregistrertsammen"))) {
             boolean borsammen = valueOf(barn.get("folkeregistrertsammen"));
             ansvar.withErFolkeregistrertSammen(
                     new JsonErFolkeregistrertSammen()
