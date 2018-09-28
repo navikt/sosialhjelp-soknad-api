@@ -113,11 +113,11 @@ public class VedleggOriginalFilerService {
     private void settSamvarsStatus(WebSoknad soknad) {
         boolean skalBeOmSamvaersavtale = false;
 
-        List<Faktum> barneFakta = soknad.getFaktaMedKey("familie.barn.true.barn");
+        List<Faktum> barneFakta = soknad.getFaktaMedKey("system.familie.barn.true.barn");
 
         for (Faktum barn : barneFakta) {
             Map<String, String> props = barn.getProperties();
-            boolean borIkkeSammen = "false".equals(props.get("borsammen"));
+            boolean borIkkeSammen = "false".equals(props.get("folkeregistrertsammen"));
             int grad = 100;
             try {
                 grad = Integer.parseInt(props.get("grad"));
