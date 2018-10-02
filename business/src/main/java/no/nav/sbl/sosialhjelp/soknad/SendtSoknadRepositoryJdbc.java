@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp.soknad;
 
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.vedlegg.VedleggstatusRepository;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,9 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
 
     @Inject
     private TransactionTemplate transactionTemplate;
+
+    @Inject
+    private VedleggstatusRepository vedleggstatusRepository;
 
     @Inject
     public void setDS(DataSource ds) {
@@ -71,8 +75,7 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                 if (sendtSoknadId == null) {
                     throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
                 }
-                //bytte ut med kall til vedleggstatusrepository
-                getJdbcTemplate().update("delete from VEDLEGGSTATUS where EIER = ? and SENDT_SOKNAD_ID = ?", eier, sendtSoknadId);
+                vedleggstatusRepository.slettAlleVedleggForSendtSoknad(sendtSoknadId, eier);
                 getJdbcTemplate().update("delete from SENDT_SOKNAD where EIER = ? and SENDT_SOKNAD_ID = ?", eier, sendtSoknadId);
             }
         });
