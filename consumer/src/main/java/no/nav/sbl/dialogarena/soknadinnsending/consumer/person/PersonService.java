@@ -1,20 +1,23 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.*;
 import no.nav.tjeneste.virksomhet.person.v1.*;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.*;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.slf4j.*;
-import org.springframework.cache.annotation.*;
-import org.springframework.stereotype.*;
+import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
 
-import javax.inject.*;
-import javax.xml.ws.*;
-import java.util.*;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.ws.WebServiceException;
+import java.util.ArrayList;
+import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.FamilierelasjonTransform.mapFamilierelasjon;
-import static org.slf4j.LoggerFactory.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnBarnForPerson;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.mapXmlPersonTilPerson;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Component
@@ -30,7 +33,12 @@ public class PersonService {
     @Named("personSelftestEndpoint")
     private PersonPortType personSelftestEndpoint;
 
-    @Cacheable(value = "barnCache", key = "#fodselsnummer")
+    public no.nav.sbl.dialogarena.sendsoknad.domain.Person hentPerson(String fodselsnummer) {
+        HentKjerneinformasjonResponse response = hentKjerneinformasjon(fodselsnummer);
+        return response != null ? mapXmlPersonTilPerson(response.getPerson()) : null;
+    }
+
+    @Cacheable(value = "personCache", key = "#fodselsnummer")
     public HentKjerneinformasjonResponse hentKjerneinformasjon(String fodselsnummer) {
         HentKjerneinformasjonRequest request = lagXMLRequestKjerneinformasjon(fodselsnummer);
         try {
@@ -39,8 +47,8 @@ public class PersonService {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
             throw new IkkeFunnetException("fant ikke bruker: " + request.getIdent(), e);
         } catch (HentKjerneinformasjonSikkerhetsbegrensning e) {
-            logger.error("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
-            throw new SikkerhetsBegrensningException("Kunne ikke hente bruker: " + request.getIdent(), e);
+            logger.warn("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
+            throw new SikkerhetsBegrensningException("Kunne ikke hente bruker på grunn av manglende tilgang", e);
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS (Person-servicen).", e);
             throw new TjenesteUtilgjengeligException("Person", e);
@@ -49,7 +57,10 @@ public class PersonService {
 
     public List<Barn> hentBarn(String fodselsnummer) {
         try {
-            return mapFamilierelasjon(hentKjerneinformasjon(fodselsnummer));
+            HentKjerneinformasjonResponse response = hentKjerneinformasjon(fodselsnummer);
+            if (response != null && response.getPerson() != null) {
+                return finnBarnForPerson(response.getPerson());
+            }
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
         } catch (WebServiceException e) {
@@ -67,5 +78,4 @@ public class PersonService {
         request.setIdent(fodselsnummer);
         return request;
     }
-
 }
