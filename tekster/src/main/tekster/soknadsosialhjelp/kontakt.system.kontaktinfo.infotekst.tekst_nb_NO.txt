@@ -1,1 +1,3 @@
-Skriv hele adressen din med gatenavn, husnummer, postnummer og poststed.
+Skriv hele adressen din med gatenavn, husnummer, postnummer og poststed. Eksempel: 
+
+Eksempelveien 47, 0123 OSLO
