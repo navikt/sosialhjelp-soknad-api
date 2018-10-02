@@ -8,6 +8,8 @@ import javax.sql.DataSource;
 
 import no.nav.sbl.sosialhjelp.soknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknad.SendtSoknadRepositoryJdbc;
+import no.nav.sbl.sosialhjelp.vedlegg.VedleggstatusRepository;
+import no.nav.sbl.sosialhjelp.vedlegg.VedleggstatusRepositoryJdbc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -56,6 +58,11 @@ public class DbTestConfig {
     @Bean
     public SendtSoknadRepository sendtSoknadRepository() {
         return new SendtSoknadRepositoryJdbc();
+    }
+
+    @Bean
+    public VedleggstatusRepository vedleggstatusRepository() {
+        return new VedleggstatusRepositoryJdbc();
     }
 
     @Bean

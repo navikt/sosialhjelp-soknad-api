@@ -121,8 +121,7 @@ public class DatabaseTestContext {
             st.execute("CREATE sequence SENDT_SOKNAD_ID_SEQ start WITH 1 increment BY 1");
             st.execute("drop table VEDLEGGSTATUS if exists ");
             st.execute("CREATE TABLE VEDLEGGSTATUS(VEDLEGGSTATUS_ID bigint NOT NULL, EIER VARCHAR(255) NOT NULL, STATUS VARCHAR(255) NOT NULL, TYPE VARCHAR(255) NOT NULL," +
-                    " SENDT_SOKNAD_ID bigint NOT NULL, CONSTRAINT UNIK_IDTYPE UNIQUE (SENDT_SOKNAD_ID, TYPE), CONSTRAINT VEDLEGGSTATUS_PK PRIMARY KEY (VEDLEGGSTATUS_ID)," +
-                    " CONSTRAINT VEDLEGGSTATUS_FK FOREIGN KEY (SENDT_SOKNAD_ID) REFERENCES SENDT_SOKNAD(SENDT_SOKNAD_ID))");
+                    " SENDT_SOKNAD_ID bigint NOT NULL, CONSTRAINT UNIK_IDTYPE UNIQUE (SENDT_SOKNAD_ID, TYPE), CONSTRAINT VEDLEGGSTATUS_PK PRIMARY KEY (VEDLEGGSTATUS_ID))");
             st.execute("drop sequence VEDLEGGSTATUSID_SEQ if exists ");
             st.execute("CREATE sequence VEDLEGGSTATUSID_SEQ start WITH 1 increment BY 1");
         } catch (SQLException e) {
