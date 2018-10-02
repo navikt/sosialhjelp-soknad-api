@@ -33,7 +33,7 @@
         <h1>{{ hentTekst "skjema.tittel" }}</h1>
         {{> skjema/dagpenger/personalia }}
     </div>
-     <div>
+    <div>
         {{#each bolker}}
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
@@ -53,6 +53,9 @@
                     {{#variabel "niva" "3"}}
                         {{#each fakta}}
                             {{> skjema/generisk/faktum }}
+                            {{#if @root.utvidetSoknad}}
+                                {{> skjema/generisk/customSvarAlternativer }}
+                            {{/if}}
                         {{/each}}
                     {{/variabel}}
 
