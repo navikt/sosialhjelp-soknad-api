@@ -124,6 +124,12 @@ public class DatabaseTestContext {
                     " SENDT_SOKNAD_ID bigint NOT NULL, CONSTRAINT UNIK_IDTYPE UNIQUE (SENDT_SOKNAD_ID, TYPE), CONSTRAINT VEDLEGGSTATUS_PK PRIMARY KEY (VEDLEGGSTATUS_ID))");
             st.execute("drop sequence VEDLEGGSTATUSID_SEQ if exists ");
             st.execute("CREATE sequence VEDLEGGSTATUSID_SEQ start WITH 1 increment BY 1");
+            st.execute("drop table SOKNAD_UNDER_ARBEID if exists");
+            st.execute("CREATE TABLE SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID bigint NOT NULL, VERSJON bigint DEFAULT 1 NOT NULL, BEHANDLINGSID VARCHAR(255) NOT NULL, TILKNYTTETBEHANDLINGSID VARCHAR(255)," +
+                    " EIER VARCHAR(255) NOT NULL, DATA BLOB NOT NULL, ORGNR VARCHAR(255) NOT NULL, STATUS VARCHAR(255) NOT NULL, OPPRETTETDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL, SISTENDRETDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL," +
+                    " CONSTRAINT UNIK_UA_BEHANDLINGSID UNIQUE (BEHANDLINGSID), CONSTRAINT SOKNAD_UNDER_ARBEID_PK PRIMARY KEY (SOKNAD_UNDER_ARBEID_ID))");
+            st.execute("drop sequence SOKNAD_UNDER_ARBEID_ID_SEQ if exists");
+            st.execute("CREATE sequence SOKNAD_UNDER_ARBEID_ID_SEQ start WITH 1 increment BY 1");
         } catch (SQLException e) {
             throw new RuntimeException("Feil ved oppretting av databasen", e);
         }

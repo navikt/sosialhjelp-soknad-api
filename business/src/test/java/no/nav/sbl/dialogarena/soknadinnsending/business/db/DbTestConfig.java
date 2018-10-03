@@ -6,8 +6,7 @@ import java.time.Clock;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import no.nav.sbl.sosialhjelp.soknad.SendtSoknadRepository;
-import no.nav.sbl.sosialhjelp.soknad.SendtSoknadRepositoryJdbc;
+import no.nav.sbl.sosialhjelp.soknad.*;
 import no.nav.sbl.sosialhjelp.vedlegg.VedleggstatusRepository;
 import no.nav.sbl.sosialhjelp.vedlegg.VedleggstatusRepositoryJdbc;
 import org.springframework.context.annotation.Bean;
@@ -63,6 +62,11 @@ public class DbTestConfig {
     @Bean
     public VedleggstatusRepository vedleggstatusRepository() {
         return new VedleggstatusRepositoryJdbc();
+    }
+
+    @Bean
+    public SoknadUnderArbeidRepository soknadUnderArbeidRepository() {
+        return new SoknadUnderArbeidRepositoryJdbc();
     }
 
     @Bean
