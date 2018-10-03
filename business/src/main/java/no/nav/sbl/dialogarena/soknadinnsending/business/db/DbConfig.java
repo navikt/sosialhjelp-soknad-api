@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.soknad.SendtSoknadRepositoryJdbc;
+import no.nav.sbl.sosialhjelp.soknad.SoknadUnderArbeidRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.vedlegg.VedleggstatusRepositoryJdbc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import java.time.Clock;
         SoknadRepositoryJdbc.class,
         SendtSoknadRepositoryJdbc.class,
         VedleggstatusRepositoryJdbc.class,
+        SoknadUnderArbeidRepositoryJdbc.class,
         VedleggRepositoryJdbc.class,
         FillagerRepositoryJdbc.class,
         SoknadMetadataRepositoryJdbc.class,

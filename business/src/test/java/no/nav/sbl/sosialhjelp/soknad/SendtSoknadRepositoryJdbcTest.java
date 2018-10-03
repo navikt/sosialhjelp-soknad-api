@@ -43,7 +43,6 @@ public class SendtSoknadRepositoryJdbcTest {
 
     @After
     public void cleanUp() {
-        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from VEDLEGGSTATUS");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SENDT_SOKNAD");
     }
 

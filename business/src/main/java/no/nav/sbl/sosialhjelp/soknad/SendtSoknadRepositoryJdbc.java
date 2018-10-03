@@ -36,9 +36,7 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
 
     @Override
     public Long opprettSendtSoknad(SendtSoknad sendtSoknad, String eier) {
-        if (eier == null || !eier.equalsIgnoreCase(sendtSoknad.getEier())) {
-            throw new RuntimeException("Eier stemmer ikke med søknadens eier");
-        }
+        sjekkOmBrukerEierSendtSoknad(sendtSoknad, eier);
         Long sendtSoknadId = getJdbcTemplate().queryForObject(selectNextSequenceValue("SENDT_SOKNAD_ID_SEQ"), Long.class);
         getJdbcTemplate()
                 .update("insert into SENDT_SOKNAD (sendt_soknad_id, behandlingsid, tilknyttetbehandlingsid, eier, fiksforsendelseid, brukeropprettetdato, brukerferdigdato, sendtdato)" +
@@ -68,6 +66,7 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
 
     @Override
     public void slettSendtSoknad(SendtSoknad sendtSoknad, String eier) {
+        sjekkOmBrukerEierSendtSoknad(sendtSoknad, eier);
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
@@ -79,6 +78,12 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                 getJdbcTemplate().update("delete from SENDT_SOKNAD where EIER = ? and SENDT_SOKNAD_ID = ?", eier, sendtSoknadId);
             }
         });
+    }
+
+    private void sjekkOmBrukerEierSendtSoknad(SendtSoknad sendtSoknad, String eier) {
+        if (eier == null || !eier.equalsIgnoreCase(sendtSoknad.getEier())) {
+            throw new RuntimeException("Eier stemmer ikke med søknadens eier");
+        }
     }
 
     public class SendtSoknadRowMapper implements RowMapper<SendtSoknad> {
