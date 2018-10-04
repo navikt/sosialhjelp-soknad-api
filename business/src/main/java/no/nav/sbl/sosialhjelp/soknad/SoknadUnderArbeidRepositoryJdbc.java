@@ -2,6 +2,7 @@ package no.nav.sbl.sosialhjelp.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.vedlegg.OpplastetVedleggRepository;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,9 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Inject
     private TransactionTemplate transactionTemplate;
+
+    @Inject
+    private OpplastetVedleggRepository opplastetVedleggRepository;
 
     @Inject
     public void setDS(DataSource ds) {
@@ -96,7 +100,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                 if (soknadUnderArbeidId == null) {
                     throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
                 }
-                //vedleggstatusRepository.slettAlleVedleggForSendtSoknad(sendtSoknadId, eier);
+                opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier);
                 getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
             }
         });

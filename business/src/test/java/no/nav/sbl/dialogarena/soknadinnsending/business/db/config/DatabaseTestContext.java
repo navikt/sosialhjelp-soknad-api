@@ -130,6 +130,9 @@ public class DatabaseTestContext {
                     " CONSTRAINT UNIK_UA_BEHANDLINGSID UNIQUE (BEHANDLINGSID), CONSTRAINT SOKNAD_UNDER_ARBEID_PK PRIMARY KEY (SOKNAD_UNDER_ARBEID_ID))");
             st.execute("drop sequence SOKNAD_UNDER_ARBEID_ID_SEQ if exists");
             st.execute("CREATE sequence SOKNAD_UNDER_ARBEID_ID_SEQ start WITH 1 increment BY 1");
+            st.execute("drop table OPPLASTET_VEDLEGG if exists");
+            st.execute("CREATE TABLE OPPLASTET_VEDLEGG(UUID VARCHAR(255) NOT NULL, EIER VARCHAR(255) NOT NULL, TYPE VARCHAR(255) NOT NULL, DATA blob NOT NULL, SOKNAD_UNDER_ARBEID_ID bigint NOT NULL," +
+                    " FILNAVN VARCHAR(255) NOT NULL, SHA512 VARCHAR(255) NOT NULL, CONSTRAINT UNIK_OPPLASTET_VEDLEGG_UUID UNIQUE (UUID))");
         } catch (SQLException e) {
             throw new RuntimeException("Feil ved oppretting av databasen", e);
         }

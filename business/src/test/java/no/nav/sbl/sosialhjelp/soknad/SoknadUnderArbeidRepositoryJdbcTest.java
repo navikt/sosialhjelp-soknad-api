@@ -2,7 +2,8 @@ package no.nav.sbl.sosialhjelp.soknad;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.vedlegg.OpplastetVedleggRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,9 +42,13 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Inject
+    private OpplastetVedleggRepository opplastetVedleggRepository;
+
     @After
     public void cleanUp() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID");
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG");
     }
 
     @Test
@@ -126,10 +131,12 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
+        final String opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER);
 
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER);
 
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).isPresent(), is(false));
+        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent(), is(false));
     }
 
     private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {
@@ -142,5 +149,15 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withInnsendingStatus(UNDER_ARBEID)
                 .withOpprettetDato(OPPRETTET_DATO)
                 .withSistEndretDato(SIST_ENDRET_DATO);
+    }
+
+    private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
+        return new OpplastetVedlegg()
+                .withEier(EIER)
+                .withVedleggType(new VedleggType("bostotte", "annetboutgift"))
+                .withData(new byte[]{1, 2, 3})
+                .withSoknadId(soknadId)
+                .withFilnavn("dokumentasjon.pdf")
+                .withSha512("aaa");
     }
 }
