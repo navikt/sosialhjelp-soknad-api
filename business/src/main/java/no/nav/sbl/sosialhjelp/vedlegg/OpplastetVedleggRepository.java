@@ -3,13 +3,13 @@ package no.nav.sbl.sosialhjelp.vedlegg;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OpplastetVedleggRepository {
 
-    OpplastetVedlegg hentVedlegg(String uuid, String eier);
+    Optional<OpplastetVedlegg> hentVedlegg(String uuid, String eier);
     List<OpplastetVedlegg> hentVedleggForSoknad(Long soknadId, String eier);
     String opprettVedlegg(OpplastetVedlegg opplastetVedlegg, String eier);
     void slettVedlegg(String uuid, String eier);
     void slettAlleVedleggForSoknad(Long soknadId, String eier);
-
 }

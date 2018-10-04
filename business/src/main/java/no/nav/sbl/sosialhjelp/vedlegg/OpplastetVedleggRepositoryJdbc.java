@@ -1,0 +1,86 @@
+package no.nav.sbl.sosialhjelp.vedlegg;
+
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import static no.nav.sbl.sosialhjelp.domain.VedleggType.mapSammensattVedleggTypeTilVedleggType;
+
+@Named("OpplastetVedleggRepository")
+@Component
+public class OpplastetVedleggRepositoryJdbc extends NamedParameterJdbcDaoSupport implements OpplastetVedleggRepository {
+
+    @Inject
+    public void setDS(DataSource ds) {
+        super.setDataSource(ds);
+    }
+
+    @Override
+    public Optional<OpplastetVedlegg> hentVedlegg(String uuid, String eier) {
+        return getJdbcTemplate().query("select * from OPPLASTET_VEDLEGG where EIER = ? and UUID = ?",
+                new OpplastetVedleggRowMapper(), eier, uuid).stream().findFirst();
+    }
+
+    @Override
+    public List<OpplastetVedlegg> hentVedleggForSoknad(Long soknadId, String eier) {
+        return getJdbcTemplate().query("select * from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
+                new OpplastetVedleggRowMapper(), eier, soknadId);
+    }
+
+    @Override
+    public String opprettVedlegg(OpplastetVedlegg opplastetVedlegg, String eier) {
+        if (eier == null || !eier.equalsIgnoreCase(opplastetVedlegg.getEier())) {
+            throw new RuntimeException("Eier stemmer ikke med vedleggets eier");
+        }
+        getJdbcTemplate()
+                .update("insert into OPPLASTET_VEDLEGG (UUID, EIER, TYPE, DATA, SOKNAD_UNDER_ARBEID_ID, FILNAVN, SHA512)" +
+                                " values (?,?,?,?,?,?,?)",
+                        opplastetVedlegg.getUuid(),
+                        opplastetVedlegg.getEier(),
+                        opplastetVedlegg.getVedleggType().getSammensattVedleggType(),
+                        opplastetVedlegg.getData(),
+                        opplastetVedlegg.getSoknadId(),
+                        opplastetVedlegg.getFilnavn(),
+                        opplastetVedlegg.getSha512());
+        return opplastetVedlegg.getUuid();
+    }
+
+    @Override
+    public void slettVedlegg(String uuid, String eier) {
+        getJdbcTemplate()
+                .update("delete from OPPLASTET_VEDLEGG where EIER = ? and UUID = ?",
+                        eier,
+                        uuid);
+    }
+
+    @Override
+    public void slettAlleVedleggForSoknad(Long soknadId, String eier) {
+        getJdbcTemplate()
+                .update("delete from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
+                        eier,
+                        soknadId);
+    }
+
+    public class OpplastetVedleggRowMapper implements RowMapper<OpplastetVedlegg> {
+
+        public OpplastetVedlegg mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new OpplastetVedlegg()
+                    .withUuid(rs.getString("uuid"))
+                    .withEier(rs.getString("eier"))
+                    .withVedleggType(mapSammensattVedleggTypeTilVedleggType(rs.getString("type")))
+                    .withData(rs.getBytes("data"))
+                    .withSoknadId(rs.getLong("soknad_under_arbeid_id"))
+                    .withFilnavn(rs.getString("filnavn"))
+                    .withSha512(rs.getString("sha512"));
+        }
+    }
+}

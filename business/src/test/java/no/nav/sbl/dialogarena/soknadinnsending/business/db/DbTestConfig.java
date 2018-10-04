@@ -7,8 +7,7 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import no.nav.sbl.sosialhjelp.soknad.*;
-import no.nav.sbl.sosialhjelp.vedlegg.VedleggstatusRepository;
-import no.nav.sbl.sosialhjelp.vedlegg.VedleggstatusRepositoryJdbc;
+import no.nav.sbl.sosialhjelp.vedlegg.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -67,6 +66,11 @@ public class DbTestConfig {
     @Bean
     public SoknadUnderArbeidRepository soknadUnderArbeidRepository() {
         return new SoknadUnderArbeidRepositoryJdbc();
+    }
+
+    @Bean
+    public OpplastetVedleggRepository opplastetVedleggRepository() {
+        return new OpplastetVedleggRepositoryJdbc();
     }
 
     @Bean
