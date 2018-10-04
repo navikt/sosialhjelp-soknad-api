@@ -1,9 +1,7 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
 
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonSikkerhetsbegrensing;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
@@ -26,9 +24,9 @@ public class EpostService {
     private DigitalKontaktinformasjonV1 dkif;
 
     @Cacheable("dkifCache")
-    public WSHentDigitalKontaktinformasjonResponse hentInfoFraDKIF(String ident) {
+    public DigitalKontaktinfo hentInfoFraDKIF(String ident) {
         try {
-            return dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident));
+            return mapResponsTilKontaktInfo(dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident)));
         }catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
             logger.error("Person ikke tilgjengelig i dkif: {}", e.getMessage());
         } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
@@ -37,7 +35,19 @@ public class EpostService {
             logger.info("Feil ved henting fra dkif: {}", e.getMessage());
         }
 
-        return new WSHentDigitalKontaktinformasjonResponse().withDigitalKontaktinformasjon(new WSKontaktinformasjon());
+        return new DigitalKontaktinfo().withEpostadresse("").withMobilnummer("");
+    }
+
+    DigitalKontaktinfo mapResponsTilKontaktInfo(WSHentDigitalKontaktinformasjonResponse response) {
+        if (response == null || response.getDigitalKontaktinformasjon() == null) {
+            return new DigitalKontaktinfo();
+        }
+        WSKontaktinformasjon digitalKontaktinformasjon = response.getDigitalKontaktinformasjon();
+        return new DigitalKontaktinfo()
+                .withEpostadresse(digitalKontaktinformasjon.getEpostadresse() != null ?
+                        digitalKontaktinformasjon.getEpostadresse().getValue() : "")
+                .withMobilnummer(digitalKontaktinformasjon.getMobiltelefonnummer() != null ?
+                        digitalKontaktinformasjon.getMobiltelefonnummer().getValue() : "");
     }
 
     private WSHentDigitalKontaktinformasjonRequest makeDKIFRequest(String ident) {
