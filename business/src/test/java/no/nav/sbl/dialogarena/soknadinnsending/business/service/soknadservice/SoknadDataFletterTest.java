@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
@@ -59,6 +60,8 @@ public class SoknadDataFletterTest {
     private HendelseRepository hendelseRepository;
     @Mock
     private HenvendelseService henvendelsesConnector;
+    @Mock
+    private OppgaveHandterer oppgaveHandterer;
     @Mock
     private FillagerService fillagerService;
     @Mock
@@ -178,7 +181,7 @@ public class SoknadDataFletterTest {
 
         ArgumentCaptor<HovedskjemaMetadata> hovedCaptor = ArgumentCaptor.forClass(HovedskjemaMetadata.class);
         ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
-        verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), hovedCaptor.capture(), vedleggCaptor.capture(), any());
+        verify(oppgaveHandterer).leggTilOppgave(eq(behandlingsId));
 
         HovedskjemaMetadata capturedHoved = hovedCaptor.getValue();
         assertThat(capturedHoved.filUuid).isEqualTo("uidHovedskjema");

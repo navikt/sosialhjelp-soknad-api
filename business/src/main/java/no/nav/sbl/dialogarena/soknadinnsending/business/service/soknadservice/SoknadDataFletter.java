@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -61,6 +62,8 @@ public class SoknadDataFletter {
     private SoknadRepository lokalDb;
     @Inject
     private HendelseRepository hendelseRepository;
+    @Inject
+    private OppgaveHandterer oppgaveHandterer;
     @Inject
     private WebSoknadConfig config;
     @Inject
@@ -321,7 +324,8 @@ public class SoknadDataFletter {
         VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
-        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
+        oppgaveHandterer.leggTilOppgave(behandlingsId);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
