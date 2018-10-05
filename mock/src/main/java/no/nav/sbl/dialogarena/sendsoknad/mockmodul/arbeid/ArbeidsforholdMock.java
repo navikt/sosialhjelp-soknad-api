@@ -24,9 +24,9 @@ public class ArbeidsforholdMock {
                 public FinnArbeidsforholdPrArbeidstakerResponse answer(InvocationOnMock invocationOnMock) throws Throwable {
                     FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
                     Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
-                    Organisasjon org = new Organisasjon();
-                    org.setOrgnummer("123");
-                    arbeidsforhold.setArbeidsgiver(org);
+                    Organisasjon organisasjon = new Organisasjon();
+                    organisasjon.setOrgnummer("123");
+                    arbeidsforhold.setArbeidsgiver(organisasjon);
                     arbeidsforhold.setAnsettelsesPeriode(hentPeriode());
                     arbeidsforhold.getArbeidsavtale().add(lagArbeidsavtale());
                     response.getArbeidsforhold().add(arbeidsforhold);
