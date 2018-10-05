@@ -37,7 +37,6 @@ public class OrganisasjonWSConfig {
 
     @Bean
     public OrganisasjonV4 organisasjonEndpoint() {
-        //OrganisasjonV4 mock = new ArbeidsforholdMock().organisasjonMock();
     	OrganisasjonV4 mock = new OrganisasjonMock();
         
         OrganisasjonV4 prod = factory().withUserSecurity().get();
