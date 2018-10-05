@@ -5,14 +5,6 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonOrganisasjonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonUgyldigInput;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Virksomhet;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -32,6 +24,9 @@ public class ArbeidsforholdMock {
                 public FinnArbeidsforholdPrArbeidstakerResponse answer(InvocationOnMock invocationOnMock) throws Throwable {
                     FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
                     Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
+                    Organisasjon org = new Organisasjon();
+                    org.setOrgnummer("123");
+                    arbeidsforhold.setArbeidsgiver(org);
                     arbeidsforhold.setAnsettelsesPeriode(hentPeriode());
                     arbeidsforhold.getArbeidsavtale().add(lagArbeidsavtale());
                     response.getArbeidsforhold().add(arbeidsforhold);
@@ -61,20 +56,4 @@ public class ArbeidsforholdMock {
         return avtale;
     }
 
-
-    public OrganisasjonV4 organisasjonMock() {
-        OrganisasjonV4 mock = mock(OrganisasjonV4.class);
-        try {
-            HentOrganisasjonResponse response = new HentOrganisasjonResponse();
-            Organisasjon organisasjon = new Virksomhet();
-            UstrukturertNavn value = new UstrukturertNavn();
-            value.getNavnelinje().add("Mock navn arbeidsgiver");
-            organisasjon.setNavn(value);
-            response.setOrganisasjon(organisasjon);
-            when(mock.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(response);
-        } catch (HentOrganisasjonOrganisasjonIkkeFunnet | HentOrganisasjonUgyldigInput hentOrganisasjonOrganisasjonIkkeFunnet) {
-            hentOrganisasjonOrganisasjonIkkeFunnet.printStackTrace();
-        }
-        return mock;
-    }
 }
