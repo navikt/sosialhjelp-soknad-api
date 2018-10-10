@@ -32,21 +32,17 @@ public class OrganisasjonMock implements OrganisasjonV4 {
 
 	@Override
 	public void ping() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public FinnOrganisasjonResponse finnOrganisasjon(FinnOrganisasjonRequest request)
 			throws FinnOrganisasjonForMangeForekomster, FinnOrganisasjonUgyldigInput {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public HentOrganisasjonsnavnBolkResponse hentOrganisasjonsnavnBolk(HentOrganisasjonsnavnBolkRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -56,9 +52,6 @@ public class OrganisasjonMock implements OrganisasjonV4 {
         Organisasjon organisasjon = new Virksomhet();
         UstrukturertNavn value = new UstrukturertNavn();
         value.getNavnelinje().add("Mock navn arbeidsgiver");
-        value.getNavnelinje().add("");
-        value.getNavnelinje().add("");
-        value.getNavnelinje().add("");
         organisasjon.setNavn(value);
         response.setOrganisasjon(organisasjon);
 		return response;
@@ -67,29 +60,25 @@ public class OrganisasjonMock implements OrganisasjonV4 {
 	@Override
 	public HentNoekkelinfoOrganisasjonResponse hentNoekkelinfoOrganisasjon(HentNoekkelinfoOrganisasjonRequest request)
 			throws HentNoekkelinfoOrganisasjonOrganisasjonIkkeFunnet, HentNoekkelinfoOrganisasjonUgyldigInput {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public ValiderOrganisasjonResponse validerOrganisasjon(ValiderOrganisasjonRequest request)
 			throws ValiderOrganisasjonOrganisasjonIkkeFunnet, ValiderOrganisasjonUgyldigInput {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public HentVirksomhetsOrgnrForJuridiskOrgnrBolkResponse hentVirksomhetsOrgnrForJuridiskOrgnrBolk(
 			HentVirksomhetsOrgnrForJuridiskOrgnrBolkRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public FinnOrganisasjonsendringerListeResponse finnOrganisasjonsendringerListe(
 			FinnOrganisasjonsendringerListeRequest request) throws FinnOrganisasjonsendringerListeUgyldigInput {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 }
