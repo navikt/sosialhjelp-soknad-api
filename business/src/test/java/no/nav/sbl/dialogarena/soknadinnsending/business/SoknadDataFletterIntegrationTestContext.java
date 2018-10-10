@@ -19,6 +19,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
+import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
+import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
+import no.nav.sbl.sosialhjelp.soknad.SoknadUnderArbeidRepository;
+import no.nav.sbl.sosialhjelp.vedlegg.OpplastetVedleggRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -149,5 +153,25 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public OppgaveHandterer oppgaveHandterer() {
         return mock(OppgaveHandterer.class);
+    }
+
+    @Bean
+    public SoknadUnderArbeidRepository soknadUnderArbeidRepository() {
+        return mock(SoknadUnderArbeidRepository.class);
+    }
+
+    @Bean
+    OpplastetVedleggRepository opplastetVedleggRepository() {
+        return mock(OpplastetVedleggRepository.class);
+    }
+
+    @Bean
+    WebSoknadConverter webSoknadConverter() {
+        return mock(WebSoknadConverter.class);
+    }
+
+    @Bean
+    VedleggConverter vedleggConverter() {
+        return mock(VedleggConverter.class);
     }
 }

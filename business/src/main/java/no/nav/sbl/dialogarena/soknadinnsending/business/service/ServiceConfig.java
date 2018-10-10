@@ -4,6 +4,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
+import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
+import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -26,7 +28,9 @@ import org.springframework.context.annotation.Import;
         SynligeFaktaService.class,
         SoknadMetricsService.class,
         FillagerService.class,
-        HenvendelseService.class
+        HenvendelseService.class,
+        VedleggConverter.class,
+        WebSoknadConverter.class
 })
 public class ServiceConfig {
 }
