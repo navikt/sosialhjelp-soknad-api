@@ -1,4 +1,4 @@
-package no.nav.sbl.sosialhjelp.soknad;
+package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 

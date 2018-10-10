@@ -1,4 +1,4 @@
-package no.nav.sbl.sosialhjelp.vedlegg;
+package no.nav.sbl.sosialhjelp.sendtsoknad;
 
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import org.springframework.jdbc.core.RowMapper;

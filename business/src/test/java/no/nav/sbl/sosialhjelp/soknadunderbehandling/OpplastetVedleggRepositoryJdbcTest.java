@@ -1,4 +1,4 @@
-package no.nav.sbl.sosialhjelp.vedlegg;
+package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
