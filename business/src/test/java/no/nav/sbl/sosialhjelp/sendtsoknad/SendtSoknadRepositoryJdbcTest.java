@@ -48,19 +48,24 @@ public class SendtSoknadRepositoryJdbcTest {
 
     @Test
     public void opprettSendtSoknadOppretterSendtSoknadIDatabasen() {
-        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
 
         assertThat(sendtSoknadId, notNullValue());
     }
 
     @Test(expected = RuntimeException.class)
     public void opprettSendtSoknadKasterRuntimeExceptionHvisEierErUlikSoknadseier() {
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER2);
+        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void opprettSendtSoknadKasterRuntimeExceptionHvisEierErNull() {
+        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null);
     }
 
     @Test
     public void hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
 
         SendtSoknad sendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
 
@@ -91,13 +96,17 @@ public class SendtSoknadRepositoryJdbcTest {
 
     @Test
     public void slettSendtSoknadSletterSoknadFraDatabase() {
-        SendtSoknad sendtSoknad = lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID);
+        SendtSoknad sendtSoknad = lagSendtSoknad(EIER);
         Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, EIER);
         sendtSoknad.setSendtSoknadId(sendtSoknadId);
 
         sendtSoknadRepository.slettSendtSoknad(sendtSoknad, EIER);
 
         assertThat(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).isPresent(), is(false));
+    }
+
+    private SendtSoknad lagSendtSoknad(String eier) {
+        return lagSendtSoknad(eier, BEHANDLINGSID, FIKSFORSENDELSEID);
     }
 
     private SendtSoknad lagSendtSoknad(String eier, String behandlingsId, String fiksforsendelseId) {
