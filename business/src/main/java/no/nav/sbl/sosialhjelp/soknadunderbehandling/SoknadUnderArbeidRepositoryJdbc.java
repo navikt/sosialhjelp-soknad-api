@@ -1,8 +1,7 @@
-package no.nav.sbl.sosialhjelp.soknad;
+package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.vedlegg.OpplastetVedleggRepository;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
