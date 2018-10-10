@@ -1,4 +1,4 @@
-package no.nav.sbl.sosialhjelp.soknad;
+package no.nav.sbl.sosialhjelp.sendtsoknad;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
