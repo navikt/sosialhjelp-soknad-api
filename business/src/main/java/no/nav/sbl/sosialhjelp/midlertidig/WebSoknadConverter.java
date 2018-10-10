@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.joda.time.DateTime;
@@ -18,6 +17,8 @@ import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 
+import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -30,6 +31,9 @@ public class WebSoknadConverter {
     private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
 
     public SoknadUnderArbeid mapWebSoknadTilSoknadUnderArbeid(WebSoknad webSoknad, String orgnummer) {
+        if (webSoknad == null || isEmpty(orgnummer)) {
+            return null;
+        }
         return new SoknadUnderArbeid()
                 .withVersjon(1L)
                 .withBehandlingsId(webSoknad.getBrukerBehandlingId())
@@ -47,15 +51,15 @@ public class WebSoknadConverter {
         return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
     }
 
-    private JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
+    JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
         return new JsonInternalSoknad()
                 .withSoknad(JsonSoknadConverter.tilJsonSoknad(new InputSource(webSoknad, messageSource)));
     }
 
-    private byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
+    byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
         try {
             final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
-            JsonSosialhjelpValidator.ensureValidInternalSoknad(internalSoknad);
+            ensureValidInternalSoknad(internalSoknad);
             return internalSoknad.getBytes(StandardCharsets.UTF_8);
         } catch (JsonProcessingException e) {
             logger.error("Kunne ikke konvertere søknadsobjekt til tekststreng", e);
@@ -63,7 +67,7 @@ public class WebSoknadConverter {
         return null;
     }
 
-    private LocalDateTime fraJodaDateTimeTilLocalDateTime(DateTime jodaDateTime) {
+    LocalDateTime fraJodaDateTimeTilLocalDateTime(DateTime jodaDateTime) {
         if (jodaDateTime == null) {
             return null;
         }

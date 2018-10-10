@@ -1,0 +1,158 @@
+package no.nav.sbl.sosialhjelp.midlertidig;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException;
+import no.nav.sbl.soknadsosialhjelp.soknad.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
+import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.time.LocalDateTime;
+import java.util.Locale;
+import java.util.Properties;
+
+import static java.time.Month.AUGUST;
+import static java.util.Collections.emptyList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.FNR_KEY;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class WebSoknadConverterTest {
+
+    private static final String ORGNR = "012345678";
+    private static final String BEHANDLINGSID = "1100001L";
+    private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
+    private static final String EIER = "12345678901";
+
+    private NavMessageSource messageSource = mock(NavMessageSource.class);
+    @InjectMocks
+    private WebSoknadConverter webSoknadConverter;
+
+    @Before
+    public void setUp() {
+        when(messageSource.getBundleFor(anyString(), any(Locale.class))).thenReturn(new Properties());
+    }
+
+    @Test
+    public void mapWebSoknadTilSoknadUnderArbeidMapperFelterRiktig() {
+        SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(lagGyldigWebSoknad(), ORGNR);
+
+        assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
+        assertThat(soknadUnderArbeid.getVersjon(), is(1L));
+        assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
+        assertThat(soknadUnderArbeid.getEier(), is(EIER));
+        assertThat(soknadUnderArbeid.getData(), notNullValue());
+        assertThat(soknadUnderArbeid.getOrgnummer(), is(ORGNR));
+        assertThat(soknadUnderArbeid.getInnsendingStatus(), is(UNDER_ARBEID));
+        assertThat(soknadUnderArbeid.getOpprettetDato(), notNullValue());
+        assertThat(soknadUnderArbeid.getSistEndretDato(), notNullValue());
+    }
+
+    @Test
+    public void mapWebSoknadTilJsonSoknadInternalLagerJsonSoknadInternalMedDataFraWebSoknad() {
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad());
+
+        assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi(), is(EIER));
+        assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse().getType().value(), is("gateadresse"));
+    }
+
+    @Test
+    public void mapJsonSoknadInternalTilFilMapperGyldigSoknadTilFil() {
+        byte[] fil = webSoknadConverter.mapJsonSoknadInternalTilFil(lagGyldigJsonInternalSoknad());
+
+        assertThat(fil, notNullValue());
+    }
+
+    @Test(expected = JsonSosialhjelpValidationException.class)
+    public void mapJsonSoknadInternalTilFilKasterExceptionVedUgyldigSoknad() {
+        JsonInternalSoknad ugyldigInternalSoknad = new JsonInternalSoknad()
+                .withSoknad(new JsonSoknad()
+                        .withVersion("1")
+                        .withData(new JsonData()));
+
+        webSoknadConverter.mapJsonSoknadInternalTilFil(ugyldigInternalSoknad);
+    }
+
+    @Test
+    public void fraJodaDateTimeTilLocalDateTimeKonvertererDatoRiktig() {
+        final DateTime dateTime = new DateTime(2017, 8, 22, 11, 43, 0);
+
+        LocalDateTime localDateTime = webSoknadConverter.fraJodaDateTimeTilLocalDateTime(dateTime);
+
+        assertThat(localDateTime.getYear(), is(2017));
+        assertThat(localDateTime.getMonth(), is(AUGUST));
+        assertThat(localDateTime.getDayOfMonth(), is(22));
+        assertThat(localDateTime.getHour(), is(11));
+        assertThat(localDateTime.getMinute(), is(43));
+        assertThat(localDateTime.getSecond(), is(0));
+    }
+
+    private JsonInternalSoknad lagGyldigJsonInternalSoknad() {
+        return new JsonInternalSoknad()
+                .withSoknad(new JsonSoknad()
+                        .withVersion("1.0.0")
+                        .withKompatibilitet(emptyList())
+                        .withDriftsinformasjon("")
+                        .withData(new JsonData()
+                                .withArbeid(new JsonArbeid())
+                                .withBegrunnelse(new JsonBegrunnelse()
+                                        .withHvaSokesOm("")
+                                        .withHvorforSoke(""))
+                                .withBosituasjon(new JsonBosituasjon())
+                                .withFamilie(new JsonFamilie()
+                                        .withForsorgerplikt(new JsonForsorgerplikt()))
+                                .withOkonomi(new JsonOkonomi()
+                                        .withOpplysninger(new JsonOkonomiopplysninger())
+                                        .withOversikt(new JsonOkonomioversikt()))
+                                .withPersonalia(new JsonPersonalia()
+                                        .withKontonummer(new JsonKontonummer()
+                                                .withKilde(JsonKilde.BRUKER))
+                                        .withNavn(new JsonSokernavn()
+                                                .withFornavn("Fornavn")
+                                                .withMellomnavn("")
+                                                .withEtternavn("Etternavn")
+                                                .withKilde(JsonSokernavn.Kilde.SYSTEM))
+                                        .withPersonIdentifikator(new JsonPersonIdentifikator()
+                                                .withVerdi("12345678910")
+                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)))
+                                .withUtdanning(new JsonUtdanning()
+                                        .withKilde(JsonKilde.BRUKER))));
+    }
+
+    private WebSoknad lagGyldigWebSoknad() {
+        WebSoknad webSoknad = new WebSoknad()
+                .medBehandlingId(BEHANDLINGSID)
+                .medBehandlingskjedeId(TILKNYTTET_BEHANDLINGSID)
+                .medAktorId(EIER)
+                .medStatus(UNDER_ARBEID)
+                .medOppretteDato(new DateTime());
+        webSoknad.setSistLagret(new DateTime());
+        webSoknad.medFaktum(new Faktum().medKey("personalia").medSystemProperty(FNR_KEY, EIER));
+        webSoknad.medFaktum(new Faktum().medKey("kontakt.system.adresse")
+                .medSystemProperty("type", "gateadresse")
+                .medSystemProperty("gatenavn", "Adresseveien"));
+        return webSoknad;
+    }
+}
