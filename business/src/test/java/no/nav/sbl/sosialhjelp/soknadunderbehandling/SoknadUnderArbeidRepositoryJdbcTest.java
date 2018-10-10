@@ -1,9 +1,8 @@
-package no.nav.sbl.sosialhjelp.soknad;
+package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.sosialhjelp.domain.*;
-import no.nav.sbl.sosialhjelp.vedlegg.OpplastetVedleggRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

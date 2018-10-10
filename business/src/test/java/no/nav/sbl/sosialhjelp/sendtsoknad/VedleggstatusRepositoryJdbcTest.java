@@ -1,9 +1,8 @@
-package no.nav.sbl.sosialhjelp.vedlegg;
+package no.nav.sbl.sosialhjelp.sendtsoknad;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.sosialhjelp.domain.*;
-import no.nav.sbl.sosialhjelp.soknad.SendtSoknadRepository;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
