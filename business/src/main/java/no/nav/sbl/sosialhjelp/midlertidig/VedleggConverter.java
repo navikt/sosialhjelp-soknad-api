@@ -4,12 +4,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
@@ -19,8 +21,12 @@ public class VedleggConverter {
     private VedleggService vedleggService;
 
     public List<OpplastetVedlegg> mapVedleggListeTilOpplastetVedleggListe(Long soknadUnderArbeidId, String eier, List<Vedlegg> vedleggListe) {
-        if (vedleggListe == null || vedleggListe.isEmpty()) {
+        if (soknadUnderArbeidId == null || isEmpty(eier)) {
             return null;
+        }
+
+        if (vedleggListe == null || vedleggListe.isEmpty()) {
+            return new ArrayList<>();
         }
         List<OpplastetVedlegg> opplastedeVedlegg = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggListe) {
@@ -32,7 +38,11 @@ public class VedleggConverter {
     }
 
     OpplastetVedlegg mapVedleggTilOpplastetVedlegg(Long soknadUnderArbeidId, String eier, Vedlegg vedlegg) {
-        byte[] data = vedleggService.hentVedlegg(vedlegg.getVedleggId(), true).getData();
+        Vedlegg vedleggMedInnhold = vedleggService.hentVedlegg(vedlegg.getVedleggId(), true);
+        if (vedleggMedInnhold == null || vedleggMedInnhold.getData() == null) {
+            return null;
+        }
+        byte[] data = vedleggMedInnhold.getData();
         return new OpplastetVedlegg().withSoknadId(soknadUnderArbeidId)
                 .withVedleggType(new VedleggType(vedlegg.getSkjemaNummer(), vedlegg.getSkjemanummerTillegg()))
                 .withData(data)

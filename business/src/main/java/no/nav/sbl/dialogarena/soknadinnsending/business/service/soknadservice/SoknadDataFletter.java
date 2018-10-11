@@ -20,8 +20,8 @@ import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
-import no.nav.sbl.sosialhjelp.soknad.SoknadUnderArbeidRepository;
-import no.nav.sbl.sosialhjelp.vedlegg.OpplastetVedleggRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -360,14 +360,15 @@ public class SoknadDataFletter {
 
     private void lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe, String orgnummer) {
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, orgnummer);
-        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, soknad.getAktoerId());
-        soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
-
-        final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeidId,
-                soknadUnderArbeid.getEier(), vedleggListe);
-        if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
-            for (OpplastetVedlegg opplastetVedlegg : opplastedeVedlegg) {
-                opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, soknadUnderArbeid.getEier());
+        if (soknadUnderArbeid != null) {
+            final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, soknad.getAktoerId());
+            soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
+            final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeidId,
+                    soknadUnderArbeid.getEier(), vedleggListe);
+            if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
+                for (OpplastetVedlegg opplastetVedlegg : opplastedeVedlegg) {
+                    opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, soknadUnderArbeid.getEier());
+                }
             }
         }
     }
