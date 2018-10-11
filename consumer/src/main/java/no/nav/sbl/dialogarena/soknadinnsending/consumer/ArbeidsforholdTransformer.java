@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>,
@@ -84,7 +86,9 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
             HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
             try {
                 //Kan bare være ustrukturert navn.
-                return Joiner.on(", ").join(((UstrukturertNavn) organisasjonWebService.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon().getNavn()).getNavnelinje());
+            	List<String> orgNavn = ((UstrukturertNavn) organisasjonWebService.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon().getNavn()).getNavnelinje();
+            	orgNavn.removeAll(Arrays.asList("", null));
+                return Joiner.on(", ").join(orgNavn);
             } catch (Exception ex) {
                 LOGGER.warn("Kunne ikke hente orgnr: " + orgnr, ex);
                 return "";
