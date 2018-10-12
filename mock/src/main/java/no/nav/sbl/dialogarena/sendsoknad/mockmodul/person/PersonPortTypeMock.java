@@ -1,15 +1,14 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 
-import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
+import no.nav.tjeneste.virksomhet.person.v1.*;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
+import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock.*;
+
 public class PersonPortTypeMock implements PersonPortType {
-    Person person;
+    private Person person;
 
     @Override
     public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {

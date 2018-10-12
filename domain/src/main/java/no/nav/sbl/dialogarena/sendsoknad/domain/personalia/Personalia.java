@@ -232,28 +232,6 @@ public class Personalia {
         return false;
     }
 
-    public boolean harNorskMidlertidigAdresse() {
-        if (sekundarAdresse == null) {
-            return false;
-        }
-        String adressetype = sekundarAdresse.getAdressetype();
-
-        if (adressetype == null) {
-            return false;
-        }
-        if (adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_NORGE.name())) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean harUtenlandskFolkeregistrertAdresse() {
-        if ((gjeldendeAdresse == null) || (gjeldendeAdresse.getAdressetype() == null)) {
-            return false;
-        }
-        return gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name());
-    }
-
     public String getKontonummer() {
         return kontonummer;
     }
