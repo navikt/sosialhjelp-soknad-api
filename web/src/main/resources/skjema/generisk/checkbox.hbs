@@ -18,3 +18,10 @@
 
     {{> skjema/generisk/vedlegg}}
 {{/visCheckbox}}
+
+{{#if @root.utvidetSoknad}}
+    {{#hvisIkkeTom (hentTekst key) }}
+        <h{{niva}}>Svaralternativer:</h{{niva}}>
+        {{ hentTekst key }} (Avhuket Ja/Nei)
+    {{/hvisIkkeTom}}
+{{/if}}

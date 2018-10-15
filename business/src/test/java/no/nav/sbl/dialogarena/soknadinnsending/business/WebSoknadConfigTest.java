@@ -57,7 +57,7 @@ public class WebSoknadConfigTest {
 
         List<BolkService> bolker = config.getSoknadBolker(new WebSoknad().medskjemaNummer(SosialhjelpInformasjon.SKJEMANUMMER), asList(personalia, barn, arbeidsforhold));
         assertThat(bolker.contains(personalia)).isTrue();
-        assertThat(bolker.contains(barn)).isFalse();
+        assertThat(bolker.contains(barn)).isTrue();
         assertThat(bolker.contains(arbeidsforhold)).isTrue();
     }
 }
