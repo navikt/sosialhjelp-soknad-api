@@ -87,7 +87,7 @@
         <constraints>
             <constraint>
                 <faktum>dinsituasjon.registrertjobb</faktum>
-                <expression>properties['haravsluttetarbeidsforhold'] == 'true'</expression>
+                <expression>properties['skalbeomsluttoppjor'] == 'true'</expression>
             </constraint>
         </constraints>
         <properties>
