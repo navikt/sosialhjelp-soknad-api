@@ -4,6 +4,7 @@ import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class FiksHandterer {
 
     @Inject
     private FillagerService fillagerService;
+
+    @Inject
+    private SendtSoknadRepository sendtSoknadRepository;
 
 
     public void eksekver(Oppgave oppgaveKjede) {
@@ -58,7 +62,7 @@ public class FiksHandterer {
             oppgaveKjede.nesteSteg();
         } else {
             metadataInnfyller.lagreFiksId(data, resultat);
-            //oppdater sendtsoknad?
+            sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, data.behandlingsId, data.avsenderFodselsnummer);
             oppgaveKjede.ferdigstill();
         }
     }

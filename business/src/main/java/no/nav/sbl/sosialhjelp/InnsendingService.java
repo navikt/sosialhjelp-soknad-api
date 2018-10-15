@@ -11,10 +11,10 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class InnsendingService {
@@ -55,10 +55,14 @@ public class InnsendingService {
                 .hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier()));
         List<Vedleggstatus> alleVedlegg = new ArrayList<>();
         if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
-            alleVedlegg.addAll(opplastedeVedlegg);
+            alleVedlegg.addAll(opplastedeVedlegg.stream()
+                    .filter(Objects::nonNull)
+                    .collect(toList()));
         }
         if (ikkeOpplastedePaakrevdeVedlegg != null && !ikkeOpplastedePaakrevdeVedlegg.isEmpty()) {
-            alleVedlegg.addAll(ikkeOpplastedePaakrevdeVedlegg);
+            alleVedlegg.addAll(ikkeOpplastedePaakrevdeVedlegg.stream()
+                    .filter(Objects::nonNull)
+                    .collect(toList()));
         }
         return alleVedlegg;
     }
@@ -69,8 +73,7 @@ public class InnsendingService {
                 .withTilknyttetBehandlingsId(soknadUnderArbeid.getTilknyttetBehandlingsId())
                 .withEier(soknadUnderArbeid.getEier())
                 .withBrukerOpprettetDato(soknadUnderArbeid.getOpprettetDato())
-                .withBrukerFerdigDato(soknadUnderArbeid.getSistEndretDato())
-                .withSendtDato(now());
+                .withBrukerFerdigDato(soknadUnderArbeid.getSistEndretDato());
     }
 
     List<Vedleggstatus> mapOpplastedeVedleggTilVedleggstatusListe(List<OpplastetVedlegg> opplastedeVedlegg) {
