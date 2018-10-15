@@ -16,8 +16,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
@@ -44,6 +44,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UN
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
+import static no.nav.sbl.sosialhjelp.midlertidig.VedleggsforventningConverter.mapVedleggsforventningerTilVedleggstatusListe;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
@@ -99,6 +100,9 @@ public class SoknadDataFletter {
 
     @Inject
     private WebSoknadConverter webSoknadConverter;
+
+    @Inject
+    private InnsendingService innsendingService;
 
     private Map<String, BolkService> bolker;
 
@@ -345,20 +349,19 @@ public class SoknadDataFletter {
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
         final String orgnummer = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
-        lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe, orgnummer);
+        final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe, orgnummer);
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         oppgaveHandterer.leggTilOppgave(behandlingsId);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
-        // slett fra soknad_under_arbeid og opplastetvedlegg
-        // lagre til sendt_soknad og vedleggstatus
+        sendSoknadMedNyModell(soknadUnderArbeid, vedleggListe);
 
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
 
     }
 
-    private void lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe, String orgnummer) {
+    private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe, String orgnummer) {
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, orgnummer);
         if (soknadUnderArbeid != null) {
             final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, soknad.getAktoerId());
@@ -371,6 +374,12 @@ public class SoknadDataFletter {
                 }
             }
         }
+        return soknadUnderArbeid;
+    }
+
+    private void sendSoknadMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg) {
+        List<Vedleggstatus> vedleggstatuser = mapVedleggsforventningerTilVedleggstatusListe(vedlegg, soknadUnderArbeid.getEier());
+        innsendingService.sendSoknad(soknadUnderArbeid, vedleggstatuser);
     }
 
     private HovedskjemaMetadata lagHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {

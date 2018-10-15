@@ -7,8 +7,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
+import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.context.annotation.Bean;
@@ -74,5 +77,20 @@ public class VedleggServiceIntegrationContext {
     @Bean
     VedleggConverter vedleggConverter() {
         return mock(VedleggConverter.class);
+    }
+
+    @Bean
+    InnsendingService innsendingService() {
+        return mock(InnsendingService.class);
+    }
+
+    @Bean
+    SendtSoknadRepository sendtSoknadRepository() {
+        return mock(SendtSoknadRepository.class);
+    }
+
+    @Bean
+    VedleggstatusRepository vedleggstatusRepository() {
+        return mock(VedleggstatusRepository.class);
     }
 }

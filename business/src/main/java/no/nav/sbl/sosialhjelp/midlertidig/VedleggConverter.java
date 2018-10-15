@@ -4,12 +4,11 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -21,16 +20,20 @@ public class VedleggConverter {
     private VedleggService vedleggService;
 
     public List<OpplastetVedlegg> mapVedleggListeTilOpplastetVedleggListe(Long soknadUnderArbeidId, String eier, List<Vedlegg> vedleggListe) {
-        if (soknadUnderArbeidId == null || isEmpty(eier)) {
+        if (soknadUnderArbeidId == null || isEmpty(eier) || vedleggListe == null) {
             return null;
         }
+        final List<Vedlegg> vedleggSomErLastetOpp = vedleggListe.stream()
+                .filter(Objects::nonNull)
+                .filter(vedlegg -> vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp))
+                .collect(Collectors.toList());
 
-        if (vedleggListe == null || vedleggListe.isEmpty()) {
+        if (vedleggSomErLastetOpp.isEmpty()) {
             return new ArrayList<>();
         }
         List<OpplastetVedlegg> opplastedeVedlegg = new ArrayList<>();
-        for (Vedlegg vedlegg : vedleggListe) {
-            if (vedlegg != null && vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp) && isNotEmpty(vedlegg.getFilnavn())) {
+        for (Vedlegg vedlegg : vedleggSomErLastetOpp) {
+            if (isNotEmpty(vedlegg.getFilnavn())) {
                 opplastedeVedlegg.add(mapVedleggTilOpplastetVedlegg(soknadUnderArbeidId, eier, vedlegg));
             }
         }
