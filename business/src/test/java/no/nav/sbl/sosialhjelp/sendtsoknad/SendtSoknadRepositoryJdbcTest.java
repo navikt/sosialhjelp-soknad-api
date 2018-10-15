@@ -95,6 +95,17 @@ public class SendtSoknadRepositoryJdbcTest {
     }
 
     @Test
+    public void oppdaterSendtSoknadVedSendingTilFiksOppdatererFiksIdOgSendtDato() {
+        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknadSomIkkeErSendtTilFiks(), EIER);
+
+        sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER);
+
+        SendtSoknad oppdatertSendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
+        assertThat(oppdatertSendtSoknad.getFiksforsendelseId(), is(FIKSFORSENDELSEID));
+        assertThat(oppdatertSendtSoknad.getSendtDato(), notNullValue());
+    }
+
+    @Test
     public void slettSendtSoknadSletterSoknadFraDatabase() {
         SendtSoknad sendtSoknad = lagSendtSoknad(EIER);
         Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, EIER);
@@ -117,5 +128,13 @@ public class SendtSoknadRepositoryJdbcTest {
                 .withBrukerOpprettetDato(BRUKER_OPPRETTET_DATO)
                 .withBrukerFerdigDato(BRUKER_FERDIG_DATO)
                 .withSendtDato(SENDT_DATO);
+    }
+
+    private SendtSoknad lagSendtSoknadSomIkkeErSendtTilFiks() {
+        return new SendtSoknad().withEier(EIER)
+                .withBehandlingsId(BEHANDLINGSID)
+                .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
+                .withBrukerOpprettetDato(BRUKER_OPPRETTET_DATO)
+                .withBrukerFerdigDato(BRUKER_FERDIG_DATO);
     }
 }
