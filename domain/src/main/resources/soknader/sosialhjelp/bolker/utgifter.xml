@@ -69,7 +69,7 @@
         <optional>true</optional>
         <constraints>
             <constraint>
-                <faktum>familie.barn</faktum>
+                <faktum>system.familie.barn</faktum>
                 <expression>value != "false"</expression>
             </constraint>
         </constraints>
