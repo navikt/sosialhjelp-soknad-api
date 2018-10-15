@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 
 @Named("SendtSoknadRepository")
@@ -47,7 +48,8 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                         sendtSoknad.getFiksforsendelseId(),
                         Date.from(sendtSoknad.getBrukerOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         Date.from(sendtSoknad.getBrukerFerdigDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        Date.from(sendtSoknad.getSendtDato().atZone(ZoneId.systemDefault()).toInstant()));
+                        sendtSoknad.getSendtDato() != null ? Date.from(sendtSoknad.getSendtDato().atZone(ZoneId.systemDefault()).toInstant())
+                         : null);
         return sendtSoknadId;
     }
 
@@ -61,6 +63,16 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
     public List<SendtSoknad> hentAlleSendteSoknader(String eier) {
         return getJdbcTemplate().query("select * from SENDT_SOKNAD where EIER = ?",
                 new SendtSoknadRowMapper(), eier);
+    }
+
+    @Override
+    public void oppdaterSendtSoknadVedSendingTilFiks(String fiksforsendelseId, String behandlingsId, String eier) {
+        getJdbcTemplate()
+                .update("update SENDT_SOKNAD set FIKSFORSENDELSEID = ?, SENDTDATO = ? where BEHANDLINGSID = ? and EIER = ?",
+                        fiksforsendelseId,
+                        Date.from(now().atZone(ZoneId.systemDefault()).toInstant()),
+                        behandlingsId,
+                        eier);
     }
 
     @Override
