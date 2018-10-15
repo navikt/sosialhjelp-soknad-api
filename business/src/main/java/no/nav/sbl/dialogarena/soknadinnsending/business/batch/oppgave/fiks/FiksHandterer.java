@@ -58,6 +58,7 @@ public class FiksHandterer {
             oppgaveKjede.nesteSteg();
         } else {
             metadataInnfyller.lagreFiksId(data, resultat);
+            //oppdater sendtsoknad?
             oppgaveKjede.ferdigstill();
         }
     }
