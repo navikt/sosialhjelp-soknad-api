@@ -30,6 +30,16 @@ public class ArbeidsforholdBolk implements BolkService {
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdBolk.class);
 
 
+    public ArbeidsforholdBolk() {
+
+    }
+
+    public ArbeidsforholdBolk(FaktaService faktaService, ArbeidsforholdService arbeidsforholdService) {
+        this.faktaService = faktaService;
+        this.arbeidsforholdService = arbeidsforholdService;
+    }
+
+
     protected void afterGenererArbeidsforhold(List<Faktum> arbeidsforholdFakta, final Long soknadId) {
         if (!arbeidsforholdFakta.isEmpty()) {
             Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
