@@ -15,7 +15,6 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
 public class InnsendingService {
@@ -60,7 +59,7 @@ public class InnsendingService {
                     .filter(Objects::nonNull)
                     .collect(toList()));
         }
-        if (ikkeOpplastedePaakrevdeVedlegg != null && !ikkeOpplastedePaakrevdeVedlegg.isEmpty()) {
+        if (!soknadUnderArbeid.erEttersendelse() && ikkeOpplastedePaakrevdeVedlegg != null && !ikkeOpplastedePaakrevdeVedlegg.isEmpty()) {
             alleVedlegg.addAll(ikkeOpplastedePaakrevdeVedlegg.stream()
                     .filter(Objects::nonNull)
                     .collect(toList()));
@@ -70,7 +69,7 @@ public class InnsendingService {
 
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer) {
         if (isEmpty(orgnummer)) {
-            if (isNotEmpty(soknadUnderArbeid.getTilknyttetBehandlingsId())) {
+            if (soknadUnderArbeid.erEttersendelse()) {
                 orgnummer = finnOrgnummerForEttersendelse(soknadUnderArbeid);
             } else {
                 throw new IllegalStateException("Søknadsmottaker mangler");

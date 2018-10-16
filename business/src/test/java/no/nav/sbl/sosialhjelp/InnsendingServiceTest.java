@@ -83,11 +83,20 @@ public class InnsendingServiceTest {
     }
 
     @Test
+    public void finnAlleVedleggHenterHenterBareOpplastedeVedleggVedEttersendelse() {
+        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(lagOpplastetVedleggListe());
+
+        List<Vedleggstatus> alleVedlegg = innsendingService.finnAlleVedlegg(lagSoknadUnderArbeidForEttersendelse(), lagIkkeOpplastedePaakrevdeVedlegg());
+
+        assertThat(alleVedlegg.size(), is(1));
+    }
+
+    @Test
     public void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
         SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid(), ORGNR);
 
         assertThat(sendtSoknad.getBehandlingsId(), is(BEHANDLINGSID));
-        assertThat(sendtSoknad.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
+        assertThat(sendtSoknad.getTilknyttetBehandlingsId(), nullValue());
         assertThat(sendtSoknad.getEier(), is(EIER));
         assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
         assertThat(sendtSoknad.getBrukerOpprettetDato(), is(OPPRETTET_DATO));
@@ -98,9 +107,10 @@ public class InnsendingServiceTest {
 
     @Test
     public void mapSoknadUnderArbeidTilSendtSoknadHenterOrgNummerFraSendtSoknadVedEttersendelse() {
-        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid(), null);
+        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidForEttersendelse(), null);
 
         assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
+        assertThat(sendtSoknad.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -130,6 +140,15 @@ public class InnsendingServiceTest {
     }
 
     private SoknadUnderArbeid lagSoknadUnderArbeid() {
+        return new SoknadUnderArbeid()
+                .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
+                .withBehandlingsId(BEHANDLINGSID)
+                .withEier(EIER)
+                .withOpprettetDato(OPPRETTET_DATO)
+                .withSistEndretDato(SIST_ENDRET_DATO);
+    }
+
+    private SoknadUnderArbeid lagSoknadUnderArbeidForEttersendelse() {
         return new SoknadUnderArbeid()
                 .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
                 .withBehandlingsId(BEHANDLINGSID)
