@@ -5,7 +5,8 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import javax.ws.rs.client.Client;
+import java.util.function.Function;
+
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -14,20 +15,24 @@ import org.slf4j.Logger;
 
 import no.nav.modig.common.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 
 public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
     private static final Logger logger = getLogger(AdresseSokConsumerImpl.class);
-
-    private Client client;
+    
+    private Function<Sokedata, RestCallContext> restCallContextSelector;
     private String endpoint;
 
-    public AdresseSokConsumerImpl(Client client, String endpoint) {
-        this.client = client;
+    
+    public AdresseSokConsumerImpl(Function<Sokedata, RestCallContext> restCallContextSelector, String endpoint) {
+        this.restCallContextSelector = restCallContextSelector;
         this.endpoint = endpoint;
     }
 
+    
     @Override
     public AdressesokRespons sokAdresse(String adresse) {
         final Sokedata sokedata = AdresseStringSplitter.toSokedata(adresse);
@@ -36,20 +41,16 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public AdressesokRespons sokAdresse(Sokedata sokedata) {
-        /* I Q1 er det bedre ytelse med kun fonetisk søk (F).
-        final AdressesokRespons respons = sokAdresseCall(sokedata, "E");
-        if (!respons.adresseDataList.isEmpty()) {
-            return respons;
-        }
-        */
-        
-        return sokAdresseCall(sokedata, sokedata.soketype.toTpsKode());
-    }
-    
-    private AdressesokRespons sokAdresseCall(Sokedata sokedata, String soketype) {
-        final Invocation.Builder request = lagRequest(sokedata, soketype);
-        Response response = null;
+        final RestCallContext executionContext = restCallContextSelector.apply(sokedata);
+        final Invocation.Builder request = lagRequest(executionContext, sokedata, sokedata.soketype.toTpsKode());
 
+        return RestCallUtils.performRequestUsingContext(executionContext, () -> {
+            return sokAdresseMotTjeneste(sokedata, request);
+        });
+    }
+
+    private AdressesokRespons sokAdresseMotTjeneste(Sokedata sokedata, final Invocation.Builder request) {
+        Response response = null;
         try {
             response = request.get();
             
@@ -102,13 +103,13 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         return s == null || s.trim().length() == 0;
     }
 
-    private Invocation.Builder lagRequest(Sokedata sokedata, String soketype) {
+    private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata, String soketype) {
         String consumerId = getSubjectHandler().getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
         final String maxretur = (sokedata.postnummer != null) ? "100" : "10";
-        WebTarget b = client.target(endpoint + "adressesoek")
+        WebTarget b = executionContext.getClient().target(endpoint + "adressesoek")
                 .queryParam("soketype", soketype)
                 .queryParam("alltidRetur", "true")
                 .queryParam("maxretur", maxretur);
