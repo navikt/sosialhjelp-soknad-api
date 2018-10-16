@@ -39,13 +39,14 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
         sjekkOmBrukerEierSendtSoknad(sendtSoknad, eier);
         Long sendtSoknadId = getJdbcTemplate().queryForObject(selectNextSequenceValue("SENDT_SOKNAD_ID_SEQ"), Long.class);
         getJdbcTemplate()
-                .update("insert into SENDT_SOKNAD (sendt_soknad_id, behandlingsid, tilknyttetbehandlingsid, eier, fiksforsendelseid, brukeropprettetdato, brukerferdigdato, sendtdato)" +
-                                " values (?,?,?,?,?,?,?,?)",
+                .update("insert into SENDT_SOKNAD (sendt_soknad_id, behandlingsid, tilknyttetbehandlingsid, eier, fiksforsendelseid, orgnr, brukeropprettetdato, brukerferdigdato, sendtdato)" +
+                                " values (?,?,?,?,?,?,?,?,?)",
                         sendtSoknadId,
                         sendtSoknad.getBehandlingsId(),
                         sendtSoknad.getTilknyttetBehandlingsId(),
                         sendtSoknad.getEier(),
                         sendtSoknad.getFiksforsendelseId(),
+                        sendtSoknad.getOrgnummer(),
                         Date.from(sendtSoknad.getBrukerOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         Date.from(sendtSoknad.getBrukerFerdigDato().atZone(ZoneId.systemDefault()).toInstant()),
                         sendtSoknad.getSendtDato() != null ? Date.from(sendtSoknad.getSendtDato().atZone(ZoneId.systemDefault()).toInstant())
@@ -106,6 +107,7 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                     .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
                     .withEier(rs.getString("eier"))
                     .withFiksforsendelseId(rs.getString("fiksforsendelseid"))
+                    .withOrgnummer(rs.getString("orgnr"))
                     .withBrukerOpprettetDato(rs.getTimestamp("brukeropprettetdato") != null ?
                             rs.getTimestamp("brukeropprettetdato").toLocalDateTime() : null)
                     .withBrukerFerdigDato(rs.getTimestamp("brukerferdigdato") != null ?

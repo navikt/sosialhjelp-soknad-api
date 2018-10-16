@@ -12,9 +12,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
 public class InnsendingService {
@@ -29,7 +30,7 @@ public class InnsendingService {
     @Inject
     private VedleggstatusRepository vedleggstatusRepository;
 
-    public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg) {
+    public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg, String orgnummer) {
         if (soknadUnderArbeid == null || soknadUnderArbeid.getSoknadId() == null) {
             throw new IllegalStateException("Kan ikke sende søknad som ikke finnes eller som mangler søknadsid");
         }
@@ -37,7 +38,7 @@ public class InnsendingService {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 final List<Vedleggstatus> alleVedlegg = finnAlleVedlegg(soknadUnderArbeid, ikkeOpplastedePaakrevdeVedlegg);
-                SendtSoknad sendtSoknad = mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid);
+                SendtSoknad sendtSoknad = mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid, orgnummer);
                 final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, sendtSoknad.getEier());
                 sendtSoknad.setSendtSoknadId(sendtSoknadId);
 
@@ -67,13 +68,31 @@ public class InnsendingService {
         return alleVedlegg;
     }
 
-    SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+    SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer) {
+        if (isEmpty(orgnummer)) {
+            if (isNotEmpty(soknadUnderArbeid.getTilknyttetBehandlingsId())) {
+                orgnummer = finnOrgnummerForEttersendelse(soknadUnderArbeid);
+            } else {
+                throw new IllegalStateException("Søknadsmottaker mangler");
+            }
+        }
         return new SendtSoknad()
                 .withBehandlingsId(soknadUnderArbeid.getBehandlingsId())
                 .withTilknyttetBehandlingsId(soknadUnderArbeid.getTilknyttetBehandlingsId())
+                .withOrgnummer(orgnummer)
                 .withEier(soknadUnderArbeid.getEier())
                 .withBrukerOpprettetDato(soknadUnderArbeid.getOpprettetDato())
                 .withBrukerFerdigDato(soknadUnderArbeid.getSistEndretDato());
+    }
+
+    private String finnOrgnummerForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
+        Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(soknadUnderArbeid.getTilknyttetBehandlingsId(),
+                soknadUnderArbeid.getEier());
+        if (sendtSoknad.isPresent()) {
+            return sendtSoknad.get().getOrgnummer();
+        } else {
+            throw new IllegalStateException("Finner ikke søknaden det skal ettersendes på");
+        }
     }
 
     List<Vedleggstatus> mapOpplastedeVedleggTilVedleggstatusListe(List<OpplastetVedlegg> opplastedeVedlegg) {

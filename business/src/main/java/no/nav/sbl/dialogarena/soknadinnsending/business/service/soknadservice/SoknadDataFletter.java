@@ -349,20 +349,19 @@ public class SoknadDataFletter {
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
         final String orgnummer = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
-        final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe, orgnummer);
+        final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         oppgaveHandterer.leggTilOppgave(behandlingsId);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
-        sendSoknadMedNyModell(soknadUnderArbeid, vedleggListe);
+        sendSoknadMedNyModell(soknadUnderArbeid, vedleggListe, orgnummer);
 
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
-
     }
 
-    private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe, String orgnummer) {
-        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, orgnummer);
+    private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe) {
+        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
         if (soknadUnderArbeid != null) {
             final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, soknad.getAktoerId());
             soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
@@ -377,9 +376,11 @@ public class SoknadDataFletter {
         return soknadUnderArbeid;
     }
 
-    private void sendSoknadMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg) {
-        List<Vedleggstatus> vedleggstatuser = mapVedleggsforventningerTilVedleggstatusListe(vedlegg, soknadUnderArbeid.getEier());
-        innsendingService.sendSoknad(soknadUnderArbeid, vedleggstatuser);
+    private void sendSoknadMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg, String orgnummer) {
+        if (soknadUnderArbeid != null) {
+            List<Vedleggstatus> vedleggstatuser = mapVedleggsforventningerTilVedleggstatusListe(vedlegg, soknadUnderArbeid.getEier());
+            innsendingService.sendSoknad(soknadUnderArbeid, vedleggstatuser, orgnummer);
+        }
     }
 
     private HovedskjemaMetadata lagHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {

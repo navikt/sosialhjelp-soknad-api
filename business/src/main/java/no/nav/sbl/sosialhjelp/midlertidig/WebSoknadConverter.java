@@ -3,8 +3,10 @@ package no.nav.sbl.sosialhjelp.midlertidig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -18,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.*;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -30,8 +31,8 @@ public class WebSoknadConverter {
     private final ObjectMapper mapper = new ObjectMapper();
     private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
 
-    public SoknadUnderArbeid mapWebSoknadTilSoknadUnderArbeid(WebSoknad webSoknad, String orgnummer) {
-        if (webSoknad == null || isEmpty(orgnummer)) {
+    public SoknadUnderArbeid mapWebSoknadTilSoknadUnderArbeid(WebSoknad webSoknad) {
+        if (webSoknad == null) {
             return null;
         }
         return new SoknadUnderArbeid()
@@ -40,15 +41,20 @@ public class WebSoknadConverter {
                 .withTilknyttetBehandlingsId(webSoknad.getBehandlingskjedeId())
                 .withEier(webSoknad.getAktoerId())
                 .withData(webSoknadTilJson(webSoknad))
-                .withOrgnummer(orgnummer)
                 .withInnsendingStatus(webSoknad.getStatus())
                 .withOpprettetDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getOpprettetDato()))
                 .withSistEndretDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getSistLagret()));
     }
 
     private byte[] webSoknadTilJson(WebSoknad webSoknad) {
-        JsonInternalSoknad jsonInternalSoknad = mapWebSoknadTilJsonSoknadInternal(webSoknad);
-        return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
+        if (!webSoknad.erEttersending()) {
+            JsonInternalSoknad jsonInternalSoknad = mapWebSoknadTilJsonSoknadInternal(webSoknad);
+            return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
+        } else {
+            final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
+            final AlternativRepresentasjon alternativRepresentasjon = sosialhjelpVedleggTilJson.transform(webSoknad);
+            return alternativRepresentasjon.getContent();
+        }
     }
 
     JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {

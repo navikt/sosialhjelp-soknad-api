@@ -28,7 +28,6 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     private static final String EIER2 = "10987654321";
     private static final String BEHANDLINGSID = "1100020";
     private static final String TILKNYTTET_BEHANDLINGSID = "4567";
-    private static final String ORGNUMMER = "987654";
     private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
     private static final LocalDateTime SIST_ENDRET_DATO = now();
     private static final LocalDateTime SIST_ENDRET_DATO_OPPDATERT = now().minusSeconds(20);
@@ -69,7 +68,6 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getEier(), is(EIER));
         assertThat(soknadUnderArbeid.getData(), is(DATA));
-        assertThat(soknadUnderArbeid.getOrgnummer(), is(ORGNUMMER));
         assertThat(soknadUnderArbeid.getInnsendingStatus(), is(UNDER_ARBEID));
         assertThat(soknadUnderArbeid.getOpprettetDato(), is(OPPRETTET_DATO));
         assertThat(soknadUnderArbeid.getSistEndretDato(), is(SIST_ENDRET_DATO));
@@ -144,7 +142,6 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
                 .withEier(EIER)
                 .withData(DATA)
-                .withOrgnummer(ORGNUMMER)
                 .withInnsendingStatus(UNDER_ARBEID)
                 .withOpprettetDato(OPPRETTET_DATO)
                 .withSistEndretDato(SIST_ENDRET_DATO);

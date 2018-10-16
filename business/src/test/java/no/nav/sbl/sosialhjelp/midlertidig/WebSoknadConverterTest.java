@@ -41,7 +41,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class WebSoknadConverterTest {
 
-    private static final String ORGNR = "012345678";
     private static final String BEHANDLINGSID = "1100001L";
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
     private static final String EIER = "12345678901";
@@ -57,14 +56,13 @@ public class WebSoknadConverterTest {
 
     @Test
     public void mapWebSoknadTilSoknadUnderArbeidMapperFelterRiktig() {
-        SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(lagGyldigWebSoknad(), ORGNR);
+        SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(lagGyldigWebSoknad());
 
         assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getVersjon(), is(1L));
         assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getEier(), is(EIER));
         assertThat(soknadUnderArbeid.getData(), notNullValue());
-        assertThat(soknadUnderArbeid.getOrgnummer(), is(ORGNR));
         assertThat(soknadUnderArbeid.getInnsendingStatus(), is(UNDER_ARBEID));
         assertThat(soknadUnderArbeid.getOpprettetDato(), notNullValue());
         assertThat(soknadUnderArbeid.getSistEndretDato(), notNullValue());

@@ -8,6 +8,7 @@ public class SendtSoknad {
     private String tilknyttetBehandlingsId;
     private String eier;
     private String fiksforsendelseId;
+    private String orgnummer;
     private LocalDateTime brukerOpprettetDato;
     private LocalDateTime brukerFerdigDato;
     private LocalDateTime sendtDato;
@@ -30,6 +31,10 @@ public class SendtSoknad {
 
     public String getFiksforsendelseId() {
         return fiksforsendelseId;
+    }
+
+    public String getOrgnummer() {
+        return orgnummer;
     }
 
     public LocalDateTime getBrukerOpprettetDato() {
@@ -70,6 +75,11 @@ public class SendtSoknad {
 
     public SendtSoknad withFiksforsendelseId(String fiksforsendelseId) {
         this.fiksforsendelseId = fiksforsendelseId;
+        return this;
+    }
+
+    public SendtSoknad withOrgnummer(String orgnummer) {
+        this.orgnummer = orgnummer;
         return this;
     }
 

@@ -11,7 +11,6 @@ public class SoknadUnderArbeid {
     private String tilknyttetBehandlingsId;
     private String eier;
     private byte[] data;
-    private String orgnummer;
     private SoknadInnsendingStatus innsendingStatus;
     private LocalDateTime opprettetDato;
     private LocalDateTime sistEndretDato;
@@ -75,15 +74,6 @@ public class SoknadUnderArbeid {
 
     public SoknadUnderArbeid withData(byte[] data) {
         this.data = data;
-        return this;
-    }
-
-    public String getOrgnummer() {
-        return orgnummer;
-    }
-
-    public SoknadUnderArbeid withOrgnummer(String orgnummer) {
-        this.orgnummer = orgnummer;
         return this;
     }
 
