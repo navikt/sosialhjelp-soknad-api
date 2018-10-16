@@ -14,8 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.transaction.support.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.time.LocalDateTime.now;
 import static org.hamcrest.CoreMatchers.is;
@@ -37,6 +36,8 @@ public class InnsendingServiceTest {
     private static final VedleggType VEDLEGGTYPE = new VedleggType(TYPE, TILLEGGSINFO);
     private static final String BEHANDLINGSID = "1100001L";
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
+    private static final String FIKSFORSENDELSEID = "12345";
+    private static final String ORGNR = "012345678";
     private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
     private static final LocalDateTime SIST_ENDRET_DATO = now();
     @Mock
@@ -61,12 +62,13 @@ public class InnsendingServiceTest {
         });
         when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(lagOpplastetVedleggListe());
         when(sendtSoknadRepository.opprettSendtSoknad(any(), anyString())).thenReturn(SENDT_SOKNAD_ID);
+        when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(lagSendtSoknad());
         when(vedleggstatusRepository.opprettVedlegg(any(), anyString())).thenReturn(5L);
     }
 
     @Test
     public void sendSoknadSletterSoknadFraSoknadUnderArbeid() {
-        innsendingService.sendSoknad(lagSoknadUnderArbeid(), new ArrayList<>());
+        innsendingService.sendSoknad(lagSoknadUnderArbeid(), new ArrayList<>(), ORGNR);
 
         verify(soknadUnderArbeidRepository, times(1)).slettSoknad(any(SoknadUnderArbeid.class), eq(EIER));
     }
@@ -82,15 +84,28 @@ public class InnsendingServiceTest {
 
     @Test
     public void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
-        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid());
+        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid(), ORGNR);
 
         assertThat(sendtSoknad.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(sendtSoknad.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
         assertThat(sendtSoknad.getEier(), is(EIER));
+        assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
         assertThat(sendtSoknad.getBrukerOpprettetDato(), is(OPPRETTET_DATO));
         assertThat(sendtSoknad.getBrukerFerdigDato(), is(SIST_ENDRET_DATO));
         assertThat(sendtSoknad.getSendtDato(), nullValue());
         assertThat(sendtSoknad.getFiksforsendelseId(), nullValue());
+    }
+
+    @Test
+    public void mapSoknadUnderArbeidTilSendtSoknadHenterOrgNummerFraSendtSoknadVedEttersendelse() {
+        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid(), null);
+
+        assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisOrgnrOgTilknyttetIdMangler() {
+        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidUtenOrgnrOgUtenTilknyttetBehandlingsid(), null);
     }
 
     @Test
@@ -124,6 +139,15 @@ public class InnsendingServiceTest {
                 .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
+    private SoknadUnderArbeid lagSoknadUnderArbeidUtenOrgnrOgUtenTilknyttetBehandlingsid() {
+        return new SoknadUnderArbeid()
+                .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
+                .withBehandlingsId(BEHANDLINGSID)
+                .withEier(EIER)
+                .withOpprettetDato(OPPRETTET_DATO)
+                .withSistEndretDato(SIST_ENDRET_DATO);
+    }
+
     private OpplastetVedlegg lagOpplastetVedlegg() {
         return new OpplastetVedlegg()
                 .withVedleggType(VEDLEGGTYPE)
@@ -139,5 +163,16 @@ public class InnsendingServiceTest {
                 .withSendtSoknadId(SOKNAD_UNDER_ARBEID_ID));
         paakrevdeVedlegg.add(null);
         return paakrevdeVedlegg;
+    }
+
+    private Optional<SendtSoknad> lagSendtSoknad() {
+        return Optional.of(new SendtSoknad().withEier(EIER)
+                .withBehandlingsId(BEHANDLINGSID)
+                .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
+                .withFiksforsendelseId(FIKSFORSENDELSEID)
+                .withOrgnummer(ORGNR)
+                .withBrukerOpprettetDato(OPPRETTET_DATO)
+                .withBrukerFerdigDato(SIST_ENDRET_DATO)
+                .withSendtDato(now()));
     }
 }

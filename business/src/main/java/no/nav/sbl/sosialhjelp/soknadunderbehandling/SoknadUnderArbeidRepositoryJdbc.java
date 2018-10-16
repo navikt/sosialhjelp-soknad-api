@@ -39,15 +39,14 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
         Long soknadUnderArbeidId = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"), Long.class);
         getJdbcTemplate()
-                .update("insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, ORGNR, STATUS, OPPRETTETDATO, SISTENDRETDATO)" +
-                                " values (?,?,?,?,?,?,?,?,?,?)",
+                .update("insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)" +
+                                " values (?,?,?,?,?,?,?,?,?)",
                         soknadUnderArbeidId,
                         soknadUnderArbeid.getVersjon(),
                         soknadUnderArbeid.getBehandlingsId(),
                         soknadUnderArbeid.getTilknyttetBehandlingsId(),
                         soknadUnderArbeid.getEier(),
                         soknadUnderArbeid.getData(),
-                        soknadUnderArbeid.getOrgnummer(),
                         soknadUnderArbeid.getInnsendingStatus().toString(),
                         Date.from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
@@ -130,7 +129,6 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
                     .withEier(rs.getString("eier"))
                     .withData(rs.getBytes("data"))
-                    .withOrgnummer(rs.getString("orgnr"))
                     .withInnsendingStatus(status)
                     .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
                             rs.getTimestamp("opprettetdato").toLocalDateTime() : null)
