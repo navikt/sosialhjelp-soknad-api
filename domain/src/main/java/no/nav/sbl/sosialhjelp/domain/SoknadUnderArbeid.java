@@ -4,6 +4,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 public class SoknadUnderArbeid {
     private Long soknadId;
     private Long versjon;
@@ -14,6 +16,10 @@ public class SoknadUnderArbeid {
     private SoknadInnsendingStatus innsendingStatus;
     private LocalDateTime opprettetDato;
     private LocalDateTime sistEndretDato;
+
+    public boolean erEttersendelse() {
+        return !isEmpty(tilknyttetBehandlingsId);
+    }
 
     public Long getSoknadId() {
         return soknadId;
