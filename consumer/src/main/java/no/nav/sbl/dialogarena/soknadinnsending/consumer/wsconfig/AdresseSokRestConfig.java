@@ -31,16 +31,16 @@ public class AdresseSokRestConfig {
     
     private final RestCallContext medPostnummerExecutionContext = new RestCallContext.Builder()
             .withClient(RestUtils.createClient(RestConfig.builder().readTimeout(5000).build()))
-            .withConcurrentRequests(2)
-            .withMaximumQueueSize(8)
-            .withTimeoutInMilliseconds(20000)
+            .withConcurrentRequests(3)
+            .withMaximumQueueSize(9)
+            .withTimeoutInMilliseconds(30000)
             .build();
     
     private final RestCallContext utenPostnummerExecutionContext = new RestCallContext.Builder()
             .withClient(RestUtils.createClient(RestConfig.builder().readTimeout(5000).build()))
-            .withConcurrentRequests(1)
-            .withMaximumQueueSize(4)
-            .withTimeoutInMilliseconds(20000)
+            .withConcurrentRequests(2)
+            .withMaximumQueueSize(6)
+            .withTimeoutInMilliseconds(30000)
             .build();
     
     private final Function<Sokedata, RestCallContext> restCallContextSelector = (sokedata) -> {
