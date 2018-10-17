@@ -54,7 +54,7 @@
 
     <faktum>
         <id>utgifter.boutgift.true.type.andreutgifter.true.beskrivelse</id>
-        <type>textbox</type>
+        <type>hidden</type>
         <dependOn>utgifter.boutgift.true.type.andreutgifter</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -115,10 +115,9 @@
         <dependOn>utgifter.barn.true.utgifter</dependOn>
         <optional>true</optional>
     </faktum>
-
     <faktum>
         <id>utgifter.barn.true.utgifter.annet.true.beskrivelse</id>
-        <type>textbox</type>
+        <type>hidden</type>
         <dependOn>utgifter.barn.true.utgifter.annet</dependOn>
         <dependOnValues>
             <value>true</value>
