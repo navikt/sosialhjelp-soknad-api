@@ -15,13 +15,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 
 public class SosialhjelpArbeidsforholdBolkTest {
 
     @Test
     public void testGetSoekeperiode() {
-        final SosialhjelpArbeidsforholdBolk sosialhjelpArbeidsforholdBolk = new SosialhjelpArbeidsforholdBolk(null, null);
+        final SosialhjelpArbeidsforholdBolk sosialhjelpArbeidsforholdBolk = new SosialhjelpArbeidsforholdBolk(
+                mock(FaktaService.class), mock(ArbeidsforholdService.class));
+
         ArbeidsforholdService.Sokeperiode sokeperiode;
 
         sokeperiode = sosialhjelpArbeidsforholdBolk.getSoekeperiode();
@@ -34,31 +37,37 @@ public class SosialhjelpArbeidsforholdBolkTest {
 
     @Test
     public void skalBeOmSluttOppgjorHvisSluttdatoInnenforEnManedFremITid() throws Exception {
-        final ArbeidsforholdService arbeidsforholdService = mock(ArbeidsforholdService.class);
-        final SosialhjelpArbeidsforholdBolk sosialhjelpArbeidsforholdBolk = new SosialhjelpArbeidsforholdBolk(null, arbeidsforholdService);
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
+        final no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
         arbeidsforhold.tom = new DateTime().plusMonths(1).toString("yyyy-MM-dd");
+
+        final ArbeidsforholdService arbeidsforholdService = mock(ArbeidsforholdService.class);
+        final SosialhjelpArbeidsforholdBolk sosialhjelpArbeidsforholdBolk = new SosialhjelpArbeidsforholdBolk(
+                mock(FaktaService.class), arbeidsforholdService);
+
         when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class)))
                 .thenReturn(Arrays.asList(arbeidsforhold));
 
         List<Faktum> faktums = sosialhjelpArbeidsforholdBolk.genererArbeidsforhold("123", 11L);
         Faktum faktum = faktums.get(1);
 
-        assertThat(faktum.finnEgenskap("skalbeomsluttoppjor").getValue(), equalTo("true"));
+        assertThat(faktum.finnEgenskap("skalbeomsluttoppgjor").getValue(), equalTo("true"));
     }
 
     @Test
     public void skalIkkeBeOmSluttOppgjorHvisSluttdatoEtterEnManedFremITid() throws Exception {
-        final ArbeidsforholdService arbeidsforholdService = mock(ArbeidsforholdService.class);
-        final SosialhjelpArbeidsforholdBolk sosialhjelpArbeidsforholdBolk = new SosialhjelpArbeidsforholdBolk(null, arbeidsforholdService);
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
+        final no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
         arbeidsforhold.tom = new DateTime().plusMonths(1).plusDays(1).toString("yyyy-MM-dd");
+
+        final ArbeidsforholdService arbeidsforholdService = mock(ArbeidsforholdService.class);
+        final SosialhjelpArbeidsforholdBolk sosialhjelpArbeidsforholdBolk = new SosialhjelpArbeidsforholdBolk(
+                mock(FaktaService.class), arbeidsforholdService);
+
         when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class)))
                 .thenReturn(Arrays.asList(arbeidsforhold));
 
         List<Faktum> faktums = sosialhjelpArbeidsforholdBolk.genererArbeidsforhold("123", 11L);
         Faktum faktum = faktums.get(1);
 
-        assertThat(faktum.finnEgenskap("skalbeomsluttoppjor").getValue(), equalTo("false"));
+        assertThat(faktum.finnEgenskap("skalbeomsluttoppgjor").getValue(), equalTo("false"));
     }
 }

@@ -10,14 +10,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 @Service
 public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
 
-
-    public SosialhjelpArbeidsforholdBolk() {
-        super();
-    }
-
+    @Inject
     public SosialhjelpArbeidsforholdBolk(FaktaService faktaService, ArbeidsforholdService arbeidsforholdService) {
         super(faktaService, arbeidsforholdService);
     }
@@ -34,7 +32,7 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
     @Override
     protected void afterGenererArbeidsforhold(List<Faktum> arbeidsforholdFakta, Long soknadId) {
         boolean harArbeid = !arbeidsforholdFakta.isEmpty();
-        boolean skalbeomsluttoppjor = arbeidsforholdFakta.stream()
+        boolean skalBeOmSluttoppgjor = arbeidsforholdFakta.stream()
                 .anyMatch(arbeid -> arbeid.getProperties().get("tom") != null && isBeforeOneMonthAheadInTime(arbeid.getProperties().get("tom")));
         boolean harAvsluttetArbeidsforhold = arbeidsforholdFakta.stream()
                 .anyMatch(arbeid -> "false".equals(arbeid.getProperties().get("ansatt")));
@@ -44,7 +42,7 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
         Faktum dinSituasjonJobb = new Faktum().medSoknadId(soknadId).medKey("dinsituasjon.registrertjobb")
                 .medSystemProperty("harhentetfraaareg", "true")
                 .medSystemProperty("hararbeidsforhold", Boolean.toString(harArbeid))
-                .medSystemProperty("skalbeomsluttoppjor", Boolean.toString(skalbeomsluttoppjor))
+                .medSystemProperty("skalbeomsluttoppgjor", Boolean.toString(skalBeOmSluttoppgjor))
                 .medSystemProperty("hargjeldendearbeidsforhold", Boolean.toString(harGjeldendeArbeidsforhold))
                 .medSystemProperty("haravsluttetarbeidsforhold", Boolean.toString(harAvsluttetArbeidsforhold));
         arbeidsforholdFakta.add(dinSituasjonJobb);
