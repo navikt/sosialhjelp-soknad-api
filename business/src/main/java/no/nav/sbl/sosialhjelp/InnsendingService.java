@@ -5,6 +5,7 @@ import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -15,9 +16,11 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class InnsendingService {
+    private static final Logger logger = getLogger(InnsendingService.class);
     @Inject
     private TransactionTemplate transactionTemplate;
     @Inject
@@ -29,7 +32,7 @@ public class InnsendingService {
     @Inject
     private VedleggstatusRepository vedleggstatusRepository;
 
-    public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg, String orgnummer) {
+    public void opprettSendtSoknad(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg, String orgnummer) {
         if (soknadUnderArbeid == null || soknadUnderArbeid.getSoknadId() == null) {
             throw new IllegalStateException("Kan ikke sende søknad som ikke finnes eller som mangler søknadsid");
         }
@@ -45,9 +48,19 @@ public class InnsendingService {
                     vedleggstatus.setSendtSoknadId(sendtSoknad.getSendtSoknadId());
                     vedleggstatusRepository.opprettVedlegg(vedleggstatus, sendtSoknad.getEier());
                 }
-                soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
             }
         });
+    }
+
+    public void finnOgSlettSoknadUnderArbeidVedSendingTilFiks(String behandlingsId, String eier) {
+        logger.debug("Henter søknad under arbeid for behandlingsid {} og eier {}", behandlingsId, eier);
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        soknadUnderArbeid.ifPresent(soknadUnderArbeidFraDb -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidFraDb, eier));
+    }
+
+    public void oppdaterSendtSoknadVedSendingTilFiks(String fiksforsendelseId, String behandlingsId, String eier) {
+        logger.debug("Oppdaterer sendt søknad for behandlingsid {} og eier {}", behandlingsId, eier);
+        sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId, behandlingsId, eier);
     }
 
     List<Vedleggstatus> finnAlleVedlegg(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg) {
