@@ -32,9 +32,11 @@ public class AdresseSokConsumerImplTest {
     public void simpleRestCallWith404() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", TestSubjectHandler.class.getName());
         
-        final Client client = mockClient();
+        final ClientMock mock = mockClient();
+        when(mock.response.getStatus()).thenReturn(404);
+        
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl((lala) -> new RestCallContext.Builder()
-                .withClient(client).build(), "foobar");
+                .withClient(mock.client).build(), "foobar");
         
         adresseSok.sokAdresse(new Sokedata()
                 .withAdresse("Testsveien")
@@ -47,21 +49,11 @@ public class AdresseSokConsumerImplTest {
         
         final ListAppender<ILoggingEvent> listAppender = createTestLogAppender();
         
-        final Client client = mock(Client.class);
-        final WebTarget webTarget = mock(WebTarget.class);
-        when(client.target(anyString())).thenReturn(webTarget);
-        when(webTarget.queryParam(anyString(), any())).thenReturn(webTarget);
-        
-        final Builder builder = mock(Builder.class);
-        when(webTarget.request()).thenReturn(builder);
-        when(builder.header(anyString(), any())).thenReturn(builder);
-        
-        final Response response = mock(Response.class);
-        when(response.getStatus()).thenReturn(500);
-        when(builder.get()).thenReturn(response);
-        
+        final ClientMock mock = mockClient();
+        when(mock.response.getStatus()).thenReturn(500);
+
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl((lala) -> new RestCallContext.Builder()
-                    .withClient(client).withTimeoutInMilliseconds(60000).build(), "foobar");
+                    .withClient(mock.client).withTimeoutInMilliseconds(60000).build(), "foobar");
         
         try (MDCCloseable c = MDC.putCloseable("lala", "foobar")) {
             adresseSok.sokAdresse(new Sokedata());
@@ -94,7 +86,11 @@ public class AdresseSokConsumerImplTest {
         return listAppender;
     }
 
-    private Client mockClient() {
+    private ClientMock mockClient() {
+        /* 
+         * Denne metoden skal kun returnere mock-instanser. Faktiske returverdier skal defineres av testene.
+         * 
+         */
         final Client client = mock(Client.class);
         final WebTarget webTarget = mock(WebTarget.class);
         when(client.target(anyString())).thenReturn(webTarget);
@@ -105,16 +101,29 @@ public class AdresseSokConsumerImplTest {
         when(builder.header(anyString(), any())).thenReturn(builder);
         
         final Response response = mock(Response.class);
-        when(response.getStatus()).thenReturn(404);
         when(builder.get()).thenReturn(response);
         
-        return client;
+        return new ClientMock(client, webTarget, builder, response);
     }
     
     public static class TestSubjectHandler extends SubjectHandler {
         @Override
         public Subject getSubject() {
             return null;
+        }
+    }
+    
+    private static final class ClientMock {
+        Client client;
+        WebTarget webTarget;
+        Builder builder;
+        Response response;
+        
+        private ClientMock(Client client, WebTarget webTarget, Builder builder, Response response) {
+            this.client = client;
+            this.webTarget = webTarget;
+            this.builder = builder;
+            this.response = response;
         }
     }
 }
