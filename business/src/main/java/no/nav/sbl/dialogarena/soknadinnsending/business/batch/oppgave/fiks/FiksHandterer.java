@@ -4,7 +4,7 @@ import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
-import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
+import no.nav.sbl.sosialhjelp.InnsendingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class FiksHandterer {
     private FillagerService fillagerService;
 
     @Inject
-    private SendtSoknadRepository sendtSoknadRepository;
+    private InnsendingService innsendingService;
 
 
     public void eksekver(Oppgave oppgaveKjede) {
@@ -41,6 +41,7 @@ public class FiksHandterer {
         if (oppgaveKjede.steg == 0) {
             data.behandlingsId = oppgaveKjede.behandlingsId;
             metadataInnfyller.byggOppFiksData(data);
+
             oppgaveKjede.nesteSteg();
         } else if (oppgaveKjede.steg == 1) {
             Event event = MetricsFactory.createEvent("digisos.fikshandterer.sendt");
@@ -58,11 +59,12 @@ public class FiksHandterer {
             }
             oppgaveKjede.nesteSteg();
         } else if (oppgaveKjede.steg == 2) {
+            innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(oppgaveKjede.behandlingsId, oppgaveKjede.oppgaveData.avsenderFodselsnummer);
             fillagerService.slettAlle(data.behandlingsId);
             oppgaveKjede.nesteSteg();
         } else {
             metadataInnfyller.lagreFiksId(data, resultat);
-            sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, data.behandlingsId, data.avsenderFodselsnummer);
+            innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, data.behandlingsId, data.avsenderFodselsnummer);
             oppgaveKjede.ferdigstill();
         }
     }

@@ -355,7 +355,7 @@ public class SoknadDataFletter {
         oppgaveHandterer.leggTilOppgave(behandlingsId);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
-        sendSoknadMedNyModell(soknadUnderArbeid, vedleggListe, orgnummer);
+        forberedInnsendingMedNyModell(soknadUnderArbeid, vedleggListe, orgnummer);
 
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
@@ -376,10 +376,10 @@ public class SoknadDataFletter {
         return soknadUnderArbeid;
     }
 
-    private void sendSoknadMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg, String orgnummer) {
+    private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg, String orgnummer) {
         if (soknadUnderArbeid != null) {
             List<Vedleggstatus> vedleggstatuser = mapVedleggsforventningerTilVedleggstatusListe(vedlegg, soknadUnderArbeid.getEier());
-            innsendingService.sendSoknad(soknadUnderArbeid, vedleggstatuser, orgnummer);
+            innsendingService.opprettSendtSoknad(soknadUnderArbeid, vedleggstatuser, orgnummer);
         }
     }
 

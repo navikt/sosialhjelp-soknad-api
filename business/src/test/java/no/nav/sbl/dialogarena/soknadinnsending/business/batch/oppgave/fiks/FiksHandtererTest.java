@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
-import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
+import no.nav.sbl.sosialhjelp.InnsendingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,7 +31,7 @@ public class FiksHandtererTest {
     FillagerService fillagerService;
 
     @Mock
-    SendtSoknadRepository sendtSoknadRepository;
+    InnsendingService innsendingService;
 
     @InjectMocks
     FiksHandterer fiksHandterer;
@@ -47,25 +47,29 @@ public class FiksHandtererTest {
         verify(fillagerService, never()).slettAlle(any());
         verify(fiksSender, never()).sendTilFiks(any());
         verify(metadataInnfyller, never()).lagreFiksId(any(), any());
-        verify(sendtSoknadRepository, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
+        verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
+        verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
         assertEquals(1, oppgave.steg);
 
         fiksHandterer.eksekver(oppgave);
         verify(fillagerService, never()).slettAlle(any());
         verify(fiksSender, times(1)).sendTilFiks(any());
         verify(metadataInnfyller, never()).lagreFiksId(any(), any());
-        verify(sendtSoknadRepository, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
+        verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
+        verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
         assertEquals(2, oppgave.steg);
 
         fiksHandterer.eksekver(oppgave);
         verify(fillagerService, times(1)).slettAlle(any());
         verify(metadataInnfyller, never()).lagreFiksId(any(), any());
-        verify(sendtSoknadRepository, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
+        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(BEHANDLINGSID,
+                AVSENDER);
+        verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
         assertEquals(3, oppgave.steg);
 
         fiksHandterer.eksekver(oppgave);
         verify(metadataInnfyller, times(1)).lagreFiksId(any(), any());
-        verify(sendtSoknadRepository, times(1))
+        verify(innsendingService, times(1))
                 .oppdaterSendtSoknadVedSendingTilFiks(anyString(), eq(BEHANDLINGSID), eq(AVSENDER));
         assertEquals(Oppgave.Status.FERDIG, oppgave.status);
 

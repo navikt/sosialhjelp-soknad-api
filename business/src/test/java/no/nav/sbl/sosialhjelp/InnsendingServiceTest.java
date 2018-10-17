@@ -67,10 +67,11 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void sendSoknadSletterSoknadFraSoknadUnderArbeid() {
-        innsendingService.sendSoknad(lagSoknadUnderArbeid(), new ArrayList<>(), ORGNR);
+    public void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
+        innsendingService.opprettSendtSoknad(lagSoknadUnderArbeid(), new ArrayList<>(), ORGNR);
 
-        verify(soknadUnderArbeidRepository, times(1)).slettSoknad(any(SoknadUnderArbeid.class), eq(EIER));
+        verify(sendtSoknadRepository, times(1)).opprettSendtSoknad(any(SendtSoknad.class), eq(EIER));
+        verify(vedleggstatusRepository, times(1)).opprettVedlegg(any(Vedleggstatus.class), eq(EIER));
     }
 
     @Test
