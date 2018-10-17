@@ -21,19 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class ArbeidsforholdBolk implements BolkService {
 
-    @Inject
     private FaktaService faktaService;
-
-    @Inject
     private ArbeidsforholdService arbeidsforholdService;
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdBolk.class);
 
-
-    public ArbeidsforholdBolk() {
-
-    }
-
+    @Inject
     public ArbeidsforholdBolk(FaktaService faktaService, ArbeidsforholdService arbeidsforholdService) {
         this.faktaService = faktaService;
         this.arbeidsforholdService = arbeidsforholdService;
