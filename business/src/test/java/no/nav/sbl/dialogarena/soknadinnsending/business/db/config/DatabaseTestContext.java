@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -27,6 +28,11 @@ public class DatabaseTestContext {
     @Bean
     public DataSourceTransactionManager transactionManager() throws IOException {
         return new DataSourceTransactionManager(dataSource());
+    }
+
+    @Bean
+    public TransactionTemplate transactionTemplate() throws IOException {
+        return new TransactionTemplate(transactionManager());
     }
 
     public static DataSource buildDataSource() throws IOException {
@@ -107,6 +113,26 @@ public class DatabaseTestContext {
             st.execute("drop table OPPGAVE if exists");
             st.execute("create table OPPGAVE (id numeric not null, behandlingsid varchar(255), type varchar(255), status varchar(255), steg numeric, oppgavedata clob, " +
                     "oppgaveresultat clob, opprettet timestamp, sistkjort timestamp, nesteforsok timestamp, retries numeric)");
+            st.execute("drop table SENDT_SOKNAD if exists");
+            st.execute("CREATE TABLE SENDT_SOKNAD (SENDT_SOKNAD_ID bigint NOT NULL, BEHANDLINGSID varchar(255) NOT NULL, TILKNYTTETBEHANDLINGSID varchar(255), EIER varchar(255) NOT NULL," +
+                    " FIKSFORSENDELSEID varchar(255) NOT NULL, BRUKEROPPRETTETDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL, BRUKERFERDIGDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL, SENDTDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL," +
+                    " CONSTRAINT UNIK_SS_BEHANDLINGSID UNIQUE (BEHANDLINGSID), CONSTRAINT UNIK_SS_FIKSFORSENDELSEID UNIQUE (FIKSFORSENDELSEID), CONSTRAINT SENDT_SOKNAD_PK PRIMARY KEY (SENDT_SOKNAD_ID))");
+            st.execute("drop sequence SENDT_SOKNAD_ID_SEQ if exists ");
+            st.execute("CREATE sequence SENDT_SOKNAD_ID_SEQ start WITH 1 increment BY 1");
+            st.execute("drop table VEDLEGGSTATUS if exists ");
+            st.execute("CREATE TABLE VEDLEGGSTATUS(VEDLEGGSTATUS_ID bigint NOT NULL, EIER VARCHAR(255) NOT NULL, STATUS VARCHAR(255) NOT NULL, TYPE VARCHAR(255) NOT NULL," +
+                    " SENDT_SOKNAD_ID bigint NOT NULL, CONSTRAINT UNIK_IDTYPE UNIQUE (SENDT_SOKNAD_ID, TYPE), CONSTRAINT VEDLEGGSTATUS_PK PRIMARY KEY (VEDLEGGSTATUS_ID))");
+            st.execute("drop sequence VEDLEGGSTATUSID_SEQ if exists ");
+            st.execute("CREATE sequence VEDLEGGSTATUSID_SEQ start WITH 1 increment BY 1");
+            st.execute("drop table SOKNAD_UNDER_ARBEID if exists");
+            st.execute("CREATE TABLE SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID bigint NOT NULL, VERSJON bigint DEFAULT 1 NOT NULL, BEHANDLINGSID VARCHAR(255) NOT NULL, TILKNYTTETBEHANDLINGSID VARCHAR(255)," +
+                    " EIER VARCHAR(255) NOT NULL, DATA BLOB NOT NULL, ORGNR VARCHAR(255) NOT NULL, STATUS VARCHAR(255) NOT NULL, OPPRETTETDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL, SISTENDRETDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL," +
+                    " CONSTRAINT UNIK_UA_BEHANDLINGSID UNIQUE (BEHANDLINGSID), CONSTRAINT SOKNAD_UNDER_ARBEID_PK PRIMARY KEY (SOKNAD_UNDER_ARBEID_ID))");
+            st.execute("drop sequence SOKNAD_UNDER_ARBEID_ID_SEQ if exists");
+            st.execute("CREATE sequence SOKNAD_UNDER_ARBEID_ID_SEQ start WITH 1 increment BY 1");
+            st.execute("drop table OPPLASTET_VEDLEGG if exists");
+            st.execute("CREATE TABLE OPPLASTET_VEDLEGG(UUID VARCHAR(255) NOT NULL, EIER VARCHAR(255) NOT NULL, TYPE VARCHAR(255) NOT NULL, DATA blob NOT NULL, SOKNAD_UNDER_ARBEID_ID bigint NOT NULL," +
+                    " FILNAVN VARCHAR(255) NOT NULL, SHA512 VARCHAR(255) NOT NULL, CONSTRAINT UNIK_OPPLASTET_VEDLEGG_UUID UNIQUE (UUID))");
         } catch (SQLException e) {
             throw new RuntimeException("Feil ved oppretting av databasen", e);
         }
