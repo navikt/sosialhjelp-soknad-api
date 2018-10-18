@@ -25,9 +25,6 @@ public class AdresseSokRestConfig {
     @Value("${tps.adresse.url}")
     private String endpoint;
     
-    /*
-     * maximumFrontendTimeoutInMilliseconds = (timeoutInMilliseconds * maximumQueueSize) / concurrentRequests
-     */
     
     private final RestCallContext medPostnummerExecutionContext = new RestCallContext.Builder()
             .withClient(RestUtils.createClient(RestConfig.builder().readTimeout(5000).build()))
@@ -49,7 +46,6 @@ public class AdresseSokRestConfig {
 
     @Bean
     public AdresseSokConsumer adresseSokConsumer() {
-        //AdresseSokConsumerImpl prod = new AdresseSokConsumerImpl(RestUtils.createClient(RestConfig.builder().readTimeout(5000).build()), endpoint);
         AdresseSokConsumerImpl prod = new AdresseSokConsumerImpl(restCallContextSelector, endpoint);
         AdresseSokConsumer mock = new AdresseSokConsumerMock().adresseRestService();
         return createSwitcher(prod, mock, ADRESSE_KEY, AdresseSokConsumer.class);

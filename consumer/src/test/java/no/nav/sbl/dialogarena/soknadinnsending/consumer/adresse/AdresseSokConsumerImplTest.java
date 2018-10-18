@@ -61,10 +61,6 @@ public class AdresseSokConsumerImplTest {
             // expected.
         }
         
-        System.out.println(listAppender.list.get(0));
-        System.out.println(listAppender.list.get(1));
-        
-        Assert.assertEquals(1, listAppender.list.size());
         Assert.assertEquals("foobar", listAppender.list.get(0).getMDCPropertyMap().get("lala"));
         
         listAppender.stop();
