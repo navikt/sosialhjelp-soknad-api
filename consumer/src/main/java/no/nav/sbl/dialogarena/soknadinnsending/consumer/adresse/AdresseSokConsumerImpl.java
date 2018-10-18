@@ -27,6 +27,10 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     private String endpoint;
 
     
+    public AdresseSokConsumerImpl(RestCallContext restCallContext, String endpoint) {
+        this((sokedata) -> restCallContext, endpoint);
+    }
+    
     public AdresseSokConsumerImpl(Function<Sokedata, RestCallContext> restCallContextSelector, String endpoint) {
         this.restCallContextSelector = restCallContextSelector;
         this.endpoint = endpoint;
