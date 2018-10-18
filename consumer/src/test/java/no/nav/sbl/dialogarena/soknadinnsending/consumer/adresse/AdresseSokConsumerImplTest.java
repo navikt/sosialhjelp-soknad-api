@@ -12,8 +12,9 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import org.hamcrest.Matchers;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.MDC;
 import org.slf4j.MDC.MDCCloseable;
@@ -28,10 +29,24 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallCont
 
 public class AdresseSokConsumerImplTest {
 
+    private static final String PROPERTY_SUBJECT_HANDLER = "no.nav.modig.core.context.subjectHandlerImplementationClass";
+    
+    private static String oldSubjectHandlerImplementationClass;
+    
+    
+    @BeforeClass
+    public static void beforeClass() {
+        oldSubjectHandlerImplementationClass = System.getProperty(PROPERTY_SUBJECT_HANDLER, "");
+        System.setProperty(PROPERTY_SUBJECT_HANDLER, TestSubjectHandler.class.getName());
+    }
+    
+    @AfterClass
+    public static void afterClass() {
+        System.setProperty(PROPERTY_SUBJECT_HANDLER, oldSubjectHandlerImplementationClass);
+    }
+    
     @Test
     public void simpleRestCallWith404() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", TestSubjectHandler.class.getName());
-        
         final ClientMock mock = mockClient();
         when(mock.response.getStatus()).thenReturn(404);
         
@@ -45,8 +60,6 @@ public class AdresseSokConsumerImplTest {
     
     @Test
     public void mdcParametersAreAccessible() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", TestSubjectHandler.class.getName());
-        
         final ListAppender<ILoggingEvent> listAppender = createTestLogAppender();
         
         final ClientMock mock = mockClient();
