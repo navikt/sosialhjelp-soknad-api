@@ -181,7 +181,7 @@ public class SoknadDataFletterTest {
 
         ArgumentCaptor<HovedskjemaMetadata> hovedCaptor = ArgumentCaptor.forClass(HovedskjemaMetadata.class);
         ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
-        verify(oppgaveHandterer).leggTilOppgave(eq(behandlingsId));
+        verify(oppgaveHandterer).leggTilOppgave(eq(behandlingsId), eq("123456"));
 
         HovedskjemaMetadata capturedHoved = hovedCaptor.getValue();
         assertThat(capturedHoved.filUuid).isEqualTo("uidHovedskjema");

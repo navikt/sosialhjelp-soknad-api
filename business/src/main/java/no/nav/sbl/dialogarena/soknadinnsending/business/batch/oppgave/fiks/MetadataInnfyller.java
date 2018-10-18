@@ -5,11 +5,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksData.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -20,23 +23,48 @@ public class MetadataInnfyller {
     @Inject
     SoknadMetadataRepository soknadMetadataRepository;
 
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Inject
+    private SendtSoknadRepository sendtSoknadRepository;
+
     public void byggOppFiksData(FiksData data) {
         SoknadMetadata soknadMetadata = soknadMetadataRepository.hent(data.behandlingsId);
 
-        data.avsenderFodselsnummer = soknadMetadata.fnr;
-        data.mottakerOrgNr = soknadMetadata.orgnr;
-        data.mottakerNavn = soknadMetadata.navEnhet;
-        data.innsendtDato = soknadMetadata.innsendtDato;
+        final String eier = data.avsenderFodselsnummer;
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(data.behandlingsId, eier);
+        if (!soknadUnderArbeidOptional.isPresent()) {
+            throw new RuntimeException("Søknad under arbeid finnes ikke for behandlingsId " + data.behandlingsId);
+        }
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidOptional.get();
+        data.mottakerOrgNr = soknadMetadata.orgnr;//hente fra søknad
+        data.mottakerNavn = soknadMetadata.navEnhet;//hente fra søknad
+        data.innsendtDato = soknadUnderArbeid.getSistEndretDato();
 
         byggOppDokumentInfo(data, soknadMetadata);
-
-        if (soknadMetadata.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            SoknadMetadata originalSoknad = soknadMetadataRepository.hent(soknadMetadata.tilknyttetBehandlingsId);
-            if (isEmpty(originalSoknad.fiksForsendelseId)) {
-                throw new RuntimeException("Kan ikke ettersende, originalsoknaden ikke fått fiksid enda");
-            }
-            data.ettersendelsePa = originalSoknad.fiksForsendelseId;
+        if (soknadUnderArbeid.erEttersendelse()) {
+            data.ettersendelsePa = finnOriginalFiksforsendelseId(soknadMetadata, eier, soknadUnderArbeid.getTilknyttetBehandlingsId());
         }
+    }
+
+    String finnOriginalFiksforsendelseId(SoknadMetadata soknadMetadata, String eier, String tilknyttetBehandlingsId) {
+        Optional<SendtSoknad> originalSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, eier);
+        String originalFiksForsendelseId;
+        if (originalSoknad.isPresent()) {
+            originalFiksForsendelseId = originalSoknad.get().getFiksforsendelseId();
+        } else {
+            SoknadMetadata originalSoknadGammeltFormat = soknadMetadataRepository.hent(soknadMetadata.tilknyttetBehandlingsId);
+            if (originalSoknadGammeltFormat == null) {
+                throw new RuntimeException("Kan ikke ettersende, finner ikke originalsøknad");
+            } else {
+                originalFiksForsendelseId = originalSoknadGammeltFormat.fiksForsendelseId;
+            }
+        }
+        if (isEmpty(originalFiksForsendelseId)) {
+            throw new RuntimeException("Kan ikke ettersende, originalsoknaden ikke fått fiksid enda");
+        }
+        return originalFiksForsendelseId;
     }
 
     public void lagreFiksId(FiksData data, FiksResultat resultat) {
@@ -45,7 +73,7 @@ public class MetadataInnfyller {
         soknadMetadataRepository.oppdater(soknadMetadata);
     }
 
-    private void byggOppDokumentInfo(FiksData data, SoknadMetadata metadata) {
+    void byggOppDokumentInfo(FiksData data, SoknadMetadata metadata) {
         List<DokumentInfo> infoer = new ArrayList<>();
 
         // Bestemt rekkefølge på ting...

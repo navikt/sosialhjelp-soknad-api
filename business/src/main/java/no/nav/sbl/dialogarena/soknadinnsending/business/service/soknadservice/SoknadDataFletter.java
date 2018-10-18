@@ -352,7 +352,7 @@ public class SoknadDataFletter {
         final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
-        oppgaveHandterer.leggTilOppgave(behandlingsId);
+        oppgaveHandterer.leggTilOppgave(behandlingsId, soknad.getAktoerId());
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
         forberedInnsendingMedNyModell(soknadUnderArbeid, vedleggListe, orgnummer);
