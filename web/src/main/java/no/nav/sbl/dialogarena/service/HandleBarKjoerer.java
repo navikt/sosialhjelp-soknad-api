@@ -1,5 +1,19 @@
 package no.nav.sbl.dialogarena.service;
 
+import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
+import static org.apache.commons.lang3.ArrayUtils.reverse;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.split;
+import static org.slf4j.LoggerFactory.getLogger;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -9,25 +23,15 @@ import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
+
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsContext;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
-import static org.apache.commons.lang3.ArrayUtils.reverse;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.split;
-import static org.slf4j.LoggerFactory.getLogger;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
@@ -36,6 +40,9 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     @Inject
     private WebSoknadConfig webSoknadConfig;
+    
+    @Inject
+    private NavMessageSource messageSource;
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         return getHandlebars()
@@ -50,12 +57,13 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     @Override
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
-            SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
-            OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, utvidetSoknad);
+            final SosialhjelpTilJson sosialhjelpTilJson = new SosialhjelpTilJson(messageSource);
+            final JsonSoknad jsonSoknad = sosialhjelpTilJson.toJsonSoknad(soknad);
+            
             return getHandlebars()
                     .infiniteLoops(true)
-                    .compile("/skjema/generisk")
-                    .apply(Context.newBuilder(context)
+                    .compile("/skjema/ny_generisk")
+                    .apply(Context.newBuilder(jsonSoknad)
                             .resolver(
                                     JavaBeanValueResolver.INSTANCE,
                                     FieldValueResolver.INSTANCE,
