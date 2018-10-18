@@ -41,7 +41,6 @@ public class FiksHandterer {
         if (oppgaveKjede.steg == 0) {
             data.behandlingsId = oppgaveKjede.behandlingsId;
             metadataInnfyller.byggOppFiksData(data);
-
             oppgaveKjede.nesteSteg();
         } else if (oppgaveKjede.steg == 1) {
             Event event = MetricsFactory.createEvent("digisos.fikshandterer.sendt");
