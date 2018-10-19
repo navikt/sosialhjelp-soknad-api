@@ -21,13 +21,22 @@ import java.util.stream.Collectors;
 @Service
 public class ArbeidsforholdBolk implements BolkService {
 
-    @Inject
     private FaktaService faktaService;
-
-    @Inject
     private ArbeidsforholdService arbeidsforholdService;
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdBolk.class);
+
+    @Inject
+    public ArbeidsforholdBolk(FaktaService faktaService, ArbeidsforholdService arbeidsforholdService) {
+        if (faktaService == null) {
+            throw new IllegalArgumentException("faktaService == null");
+        }
+        if (arbeidsforholdService == null) {
+            throw new IllegalArgumentException("arbeidsforholdService == null");
+        }
+        this.faktaService = faktaService;
+        this.arbeidsforholdService = arbeidsforholdService;
+    }
 
 
     protected void afterGenererArbeidsforhold(List<Faktum> arbeidsforholdFakta, final Long soknadId) {
