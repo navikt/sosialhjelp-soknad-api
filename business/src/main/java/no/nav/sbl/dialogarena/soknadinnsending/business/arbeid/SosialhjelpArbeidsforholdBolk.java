@@ -33,7 +33,9 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
     protected void afterGenererArbeidsforhold(List<Faktum> arbeidsforholdFakta, Long soknadId) {
         boolean harArbeid = !arbeidsforholdFakta.isEmpty();
         boolean skalBeOmSluttoppgjor = arbeidsforholdFakta.stream()
-                .anyMatch(arbeid -> arbeid.getProperties().get("tom") != null && isBeforeOneMonthAheadInTime(arbeid.getProperties().get("tom")));
+                .anyMatch(arbeid -> arbeid.getProperties().get("tom") != null
+                    && !arbeid.getProperties().get("tom").trim().equals("")
+                    && isBeforeOneMonthAheadInTime(arbeid.getProperties().get("tom")));
         boolean harAvsluttetArbeidsforhold = arbeidsforholdFakta.stream()
                 .anyMatch(arbeid -> "false".equals(arbeid.getProperties().get("ansatt")));
         boolean harGjeldendeArbeidsforhold = arbeidsforholdFakta.stream()
