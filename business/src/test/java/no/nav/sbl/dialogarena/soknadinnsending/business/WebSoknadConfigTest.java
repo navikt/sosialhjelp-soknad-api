@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WebSoknadConfigTest {
@@ -53,7 +56,7 @@ public class WebSoknadConfigTest {
     public void testAtRiktigeSoknadBolkerErInkludert() {
         BolkService personalia = new PersonaliaBolk();
         BolkService barn = new BarnBolk();
-        BolkService arbeidsforhold = new SosialhjelpArbeidsforholdBolk();
+        BolkService arbeidsforhold = new SosialhjelpArbeidsforholdBolk(mock(FaktaService.class), mock(ArbeidsforholdService.class));
 
         List<BolkService> bolker = config.getSoknadBolker(new WebSoknad().medskjemaNummer(SosialhjelpInformasjon.SKJEMANUMMER), asList(personalia, barn, arbeidsforhold));
         assertThat(bolker.contains(personalia)).isTrue();
