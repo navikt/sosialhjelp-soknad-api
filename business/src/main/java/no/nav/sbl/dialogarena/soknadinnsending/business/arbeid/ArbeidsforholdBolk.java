@@ -28,6 +28,12 @@ public class ArbeidsforholdBolk implements BolkService {
 
     @Inject
     public ArbeidsforholdBolk(FaktaService faktaService, ArbeidsforholdService arbeidsforholdService) {
+        if (faktaService == null) {
+            throw new IllegalArgumentException("faktaService == null");
+        }
+        if (arbeidsforholdService == null) {
+            throw new IllegalArgumentException("arbeidsforholdService == null");
+        }
         this.faktaService = faktaService;
         this.arbeidsforholdService = arbeidsforholdService;
     }
