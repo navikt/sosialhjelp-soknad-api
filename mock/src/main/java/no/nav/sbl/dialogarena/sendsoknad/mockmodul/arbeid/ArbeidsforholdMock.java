@@ -9,6 +9,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -42,7 +44,8 @@ public class ArbeidsforholdMock {
         AnsettelsesPeriode periode = new AnsettelsesPeriode();
         Gyldighetsperiode gperiode = new Gyldighetsperiode();
         gperiode.setFom(ServiceUtils.stringTilXmldato("2014-01-02"));
-//        gperiode.setTom(ServiceUtils.stringTilXmldato("2015-01-01")); // Denne avgjør om man er ansatt eller ikke for øyeblikket
+        // Denne avgjør om man er ansatt eller ikke for øyeblikket
+        gperiode.setTom(ServiceUtils.stringTilXmldato(LocalDate.now().plusMonths(1).format(DateTimeFormatter.ISO_DATE)));
         periode.setPeriode(gperiode);
         return periode;
     }
