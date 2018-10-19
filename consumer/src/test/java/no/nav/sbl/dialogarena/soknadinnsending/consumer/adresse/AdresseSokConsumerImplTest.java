@@ -41,21 +41,22 @@ public class AdresseSokConsumerImplTest {
      * Verdien bør økes hvis testene sporadisk feiler.
      */
     private static final int EXECUTION_DELAY = 500;
-
-    private static final String PROPERTY_SUBJECT_HANDLER = "no.nav.modig.core.context.subjectHandlerImplementationClass";
     
     private static String oldSubjectHandlerImplementationClass;
     
     
     @BeforeClass
     public static void beforeClass() {
-        oldSubjectHandlerImplementationClass = System.getProperty(PROPERTY_SUBJECT_HANDLER, "");
-        System.setProperty(PROPERTY_SUBJECT_HANDLER, TestSubjectHandler.class.getName());
+        oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
     }
     
     @AfterClass
     public static void afterClass() {
-        System.setProperty(PROPERTY_SUBJECT_HANDLER, oldSubjectHandlerImplementationClass);
+        if (oldSubjectHandlerImplementationClass == null) {
+            System.clearProperty(SubjectHandler.SUBJECTHANDLER_KEY);
+        } else {
+            System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, oldSubjectHandlerImplementationClass);
+        }
     }
     
     
@@ -65,10 +66,7 @@ public class AdresseSokConsumerImplTest {
         when(mock.response.getStatus()).thenReturn(404);
 
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
-        
-        final AdressesokRespons adressesokRespons = adresseSok.sokAdresse(new Sokedata()
-                .withAdresse("Testeveien")
-                .withPostnummer("1337"));
+        final AdressesokRespons adressesokRespons = adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
         
         Assert.assertTrue(adressesokRespons.adresseDataList.isEmpty());
         Assert.assertEquals(false, adressesokRespons.flereTreff);
@@ -82,7 +80,7 @@ public class AdresseSokConsumerImplTest {
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
         
         try  {
-            adresseSok.sokAdresse(new Sokedata());
+            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
             Assert.fail("Forventer exception");
         } catch (RuntimeException e) {
             // expected.
@@ -99,7 +97,7 @@ public class AdresseSokConsumerImplTest {
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
         
         try (MDCCloseable c = MDC.putCloseable("lala", "foobar")) {
-            adresseSok.sokAdresse(new Sokedata());
+            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
             Assert.fail("Forventer exception");
         } catch (RuntimeException e) {
             // expected.
@@ -125,14 +123,10 @@ public class AdresseSokConsumerImplTest {
 
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContextSelector, "foobar");
         
-        adresseSok.sokAdresse(new Sokedata()
-                .withAdresse("restCallContext1")
-                .withPostnummer("1337"));
+        adresseSok.sokAdresse(new Sokedata().withAdresse("restCallContext1"));
         
         try {
-            adresseSok.sokAdresse(new Sokedata()
-                    .withAdresse("restCallContext2")
-                    .withPostnummer("1337"));
+            adresseSok.sokAdresse(new Sokedata().withAdresse("restCallContext2"));
             Assert.fail("Forventer exception");
         } catch (RuntimeException e) {
             // Forventer exception siden restCallContext2 alltid gir 500 svar.
@@ -142,7 +136,6 @@ public class AdresseSokConsumerImplTest {
     @Test
     public void girTimeout() {
         final ClientMock mock = mockClientWithDelay(EXECUTION_DELAY);
-        when(mock.response.getStatus()).thenReturn(404);
         
         final RestCallContext restCallContext = new RestCallContext.Builder()
                 .withClient(mock.client)
@@ -151,9 +144,7 @@ public class AdresseSokConsumerImplTest {
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
         
         try {
-            adresseSok.sokAdresse(new Sokedata()
-                    .withAdresse("Testsveien")
-                    .withPostnummer("1337"));
+            adresseSok.sokAdresse(new Sokedata().withAdresse("Testsveien"));
             Assert.fail("Forventet exception.");
         } catch (RuntimeException e) {
             Assert.assertEquals(TimeoutException.class, e.getCause().getClass());
@@ -174,22 +165,19 @@ public class AdresseSokConsumerImplTest {
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
         
         // Ett kall virker:
-        adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 1")
-                .withPostnummer("1337"));
+        adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 1"));
         
         // Full kø:
         new Thread(() -> {
-            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 2").withPostnummer("1337"));
+            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 2"));
         }).start();
         new Thread(() -> {
-            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 3")
-                    .withPostnummer("1337"));
+            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 3"));
         }).start();
         Thread.sleep(EXECUTION_DELAY / 2);
         
         try {
-            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 4")
-                    .withPostnummer("1337"));
+            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 4"));
             Assert.fail("Forventer exception.");
         } catch (RejectedExecutionException e) {
             // Expected.
@@ -230,7 +218,7 @@ public class AdresseSokConsumerImplTest {
         
         final Response response = mock(Response.class);
         when(builder.get()).thenReturn(response);
-        
+
         return new ClientMock(client, webTarget, builder, response);
     }
     
@@ -241,9 +229,9 @@ public class AdresseSokConsumerImplTest {
         }
     }
     
-    @SuppressWarnings("unused")
     private static final class ClientMock {
         Client client;
+        @SuppressWarnings("unused")
         WebTarget webTarget;
         Builder builder;
         Response response;
