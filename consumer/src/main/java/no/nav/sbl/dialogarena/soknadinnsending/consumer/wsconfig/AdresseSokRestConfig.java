@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 import java.util.function.Function;
 
@@ -9,10 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
+import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sbl.rest.RestUtils.RestConfig;
 
@@ -51,5 +56,27 @@ public class AdresseSokRestConfig {
         return createSwitcher(prod, mock, ADRESSE_KEY, AdresseSokConsumer.class);
     }
     
-    
+    @Bean
+    public Pingable adressesokPing() {
+        return new Pingable() {
+            @Override
+            public Ping ping() {
+                PingMetadata metadata = new PingMetadata(endpoint, "TPSWS-adressesok", false);
+                try {
+                    final AdressesokRespons respons = adresseSokConsumer().sokAdresse(new Sokedata()
+                            .withAdresse("SANNERGATA")
+                            .withHusnummer("2")
+                            .withPostnummer("0557")
+                            .withPoststed("OSLO")
+                            .withKommunenummer("0301"));
+                    if (respons.adresseDataList.size() == 0) {
+                        throw new IllegalStateException("Forventer minst én gate som heter SANNERGATA ved adressesøk.");
+                    }
+                    return lyktes(metadata);
+                } catch (Exception e) {
+                    return feilet(metadata, e);
+                }
+            }
+        };
+    }
 }

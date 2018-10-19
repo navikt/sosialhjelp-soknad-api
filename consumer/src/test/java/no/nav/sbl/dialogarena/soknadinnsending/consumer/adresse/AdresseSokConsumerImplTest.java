@@ -40,7 +40,7 @@ public class AdresseSokConsumerImplTest {
      * 
      * Verdien bør økes hvis testene sporadisk feiler.
      */
-    private static final int EXECUTION_DELAY = 500;
+    private static final int EXECUTION_DELAY = 1000;
     
     private static String oldSubjectHandlerImplementationClass;
     

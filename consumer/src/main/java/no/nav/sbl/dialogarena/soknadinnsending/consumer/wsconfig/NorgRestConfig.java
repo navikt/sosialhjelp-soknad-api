@@ -1,14 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgConsumerImpl;
-import no.nav.sbl.rest.RestUtils;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgConsumerImpl;
+import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
+import no.nav.sbl.rest.RestUtils;
 
 
 @Configuration
@@ -24,5 +30,24 @@ public class NorgRestConfig {
         NorgConsumer prod = new NorgConsumerImpl(RestUtils.createClient(), endpoint);
         NorgConsumer mock = new NorgConsumerMock();
         return createSwitcher(prod, mock, NORG_KEY, NorgConsumer.class);
+    }
+    
+    @Bean
+    public Pingable norgRestPing() {
+        return new Pingable() {
+            @Override
+            public Ping ping() {
+                PingMetadata metadata = new PingMetadata(endpoint, "Norg2", false);
+                try {
+                    final RsNorgEnhet rsNorgEnhet = norgConsumer().finnEnhetForGeografiskTilknytning("030101");
+                    if (rsNorgEnhet == null || rsNorgEnhet.navn == null || rsNorgEnhet.navn.trim().equals("")) {
+                        throw new IllegalStateException("Forventer at det finnes et NAV-kontor for GT 030101");
+                    }
+                    return lyktes(metadata);
+                } catch (Exception e) {
+                    return feilet(metadata, e);
+                }
+            }
+        };
     }
 }
