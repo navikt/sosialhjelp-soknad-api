@@ -50,6 +50,8 @@ public class ConsumerConfig {
             MaalgruppeWSConfig.class,
             SakOgAktivitetWSConfig.class,
             FiksWSConfig.class,
+            AdresseSokRestConfig.class,
+            NorgRestConfig.class,
             UtbetalingWSConfig.class
     })
     public static class WsServices {
