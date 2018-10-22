@@ -1,0 +1,61 @@
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+
+
+public final class AdresseStringSplitter {
+
+    private AdresseStringSplitter() {
+        
+    }
+    
+    
+    static Sokedata toSokedata(String adresse) {
+        if (adresse == null || adresse.trim().length() <= 1) {
+            return new Sokedata().withAdresse(adresse);
+        }
+
+        return firstNonNull(
+            postnummerMatch(adresse),
+            fullstendigGateadresseMatch(adresse),
+            new Sokedata().withAdresse(adresse)
+        );
+    }
+    
+    private static Sokedata fullstendigGateadresseMatch(String adresse) {
+        final Pattern p = Pattern.compile("^([^0-9,]*) ?([0-9]*)?([^,])?,? ?([0-9][0-9][0-9][0-9])? ?(.*)?$");
+        final Matcher m = p.matcher(adresse);
+        if (m.matches()) {
+            return new Sokedata()
+                    .withAdresse(m.group(1).trim())
+                    .withHusnummer(m.group(2))
+                    .withHusbokstav(m.group(3))
+                    .withPostnummer(m.group(4))
+                    .withPoststed(m.group(5));
+        }
+        return null;
+    }
+
+    private static Sokedata postnummerMatch(String adresse) {
+        final Pattern p = Pattern.compile("^([0-9][0-9][0-9][0-9]) *$");
+        final Matcher m = p.matcher(adresse);
+        if (m.matches()) {
+            return new Sokedata().withPostnummer(m.group(1));
+        }
+        return null;
+    }
+    
+    private static Sokedata firstNonNull(Sokedata... elems) {
+        for (Sokedata e : elems) {
+            if (e != null) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    
+}

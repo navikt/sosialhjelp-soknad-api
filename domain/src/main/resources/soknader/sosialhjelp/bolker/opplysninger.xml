@@ -87,7 +87,7 @@
         <constraints>
             <constraint>
                 <faktum>dinsituasjon.registrertjobb</faktum>
-                <expression>properties['haravsluttetarbeidsforhold'] == 'true'</expression>
+                <expression>properties['skalbeomsluttoppgjor'] == 'true'</expression>
             </constraint>
         </constraints>
         <properties>
@@ -356,7 +356,7 @@
         <constraints>
             <constraint>
                 <faktum>inntekt.eierandeler.true.type.bolig</faktum>
-                <expression>value == 'true'</expression>
+                <expression>false</expression>
             </constraint>
         </constraints>
         <optional>true</optional>
@@ -382,7 +382,7 @@
         <constraints>
             <constraint>
                 <faktum>inntekt.eierandeler.true.type.kjoretoy</faktum>
-                <expression>value == 'true'</expression>
+                <expression>false</expression>
             </constraint>
         </constraints>
         <optional>true</optional>
@@ -408,7 +408,7 @@
         <constraints>
             <constraint>
                 <faktum>inntekt.eierandeler.true.type.campingvogn</faktum>
-                <expression>value == 'true'</expression>
+                <expression>false</expression>
             </constraint>
         </constraints>
         <optional>true</optional>
@@ -434,7 +434,7 @@
         <constraints>
             <constraint>
                 <faktum>inntekt.eierandeler.true.type.fritidseiendom</faktum>
-                <expression>value == 'true'</expression>
+                <expression>false</expression>
             </constraint>
         </constraints>
         <optional>true</optional>
@@ -460,7 +460,7 @@
         <constraints>
             <constraint>
                 <faktum>inntekt.eierandeler.true.type.annet</faktum>
-                <expression>value == 'true'</expression>
+                <expression>false</expression>
             </constraint>
         </constraints>
         <optional>true</optional>
