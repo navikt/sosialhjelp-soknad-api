@@ -39,10 +39,7 @@ public class NorgRestConfig {
             public Ping ping() {
                 PingMetadata metadata = new PingMetadata(endpoint, "Norg2", false);
                 try {
-                    final RsNorgEnhet rsNorgEnhet = norgConsumer().finnEnhetForGeografiskTilknytning("030101");
-                    if (rsNorgEnhet == null || rsNorgEnhet.navn == null || rsNorgEnhet.navn.trim().equals("")) {
-                        throw new IllegalStateException("Forventer at det finnes et NAV-kontor for GT 030101");
-                    }
+                    norgConsumer().ping();
                     return lyktes(metadata);
                 } catch (Exception e) {
                     return feilet(metadata, e);
