@@ -76,16 +76,20 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         try {
             response = request.get();
             final String melding = response.readEntity(String.class);
+            final int status = response.getStatus();
             
-            if (melding.contains("maxretur er ikke numerisk")) {
+            if (status == 400) {
                 /*
                  * Vi forventer feilmelding på maxretur. Dette er en stygg hack som
                  * er laget fordi vi mangler et fungerende ping-kall mot TPSWS-REST.
+                 * 
+                 * Vi kan dessverre heller ikke sjekke om feilresponsen inneholder
+                 * "maxretur er ikke numerisk" fordi denne fjernes av APIGW.
                  */
                 return;
             }
             
-            throw new RuntimeException(response.getStatus() + ": " + melding);
+            throw new RuntimeException(status + ": " + melding);
         } finally {
             if (response != null) {
                 response.close();
