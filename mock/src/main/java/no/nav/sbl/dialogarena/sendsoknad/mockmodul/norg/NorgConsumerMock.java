@@ -15,6 +15,10 @@ public class NorgConsumerMock implements NorgConsumer {
     public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {
         throw new UnsupportedOperationException("Kontaktinformasjon for enhet er ikke støttet ennå");
     }
+    
+    @Override
+    public void ping() {
+    }
 
     private static final Map<String, RsNorgEnhet> ENHETER_PROD = new ImmutableMap.Builder<String, RsNorgEnhet>()
             .put("0701", new RsNorgEnhet().withEnhetId(100000141)
