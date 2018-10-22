@@ -46,7 +46,7 @@ public class AdresseSokRestConfig {
             .build();
     
     private final Function<Sokedata, RestCallContext> restCallContextSelector = (sokedata) -> {
-        return (sokedata.postnummer != null) ? medPostnummerExecutionContext : utenPostnummerExecutionContext;
+        return (sokedata != null && sokedata.postnummer != null) ? medPostnummerExecutionContext : utenPostnummerExecutionContext;
     };
 
     @Bean
@@ -63,15 +63,7 @@ public class AdresseSokRestConfig {
             public Ping ping() {
                 PingMetadata metadata = new PingMetadata(endpoint, "TPSWS-adressesok", false);
                 try {
-                    final AdressesokRespons respons = adresseSokConsumer().sokAdresse(new Sokedata()
-                            .withAdresse("SANNERGATA")
-                            .withHusnummer("2")
-                            .withPostnummer("0557")
-                            .withPoststed("OSLO")
-                            .withKommunenummer("0301"));
-                    if (respons.adresseDataList.size() == 0) {
-                        throw new IllegalStateException("Forventer minst én gate som heter SANNERGATA ved adressesøk.");
-                    }
+                    adresseSokConsumer().ping();
                     return lyktes(metadata);
                 } catch (Exception e) {
                     return feilet(metadata, e);

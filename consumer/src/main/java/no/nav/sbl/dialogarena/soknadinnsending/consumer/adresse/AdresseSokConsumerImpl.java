@@ -8,6 +8,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.function.Function;
 
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
@@ -15,8 +16,8 @@ import org.slf4j.Logger;
 
 import no.nav.modig.common.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 
 public class AdresseSokConsumerImpl implements AdresseSokConsumer {
@@ -51,6 +52,45 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         return RestCallUtils.performRequestUsingContext(executionContext, () -> {
             return sokAdresseMotTjeneste(sokedata, request);
         });
+    }
+    
+    @Override
+    public void ping() {
+        final String consumerId = getSubjectHandler().getConsumerId();
+        final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
+        
+        final RestCallContext restCallContext = restCallContextSelector.apply(null);
+        
+        /*
+         * Ping-kallet går raskt og utføres derfor direkte mot tjenesten uten begrensninger:
+         */
+        final Builder request = restCallContext.getClient().target(endpoint + "adressesoek")
+                .queryParam("maxretur", "PING") 
+                .request()
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
+                .header("x-nav-apiKey", apiKey);
+        
+        Response response = null;
+        try {
+            response = request.get();
+            final String melding = response.readEntity(String.class);
+            
+            if (melding.contains("maxretur er ikke numerisk")) {
+                /*
+                 * Vi forventer feilmelding på maxretur. Dette er en stygg hack som
+                 * er laget fordi vi mangler et fungerende ping-kall mot TPSWS-REST.
+                 */
+                return;
+            }
+            
+            throw new RuntimeException(melding);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
     }
 
     private AdressesokRespons sokAdresseMotTjeneste(Sokedata sokedata, final Invocation.Builder request) {
