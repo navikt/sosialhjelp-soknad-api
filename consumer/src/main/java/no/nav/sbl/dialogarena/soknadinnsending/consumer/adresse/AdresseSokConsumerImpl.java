@@ -85,7 +85,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
                 return;
             }
             
-            throw new RuntimeException(melding);
+            throw new RuntimeException(response.getStatus() + ": " + melding);
         } finally {
             if (response != null) {
                 response.close();
