@@ -7,7 +7,7 @@ public interface AdresseSokConsumer {
 
     AdressesokRespons sokAdresse(String adresse);
     AdressesokRespons sokAdresse(Sokedata adressefelter);
-
+    void ping();
 
     class AdressesokRespons {
         public boolean flereTreff;
