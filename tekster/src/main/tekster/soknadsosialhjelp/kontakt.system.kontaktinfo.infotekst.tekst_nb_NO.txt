@@ -1,1 +1,3 @@
-Vi har hentet følgende opplysninger fra NAVs persondatasystem (henter fra Det sentrale folkeregisteret):
+Skriv hele adressen din med gatenavn, husnummer, postnummer og poststed. Eksempel: 
+
+Eksempelveien 47, 0123 OSLO

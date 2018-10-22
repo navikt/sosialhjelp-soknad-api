@@ -94,3 +94,11 @@ fasitResources:
     resourceType: applicationProperties
   - alias: openam
     resourceType: openam
+  - alias: tpsws.api.v1
+    resourceType: restservice
+  - alias: soknadsosialhjelp-server-tpsws.api.v1-apiKey
+    resourceType: credential
+  - alias: norg2.api.v1
+    resourceType: restservice
+  - alias: soknadsosialhjelp-server-norg2.api.v1-apiKey
+    resourceType: credential
