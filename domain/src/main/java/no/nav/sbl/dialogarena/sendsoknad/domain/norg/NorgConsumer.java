@@ -7,6 +7,8 @@ public interface NorgConsumer {
     RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning);
 
     RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr);
+    
+    void ping();
 
     class RsNorgEnhet {
         public long enhetId;
@@ -90,4 +92,5 @@ public interface NorgConsumer {
         public String kommentar;
         public boolean stengt;
     }
+
 }

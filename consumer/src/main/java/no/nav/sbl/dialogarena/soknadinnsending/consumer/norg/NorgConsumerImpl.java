@@ -50,6 +50,28 @@ public class NorgConsumerImpl implements NorgConsumer {
             }
         }
     }
+    
+    @Override
+    public void ping() {
+        /* 
+         * TODO: Erstatt denne metoden med et skikkelig ping-kall. Vi bruker nå et
+         *       urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
+         *       at vi når tjenesten).
+         */
+        final Invocation.Builder request = lagRequest(endpoint + "kodeverk/EnhetstyperNorg");
+
+        Response response = null;
+        try {
+            response = request.get();
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+            }
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
+    }
 
     @Override
     public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {
