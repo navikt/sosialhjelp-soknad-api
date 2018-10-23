@@ -54,11 +54,18 @@ public class NorgConsumerImpl implements NorgConsumer {
     @Override
     public void ping() {
         /* 
-         * TODO: Erstatt denne metoden med et skikkelig ping-kall. Vi bruker nå et
-         *       urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
-         *       at vi når tjenesten).
+         * Erstatt denne metoden med et skikkelig ping-kall. Vi bruker nå et
+         * urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
+         * at vi når tjenesten).
          */
-        final Invocation.Builder request = lagRequest(endpoint + "kodeverk/EnhetstyperNorg");
+        final String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
+
+        final Invocation.Builder request = client.target(endpoint + "kodeverk/EnhetstyperNorg").request()
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
+                .header("x-nav-apiKey", apiKey);
 
         Response response = null;
         try {
