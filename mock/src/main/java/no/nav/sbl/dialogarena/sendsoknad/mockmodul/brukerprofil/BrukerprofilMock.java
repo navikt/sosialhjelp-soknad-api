@@ -11,10 +11,10 @@ public class BrukerprofilMock {
     private static final String MELLOMNAVN = "D.";
     private static final String ETTERNAVN = "Mockmann";
     private static final String EPOST = "test@epost.com";
-    private static final String GATENAVN = "Grepalida";
-    private static final String HUSNUMMER = "44";
+    private static final String GATENAVN = "SANNERGATA"; // "Grepalida";
+    private static final String HUSNUMMER = "2"; // "44";
     private static final String BOLIGNUMMER = "1234";
-    private static final String POSTNUMMER = "0560";
+    private static final String POSTNUMMER = "0557"; // "0560";
     private static final String KOMMUNENUMMER = "0701";
     private static final String LANDKODE = "NOR";
     private static final String LANDKODE_UTENLANDSK = "FIN";
@@ -57,8 +57,8 @@ public class BrukerprofilMock {
         settSekundarAdresse(xmlBruker, Adressetyper.UTENLANDSK);
         
         //settMatrikkeladresse(xmlBruker);
-        //xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue("midlertidig"));
-        //settMidlertidigPostadresse(xmlBruker);
+        xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue("midlertidig"));
+        settMidlertidigPostadresse(xmlBruker);
 
         brukerprofilPortTypeMock.setPerson(xmlBruker);
     }

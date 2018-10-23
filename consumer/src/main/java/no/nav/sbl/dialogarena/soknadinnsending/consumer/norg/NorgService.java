@@ -42,10 +42,8 @@ public class NorgService {
         NavEnhet enhet = new NavEnhet();
         enhet.enhetNr = rsNorgEnhet.enhetNr;
         enhet.navn = rsNorgEnhet.navn;
-        enhet.sosialOrgnr = rsNorgEnhet.orgNrTilKommunaltNavKontor;
-        if (!isProduction()) {
-            enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getTestOrganisasjonsnummer(rsNorgEnhet.enhetNr);
-        }
+        enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
+
         return enhet;
     }
 
@@ -99,9 +97,5 @@ public class NorgService {
         } else {
             return gateadresse(rs.postnummer, rs.poststed, rs.gatenavn, rs.husnummer, rs.husbokstav, rs.adresseTilleggsnavn);
         }
-    }
-
-    private static boolean isProduction() {
-        return "p".equals(System.getProperty("environment.name"));
     }
 }
