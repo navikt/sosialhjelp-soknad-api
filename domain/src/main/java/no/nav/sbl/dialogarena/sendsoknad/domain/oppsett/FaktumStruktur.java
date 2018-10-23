@@ -247,6 +247,10 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         boolean result = false;
         for (Constraint constraint : constraints) {
             Faktum constraintFaktum = getConstraintFaktum(constraint, soknad, faktum);
+            if (constraintFaktum == null) {
+                // Faktummodellen har blitt endret: Ikke vis informasjon.
+                continue;
+            }
 
             boolean constrainedErSynlig = constrainedErSynlig(soknad, constraint.getFaktumStruktur(), constraintFaktum);
             boolean forventningOppfylt = ForventningsSjekker.sjekkForventning(constraint.getExpression(), constraintFaktum);
