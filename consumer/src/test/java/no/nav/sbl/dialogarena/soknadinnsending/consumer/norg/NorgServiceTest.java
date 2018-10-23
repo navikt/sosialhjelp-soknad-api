@@ -21,7 +21,7 @@ public class NorgServiceTest {
 
     private static final String GT = "0101";
     private static final String ENHETSNUMMER = "0701";
-    private static final String ORGNUMMER_PROD = "202020";
+    private static final String ORGNUMMER_PROD = "974605171";
     private static final String ORGNUMMER_TEST = getOrganisasjonsnummer(ENHETSNUMMER);
 
     @Mock
