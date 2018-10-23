@@ -289,7 +289,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>soeknadsskjemaSosialhjelp-v1-soknaddefinisjon</artifactId>
-                <version>1.0.11</version>
+                <version>1.0.12</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -741,7 +741,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>soknadsosialhjelp-filformat</artifactId>
-                <version>107.20180920.830</version>
+                <version>1.20181023.1342</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.google.code.findbugs</groupId>

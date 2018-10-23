@@ -9,6 +9,7 @@ public class SendtSoknad {
     private String eier;
     private String fiksforsendelseId;
     private String orgnummer;
+    private String navEnhetsnavn;
     private LocalDateTime brukerOpprettetDato;
     private LocalDateTime brukerFerdigDato;
     private LocalDateTime sendtDato;
@@ -35,6 +36,10 @@ public class SendtSoknad {
 
     public String getOrgnummer() {
         return orgnummer;
+    }
+
+    public String getNavEnhetsnavn() {
+        return navEnhetsnavn;
     }
 
     public LocalDateTime getBrukerOpprettetDato() {
@@ -80,6 +85,11 @@ public class SendtSoknad {
 
     public SendtSoknad withOrgnummer(String orgnummer) {
         this.orgnummer = orgnummer;
+        return this;
+    }
+
+    public SendtSoknad withNavEnhetsnavn(String navEnhetsnavn) {
+        this.navEnhetsnavn = navEnhetsnavn;
         return this;
     }
 

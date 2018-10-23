@@ -20,6 +20,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
@@ -191,5 +192,10 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     VedleggstatusRepository vedleggstatusRepository() {
         return mock(VedleggstatusRepository.class);
+    }
+
+    @Bean
+    SoknadUnderArbeidService soknadUnderArbeidService() {
+        return mock(SoknadUnderArbeidService.class);
     }
 }

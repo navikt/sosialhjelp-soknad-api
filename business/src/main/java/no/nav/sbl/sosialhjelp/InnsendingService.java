@@ -1,5 +1,6 @@
 package no.nav.sbl.sosialhjelp;
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
@@ -31,8 +32,10 @@ public class InnsendingService {
     private OpplastetVedleggRepository opplastetVedleggRepository;
     @Inject
     private VedleggstatusRepository vedleggstatusRepository;
+    @Inject
+    private SoknadUnderArbeidService soknadUnderArbeidService;
 
-    public void opprettSendtSoknad(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg, String orgnummer) {
+    public void opprettSendtSoknad(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg) {
         if (soknadUnderArbeid == null || soknadUnderArbeid.getSoknadId() == null) {
             throw new IllegalStateException("Kan ikke sende søknad som ikke finnes eller som mangler søknadsid");
         }
@@ -40,7 +43,7 @@ public class InnsendingService {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 final List<Vedleggstatus> alleVedlegg = finnAlleVedlegg(soknadUnderArbeid, ikkeOpplastedePaakrevdeVedlegg);
-                SendtSoknad sendtSoknad = mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid, orgnummer);
+                SendtSoknad sendtSoknad = mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid);
                 final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, sendtSoknad.getEier());
                 sendtSoknad.setSendtSoknadId(sendtSoknadId);
 
@@ -80,28 +83,39 @@ public class InnsendingService {
         return alleVedlegg;
     }
 
-    SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer) {
-        if (isEmpty(orgnummer)) {
-            if (soknadUnderArbeid.erEttersendelse()) {
-                orgnummer = finnOrgnummerForEttersendelse(soknadUnderArbeid);
-            } else {
-                throw new IllegalStateException("Søknadsmottaker mangler");
+    SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+        String orgnummer = null;
+        String navEnhetsnavn = null;
+        if (soknadUnderArbeid.erEttersendelse()) {
+            SendtSoknad sendtSoknad = finnSendtSoknadForEttersendelse(soknadUnderArbeid);
+            orgnummer = sendtSoknad.getOrgnummer();
+            navEnhetsnavn = sendtSoknad.getNavEnhetsnavn();
+        } else {
+            JsonInternalSoknad internalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
+            if (internalSoknad != null && internalSoknad.getMottaker() != null) {
+                orgnummer = internalSoknad.getMottaker().getOrganisasjonsnummer();
+                navEnhetsnavn = internalSoknad.getMottaker().getNavEnhetsnavn();
             }
+        }
+
+        if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
+            throw new IllegalStateException("Søknadsmottaker mangler");
         }
         return new SendtSoknad()
                 .withBehandlingsId(soknadUnderArbeid.getBehandlingsId())
                 .withTilknyttetBehandlingsId(soknadUnderArbeid.getTilknyttetBehandlingsId())
                 .withOrgnummer(orgnummer)
+                .withNavEnhetsnavn(navEnhetsnavn)
                 .withEier(soknadUnderArbeid.getEier())
                 .withBrukerOpprettetDato(soknadUnderArbeid.getOpprettetDato())
                 .withBrukerFerdigDato(soknadUnderArbeid.getSistEndretDato());
     }
 
-    private String finnOrgnummerForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
+    private SendtSoknad finnSendtSoknadForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
         Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(soknadUnderArbeid.getTilknyttetBehandlingsId(),
                 soknadUnderArbeid.getEier());
         if (sendtSoknad.isPresent()) {
-            return sendtSoknad.get().getOrgnummer();
+            return sendtSoknad.get();
         } else {
             throw new IllegalStateException("Finner ikke søknaden det skal ettersendes på");
         }
