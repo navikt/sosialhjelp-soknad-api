@@ -11,7 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getTestOrganisasjonsnummer;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getOrganisasjonsnummer;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -22,7 +22,7 @@ public class NorgServiceTest {
     private static final String GT = "0101";
     private static final String ENHETSNUMMER = "0701";
     private static final String ORGNUMMER_PROD = "202020";
-    private static final String ORGNUMMER_TEST = getTestOrganisasjonsnummer(ENHETSNUMMER);
+    private static final String ORGNUMMER_TEST = getOrganisasjonsnummer(ENHETSNUMMER);
 
     @Mock
     private NorgConsumer norgConsumer;
