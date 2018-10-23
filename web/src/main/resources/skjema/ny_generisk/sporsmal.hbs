@@ -1,10 +1,10 @@
-{{#hvisTekstFinnes (concat key ".sporsmal")}}
-    {{#hvisTekstFinnes (concat key ".undertittel")}}
-        <h{{{niva}}}>{{{ hentTekst (concat key ".undertittel") }}}</h{{{niva}}}>
+{{#hvisTekstFinnes (concat tekst ".sporsmal")}}
+    {{#hvisTekstFinnes (concat tekst ".undertittel")}}
+        <h{{{niva}}}>{{{ hentTekst (concat tekst ".undertittel") }}}</h{{{niva}}}>
         {{#variabel "niva" (inc niva)}}
-            <h{{niva}}>{{{ hentTekst (concat key ".sporsmal") }}}</h{{niva}}>
+            <h{{niva}}>{{{ hentTekst (concat tekst ".sporsmal") }}}</h{{niva}}>
         {{/variabel}}
     {{else}}
-        <h{{niva}}>{{{ hentTekst (concat key ".sporsmal") }}}</h{{niva}}>
+        <h{{niva}}>{{{ hentTekst (concat tekst ".sporsmal") }}}</h{{niva}}>
     {{/hvisTekstFinnes}}
 {{/hvisTekstFinnes}}

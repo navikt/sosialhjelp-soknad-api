@@ -3,19 +3,17 @@
 <span class="label">{{ hentTekst (concat tekst ".label") }}</span>
 <ul class="svar-liste">
     <li>
-        {{#hvisIkkeTom originalValue}}
+        {{#if verdi}}
             <span class="verdi verdi--tekst">
-                {{originalValue}}
+                {{verdi}}
             </span>
         {{else}}
             <span class="verdi verdi--ikkeUtfylt">
-                {{#if optional}}
-                    <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-                {{/if}}
+                <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
             </span>
-        {{/hvisIkkeTom}}
-        {{#hvisTekstFinnes (concat key ".enhet")}}
-            {{ hentTekst (concat key ".enhet") }}
+        {{/if}}
+        {{#hvisTekstFinnes (concat tekst ".enhet")}}
+            {{ hentTekst (concat tekst ".enhet") }}
         {{/hvisTekstFinnes}}
     </li>
 </ul>

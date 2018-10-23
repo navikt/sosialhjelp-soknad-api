@@ -45,53 +45,22 @@
         </div>
     </div>
     <div>
-        <div class="bolk js-bolk">
-            <h2 class="bolk__tittel">{{ hentTekst "personopplysninger.tittel" }}</h2>
-            <ul class="fakta-liste">
-                {{#variabel "niva" "3"}}
-                    {{#with data.personalia}}
-                        {{> skjema/ny_generisk/textbox }}
-                    {{/with}}
-                oppholdsadresse (kommune)
-                statsborgerskap
-                folkeregistrertAdresse
-                telefonnummer
-                kontonummer
-                    {{#each fakta}}
-                        {{> skjema/ny_generisk/textbox }}
-                        {{#if @root.utvidetSoknad}}
-                            {{> skjema/generisk/customSvarAlternativer }}
-                        {{/if}}
-                    {{/each}}
-                {{/variabel}}
-                <span class="label">{{ hentTekst "personalia.kommune.label" }}</span>
-                <ul class="svar-liste">
-	                <li>
-	                    <span class="verdi verdi--tekst">
-	                        {{#with data.personalia.oppholdsadresse.type}}
-	                    </span>
-	                </li>
-                </ul>
-            </ul>
-        </div>
-        <div class="bolk js-bolk">
-            <ul class="fakta-liste">
-                {{#variabel "niva" "3"}}
-                    {{#each fakta}}
-                        {{> skjema/generisk/faktum }}
-                        {{#if @root.utvidetSoknad}}
-                            {{> skjema/generisk/customSvarAlternativer }}
-                        {{/if}}
-                    {{/each}}
-                {{/variabel}}
-
-                {{#hvisIngenSynligeBarneFakta fakta}}
-                    {{#variabel "key" (toLowerCase navn)}}
-                        {{> skjema/generisk/harikkebarn }}
+        {{#with data.personalia}}
+            <div class="bolk js-bolk">
+                <h2 class="bolk__tittel">{{ hentTekst "personaliabolk.tittel" }}</h2>
+                <ul class="fakta-liste">
+                    {{#variabel "niva" "3"}}
+                        <li>
+                            {{#variabel "tekst" "personalia.kommune"}}
+                                {{#variabel "verdi" oppholdsadresse.type }}
+                                    {{> skjema/ny_generisk/textbox }}
+                                {{/variabel}}
+                            {{/variabel}}
+                        </li>
                     {{/variabel}}
-                {{/hvisIngenSynligeBarneFakta}}
-            </ul>
-        </div>
+                </ul>
+            </div>
+        {{/with}}
     </div>
 </div>
 
