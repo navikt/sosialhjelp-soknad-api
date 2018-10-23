@@ -1,5 +1,7 @@
 package no.nav.sbl.sosialhjelp;
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
@@ -38,6 +40,7 @@ public class InnsendingServiceTest {
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
     private static final String FIKSFORSENDELSEID = "12345";
     private static final String ORGNR = "012345678";
+    private static final String NAVENHETSNAVN = "NAV Enhet";
     private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
     private static final LocalDateTime SIST_ENDRET_DATO = now();
     @Mock
@@ -50,6 +53,8 @@ public class InnsendingServiceTest {
     private OpplastetVedleggRepository opplastetVedleggRepository;
     @Mock
     private VedleggstatusRepository vedleggstatusRepository;
+    @Mock
+    private SoknadUnderArbeidService soknadUnderArbeidService;
     @InjectMocks
     private InnsendingService innsendingService;
 
@@ -64,11 +69,15 @@ public class InnsendingServiceTest {
         when(sendtSoknadRepository.opprettSendtSoknad(any(), anyString())).thenReturn(SENDT_SOKNAD_ID);
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(lagSendtSoknad());
         when(vedleggstatusRepository.opprettVedlegg(any(), anyString())).thenReturn(5L);
+        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
+                .thenReturn(new JsonInternalSoknad().withMottaker(new JsonSoknadsmottaker()
+                        .withOrganisasjonsnummer(ORGNR)
+                        .withNavEnhetsnavn(NAVENHETSNAVN)));
     }
 
     @Test
     public void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
-        innsendingService.opprettSendtSoknad(lagSoknadUnderArbeid(), new ArrayList<>(), ORGNR);
+        innsendingService.opprettSendtSoknad(lagSoknadUnderArbeid(), new ArrayList<>());
 
         verify(sendtSoknadRepository, times(1)).opprettSendtSoknad(any(SendtSoknad.class), eq(EIER));
         verify(vedleggstatusRepository, times(1)).opprettVedlegg(any(Vedleggstatus.class), eq(EIER));
@@ -94,12 +103,13 @@ public class InnsendingServiceTest {
 
     @Test
     public void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
-        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid(), ORGNR);
+        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid());
 
         assertThat(sendtSoknad.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(sendtSoknad.getTilknyttetBehandlingsId(), nullValue());
         assertThat(sendtSoknad.getEier(), is(EIER));
         assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
+        assertThat(sendtSoknad.getNavEnhetsnavn(), is(NAVENHETSNAVN));
         assertThat(sendtSoknad.getBrukerOpprettetDato(), is(OPPRETTET_DATO));
         assertThat(sendtSoknad.getBrukerFerdigDato(), is(SIST_ENDRET_DATO));
         assertThat(sendtSoknad.getSendtDato(), nullValue());
@@ -107,16 +117,20 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void mapSoknadUnderArbeidTilSendtSoknadHenterOrgNummerFraSendtSoknadVedEttersendelse() {
-        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidForEttersendelse(), null);
+    public void mapSoknadUnderArbeidTilSendtSoknadHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
+        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidForEttersendelse());
 
         assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
+        assertThat(sendtSoknad.getNavEnhetsnavn(), is(NAVENHETSNAVN));
         assertThat(sendtSoknad.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisOrgnrOgTilknyttetIdMangler() {
-        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidUtenOrgnrOgUtenTilknyttetBehandlingsid(), null);
+    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisMottakerinfoMangler() {
+        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
+                .thenReturn(new JsonInternalSoknad().withMottaker(null));
+
+        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidUtenTilknyttetBehandlingsid());
     }
 
     @Test
@@ -159,7 +173,7 @@ public class InnsendingServiceTest {
                 .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
-    private SoknadUnderArbeid lagSoknadUnderArbeidUtenOrgnrOgUtenTilknyttetBehandlingsid() {
+    private SoknadUnderArbeid lagSoknadUnderArbeidUtenTilknyttetBehandlingsid() {
         return new SoknadUnderArbeid()
                 .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
                 .withBehandlingsId(BEHANDLINGSID)
@@ -191,6 +205,7 @@ public class InnsendingServiceTest {
                 .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
                 .withFiksforsendelseId(FIKSFORSENDELSEID)
                 .withOrgnummer(ORGNR)
+                .withNavEnhetsnavn(NAVENHETSNAVN)
                 .withBrukerOpprettetDato(OPPRETTET_DATO)
                 .withBrukerFerdigDato(SIST_ENDRET_DATO)
                 .withSendtDato(now()));

@@ -17,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -103,6 +104,9 @@ public class SoknadDataFletter {
 
     @Inject
     private InnsendingService innsendingService;
+
+    @Inject
+    private SoknadUnderArbeidService soknadUnderArbeidService;
 
     private Map<String, BolkService> bolker;
 
@@ -348,14 +352,18 @@ public class SoknadDataFletter {
         VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggListe);
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
-        final String orgnummer = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
         final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
+        if (!soknadUnderArbeid.erEttersendelse()) {
+            final String orgnummer = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
+            final String navEnhetsnavn = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
+            soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaNySoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn, soknad.getAktoerId());
+        }
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         oppgaveHandterer.leggTilOppgave(behandlingsId, soknad.getAktoerId());
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
-        forberedInnsendingMedNyModell(soknadUnderArbeid, vedleggListe, orgnummer);
+        forberedInnsendingMedNyModell(soknadUnderArbeid, vedleggListe);
 
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
@@ -376,10 +384,10 @@ public class SoknadDataFletter {
         return soknadUnderArbeid;
     }
 
-    private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg, String orgnummer) {
+    private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg) {
         if (soknadUnderArbeid != null) {
             List<Vedleggstatus> vedleggstatuser = mapVedleggsforventningerTilVedleggstatusListe(vedlegg, soknadUnderArbeid.getEier());
-            innsendingService.opprettSendtSoknad(soknadUnderArbeid, vedleggstatuser, orgnummer);
+            innsendingService.opprettSendtSoknad(soknadUnderArbeid, vedleggstatuser);
         }
     }
 

@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Import;
 import java.time.Clock;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 
 @Configuration
 @Import({VedleggServiceIntegrationMockContext.class})
@@ -92,5 +94,10 @@ public class VedleggServiceIntegrationContext {
     @Bean
     VedleggstatusRepository vedleggstatusRepository() {
         return mock(VedleggstatusRepository.class);
+    }
+
+    @Bean
+    SoknadUnderArbeidService soknadUnderArbeidService() {
+        return mock(SoknadUnderArbeidService.class);
     }
 }
