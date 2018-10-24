@@ -26,7 +26,10 @@ public class MetadataInnfyller {
     public void byggOppFiksData(FiksData data) {
         SoknadMetadata soknadMetadata = soknadMetadataRepository.hent(data.behandlingsId);
 
-        final String eier = data.avsenderFodselsnummer;
+        String eier = data.avsenderFodselsnummer;
+        if (isEmpty(eier)) {
+            eier = soknadMetadata.fnr;
+        }
         Optional<SendtSoknad> sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(data.behandlingsId, eier);
         if (!sendtSoknadOptional.isPresent()) {
             throw new RuntimeException("Sendt søknad finnes ikke for behandlingsId " + data.behandlingsId);
