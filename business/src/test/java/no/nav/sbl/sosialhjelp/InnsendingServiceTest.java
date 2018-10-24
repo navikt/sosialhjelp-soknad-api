@@ -1,5 +1,7 @@
 package no.nav.sbl.sosialhjelp;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.*;
@@ -40,7 +42,9 @@ public class InnsendingServiceTest {
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
     private static final String FIKSFORSENDELSEID = "12345";
     private static final String ORGNR = "012345678";
+    private static final String ORGNR_METADATA = "8888";
     private static final String NAVENHETSNAVN = "NAV Enhet";
+    private static final String NAVENHETSNAVN_METADATA = "NAV Enhet2";
     private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
     private static final LocalDateTime SIST_ENDRET_DATO = now();
     @Mock
@@ -55,6 +59,8 @@ public class InnsendingServiceTest {
     private VedleggstatusRepository vedleggstatusRepository;
     @Mock
     private SoknadUnderArbeidService soknadUnderArbeidService;
+    @Mock
+    private SoknadMetadataRepository soknadMetadataRepository;
     @InjectMocks
     private InnsendingService innsendingService;
 
@@ -125,8 +131,27 @@ public class InnsendingServiceTest {
         assertThat(sendtSoknad.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
     }
 
+    @Test
+    public void mapSoknadUnderArbeidTilSendtSoknadHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
+        when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
+        when(soknadMetadataRepository.hent(anyString())).thenReturn(lagSoknadMetadata());
+
+        SendtSoknad soknadMedMottaksinfoFraMetadata = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidForEttersendelse());
+
+        assertThat(soknadMedMottaksinfoFraMetadata.getOrgnummer(), is(ORGNR_METADATA));
+        assertThat(soknadMedMottaksinfoFraMetadata.getNavEnhetsnavn(), is(NAVENHETSNAVN_METADATA));
+    }
+
     @Test(expected = IllegalStateException.class)
-    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisMottakerinfoMangler() {
+    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
+        when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
+        when(soknadMetadataRepository.hent(anyString())).thenReturn(null);
+
+        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidForEttersendelse());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
         when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
                 .thenReturn(new JsonInternalSoknad().withMottaker(null));
 
@@ -209,5 +234,12 @@ public class InnsendingServiceTest {
                 .withBrukerOpprettetDato(OPPRETTET_DATO)
                 .withBrukerFerdigDato(SIST_ENDRET_DATO)
                 .withSendtDato(now()));
+    }
+
+    private SoknadMetadata lagSoknadMetadata() {
+        SoknadMetadata soknadMetadata = new SoknadMetadata();
+        soknadMetadata.orgnr = ORGNR_METADATA;
+        soknadMetadata.navEnhet = NAVENHETSNAVN_METADATA;
+        return soknadMetadata;
     }
 }

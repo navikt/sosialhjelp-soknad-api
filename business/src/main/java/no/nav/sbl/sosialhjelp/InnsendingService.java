@@ -1,5 +1,7 @@
 package no.nav.sbl.sosialhjelp;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
@@ -34,6 +36,8 @@ public class InnsendingService {
     private VedleggstatusRepository vedleggstatusRepository;
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
+    @Inject
+    private SoknadMetadataRepository soknadMetadataRepository;
 
     public void opprettSendtSoknad(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg) {
         if (soknadUnderArbeid == null || soknadUnderArbeid.getSoknadId() == null) {
@@ -112,13 +116,28 @@ public class InnsendingService {
     }
 
     private SendtSoknad finnSendtSoknadForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
-        Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(soknadUnderArbeid.getTilknyttetBehandlingsId(),
+        final String tilknyttetBehandlingsId = soknadUnderArbeid.getTilknyttetBehandlingsId();
+        Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId,
                 soknadUnderArbeid.getEier());
         if (sendtSoknad.isPresent()) {
             return sendtSoknad.get();
         } else {
-            throw new IllegalStateException("Finner ikke søknaden det skal ettersendes på");
+            final SendtSoknad konvertertGammelSoknad = finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId);
+            if (konvertertGammelSoknad == null) {
+                throw new IllegalStateException("Finner ikke søknaden det skal ettersendes på");
+            }
+            return konvertertGammelSoknad;
         }
+    }
+
+    private SendtSoknad finnSendtSoknadForEttersendelsePaGammeltFormat(String tilknyttetBehandlingsId) {
+        SoknadMetadata originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId);
+        if (originalSoknadGammeltFormat == null) {
+            return null;
+        }
+        return new SendtSoknad()
+                .withOrgnummer(originalSoknadGammeltFormat.orgnr)
+                .withNavEnhetsnavn(originalSoknadGammeltFormat.navEnhet);
     }
 
     List<Vedleggstatus> mapOpplastedeVedleggTilVedleggstatusListe(List<OpplastetVedlegg> opplastedeVedlegg) {

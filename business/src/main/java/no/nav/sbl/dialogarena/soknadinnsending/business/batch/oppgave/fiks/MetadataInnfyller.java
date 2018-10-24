@@ -1,17 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
-import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksData.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -23,70 +18,47 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Service
 public class MetadataInnfyller {
 
-    static final String FIKSFORSENDELSEID_KEY = "fiksforsendelseId";
-    static final String ORGNUMMER_KEY = "orgnummer";
-    static final String NAVENHETSNAVN_KEY = "navenhetsnavn";
     @Inject
     SoknadMetadataRepository soknadMetadataRepository;
     @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    @Inject
     private SendtSoknadRepository sendtSoknadRepository;
-    @Inject
-    private SoknadUnderArbeidService soknadUnderArbeidService;
 
     public void byggOppFiksData(FiksData data) {
         SoknadMetadata soknadMetadata = soknadMetadataRepository.hent(data.behandlingsId);
 
         final String eier = data.avsenderFodselsnummer;
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(data.behandlingsId, eier);
-        if (!soknadUnderArbeidOptional.isPresent()) {
-            throw new RuntimeException("Søknad under arbeid finnes ikke for behandlingsId " + data.behandlingsId);
+        Optional<SendtSoknad> sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(data.behandlingsId, eier);
+        if (!sendtSoknadOptional.isPresent()) {
+            throw new RuntimeException("Sendt søknad finnes ikke for behandlingsId " + data.behandlingsId);
         }
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidOptional.get();
-        data.innsendtDato = soknadUnderArbeid.getSistEndretDato();
+        SendtSoknad sendtSoknad = sendtSoknadOptional.get();
+        data.innsendtDato = sendtSoknad.getBrukerFerdigDato();
+        data.mottakerOrgNr = sendtSoknad.getOrgnummer();
+        data.mottakerNavn = sendtSoknad.getNavEnhetsnavn();
 
-        if (soknadUnderArbeid.erEttersendelse()) {
-            final Map<String, String> mottakerinfo = finnOriginalMottaksinfoVedEttersendelse(soknadMetadata, eier, soknadUnderArbeid.getTilknyttetBehandlingsId());
-            data.ettersendelsePa = mottakerinfo.get(FIKSFORSENDELSEID_KEY);
-            data.mottakerOrgNr = mottakerinfo.get(ORGNUMMER_KEY);
-            data.mottakerNavn = mottakerinfo.get(NAVENHETSNAVN_KEY);
-        } else {
-            JsonInternalSoknad internalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
-            data.mottakerOrgNr = internalSoknad.getMottaker().getOrganisasjonsnummer();
-            data.mottakerNavn = internalSoknad.getMottaker().getNavEnhetsnavn();
+        if (sendtSoknad.erEttersendelse()) {
+            data.ettersendelsePa = finnOriginalFiksForsendelseIdVedEttersendelse(sendtSoknad.getTilknyttetBehandlingsId(), eier);
         }
         byggOppDokumentInfo(data, soknadMetadata);
     }
 
-    Map<String, String> finnOriginalMottaksinfoVedEttersendelse(SoknadMetadata soknadMetadata, String eier, String tilknyttetBehandlingsId) {
+    String finnOriginalFiksForsendelseIdVedEttersendelse(String tilknyttetBehandlingsId, String eier) {
         Optional<SendtSoknad> originalSoknadOptional = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, eier);
         String originalFiksForsendelseId;
-        String orgnummer;
-        String navEnhetsnavn;
         if (originalSoknadOptional.isPresent()) {
-            SendtSoknad originalSoknad = originalSoknadOptional.get();
-            originalFiksForsendelseId = originalSoknad.getFiksforsendelseId();
-            orgnummer = originalSoknad.getOrgnummer();
-            navEnhetsnavn = originalSoknad.getNavEnhetsnavn();
+            originalFiksForsendelseId = originalSoknadOptional.get().getFiksforsendelseId();
         } else {
-            SoknadMetadata originalSoknadGammeltFormat = soknadMetadataRepository.hent(soknadMetadata.tilknyttetBehandlingsId);
+            SoknadMetadata originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId);
             if (originalSoknadGammeltFormat == null) {
                 throw new RuntimeException("Kan ikke ettersende, finner ikke originalsøknad");
             } else {
                 originalFiksForsendelseId = originalSoknadGammeltFormat.fiksForsendelseId;
-                orgnummer = originalSoknadGammeltFormat.orgnr;
-                navEnhetsnavn = originalSoknadGammeltFormat.navEnhet;
             }
         }
         if (isEmpty(originalFiksForsendelseId)) {
             throw new RuntimeException("Kan ikke ettersende, originalsoknaden ikke fått fiksid enda");
         }
-        return new ImmutableMap.Builder<String, String>()
-                .put(FIKSFORSENDELSEID_KEY, originalFiksForsendelseId)
-                .put(ORGNUMMER_KEY, orgnummer)
-                .put(NAVENHETSNAVN_KEY, navEnhetsnavn)
-                .build();
+        return originalFiksForsendelseId;
     }
 
     public void lagreFiksId(FiksData data, FiksResultat resultat) {

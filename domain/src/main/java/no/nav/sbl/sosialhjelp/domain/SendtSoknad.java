@@ -2,6 +2,8 @@ package no.nav.sbl.sosialhjelp.domain;
 
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 public class SendtSoknad {
     private Long sendtSoknadId;
     private String behandlingsId;
@@ -13,6 +15,10 @@ public class SendtSoknad {
     private LocalDateTime brukerOpprettetDato;
     private LocalDateTime brukerFerdigDato;
     private LocalDateTime sendtDato;
+
+    public boolean erEttersendelse() {
+        return !isEmpty(tilknyttetBehandlingsId);
+    }
 
     public Long getSendtSoknadId() {
         return sendtSoknadId;
