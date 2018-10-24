@@ -5,13 +5,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
-import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,15 +15,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.MetadataInnfyller.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -44,27 +37,19 @@ public class MetadataInnfyllerTest {
     private static final String ORGNUMMER_METADATA = "4444444";
     private static final String ENHETSNAVN = "NAV Moss";
     private static final String ENHETSNAVN_METADATA = "NAV Aremark";
-    private static final LocalDateTime SIST_OPPDATERT = now();
+    private static final LocalDateTime BRUKER_FERDIG_DATO = now();
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
     @Mock
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    @Mock
     private SendtSoknadRepository sendtSoknadRepository;
-    @Mock
-    private SoknadUnderArbeidService soknadUnderArbeidService;
 
     @InjectMocks
     MetadataInnfyller metadataInnfyller;
 
     @Before
     public void setup() {
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(lagSoknadUnderArbeidForNySoknad());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(lagSoknadMetadata());
-        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
-                .thenReturn(new JsonInternalSoknad().withMottaker(new JsonSoknadsmottaker()
-                        .withOrganisasjonsnummer(ORGNUMMER)
-                        .withNavEnhetsnavn(ENHETSNAVN)));
+        when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(lagSendtSoknadForNySoknad());
     }
 
     @Test
@@ -77,31 +62,27 @@ public class MetadataInnfyllerTest {
 
         assertThat(fiksData.mottakerOrgNr, is(ORGNUMMER));
         assertThat(fiksData.mottakerNavn, is(ENHETSNAVN));
-        assertThat(fiksData.innsendtDato, is(SIST_OPPDATERT));
+        assertThat(fiksData.innsendtDato, is(BRUKER_FERDIG_DATO));
         assertThat(fiksData.ettersendelsePa, nullValue());
     }
 
     @Test
-    public void finnOriginalMottaksinfoVedEttersendelseBrukerFiksIdFraSendtSoknadHvisDenFinnes() {
+    public void finnOriginalFiksForsendelseIdVedEttersendelseBrukerFiksIdFraSendtSoknadHvisDenFinnes() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(lagSendtSoknadForEttersendelse());
 
-        final Map<String, String> mottakerinfo = metadataInnfyller.finnOriginalMottaksinfoVedEttersendelse(lagSoknadMetadata(), EIER, TILKNYTTET_BEHANDLINGSID);
+        final String originalFiksForsendelseId = metadataInnfyller.finnOriginalFiksForsendelseIdVedEttersendelse(TILKNYTTET_BEHANDLINGSID, EIER);
 
-        assertThat(mottakerinfo.get(FIKSFORSENDELSEID_KEY), is(FIKSFORSENDELSEID));
-        assertThat(mottakerinfo.get(ORGNUMMER_KEY), is(ORGNUMMER));
-        assertThat(mottakerinfo.get(NAVENHETSNAVN_KEY), is(ENHETSNAVN));
+        assertThat(originalFiksForsendelseId, is(FIKSFORSENDELSEID));
     }
 
     @Test
-    public void finnOriginalMottaksinfoVedEttersendelseBrukerFiksIdFraSoknadMetadataVedEttersendelsePaGammelSoknad() {
+    public void finnOriginalFiksForsendelseIdVedEttersendelseBrukerFiksIdFraSoknadMetadataVedEttersendelsePaGammelSoknad() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(lagSoknadMetadataForEttersendelse());
 
-        final Map<String, String> mottakerinfo = metadataInnfyller.finnOriginalMottaksinfoVedEttersendelse(lagSoknadMetadata(), EIER, TILKNYTTET_BEHANDLINGSID);
+        final String originalFiksForsendelseId = metadataInnfyller.finnOriginalFiksForsendelseIdVedEttersendelse(TILKNYTTET_BEHANDLINGSID, EIER);
 
-        assertThat(mottakerinfo.get(FIKSFORSENDELSEID_KEY), is(FIKSFORSENDELSEID_METADATA));
-        assertThat(mottakerinfo.get(ORGNUMMER_KEY), is(ORGNUMMER_METADATA));
-        assertThat(mottakerinfo.get(NAVENHETSNAVN_KEY), is(ENHETSNAVN_METADATA));
+        assertThat(originalFiksForsendelseId, is(FIKSFORSENDELSEID_METADATA));
     }
 
     @Test
@@ -118,11 +99,12 @@ public class MetadataInnfyllerTest {
         assertEquals("uid-v1", fiksData.dokumentInfoer.get(4).uuid);
     }
 
-    private Optional<SoknadUnderArbeid> lagSoknadUnderArbeidForNySoknad() {
-        return Optional.ofNullable(new SoknadUnderArbeid()
+    private Optional<SendtSoknad> lagSendtSoknadForNySoknad() {
+        return Optional.ofNullable(new SendtSoknad()
                 .withBehandlingsId(BEHANDLINGSID)
-                .withData(new byte[0])
-                .withSistEndretDato(SIST_OPPDATERT));
+                .withOrgnummer(ORGNUMMER)
+                .withNavEnhetsnavn(ENHETSNAVN)
+                .withBrukerFerdigDato(BRUKER_FERDIG_DATO));
     }
 
     private Optional<SendtSoknad> lagSendtSoknadForEttersendelse() {
