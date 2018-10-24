@@ -39,14 +39,26 @@ public final class JsonAdresseConverter {
 
     public static JsonAdresse tilOppholdsadresse(WebSoknad webSoknad) {
         try {
-            if (faktumVerdiErTrue(webSoknad, "kontakt.adresse.brukerendrettoggle")) {
+            final String oppholdsadressevalg = webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg");
+            if (faktumVerdiErTrue(webSoknad, "kontakt.adresse.brukerendrettoggle")
+                    || "soknad".equals(oppholdsadressevalg)) {
                 final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.adresse.bruker");
                 if (faktum == null) {
                     return null;
                 }
-
-                return tilBrukersUstrukturertAdresse(faktum);
+                
+                if (JsonUtils.erIkkeTom(faktum.getProperties().get("type"))) {
+                    return tilBrukerAdresse(faktum);
+                } else {
+                    return tilBrukersUstrukturertAdresse(faktum);
+                }
             } else {
+                if ("folkeregistrert".equals(oppholdsadressevalg)) {
+                    return tilFolkeregistrertAdresse(webSoknad);
+                }
+                
+                // "midlertidig" eller gammel løsning (null):
+                
                 final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.adresse");
                 final JsonAdresse adresse = tilSystemAdresse(faktum);
                 if (adresse.getType() == Type.POSTBOKS) {
@@ -104,6 +116,20 @@ public final class JsonAdresseConverter {
         return ustrukturertAdresse;
     }
 
+    private static JsonAdresse tilBrukerAdresse(Faktum faktum) {
+        if (faktum == null) {
+            return null;
+        }
+
+        try {
+            final JsonAdresse adresse = tilJsonAdresse(faktum);
+            return adresse;
+        } catch (RuntimeException e) {
+            logger.error("Uventet feil: Kan ikke sende med brukerspesifisert adresse", e);
+            return null;
+        }
+    }
+    
     private static JsonAdresse tilSystemAdresse(Faktum faktum) {
         if (faktum == null) {
             return null;
