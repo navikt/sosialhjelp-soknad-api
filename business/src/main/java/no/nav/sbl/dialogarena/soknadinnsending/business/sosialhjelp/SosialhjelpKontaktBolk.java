@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.BOSTEDSADRESSE;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -109,6 +111,8 @@ public class SosialhjelpKontaktBolk implements BolkService {
         } else {
             populerStrukturertAdresse(adresseFaktum, strukturertAdresse);
         }
+        
+        adresseFaktum.medSystemProperty("kilde", (BOSTEDSADRESSE.name().equals(gjeldendeAdresse.getAdressetype())) ? "folkeregister" : "");
         
         return adresseFaktum;
         
