@@ -45,24 +45,10 @@
         </div>
     </div>
     <div>
-        {{#with data.personalia}}
-            <div class="bolk js-bolk">
-                <h2 class="bolk__tittel">{{ hentTekst "personaliabolk.tittel" }}</h2>
-                <ul class="fakta-liste">
-                    {{#variabel "niva" "3"}}
-                        <li>
-                            {{#variabel "tekst" "personalia.kommune"}}
-                                {{#variabel "verdi" oppholdsadresse.type }}
-                                    {{> skjema/ny_generisk/textbox }}
-                                {{/variabel}}
-                            {{/variabel}}
-                        </li>
-                    {{/variabel}}
-                </ul>
-            </div>
-        {{/with}}
+    	{{> skjema/ny_generisk/personalia}}
     </div>
 </div>
+<div class="js-signatur"></div>
 
 </body>
 </html>
