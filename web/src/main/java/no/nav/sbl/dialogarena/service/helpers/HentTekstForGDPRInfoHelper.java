@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.Soknadsmottaker;
 import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.service.HandlebarsUtils;
 import no.nav.sbl.dialogarena.utils.UrlUtils;
@@ -20,7 +21,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getNavEnhetFromWebSoknad;
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 @Component
@@ -86,8 +86,8 @@ public class HentTekstForGDPRInfoHelper extends RegistryAwareHelper<String> {
             if (soknad.erEttersending()) {
                 navenhet = soknad.getValueForFaktum("ettersendelse.sendestil");
             } else {
-                KommuneTilNavEnhetMapper.NavEnhet navEnhet = getNavEnhetFromWebSoknad(soknad);
-                navenhet = navEnhet.getNavn();
+                final Soknadsmottaker soknadsmottaker = KommuneTilNavEnhetMapper.getSoknadsmottaker(soknad);
+                navenhet = soknadsmottaker.getSammensattNavn();
             }
 
 
