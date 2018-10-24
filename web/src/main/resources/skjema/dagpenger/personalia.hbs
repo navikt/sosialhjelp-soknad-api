@@ -3,16 +3,6 @@
     <div class="personalia">
         <p class="nvn">{{properties.navn}}</p>
         <p class="fnr">{{properties.fnr}}</p>
-        <p class="adr">{{properties.folkeregistrertAdresse}}</p>
-        {{#if properties.kontonummer }}
-        <div>
-            <span>{{ hentTekst "personalia.kontonummer" }}</span>:
-            <span>{{ properties.kontonummer ~}}</span>
-            {{~#hvisSant properties.erUtenlandskBankkonto ~}}
-                 , <span>{{ properties.utenlandskKontoBanknavn }}</span>,
-                <span>{{ properties.utenlandskKontoLand ~}}</span>
-            {{/hvisSant}}
-        </div>
-        {{/if}}
+        <p class="adr">Folkeregistrert: {{properties.folkeregistrertAdresse}}</p>
     </div>
 {{/forFaktum}}
