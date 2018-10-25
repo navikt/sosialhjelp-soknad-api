@@ -5,6 +5,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
@@ -16,7 +17,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -34,24 +35,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.LoggingTestUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 
 public class AdresseSokConsumerImplTest {
-
-    /**
-     * Angir ventetid i millisekunder ved testing av asynkron/parallell kode. 
-     * 
-     * Verdien bør økes hvis testene sporadisk feiler.
-     */
-    private static final int EXECUTION_DELAY = 1000;
     
     private static String oldSubjectHandlerImplementationClass;
     
     
     @BeforeClass
-    public static void beforeClass() {
+    public static void oppsettForInnloggetBruker() {
         oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
     }
     
     @AfterClass
-    public static void afterClass() {
+    public static void fjernOppsettForInnloggetBruker() {
         if (oldSubjectHandlerImplementationClass == null) {
             System.clearProperty(SubjectHandler.SUBJECTHANDLER_KEY);
         } else {
@@ -68,8 +62,8 @@ public class AdresseSokConsumerImplTest {
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
         final AdressesokRespons adressesokRespons = adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
         
-        Assert.assertTrue(adressesokRespons.adresseDataList.isEmpty());
-        Assert.assertEquals(false, adressesokRespons.flereTreff);
+        assertTrue(adressesokRespons.adresseDataList.isEmpty());
+        assertEquals(false, adressesokRespons.flereTreff);
     }
     
     @Test
@@ -81,7 +75,7 @@ public class AdresseSokConsumerImplTest {
         
         try  {
             adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
-            Assert.fail("Forventer exception");
+            fail("Forventer exception");
         } catch (RuntimeException e) {
             // expected.
         }
@@ -98,12 +92,12 @@ public class AdresseSokConsumerImplTest {
         
         try (MDCCloseable c = MDC.putCloseable("lala", "foobar")) {
             adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
-            Assert.fail("Forventer exception");
+            fail("Forventer exception");
         } catch (RuntimeException e) {
             // expected.
         }
         
-        Assert.assertEquals("foobar", listAppender.list.get(0).getMDCPropertyMap().get("lala"));
+        assertEquals("foobar", listAppender.list.get(0).getMDCPropertyMap().get("lala"));
         
         listAppender.stop();
     }
@@ -127,82 +121,123 @@ public class AdresseSokConsumerImplTest {
         
         try {
             adresseSok.sokAdresse(new Sokedata().withAdresse("restCallContext2"));
-            Assert.fail("Forventer exception");
+            fail("Forventer exception");
         } catch (RuntimeException e) {
             // Forventer exception siden restCallContext2 alltid gir 500 svar.
         }
     }
     
-    @Test
+    @Test(timeout=30000)
     public void girTimeout() {
-        final ClientMock mock = mockClientWithDelay(EXECUTION_DELAY);
-        
-        final RestCallContext restCallContext = new RestCallContext.Builder()
-                .withClient(mock.client)
-                .withTimeoutInMilliseconds(EXECUTION_DELAY / 2)
-                .build();
-        final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
-        
+        final CountDownLatch done = new CountDownLatch(1);
         try {
-            adresseSok.sokAdresse(new Sokedata().withAdresse("Testsveien"));
-            Assert.fail("Forventet exception.");
-        } catch (RuntimeException e) {
-            Assert.assertEquals(TimeoutException.class, e.getCause().getClass());
+            final ClientMock mock = mockClientWithWait(done);
+            
+            final RestCallContext restCallContext = new RestCallContext.Builder()
+                    .withClient(mock.client)
+                    .withExecutorTimeoutInMilliseconds(1)
+                    .build();
+            final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
+            
+            try {
+                adresseSok.sokAdresse(new Sokedata().withAdresse("Testsveien"));
+                fail("Forventet exception.");
+            } catch (RuntimeException e) {
+                assertEquals(TimeoutException.class, e.getCause().getClass());
+            }
+        } finally {
+            done.countDown();
         }
     }
     
-    @Test
+    @Test(timeout=30000)
     public void skalAvviseSokNarKoenErFull() throws Exception {
-        final ClientMock mock = mockClientWithDelay(EXECUTION_DELAY);
-        when(mock.response.getStatus()).thenReturn(404);
-        
-        final RestCallContext restCallContext = new RestCallContext.Builder()
-                .withClient(mock.client)
-                .withConcurrentRequests(1)
-                .withMaximumQueueSize(1)
-                .withTimeoutInMilliseconds(EXECUTION_DELAY * 2)
-                .build();
-        final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
-        
-        // Ett kall virker:
-        adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 1"));
-        
-        // Full kø:
-        new Thread(() -> {
-            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 2"));
-        }).start();
-        new Thread(() -> {
-            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 3"));
-        }).start();
-        Thread.sleep(EXECUTION_DELAY / 2);
+        skalAvviseSokNarKoenErFullMed(1, 1);
+    }
+    
+    @Test(timeout=30000)
+    public void skalAvviseSokNarKoenErFullMedFlereSamtidigeKallOgOppgaverIKo() throws Exception {
+        skalAvviseSokNarKoenErFullMed(4, 12);
+    }
+    
+    private void skalAvviseSokNarKoenErFullMed(int numberOfConcurrentCalls, int queueSize) throws Exception {
+        final CountDownLatch requiredNumberOfConcurrentCalls = new CountDownLatch(numberOfConcurrentCalls);
+        final CountDownLatch done = new CountDownLatch(1);
         
         try {
-            adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 4"));
-            Assert.fail("Forventer exception.");
-        } catch (RejectedExecutionException e) {
-            // Expected.
+            final ClientMock mock = mockClientWithWait(requiredNumberOfConcurrentCalls, done);
+            when(mock.response.getStatus()).thenReturn(404);
+            
+            final RestCallContext restCallContext = new RestCallContext.Builder()
+                    .withClient(mock.client)
+                    .withConcurrentRequests(numberOfConcurrentCalls)
+                    .withMaximumQueueSize(queueSize)
+                    .withExecutorTimeoutInMilliseconds(60000)
+                    .build();
+            final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
+    
+            // Kjørende kall: 
+            runTimesInParallell(numberOfConcurrentCalls, () -> {
+                    adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 1"));
+            });
+            
+            requiredNumberOfConcurrentCalls.await();
+            
+            // Kall i kø
+            runTimesInParallell(queueSize, () -> {
+                adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 2"));
+            });
+   
+            /*
+             * Størrelse på kø kan først sjekkes når antallet samtidige kall
+             * man ønsker har blitt oppnådd (ref. requiredNumberOfConcurrentCalls).
+             * Dette fordi kallene som skal kjøres samtidig først ligger på køen.
+             */
+            while (restCallContext.currentQueueSize() != queueSize) {
+                Thread.sleep(10);
+            }
+            
+            try {
+                adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 3"));
+                fail("Forventer exception.");
+            } catch (RejectedExecutionException e) {
+                // Forventet.
+            }
+        } finally {
+            done.countDown();
         }
     }
 
+
+    private static void runTimesInParallell(int times, Runnable r) {
+        for (int i=0; i<times; i++) {
+            new Thread(r).start();
+        }
+    }
     
-    private RestCallContext simpleRestCallContext(final ClientMock mock) {
+    private static RestCallContext simpleRestCallContext(final ClientMock mock) {
         return new RestCallContext.Builder()
                 .withClient(mock.client)
                 .build();
     }
 
-    private ClientMock mockClientWithDelay(int delayInMilliseconds) {
+    private static ClientMock mockClientWithWait(CountDownLatch done) {
+        return mockClientWithWait(new CountDownLatch(1), done);
+    }
+    
+    private static ClientMock mockClientWithWait(CountDownLatch requiredNumberOfConcurrentCalls, CountDownLatch done) {
         final ClientMock mock = mockClient();
         when(mock.builder.get()).thenAnswer(new Answer<Response>() {
             public Response answer(InvocationOnMock invocation) throws Throwable {
-                Thread.sleep(delayInMilliseconds);
+                requiredNumberOfConcurrentCalls.countDown();
+                done.await();
                 return mock.response;
             }
         });
         return mock;
     }
     
-    private ClientMock mockClient() {
+    private static ClientMock mockClient() {
         /* 
          * Denne metoden skal kun returnere mock-instanser. Faktiske returverdier skal defineres av testene.
          * 
