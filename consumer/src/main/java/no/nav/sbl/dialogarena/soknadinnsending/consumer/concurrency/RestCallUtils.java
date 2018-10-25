@@ -31,7 +31,7 @@ public final class RestCallUtils {
         });
 
         try {
-            return future.get(executionContext.getTimeoutInMilliseconds(), TimeUnit.MILLISECONDS);
+            return future.get(executionContext.getExecutorTimeoutInMilliseconds(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException|ExecutionException|InterruptedException e) {
             throw new RuntimeException(e);
         }
