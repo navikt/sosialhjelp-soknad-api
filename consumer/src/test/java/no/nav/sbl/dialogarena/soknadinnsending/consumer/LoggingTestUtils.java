@@ -15,13 +15,7 @@ public final class LoggingTestUtils {
     
     
     public static ListAppender<ILoggingEvent> createTestLogAppender() {
-        final ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>() {
-            @Override
-            protected void append(ILoggingEvent e) {
-                super.append(e);
-                e.prepareForDeferredProcessing();
-            }
-        };
+        final ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
         listAppender.start();
         
         final Logger logger = (Logger) getLogger(AdresseSokConsumerImpl.class);
