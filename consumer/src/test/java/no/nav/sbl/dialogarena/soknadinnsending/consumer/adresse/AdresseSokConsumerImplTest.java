@@ -86,7 +86,7 @@ public class AdresseSokConsumerImplTest {
     
     @Test
     public void mdcParametersAreAccessible() {
-        final ListAppender<ILoggingEvent> listAppender = LoggingTestUtils.createTestLogAppender();
+        final ListAppender<ILoggingEvent> listAppender = LoggingTestUtils.createTestLogAppender(Level.INFO);
         
         final ClientMock mock = mockClient();
         when(mock.response.getStatus()).thenReturn(500);

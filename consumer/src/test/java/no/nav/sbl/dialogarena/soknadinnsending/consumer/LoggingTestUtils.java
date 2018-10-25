@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -14,8 +15,15 @@ public final class LoggingTestUtils {
     }
     
     
-    public static ListAppender<ILoggingEvent> createTestLogAppender() {
-        final ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
+    public static ListAppender<ILoggingEvent> createTestLogAppender(Level threshold) {
+        final ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>() {
+            @Override
+            protected void append(ILoggingEvent e) {
+                if (e.getLevel().isGreaterOrEqual(threshold)) {
+                    super.append(e);
+                }
+            }
+        };
         listAppender.start();
         
         final Logger logger = (Logger) getLogger(AdresseSokConsumerImpl.class);
