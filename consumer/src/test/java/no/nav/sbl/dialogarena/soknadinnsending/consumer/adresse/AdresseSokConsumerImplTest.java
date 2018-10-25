@@ -181,30 +181,17 @@ public class AdresseSokConsumerImplTest {
                     .withExecutorTimeoutInMilliseconds(60000)
                     .build();
             final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
-    
-            // Kjørende kall: 
-            runTimesInParallell(numberOfConcurrentCalls, () -> {
-                    adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 1"));
-            });
+            final Runnable adressesokCall = () -> {
+                adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 1"));
+            };
             
+            executeMaximumNumberOfConcurrentCalls(numberOfConcurrentCalls, adressesokCall);
             requiredNumberOfConcurrentCalls.await();
-            
-            // Kall i kø
-            runTimesInParallell(queueSize, () -> {
-                adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 2"));
-            });
-   
-            /*
-             * Størrelse på kø kan først sjekkes når antallet samtidige kall
-             * man ønsker har blitt oppnådd (ref. requiredNumberOfConcurrentCalls).
-             * Dette fordi kallene som skal kjøres samtidig først ligger på køen.
-             */
-            while (restCallContext.currentQueueSize() != queueSize) {
-                Thread.sleep(10);
-            }
+            fillQueue(queueSize, adressesokCall);
+            awaitQueueFilled(queueSize, restCallContext);
             
             try {
-                adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 3"));
+                adressesokCall.run();
                 fail("Forventer exception.");
             } catch (RejectedExecutionException e) {
                 // Forventet.
@@ -214,6 +201,26 @@ public class AdresseSokConsumerImplTest {
         }
     }
 
+    private void awaitQueueFilled(int queueSize, final RestCallContext restCallContext) throws InterruptedException {
+        /*
+         * Størrelse på kø kan først sjekkes når antallet samtidige kall
+         * man ønsker har blitt oppnådd (ref. requiredNumberOfConcurrentCalls).
+         * Dette fordi kallene som skal kjøres samtidig først ligger på køen.
+         */
+        
+        while (restCallContext.currentQueueSize() != queueSize) {
+            Thread.sleep(10);
+        }
+    }
+
+    
+    private static void executeMaximumNumberOfConcurrentCalls(int numberOfConcurrentCalls, Runnable r) {
+        runTimesInParallell(numberOfConcurrentCalls, r);
+    }
+    
+    private static void fillQueue(int queueSize, Runnable r) {
+        runTimesInParallell(queueSize, r);
+    }
 
     private static void runTimesInParallell(int times, Runnable r) {
         for (int i=0; i<times; i++) {
