@@ -1,5 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -17,7 +20,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -25,6 +27,7 @@ import org.mockito.stubbing.Answer;
 import org.slf4j.MDC;
 import org.slf4j.MDC.MDCCloseable;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import no.nav.modig.core.context.SubjectHandler;
@@ -97,6 +100,9 @@ public class AdresseSokConsumerImplTest {
             // expected.
         }
         
+        assertEquals(1, listAppender.list.size());
+        final ILoggingEvent logEvent = listAppender.list.get(0);
+        assertEquals(Level.INFO, logEvent.getLevel());
         assertEquals("foobar", listAppender.list.get(0).getMDCPropertyMap().get("lala"));
         
         listAppender.stop();
