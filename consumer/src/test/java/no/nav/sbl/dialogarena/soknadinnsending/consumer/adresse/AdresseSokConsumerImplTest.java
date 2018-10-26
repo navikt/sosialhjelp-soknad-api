@@ -8,10 +8,12 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.security.auth.Subject;
 import javax.ws.rs.client.Client;
@@ -93,17 +95,21 @@ public class AdresseSokConsumerImplTest {
 
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
         
-        try (MDCCloseable c = MDC.putCloseable("lala", "foobar")) {
+        try (MDCCloseable c = MDC.putCloseable("lala", "testverdi")) {
             adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
             fail("Forventer exception");
         } catch (RuntimeException e) {
             // expected.
         }
         
-        assertEquals(1, listAppender.list.size());
-        final ILoggingEvent logEvent = listAppender.list.get(0);
-        assertEquals(Level.INFO, logEvent.getLevel());
-        assertEquals("foobar", listAppender.list.get(0).getMDCPropertyMap().get("lala"));
+        System.out.println("Følgende meldinger har blitt logget: " + Arrays.toString(listAppender.list.toArray()));
+
+        final ILoggingEvent logEvent = listAppender.list.stream()
+                .filter(e -> e.getLevel() == Level.INFO)
+                .findFirst()
+                .get();
+        
+        assertEquals("testverdi", logEvent.getMDCPropertyMap().get("lala"));
         
         listAppender.stop();
     }
