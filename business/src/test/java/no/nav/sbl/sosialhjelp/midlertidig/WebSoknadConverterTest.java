@@ -1,7 +1,6 @@
 package no.nav.sbl.sosialhjelp.midlertidig;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException;
 import no.nav.sbl.soknadsosialhjelp.soknad.*;
@@ -31,6 +30,7 @@ import static java.util.Collections.emptyList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.FNR_KEY;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -62,10 +62,17 @@ public class WebSoknadConverterTest {
         assertThat(soknadUnderArbeid.getVersjon(), is(1L));
         assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getEier(), is(EIER));
-        assertThat(soknadUnderArbeid.getData(), notNullValue());
+        assertThat(soknadUnderArbeid.getData().length, not(0));
         assertThat(soknadUnderArbeid.getInnsendingStatus(), is(UNDER_ARBEID));
         assertThat(soknadUnderArbeid.getOpprettetDato(), notNullValue());
         assertThat(soknadUnderArbeid.getSistEndretDato(), notNullValue());
+    }
+
+    @Test
+    public void webSoknadTilJsonReturnererTomArrayForEttersendelse() {
+        byte[] dataForEttersending = webSoknadConverter.webSoknadTilJson(lagGyldigWebSoknadForEttersending());
+
+        assertThat(dataForEttersending.length, is(0));
     }
 
     @Test
@@ -152,5 +159,9 @@ public class WebSoknadConverterTest {
                 .medSystemProperty("type", "gateadresse")
                 .medSystemProperty("gatenavn", "Adresseveien"));
         return webSoknad;
+    }
+
+    private WebSoknad lagGyldigWebSoknadForEttersending() {
+        return lagGyldigWebSoknad().medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET);
     }
 }

@@ -34,7 +34,7 @@ public class SoknadUnderArbeidService {
         }
 
         if (soknadUnderArbeid.erEttersendelse()) {
-            throw new IllegalStateException("Har forsøkt å oppdatere mottakerinfo for ettersending, dette skal ikke skje.");
+            throw new IllegalStateException("Har forsøkt å oppdatere mottakerinfo for ettersending, når det skulle ha blitt hentet fra søknaden det ettersendes på.");
         } else if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
             throw new RuntimeException("Informasjon om orgnummer og NAV-enhet mangler");
         } else {
@@ -43,7 +43,7 @@ public class SoknadUnderArbeidService {
         }
     }
 
-    public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
+    JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
         try {
             return mapper.readValue(soknadUnderArbeid.getData(), JsonInternalSoknad.class);
         } catch (IOException e) {
