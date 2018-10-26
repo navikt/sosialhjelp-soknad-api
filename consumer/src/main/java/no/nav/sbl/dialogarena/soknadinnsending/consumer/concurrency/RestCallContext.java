@@ -11,14 +11,13 @@ import javax.ws.rs.client.Client;
 public final class RestCallContext {
     
     private final Client client;
-    private final ExecutorService executorService;
-    private final long timeoutInMilliseconds;
-
+    private final ThreadPoolExecutor executorService;
+    private final long executorTimeoutInMilliseconds;
     
-    private RestCallContext(Client client, ExecutorService executorService, long timeoutInMilliseconds) {
+    private RestCallContext(Client client, ThreadPoolExecutor executorService, long executorTimeoutInMilliseconds) {
         this.client = client;
         this.executorService = executorService;
-        this.timeoutInMilliseconds = timeoutInMilliseconds;
+        this.executorTimeoutInMilliseconds = executorTimeoutInMilliseconds;
     }
     
     
@@ -30,8 +29,12 @@ public final class RestCallContext {
         return executorService;
     }
     
-    public long getTimeoutInMilliseconds() {
-        return timeoutInMilliseconds;
+    public long getExecutorTimeoutInMilliseconds() {
+        return executorTimeoutInMilliseconds;
+    }
+    
+    public int currentQueueSize() {
+        return executorService.getQueue().size();
     }
     
     
@@ -39,7 +42,7 @@ public final class RestCallContext {
         private Client client;
         private int concurrentRequests = 1;
         private int maximumQueueSize = 10;
-        private long timeoutInMilliseconds = 1000;
+        private long executorTimeoutInMilliseconds = 1000;
         
         public Builder withClient(Client client) {
             this.client = client;
@@ -56,8 +59,8 @@ public final class RestCallContext {
             return this;
         }
         
-        public Builder withTimeoutInMilliseconds(long timeoutInMilliseconds) {
-            this.timeoutInMilliseconds = timeoutInMilliseconds;
+        public Builder withExecutorTimeoutInMilliseconds(long executorTimeoutInMilliseconds) {
+            this.executorTimeoutInMilliseconds = executorTimeoutInMilliseconds;
             return this;
         }
         
@@ -65,13 +68,13 @@ public final class RestCallContext {
             if (client == null) {
                 throw new IllegalArgumentException("client == null");
             }
-            final ExecutorService executorService = new ThreadPoolExecutor(
+            final ThreadPoolExecutor executorService = new ThreadPoolExecutor(
                     concurrentRequests,
                     concurrentRequests,
                     0L, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<Runnable>(maximumQueueSize));
             
-            return new RestCallContext(client, executorService, timeoutInMilliseconds);
+            return new RestCallContext(client, executorService, executorTimeoutInMilliseconds);
         }
     }
 }
