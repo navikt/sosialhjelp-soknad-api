@@ -67,10 +67,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>soeknadsskjemaSosialhjelp-v1-meldingsdefinisjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>soeknadsskjemaSosialhjelp-v1-soknaddefinisjon</artifactId>
         </dependency>
         <dependency>
