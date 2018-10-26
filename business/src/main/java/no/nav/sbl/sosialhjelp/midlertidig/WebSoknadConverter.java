@@ -46,14 +46,12 @@ public class WebSoknadConverter {
                 .withSistEndretDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getSistLagret()));
     }
 
-    private byte[] webSoknadTilJson(WebSoknad webSoknad) {
+    byte[] webSoknadTilJson(WebSoknad webSoknad) {
         if (!webSoknad.erEttersending()) {
             JsonInternalSoknad jsonInternalSoknad = mapWebSoknadTilJsonSoknadInternal(webSoknad);
             return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
         } else {
-            final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
-            final AlternativRepresentasjon alternativRepresentasjon = sosialhjelpVedleggTilJson.transform(webSoknad);
-            return alternativRepresentasjon.getContent();
+            return new byte[0];
         }
     }
 
