@@ -138,16 +138,18 @@ public class SoknadActions {
     @Path("/opprinneliginnsendtdato")
     @Produces(TEXT_PLAIN)
     @SjekkTilgangTilSoknad(type = Metadata)
+    @Deprecated
     public Long finnOpprinneligInnsendtDato(@PathParam("behandlingsId") String behandlingsId) {
-        return soknadService.hentOpprinneligInnsendtDato(behandlingsId);
+        return null;
     }
 
     @GET
     @Path("/sistinnsendtebehandlingsid")
     @Produces(TEXT_PLAIN)
     @SjekkTilgangTilSoknad(type = Metadata)
+    @Deprecated
     public String finnSisteInnsendteBehandlingsId(@PathParam("behandlingsId") String behandlingsId) {
-        return soknadService.hentSisteInnsendteBehandlingsId(behandlingsId);
+        return null;
     }
 
 }

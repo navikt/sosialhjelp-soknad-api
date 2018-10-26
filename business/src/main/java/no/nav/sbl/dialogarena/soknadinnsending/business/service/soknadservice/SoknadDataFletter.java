@@ -415,12 +415,4 @@ public class SoknadDataFletter {
 
         return hovedskjema;
     }
-
-    public Long hentOpprinneligInnsendtDato(String behandlingsId) {
-        return null;
-    }
-
-    public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
-        return null;
-    }
 }
