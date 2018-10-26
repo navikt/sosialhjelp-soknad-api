@@ -29,18 +29,26 @@ public class MetadataInnfyller {
         String eier = data.avsenderFodselsnummer;
         if (isEmpty(eier)) {
             eier = soknadMetadata.fnr;
+            data.avsenderFodselsnummer = eier;
         }
         Optional<SendtSoknad> sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(data.behandlingsId, eier);
-        if (!sendtSoknadOptional.isPresent()) {
-            throw new RuntimeException("Sendt søknad finnes ikke for behandlingsId " + data.behandlingsId);
-        }
-        SendtSoknad sendtSoknad = sendtSoknadOptional.get();
-        data.innsendtDato = sendtSoknad.getBrukerFerdigDato();
-        data.mottakerOrgNr = sendtSoknad.getOrgnummer();
-        data.mottakerNavn = sendtSoknad.getNavEnhetsnavn();
+        if (sendtSoknadOptional.isPresent()) {
+            SendtSoknad sendtSoknad = sendtSoknadOptional.get();
+            data.innsendtDato = sendtSoknad.getBrukerFerdigDato();
+            data.mottakerOrgNr = sendtSoknad.getOrgnummer();
+            data.mottakerNavn = sendtSoknad.getNavEnhetsnavn();
 
-        if (sendtSoknad.erEttersendelse()) {
-            data.ettersendelsePa = finnOriginalFiksForsendelseIdVedEttersendelse(sendtSoknad.getTilknyttetBehandlingsId(), eier);
+            if (sendtSoknad.erEttersendelse()) {
+                data.ettersendelsePa = finnOriginalFiksForsendelseIdVedEttersendelse(sendtSoknad.getTilknyttetBehandlingsId(), eier);
+            }
+        } else {
+            data.innsendtDato = soknadMetadata.innsendtDato;
+            data.mottakerOrgNr = soknadMetadata.orgnr;
+            data.mottakerNavn = soknadMetadata.navEnhet;
+
+            if (soknadMetadata.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+                data.ettersendelsePa = finnOriginalFiksForsendelseIdVedEttersendelse(soknadMetadata.tilknyttetBehandlingsId, eier);
+            }
         }
         byggOppDokumentInfo(data, soknadMetadata);
     }
