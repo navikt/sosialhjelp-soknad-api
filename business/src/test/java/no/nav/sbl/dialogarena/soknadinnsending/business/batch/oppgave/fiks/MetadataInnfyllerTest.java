@@ -38,6 +38,7 @@ public class MetadataInnfyllerTest {
     private static final String ENHETSNAVN = "NAV Moss";
     private static final String ENHETSNAVN_METADATA = "NAV Aremark";
     private static final LocalDateTime BRUKER_FERDIG_DATO = now();
+    private static final LocalDateTime BRUKER_FERDIG_DATO_METADATA = now().minusDays(1L);
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
     @Mock
@@ -53,7 +54,7 @@ public class MetadataInnfyllerTest {
     }
 
     @Test
-    public void byggOppFiksDataHenterMetdataFraSoknadUnderArbeid() {
+    public void byggOppFiksDataHenterMetadataFraSendtSoknadHvisDenFinnes() {
         FiksData fiksData = new FiksData();
         fiksData.behandlingsId = BEHANDLINGSID;
         fiksData.avsenderFodselsnummer = EIER;
@@ -63,6 +64,22 @@ public class MetadataInnfyllerTest {
         assertThat(fiksData.mottakerOrgNr, is(ORGNUMMER));
         assertThat(fiksData.mottakerNavn, is(ENHETSNAVN));
         assertThat(fiksData.innsendtDato, is(BRUKER_FERDIG_DATO));
+        assertThat(fiksData.ettersendelsePa, nullValue());
+    }
+
+    @Test
+    public void byggOppFiksDataHenterMetadataFraSoknadMetadataHvisSendtSoknadIkkeFinnes() {
+        when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
+
+        FiksData fiksData = new FiksData();
+        fiksData.behandlingsId = BEHANDLINGSID;
+
+        metadataInnfyller.byggOppFiksData(fiksData);
+
+        assertThat(fiksData.avsenderFodselsnummer, is(EIER));
+        assertThat(fiksData.mottakerOrgNr, is(ORGNUMMER_METADATA));
+        assertThat(fiksData.mottakerNavn, is(ENHETSNAVN_METADATA));
+        assertThat(fiksData.innsendtDato, is(BRUKER_FERDIG_DATO_METADATA));
         assertThat(fiksData.ettersendelsePa, nullValue());
     }
 
@@ -127,6 +144,10 @@ public class MetadataInnfyllerTest {
         mockData.hovedskjema = new HovedskjemaMetadata();
         mockData.hovedskjema.filUuid = "uid-hoved";
         mockData.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
+        mockData.orgnr = ORGNUMMER_METADATA;
+        mockData.navEnhet = ENHETSNAVN_METADATA;
+        mockData.fnr = EIER;
+        mockData.innsendtDato = BRUKER_FERDIG_DATO_METADATA;
 
         FilData json = new FilData();
         json.mimetype = "application/json";
