@@ -15,7 +15,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SamtidigSoknadUnderArbeidOppdateringException;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -28,12 +30,14 @@ import java.time.LocalDateTime;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadUnderArbeidServiceTest {
@@ -47,8 +51,13 @@ public class SoknadUnderArbeidServiceTest {
     @InjectMocks
     private SoknadUnderArbeidService soknadUnderArbeidService;
 
+    @Before
+    public void settRiktigVentetid() {
+        soknadUnderArbeidService.setVentetidIms(1);
+    }
+
     @Test
-    public void settOrgnummerOgNavEnhetsnavnPaNySoknadOppdatererSoknadenIDatabasen() {
+    public void settOrgnummerOgNavEnhetsnavnPaNySoknadOppdatererSoknadenIDatabasen() throws SamtidigSoknadUnderArbeidOppdateringException {
         soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaNySoknad(lagSoknadUnderArbeid(), ORGNR, NAVENHETSNAVN, EIER);
 
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(any(SoknadUnderArbeid.class), eq(EIER));
@@ -62,6 +71,17 @@ public class SoknadUnderArbeidServiceTest {
     }
 
     @Test
+    public void oppdaterSoknadsdataIDatabasenForsokerIgjenHvisOppdateringFeiler() throws SamtidigSoknadUnderArbeidOppdateringException {
+        doThrow(new SamtidigSoknadUnderArbeidOppdateringException("melding"))
+                .doNothing()
+                .when(soknadUnderArbeidRepository).oppdaterSoknadsdata(any(SoknadUnderArbeid.class), anyString());
+
+        soknadUnderArbeidService.oppdaterSoknadsdataIDatabasen(lagSoknadUnderArbeid(), EIER);
+
+        verify(soknadUnderArbeidRepository, times(2)).oppdaterSoknadsdata(any(SoknadUnderArbeid.class), eq(EIER));
+    }
+
+    @Test
     public void hentJsonInternalSoknadFraSoknadUnderArbeidOppretterInternalSoknadForGyldigData() {
         JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(lagSoknadUnderArbeid());
 
@@ -71,11 +91,10 @@ public class SoknadUnderArbeidServiceTest {
     }
 
     @Test
-    public void oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknadSetterMottakerinfoOgSistEndret() {
+    public void oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknadSetterMottakerinfo() {
         SoknadUnderArbeid oppdatertSoknadUnderArbeid = soknadUnderArbeidService.oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(lagSoknadUnderArbeid(),
                 ORGNR, NAVENHETSNAVN);
 
-        assertThat(oppdatertSoknadUnderArbeid.getSistEndretDato(), not(SIST_ENDRET));
         JsonInternalSoknad oppdatertInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(oppdatertSoknadUnderArbeid);
         assertThat(oppdatertInternalSoknad.getMottaker().getOrganisasjonsnummer(), is(ORGNR));
         assertThat(oppdatertInternalSoknad.getMottaker().getNavEnhetsnavn(), is(NAVENHETSNAVN));
