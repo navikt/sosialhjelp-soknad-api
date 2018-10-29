@@ -69,10 +69,10 @@ public class WebSoknadConverterTest {
     }
 
     @Test
-    public void webSoknadTilJsonReturnererTomArrayForEttersendelse() {
+    public void webSoknadTilJsonReturnererArrayMedLengdeEnForEttersendelse() {
         byte[] dataForEttersending = webSoknadConverter.webSoknadTilJson(lagGyldigWebSoknadForEttersending());
 
-        assertThat(dataForEttersending.length, is(0));
+        assertThat(dataForEttersending.length, is(1));
     }
 
     @Test
