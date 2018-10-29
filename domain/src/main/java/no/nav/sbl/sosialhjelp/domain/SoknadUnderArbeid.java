@@ -109,4 +109,8 @@ public class SoknadUnderArbeid {
         this.sistEndretDato = sistEndretDato;
         return this;
     }
+
+    public void setSistEndretDato(LocalDateTime sistEndretDato) {
+        this.sistEndretDato = sistEndretDato;
+    }
 }

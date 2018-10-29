@@ -16,9 +16,7 @@ import java.util.Optional;
 import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,7 +29,6 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     private static final String TILKNYTTET_BEHANDLINGSID = "4567";
     private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
     private static final LocalDateTime SIST_ENDRET_DATO = now();
-    private static final LocalDateTime SIST_ENDRET_DATO_OPPDATERT = now().minusSeconds(20);
     private static final byte[] DATA = {1, 2, 3, 4};
     private static final byte[] DATA_OPPDATERT = {1, 2, 3, 4, 5, 6, 7, 8};
 
@@ -104,33 +101,31 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     }
 
     @Test
-    public void oppdaterSoknadsdataOppdatererVersjonOgDataOgSistEndretDato() {
+    public void oppdaterSoknadsdataOppdatererVersjonOgDataOgSistEndretDato() throws SamtidigSoknadUnderArbeidOppdateringException {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
-        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withVersjon(2L)
-                .withData(DATA_OPPDATERT).withSistEndretDato(SIST_ENDRET_DATO_OPPDATERT);
+        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withData(DATA_OPPDATERT);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER);
 
         SoknadUnderArbeid soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
         assertThat(soknadUnderArbeidFraDb.getVersjon(), is(2L));
         assertThat(soknadUnderArbeidFraDb.getData(), is(DATA_OPPDATERT));
-        assertThat(soknadUnderArbeidFraDb.getSistEndretDato(), is(SIST_ENDRET_DATO_OPPDATERT));
+        assertThat(soknadUnderArbeidFraDb.getSistEndretDato().isAfter(SIST_ENDRET_DATO), is(true));
     }
 
     @Test
     public void oppdaterInnsendingStatusOppdatererStatusOgSistEndretDato() {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
-        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withInnsendingStatus(AVBRUTT_AV_BRUKER)
-                .withSistEndretDato(SIST_ENDRET_DATO_OPPDATERT);
+        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withInnsendingStatus(AVBRUTT_AV_BRUKER);
 
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, EIER);
 
         SoknadUnderArbeid soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
         assertThat(soknadUnderArbeidFraDb.getVersjon(), is(1L));
         assertThat(soknadUnderArbeidFraDb.getInnsendingStatus(), is(AVBRUTT_AV_BRUKER));
-        assertThat(soknadUnderArbeidFraDb.getSistEndretDato(), is(SIST_ENDRET_DATO_OPPDATERT));
+        assertThat(soknadUnderArbeidFraDb.getSistEndretDato().isAfter(SIST_ENDRET_DATO), is(true));
     }
 
     @Test
