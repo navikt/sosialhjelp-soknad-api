@@ -51,7 +51,7 @@ public class WebSoknadConverter {
             JsonInternalSoknad jsonInternalSoknad = mapWebSoknadTilJsonSoknadInternal(webSoknad);
             return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
         } else {
-            return new byte[0];
+            return new byte[1];
         }
     }
 
