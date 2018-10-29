@@ -18,6 +18,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AV
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -91,6 +92,15 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(soknadUnderArbeid.getSoknadId(), is(soknadUnderArbeidId));
         assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getEier(), is(EIER));
+    }
+
+    @Test
+    public void hentSoknadTaklerAtDataErNull() {
+        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID).withData(null), EIER);
+
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER);
+
+        assertThat(soknadUnderArbeid.get().getData(), nullValue());
     }
 
     @Test
