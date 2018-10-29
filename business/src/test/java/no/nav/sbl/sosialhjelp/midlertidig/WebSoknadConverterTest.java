@@ -29,9 +29,7 @@ import static java.time.Month.AUGUST;
 import static java.util.Collections.emptyList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.FNR_KEY;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -69,10 +67,10 @@ public class WebSoknadConverterTest {
     }
 
     @Test
-    public void webSoknadTilJsonReturnererArrayMedLengdeEnForEttersendelse() {
+    public void webSoknadTilJsonReturnererNullForEttersendelse() {
         byte[] dataForEttersending = webSoknadConverter.webSoknadTilJson(lagGyldigWebSoknadForEttersending());
 
-        assertThat(dataForEttersending.length, is(1));
+        assertThat(dataForEttersending, nullValue());
     }
 
     @Test
