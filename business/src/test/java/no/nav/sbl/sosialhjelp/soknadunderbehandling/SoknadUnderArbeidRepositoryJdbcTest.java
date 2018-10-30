@@ -2,6 +2,7 @@ package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
+import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.domain.*;
 import org.junit.After;
 import org.junit.Test;
@@ -101,7 +102,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     }
 
     @Test
-    public void oppdaterSoknadsdataOppdatererVersjonOgDataOgSistEndretDato() throws SamtidigSoknadUnderArbeidOppdateringException {
+    public void oppdaterSoknadsdataOppdatererVersjonOgDataOgSistEndretDato() throws SamtidigOppdateringException {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withData(DATA_OPPDATERT);
@@ -112,6 +113,15 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(soknadUnderArbeidFraDb.getVersjon(), is(2L));
         assertThat(soknadUnderArbeidFraDb.getData(), is(DATA_OPPDATERT));
         assertThat(soknadUnderArbeidFraDb.getSistEndretDato().isAfter(SIST_ENDRET_DATO), is(true));
+    }
+
+    @Test(expected = SamtidigOppdateringException.class)
+    public void oppdaterSoknadsdataKasterExceptionVedVersjonskonflikt() throws SamtidigOppdateringException {
+        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
+        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
+        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withData(DATA_OPPDATERT).withVersjon(5L);
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER);
     }
 
     @Test
