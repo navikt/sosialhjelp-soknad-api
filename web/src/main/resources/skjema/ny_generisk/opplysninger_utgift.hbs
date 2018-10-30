@@ -1,0 +1,38 @@
+<h3>{{ hentTekst "utgifterbolk.tittel" }}</h3>
+<li>
+	<ul class="svar-liste">
+		{{#each opplysninger.utgift}}
+			{{#hvisMinstEnIkkeTom brutto netto}}
+				<li>
+					<span class="label">{{tittel}}</span>
+					<ul class="svar-liste">
+						<li>
+							<span class="verdi verdi--tekst">
+								Brutto: {{brutto}}
+							</span>
+						</li>
+						<li>
+							<span class="verdi verdi--tekst">
+								Netto: {{netto}}
+							</span>
+						</li>
+					</ul>
+				</li>
+			{{/hvisMinstEnIkkeTom}}
+		{{/each}}
+		{{#each oversikt.utgift}}
+			{{#if belop}}
+				<li>
+					<span class="label">{{tittel}}</span>
+					<ul class="svar-liste">
+						<li>
+							<span class="verdi verdi--tekst">
+								Sum: {{belop}}
+							</span>
+						</li>
+					</ul>
+				</li>
+			{{/if}}
+		{{/each}}
+	</ul>
+</li>

@@ -1,0 +1,41 @@
+{{#with data.begrunnelse}}
+	<div class="bolk js-bolk">
+		<h2 class="bolk__tittel">{{ hentTekst "begrunnelsebolk.tittel" }}</h2>
+		<ul class="fakta-liste">
+			<h3>{{ hentTekst "begrunnelse.hva.sporsmal" }}</h3>
+			<li>
+				<span class="label">{{ hentTekst "begrunnelse.hvorfor.label" }}</span>
+				<ul class="svar-liste">
+					<li>
+						{{#if hvorforSoke.verdi}}
+							<span class="verdi verdi--tekst">
+								{{hvorforSoke.verdi}}
+							</span>
+						{{else}}
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+							</span>
+						{{/if}}
+					</li>
+				</ul>
+			</li>
+			<h3>{{ hentTekst "begrunnelse.hvorfor.sporsmal" }}</h3>
+			<li>
+				<span class="label">{{ hentTekst "begrunnelse.hva.label" }}</span>
+				<ul class="svar-liste">
+					<li>
+						{{#if hvaSokesOm.verdi}}
+							<span class="verdi verdi--tekst">
+								{{hvaSokesOm.verdi}}
+							</span>
+						{{else}}
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+							</span>
+						{{/if}}
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+{{/with}}

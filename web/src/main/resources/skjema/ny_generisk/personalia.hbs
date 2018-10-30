@@ -2,13 +2,41 @@
 	<div class="bolk js-bolk">
 		<h2 class="bolk__tittel">{{ hentTekst "personaliabolk.tittel" }}</h2>
 		<ul class="fakta-liste">
-			<li>
-				<span class="label">{{ hentTekst "kontakt.system.personalia.statsborgerskap.label" }}</span>
-				<ul class="svar-liste">
-					<li>
-						{{#if statsborgerskap.verdi}}
+			{{#if statsborgerskap.verdi}}
+				<li>
+					<h3>{{ hentTekst "kontakt.system.personalia.statsborgerskap" }}</h3>
+					<ul class="svar-liste">
+						<li>
 							<span class="verdi verdi--tekst">
 								{{statsborgerskap.verdi}}
+							</span>
+						</li>
+					</ul>
+				</li>
+			{{/if}}
+			<h3>{{ hentTekst "kontakt.system.adresse.sporsmal" }}</h3>
+			<li>
+				<span class="label">Folkeregistrert adresse</span>
+				{{#with folkeregistrertAdresse}}
+					{{> skjema/ny_generisk/adresse}}
+				{{/with}}
+				<span class="label">Oppholdsadresse</span>
+				{{#with oppholdsadresse}}
+					{{> skjema/ny_generisk/adresse}}
+				{{/with}}
+				<span class="label">Postadresse</span>
+				{{#with postadresse}}
+					{{> skjema/ny_generisk/adresse}}
+				{{/with}}
+			</li>
+			<h3>{{ hentTekst "kontakt.system.telefon.sporsmal" }}</h3>
+			<li>
+				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
+				<ul class="svar-liste">
+					<li>
+						{{#if telefonnummer.verdi}}
+							<span class="verdi verdi--tekst">
+								{{telefonnummer.verdi}}
 							</span>
 						{{else}}
 							<span class="verdi verdi--ikkeUtfylt">
@@ -18,59 +46,22 @@
 					</li>
 				</ul>
 			</li>
-			<h3>{{ hentTekst "kontakt.system.adresse.sporsmal" }}</h3>
+			<h3>{{ hentTekst "kontakt.kontonummer.label" }}</h3>
 			<li>
-				<span class="label">Folkeregistrert adresse</span>
-				{{#with folkeregistrertAdresse}}
-					<ul class="svar-liste">
-						<li>
-							<div>
-								<span class="verdi verdi--tekst">
-									{{gatenavn}} {{husnummer}}{{husbokstav}}
-								</span>
-							</div>
-							<div>
-								<span class="verdi verdi--tekst">
-			            			{{postnummer}} {{poststed}}
-			            		</span>
-							</div>
-						</li>
-					</ul>
-				{{/with}}
-				<span class="label">Oppholdsadresse</span>
-				{{#with oppholdsadresse}}
-					<ul class="svar-liste">
-						<li>
-							<div>
-								 <span class="verdi verdi--tekst">
-									{{gatenavn}} {{husnummer}}{{husbokstav}}
-								</span>
-							</div>
-							<div>
-								<span class="verdi verdi--tekst">
-									{{postnummer}} {{poststed}}
-								</span>
-							</div>
-						</li>
-					</ul>
-				{{/with}}
-				<span class="label">Postadresse</span>
-				{{#with postadresse}}
-					<ul class="svar-liste">
-						<li>
-							<div>
-								<span class="verdi verdi--tekst">
-									{{gatenavn}} {{husnummer}}{{husbokstav}}
-								</span>
-							</div>
-							<div>
-								<span class="verdi verdi--tekst">
-									{{postnummer}} {{poststed}}
-								</span>
-							</div>
-						</li>
-					</ul>
-				{{/with}}
+				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
+				<ul class="svar-liste">
+					<li>
+						{{#if kontonummer.verdi}}
+							<span class="verdi verdi--tekst">
+								{{kontonummer.verdi}}
+							</span>
+						{{else}}
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+							</span>
+						{{/if}}
+					</li>
+				</ul>
 			</li>
 		</ul>
 	</div>

@@ -1,0 +1,35 @@
+<h3>{{ hentTekst "utgifter.boutgift.sporsmal" }}</h3>
+<li>
+	<ul class="svar-liste">
+		<li>
+			<span class="verdi verdi--radio">
+				{{ hentTekst (concat "utgifter.boutgift." verdi) }}
+			</span>
+		</li>
+	</ul>
+	{{#if verdi}}
+		<h4>
+			{{hentTekst "utgifter.boutgift.true.type.sporsmal"}}
+		</h4>
+		<ul class="svar-liste">
+			{{#each @root.data.okonomi.opplysninger.utgift}}
+				{{#hvisBoutgift type}}
+					<li>
+						<span class="verdi verdi--radio">
+							{{ tittel }}
+						</span>
+					</li>
+				{{/hvisBoutgift}}
+			{{/each}}
+			{{#each @root.data.okonomi.oversikt.utgift}}
+				{{#hvisBoutgift type}}
+					<li>
+						<span class="verdi verdi--radio">
+							{{ tittel }}
+						</span>
+					</li>
+				{{/hvisBoutgift}}
+			{{/each}}
+		</ul>
+	{{/if}}
+</li>

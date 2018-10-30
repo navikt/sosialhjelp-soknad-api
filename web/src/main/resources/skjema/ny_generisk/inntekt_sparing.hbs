@@ -1,0 +1,40 @@
+<h3>{{ hentTekst "inntekt.bankinnskudd.true.type.sporsmal" }}</h3>
+<li>
+	<ul class="svar-liste">
+		{{#each @root.data.okonomi.oversikt.formue}}
+			{{#hvisSparing type}}
+				<li>
+					<span class="verdi verdi--radio">
+						{{ tittel }}
+					</span>
+					{{#hvisLik type "belop"}}
+						<ul class="fakta-liste">
+							<span class="label">
+								{{hentTekst "inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"}}
+							</span>
+							<ul class="svar-liste">
+								<li>
+									{{#if @root.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing}}
+										<span class="verdi verdi--tekst">
+											{{@root.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing}}
+										</span>
+									{{else}}
+										<span class="verdi verdi--ikkeUtfylt">
+											<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+										</span>
+									{{/if}}
+								</li>
+							</ul>
+						</ul>
+					{{/hvisLik}}
+				</li>
+			{{/hvisSparing}}
+		{{else}}
+			<li>
+				<span class="verdi verdi--ikkeUtfylt">
+					<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+				</span>
+			</li>
+		{{/each}}
+	</ul>
+</li>

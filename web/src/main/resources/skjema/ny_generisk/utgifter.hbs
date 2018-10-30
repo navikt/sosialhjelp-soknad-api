@@ -1,0 +1,15 @@
+<div class="bolk js-bolk">
+	{{#with data.okonomi}}
+		<h2 class="bolk__tittel">{{ hentTekst "utgifterbolk.tittel" }}</h2>
+		<ul class="fakta-liste">
+			{{#each opplysninger.bekreftelse}}
+				{{#hvisLik type "boutgifter"}}
+					{{> skjema/ny_generisk/utgifter_boutgifter}}
+				{{/hvisLik}}
+				{{#hvisLik type "barneutgifter"}}
+					{{> skjema/ny_generisk/utgifter_barneutgifter}}
+				{{/hvisLik}}
+			{{/each}}
+		</ul>
+	{{/with}}
+</div>
