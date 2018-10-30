@@ -4,6 +4,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 public class SoknadUnderArbeid {
     private Long soknadId;
     private Long versjon;
@@ -11,10 +13,13 @@ public class SoknadUnderArbeid {
     private String tilknyttetBehandlingsId;
     private String eier;
     private byte[] data;
-    private String orgnummer;
     private SoknadInnsendingStatus innsendingStatus;
     private LocalDateTime opprettetDato;
     private LocalDateTime sistEndretDato;
+
+    public boolean erEttersendelse() {
+        return !isEmpty(tilknyttetBehandlingsId);
+    }
 
     public Long getSoknadId() {
         return soknadId;
@@ -78,15 +83,6 @@ public class SoknadUnderArbeid {
         return this;
     }
 
-    public String getOrgnummer() {
-        return orgnummer;
-    }
-
-    public SoknadUnderArbeid withOrgnummer(String orgnummer) {
-        this.orgnummer = orgnummer;
-        return this;
-    }
-
     public SoknadInnsendingStatus getInnsendingStatus() {
         return innsendingStatus;
     }
@@ -112,5 +108,9 @@ public class SoknadUnderArbeid {
     public SoknadUnderArbeid withSistEndretDato(LocalDateTime sistEndretDato) {
         this.sistEndretDato = sistEndretDato;
         return this;
+    }
+
+    public void setSistEndretDato(LocalDateTime sistEndretDato) {
+        this.sistEndretDato = sistEndretDato;
     }
 }

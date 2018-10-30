@@ -2,15 +2,23 @@ package no.nav.sbl.sosialhjelp.domain;
 
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 public class SendtSoknad {
     private Long sendtSoknadId;
     private String behandlingsId;
     private String tilknyttetBehandlingsId;
     private String eier;
     private String fiksforsendelseId;
+    private String orgnummer;
+    private String navEnhetsnavn;
     private LocalDateTime brukerOpprettetDato;
     private LocalDateTime brukerFerdigDato;
     private LocalDateTime sendtDato;
+
+    public boolean erEttersendelse() {
+        return !isEmpty(tilknyttetBehandlingsId);
+    }
 
     public Long getSendtSoknadId() {
         return sendtSoknadId;
@@ -30,6 +38,14 @@ public class SendtSoknad {
 
     public String getFiksforsendelseId() {
         return fiksforsendelseId;
+    }
+
+    public String getOrgnummer() {
+        return orgnummer;
+    }
+
+    public String getNavEnhetsnavn() {
+        return navEnhetsnavn;
     }
 
     public LocalDateTime getBrukerOpprettetDato() {
@@ -70,6 +86,16 @@ public class SendtSoknad {
 
     public SendtSoknad withFiksforsendelseId(String fiksforsendelseId) {
         this.fiksforsendelseId = fiksforsendelseId;
+        return this;
+    }
+
+    public SendtSoknad withOrgnummer(String orgnummer) {
+        this.orgnummer = orgnummer;
+        return this;
+    }
+
+    public SendtSoknad withNavEnhetsnavn(String navEnhetsnavn) {
+        this.navEnhetsnavn = navEnhetsnavn;
         return this;
     }
 
