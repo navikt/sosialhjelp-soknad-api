@@ -97,14 +97,6 @@ public class SoknadService {
         return lokalDb.hentFaktumMedKey(soknadId, "skjema.sprak");
     }
 
-    public Long hentOpprinneligInnsendtDato(String behandlingsId) {
-        return soknadDataFletter.hentOpprinneligInnsendtDato(behandlingsId);
-    }
-
-    public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
-        return soknadDataFletter.hentSisteInnsendteBehandlingsId(behandlingsId);
-    }
-
     @Transactional
     public void sendSoknad(String behandlingsId, byte[] pdf) {
         sendSoknad(behandlingsId, pdf, null);

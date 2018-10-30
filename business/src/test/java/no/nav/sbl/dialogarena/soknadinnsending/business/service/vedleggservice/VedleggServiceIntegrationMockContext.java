@@ -17,9 +17,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Named;
 import javax.sql.DataSource;
+
+import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
 
@@ -80,6 +84,16 @@ public class VedleggServiceIntegrationMockContext {
     @Bean
     public DataSource dataSource() {
         return mock(DataSource.class);
+    }
+
+    @Bean
+    public DataSourceTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(dataSource());
+    }
+
+    @Bean
+    public TransactionTemplate transactionTemplate() {
+        return new TransactionTemplate(transactionManager());
     }
 
     @Bean
