@@ -43,6 +43,9 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     
     @Inject
     private NavMessageSource messageSource;
+    
+    @Inject
+    private WebSoknadConfig config;
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         return getHandlebars()
@@ -58,6 +61,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
             final SosialhjelpTilJson sosialhjelpTilJson = new SosialhjelpTilJson(messageSource);
+            soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
             final JsonSoknad jsonSoknad = sosialhjelpTilJson.toJsonSoknad(soknad);
             
             return getHandlebars()

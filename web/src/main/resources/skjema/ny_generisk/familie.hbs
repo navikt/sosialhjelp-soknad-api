@@ -1,0 +1,173 @@
+<div class="bolk js-bolk">
+	{{#with data.familie}}
+		<h2 class="bolk__tittel">{{ hentTekst "familiebolk.tittel" }}</h2>
+		<h3>{{ hentTekst "system.familie.sivilstatus.sporsmal" }}</h3>
+		<ul class="fakta-liste">
+			<li>
+				<ul class="svar-liste">
+					<li>
+						{{#if sivilstatus.status}}
+							<span class="verdi verdi--tekst">
+								{{ hentTekst (concat 'familie.sivilstatus.' sivilstatus.status) }}
+							</span>
+						{{else}}
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+							</span>
+						{{/if}}
+					</li>
+				</ul>
+			</li>
+			{{#with sivilstatus.ektefelle}}
+				<h3>{{ hentTekst "system.familie.sivilstatus.infotekst" }}</h3>
+				<li>
+					<span class="label">{{ hentTekst "system.familie.sivilstatus.gift.ektefelle.navn" }}</span>
+					<ul class="svar-liste">
+						<li>
+							{{#if navn.fornavn}}
+								<span class="verdi verdi--tekst">
+									{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}
+								</span>
+							{{else}}
+								<span class="verdi verdi--ikkeUtfylt">
+									<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+								</span>
+							{{/if}}
+						</li>
+					</ul>
+				</li>
+				<li>
+					<span class="label">{{ hentTekst "system.familie.sivilstatus.gift.ektefelle.fodselsdato" }}</span>
+					<ul class="svar-liste">
+						<li>
+							{{#if fodselsdato}}
+								<span class="verdi verdi--tekst">
+									{{fodselsdato}}
+								</span>
+							{{else}}
+								<span class="verdi verdi--ikkeUtfylt">
+									<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+								</span>
+							{{/if}}
+						</li>
+					</ul>
+				</li>
+				{{#hvisIkkeTom folkeregistrertMedEktefelle}}
+					<li>
+						<span class="label">{{ hentTekst "system.familie.sivilstatus.gift.ektefelle.folkereg" }}</span>
+						<ul class="svar-liste">
+							<li>
+								<span class="verdi verdi--tekst">
+									{{ hentTekst (concat 'system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.' folkeregistrertMedEktefelle) }}
+								</span>
+							</li>
+						</ul>
+					</li>
+				{{/hvisIkkeTom}}
+				{{#hvisIkkeTom borSammenMed}}
+					<li>
+						<span class="label">{{ hentTekst "familie.sivilstatus.gift.ektefelle.borsammen.sporsmal" }}</span>
+						<ul class="svar-liste">
+							<li>
+								<span class="verdi verdi--tekst">
+									{{ hentTekst (concat 'familie.sivilstatus.gift.ektefelle.borsammen.' borSammenMed) }}
+								</span>
+							</li>
+						</ul>
+					</li>
+				{{/hvisIkkeTom}}
+			{{/with}}
+			{{#if forsorgerplikt.harForsorgerplikt.verdi}}
+				<h3>{{ hentTekst "familierelasjon.faktum.sporsmal" }}</h3>
+				{{#each forsorgerplikt.ansvar}}
+					<h3>{{ hentTekst "system.familie.barn.true.listetittel" }}</h3>
+					{{#with barn}}
+						<li>
+							<span class="label">{{ hentTekst "kontakt.system.personalia.navn" }}</span>
+							<ul class="svar-liste">
+								<li>
+									<span class="verdi verdi--tekst">
+										{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}
+									</span>
+								</li>
+							</ul>
+						</li>
+						{{#if fodselsdato}}
+							<li>
+								<span class="label">{{ hentTekst "familierelasjon.fodselsdato" }}</span>
+								<ul class="svar-liste">
+									<li>
+										<span class="verdi verdi--tekst">
+											{{fodselsdato}}
+										</span>
+									</li>
+								</ul>
+							</li>
+						{{/if}}
+					{{/with}}
+					{{#hvisIkkeTom erFolkeregistrertSammen.verdi}}
+						<li>
+							<span class="label">{{ hentTekst "familierelasjon.samme_folkeregistrerte_adresse" }}</span>
+							<ul class="svar-liste">
+								<li>
+									<span class="verdi verdi--tekst">
+										{{ hentTekst (concat 'system.familie.barn.true.barn.folkeregistrertsammen.' erFolkeregistrertSammen.verdi) }}
+									</span>
+								</li>
+							</ul>
+						</li>
+					{{/hvisIkkeTom}}
+					<li>
+						<span class="label">{{ hentTekst "system.familie.barn.true.barn.deltbosted.sporsmal" }}</span>
+						<ul class="svar-liste">
+							<li>
+								{{#hvisIkkeTom harDeltBosted.verdi}}
+									<span class="verdi verdi--tekst">
+										{{ hentTekst (concat 'system.familie.barn.true.barn.deltbosted.' harDeltBosted.verdi) }}
+									</span>
+								{{else}}
+									<span class="verdi verdi--ikkeUtfylt">
+										<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+									</span>
+								{{/hvisIkkeTom}}
+							</li>
+						</ul>
+					</li>
+					<li>
+						<span class="label">{{ hentTekst "system.familie.barn.true.barn.grad.sporsmal" }}</span>
+						<ul class="svar-liste">
+							<li>
+								{{#hvisIkkeTom samvarsgrad.verdi}}
+									<span class="verdi verdi--tekst">
+										{{ samvarsgrad.verdi }} {{ hentTekst "prosent" }}
+									</span>
+								{{else}}
+									<span class="verdi verdi--ikkeUtfylt">
+										<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+									</span>
+								{{/hvisIkkeTom}}
+							</li>
+						</ul>
+					</li>
+				{{/each}}
+				<li>
+					<h3>{{ hentTekst "familie.barn.true.barnebidrag.sporsmal" }}</h3>
+					<ul class="svar-liste">
+						<li>
+							{{#hvisIkkeTom forsorgerplikt.barnebidrag.verdi}}
+								<span class="verdi verdi--tekst">
+									{{ hentTekst (concat 'familie.barn.true.barnebidrag.' forsorgerplikt.barnebidrag.verdi) }}
+								</span>
+							{{else}}
+								<span class="verdi verdi--ikkeUtfylt">
+									<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+								</span>
+							{{/hvisIkkeTom}}
+						</li>
+					</ul>
+				</li>
+			{{/if}}
+		</ul>
+		
+	{{/with}}
+</div>

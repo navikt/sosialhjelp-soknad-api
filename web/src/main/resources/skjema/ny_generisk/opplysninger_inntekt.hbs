@@ -1,0 +1,72 @@
+<h3>{{ hentTekst "inntektbolk.tittel" }}</h3>
+<li>
+	<ul class="svar-liste">
+		{{#each oversikt.inntekt}}
+			{{#hvisMinstEnIkkeTom brutto netto}}
+				<li>
+					<span class="label">{{tittel}}</span>
+					<ul class="svar-liste">
+						{{#if brutto}}
+							<li>
+								<span class="verdi verdi--tekst">
+									Brutto: {{brutto}}
+								</span>
+							</li>
+						{{/if}}
+						{{#if netto}}
+							<li>
+								<span class="verdi verdi--tekst">
+									Netto: {{netto}}
+								</span>
+							</li>
+						{{/if}}
+					</ul>
+				</li>
+			{{/hvisMinstEnIkkeTom}}
+		{{/each}}
+		{{#each oversikt.formue}}
+			{{#if belop}}
+				<li>
+					<span class="label">{{tittel}}</span>
+					<ul class="svar-liste">
+						<li>
+							<span class="verdi verdi--tekst">
+								Sum: {{belop}}
+							</span>
+						</li>
+					</ul>
+				</li>
+			{{/if}}
+		{{/each}}
+		{{#each opplysninger.utbetaling}}
+			{{#hvisMinstEnIkkeTom brutto netto belop}}
+				<li>
+					<span class="label">{{tittel}}</span>
+					<ul class="svar-liste">
+						{{#if belop}}
+							<li>
+								<span class="verdi verdi--tekst">
+									Belop: {{belop}}
+								</span>
+							</li>
+						{{/if}}
+						{{#if brutto}}
+							<li>
+								<span class="verdi verdi--tekst">
+									Brutto: {{brutto}}
+								</span>
+							</li>
+						{{/if}}
+						{{#if netto}}
+							<li>
+								<span class="verdi verdi--tekst">
+									Netto: {{netto}}
+								</span>
+							</li>
+						{{/if}}
+					</ul>
+				</li>
+			{{/hvisMinstEnIkkeTom}}
+		{{/each}}
+	</ul>
+</li>

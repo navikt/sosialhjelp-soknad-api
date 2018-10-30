@@ -1,0 +1,30 @@
+<div class="bolk js-bolk">
+	{{#with data.okonomi}}
+		<h2 class="bolk__tittel">{{ hentTekst "inntektbolk.tittel" }}</h2>
+		<ul class="fakta-liste">
+			{{#each opplysninger.bekreftelse}}
+				{{#hvisLik type "bostotte"}}
+					<h3>{{hentTekst "inntekt.bostotte.sporsmal"}}</h3>
+					<li>
+						<ul class="svar-liste">
+							<li>
+								<span class="verdi verdi--radio">
+									{{ hentTekst (concat 'inntekt.bostotte.' verdi) }}
+								</span>
+							</li>
+						</ul>
+					</li>
+				{{/hvisLik}}
+				{{#hvisLik type "verdi"}}
+					{{> skjema/ny_generisk/inntekt_verdi}}
+				{{/hvisLik}}
+				{{#hvisLik type "sparing"}}
+					{{> skjema/ny_generisk/inntekt_sparing}}
+				{{/hvisLik}}
+				{{#hvisLik type "utbetaling"}}
+					{{> skjema/ny_generisk/inntekt_utbetaling}}
+				{{/hvisLik}}
+			{{/each}}
+		</ul>
+	{{/with}}
+</div>
