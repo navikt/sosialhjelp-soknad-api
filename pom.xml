@@ -58,7 +58,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.4.4</jackson.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <filformat.version>1.0.78.19</filformat.version>
+        <filformat.version>1.20181030.820</filformat.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -173,16 +173,6 @@
                 <groupId>no.nav.sbl</groupId>
                 <artifactId>arena-maalgruppe_v1</artifactId>
                 <version>1.0.2</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-soknaddefinisjon</artifactId>
-                <version>1.0.10</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-vedleggdefinisjon</artifactId>
-                <version>1.0.4</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
