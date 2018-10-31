@@ -30,12 +30,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-domain</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>no.nav.sbl.dialogarena</groupId>
-                    <artifactId>soeknadsskjemaSosialhjelp-v1-vedleggdefinisjon</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Avhengigheter med scope compile -->
@@ -83,11 +77,6 @@
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>soknadsosialhjelp-filformat</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>soeknadsskjemaSosialhjelp-v1-soknaddefinisjon</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
