@@ -2,42 +2,85 @@
 <li>
 	<ul class="svar-liste">
 		{{#each oversikt.inntekt}}
-			{{#hvisMinstEnIkkeTom brutto netto}}
+			<ul class="svar-liste">
 				<li>
-					<span class="label">{{tittel}}</span>
-					<ul class="svar-liste">
-						{{#if brutto}}
-							<li>
-								<span class="verdi verdi--tekst">
-									Brutto: {{brutto}}
-								</span>
-							</li>
-						{{/if}}
-						{{#if netto}}
-							<li>
-								<span class="verdi verdi--tekst">
-									Netto: {{netto}}
-								</span>
-							</li>
-						{{/if}}
-					</ul>
-				</li>
-			{{/hvisMinstEnIkkeTom}}
-		{{/each}}
-		{{#each oversikt.formue}}
-			{{#if belop}}
-				<li>
-					<span class="label">{{tittel}}</span>
-					<ul class="svar-liste">
+					<h4>{{tittel}}</h4>
+					<ul class="fakta-liste">
 						<li>
-							<span class="verdi verdi--tekst">
-								Sum: {{belop}}
-							</span>
+							{{#hvisLik type "bostotte"}}
+								<span class="label">{{hentTekst "opplysninger.inntekt.bostotte.utbetaling.label"}}</span>
+							{{/hvisLik}}
+							{{#hvisLik type "studielanOgStipend"}}
+								<span class="label">{{hentTekst "opplysninger.arbeid.student.utbetaling.label"}}</span>
+							{{/hvisLik}}
+							{{#hvisLik type "jobb"}}
+								<span class="label">{{hentTekst "opplysninger.arbeid.jobb.nettolonn.label"}}</span>
+							{{/hvisLik}}
+							{{#hvisLik type "barnebidrag"}}
+								<span class="label">{{hentTekst "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label"}}</span>
+							{{/hvisLik}}
+							<ul class="svar-liste">
+								<li>
+									{{#if netto}}
+										<span class="verdi verdi--tekst">
+											{{netto}}
+										</span>
+									{{else}}
+										<span class="verdi verdi--ikkeUtfylt">
+											<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+										</span>
+									{{/if}}
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</li>
-			{{/if}}
+			</ul>
 		{{/each}}
+		
+		{{#each oversikt.formue}}
+			<ul class="svar-liste">
+				<li>
+					<h4>{{tittel}}</h4>
+					<ul class="fakta-liste">
+						<li>
+							{{#hvisLik type "brukskonto"}}
+								<span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.brukskonto.saldo.label"}}</span>
+							{{/hvisLik}}
+							{{#hvisLik type "bsu"}}
+								<span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.bsu.saldo.label"}}</span>
+							{{/hvisLik}}
+							{{#hvisLik type "sparekonto"}}
+								<span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.sparekonto.saldo.label"}}</span>
+							{{/hvisLik}}
+							{{#hvisLik type "livsforsikringssparedel"}}
+								<span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.livsforsikring.saldo.label"}}</span>
+							{{/hvisLik}}
+							{{#hvisLik type "verdipapirer"}}
+								<span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.aksjer.saldo.label"}}</span>
+							{{/hvisLik}}
+							{{#hvisLik type "belop"}}
+								<span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.annet.saldo.label"}}</span>
+							{{/hvisLik}}
+							<ul class="svar-liste">
+								<li>
+									{{#if belop}}
+										<span class="verdi verdi--tekst">
+											{{belop}}
+										</span>
+									{{else}}
+										<span class="verdi verdi--ikkeUtfylt">
+											<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+										</span>
+									{{/if}}
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		{{/each}}
+
 		{{#each opplysninger.utbetaling}}
 			{{#hvisLik type "navytelse"}}
 			{{else}}
@@ -46,7 +89,18 @@
 						<h4>{{tittel}}</h4>
 						<ul class="fakta-liste">
 							<li>
-								<span class="label">Sum</span>
+								{{#hvisLik type "salg"}}
+									<span class="label">{{hentTekst "opplysninger.inntekt.inntekter.salg.sum.label"}}</span>
+								{{/hvisLik}}
+								{{#hvisLik type "utbytte"}}
+									<span class="label">{{hentTekst "opplysninger.inntekt.inntekter.utbytte.sum.label"}}</span>
+								{{/hvisLik}}
+								{{#hvisLik type "forsikring"}}
+									<span class="label">{{hentTekst "opplysninger.inntekt.inntekter.forsikringsutbetalinger.sum.label"}}</span>
+								{{/hvisLik}}
+								{{#hvisLik type "annen"}}
+									<span class="label">{{hentTekst "opplysninger.inntekt.inntekter.annet.sum.label"}}</span>
+								{{/hvisLik}}
 								<ul class="svar-liste">
 									<li>
 										{{#if belop}}
