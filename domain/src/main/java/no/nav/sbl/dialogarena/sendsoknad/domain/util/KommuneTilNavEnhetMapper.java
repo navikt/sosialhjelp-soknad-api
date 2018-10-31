@@ -52,6 +52,10 @@ public class KommuneTilNavEnhetMapper {
             .put("0321", "974778807")    // Østensjø, Oslo kommune
             .put("5701", "892284792")    // Falkenborg, Trondheim kommune
             .put("5702", "992284838")    // Lerkendal, Trondheim kommune
+            .put("1161", "873864192")    // Eiganes og Tasta, Stavanger kommune
+            .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
+            .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
+            .put("1165", "973864203")    // Madla, Stavanger kommune
             .build();
     
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
