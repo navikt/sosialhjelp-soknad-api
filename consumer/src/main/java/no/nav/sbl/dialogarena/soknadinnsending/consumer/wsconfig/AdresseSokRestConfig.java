@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokConsumerImpl;
@@ -35,14 +34,14 @@ public class AdresseSokRestConfig {
             .withClient(RestUtils.createClient(RestConfig.builder().readTimeout(30000).build()))
             .withConcurrentRequests(3)
             .withMaximumQueueSize(9)
-            .withTimeoutInMilliseconds(30000)
+            .withExecutorTimeoutInMilliseconds(30000)
             .build();
     
     private final RestCallContext utenPostnummerExecutionContext = new RestCallContext.Builder()
             .withClient(RestUtils.createClient(RestConfig.builder().readTimeout(30000).build()))
             .withConcurrentRequests(2)
             .withMaximumQueueSize(6)
-            .withTimeoutInMilliseconds(30000)
+            .withExecutorTimeoutInMilliseconds(30000)
             .build();
     
     private final Function<Sokedata, RestCallContext> restCallContextSelector = (sokedata) -> {
