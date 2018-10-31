@@ -6,7 +6,7 @@
 </head>
 
 <body>
-
+{{#with soknad}}
 <div class="header">
 	<img class="header-logo" src="img/nav-logo.gif"/>
 	{{#with data.personalia}}
@@ -32,9 +32,6 @@
 			{{#with data.personalia}}
 				<p class ="nvn">{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}</p>
 				<p class ="fnr">{{personIdentifikator.verdi}}</p>
-				{{#with folkeregistrertAdresse}}
-					<p class ="adr">{{gatenavn}} {{husnummer}}{{husbokstav}}, {{postnummer}} {{poststed}}</p>
-				{{/with}}
 				{{#if kontonummer.verdi}}
 				<div>
 					<span>Kontonummer</span>:
@@ -70,6 +67,7 @@
 	</div>
 </div>
 <div class="js-signatur"></div>
+{{/with}}
 
 </body>
 </html>

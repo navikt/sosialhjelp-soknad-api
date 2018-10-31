@@ -18,6 +18,17 @@
 						</li>
 					</ul>
 				</li>
+			{{else}}
+				<li>
+					<span class="label">{{tittel}}</span>
+					<ul class="svar-liste">
+						<li>
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+							</span>
+						</li>
+					</ul>
+				</li>
 			{{/hvisMinstEnIkkeTom}}
 		{{/each}}
 		{{#each oversikt.utgift}}
@@ -28,6 +39,17 @@
 						<li>
 							<span class="verdi verdi--tekst">
 								Sum: {{belop}}
+							</span>
+						</li>
+					</ul>
+				</li>
+			{{else}}
+				<li>
+					<span class="label">{{tittel}}</span>
+					<ul class="svar-liste">
+						<li>
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
 							</span>
 						</li>
 					</ul>

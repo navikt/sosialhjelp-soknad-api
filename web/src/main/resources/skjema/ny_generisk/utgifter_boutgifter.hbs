@@ -1,4 +1,3 @@
-<h3>{{ hentTekst "utgifter.boutgift.sporsmal" }}</h3>
 <li>
 	<ul class="svar-liste">
 		<li>
@@ -12,7 +11,7 @@
 			{{hentTekst "utgifter.boutgift.true.type.sporsmal"}}
 		</h4>
 		<ul class="svar-liste">
-			{{#each @root.data.okonomi.opplysninger.utgift}}
+			{{#each @root.soknad.data.okonomi.opplysninger.utgift}}
 				{{#hvisBoutgift type}}
 					<li>
 						<span class="verdi verdi--radio">
@@ -21,7 +20,7 @@
 					</li>
 				{{/hvisBoutgift}}
 			{{/each}}
-			{{#each @root.data.okonomi.oversikt.utgift}}
+			{{#each @root.soknad.data.okonomi.oversikt.utgift}}
 				{{#hvisBoutgift type}}
 					<li>
 						<span class="verdi verdi--radio">

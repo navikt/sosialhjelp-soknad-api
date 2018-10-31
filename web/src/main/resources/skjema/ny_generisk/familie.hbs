@@ -52,6 +52,8 @@
 						</li>
 					</ul>
 				</li>
+			{{/with}}
+			{{#with sivilstatus}}
 				{{#hvisIkkeTom folkeregistrertMedEktefelle}}
 					<li>
 						<span class="label">{{ hentTekst "system.familie.sivilstatus.gift.ektefelle.folkereg" }}</span>
@@ -77,6 +79,7 @@
 					</li>
 				{{/hvisIkkeTom}}
 			{{/with}}
+				
 			{{#if forsorgerplikt.harForsorgerplikt.verdi}}
 				<h3>{{ hentTekst "familierelasjon.faktum.sporsmal" }}</h3>
 				{{#each forsorgerplikt.ansvar}}
@@ -133,22 +136,24 @@
 							</li>
 						</ul>
 					</li>
-					<li>
-						<span class="label">{{ hentTekst "system.familie.barn.true.barn.grad.sporsmal" }}</span>
-						<ul class="svar-liste">
-							<li>
-								{{#hvisIkkeTom samvarsgrad.verdi}}
-									<span class="verdi verdi--tekst">
-										{{ samvarsgrad.verdi }} {{ hentTekst "prosent" }}
-									</span>
-								{{else}}
-									<span class="verdi verdi--ikkeUtfylt">
-										<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-									</span>
-								{{/hvisIkkeTom}}
-							</li>
-						</ul>
-					</li>
+					{{#unless erFolkeregistrertSammen.verdi}}
+						<li>
+							<span class="label">{{ hentTekst "system.familie.barn.true.barn.grad.sporsmal" }}</span>
+							<ul class="svar-liste">
+								<li>
+									{{#hvisIkkeTom samvarsgrad.verdi}}
+										<span class="verdi verdi--tekst">
+											{{ samvarsgrad.verdi }} {{ hentTekst "prosent" }}
+										</span>
+									{{else}}
+										<span class="verdi verdi--ikkeUtfylt">
+											<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+										</span>
+									{{/hvisIkkeTom}}
+								</li>
+							</ul>
+						</li>
+					{{/unless}}
 				{{/each}}
 				<li>
 					<h3>{{ hentTekst "familie.barn.true.barnebidrag.sporsmal" }}</h3>
