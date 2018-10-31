@@ -19,6 +19,14 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
+import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
+import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
+import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
+import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -149,5 +157,45 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public OppgaveHandterer oppgaveHandterer() {
         return mock(OppgaveHandterer.class);
+    }
+
+    @Bean
+    public SoknadUnderArbeidRepository soknadUnderArbeidRepository() {
+        return mock(SoknadUnderArbeidRepository.class);
+    }
+
+    @Bean
+    OpplastetVedleggRepository opplastetVedleggRepository() {
+        return mock(OpplastetVedleggRepository.class);
+    }
+
+    @Bean
+    WebSoknadConverter webSoknadConverter() {
+        return mock(WebSoknadConverter.class);
+    }
+
+    @Bean
+    VedleggConverter vedleggConverter() {
+        return mock(VedleggConverter.class);
+    }
+
+    @Bean
+    InnsendingService innsendingService() {
+        return mock(InnsendingService.class);
+    }
+
+    @Bean
+    SendtSoknadRepository sendtSoknadRepository() {
+        return mock(SendtSoknadRepository.class);
+    }
+
+    @Bean
+    VedleggstatusRepository vedleggstatusRepository() {
+        return mock(VedleggstatusRepository.class);
+    }
+
+    @Bean
+    SoknadUnderArbeidService soknadUnderArbeidService() {
+        return mock(SoknadUnderArbeidService.class);
     }
 }

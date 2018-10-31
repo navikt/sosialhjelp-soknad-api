@@ -31,6 +31,8 @@ public class SendtSoknadRepositoryJdbcTest {
     private static final String FIKSFORSENDELSEID = "12345";
     private static final String FIKSFORSENDELSEID2 = "12789";
     private static final String FIKSFORSENDELSEID3 = "12652";
+    private static final String ORGNUMMER = "987654";
+    private static final String NAVENHETSNAVN = "NAV Enhet";
     private static final LocalDateTime BRUKER_OPPRETTET_DATO = now().minusDays(2);
     private static final LocalDateTime BRUKER_FERDIG_DATO = now().minusSeconds(50);
     private static final LocalDateTime SENDT_DATO = now();
@@ -74,6 +76,8 @@ public class SendtSoknadRepositoryJdbcTest {
         assertThat(sendtSoknad.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(sendtSoknad.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
         assertThat(sendtSoknad.getFiksforsendelseId(), is(FIKSFORSENDELSEID));
+        assertThat(sendtSoknad.getOrgnummer(), is(ORGNUMMER));
+        assertThat(sendtSoknad.getNavEnhetsnavn(), is(NAVENHETSNAVN));
         assertThat(sendtSoknad.getBrukerOpprettetDato(), is(BRUKER_OPPRETTET_DATO));
         assertThat(sendtSoknad.getBrukerFerdigDato(), is(BRUKER_FERDIG_DATO));
         assertThat(sendtSoknad.getSendtDato(), is(SENDT_DATO));
@@ -92,6 +96,17 @@ public class SendtSoknadRepositoryJdbcTest {
         assertThat(sendteSoknader.get(0).getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(sendteSoknader.get(1).getEier(), is(EIER));
         assertThat(sendteSoknader.get(1).getBehandlingsId(), is(BEHANDLINGSID2));
+    }
+
+    @Test
+    public void oppdaterSendtSoknadVedSendingTilFiksOppdatererFiksIdOgSendtDato() {
+        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknadSomIkkeErSendtTilFiks(), EIER);
+
+        sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER);
+
+        SendtSoknad oppdatertSendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
+        assertThat(oppdatertSendtSoknad.getFiksforsendelseId(), is(FIKSFORSENDELSEID));
+        assertThat(oppdatertSendtSoknad.getSendtDato(), notNullValue());
     }
 
     @Test
@@ -114,8 +129,20 @@ public class SendtSoknadRepositoryJdbcTest {
                 .withBehandlingsId(behandlingsId)
                 .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
                 .withFiksforsendelseId(fiksforsendelseId)
+                .withOrgnummer(ORGNUMMER)
+                .withNavEnhetsnavn(NAVENHETSNAVN)
                 .withBrukerOpprettetDato(BRUKER_OPPRETTET_DATO)
                 .withBrukerFerdigDato(BRUKER_FERDIG_DATO)
                 .withSendtDato(SENDT_DATO);
+    }
+
+    private SendtSoknad lagSendtSoknadSomIkkeErSendtTilFiks() {
+        return new SendtSoknad().withEier(EIER)
+                .withBehandlingsId(BEHANDLINGSID)
+                .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
+                .withOrgnummer(ORGNUMMER)
+                .withNavEnhetsnavn(NAVENHETSNAVN)
+                .withBrukerOpprettetDato(BRUKER_OPPRETTET_DATO)
+                .withBrukerFerdigDato(BRUKER_FERDIG_DATO);
     }
 }
