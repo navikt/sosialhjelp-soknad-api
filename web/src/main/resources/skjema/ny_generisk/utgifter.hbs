@@ -2,14 +2,29 @@
 	{{#with data.okonomi}}
 		<h2 class="bolk__tittel">{{ hentTekst "utgifterbolk.tittel" }}</h2>
 		<ul class="fakta-liste">
-			{{#each opplysninger.bekreftelse}}
-				{{#hvisLik type "boutgifter"}}
+			{{#with opplysninger}}
+				<h3>{{ hentTekst "utgifter.boutgift.sporsmal" }}</h3>
+				{{#hentOkonomiBekreftelse "boutgifter"}}
 					{{> skjema/ny_generisk/utgifter_boutgifter}}
-				{{/hvisLik}}
-				{{#hvisLik type "barneutgifter"}}
+				{{else}}
+					<li>
+						<span class="verdi verdi--ikkeUtfylt">
+							<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+						</span>
+					</li>
+				{{/hentOkonomiBekreftelse}}
+				
+				<h3>{{ hentTekst "utgifter.barn.sporsmal" }}</h3>
+				{{#hentOkonomiBekreftelse "barneutgifter"}}
 					{{> skjema/ny_generisk/utgifter_barneutgifter}}
-				{{/hvisLik}}
-			{{/each}}
+				{{else}}
+					<li>
+						<span class="verdi verdi--ikkeUtfylt">
+							<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+						</span>
+					</li>
+				{{/hentOkonomiBekreftelse}}
+			{{/with}}
 		</ul>
 	{{/with}}
 </div>

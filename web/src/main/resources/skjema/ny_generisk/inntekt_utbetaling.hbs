@@ -1,4 +1,3 @@
-<h3>{{ hentTekst "inntekt.inntekter.sporsmal" }}</h3>
 <li>
 	<ul class="svar-liste">
 		<li>
@@ -8,43 +7,44 @@
 		</li>
 	</ul>
 	{{#if verdi}}
-		<h4>
-			{{hentTekst "inntekt.inntekter.true.type.sporsmal"}}
-		</h4>
 		<ul class="svar-liste">
-			{{#each @root.data.okonomi.opplysninger.utbetaling}}
-				<li>
-					<span class="verdi verdi--radio">
-						{{ tittel }}
-					</span>
-					{{#hvisLik type "annen"}}
-						<ul class="fakta-liste">
-							<span class="label">
-								{{hentTekst "inntekt.inntekter.true.type.annet.true.beskrivelse.label"}}
-							</span>
-							<ul class="svar-liste">
-								<li>
-									{{#if @root.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling}}
-										<span class="verdi verdi--tekst">
-											{{@root.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling}}
+			<li>
+				<h4>
+					{{hentTekst "inntekt.inntekter.true.type.sporsmal"}}
+				</h4>
+				<ul class="svar-liste">
+					{{#each @root.soknad.data.okonomi.opplysninger.utbetaling}}
+						{{#hvisLik type "navytelse"}}
+						{{else}}
+							<li>
+								<span class="verdi verdi--radio">
+									{{ tittel }}
+								</span>
+								{{#hvisLik type "annen"}}
+									<ul class="fakta-liste">
+										<span class="label">
+											{{hentTekst "inntekt.inntekter.true.type.annet.true.beskrivelse.label"}}
 										</span>
-									{{else}}
-										<span class="verdi verdi--ikkeUtfylt">
-											<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-										</span>
-									{{/if}}
-								</li>
-							</ul>
-						</ul>
-					{{/hvisLik}}
-				</li>
-			{{else}}
-				<li>
-					<span class="verdi verdi--ikkeUtfylt">
-						<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-					</span>
-				</li>
-			{{/each}}
+										<ul class="svar-liste">
+											<li>
+												{{#if @root.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling}}
+													<span class="verdi verdi--tekst">
+														{{@root.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling}}
+													</span>
+												{{else}}
+													<span class="verdi verdi--ikkeUtfylt">
+														<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+													</span>
+												{{/if}}
+											</li>
+										</ul>
+									</ul>
+								{{/hvisLik}}
+							</li>
+						{{/hvisLik}}
+					{{/each}}
+				</ul>
+			</li>
 		</ul>
 	{{/if}}
 </li>

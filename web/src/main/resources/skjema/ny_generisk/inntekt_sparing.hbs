@@ -1,7 +1,6 @@
-<h3>{{ hentTekst "inntekt.bankinnskudd.true.type.sporsmal" }}</h3>
 <li>
 	<ul class="svar-liste">
-		{{#each @root.data.okonomi.oversikt.formue}}
+		{{#each @root.soknad.data.okonomi.oversikt.formue}}
 			{{#hvisSparing type}}
 				<li>
 					<span class="verdi verdi--radio">
@@ -14,9 +13,9 @@
 							</span>
 							<ul class="svar-liste">
 								<li>
-									{{#if @root.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing}}
+									{{#if @root.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing}}
 										<span class="verdi verdi--tekst">
-											{{@root.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing}}
+											{{@root.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing}}
 										</span>
 									{{else}}
 										<span class="verdi verdi--ikkeUtfylt">
@@ -29,12 +28,6 @@
 					{{/hvisLik}}
 				</li>
 			{{/hvisSparing}}
-		{{else}}
-			<li>
-				<span class="verdi verdi--ikkeUtfylt">
-					<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-				</span>
-			</li>
 		{{/each}}
 	</ul>
 </li>

@@ -1,4 +1,3 @@
-<h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>
 <li>
 	<ul class="svar-liste">
 		<li>
@@ -8,45 +7,43 @@
 		</li>
 	</ul>
 	{{#if verdi}}
-		<h4>
-			{{hentTekst "inntekt.eierandeler.true.type.sporsmal"}}
-		</h4>
 		<ul class="svar-liste">
-			{{#each @root.data.okonomi.oversikt.formue}}
-				{{#hvisOkonomiskVerdi type}}
-					<li>
-						<span class="verdi verdi--radio">
-							{{ tittel }}
-						</span>
-						{{#hvisLik type "annet"}}
-							<ul class="fakta-liste">
-								<span class="label">
-									{{hentTekst "inntekt.eierandeler.true.type.annet.true.beskrivelse.label"}}
+			<li>
+				<h4>
+					{{hentTekst "inntekt.eierandeler.true.type.sporsmal"}}
+				</h4>
+				<ul class="svar-liste">
+					{{#each @root.soknad.data.okonomi.oversikt.formue}}
+						{{#hvisOkonomiskVerdi type}}
+							<li>
+								<span class="verdi verdi--radio">
+									{{ tittel }}
 								</span>
-								<ul class="svar-liste">
-									<li>
-										{{#if @root.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi}}
-											<span class="verdi verdi--tekst">
-												{{@root.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi}}
-											</span>
-										{{else}}
-											<span class="verdi verdi--ikkeUtfylt">
-												<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-											</span>
-										{{/if}}
-									</li>
-								</ul>
-							</ul>
-						{{/hvisLik}}
-					</li>
-				{{/hvisOkonomiskVerdi}}
-			{{else}}
-				<li>
-					<span class="verdi verdi--ikkeUtfylt">
-						<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-					</span>
-				</li>
-			{{/each}}
+								{{#hvisLik type "annet"}}
+									<ul class="fakta-liste">
+										<span class="label">
+											{{hentTekst "inntekt.eierandeler.true.type.annet.true.beskrivelse.label"}}
+										</span>
+										<ul class="svar-liste">
+											<li>
+												{{#if @root.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi}}
+													<span class="verdi verdi--tekst">
+														{{@root.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi}}
+													</span>
+												{{else}}
+													<span class="verdi verdi--ikkeUtfylt">
+														<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+													</span>
+												{{/if}}
+											</li>
+										</ul>
+									</ul>
+								{{/hvisLik}}
+							</li>
+						{{/hvisOkonomiskVerdi}}
+					{{/each}}
+				</ul>
+			</li>
 		</ul>
 	{{/if}}
 </li>

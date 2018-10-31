@@ -63,11 +63,12 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             final SosialhjelpTilJson sosialhjelpTilJson = new SosialhjelpTilJson(messageSource);
             soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
             final JsonSoknad jsonSoknad = sosialhjelpTilJson.toJsonSoknad(soknad);
+            final HandlebarContext context = new HandlebarContext(jsonSoknad);
             
             return getHandlebars()
                     .infiniteLoops(true)
                     .compile("/skjema/ny_generisk")
-                    .apply(Context.newBuilder(jsonSoknad)
+                    .apply(Context.newBuilder(context)
                             .resolver(
                                     JavaBeanValueResolver.INSTANCE,
                                     FieldValueResolver.INSTANCE,

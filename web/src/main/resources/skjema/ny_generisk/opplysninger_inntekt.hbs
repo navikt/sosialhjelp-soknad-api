@@ -39,34 +39,32 @@
 			{{/if}}
 		{{/each}}
 		{{#each opplysninger.utbetaling}}
-			{{#hvisMinstEnIkkeTom brutto netto belop}}
-				<li>
-					<span class="label">{{tittel}}</span>
-					<ul class="svar-liste">
-						{{#if belop}}
+			{{#hvisLik type "navytelse"}}
+			{{else}}
+				<ul class="svar-liste">
+					<li>
+						<h4>{{tittel}}</h4>
+						<ul class="fakta-liste">
 							<li>
-								<span class="verdi verdi--tekst">
-									Belop: {{belop}}
-								</span>
+								<span class="label">Sum</span>
+								<ul class="svar-liste">
+									<li>
+										{{#if belop}}
+											<span class="verdi verdi--tekst">
+												{{belop}}
+											</span>
+										{{else}}
+											<span class="verdi verdi--ikkeUtfylt">
+												<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+											</span>
+										{{/if}}
+									</li>
+								</ul>
 							</li>
-						{{/if}}
-						{{#if brutto}}
-							<li>
-								<span class="verdi verdi--tekst">
-									Brutto: {{brutto}}
-								</span>
-							</li>
-						{{/if}}
-						{{#if netto}}
-							<li>
-								<span class="verdi verdi--tekst">
-									Netto: {{netto}}
-								</span>
-							</li>
-						{{/if}}
-					</ul>
-				</li>
-			{{/hvisMinstEnIkkeTom}}
+						</ul>
+					</li>
+				</ul>
+			{{/hvisLik}}
 		{{/each}}
 	</ul>
 </li>
