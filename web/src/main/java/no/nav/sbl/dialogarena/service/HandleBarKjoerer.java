@@ -26,6 +26,7 @@ import com.github.jknack.handlebars.context.MethodValueResolver;
 
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
@@ -63,7 +64,8 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             final SosialhjelpTilJson sosialhjelpTilJson = new SosialhjelpTilJson(messageSource);
             soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
             final JsonSoknad jsonSoknad = sosialhjelpTilJson.toJsonSoknad(soknad);
-            final HandlebarContext context = new HandlebarContext(jsonSoknad);
+            final List<Vedlegg> vedleggListe = soknad.getVedlegg();
+            final HandlebarContext context = new HandlebarContext(jsonSoknad, vedleggListe);
             
             return getHandlebars()
                     .infiniteLoops(true)

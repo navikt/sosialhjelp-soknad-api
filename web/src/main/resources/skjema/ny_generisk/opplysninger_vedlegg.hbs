@@ -1,0 +1,10 @@
+<h3>{{ hentTekst "vedlegg.oppsummering.tittel" }}</h3>
+<li>
+	<ul class="svar-liste">
+		{{#each @root.vedleggListe}}
+			<li>
+				<span>skjemaNummer: {{skjemaNummer}}, skjemanummerTillegg: {{skjemanummerTillegg}}</span>
+			</li>
+		{{/each}}
+	</ul>
+</li>
