@@ -57,9 +57,9 @@ public class SoknadsmottakerRessursTest {
 
     private AdresseForslag getAdresseForslagGateadresse() {
         AdresseForslag adresseForslagGateadresse = new AdresseForslag();
-        adresseForslagGateadresse.geografiskTilknytning = "0101";
-        adresseForslagGateadresse.kommunenummer = "0100";
-        adresseForslagGateadresse.bydel = "0102";
+        adresseForslagGateadresse.geografiskTilknytning = "030101";
+        adresseForslagGateadresse.kommunenummer = "0301";
+        adresseForslagGateadresse.bydel = "030101";
         adresseForslagGateadresse.kommunenavn = "Kommunen";
         adresseForslagGateadresse.type = "gateadresse";
         return adresseForslagGateadresse;
@@ -67,8 +67,8 @@ public class SoknadsmottakerRessursTest {
 
     private AdresseForslag getAdresseForslagMatrikkeladresse() {
         AdresseForslag adresseForslagGateadresse = new AdresseForslag();
-        adresseForslagGateadresse.geografiskTilknytning = "0101";
-        adresseForslagGateadresse.kommunenummer = "0101";
+        adresseForslagGateadresse.geografiskTilknytning = "030101";
+        adresseForslagGateadresse.kommunenummer = "0301";
         return adresseForslagGateadresse;
     }
 }
