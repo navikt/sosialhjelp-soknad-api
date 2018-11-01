@@ -65,17 +65,18 @@ public class SoknadsmottakerRessurs {
             return null;
         }
         if (adresseForslag.kommunenummer == null
-                || adresseForslag.kommunenummer.length() != 4
-                || !KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer)) {
+                || adresseForslag.kommunenummer.length() != 4) {
             return null;
         }
+        
+        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         return new NavEnhetFrontend()
                 .withEnhetsId(navEnhet.enhetNr)
                 .withEnhetsnavn(navEnhet.navn)
                 .withBydelsnummer(adresseForslag.bydel)
                 .withKommunenummer(adresseForslag.kommunenummer)
                 .withKommunenavn(adresseForslag.kommunenavn)
-                .withSosialOrgnr(navEnhet.sosialOrgnr)
+                .withSosialOrgnr((digisosKommune) ? navEnhet.sosialOrgnr : null)
                 .withFeatures(getFeaturesForEnhet(navEnhet.enhetNr));
     }
 
