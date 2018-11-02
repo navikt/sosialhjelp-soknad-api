@@ -4,12 +4,15 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
+import org.joda.time.DateTime;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +65,20 @@ public class UtbetalingServiceTest {
     }
 
     @Test
+    public void mapTilUtbetalingerIgnorererUtbetalingerSomIkkeErUtbetalt() {
+        List<Utbetaling> utbetalinger = utbetalingService.mapTilUtbetalinger(lagWSHentUtbetalingsinformasjonResponseUtenUtbetalingsdato(wsPerson));
+
+        assertThat(utbetalinger.size(), is(0));
+    }
+
+    @Test
+    public void mapTilUtbetalingerIgnorererUtbetalingerSomIkkeErUtbetaltSisteTrettiDager() {
+        List<Utbetaling> utbetalinger = utbetalingService.mapTilUtbetalinger(lagWSHentUtbetalingsinformasjonResponseMedEnUtbetalingUtenforPeriode(wsPerson));
+
+        assertThat(utbetalinger.size(), is(1));
+    }
+
+    @Test
     public void ytelseTilUtbetalingMapperMaksimalWSUtbetalingerRiktig() {
         Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(lagKomplettWSUtbetaling(wsPerson), lagKomplettWsYtelse(wsPerson));
         Utbetaling.Komponent komponent = utbetaling.komponenter.get(1);
@@ -83,13 +100,6 @@ public class UtbetalingServiceTest {
         assertThat(komponent.satsType, is(SATSTYPE));
         assertThat(komponent.satsBelop, is(SATSBELOP));
         assertThat(komponent.satsAntall, is(SATSANTALL));
-    }
-
-    @Test
-    public void mapTilUtbetalingerIgnorererUtbetalingerSomIkkeErUtbetalt() {
-        List<Utbetaling> utbetalinger = utbetalingService.mapTilUtbetalinger(lagWSHentUtbetalingsinformasjonResponseUtenUtbetalingsdato(wsPerson));
-
-        assertThat(utbetalinger.size(), is(0));
     }
 
     @Test
@@ -128,6 +138,16 @@ public class UtbetalingServiceTest {
         return new WSHentUtbetalingsinformasjonResponse().withUtbetalingListe(wsUtbetalinger);
     }
 
+    private WSHentUtbetalingsinformasjonResponse lagWSHentUtbetalingsinformasjonResponseMedEnUtbetalingUtenforPeriode(WSPerson wsPerson) {
+        List<WSUtbetaling> wsUtbetalinger = new ArrayList<>();
+        final LocalDateTime posteringsdato = LocalDateTime.now().minusDays(40);
+        final LocalDateTime utbetalingsDatoUtenforPeriode = LocalDateTime.now().minusDays(35);
+        final LocalDateTime utbetalingsDatoInnenforPeriode = LocalDateTime.now().minusDays(30);
+        wsUtbetalinger.add(lagWSUtbetaling(wsPerson, posteringsdato, utbetalingsDatoUtenforPeriode));
+        wsUtbetalinger.add(lagWSUtbetaling(wsPerson, posteringsdato, utbetalingsDatoInnenforPeriode));
+        return new WSHentUtbetalingsinformasjonResponse().withUtbetalingListe(wsUtbetalinger);
+    }
+
     private WSUtbetaling lagWSUtbetalingSomIkkeErUtbetalt(WSPerson wsPerson) {
         WSBankkonto bankkonto = new WSBankkonto()
                 .withKontotype("Norsk bankkonto")
@@ -138,6 +158,22 @@ public class UtbetalingServiceTest {
                 .withUtbetalingNettobeloep(3880.0)
                 .withYtelseListe(lagKomplettWsYtelse(wsPerson))
                 .withForfallsdato(dato(YEAR, MONTH, FORFALLSDAG))
+                .withUtbetaltTilKonto(bankkonto)
+                .withUtbetalingsmelding(null)
+                .withUtbetalingsmetode("Norsk bankkonto")
+                .withUtbetalingsstatus("Ikke utbetalt");
+    }
+
+    private WSUtbetaling lagWSUtbetaling(WSPerson wsPerson, LocalDateTime posteringsdato, LocalDateTime utbetalingsdato) {
+        WSBankkonto bankkonto = new WSBankkonto()
+                .withKontotype("Norsk bankkonto")
+                .withKontonummer("32902095534");
+        return new WSUtbetaling()
+                .withPosteringsdato(dato(posteringsdato))
+                .withUtbetaltTil(wsPerson)
+                .withUtbetalingNettobeloep(3880.0)
+                .withYtelseListe(lagKomplettWsYtelse(wsPerson))
+                .withUtbetalingsdato(dato(utbetalingsdato))
                 .withUtbetaltTilKonto(bankkonto)
                 .withUtbetalingsmelding(null)
                 .withUtbetalingsmetode("Norsk bankkonto")
