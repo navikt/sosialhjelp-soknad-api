@@ -38,6 +38,8 @@ public class InnsendingServiceTest {
     private static final String TYPE = "bostotte";
     private static final String TILLEGGSINFO = "annetboutgift";
     private static final VedleggType VEDLEGGTYPE = new VedleggType(TYPE, TILLEGGSINFO);
+    private static final VedleggType VEDLEGGTYPE2 = new VedleggType("type2", "tilleggsinfo2");
+    private static final VedleggType VEDLEGGTYPE3 = new VedleggType(TYPE, "tilleggsinfo2");
     private static final String BEHANDLINGSID = "1100001L";
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
     private static final String FIKSFORSENDELSEID = "12345";
@@ -172,11 +174,38 @@ public class InnsendingServiceTest {
         assertThat(vedleggstatus.getVedleggType().getTilleggsinfo(), is(TILLEGGSINFO));
     }
 
+    @Test
+    public void fjernDuplikateVedleggstatuserFjernerVedleggstatuserMedSammeVedleggType() {
+        List<Vedleggstatus> vedleggstatuserUtenDuplikater = innsendingService.fjernDuplikateVedleggstatuser(lagVedleggstatusListeMedDuplikater());
+
+        assertThat(vedleggstatuserUtenDuplikater.size(), is(4));
+        assertThat(vedleggstatuserUtenDuplikater.get(0).getVedleggType(), is(VEDLEGGTYPE));
+        assertThat(vedleggstatuserUtenDuplikater.get(1).getVedleggType(), is(VEDLEGGTYPE2));
+        assertThat(vedleggstatuserUtenDuplikater.get(2).getVedleggType(), is(VEDLEGGTYPE3));
+        assertThat(vedleggstatuserUtenDuplikater.get(3).getVedleggType(), nullValue());
+    }
+
     private List<OpplastetVedlegg> lagOpplastetVedleggListe() {
         List<OpplastetVedlegg> opplastedeVedlegg = new ArrayList<>();
         opplastedeVedlegg.add(lagOpplastetVedlegg());
+        opplastedeVedlegg.add(lagOpplastetVedlegg());
         opplastedeVedlegg.add(null);
         return opplastedeVedlegg;
+    }
+
+    private List<Vedleggstatus> lagVedleggstatusListeMedDuplikater() {
+        List<Vedleggstatus> vedleggstatuser = new ArrayList<>();
+        vedleggstatuser.add(new Vedleggstatus()
+                .withVedleggType(VEDLEGGTYPE));
+        vedleggstatuser.add(new Vedleggstatus()
+                .withVedleggType(VEDLEGGTYPE));
+        vedleggstatuser.add(new Vedleggstatus()
+                .withVedleggType(VEDLEGGTYPE2));
+        vedleggstatuser.add(new Vedleggstatus()
+                .withVedleggType(VEDLEGGTYPE3));
+        vedleggstatuser.add(new Vedleggstatus());
+        vedleggstatuser.add(new Vedleggstatus());
+        return vedleggstatuser;
     }
 
     private SoknadUnderArbeid lagSoknadUnderArbeid() {
