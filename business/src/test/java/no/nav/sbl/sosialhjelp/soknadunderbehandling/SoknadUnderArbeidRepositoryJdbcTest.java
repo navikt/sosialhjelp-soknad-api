@@ -3,6 +3,7 @@ package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
+import no.nav.sbl.sosialhjelp.SoknadLaastException;
 import no.nav.sbl.sosialhjelp.domain.*;
 import org.junit.After;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.LAAST;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -120,6 +122,15 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withData(DATA_OPPDATERT).withVersjon(5L);
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER);
+    }
+
+    @Test(expected = SoknadLaastException.class)
+    public void oppdaterSoknadsdataKasterExceptionVedOppdateringAvLaastSoknad() throws SamtidigOppdateringException {
+        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID).withInnsendingStatus(LAAST);
+        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
+        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withData(DATA_OPPDATERT);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER);
     }
