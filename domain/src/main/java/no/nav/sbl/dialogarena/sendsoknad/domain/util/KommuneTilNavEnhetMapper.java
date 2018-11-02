@@ -215,20 +215,22 @@ public class KommuneTilNavEnhetMapper {
         }
     }
 
-    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219", "5001"));
+    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219", "5001", "1103"));
 
-    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "0806", "1201", "0301", "1247", "5001"));
+    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "0806", "1201", "0301", "1247", "5001", "1103"));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .put("trondheim", "Trondheim")
+            .put("stavanger", "Stavanger")
             .build();
 
     private static final Map<String, String> PROD_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .put("trondheim", "Trondheim")
+            .put("stavanger", "Stavanger")
             .build();
 
 
@@ -295,6 +297,11 @@ public class KommuneTilNavEnhetMapper {
             .put("ostensjo",        new NavEnhet("Østensjø", "oslo",            "974778807"))
             .put("falkenborg",      new NavEnhet("Falkenborg", "trondheim",     "892284792"))
             .put("lerkendal",       new NavEnhet("Lerkendal", "trondheim",      "992284838"))
+
+            .put("eiganesogtasta",  new NavEnhet("Eiganes og Tasta", "stavanger","873864192"))
+            .put("hillevagoghinna", new NavEnhet("Hillevåg og Hinna", "stavanger","976670531"))
+            .put("hundvagogstorhaug",new NavEnhet("Hundvåg og Storhaug", "stavanger","973864181"))
+            .put("madla",           new NavEnhet("Madla", "stavanger",          "973864203"))
 
             .build();
 
