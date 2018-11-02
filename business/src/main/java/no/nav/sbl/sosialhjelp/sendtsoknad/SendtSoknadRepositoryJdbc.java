@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 
 @Named("SendtSoknadRepository")
@@ -38,16 +39,19 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
         sjekkOmBrukerEierSendtSoknad(sendtSoknad, eier);
         Long sendtSoknadId = getJdbcTemplate().queryForObject(selectNextSequenceValue("SENDT_SOKNAD_ID_SEQ"), Long.class);
         getJdbcTemplate()
-                .update("insert into SENDT_SOKNAD (sendt_soknad_id, behandlingsid, tilknyttetbehandlingsid, eier, fiksforsendelseid, brukeropprettetdato, brukerferdigdato, sendtdato)" +
-                                " values (?,?,?,?,?,?,?,?)",
+                .update("insert into SENDT_SOKNAD (sendt_soknad_id, behandlingsid, tilknyttetbehandlingsid, eier, fiksforsendelseid, orgnr, navenhetsnavn, brukeropprettetdato, brukerferdigdato, sendtdato)" +
+                                " values (?,?,?,?,?,?,?,?,?,?)",
                         sendtSoknadId,
                         sendtSoknad.getBehandlingsId(),
                         sendtSoknad.getTilknyttetBehandlingsId(),
                         sendtSoknad.getEier(),
                         sendtSoknad.getFiksforsendelseId(),
+                        sendtSoknad.getOrgnummer(),
+                        sendtSoknad.getNavEnhetsnavn(),
                         Date.from(sendtSoknad.getBrukerOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         Date.from(sendtSoknad.getBrukerFerdigDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        Date.from(sendtSoknad.getSendtDato().atZone(ZoneId.systemDefault()).toInstant()));
+                        sendtSoknad.getSendtDato() != null ? Date.from(sendtSoknad.getSendtDato().atZone(ZoneId.systemDefault()).toInstant())
+                         : null);
         return sendtSoknadId;
     }
 
@@ -61,6 +65,16 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
     public List<SendtSoknad> hentAlleSendteSoknader(String eier) {
         return getJdbcTemplate().query("select * from SENDT_SOKNAD where EIER = ?",
                 new SendtSoknadRowMapper(), eier);
+    }
+
+    @Override
+    public void oppdaterSendtSoknadVedSendingTilFiks(String fiksforsendelseId, String behandlingsId, String eier) {
+        getJdbcTemplate()
+                .update("update SENDT_SOKNAD set FIKSFORSENDELSEID = ?, SENDTDATO = ? where BEHANDLINGSID = ? and EIER = ?",
+                        fiksforsendelseId,
+                        Date.from(now().atZone(ZoneId.systemDefault()).toInstant()),
+                        behandlingsId,
+                        eier);
     }
 
     @Override
@@ -94,6 +108,8 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                     .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
                     .withEier(rs.getString("eier"))
                     .withFiksforsendelseId(rs.getString("fiksforsendelseid"))
+                    .withOrgnummer(rs.getString("orgnr"))
+                    .withNavEnhetsnavn(rs.getString("navenhetsnavn"))
                     .withBrukerOpprettetDato(rs.getTimestamp("brukeropprettetdato") != null ?
                             rs.getTimestamp("brukeropprettetdato").toLocalDateTime() : null)
                     .withBrukerFerdigDato(rs.getTimestamp("brukerferdigdato") != null ?

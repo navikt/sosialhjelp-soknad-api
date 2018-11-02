@@ -50,6 +50,35 @@ public class NorgConsumerImpl implements NorgConsumer {
             }
         }
     }
+    
+    @Override
+    public void ping() {
+        /* 
+         * Erstatt denne metoden med et skikkelig ping-kall. Vi bruker nå et
+         * urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
+         * at vi når tjenesten).
+         */
+        final String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
+
+        final Invocation.Builder request = client.target(endpoint + "kodeverk/EnhetstyperNorg").request()
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
+                .header("x-nav-apiKey", apiKey);
+
+        Response response = null;
+        try {
+            response = request.get();
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+            }
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
+    }
 
     @Override
     public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {

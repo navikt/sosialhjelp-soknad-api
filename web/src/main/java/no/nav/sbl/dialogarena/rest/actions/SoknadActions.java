@@ -6,12 +6,12 @@ import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,6 @@ import javax.ws.rs.core.Context;
 import java.util.Locale;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Metadata;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
@@ -133,21 +132,4 @@ public class SoknadActions {
             logger.debug("Fant ingen epostadresse");
         }
     }
-
-    @GET
-    @Path("/opprinneliginnsendtdato")
-    @Produces(TEXT_PLAIN)
-    @SjekkTilgangTilSoknad(type = Metadata)
-    public Long finnOpprinneligInnsendtDato(@PathParam("behandlingsId") String behandlingsId) {
-        return soknadService.hentOpprinneligInnsendtDato(behandlingsId);
-    }
-
-    @GET
-    @Path("/sistinnsendtebehandlingsid")
-    @Produces(TEXT_PLAIN)
-    @SjekkTilgangTilSoknad(type = Metadata)
-    public String finnSisteInnsendteBehandlingsId(@PathParam("behandlingsId") String behandlingsId) {
-        return soknadService.hentSisteInnsendteBehandlingsId(behandlingsId);
-    }
-
 }
