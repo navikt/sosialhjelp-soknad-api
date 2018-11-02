@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -13,9 +14,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 
+import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -39,15 +42,14 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
         Long soknadUnderArbeidId = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"), Long.class);
         getJdbcTemplate()
-                .update("insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, ORGNR, STATUS, OPPRETTETDATO, SISTENDRETDATO)" +
-                                " values (?,?,?,?,?,?,?,?,?,?)",
+                .update("insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)" +
+                                " values (?,?,?,?,?,?,?,?,?)",
                         soknadUnderArbeidId,
                         soknadUnderArbeid.getVersjon(),
                         soknadUnderArbeid.getBehandlingsId(),
                         soknadUnderArbeid.getTilknyttetBehandlingsId(),
                         soknadUnderArbeid.getEier(),
                         soknadUnderArbeid.getData(),
-                        soknadUnderArbeid.getOrgnummer(),
                         soknadUnderArbeid.getInnsendingStatus().toString(),
                         Date.from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
@@ -67,26 +69,41 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public void oppdaterSoknadsdata(SoknadUnderArbeid soknadUnderArbeid, String eier) {
+    public void oppdaterSoknadsdata(SoknadUnderArbeid soknadUnderArbeid, String eier) throws SamtidigOppdateringException {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
-        getJdbcTemplate()
-                .update("update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ?",
-                        soknadUnderArbeid.getVersjon(),
+        final Long opprinneligVersjon = soknadUnderArbeid.getVersjon();
+        final Long oppdatertVersjon = opprinneligVersjon + 1;
+        final LocalDateTime sistEndretDato = now();
+        final int antallOppdaterteRader = getJdbcTemplate()
+                .update("update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ?",
+                        oppdatertVersjon,
                         soknadUnderArbeid.getData(),
-                        Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()),
+                        Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
                         soknadUnderArbeid.getSoknadId(),
-                        eier);
+                        eier,
+                        opprinneligVersjon);
+        if (antallOppdaterteRader == 0) {
+            throw new SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid " +
+                    "med behandlingsId " + soknadUnderArbeid.getBehandlingsId() + " fra versjon " + opprinneligVersjon +
+                    " til versjon " + oppdatertVersjon);
+        }
+        soknadUnderArbeid.setVersjon(oppdatertVersjon);
+        soknadUnderArbeid.setSistEndretDato(sistEndretDato);
     }
 
     @Override
     public void oppdaterInnsendingStatus(SoknadUnderArbeid soknadUnderArbeid, String eier) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
-        getJdbcTemplate()
+        final LocalDateTime sistEndretDato = now();
+        final int antallOppdaterteRader = getJdbcTemplate()
                 .update("update SOKNAD_UNDER_ARBEID set STATUS = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ?",
                         soknadUnderArbeid.getInnsendingStatus().toString(),
-                        Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()),
+                        Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier);
+        if (antallOppdaterteRader != 0) {
+            soknadUnderArbeid.setSistEndretDato(sistEndretDato);
+        }
     }
 
     @Override
@@ -130,7 +147,6 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
                     .withEier(rs.getString("eier"))
                     .withData(rs.getBytes("data"))
-                    .withOrgnummer(rs.getString("orgnr"))
                     .withInnsendingStatus(status)
                     .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
                             rs.getTimestamp("opprettetdato").toLocalDateTime() : null)

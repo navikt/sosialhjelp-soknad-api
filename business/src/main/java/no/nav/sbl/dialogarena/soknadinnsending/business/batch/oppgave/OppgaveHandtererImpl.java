@@ -3,9 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksHandterer;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.MetadataInnfyller;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
@@ -102,7 +100,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     }
 
     @Override
-    public void leggTilOppgave(String behandlingsId) {
+    public void leggTilOppgave(String behandlingsId, String eier) {
         Oppgave oppgave = new Oppgave();
         oppgave.behandlingsId = behandlingsId;
         oppgave.type = FiksHandterer.FIKS_OPPGAVE;
@@ -111,6 +109,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
         oppgave.nesteForsok = LocalDateTime.now();
         oppgave.steg = 0;
         oppgave.retries = 0;
+        oppgave.oppgaveData.avsenderFodselsnummer = eier;
 
         oppgaveRepository.opprett(oppgave);
     }

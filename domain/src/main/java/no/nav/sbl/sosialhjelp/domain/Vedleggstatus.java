@@ -52,6 +52,10 @@ public class Vedleggstatus {
         return this;
     }
 
+    public void setSendtSoknadId(Long sendtSoknadId) {
+        this.sendtSoknadId = sendtSoknadId;
+    }
+
     public enum Status {
         VedleggKreves(0),
         LastetOpp(1),

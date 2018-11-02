@@ -5,11 +5,12 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksData.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -19,24 +20,56 @@ public class MetadataInnfyller {
 
     @Inject
     SoknadMetadataRepository soknadMetadataRepository;
+    @Inject
+    private SendtSoknadRepository sendtSoknadRepository;
 
     public void byggOppFiksData(FiksData data) {
         SoknadMetadata soknadMetadata = soknadMetadataRepository.hent(data.behandlingsId);
 
-        data.avsenderFodselsnummer = soknadMetadata.fnr;
-        data.mottakerOrgNr = soknadMetadata.orgnr;
-        data.mottakerNavn = soknadMetadata.navEnhet;
-        data.innsendtDato = soknadMetadata.innsendtDato;
-
-        byggOppDokumentInfo(data, soknadMetadata);
-
-        if (soknadMetadata.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            SoknadMetadata originalSoknad = soknadMetadataRepository.hent(soknadMetadata.tilknyttetBehandlingsId);
-            if (isEmpty(originalSoknad.fiksForsendelseId)) {
-                throw new RuntimeException("Kan ikke ettersende, originalsoknaden ikke fått fiksid enda");
-            }
-            data.ettersendelsePa = originalSoknad.fiksForsendelseId;
+        String eier = data.avsenderFodselsnummer;
+        if (isEmpty(eier)) {
+            eier = soknadMetadata.fnr;
+            data.avsenderFodselsnummer = eier;
         }
+        Optional<SendtSoknad> sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(data.behandlingsId, eier);
+        if (sendtSoknadOptional.isPresent()) {
+            SendtSoknad sendtSoknad = sendtSoknadOptional.get();
+            data.innsendtDato = sendtSoknad.getBrukerFerdigDato();
+            data.mottakerOrgNr = sendtSoknad.getOrgnummer();
+            data.mottakerNavn = sendtSoknad.getNavEnhetsnavn();
+
+            if (sendtSoknad.erEttersendelse()) {
+                data.ettersendelsePa = finnOriginalFiksForsendelseIdVedEttersendelse(sendtSoknad.getTilknyttetBehandlingsId(), eier);
+            }
+        } else {
+            data.innsendtDato = soknadMetadata.innsendtDato;
+            data.mottakerOrgNr = soknadMetadata.orgnr;
+            data.mottakerNavn = soknadMetadata.navEnhet;
+
+            if (soknadMetadata.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+                data.ettersendelsePa = finnOriginalFiksForsendelseIdVedEttersendelse(soknadMetadata.tilknyttetBehandlingsId, eier);
+            }
+        }
+        byggOppDokumentInfo(data, soknadMetadata);
+    }
+
+    String finnOriginalFiksForsendelseIdVedEttersendelse(String tilknyttetBehandlingsId, String eier) {
+        Optional<SendtSoknad> originalSoknadOptional = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, eier);
+        String originalFiksForsendelseId;
+        if (originalSoknadOptional.isPresent()) {
+            originalFiksForsendelseId = originalSoknadOptional.get().getFiksforsendelseId();
+        } else {
+            SoknadMetadata originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId);
+            if (originalSoknadGammeltFormat == null) {
+                throw new RuntimeException("Kan ikke ettersende, finner ikke originalsøknad");
+            } else {
+                originalFiksForsendelseId = originalSoknadGammeltFormat.fiksForsendelseId;
+            }
+        }
+        if (isEmpty(originalFiksForsendelseId)) {
+            throw new RuntimeException("Kan ikke ettersende, originalsoknaden ikke fått fiksid enda");
+        }
+        return originalFiksForsendelseId;
     }
 
     public void lagreFiksId(FiksData data, FiksResultat resultat) {
@@ -45,7 +78,7 @@ public class MetadataInnfyller {
         soknadMetadataRepository.oppdater(soknadMetadata);
     }
 
-    private void byggOppDokumentInfo(FiksData data, SoknadMetadata metadata) {
+    void byggOppDokumentInfo(FiksData data, SoknadMetadata metadata) {
         List<DokumentInfo> infoer = new ArrayList<>();
 
         // Bestemt rekkefølge på ting...

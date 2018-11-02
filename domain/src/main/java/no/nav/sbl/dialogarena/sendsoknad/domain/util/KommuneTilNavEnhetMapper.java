@@ -23,6 +23,41 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
 
+    private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
+            .put("0701", "974605171")    // Horten
+            .put("1247", "974600889")    // Askøy
+            .put("0806", "995509970")    // Skien
+            .put("1204", "976829786")    // Arna, Bergen kommune
+            .put("1209", "976830563")    // Bergenhus, Bergen kommune
+            .put("1202", "976829948")    // Fana, Bergen kommune
+            .put("1205", "976830032")    // Fyllingsdalen, Bergen kommune
+            .put("1206", "976830121")    // Laksevåg, Bergen kommune
+            .put("1210", "976830652")    // Ytrebygda, Bergen kommune
+            .put("1208", "976830172")    // Årstad, Bergen kommune
+            .put("1203", "976830784")    // Åsane, Bergen kommune
+            .put("0326", "970534644")    // Alna, Oslo kommune
+            .put("0330", "974778874")    // Bjerke, Oslo kommune
+            .put("0312", "874778702")    // Frogner, Oslo kommune
+            .put("0316", "974778742")    // Gamle Oslo, Oslo kommune
+            .put("0328", "974778866")    // Grorud, Oslo kommune
+            .put("0315", "870534612")    // Grünerløkka, Oslo kommune
+            .put("0331", "974778882")    // Nordre Aker, Oslo kommune
+            .put("0318", "970534679")    // Nordstrand, Oslo kommune
+            .put("0314", "974778726")    // Sagene, Oslo kommune
+            .put("0313", "971179686")    // St. Hanshaugen, Oslo kommune
+            .put("0327", "874778842")    // Stovner, Oslo kommune
+            .put("0319", "972408875")    // Søndre Nordstrand, Oslo kommune
+            .put("0335", "971022051")    // Ullern, Oslo kommune
+            .put("0334", "970145311")    // Vestre Aker, Oslo kommune
+            .put("0321", "974778807")    // Østensjø, Oslo kommune
+            .put("5701", "892284792")    // Falkenborg, Trondheim kommune
+            .put("5702", "992284838")    // Lerkendal, Trondheim kommune
+            .put("1161", "873864192")    // Eiganes og Tasta, Stavanger kommune
+            .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
+            .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
+            .put("1165", "973864203")    // Madla, Stavanger kommune
+            .build();
+    
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701","910940066")
             .put("1208", "910230158")
@@ -47,8 +82,8 @@ public class KommuneTilNavEnhetMapper {
             .build();
     private static final Map<String, Map<String, Boolean>> FEATURES_FOR_ENHET = new HashMap<>();
 
-    public static String getTestOrganisasjonsnummer(String enhetNr) {
-        return TEST_ORGANISASJONSNUMMER.get(enhetNr);
+    public static String getOrganisasjonsnummer(String enhetNr) {
+        return isProduction() ? PROD_ORGANISASJONSNUMMER.get(enhetNr) : TEST_ORGANISASJONSNUMMER.get(enhetNr);
     }
 
     public static Map<String, Boolean> getFeaturesForEnhet(String enhetNr) {
@@ -180,20 +215,22 @@ public class KommuneTilNavEnhetMapper {
         }
     }
 
-    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219", "5001"));
+    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219", "5001", "1103"));
 
-    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "0806", "1201", "0301", "1247", "5001"));
+    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "0806", "1201", "0301", "1247", "5001", "1103"));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .put("trondheim", "Trondheim")
+            .put("stavanger", "Stavanger")
             .build();
 
     private static final Map<String, String> PROD_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .put("trondheim", "Trondheim")
+            .put("stavanger", "Stavanger")
             .build();
 
 
@@ -260,6 +297,11 @@ public class KommuneTilNavEnhetMapper {
             .put("ostensjo",        new NavEnhet("Østensjø", "oslo",            "974778807"))
             .put("falkenborg",      new NavEnhet("Falkenborg", "trondheim",     "892284792"))
             .put("lerkendal",       new NavEnhet("Lerkendal", "trondheim",      "992284838"))
+
+            .put("eiganesogtasta",  new NavEnhet("Eiganes og Tasta", "stavanger","873864192"))
+            .put("hillevagoghinna", new NavEnhet("Hillevåg og Hinna", "stavanger","976670531"))
+            .put("hundvagogstorhaug",new NavEnhet("Hundvåg og Storhaug", "stavanger","973864181"))
+            .put("madla",           new NavEnhet("Madla", "stavanger",          "973864203"))
 
             .build();
 
