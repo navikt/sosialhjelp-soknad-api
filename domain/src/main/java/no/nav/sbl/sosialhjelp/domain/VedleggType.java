@@ -35,4 +35,22 @@ public class VedleggType {
         }
         return null;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        VedleggType that = (VedleggType) o;
+
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+        return tilleggsinfo != null ? tilleggsinfo.equals(that.tilleggsinfo) : that.tilleggsinfo == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + (tilleggsinfo != null ? tilleggsinfo.hashCode() : 0);
+        return result;
+    }
 }
