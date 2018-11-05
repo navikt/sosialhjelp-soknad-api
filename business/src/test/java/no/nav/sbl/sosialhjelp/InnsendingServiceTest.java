@@ -85,6 +85,7 @@ public class InnsendingServiceTest {
     public void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
         innsendingService.opprettSendtSoknad(lagSoknadUnderArbeid(), new ArrayList<>());
 
+        verify(soknadUnderArbeidRepository, times(1)).oppdaterInnsendingStatus(any(SoknadUnderArbeid.class), eq(EIER));
         verify(sendtSoknadRepository, times(1)).opprettSendtSoknad(any(SendtSoknad.class), eq(EIER));
         verify(vedleggstatusRepository, times(1)).opprettVedlegg(any(Vedleggstatus.class), eq(EIER));
     }

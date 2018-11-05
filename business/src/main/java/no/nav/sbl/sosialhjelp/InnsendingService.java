@@ -1,5 +1,6 @@
 package no.nav.sbl.sosialhjelp;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -43,6 +44,9 @@ public class InnsendingService {
         if (soknadUnderArbeid == null || soknadUnderArbeid.getSoknadId() == null) {
             throw new IllegalStateException("Kan ikke sende søknad som ikke finnes eller som mangler søknadsid");
         }
+        soknadUnderArbeid.setInnsendingStatus(SoknadInnsendingStatus.LAAST);
+        soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.getEier());
+
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
