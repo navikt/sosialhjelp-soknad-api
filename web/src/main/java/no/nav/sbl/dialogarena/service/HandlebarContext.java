@@ -12,11 +12,9 @@ public final class HandlebarContext {
     
     private final JsonInternalSoknad internalSoknad;
 
-    
     public HandlebarContext(JsonInternalSoknad internalSoknad) {
         this.internalSoknad = internalSoknad;
     }
-    
     
     public JsonSoknad getSoknad() {
         return internalSoknad.getSoknad();
@@ -24,10 +22,5 @@ public final class HandlebarContext {
     
     public JsonVedleggSpesifikasjon getJsonVedleggSpesifikasjon() {
         return internalSoknad.getVedlegg();
-    }
-    
-    @Deprecated
-    public List<Vedlegg> getVedleggListe() {
-        return Collections.emptyList();
     }
 }

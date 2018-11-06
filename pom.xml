@@ -58,7 +58,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.4.4</jackson.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <filformat.version>1.20181030.1022</filformat.version>
+        <filformat.version>1.20181106.1014</filformat.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
