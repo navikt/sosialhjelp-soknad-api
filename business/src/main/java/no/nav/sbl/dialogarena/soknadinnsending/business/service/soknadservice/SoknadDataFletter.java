@@ -6,7 +6,9 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -14,6 +16,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
+import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
+import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -36,6 +45,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UN
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
+import static no.nav.sbl.sosialhjelp.midlertidig.VedleggsforventningConverter.mapVedleggsforventningerTilVedleggstatusListe;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
@@ -62,6 +72,8 @@ public class SoknadDataFletter {
     @Inject
     private HendelseRepository hendelseRepository;
     @Inject
+    private OppgaveHandterer oppgaveHandterer;
+    @Inject
     private WebSoknadConfig config;
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
@@ -77,6 +89,24 @@ public class SoknadDataFletter {
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Inject
+    private OpplastetVedleggRepository opplastetVedleggRepository;
+
+    @Inject
+    private VedleggConverter vedleggConverter;
+
+    @Inject
+    private WebSoknadConverter webSoknadConverter;
+
+    @Inject
+    private InnsendingService innsendingService;
+
+    @Inject
+    private SoknadUnderArbeidService soknadUnderArbeidService;
 
     private Map<String, BolkService> bolker;
 
@@ -318,14 +348,47 @@ public class SoknadDataFletter {
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
         HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
-        VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
+        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
+        VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggListe);
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
-        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
+        final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
+        if (!soknadUnderArbeid.erEttersendelse()) {
+            final String orgnummer = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
+            final String navEnhetsnavn = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
+            soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaNySoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn, soknad.getAktoerId());
+        }
+
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
+        oppgaveHandterer.leggTilOppgave(behandlingsId, soknad.getAktoerId());
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
-        soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
+        forberedInnsendingMedNyModell(soknadUnderArbeid, vedleggListe);
 
+        soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
+    }
+
+    private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe) {
+        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+        if (soknadUnderArbeid != null) {
+            final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, soknad.getAktoerId());
+            soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
+            final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeidId,
+                    soknadUnderArbeid.getEier(), vedleggListe);
+            if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
+                for (OpplastetVedlegg opplastetVedlegg : opplastedeVedlegg) {
+                    opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, soknadUnderArbeid.getEier());
+                }
+            }
+        }
+        return soknadUnderArbeid;
+    }
+
+    private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg) {
+        if (soknadUnderArbeid != null) {
+            List<Vedleggstatus> vedleggstatuser = mapVedleggsforventningerTilVedleggstatusListe(vedlegg, soknadUnderArbeid.getEier());
+            innsendingService.opprettSendtSoknad(soknadUnderArbeid, vedleggstatuser);
+        }
     }
 
     private HovedskjemaMetadata lagHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
@@ -351,24 +414,5 @@ public class SoknadDataFletter {
         }
 
         return hovedskjema;
-    }
-
-    public Long hentOpprinneligInnsendtDato(String behandlingsId) {
-        return null; /* henvendelseService.hentBehandlingskjede(behandlingsId).stream()
-                .filter(STATUS_FERDIG)
-                .sorted(ELDSTE_FORST)
-                .findFirst()
-                .map(WSBehandlingskjedeElement::getInnsendtDato)
-                .map(BaseDateTime::getMillis)
-                .orElseThrow(() -> new ApplicationException(String.format("Kunne ikke hente ut opprinneligInnsendtDato for %s", behandlingsId)));*/
-    }
-
-    public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
-        return null; /*henvendelseService.hentBehandlingskjede(behandlingsId).stream()
-                .filter(STATUS_FERDIG)
-                .sorted(NYESTE_FORST)
-                .findFirst()
-                .get()
-                .getBehandlingsId();*/
     }
 }
