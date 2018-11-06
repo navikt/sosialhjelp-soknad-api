@@ -1,10 +1,10 @@
 <h3>{{ hentTekst "vedlegg.oppsummering.tittel" }}</h3>
-<li>
-	<ul class="svar-liste">
-		{{#each @root.jsonVedleggSpesifikasjon.vedlegg}}
-			<li>
-				<span>type: {{type}}, tilleggsinfo: {{tilleggsinfo}}</span>
-			</li>
-		{{/each}}
-	</ul>
-</li>
+{{#each @root.jsonVedleggSpesifikasjon.vedlegg}}
+	<span>{{ hentTekst (concat 'vedlegg.' type '.' tilleggsinfo '.tittel') }}</span>
+	{{#each filer}}
+		<br>
+		<span>{{filnavn}}</span>
+	{{/each}}
+	<br>
+	<br>
+{{/each}}
