@@ -26,13 +26,14 @@ import com.github.jknack.handlebars.context.MethodValueResolver;
 
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
@@ -61,11 +62,8 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     @Override
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
-            final SosialhjelpTilJson sosialhjelpTilJson = new SosialhjelpTilJson(messageSource);
-            soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
-            final JsonSoknad jsonSoknad = sosialhjelpTilJson.toJsonSoknad(soknad);
-            final List<Vedlegg> vedleggListe = soknad.getVedlegg();
-            final HandlebarContext context = new HandlebarContext(jsonSoknad, vedleggListe);
+            final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
+            final HandlebarContext context = new HandlebarContext(internalSoknad);
             
             return getHandlebars()
                     .infiniteLoops(true)
@@ -84,6 +82,20 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
             throw e;
         }
+    }
+
+    private JsonInternalSoknad legacyGenererJsonInternalSoknad(WebSoknad soknad) {
+        final SosialhjelpTilJson sosialhjelpTilJson = new SosialhjelpTilJson(messageSource);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
+        
+        final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
+        
+        final JsonSoknad jsonSoknad = sosialhjelpTilJson.toJsonSoknad(soknad);
+        final JsonVedleggSpesifikasjon jsonVedlegg = sosialhjelpVedleggTilJson.toJsonVedleggSpesifikasjon(soknad);
+        final JsonInternalSoknad internalSoknad = new JsonInternalSoknad()
+                .withSoknad(jsonSoknad)
+                .withVedlegg(jsonVedlegg);
+        return internalSoknad;
     }
 
     @Override

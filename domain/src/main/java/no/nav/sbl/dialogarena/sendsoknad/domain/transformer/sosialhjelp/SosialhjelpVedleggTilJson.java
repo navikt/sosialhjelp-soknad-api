@@ -24,18 +24,20 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
 
     private static final Logger logger = getLogger(SosialhjelpVedleggTilJson.class);
 
-    public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        List<JsonVedlegg> vedlegg;
+    public JsonVedleggSpesifikasjon toJsonVedleggSpesifikasjon(WebSoknad webSoknad) {
+        final List<JsonVedlegg> vedlegg;
         if (webSoknad.erEttersending()) {
             vedlegg = grupperVedleggForEttersendelse(webSoknad);
         } else {
             vedlegg = grupperVedleggFiler(webSoknad);
         }
-
+        return new JsonVedleggSpesifikasjon().withVedlegg(vedlegg);
+    }
+    
+    public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         String json;
-        
         try {
-            JsonVedleggSpesifikasjon jsonObjekt = new JsonVedleggSpesifikasjon().withVedlegg(vedlegg);
+            JsonVedleggSpesifikasjon jsonObjekt = toJsonVedleggSpesifikasjon(webSoknad);
             leggPaGarbageDataForAHindreValidering(jsonObjekt);
             json = new ObjectMapper().writeValueAsString(jsonObjekt);
             JsonSosialhjelpValidator.ensureValidVedlegg(json);
