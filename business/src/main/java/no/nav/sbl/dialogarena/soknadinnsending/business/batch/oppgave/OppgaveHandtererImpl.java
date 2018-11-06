@@ -107,7 +107,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
         oppgave.status = Status.KLAR;
         oppgave.opprettet = LocalDateTime.now();
         oppgave.nesteForsok = LocalDateTime.now();
-        oppgave.steg = 0;
+        oppgave.steg = 21;
         oppgave.retries = 0;
         oppgave.oppgaveData.avsenderFodselsnummer = eier;
 

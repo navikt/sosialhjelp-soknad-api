@@ -5,6 +5,7 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,50 @@ public class FiksHandterer {
     @Inject
     private InnsendingService innsendingService;
 
-
     public void eksekver(Oppgave oppgaveKjede) {
-        logger.info("Kjører fikskjede for behandlingsid {}, steg {}", oppgaveKjede.behandlingsId, oppgaveKjede.steg);
+        final String behandlingsId = oppgaveKjede.behandlingsId;
+        logger.info("Kjører fikskjede for behandlingsid {}, steg {}", behandlingsId, oppgaveKjede.steg);
 
+        if (oppgaveKjede.steg < 20) {
+            eksekverMedGammelStruktur(oppgaveKjede);
+        } else {
+            FiksResultat resultat = oppgaveKjede.oppgaveResultat;
+            final String eier = oppgaveKjede.oppgaveData.avsenderFodselsnummer;
+            if (isEmpty(eier)) {
+                throw new IllegalStateException("Søknad med behandlingsid " + behandlingsId + " mangler eier");
+            }
+            if (oppgaveKjede.steg == 21) {
+                final SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
+
+                Event event = MetricsFactory.createEvent("digisos.fikshandterer.sendt");
+                event.addTagToReport("ettersendelse", sendtSoknad.erEttersendelse() ? "true" : "false");
+                event.addTagToReport("mottaker", tilInfluxNavn(sendtSoknad.getNavEnhetsnavn()));
+                try {
+                    resultat.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad);
+                    logger.info("Søknad {} fikk id {} i Fiks", behandlingsId, resultat.fiksForsendelsesId);
+                } catch (Exception e) {
+                    resultat.feilmelding = e.getMessage();
+                    event.setFailed();
+                    throw e;
+                } finally {
+                    event.report();
+                }
+                oppgaveKjede.nesteSteg();
+            } else if (oppgaveKjede.steg == 22) {
+                innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId, eier);
+                fillagerService.slettAlle(behandlingsId);
+                oppgaveKjede.nesteSteg();
+            } else {
+                metadataInnfyller.lagreFiksId(oppgaveKjede.oppgaveData, resultat);
+                innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier);
+                oppgaveKjede.ferdigstill();
+            }
+        }
+    }
+
+    void eksekverMedGammelStruktur(Oppgave oppgaveKjede) {
         FiksData data = oppgaveKjede.oppgaveData;
         FiksResultat resultat = oppgaveKjede.oppgaveResultat;
-
         if (oppgaveKjede.steg == 0) {
             data.behandlingsId = oppgaveKjede.behandlingsId;
             metadataInnfyller.byggOppFiksData(data);

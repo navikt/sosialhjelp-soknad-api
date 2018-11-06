@@ -4,12 +4,16 @@ import com.google.common.collect.ImmutableMap;
 import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
+import no.nav.sbl.sosialhjelp.domain.*;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -30,6 +34,12 @@ public class FiksSender {
     @Inject
     private DokumentKrypterer dokumentKrypterer;
 
+    @Inject
+    private InnsendingService innsendingService;
+
+    @Inject
+    private SoknadUnderArbeidService soknadUnderArbeidService;
+
     private final Printkonfigurasjon fakePrintConfig = new Printkonfigurasjon()
             .withBrevtype(Brevtype.APOST)
             .withFargePrint(true)
@@ -44,6 +54,19 @@ public class FiksSender {
         final boolean skalKryptere = skalKryptere();
 
         final Forsendelse forsendelse = opprettForsendelse(data, fakeAdresse, skalKryptere);
+
+        return forsendelsesService.sendForsendelse(forsendelse);
+    }
+
+    public String sendTilFiks(SendtSoknad sendtSoknad) {
+        PostAdresse fakeAdresse = new PostAdresse()
+                .withNavn(sendtSoknad.getNavEnhetsnavn())
+                .withPostnr("0000")
+                .withPoststed("Ikke send");
+
+        final boolean skalKryptere = skalKryptere();
+
+        final Forsendelse forsendelse = opprettForsendelse(sendtSoknad, fakeAdresse, skalKryptere);
 
         return forsendelsesService.sendForsendelse(forsendelse);
     }
@@ -70,6 +93,50 @@ public class FiksSender {
                             new NoarkMetadataFraAvleverendeSakssystem()
                                     .withDokumentetsDato(data.innsendtDato)
                     );
+    }
+
+    Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse, boolean skalKryptere) {
+        final SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
+        return new Forsendelse()
+                .withMottaker(new Adresse()
+                        .withDigitalAdresse(
+                                new OrganisasjonDigitalAdresse().withOrgnr(sendtSoknad.getOrgnummer()))
+                        .withPostAdresse(fakeAdresse))
+                .withAvgivendeSystem("digisos_avsender")
+                .withForsendelseType("nav.digisos")
+                .withEksternref(environmentNameIfTest() + sendtSoknad.getBehandlingsId())
+                .withTittel(sendtSoknad.erEttersendelse() ? ETTERSENDELSE_TIL_NAV : SOKNAD_TIL_NAV)
+                .withKunDigitalLevering(false)
+                .withPrintkonfigurasjon(fakePrintConfig)
+                .withKryptert(skalKryptere)
+                .withKrevNiva4Innlogging(skalKryptere)
+                .withSvarPaForsendelse(sendtSoknad.erEttersendelse() ?
+                        innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).getFiksforsendelseId() : null)
+                .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid, skalKryptere))
+                .withMetadataFraAvleverendeSystem(
+                        new NoarkMetadataFraAvleverendeSakssystem()
+                                .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
+                );
+    }
+
+    Collection<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid, boolean skalKryptere) {
+        List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
+        //hent vedlegg fra json
+        JsonInternalSoknad soknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);//flytte til service?
+
+        if (soknadUnderArbeid.erEttersendelse()) {
+/*            infoer.add(leggTilEttersendelsePdf(metadata.hovedskjema));
+            infoer.add(leggTilVedleggJson(metadata.hovedskjema));
+            infoer.addAll(leggTilVedlegg(metadata.vedlegg));*/
+        } else {
+/*            infoer.add(leggTilSoknadJson(metadata.hovedskjema));
+            infoer.add(leggTilPdf(metadata.hovedskjema));
+            infoer.add(leggTilVedleggJson(metadata.hovedskjema));
+            infoer.add(leggTilJuridiskPdf(metadata.hovedskjema));
+            infoer.addAll(leggTilVedlegg(metadata.vedlegg));*/
+        }
+
+        return null;
     }
 
     private boolean erNySoknad(String ettersendelsePa) {
