@@ -74,6 +74,55 @@ public class InnsendingService {
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId, behandlingsId, eier);
     }
 
+    public SendtSoknad hentSendtSoknad(String behandlingsId, String eier) {
+        Optional<SendtSoknad> sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(behandlingsId, eier);
+        if (!sendtSoknadOptional.isPresent()) {
+            throw new RuntimeException("Finner ikke sendt søknad med behandlingsId " + behandlingsId);
+        }
+        return sendtSoknadOptional.get();
+    }
+
+    public SoknadUnderArbeid hentSoknadUnderArbeid(String behandlingsId, String eier) {
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        if (!soknadUnderArbeidOptional.isPresent()) {
+            throw new RuntimeException("Finner ikke sendt søknad med behandlingsId " + behandlingsId);
+        }
+        return soknadUnderArbeidOptional.get();
+    }
+
+    public List<OpplastetVedlegg> hentAlleOpplastedeVedleggForSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+        if (soknadUnderArbeid == null) {
+            return null;
+        }
+        return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier());
+    }
+
+    public SendtSoknad finnSendtSoknadForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
+        final String tilknyttetBehandlingsId = soknadUnderArbeid.getTilknyttetBehandlingsId();
+        Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId,
+                soknadUnderArbeid.getEier());
+        if (sendtSoknad.isPresent()) {
+            return sendtSoknad.get();
+        } else {
+            final SendtSoknad konvertertGammelSoknad = finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId);
+            if (konvertertGammelSoknad == null) {
+                throw new IllegalStateException("Finner ikke søknaden det skal ettersendes på");
+            }
+            return konvertertGammelSoknad;
+        }
+    }
+
+    private SendtSoknad finnSendtSoknadForEttersendelsePaGammeltFormat(String tilknyttetBehandlingsId) {
+        SoknadMetadata originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId);
+        if (originalSoknadGammeltFormat == null) {
+            return null;
+        }
+        return new SendtSoknad()
+                .withOrgnummer(originalSoknadGammeltFormat.orgnr)
+                .withNavEnhetsnavn(originalSoknadGammeltFormat.navEnhet)
+                .withFiksforsendelseId(originalSoknadGammeltFormat.fiksForsendelseId);
+    }
+
     List<Vedleggstatus> finnAlleVedlegg(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg) {
         List<Vedleggstatus> opplastedeVedlegg = mapOpplastedeVedleggTilVedleggstatusListe(opplastetVedleggRepository
                 .hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier()));
@@ -117,31 +166,6 @@ public class InnsendingService {
                 .withEier(soknadUnderArbeid.getEier())
                 .withBrukerOpprettetDato(soknadUnderArbeid.getOpprettetDato())
                 .withBrukerFerdigDato(soknadUnderArbeid.getSistEndretDato());
-    }
-
-    private SendtSoknad finnSendtSoknadForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
-        final String tilknyttetBehandlingsId = soknadUnderArbeid.getTilknyttetBehandlingsId();
-        Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId,
-                soknadUnderArbeid.getEier());
-        if (sendtSoknad.isPresent()) {
-            return sendtSoknad.get();
-        } else {
-            final SendtSoknad konvertertGammelSoknad = finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId);
-            if (konvertertGammelSoknad == null) {
-                throw new IllegalStateException("Finner ikke søknaden det skal ettersendes på");
-            }
-            return konvertertGammelSoknad;
-        }
-    }
-
-    private SendtSoknad finnSendtSoknadForEttersendelsePaGammeltFormat(String tilknyttetBehandlingsId) {
-        SoknadMetadata originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId);
-        if (originalSoknadGammeltFormat == null) {
-            return null;
-        }
-        return new SendtSoknad()
-                .withOrgnummer(originalSoknadGammeltFormat.orgnr)
-                .withNavEnhetsnavn(originalSoknadGammeltFormat.navEnhet);
     }
 
     List<Vedleggstatus> mapOpplastedeVedleggTilVedleggstatusListe(List<OpplastetVedlegg> opplastedeVedlegg) {

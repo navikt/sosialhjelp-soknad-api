@@ -42,7 +42,10 @@ public class SoknadUnderArbeidService {
         }
     }
 
-    JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
+    public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
+        if (soknadUnderArbeid == null || soknadUnderArbeid.getData() == null) {
+            return null;
+        }
         try {
             return mapper.readValue(soknadUnderArbeid.getData(), JsonInternalSoknad.class);
         } catch (IOException e) {
