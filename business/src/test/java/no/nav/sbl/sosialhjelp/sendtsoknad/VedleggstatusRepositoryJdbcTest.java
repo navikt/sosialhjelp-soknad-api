@@ -26,6 +26,8 @@ public class VedleggstatusRepositoryJdbcTest {
     private static final String BEHANDLINGSID2 = "1100021";
     private static final String FIKSFORSENDELSEID = "12345";
     private static final String FIKSFORSENDELSEID2 = "12789";
+    private static final String ORGNUMMER = "987654";
+    private static final String NAVENHETSNAVN = "NAV Enhet";
     private static final LocalDateTime BRUKER_OPPRETTET_DATO = now().minusDays(2);
     private static final LocalDateTime BRUKER_FERDIG_DATO = now().minusSeconds(50);
     private static final LocalDateTime SENDT_DATO = now();
@@ -148,6 +150,8 @@ public class VedleggstatusRepositoryJdbcTest {
         return new SendtSoknad().withEier(eier)
                 .withBehandlingsId(behandlingsId)
                 .withFiksforsendelseId(fiksforsendelseId)
+                .withOrgnummer(ORGNUMMER)
+                .withNavEnhetsnavn(NAVENHETSNAVN)
                 .withBrukerOpprettetDato(BRUKER_OPPRETTET_DATO)
                 .withBrukerFerdigDato(BRUKER_FERDIG_DATO)
                 .withSendtDato(SENDT_DATO);
