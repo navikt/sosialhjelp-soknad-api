@@ -1,39 +1,54 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.internal.Files;
-import com.github.jknack.handlebars.io.StringTemplateSource;
-import com.github.jknack.handlebars.io.TemplateSource;
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.dialogarena.service.CmsTekst;
-import no.nav.sbl.dialogarena.service.HandlebarRegistry;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.*;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.time.Clock;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import javax.inject.Inject;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.internal.Files;
+import com.github.jknack.handlebars.io.StringTemplateSource;
+import com.github.jknack.handlebars.io.TemplateSource;
+
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.service.CmsTekst;
+import no.nav.sbl.dialogarena.service.HandlebarRegistry;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class})
@@ -64,6 +79,8 @@ public class RegistryAwareHelperTest {
     * */
 
     @Test
+    @Ignore("Ignoreres inntil det har blitt vurdert om dette har verdi eller ikke.")
+    // TODO Oskar før pull request.
     public void skrivRegistrerteHelpersTilReadme() throws Exception {
         List<Map<String, String>> helpersListe = new ArrayList<>();
 
