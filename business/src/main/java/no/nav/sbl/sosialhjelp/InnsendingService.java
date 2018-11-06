@@ -73,6 +73,7 @@ public class InnsendingService {
     List<Vedleggstatus> finnAlleVedlegg(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg) {
         List<Vedleggstatus> opplastedeVedlegg = mapOpplastedeVedleggTilVedleggstatusListe(opplastetVedleggRepository
                 .hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier()));
+
         List<Vedleggstatus> alleVedlegg = new ArrayList<>();
         if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
             alleVedlegg.addAll(opplastedeVedlegg.stream()
@@ -155,6 +156,13 @@ public class InnsendingService {
                         .withStatus(Vedleggstatus.Status.LastetOpp));
             }
         }
+        fjernDuplikateVedleggstatuser(vedleggstatuser);
         return vedleggstatuser;
+    }
+
+    List<Vedleggstatus> fjernDuplikateVedleggstatuser(List<Vedleggstatus> vedleggstatusForOpplastedeVedlegg) {
+        Set<VedleggType> vedleggTyper = new HashSet<>();
+        vedleggstatusForOpplastedeVedlegg.removeIf(vedleggstatus -> !vedleggTyper.add(vedleggstatus.getVedleggType()));
+        return vedleggstatusForOpplastedeVedlegg;
     }
 }
