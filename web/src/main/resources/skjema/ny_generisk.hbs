@@ -42,7 +42,11 @@
 		</div>
 	</div>
 	<div>
-		{{> skjema/ny_generisk/personalia}}
+		{{#if @root.utvidetSoknad}}
+			{{> skjema/ny_generisk/personalia_utvidet}}
+		{{else}}
+			{{> skjema/ny_generisk/personalia}}
+		{{/if}}
 	</div>
 	<div>
 		{{> skjema/ny_generisk/begrunnelse}}

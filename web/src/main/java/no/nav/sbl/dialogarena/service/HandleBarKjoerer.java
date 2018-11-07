@@ -63,7 +63,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
             final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
-            final HandlebarContext context = new HandlebarContext(internalSoknad);
+            final HandlebarContext context = new HandlebarContext(internalSoknad, utvidetSoknad);
             
             return getHandlebars()
                     .infiniteLoops(true)

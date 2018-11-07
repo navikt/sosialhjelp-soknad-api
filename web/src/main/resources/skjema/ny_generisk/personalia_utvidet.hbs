@@ -1,0 +1,89 @@
+{{#with data.personalia}}
+	<div class="bolk js-bolk">
+		<h2 class="bolk__tittel">{{ hentTekst "personaliabolk.tittel" }}</h2>
+		{{#if @root.utvidetSoknad}}
+			<h3>{{hentTekst "kontakt.system.personalia.sporsmal"}}</h3>
+			<span>{{hentTekst "kontakt.system.personalia.infotekst.tekst"}}</span>
+		{{/if}}
+		<ul class="fakta-liste">
+			<li>
+				<h3>{{ hentTekst "kontakt.system.personalia.navn" }}</h3>
+				<ul class="svar-liste">
+					<li>
+						<span class="verdi verdi--tekst">
+							{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}
+						</span>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<h3>{{ hentTekst "kontakt.system.personalia.fnr" }}</h3>
+				<ul class="svar-liste">
+					<li>
+						<span class="verdi verdi--tekst">
+							{{personIdentifikator.verdi}}
+						</span>
+					</li>
+				</ul>
+			</li>
+			{{personIdentifikator.verdi}}
+			{{#if statsborgerskap.verdi}}
+				<li>
+					<h3>{{ hentTekst "kontakt.system.personalia.statsborgerskap" }}</h3>
+					<ul class="svar-liste">
+						<li>
+							<span class="verdi verdi--tekst">
+								{{statsborgerskap.verdi}}
+							</span>
+						</li>
+					</ul>
+				</li>
+			{{/if}}
+			<h3>{{ hentTekst "kontakt.system.adresse.sporsmal" }}</h3>
+			<li>
+				<span class="label">Folkeregistrert adresse</span>
+				{{#with folkeregistrertAdresse}}
+					{{> skjema/ny_generisk/adresse}}
+				{{/with}}
+				<span class="label">Oppholdsadresse</span>
+				{{#with oppholdsadresse}}
+					{{> skjema/ny_generisk/adresse}}
+				{{/with}}
+			</li>
+			<h3>{{ hentTekst "kontakt.system.telefon.sporsmal" }}</h3>
+			<li>
+				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
+				<ul class="svar-liste">
+					<li>
+						{{#if telefonnummer.verdi}}
+							<span class="verdi verdi--tekst">
+								{{telefonnummer.verdi}}
+							</span>
+						{{else}}
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+							</span>
+						{{/if}}
+					</li>
+				</ul>
+			</li>
+			<h3>{{ hentTekst "kontakt.kontonummer.label" }}</h3>
+			<li>
+				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
+				<ul class="svar-liste">
+					<li>
+						{{#if kontonummer.verdi}}
+							<span class="verdi verdi--tekst">
+								{{kontonummer.verdi}}
+							</span>
+						{{else}}
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+							</span>
+						{{/if}}
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+{{/with}}
