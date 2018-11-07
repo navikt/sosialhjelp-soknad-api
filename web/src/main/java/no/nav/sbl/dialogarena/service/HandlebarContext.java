@@ -11,9 +11,11 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 public final class HandlebarContext {
     
     private final JsonInternalSoknad internalSoknad;
+    private final boolean utvidetSoknad;
 
-    public HandlebarContext(JsonInternalSoknad internalSoknad) {
+    public HandlebarContext(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) {
         this.internalSoknad = internalSoknad;
+        this.utvidetSoknad = utvidetSoknad;
     }
     
     public JsonSoknad getSoknad() {
@@ -22,5 +24,9 @@ public final class HandlebarContext {
     
     public JsonVedleggSpesifikasjon getJsonVedleggSpesifikasjon() {
         return internalSoknad.getVedlegg();
+    }
+
+    public boolean getUtvidetSoknad() {
+        return utvidetSoknad;
     }
 }
