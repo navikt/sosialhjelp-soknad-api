@@ -4,12 +4,12 @@
 		<ul class="fakta-liste">
 			<h3>{{ hentTekst "begrunnelse.hva.sporsmal" }}</h3>
 			<li>
-				<span class="label">{{ hentTekst "begrunnelse.hvorfor.label" }}</span>
+				<span class="label">{{ hentTekst "begrunnelse.hva.label" }}</span>
 				<ul class="svar-liste">
 					<li>
-						{{#if hvorforSoke.verdi}}
+						{{#if hvaSokesOm}}
 							<span class="verdi verdi--tekst">
-								{{hvorforSoke.verdi}}
+								{{hvaSokesOm}}
 							</span>
 						{{else}}
 							<span class="verdi verdi--ikkeUtfylt">
@@ -21,12 +21,11 @@
 			</li>
 			<h3>{{ hentTekst "begrunnelse.hvorfor.sporsmal" }}</h3>
 			<li>
-				<span class="label">{{ hentTekst "begrunnelse.hva.label" }}</span>
 				<ul class="svar-liste">
 					<li>
-						{{#if hvaSokesOm.verdi}}
+						{{#if hvorforSoke}}
 							<span class="verdi verdi--tekst">
-								{{hvaSokesOm.verdi}}
+								{{hvorforSoke}}
 							</span>
 						{{else}}
 							<span class="verdi verdi--ikkeUtfylt">
