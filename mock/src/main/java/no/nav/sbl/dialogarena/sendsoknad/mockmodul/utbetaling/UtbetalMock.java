@@ -7,10 +7,11 @@ import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonRequest;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import org.joda.time.*;
 import org.slf4j.Logger;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -18,6 +19,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class UtbetalMock implements UtbetalingV1 {
 
     private static final Logger logger = getLogger(UtbetalMock.class);
+    private static final LocalDateTime POSTERINGSDATO = LocalDateTime.now().minusDays(40);
+    private static final LocalDateTime UTBETALINGSDATO_INNENFOR_PERIODE = LocalDateTime.now().minusDays(30);
+    private static final LocalDateTime UTBETALINGSDATO_INNENFOR_PERIODE2 = LocalDateTime.now().minusDays(15);
+    private static final LocalDateTime UTBETALINGSDATO_UTENFOR_PERIODE = LocalDateTime.now().minusDays(35);
+    private static final LocalDateTime FORFALLSDATO = LocalDateTime.now().minusDays(25);
 
 
     @Override
@@ -45,7 +51,7 @@ public class UtbetalMock implements UtbetalingV1 {
         return new WSHentUtbetalingsinformasjonResponse()
                 .withUtbetalingListe(
                         new WSUtbetaling()
-                                .withPosteringsdato(dato(2018, 2, 21))
+                                .withPosteringsdato(dato(POSTERINGSDATO))
                                 .withUtbetaltTil(person)
                                 .withUtbetalingNettobeloep(3880.0)
                                 .withYtelseListe(
@@ -88,14 +94,14 @@ public class UtbetalMock implements UtbetalingV1 {
                                                 .withRettighetshaver(person)
                                                 .withRefundertForOrg(dummyOrg)
                                 )
-                                .withUtbetalingsdato(dato(2018, 2, 27))
-                                .withForfallsdato(dato(2018, 2, 28))
+                                .withUtbetalingsdato(dato(UTBETALINGSDATO_INNENFOR_PERIODE))
+                                .withForfallsdato(dato(FORFALLSDATO))
                                 .withUtbetaltTilKonto(bankkonto)
                                 .withUtbetalingsmelding(null)
                                 .withUtbetalingsmetode("Norsk bankkonto")
                                 .withUtbetalingsstatus("Utbetalt"),
                         new WSUtbetaling()
-                                .withPosteringsdato(dato(2018, 2, 21))
+                                .withPosteringsdato(dato(POSTERINGSDATO))
                                 .withUtbetaltTil(person)
                                 .withUtbetalingNettobeloep(18201.0)
                                 .withUtbetalingsmelding("Skatt tabell: 7103, NAV får overført ditt skattekort fra Skatteetaten og er pliktig til, å bruke dette skattekortet ...")
@@ -117,13 +123,44 @@ public class UtbetalMock implements UtbetalingV1 {
                                         .withBilagsnummer("568827408")
                                         .withRettighetshaver(person)
                                         .withRefundertForOrg(dummyOrg))
-                                .withUtbetalingsdato(dato(2018, 2, 22))
-                                .withForfallsdato(dato(2018, 2, 22))
+                                .withUtbetalingsdato(dato(UTBETALINGSDATO_INNENFOR_PERIODE2))
+                                .withForfallsdato(dato(FORFALLSDATO))
+                                .withUtbetaltTilKonto(bankkonto)
+                                .withUtbetalingsmetode("Norsk bankkonto")
+                                .withUtbetalingsstatus("Utbetalt"),
+                        new WSUtbetaling()
+                                .withPosteringsdato(dato(POSTERINGSDATO))
+                                .withUtbetaltTil(person)
+                                .withUtbetalingNettobeloep(2000.0)
+                                .withUtbetalingsmelding("Skal ikke vises fordi den er for gammel")
+                                .withYtelseListe(new WSYtelse()
+                                        .withYtelsestype(new WSYtelsestyper().withValue("Utdatert"))
+                                        .withYtelsesperiode(new WSPeriode()
+                                                .withFom(dato(2018, 2, 1))
+                                                .withTom(dato(2018, 2, 28)))
+                                        .withYtelseskomponentListe(new WSYtelseskomponent()
+                                                .withYtelseskomponenttype("Arbeidstaker")
+                                                .withSatsbeloep(1181.0)
+                                                .withSatstype("Dag")
+                                                .withYtelseskomponentbeloep(1000.0))
+                                        .withYtelseskomponentersum(2000.0)
+                                        .withTrekksum(-0.0)
+                                        .withSkattListe(new WSSkatt().withSkattebeloep(-5419.0))
+                                        .withSkattsum(-5419.0)
+                                        .withYtelseNettobeloep(18201.0)
+                                        .withBilagsnummer("568827358")
+                                        .withRettighetshaver(person)
+                                        .withRefundertForOrg(dummyOrg))
+                                .withUtbetalingsdato(dato(UTBETALINGSDATO_UTENFOR_PERIODE))
+                                .withForfallsdato(dato(FORFALLSDATO))
                                 .withUtbetaltTilKonto(bankkonto)
                                 .withUtbetalingsmetode("Norsk bankkonto")
                                 .withUtbetalingsstatus("Utbetalt")
-
                 );
+    }
+
+    public static DateTime dato(LocalDateTime localDateTime) {
+        return new DateTime(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
 
     public static DateTime dato(int y, int m, int d) {
