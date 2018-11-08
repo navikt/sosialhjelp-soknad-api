@@ -38,6 +38,6 @@ public class HentOkonomiBekreftelseHelper extends RegistryAwareHelper<String> {
 
     @Override
     public String getBeskrivelse() {
-        return "Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen";
+        return "Henter alle økonomiske bekreftelser angitt av bruker";
     }
 }

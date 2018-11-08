@@ -84,22 +84,24 @@
 					</li>
 				</ul>
 			</li>
-			<li>
-				<span class="label">{{hentTekst "dinsituasjon.studerer.true.grad.sporsmal"}}</span>
-				<ul class="svar-liste">
-					<li>
-						{{#hvisIkkeTom studentgrad}}
-							<span class="verdi verdi--tekst">
-								{{ hentTekst (concat 'dinsituasjon.studerer.true.grad.' studentgrad) }}
-							</span>
-						{{else}}
-							<span class="verdi verdi--ikkeUtfylt">
-								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-							</span>
-						{{/hvisIkkeTom}}
-					</li>
-				</ul>
-			</li>
+			{{#if erStudent}}
+				<li>
+					<span class="label">{{hentTekst "dinsituasjon.studerer.true.grad.sporsmal"}}</span>
+					<ul class="svar-liste">
+						<li>
+							{{#hvisIkkeTom studentgrad}}
+								<span class="verdi verdi--tekst">
+									{{ hentTekst (concat 'dinsituasjon.studerer.true.grad.' studentgrad) }}
+								</span>
+							{{else}}
+								<span class="verdi verdi--ikkeUtfylt">
+									<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+								</span>
+							{{/hvisIkkeTom}}
+						</li>
+					</ul>
+				</li>
+			{{/if}}
 		</ul>
 	{{/with}}
 </div>
