@@ -31,7 +31,7 @@ public class UtbetalingBolk implements BolkService {
 
     @Override
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
-        List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(30), LocalDate.now());
+        List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(40), LocalDate.now());
 
         List<Faktum> fakta = new ArrayList<>();
 
