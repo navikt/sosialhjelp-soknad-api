@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import java.util.*;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggAlleredeSendt;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransformer {
@@ -25,12 +27,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
     private static final Logger logger = getLogger(SosialhjelpVedleggTilJson.class);
 
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        List<JsonVedlegg> vedlegg;
-        if (webSoknad.erEttersending()) {
-            vedlegg = grupperVedleggForEttersendelse(webSoknad);
-        } else {
-            vedlegg = grupperVedleggFiler(webSoknad);
-        }
+        List<JsonVedlegg> vedlegg = opprettJsonVedleggFraWebSoknad(webSoknad);
 
         String json;
         
@@ -52,13 +49,24 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                 .medContent(json.getBytes());
     }
 
+    public List<JsonVedlegg> opprettJsonVedleggFraWebSoknad(WebSoknad webSoknad) {
+        List<JsonVedlegg> vedlegg;
+        if (webSoknad.erEttersending()) {
+            vedlegg = grupperVedleggForEttersendelse(webSoknad);
+        } else {
+            vedlegg = grupperVedleggFiler(webSoknad);
+        }
+        return vedlegg;
+    }
+
     private List<JsonVedlegg> grupperVedleggForEttersendelse(WebSoknad webSoknad) {
         List<Vedlegg> alleVedlegg = webSoknad.getVedlegg();
 
         Map<String, JsonVedlegg> vedleggMap = new HashMap<>();
 
         for (Vedlegg vedlegg : alleVedlegg) {
-            if (vedlegg.getInnsendingsvalg().erIkke(LastetOpp)) {
+            if (vedlegg.getInnsendingsvalg().erIkke(LastetOpp) && vedlegg.getInnsendingsvalg().erIkke(VedleggAlleredeSendt)
+            && vedlegg.getInnsendingsvalg().erIkke(VedleggKreves)) {
                 continue;
             }
 
@@ -69,28 +77,29 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                 jsonVedlegg = new JsonVedlegg()
                         .withType(vedlegg.getSkjemaNummer())
                         .withTilleggsinfo(vedlegg.getSkjemanummerTillegg())
+                        .withStatus(vedlegg.getInnsendingsvalg().name())
                         .withFiler(new ArrayList<>());
                 vedleggMap.put(sammensattNavn, jsonVedlegg);
             }
 
-            jsonVedlegg.getFiler().add(new JsonFiler()
-                    .withFilnavn(vedlegg.getFilnavn())
-                    .withSha512(vedlegg.getSha512())
-            );
-
-
+            if (vedlegg.getInnsendingsvalg().er(LastetOpp)) {
+                jsonVedlegg.getFiler().add(new JsonFiler()
+                        .withFilnavn(vedlegg.getFilnavn())
+                        .withSha512(vedlegg.getSha512()));
+            }
         }
 
         return new ArrayList<>(vedleggMap.values());
     }
 
-    protected List<JsonVedlegg> grupperVedleggFiler(WebSoknad webSoknad) {
+    List<JsonVedlegg> grupperVedleggFiler(WebSoknad webSoknad) {
         List<Vedlegg> vedlegg = webSoknad.getVedlegg();
 
         Map<Long, JsonVedlegg> vedleggMap = new HashMap<>();
 
         for (Vedlegg v : vedlegg) {
-            if (v.getInnsendingsvalg().erIkke(LastetOpp)) {
+            if (v.getInnsendingsvalg().erIkke(LastetOpp) && v.getInnsendingsvalg().erIkke(VedleggAlleredeSendt)
+                    && v.getInnsendingsvalg().erIkke(VedleggKreves)) {
                 continue;
             }
 
@@ -102,14 +111,16 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                 jsonVedlegg = new JsonVedlegg()
                         .withType(v.getSkjemaNummer())
                         .withTilleggsinfo(v.getSkjemanummerTillegg())
+                        .withStatus(v.getInnsendingsvalg().name())
                         .withFiler(new ArrayList<>());
                 vedleggMap.put(belopFaktumId, jsonVedlegg);
             }
 
-            jsonVedlegg.getFiler().add(new JsonFiler()
-                    .withFilnavn(v.getFilnavn())
-                    .withSha512(v.getSha512())
-            );
+            if (v.getInnsendingsvalg().er(LastetOpp)) {
+                jsonVedlegg.getFiler().add(new JsonFiler()
+                        .withFilnavn(v.getFilnavn())
+                        .withSha512(v.getSha512()));
+            }
         }
         return new ArrayList<>(vedleggMap.values());
     }
