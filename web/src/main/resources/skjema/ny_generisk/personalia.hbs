@@ -16,13 +16,21 @@
 			{{/if}}
 			<h3>{{ hentTekst "kontakt.system.adresse.sporsmal" }}</h3>
 			<li>
-				<span class="label">Folkeregistrert adresse</span>
+				<span class="label">{{hentTekst "kontakt.system.oppholdsadresse.folkeregistrertAdresse"}}</span>
 				{{#with folkeregistrertAdresse}}
 					{{> skjema/ny_generisk/adresse}}
 				{{/with}}
-				<span class="label">Oppholdsadresse</span>
+				<span class="label">{{hentTekst "kontakt.system.oppholdsadresse.hvorOppholder"}}</span>
 				{{#with oppholdsadresse}}
 					{{> skjema/ny_generisk/adresse}}
+				{{else}}
+					<ul class="svar-liste">
+						<li>
+							<span class="verdi verdi--ikkeUtfylt">
+								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+							</span>
+						</li>
+					</ul>
 				{{/with}}
 			</li>
 			<h3>{{ hentTekst "kontakt.system.telefon.sporsmal" }}</h3>
@@ -47,14 +55,20 @@
 				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
 				<ul class="svar-liste">
 					<li>
-						{{#if kontonummer.verdi}}
-							<span class="verdi verdi--tekst">
-								{{kontonummer.verdi}}
+						{{#if kontonummer.harIkkeKonto}}
+							<span class="verdi verdi--radio">
+								{{hentTekst "kontakt.kontonummer.harikke.true"}}
 							</span>
 						{{else}}
-							<span class="verdi verdi--ikkeUtfylt">
-								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-							</span>
+							{{#if kontonummer.verdi}}
+								<span class="verdi verdi--tekst">
+									{{kontonummer.verdi}}
+								</span>
+							{{else}}
+								<span class="verdi verdi--ikkeUtfylt">
+									<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+								</span>
+							{{/if}}
 						{{/if}}
 					</li>
 				</ul>
