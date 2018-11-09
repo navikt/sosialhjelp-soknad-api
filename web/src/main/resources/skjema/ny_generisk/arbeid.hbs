@@ -53,6 +53,9 @@
 		{{else}}
 			<p>{{ hentTekst "arbeidsforhold.ingen" }}</p>
 		{{/if}}
+		{{#if @root.utvidetSoknad}}
+			{{ hentTekst "opplysninger.arbeidsituasjon.kommentarer.label" }}
+		{{/if}}
 		{{#if kommentarTilArbeidsforhold.verdi}}
 			<ul class="fakta-liste">
 				<span class="label">{{ hentTekst "opplysninger.arbeidsituasjon.kommentarer.label" }}</span>
@@ -82,6 +85,9 @@
 							</span>
 						{{/hvisIkkeTom}}
 					</li>
+					{{#if @root.utvidetSoknad}}
+						{{{hentSvaralternativer "dinsituasjon.studerer"}}}
+					{{/if}}
 				</ul>
 			</li>
 			{{#if erStudent}}
@@ -99,6 +105,9 @@
 								</span>
 							{{/hvisIkkeTom}}
 						</li>
+						{{#if @root.utvidetSoknad}}
+							{{{hentSvaralternativer "dinsituasjon.studerer.true.grad"}}}
+						{{/if}}
 					</ul>
 				</li>
 			{{/if}}

@@ -3,7 +3,7 @@
 		<h2 class="bolk__tittel">{{ hentTekst "personaliabolk.tittel" }}</h2>
 		{{#if @root.utvidetSoknad}}
 			<h3>{{hentTekst "kontakt.system.personalia.sporsmal"}}</h3>
-			<span>{{hentTekst "kontakt.system.personalia.infotekst.tekst"}}</span>
+			{{{settInnInfotekst "kontakt.system.personalia.infotekst.tekst"}}}
 		{{/if}}
 		<ul class="fakta-liste">
 			<li>
@@ -26,7 +26,6 @@
 					</li>
 				</ul>
 			</li>
-			{{personIdentifikator.verdi}}
 			{{#if statsborgerskap.verdi}}
 				<li>
 					<h3>{{ hentTekst "kontakt.system.personalia.statsborgerskap" }}</h3>
@@ -39,47 +38,72 @@
 					</ul>
 				</li>
 			{{/if}}
-			<h3>{{ hentTekst "kontakt.system.adresse.sporsmal" }}</h3>
+			<h3>{{ hentTekst "soknadsmottaker.sporsmal" }}</h3>
+			{{{settInnHjelpetekst "soknadsmottaker.hjelpetekst.tekst"}}}
+			{{{settInnInfotekst "soknadsmottaker.infotekst.tekst"}}}
 			<li>
-				<span class="label">Folkeregistrert adresse</span>
+				<span class="label">{{hentTekst "kontakt.system.oppholdsadresse.folkeregistrertAdresse"}}</span>
 				{{#with folkeregistrertAdresse}}
 					{{> skjema/ny_generisk/adresse}}
 				{{/with}}
-				<span class="label">Oppholdsadresse</span>
+				<span class="label">{{hentTekst "kontakt.system.oppholdsadresse.hvorOppholder"}}</span>
 				{{#with oppholdsadresse}}
 					{{> skjema/ny_generisk/adresse}}
 				{{/with}}
 			</li>
-			<h3>{{ hentTekst "kontakt.system.telefon.sporsmal" }}</h3>
-			<li>
-				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
-				<ul class="svar-liste">
-					<li>
-						{{#if telefonnummer.verdi}}
+			{{#hvisLik telefonnummer.kilde "system"}}
+				<h3>{{ hentTekst "kontakt.system.telefoninfo.sporsmal" }}</h3>
+				{{{settInnInfotekst "kontakt.system.telefoninfo.infotekst.tekst"}}}
+				<li>
+					<span class="label">{{ hentTekst "kontakt.system.telefon.label" }}</span>
+					<ul class="svar-liste">
+						<li>
 							<span class="verdi verdi--tekst">
 								{{telefonnummer.verdi}}
 							</span>
-						{{else}}
-							<span class="verdi verdi--ikkeUtfylt">
-								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-							</span>
-						{{/if}}
-					</li>
-				</ul>
-			</li>
-			<h3>{{ hentTekst "kontakt.kontonummer.label" }}</h3>
+						</li>
+					</ul>
+				</li>
+			{{else}}
+				<h3>{{ hentTekst "kontakt.telefon.sporsmal" }}</h3>
+				{{{settInnInfotekst "kontakt.telefon.infotekst.tekst"}}}
+				<li>
+					<span class="label">{{ hentTekst "kontakt.telefon.label" }}</span>
+					<ul class="svar-liste">
+						<li>
+							{{#if telefonnummer.verdi}}
+								<span class="verdi verdi--tekst">
+									{{telefonnummer.verdi}}
+								</span>
+							{{else}}
+								<span class="verdi verdi--ikkeUtfylt">
+									<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+								</span>
+							{{/if}}
+						</li>
+					</ul>
+				</li>
+			{{/hvisLik}}
+			<h3>{{ hentTekst "kontakt.kontonummer.sporsmal" }}</h3>
+			{{{settInnInfotekst "kontakt.kontonummer.infotekst.tekst"}}}
 			<li>
-				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
+				<span class="label">{{ hentTekst "kontakt.kontonummer.label" }}</span>
 				<ul class="svar-liste">
 					<li>
-						{{#if kontonummer.verdi}}
-							<span class="verdi verdi--tekst">
-								{{kontonummer.verdi}}
+						{{#if kontonummer.harIkkeKonto}}
+							<span class="verdi verdi--radio">
+								{{hentTekst "kontakt.kontonummer.harikke.true"}}
 							</span>
 						{{else}}
-							<span class="verdi verdi--ikkeUtfylt">
-								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-							</span>
+							{{#if kontonummer.verdi}}
+								<span class="verdi verdi--tekst">
+									{{kontonummer.verdi}}
+								</span>
+							{{else}}
+								<span class="verdi verdi--ikkeUtfylt">
+									<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+								</span>
+							{{/if}}
 						{{/if}}
 					</li>
 				</ul>
