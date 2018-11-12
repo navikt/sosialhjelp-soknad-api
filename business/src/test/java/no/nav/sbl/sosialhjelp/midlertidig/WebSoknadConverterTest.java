@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -28,6 +29,7 @@ import java.util.Properties;
 import static java.time.Month.AUGUST;
 import static java.util.Collections.emptyList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.FNR_KEY;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -42,6 +44,9 @@ public class WebSoknadConverterTest {
     private static final String BEHANDLINGSID = "1100001L";
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
     private static final String EIER = "12345678901";
+    private static final String TYPE = "bostotte";
+    private static final String TILLEGGSINFO = "annetboutgift";
+    private static final String FILNAVN = "dokumentasjon.pdf";
 
     private NavMessageSource messageSource = mock(NavMessageSource.class);
     @InjectMocks
@@ -67,18 +72,25 @@ public class WebSoknadConverterTest {
     }
 
     @Test
-    public void webSoknadTilJsonReturnererNullForEttersendelse() {
-        byte[] dataForEttersending = webSoknadConverter.webSoknadTilJson(lagGyldigWebSoknadForEttersending());
-
-        assertThat(dataForEttersending, nullValue());
-    }
-
-    @Test
     public void mapWebSoknadTilJsonSoknadInternalLagerJsonSoknadInternalMedDataFraWebSoknad() {
         JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad());
 
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi(), is(EIER));
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse().getType().value(), is("gateadresse"));
+    }
+
+    @Test
+    public void mapWebSoknadTilJsonSoknadInternalReturnererKunVedleggForEttersendelse() {
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending());
+
+        JsonVedlegg vedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
+        assertThat(jsonInternalSoknad.getSoknad(), nullValue());
+        assertThat(jsonInternalSoknad.getVedlegg().getVedlegg().size(), is(1));
+        assertThat(vedlegg.getType(), is(TYPE));
+        assertThat(vedlegg.getTilleggsinfo(), is(TILLEGGSINFO));
+        assertThat(vedlegg.getStatus(), is(LastetOpp.name()));
+        assertThat(vedlegg.getFiler().get(0).getFilnavn(), is(FILNAVN));
+        assertThat(vedlegg.getFiler().get(0).getSha512(), notNullValue());
     }
 
     @Test
@@ -160,6 +172,14 @@ public class WebSoknadConverterTest {
     }
 
     private WebSoknad lagGyldigWebSoknadForEttersending() {
-        return lagGyldigWebSoknad().medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET);
+        Vedlegg vedlegg = new Vedlegg()
+                .medInnsendingsvalg(LastetOpp)
+                .medSkjemaNummer(TYPE)
+                .medSkjemanummerTillegg(TILLEGGSINFO)
+                .medFilnavn(FILNAVN)
+                .medSha512("123");
+        return lagGyldigWebSoknad()
+                .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
+                .medVedlegg(vedlegg);
     }
 }
