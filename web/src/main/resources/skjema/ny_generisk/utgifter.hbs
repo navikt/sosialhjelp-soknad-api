@@ -13,7 +13,7 @@
 				</li>
 			{{/hentOkonomiBekreftelse}}
 			
-			{{#if @root.data.familie.forsorgerplikt.harForsorgerplikt}}
+			{{#if @root.soknad.data.familie.forsorgerplikt.harForsorgerplikt}}
 				<h3>{{ hentTekst "utgifter.barn.sporsmal" }}</h3>
 				{{#hentOkonomiBekreftelse "barneutgifter"}}
 					{{> skjema/ny_generisk/utgifter_barneutgifter}}
