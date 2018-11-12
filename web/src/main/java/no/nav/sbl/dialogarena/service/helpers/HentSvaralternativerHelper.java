@@ -92,7 +92,8 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
     private static boolean shouldIncludeSubKey(String subKey) {
         return !subKey.equals("sporsmal") &&
                 !subKey.equals("infotekst") &&
-                !subKey.equals("hjelpetekst");
+                !subKey.equals("hjelpetekst") &&
+                !subKey.equals("label");
     }
     
     private void createHtmlLayout(final Set<String> svarAlternativer, StringBuilder stringBuilder) {
