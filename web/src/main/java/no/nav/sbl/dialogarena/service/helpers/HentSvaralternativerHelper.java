@@ -93,7 +93,8 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
         return !subKey.equals("sporsmal") &&
                 !subKey.equals("infotekst") &&
                 !subKey.equals("hjelpetekst") &&
-                !subKey.equals("label");
+                !subKey.equals("label") &&
+                !subKey.equals("feilmelding");
     }
     
     private void createHtmlLayout(final Set<String> svarAlternativer, StringBuilder stringBuilder) {
