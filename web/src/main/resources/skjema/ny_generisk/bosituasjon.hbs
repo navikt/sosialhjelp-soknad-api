@@ -7,9 +7,15 @@
 				<ul class="svar-liste">
 					<li>
 						{{#hvisIkkeTom botype}}
-							<span class="verdi verdi--tekst">
-								{{ hentTekst (concat 'bosituasjon.' botype) }}
-							</span>
+							{{#hvisIkkeTom (hentTekst (concat 'bosituasjon.annet.botype.' botype))}}
+								<span class="verdi verdi--tekst">
+									{{ hentTekst (concat 'bosituasjon.annet.botype.' botype) }}
+								</span>
+							{{else}}
+								<span class="verdi verdi--tekst">
+									{{ hentTekst (concat 'bosituasjon.' botype) }}
+								</span>
+							{{/hvisIkkeTom}}
 						{{else}}
 							<span class="verdi verdi--ikkeUtfylt">
 								<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
