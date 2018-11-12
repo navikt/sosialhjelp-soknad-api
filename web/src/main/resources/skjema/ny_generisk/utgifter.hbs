@@ -3,6 +3,9 @@
 		<h2 class="bolk__tittel">{{ hentTekst "utgifterbolk.tittel" }}</h2>
 		<ul class="fakta-liste">
 			<h3>{{ hentTekst "utgifter.boutgift.sporsmal" }}</h3>
+			{{#if @root.utvidetSoknad}}
+				{{{ settInnInfotekst "utgifter.boutgift.infotekst.tekst" }}}
+			{{/if}}
 			{{#hentOkonomiBekreftelse "boutgifter"}}
 				{{> skjema/ny_generisk/utgifter_boutgifter}}
 			{{else}}
@@ -12,9 +15,17 @@
 					</span>
 				</li>
 			{{/hentOkonomiBekreftelse}}
+			<li>
+				{{#if @root.utvidetSoknad}}
+					{{{hentSvaralternativer "utgifter.boutgift.true.type"}}}
+				{{/if}}
+			</li>
 			
 			{{#if @root.soknad.data.familie.forsorgerplikt.harForsorgerplikt}}
 				<h3>{{ hentTekst "utgifter.barn.sporsmal" }}</h3>
+				{{#if @root.utvidetSoknad}}
+					{{{ settInnInfotekst "utgifter.barn.infotekst.tekst" }}}
+				{{/if}}
 				{{#hentOkonomiBekreftelse "barneutgifter"}}
 					{{> skjema/ny_generisk/utgifter_barneutgifter}}
 				{{else}}
@@ -24,6 +35,11 @@
 						</span>
 					</li>
 				{{/hentOkonomiBekreftelse}}
+				<li>
+					{{#if @root.utvidetSoknad}}
+						{{{hentSvaralternativer "utgifter.boutgift.true.type"}}}
+					{{/if}}
+				</li>
 			{{/if}}
 		</ul>
 	{{/with}}

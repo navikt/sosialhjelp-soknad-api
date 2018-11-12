@@ -4,6 +4,9 @@
 		<ul class="fakta-liste">
 			{{#with opplysninger}}
 				<h3>{{hentTekst "navytelser.sporsmal"}}</h3>
+				{{#if @root.utvidetSoknad}}
+					{{{ settInnInfotekst "navytelser.infotekst.tekst" }}}
+				{{/if}}
 				<h3>{{hentTekst "utbetalinger.sporsmal"}}</h3>
 				{{#hvisUtbetalingFinnes "navytelse"}}
 					{{#each utbetaling}}
@@ -70,6 +73,9 @@
 						</span>
 					</li>
 				{{/hvisUtbetalingFinnes}}
+				{{#if @root.utvidetSoknad}}
+					{{{ settInnInfotekst "utbetalinger.infotekst.tekst" }}}
+				{{/if}}
 			
 				<h3>{{hentTekst "inntekt.bostotte.sporsmal"}}</h3>
 				{{#hentOkonomiBekreftelse "bostotte"}}
@@ -89,8 +95,16 @@
 						</span>
 					</li>
 				{{/hentOkonomiBekreftelse}}
+				<li>
+					{{#if @root.utvidetSoknad}}
+						{{{hentSvaralternativer "inntekt.bostotte"}}}
+					{{/if}}
+				</li>
 				
 				<h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>
+				{{#if @root.utvidetSoknad}}
+						{{{settInnHjelpetekst "inntekt.eierandeler.hjelpetekst.tekst"}}}
+					{{/if}}
 				{{#hentOkonomiBekreftelse "verdi"}}
 					{{> skjema/ny_generisk/inntekt_verdi}}
 				{{else}}
@@ -100,8 +114,18 @@
 						</span>
 					</li>
 				{{/hentOkonomiBekreftelse}}
+				{{#if @root.utvidetSoknad}}
+					<li>
+						{{{hentSvaralternativer "inntekt.eierandeler"}}}
+						<span>Under Ja:</span>
+						{{{hentSvaralternativer "inntekt.eierandeler.true.type"}}}
+					</li>
+				{{/if}}
 				
 				<h3>{{ hentTekst "inntekt.bankinnskudd.true.type.sporsmal" }}</h3>
+				{{#if @root.utvidetSoknad}}
+					{{{settInnHjelpetekst "inntekt.bankinnskudd.true.type.hjelpetekst.tekst"}}}
+				{{/if}}
 				{{#hentOkonomiBekreftelse "sparing"}}
 					{{> skjema/ny_generisk/inntekt_sparing}}
 				{{else}}
@@ -111,8 +135,16 @@
 						</span>
 					</li>
 				{{/hentOkonomiBekreftelse}}
+				{{#if @root.utvidetSoknad}}
+					<li>
+						{{{hentSvaralternativer "inntekt.bankinnskudd.true.type"}}}
+					</li>
+				{{/if}}
 				
 				<h3>{{ hentTekst "inntekt.inntekter.sporsmal" }}</h3>
+				{{#if @root.utvidetSoknad}}
+					{{{settInnHjelpetekst "inntekt.inntekter.hjelpetekst.tekst"}}}
+				{{/if}}
 				{{#hentOkonomiBekreftelse "utbetaling"}}
 					{{> skjema/ny_generisk/inntekt_utbetaling}}
 				{{else}}
@@ -122,6 +154,13 @@
 						</span>
 					</li>
 				{{/hentOkonomiBekreftelse}}
+				{{#if @root.utvidetSoknad}}
+					<li>
+						{{{hentSvaralternativer "inntekt.inntekter"}}}
+						<span>Under Ja:</span>
+						{{{hentSvaralternativer "inntekt.inntekter.true.type"}}}
+					</li>
+				{{/if}}
 			{{/with}}
 		</ul>
 	{{/with}}
