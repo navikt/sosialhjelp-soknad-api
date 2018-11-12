@@ -2,11 +2,17 @@
 	{{#with data.familie}}
 		<h2 class="bolk__tittel">{{ hentTekst "familiebolk.tittel" }}</h2>
 		<h3>{{ hentTekst "system.familie.sivilstatus.sporsmal" }}</h3>
+		{{#if @root.utvidetSoknad}}
+			{{hentTekst "system.familie.sivilstatus"}}
+		{{/if}}
 		<ul class="fakta-liste">
 			<li>
 				<ul class="svar-liste">
 					<li>
 						{{#if sivilstatus.status}}
+							{{#if @root.utvidetSoknad}}
+								<h4>{{ hentTekst "system.familie.sivilstatus.label" }}</h4>
+							{{/if}}
 							<span class="verdi verdi--tekst">
 								{{ hentTekst (concat 'familie.sivilstatus.' sivilstatus.status) }}
 							</span>
@@ -79,7 +85,12 @@
 					</li>
 				{{/hvisIkkeTom}}
 			{{/with}}
-				
+			{{#if @root.utvidetSoknad}}
+				{{#hvisLik sivilstatus.status "gift"}}
+					{{{ settInnInfotekst "system.familie.sivilstatus.informasjonspanel.tittel" }}}
+					{{{ settInnInfotekst "system.familie.sivilstatus.informasjonspanel.tekst" }}}
+				{{/hvisLik}}
+			{{/if}}
 			{{#if forsorgerplikt.harForsorgerplikt.verdi}}
 				<h3>{{ hentTekst "familierelasjon.faktum.sporsmal" }}</h3>
 				{{#each forsorgerplikt.ansvar}}
@@ -122,6 +133,9 @@
 					{{/hvisIkkeTom}}
 					<li>
 						<span class="label">{{ hentTekst "system.familie.barn.true.barn.deltbosted.sporsmal" }}</span>
+						{{#if @root.utvidetSoknad}}
+							{{{settInnHjelpetekst "system.familie.barn.true.barn.deltbosted.hjelpetekst.tekst"}}}
+						{{/if}}
 						<ul class="svar-liste">
 							<li>
 								{{#hvisIkkeTom harDeltBosted.verdi}}
@@ -134,6 +148,9 @@
 									</span>
 								{{/hvisIkkeTom}}
 							</li>
+							{{#if @root.utvidetSoknad}}
+								{{{hentSvaralternativer "system.familie.barn.true.barn.deltbosted"}}}
+							{{/if}}
 						</ul>
 					</li>
 					{{#unless erFolkeregistrertSammen.verdi}}
@@ -151,6 +168,9 @@
 										</span>
 									{{/hvisIkkeTom}}
 								</li>
+								{{#if @root.utvidetSoknad}}
+									{{{hentSvaralternativer "system.familie.barn.true.barn.grad"}}}
+								{{/if}}
 							</ul>
 						</li>
 					{{/unless}}
@@ -169,6 +189,9 @@
 								</span>
 							{{/hvisIkkeTom}}
 						</li>
+						{{#if @root.utvidetSoknad}}
+							{{{hentSvaralternativer "familie.barn.true.barnebidrag"}}}
+						{{/if}}
 					</ul>
 				</li>
 			{{/if}}

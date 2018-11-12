@@ -22,6 +22,13 @@
 							</span>
 						{{/hvisIkkeTom}}
 					</li>
+					{{#if @root.utvidetSoknad}}
+						{{{hentSvaralternativer "bosituasjon"}}}
+					{{/if}}
+					<span>Under {{hentTekst "bosituasjon.annet"}}:</span>
+					{{#if @root.utvidetSoknad}}
+						{{{hentSvaralternativer "bosituasjon.annet.botype"}}}
+					{{/if}}
 				</ul>
 			</li>
 			<h3 class="label">{{ hentTekst "bosituasjon.antallpersoner.sporsmal" }}</h3>
