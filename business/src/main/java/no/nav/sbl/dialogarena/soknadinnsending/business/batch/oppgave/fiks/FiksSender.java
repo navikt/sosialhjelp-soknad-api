@@ -6,8 +6,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
-import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.springframework.stereotype.Service;
 
@@ -24,21 +24,22 @@ public class FiksSender {
     static final String SOKNAD_TIL_NAV = "Søknad til NAV";
     static final String ETTERSENDELSE_TIL_NAV = "Ettersendelse til NAV";
     public static String KRYPTERING_DISABLED = "feature.fiks.kryptering.disabled";
+    private boolean SKAL_KRYPTERE = !Boolean.valueOf(System.getProperty(KRYPTERING_DISABLED, "false"));
 
-    @Inject
     private ForsendelsesServiceV9 forsendelsesService;
-
-    @Inject
     private FillagerService fillager;
-
-    @Inject
     private DokumentKrypterer dokumentKrypterer;
-
-    @Inject
     private InnsendingService innsendingService;
+    private FiksDokumentHelper fiksDokumentHelper;
 
     @Inject
-    private SoknadUnderArbeidService soknadUnderArbeidService;
+    public FiksSender(ForsendelsesServiceV9 forsendelsesService, FillagerService fillager, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService) {
+        this.forsendelsesService = forsendelsesService;
+        this.fillager = fillager;
+        this.dokumentKrypterer = dokumentKrypterer;
+        this.innsendingService = innsendingService;
+        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService);
+    }
 
     private final Printkonfigurasjon fakePrintConfig = new Printkonfigurasjon()
             .withBrevtype(Brevtype.APOST)
@@ -51,9 +52,7 @@ public class FiksSender {
                 .withPostnr("0000")
                 .withPoststed("Ikke send");
 
-        final boolean skalKryptere = skalKryptere();
-
-        final Forsendelse forsendelse = opprettForsendelse(data, fakeAdresse, skalKryptere);
+        final Forsendelse forsendelse = opprettForsendelse(data, fakeAdresse);
 
         return forsendelsesService.sendForsendelse(forsendelse);
     }
@@ -64,14 +63,11 @@ public class FiksSender {
                 .withPostnr("0000")
                 .withPoststed("Ikke send");
 
-        final boolean skalKryptere = skalKryptere();
-
-        final Forsendelse forsendelse = opprettForsendelse(sendtSoknad, fakeAdresse, skalKryptere);
-
+        final Forsendelse forsendelse = opprettForsendelse(sendtSoknad, fakeAdresse);
         return forsendelsesService.sendForsendelse(forsendelse);
     }
 
-    Forsendelse opprettForsendelse(FiksData data, PostAdresse fakeAdresse, boolean skalKryptere) {
+    Forsendelse opprettForsendelse(FiksData data, PostAdresse fakeAdresse) {
         return new Forsendelse()
                     .withMottaker(new Adresse()
                             .withDigitalAdresse(
@@ -83,11 +79,11 @@ public class FiksSender {
                     .withTittel(erNySoknad(data.ettersendelsePa) ? SOKNAD_TIL_NAV : ETTERSENDELSE_TIL_NAV)
                     .withKunDigitalLevering(false)
                     .withPrintkonfigurasjon(fakePrintConfig)
-                    .withKryptert(skalKryptere)
-                    .withKrevNiva4Innlogging(skalKryptere)
+                .withKryptert(SKAL_KRYPTERE)
+                .withKrevNiva4Innlogging(SKAL_KRYPTERE)
                     .withSvarPaForsendelse(erNySoknad(data.ettersendelsePa) ? null : data.ettersendelsePa) // For ettersendelser
                     .withDokumenter(data.dokumentInfoer.stream()
-                            .map(i -> fiksDokumentFraDokumentInfo(i, skalKryptere))
+                            .map(i -> fiksDokumentFraDokumentInfo(i))
                             .collect(toList()))
                     .withMetadataFraAvleverendeSystem(
                             new NoarkMetadataFraAvleverendeSakssystem()
@@ -95,7 +91,7 @@ public class FiksSender {
                     );
     }
 
-    Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse, boolean skalKryptere) {
+    Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
         final SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
         return new Forsendelse()
                 .withMottaker(new Adresse()
@@ -108,35 +104,41 @@ public class FiksSender {
                 .withTittel(sendtSoknad.erEttersendelse() ? ETTERSENDELSE_TIL_NAV : SOKNAD_TIL_NAV)
                 .withKunDigitalLevering(false)
                 .withPrintkonfigurasjon(fakePrintConfig)
-                .withKryptert(skalKryptere)
-                .withKrevNiva4Innlogging(skalKryptere)
+                .withKryptert(SKAL_KRYPTERE)
+                .withKrevNiva4Innlogging(SKAL_KRYPTERE)
                 .withSvarPaForsendelse(sendtSoknad.erEttersendelse() ?
                         innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).getFiksforsendelseId() : null)
-                .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid, skalKryptere))
+                .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid))
                 .withMetadataFraAvleverendeSystem(
                         new NoarkMetadataFraAvleverendeSakssystem()
                                 .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
                 );
     }
 
-    Collection<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid, boolean skalKryptere) {
-        List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
-        //hent vedlegg fra json
-        JsonInternalSoknad soknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);//flytte til service?
-
-        if (soknadUnderArbeid.erEttersendelse()) {
-/*            infoer.add(leggTilEttersendelsePdf(metadata.hovedskjema));
-            infoer.add(leggTilVedleggJson(metadata.hovedskjema));
-            infoer.addAll(leggTilVedlegg(metadata.vedlegg));*/
-        } else {
-/*            infoer.add(leggTilSoknadJson(metadata.hovedskjema));
-            infoer.add(leggTilPdf(metadata.hovedskjema));
-            infoer.add(leggTilVedleggJson(metadata.hovedskjema));
-            infoer.add(leggTilJuridiskPdf(metadata.hovedskjema));
-            infoer.addAll(leggTilVedlegg(metadata.vedlegg));*/
+    List<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+        final JsonInternalSoknad internalSoknad = innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
+        if (internalSoknad == null) {
+            throw new RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler");
+        } else if (!soknadUnderArbeid.erEttersendelse() && internalSoknad.getSoknad() == null) {
+            throw new RuntimeException("Kan ikke sende søknad fordi søknaden mangler");
+        } else if (soknadUnderArbeid.erEttersendelse() && internalSoknad.getVedlegg() == null) {
+            throw new RuntimeException("Kan ikke sende ettersendelse fordi vedlegg mangler");
         }
 
-        return null;
+        List<Dokument> fiksDokumenter = new ArrayList<>();
+        if (soknadUnderArbeid.erEttersendelse()) {
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
+            fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid, internalSoknad));
+        } else {
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForPdf(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
+            fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid, internalSoknad));
+        }
+
+        return fiksDokumenter;
     }
 
     private boolean erNySoknad(String ettersendelsePa) {
@@ -151,28 +153,17 @@ public class FiksSender {
         return environment + "-";
     }
 
-    public Dokument fiksDokumentFraDokumentInfo(FiksData.DokumentInfo info, boolean skalKryptere) {
+    public Dokument fiksDokumentFraDokumentInfo(FiksData.DokumentInfo info) {
         byte[] filData = fillager.hentFil(info.uuid);
 
         final String filnavn = FILNAVN_MAPPER.containsKey(info.filnavn) ? FILNAVN_MAPPER.get(info.filnavn) : info.filnavn;
 
-        if (skalKryptere) {
-            filData = dokumentKrypterer.krypterData(filData);
-        }
-
-        ByteDataSource dataSource = new ByteDataSource(filData);
-        dataSource.setName(filnavn);
-        dataSource.setContentType("application/octet-stream");
-
+        ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(filnavn, filData);
         return new Dokument()
                 .withFilnavn(filnavn)
                 .withMimetype(info.mimetype != null ? info.mimetype : "application/pdf")
                 .withEkskluderesFraPrint(info.ekskluderesFraPrint)
                 .withData(new DataHandler(dataSource));
-    }
-
-    private boolean skalKryptere() {
-        return !Boolean.valueOf(System.getProperty(KRYPTERING_DISABLED, "false"));
     }
 
     private static final Map<String, String> FILNAVN_MAPPER = new ImmutableMap.Builder<String, String>()
