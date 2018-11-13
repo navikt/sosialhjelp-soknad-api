@@ -33,9 +33,15 @@
 					</ul>
 				{{/with}}
 			</li>
-			<h3>{{ hentTekst "kontakt.system.telefon.sporsmal" }}</h3>
-			<li>
-				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
+			{{#hvisLik telefonnummer.kilde "system"}}
+				<h3>{{ hentTekst "kontakt.system.telefoninfo.sporsmal" }}</h3>
+				<li>
+					<span class="label">{{ hentTekst "kontakt.system.telefon.label" }}</span>
+			{{else}}
+				<h3>{{ hentTekst "kontakt.telefon.sporsmal" }}</h3>
+				<li>
+					<span class="label">{{ hentTekst "kontakt.telefon.label" }}</span>
+			{{/hvisLik}}
 				<ul class="svar-liste">
 					<li>
 						{{#if telefonnummer.verdi}}
@@ -50,9 +56,9 @@
 					</li>
 				</ul>
 			</li>
-			<h3>{{ hentTekst "kontakt.kontonummer.label" }}</h3>
+			<h3>{{ hentTekst "kontakt.kontonummer.sporsmal" }}</h3>
 			<li>
-				<span class="label">{{ hentTekst "kontakt.system.personalia.telefonnummer.label" }}</span>
+				<span class="label">{{ hentTekst "kontakt.kontonummer.label" }}</span>
 				<ul class="svar-liste">
 					<li>
 						{{#if kontonummer.harIkkeKonto}}
