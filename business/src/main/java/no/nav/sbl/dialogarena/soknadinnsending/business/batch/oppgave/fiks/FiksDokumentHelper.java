@@ -66,10 +66,10 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
-    Dokument lagDokumentForPdf(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
-        byte[] soknadPdf = null;//hent fra ny funksjonalitet
+        byte[] soknadPdf = new byte[]{1, 2, 3};//hent fra ny funksjonalitet
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadPdf);
         return new Dokument()
@@ -82,7 +82,7 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = null;//hent fra ny funksjonalitet
+        byte[] juridiskPdf = new byte[]{1, 2, 3};//hent fra ny funksjonalitet
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
         return new Dokument()
@@ -92,10 +92,23 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
+    Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad) {
+        final String filnavn = "Brukerkvittering.pdf";
+        final String mimetype = "application/pdf";
+        byte[] juridiskPdf = new byte[]{1, 2, 3};//hent fra ny funksjonalitet
+
+        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
+        return new Dokument()
+                .withFilnavn(filnavn)
+                .withMimetype(mimetype)
+                .withEkskluderesFraPrint(true)
+                .withData(new DataHandler(dataSource));
+    }
+
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "ettersendelse.pdf";
         final String mimetype = "application/pdf";
-        byte[] ettersendelsePdf = null;//hent fra ny funksjonalitet
+        byte[] ettersendelsePdf = new byte[]{1, 2, 3};//hent fra ny funksjonalitet
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, ettersendelsePdf);
         return new Dokument()
@@ -132,10 +145,7 @@ public class FiksDokumentHelper {
     }
 
     Dokument opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg, JsonFiler jsonFil) {
-        String filnavn = jsonFil.getFilnavn();
-        if (filnavn.equals("L7")) {
-            filnavn = "Brukerkvittering.pdf";
-        }
+        final String filnavn = jsonFil.getFilnavn();
         return new Dokument()
                 .withFilnavn(filnavn)
                 .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
