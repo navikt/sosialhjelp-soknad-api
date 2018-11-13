@@ -66,6 +66,7 @@ public class FiksHandterer {
                 fillagerService.slettAlle(behandlingsId);
                 oppgaveKjede.nesteSteg();
             } else {
+                oppgaveKjede.oppgaveData.behandlingsId = behandlingsId;
                 metadataInnfyller.lagreFiksId(oppgaveKjede.oppgaveData, resultat);
                 innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier);
                 oppgaveKjede.ferdigstill();

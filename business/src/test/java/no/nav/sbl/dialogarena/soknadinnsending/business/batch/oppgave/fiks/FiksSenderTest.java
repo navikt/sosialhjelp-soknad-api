@@ -160,11 +160,12 @@ public class FiksSenderTest {
 
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
 
-        assertThat(fiksDokumenter.size(), is(4));
+        assertThat(fiksDokumenter.size(), is(5));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("soknad.json"));
         assertThat(fiksDokumenter.get(1).getFilnavn(), is("Soknad.pdf"));
         assertThat(fiksDokumenter.get(2).getFilnavn(), is("vedlegg.json"));
         assertThat(fiksDokumenter.get(3).getFilnavn(), is("Soknad-juridisk.pdf"));
+        assertThat(fiksDokumenter.get(4).getFilnavn(), is("Brukerkvittering.pdf"));
     }
 
     @Test

@@ -107,13 +107,13 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void opprettDokumentForVedleggBytterFilnavnHvisFilnavnErL7() {
+    public void opprettDokumentForVedleggOppretterDokumentKorrekt() {
         OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg().withData(DATA);
-        JsonFiler jsonFiler = new JsonFiler().withFilnavn("L7");
+        JsonFiler jsonFiler = new JsonFiler().withFilnavn(FILNAVN);
 
         Dokument dokument = fiksDokumentHelper.opprettDokumentForVedlegg(opplastetVedlegg, jsonFiler);
 
-        assertThat(dokument.getFilnavn(), is("Brukerkvittering.pdf"));
+        assertThat(dokument.getFilnavn(), is(FILNAVN));
         assertThat(dokument.getData(), notNullValue());
         assertThat(dokument.getMimetype(), notNullValue());
         assertThat(dokument.isEkskluderesFraPrint(), is(true));
