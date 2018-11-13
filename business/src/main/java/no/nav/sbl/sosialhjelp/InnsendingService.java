@@ -97,6 +97,10 @@ public class InnsendingService {
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier());
     }
 
+    public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
+        return soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
+    }
+
     public SendtSoknad finnSendtSoknadForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
         final String tilknyttetBehandlingsId = soknadUnderArbeid.getTilknyttetBehandlingsId();
         Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId,
