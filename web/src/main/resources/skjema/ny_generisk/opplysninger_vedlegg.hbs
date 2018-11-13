@@ -2,9 +2,9 @@
 {{#each @root.jsonVedleggSpesifikasjon.vedlegg}}
 	<span>{{ hentTekst (concat 'vedlegg.' type '.' tilleggsinfo '.tittel') }}</span>
 	{{#each filer}}
-		<br>
+		<br />
 		<span>{{filnavn}}</span>
 	{{/each}}
-	<br>
-	<br>
+	<br />
+	<br />
 {{/each}}
