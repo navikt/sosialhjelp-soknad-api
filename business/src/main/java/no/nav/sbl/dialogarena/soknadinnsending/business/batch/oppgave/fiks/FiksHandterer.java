@@ -19,6 +19,7 @@ public class FiksHandterer {
 
     public static final String FIKS_OPPGAVE = "FiksOppgave";
     private static final Logger logger = LoggerFactory.getLogger(FiksHandterer.class);
+    private static final int NY_INNSENDINGSVERSJON = 20;
 
     @Inject
     private MetadataInnfyller metadataInnfyller;
@@ -36,7 +37,7 @@ public class FiksHandterer {
         final String behandlingsId = oppgaveKjede.behandlingsId;
         logger.info("Kjører fikskjede for behandlingsid {}, steg {}", behandlingsId, oppgaveKjede.steg);
 
-        if (oppgaveKjede.steg < 20) {
+        if (oppgaveKjede.steg < NY_INNSENDINGSVERSJON) {
             eksekverMedGammelStruktur(oppgaveKjede);
         } else {
             FiksResultat resultat = oppgaveKjede.oppgaveResultat;

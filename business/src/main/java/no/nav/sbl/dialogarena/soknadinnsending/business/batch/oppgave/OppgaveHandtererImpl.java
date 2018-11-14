@@ -31,6 +31,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     private static final int FEIL_THRESHOLD = 20;
     private static final int PROSESS_RATE = 10 * 1000; // 10 sek etter forrige
     private static final int RAPPORTER_RATE = 15 * 60 * 1000; // hvert kvarter
+    private static final int FORSTE_STEG_NY_INNSENDING = 21;
 
     @Inject
     private
@@ -107,7 +108,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
         oppgave.status = Status.KLAR;
         oppgave.opprettet = LocalDateTime.now();
         oppgave.nesteForsok = LocalDateTime.now();
-        oppgave.steg = 21;
+        oppgave.steg = FORSTE_STEG_NY_INNSENDING;
         oppgave.retries = 0;
         oppgave.oppgaveData.avsenderFodselsnummer = eier;
 
