@@ -1,96 +1,96 @@
 <h3>{{ hentTekst "utgifterbolk.tittel" }}</h3>
 <li>
-	<ul class="svar-liste">
-		{{#each opplysninger.utgift}}
-			<ul class="svar-liste">
-				<li>
-					<h4>{{tittel}}</h4>
-					<ul class="fakta-liste">
-						<li>
-							{{#hvisLik type "strom"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.boutgift.strom.sisteregning.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "kommunalAvgift"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.boutgift.kommunaleavgifter.sisteregning.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "oppvarming"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.boutgift.oppvarming.sisteregning.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "annenBoutgift"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.boutgift.andreutgifter.sisteregning.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "barnFritidsaktiviteter"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.barn.fritidsaktivitet.sisteregning.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "barnTannregulering"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.barn.tannbehandling.sisteregning.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "annenBarneutgift"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.barn.annet.sisteregning.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "annen"}}
-								<span class="label">{{hentTekst "opplysninger.ekstrainfo.utgifter.utgift.label"}}</span>
-							{{/hvisLik}}
-							<ul class="svar-liste">
-								<li>
-									{{#if belop}}
-										<span class="verdi verdi--tekst">
-											{{belop}}
-										</span>
-									{{else}}
-										<span class="verdi verdi--ikkeUtfylt">
-											<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-										</span>
-									{{/if}}
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		{{/each}}
-		
-		{{#each oversikt.utgift}}
-			<ul class="svar-liste">
-				<li>
-					<h4>{{tittel}}</h4>
-					<ul class="fakta-liste">
-						<li>
-							{{#hvisLik type "barnebidrag"}}
-								<span class="label">{{hentTekst "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "husleie"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.boutgift.husleie.permnd.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "boliglanAvdrag"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "boliglanRenter"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.boutgift.avdraglaan.renter.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "barnehage"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.barn.barnehage.sistemnd.label"}}</span>
-							{{/hvisLik}}
-							{{#hvisLik type "sfo"}}
-								<span class="label">{{hentTekst "opplysninger.utgifter.barn.sfo.sistemnd.label"}}</span>
-							{{/hvisLik}}
-							<ul class="svar-liste">
-								<li>
-									{{#if belop}}
-										<span class="verdi verdi--tekst">
-											{{belop}}
-										</span>
-									{{else}}
-										<span class="verdi verdi--ikkeUtfylt">
-											<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-										</span>
-									{{/if}}
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		{{/each}}
-	</ul>
+    <ul class="svar-liste">
+        {{#each opplysninger.utgift}}
+            <ul class="svar-liste">
+                <li>
+                    <h4>{{tittel}}</h4>
+                    <ul class="fakta-liste">
+                        <li>
+                            {{#hvisLik type "strom"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.strom.sisteregning.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "kommunalAvgift"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.kommunaleavgifter.sisteregning.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "oppvarming"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.oppvarming.sisteregning.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "annenBoutgift"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.andreutgifter.sisteregning.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "barnFritidsaktiviteter"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.fritidsaktivitet.sisteregning.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "barnTannregulering"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.tannbehandling.sisteregning.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "annenBarneutgift"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.annet.sisteregning.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "annen"}}
+                                <span class="label">{{hentTekst "opplysninger.ekstrainfo.utgifter.utgift.label"}}</span>
+                            {{/hvisLik}}
+                            <ul class="svar-liste">
+                                <li>
+                                    {{#if belop}}
+                                        <span class="verdi verdi--tekst">
+                                            {{belop}}
+                                        </span>
+                                    {{else}}
+                                        <span class="verdi verdi--ikkeUtfylt">
+                                            <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                                        </span>
+                                    {{/if}}
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        {{/each}}
+        
+        {{#each oversikt.utgift}}
+            <ul class="svar-liste">
+                <li>
+                    <h4>{{tittel}}</h4>
+                    <ul class="fakta-liste">
+                        <li>
+                            {{#hvisLik type "barnebidrag"}}
+                                <span class="label">{{hentTekst "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "husleie"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.husleie.permnd.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "boliglanAvdrag"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "boliglanRenter"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.avdraglaan.renter.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "barnehage"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.barnehage.sistemnd.label"}}</span>
+                            {{/hvisLik}}
+                            {{#hvisLik type "sfo"}}
+                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.sfo.sistemnd.label"}}</span>
+                            {{/hvisLik}}
+                            <ul class="svar-liste">
+                                <li>
+                                    {{#if belop}}
+                                        <span class="verdi verdi--tekst">
+                                            {{belop}}
+                                        </span>
+                                    {{else}}
+                                        <span class="verdi verdi--ikkeUtfylt">
+                                            <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                                        </span>
+                                    {{/if}}
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        {{/each}}
+    </ul>
 </li>

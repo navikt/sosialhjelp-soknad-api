@@ -74,21 +74,21 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
             return tekst;
         } else {
 
-        	if (options.params.length%2 == 0) {
-    			for (int i = 0; i < options.params.length; i+=2) {
-    				tekst = erstattTekst("{" + options.param(i) + "}", tekst, options.param(i+1).toString());
-    			}
-    		}
-        	return tekst;
+            if (options.params.length%2 == 0) {
+                for (int i = 0; i < options.params.length; i+=2) {
+                    tekst = erstattTekst("{" + options.param(i) + "}", tekst, options.param(i+1).toString());
+                }
+            }
+            return tekst;
         }
     }
     
     protected String erstattTekst(final String regex, final String input, final String replacement) {
-    	String[] lines = input.split("\n");
-    	for (int i = 0; i < lines.length; i++) {
-    		lines[i] = lines[i].replace(regex, replacement);
-    		
-    	}
-    	return Arrays.stream(lines).collect(Collectors.joining("\n"));
+        String[] lines = input.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            lines[i] = lines[i].replace(regex, replacement);
+            
+        }
+        return Arrays.stream(lines).collect(Collectors.joining("\n"));
     }
 }

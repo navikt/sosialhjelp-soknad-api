@@ -86,8 +86,8 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
             HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
             try {
                 //Kan bare være ustrukturert navn.
-            	List<String> orgNavn = ((UstrukturertNavn) organisasjonWebService.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon().getNavn()).getNavnelinje();
-            	orgNavn.removeAll(Arrays.asList("", null));
+                List<String> orgNavn = ((UstrukturertNavn) organisasjonWebService.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon().getNavn()).getNavnelinje();
+                orgNavn.removeAll(Arrays.asList("", null));
                 return Joiner.on(", ").join(orgNavn);
             } catch (Exception ex) {
                 LOGGER.warn("Kunne ikke hente orgnr: " + orgnr, ex);

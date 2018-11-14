@@ -1,167 +1,167 @@
 <div class="bolk js-bolk">
-	{{#with data.okonomi}}
-		<h2 class="bolk__tittel">{{ hentTekst "inntektbolk.tittel" }}</h2>
-		<ul class="fakta-liste">
-			{{#with opplysninger}}
-				<h3>{{hentTekst "navytelser.sporsmal"}}</h3>
-				{{#if @root.utvidetSoknad}}
-					{{{ settInnInfotekst "navytelser.infotekst.tekst" }}}
-				{{/if}}
-				<h3>{{hentTekst "utbetalinger.sporsmal"}}</h3>
-				{{#hvisUtbetalingFinnes "navytelse"}}
-					{{#each utbetaling}}
-						{{#hvisLik type "navytelse"}}
-							<h4>Ytelse</h4>
-							<ul class="svar-liste">
-								<li>
-									<ul class="fakta-liste">
-										<li>
-											<span class="label">{{hentTekst "utbetalinger.utbetaling.type.label"}}</span>
-											<ul class="svar-liste">
-												<li>
-													<span class="verdi verdi--tekst">
-														{{tittel}}
-													</span>
-												</li>
-											</ul>
-										</li>
-										{{#if netto}}
-											<li>
-												<span class="label">{{hentTekst "utbetalinger.utbetaling.netto.label"}}</span>
-												<ul class="svar-liste">
-													<li>
-														<span class="verdi verdi--tekst">
-															{{netto}}
-														</span>
-													</li>
-												</ul>
-											</li>
-										{{/if}}
-										{{#if brutto}}
-											<li>
-												<span class="label">{{hentTekst "utbetalinger.utbetaling.brutto.label"}}</span>
-												<ul class="svar-liste">
-													<li>
-														<span class="verdi verdi--tekst">
-															{{brutto}}
-														</span>
-													</li>
-												</ul>
-											</li>
-										{{/if}}
-										{{#if utbetalingsdato}}
-											<li>
-												<span class="label">{{hentTekst "utbetalinger.utbetaling.erutbetalt.label"}}</span>
-												<ul class="svar-liste">
-													<li>
-														<span class="verdi verdi--tekst">
-															{{utbetalingsdato}}
-														</span>
-													</li>
-												</ul>
-											</li>
-										{{/if}}
-									</ul>
-								</li>
-							</ul>
-						{{/hvisLik}}
-					{{/each}}
-				{{else}}
-					<li>
-						<span>
-							{{ hentTekst 'utbetalinger.ingen.true' }}
-						</span>
-					</li>
-				{{/hvisUtbetalingFinnes}}
-				{{#if @root.utvidetSoknad}}
-					{{{ settInnInfotekst "utbetalinger.infotekst.tekst" }}}
-				{{/if}}
-			
-				<h3>{{hentTekst "inntekt.bostotte.sporsmal"}}</h3>
-				{{#hentOkonomiBekreftelse "bostotte"}}
-					<li>
-						<ul class="svar-liste">
-							<li>
-								<span class="verdi verdi--radio">
-									{{ hentTekst (concat 'inntekt.bostotte.' verdi) }}
-								</span>
-							</li>
-						</ul>
-					</li>
-				{{else}}
-					<li>
-						<span class="verdi verdi--ikkeUtfylt">
-							<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-						</span>
-					</li>
-				{{/hentOkonomiBekreftelse}}
-				<li>
-					{{#if @root.utvidetSoknad}}
-						{{{hentSvaralternativer "inntekt.bostotte"}}}
-					{{/if}}
-				</li>
-				
-				<h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>
-				{{#if @root.utvidetSoknad}}
-						{{{settInnHjelpetekst "inntekt.eierandeler.hjelpetekst.tekst"}}}
-					{{/if}}
-				{{#hentOkonomiBekreftelse "verdi"}}
-					{{> skjema/ny_generisk/inntekt_verdi}}
-				{{else}}
-					<li>
-						<span class="verdi verdi--ikkeUtfylt">
-							<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-						</span>
-					</li>
-				{{/hentOkonomiBekreftelse}}
-				{{#if @root.utvidetSoknad}}
-					<li>
-						{{{hentSvaralternativer "inntekt.eierandeler"}}}
-						<span>Under Ja:</span>
-						{{{hentSvaralternativer "inntekt.eierandeler.true.type"}}}
-					</li>
-				{{/if}}
-				
-				<h3>{{ hentTekst "inntekt.bankinnskudd.true.type.sporsmal" }}</h3>
-				{{#if @root.utvidetSoknad}}
-					{{{settInnHjelpetekst "inntekt.bankinnskudd.true.type.hjelpetekst.tekst"}}}
-				{{/if}}
-				{{#hentOkonomiBekreftelse "sparing"}}
-					{{> skjema/ny_generisk/inntekt_sparing}}
-				{{else}}
-					<li>
-						<span class="verdi verdi--ikkeUtfylt">
-							<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-						</span>
-					</li>
-				{{/hentOkonomiBekreftelse}}
-				{{#if @root.utvidetSoknad}}
-					<li>
-						{{{hentSvaralternativer "inntekt.bankinnskudd.true.type"}}}
-					</li>
-				{{/if}}
-				
-				<h3>{{ hentTekst "inntekt.inntekter.sporsmal" }}</h3>
-				{{#if @root.utvidetSoknad}}
-					{{{settInnHjelpetekst "inntekt.inntekter.hjelpetekst.tekst"}}}
-				{{/if}}
-				{{#hentOkonomiBekreftelse "utbetaling"}}
-					{{> skjema/ny_generisk/inntekt_utbetaling}}
-				{{else}}
-					<li>
-						<span class="verdi verdi--ikkeUtfylt">
-							<i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-						</span>
-					</li>
-				{{/hentOkonomiBekreftelse}}
-				{{#if @root.utvidetSoknad}}
-					<li>
-						{{{hentSvaralternativer "inntekt.inntekter"}}}
-						<span>Under Ja:</span>
-						{{{hentSvaralternativer "inntekt.inntekter.true.type"}}}
-					</li>
-				{{/if}}
-			{{/with}}
-		</ul>
-	{{/with}}
+    {{#with data.okonomi}}
+        <h2 class="bolk__tittel">{{ hentTekst "inntektbolk.tittel" }}</h2>
+        <ul class="fakta-liste">
+            {{#with opplysninger}}
+                <h3>{{hentTekst "navytelser.sporsmal"}}</h3>
+                {{#if @root.utvidetSoknad}}
+                    {{{ settInnInfotekst "navytelser.infotekst.tekst" }}}
+                {{/if}}
+                <h3>{{hentTekst "utbetalinger.sporsmal"}}</h3>
+                {{#hvisUtbetalingFinnes "navytelse"}}
+                    {{#each utbetaling}}
+                        {{#hvisLik type "navytelse"}}
+                            <h4>Ytelse</h4>
+                            <ul class="svar-liste">
+                                <li>
+                                    <ul class="fakta-liste">
+                                        <li>
+                                            <span class="label">{{hentTekst "utbetalinger.utbetaling.type.label"}}</span>
+                                            <ul class="svar-liste">
+                                                <li>
+                                                    <span class="verdi verdi--tekst">
+                                                        {{tittel}}
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        {{#if netto}}
+                                            <li>
+                                                <span class="label">{{hentTekst "utbetalinger.utbetaling.netto.label"}}</span>
+                                                <ul class="svar-liste">
+                                                    <li>
+                                                        <span class="verdi verdi--tekst">
+                                                            {{netto}}
+                                                        </span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        {{/if}}
+                                        {{#if brutto}}
+                                            <li>
+                                                <span class="label">{{hentTekst "utbetalinger.utbetaling.brutto.label"}}</span>
+                                                <ul class="svar-liste">
+                                                    <li>
+                                                        <span class="verdi verdi--tekst">
+                                                            {{brutto}}
+                                                        </span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        {{/if}}
+                                        {{#if utbetalingsdato}}
+                                            <li>
+                                                <span class="label">{{hentTekst "utbetalinger.utbetaling.erutbetalt.label"}}</span>
+                                                <ul class="svar-liste">
+                                                    <li>
+                                                        <span class="verdi verdi--tekst">
+                                                            {{utbetalingsdato}}
+                                                        </span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        {{/if}}
+                                    </ul>
+                                </li>
+                            </ul>
+                        {{/hvisLik}}
+                    {{/each}}
+                {{else}}
+                    <li>
+                        <span>
+                            {{ hentTekst 'utbetalinger.ingen.true' }}
+                        </span>
+                    </li>
+                {{/hvisUtbetalingFinnes}}
+                {{#if @root.utvidetSoknad}}
+                    {{{ settInnInfotekst "utbetalinger.infotekst.tekst" }}}
+                {{/if}}
+            
+                <h3>{{hentTekst "inntekt.bostotte.sporsmal"}}</h3>
+                {{#hentOkonomiBekreftelse "bostotte"}}
+                    <li>
+                        <ul class="svar-liste">
+                            <li>
+                                <span class="verdi verdi--radio">
+                                    {{ hentTekst (concat 'inntekt.bostotte.' verdi) }}
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                {{else}}
+                    <li>
+                        <span class="verdi verdi--ikkeUtfylt">
+                            <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                        </span>
+                    </li>
+                {{/hentOkonomiBekreftelse}}
+                <li>
+                    {{#if @root.utvidetSoknad}}
+                        {{{hentSvaralternativer "inntekt.bostotte"}}}
+                    {{/if}}
+                </li>
+                
+                <h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>
+                {{#if @root.utvidetSoknad}}
+                        {{{settInnHjelpetekst "inntekt.eierandeler.hjelpetekst.tekst"}}}
+                    {{/if}}
+                {{#hentOkonomiBekreftelse "verdi"}}
+                    {{> skjema/ny_generisk/inntekt_verdi}}
+                {{else}}
+                    <li>
+                        <span class="verdi verdi--ikkeUtfylt">
+                            <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                        </span>
+                    </li>
+                {{/hentOkonomiBekreftelse}}
+                {{#if @root.utvidetSoknad}}
+                    <li>
+                        {{{hentSvaralternativer "inntekt.eierandeler"}}}
+                        <span>Under Ja:</span>
+                        {{{hentSvaralternativer "inntekt.eierandeler.true.type"}}}
+                    </li>
+                {{/if}}
+                
+                <h3>{{ hentTekst "inntekt.bankinnskudd.true.type.sporsmal" }}</h3>
+                {{#if @root.utvidetSoknad}}
+                    {{{settInnHjelpetekst "inntekt.bankinnskudd.true.type.hjelpetekst.tekst"}}}
+                {{/if}}
+                {{#hentOkonomiBekreftelse "sparing"}}
+                    {{> skjema/ny_generisk/inntekt_sparing}}
+                {{else}}
+                    <li>
+                        <span class="verdi verdi--ikkeUtfylt">
+                            <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                        </span>
+                    </li>
+                {{/hentOkonomiBekreftelse}}
+                {{#if @root.utvidetSoknad}}
+                    <li>
+                        {{{hentSvaralternativer "inntekt.bankinnskudd.true.type"}}}
+                    </li>
+                {{/if}}
+                
+                <h3>{{ hentTekst "inntekt.inntekter.sporsmal" }}</h3>
+                {{#if @root.utvidetSoknad}}
+                    {{{settInnHjelpetekst "inntekt.inntekter.hjelpetekst.tekst"}}}
+                {{/if}}
+                {{#hentOkonomiBekreftelse "utbetaling"}}
+                    {{> skjema/ny_generisk/inntekt_utbetaling}}
+                {{else}}
+                    <li>
+                        <span class="verdi verdi--ikkeUtfylt">
+                            <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                        </span>
+                    </li>
+                {{/hentOkonomiBekreftelse}}
+                {{#if @root.utvidetSoknad}}
+                    <li>
+                        {{{hentSvaralternativer "inntekt.inntekter"}}}
+                        <span>Under Ja:</span>
+                        {{{hentSvaralternativer "inntekt.inntekter.true.type"}}}
+                    </li>
+                {{/if}}
+            {{/with}}
+        </ul>
+    {{/with}}
 </div>
