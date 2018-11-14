@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
@@ -107,6 +109,8 @@ public class SoknadRessurs {
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
+            Event event = MetricsFactory.createEvent("soknad.startet");
+            event.report();
             opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
         } else {
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
