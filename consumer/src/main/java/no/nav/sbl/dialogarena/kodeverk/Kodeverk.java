@@ -32,4 +32,4 @@ public interface Kodeverk extends Adressekodeverk {
 
     public Map<String, String> hentAlleKodenavnMedForsteTerm(EksponertKodeverk kodeverknavn);
 }
-	
+    

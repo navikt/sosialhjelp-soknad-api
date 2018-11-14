@@ -1,14 +1,14 @@
 <div class="bolk js-bolk">
-	{{#with data.okonomi}}
-		<h2 class="bolk__tittel">{{ hentTekst "opplysningerbolk.tittel" }}</h2>
-		{{#if @root.utvidetSoknad}}
-			{{{ settInnInfotekst "opplysninger.informasjon" }}}
-			{{{ settInnInfotekst "opplysninger.ikkebesvart.melding" }}}
-		{{/if}}
-		<ul class="fakta-liste">
-			{{> skjema/ny_generisk/opplysninger_inntekt}}
-			{{> skjema/ny_generisk/opplysninger_utgift}}
-			{{> skjema/ny_generisk/opplysninger_vedlegg}}
-		</ul>
-	{{/with}}
+    {{#with data.okonomi}}
+        <h2 class="bolk__tittel">{{ hentTekst "opplysningerbolk.tittel" }}</h2>
+        {{#if @root.utvidetSoknad}}
+            {{{ settInnInfotekst "opplysninger.informasjon" }}}
+            {{{ settInnInfotekst "opplysninger.ikkebesvart.melding" }}}
+        {{/if}}
+        <ul class="fakta-liste">
+            {{> skjema/ny_generisk/opplysninger_inntekt}}
+            {{> skjema/ny_generisk/opplysninger_utgift}}
+            {{> skjema/ny_generisk/opplysninger_vedlegg}}
+        </ul>
+    {{/with}}
 </div>
