@@ -25,6 +25,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -52,10 +53,15 @@ public class SoknadsmottakerRessurs {
 
         final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad, valg);
         
+        /*
+         * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
+         * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
+         * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
+         */
         return adresseForslagene.stream().map((adresseForslag) -> {
             final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
 
     NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
@@ -63,13 +69,19 @@ public class SoknadsmottakerRessurs {
             logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
         }
+        if (adresseForslag.kommunenummer == null
+                || adresseForslag.kommunenummer.length() != 4) {
+            return null;
+        }
+        
+        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         return new NavEnhetFrontend()
                 .withEnhetsId(navEnhet.enhetNr)
                 .withEnhetsnavn(navEnhet.navn)
                 .withBydelsnummer(adresseForslag.bydel)
                 .withKommunenummer(adresseForslag.kommunenummer)
                 .withKommunenavn(adresseForslag.kommunenavn)
-                .withSosialOrgnr(navEnhet.sosialOrgnr)
+                .withSosialOrgnr((digisosKommune) ? navEnhet.sosialOrgnr : null)
                 .withFeatures(getFeaturesForEnhet(navEnhet.enhetNr));
     }
 
@@ -119,6 +131,31 @@ public class SoknadsmottakerRessurs {
         NavEnhetFrontend withFeatures(Map<String, Boolean> features) {
             this.features = features;
             return this;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((enhetsId == null) ? 0 : enhetsId.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            NavEnhetFrontend other = (NavEnhetFrontend) obj;
+            if (enhetsId == null) {
+                if (other.enhetsId != null)
+                    return false;
+            } else if (!enhetsId.equals(other.enhetsId))
+                return false;
+            return true;
         }
     }
 }

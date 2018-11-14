@@ -66,18 +66,6 @@
             <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>soeknadsskjemaSosialhjelp-v1-meldingsdefinisjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>soeknadsskjemaSosialhjelp-v1-soknaddefinisjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>soeknadsskjemaSosialhjelp-v1-vedleggdefinisjon</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-core</artifactId>
             <scope>runtime</scope>

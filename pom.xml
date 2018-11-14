@@ -58,7 +58,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.4.4</jackson.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <engangsstonad.meldingsdefinisjon.version>1.0.3</engangsstonad.meldingsdefinisjon.version>
+        <filformat.version>1.20181108.743</filformat.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -103,7 +103,93 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- Avhengigheter med scope compile -->
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>soknadsosialhjelp-filformat</artifactId>
+                <version>${filformat.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>jsr305</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.mail</groupId>
+                        <artifactId>mailapi</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Tjenestespesifikasjoner -->
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
+                <version>1.8</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
+                <version>1.0.4</version>
+                <classifier>jaxws</classifier>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-fim-arbeidsforhold-v2-tjenestespesifikasjon</artifactId>
+                <version>2.0.0</version>
+                <classifier>jaxws</classifier>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
+                <version>1.1.1</version>
+                <classifier>jaxws</classifier>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
+                <version>1.0.0</version>
+                <classifier>jaxws</classifier>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>dkif-tjenestespesifikasjon</artifactId>
+                <version>${dkif-tjenestespesifikasjon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
+                <version>0.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>arena-sakOgAktivitet_v1</artifactId>
+                <version>1.0.11</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>arena-maalgruppe_v1</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>svarut-ks-forsendelsesservice</artifactId>
+                <version>9.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
+                <version>${utbetaling.tjenestespesifikasjon.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
@@ -227,113 +313,10 @@
 
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
-                <version>1.8</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.tjenester.fim</groupId>
-                <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
-                <version>1.0.4</version>
-                <classifier>jaxws</classifier>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenester.fim</groupId>
-                <artifactId>nav-fim-arbeidsforhold-v2-tjenestespesifikasjon</artifactId>
-                <version>2.0.0</version>
-                <classifier>jaxws</classifier>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenester.fim</groupId>
-                <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-                <version>1.1.1</version>
-                <classifier>jaxws</classifier>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenester.fim</groupId>
-                <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
-                <version>1.0.0</version>
-                <classifier>jaxws</classifier>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
-                <version>2.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-types</artifactId>
                 <version>2.0.11</version>
             </dependency>
 
-            <dependency>
-                <groupId>no.nav.sbl</groupId>
-                <artifactId>dkif-tjenestespesifikasjon</artifactId>
-                <version>${dkif-tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
-                <version>0.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl</groupId>
-                <artifactId>arena-sakOgAktivitet_v1</artifactId>
-                <version>1.0.11</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl</groupId>
-                <artifactId>arena-maalgruppe_v1</artifactId>
-                <version>1.0.2</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.meldinger.virksomhet</groupId>
-                <artifactId>nav-virksomhet-soeknadsskjema-v1-meldingsdefinisjon</artifactId>
-                <version>1.0.7</version>
-                <classifier>jaxb</classifier>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>soeknadsskjemaEngangsstoenad-v1-meldingsdefinisjon</artifactId>
-                <version>${engangsstonad.meldingsdefinisjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-meldingsdefinisjon</artifactId>
-                <!-- Bør du bumpe versjon i SosialhjelpTilXml? -->
-                <version>1.6.0</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-soknaddefinisjon</artifactId>
-                <version>1.0.12</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-vedleggdefinisjon</artifactId>
-                <version>1.0.4</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon</artifactId>
-                <version>1.2.0</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>svarut-ks-forsendelsesservice</artifactId>
-                <version>9.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.meldinger.virksomhet</groupId>
-                <artifactId>nav-virksomhet-paaloepteUtgifter-v1-meldingsdefinisjon</artifactId>
-                <version>1.0.3</version>
-                <classifier>jaxb</classifier>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
-                <version>${utbetaling.tjenestespesifikasjon.version}</version>
-            </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
@@ -766,22 +749,6 @@
                 <artifactId>jaxb-java-time-adapters</artifactId>
                 <version>1.1.3</version>
             </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>soknadsosialhjelp-filformat</artifactId>
-                <version>1.20181023.1342</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.google.code.findbugs</groupId>
-                        <artifactId>jsr305</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mailapi</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
 
             <!-- Avhengigheter med scope runtime -->
 
@@ -955,12 +922,6 @@
                 <artifactId>common-jetty</artifactId>
                 <version>1.0.23</version>
                 <scope>test</scope>
-                <!--<exclusions>
-                    <exclusion>
-                        <groupId>no.nav.modig</groupId>
-                        <artifactId>modig-testcertificates</artifactId>
-                    </exclusion>
-                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
@@ -1089,54 +1050,6 @@
             </activation>
             <properties>
                 <sonar.jacoco.excludes>no/nav/sbl/dialogarena/sendsoknad/mockmodul/**/*</sonar.jacoco.excludes>
-            </properties>
-        </profile>
-        <profile>
-            <id>u1</id>
-            <properties>
-                <flyway.user>sendsok_u2</flyway.user>
-                <flyway.password>oq02k4qn2mxp</flyway.password>
-                <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
-                <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
-                <flyway.alias>henvendelseDS</flyway.alias>
-                <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl002.oera-t.local:1521:sendu</flyway.placeholders.url>
-                <flyway.locations>db/migration/${flyway.alias}</flyway.locations>
-            </properties>
-        </profile>
-        <profile>
-            <id>u5</id>
-            <properties>
-                <flyway.user>sendsoknad_u05</flyway.user>
-                <flyway.password>elyhdz5e</flyway.password>
-                <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
-                <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
-                <flyway.alias>henvendelseDS</flyway.alias>
-                <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl001.oera-t.local:1521:msbsu02</flyway.placeholders.url>
-                <flyway.locations>db/migration/${flyway.alias}</flyway.locations>
-            </properties>
-        </profile>
-        <profile>
-            <id>t11</id>
-            <properties>
-                <flyway.user>Sendsok_t11</flyway.user>
-                <flyway.password>wz3rlgl5</flyway.password>
-                <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
-                <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
-                <flyway.alias>henvendelseDS</flyway.alias>
-                <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl001.oera-t.local:1521:DBa32er1</flyway.placeholders.url>
-                <flyway.locations>db/migration/${flyway.alias}</flyway.locations>
-            </properties>
-        </profile>
-        <profile>
-            <id>t10</id>
-            <properties>
-                <flyway.user>sendsok_t10</flyway.user>
-                <flyway.password>mfqx4hvx</flyway.password>
-                <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
-                <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
-                <flyway.alias>soknadInnsendingDataSource</flyway.alias>
-                <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl002.oera-t.local:1521:sendt</flyway.placeholders.url>
-                <flyway.locations>db/migration/${flyway.alias}</flyway.locations>
             </properties>
         </profile>
     </profiles>

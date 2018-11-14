@@ -3,13 +3,14 @@ package no.nav.sbl.sosialhjelp.midlertidig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
+import java.util.List;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -28,6 +30,7 @@ public class WebSoknadConverter {
 
     @Inject
     private NavMessageSource messageSource;
+    private final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
     private final ObjectMapper mapper = new ObjectMapper();
     private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
 
@@ -47,17 +50,19 @@ public class WebSoknadConverter {
     }
 
     byte[] webSoknadTilJson(WebSoknad webSoknad) {
-        if (!webSoknad.erEttersending()) {
-            JsonInternalSoknad jsonInternalSoknad = mapWebSoknadTilJsonSoknadInternal(webSoknad);
-            return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
-        } else {
-            return null;
-        }
+        final JsonInternalSoknad jsonInternalSoknad = mapWebSoknadTilJsonSoknadInternal(webSoknad);
+        return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
     }
 
     JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
+        final List<JsonVedlegg> jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
+        if (webSoknad.erEttersending()) {
+            return new JsonInternalSoknad()
+                    .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg));
+        }
         return new JsonInternalSoknad()
-                .withSoknad(JsonSoknadConverter.tilJsonSoknad(new InputSource(webSoknad, messageSource)));
+                .withSoknad(JsonSoknadConverter.tilJsonSoknad(new InputSource(webSoknad, messageSource)))
+                .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg));
     }
 
     byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
