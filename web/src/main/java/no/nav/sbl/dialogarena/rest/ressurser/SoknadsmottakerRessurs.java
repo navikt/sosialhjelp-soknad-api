@@ -17,6 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -75,6 +77,10 @@ public class SoknadsmottakerRessurs {
         }
         
         final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
+        if (!digisosKommune) {
+            Event event = MetricsFactory.createEvent("soknad.ikke.tilgjengelig");
+            event.report();
+        }
         return new NavEnhetFrontend()
                 .withEnhetsId(navEnhet.enhetNr)
                 .withEnhetsnavn(navEnhet.navn)
