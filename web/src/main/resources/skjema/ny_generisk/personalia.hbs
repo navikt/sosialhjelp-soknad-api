@@ -72,6 +72,16 @@
                         </li>
                     </ul>
                 </li>
+                {{#if @root.utvidetSoknad}}
+                    <ul class="svar-liste">
+                        <li>
+                            <h4>Knapp tilgjengelig:</h4>
+                        </li>
+                        <li>
+                            <span>{{hentTekst "kontakt.system.telefon.endreknapp.label"}}</span>
+                        </li>
+                    </ul>
+                {{/if}}
             {{else}}
                 <h3>{{ hentTekst "kontakt.telefon.sporsmal" }}</h3>
                 {{#if @root.utvidetSoknad}}
@@ -118,6 +128,9 @@
                             {{/if}}
                         {{/if}}
                     </li>
+                    {{#if @root.utvidetSoknad}}
+                        {{{hentSvaralternativer "kontakt.kontonummer"}}}
+                    {{/if}}
                 </ul>
             </li>
         </ul>
