@@ -69,8 +69,30 @@
 	<div>
 		{{> skjema/ny_generisk/opplysninger}}
 	</div>
+	{{#if @root.utvidetSoknad}}
+		<div>
+			{{> skjema/ny_generisk/soknad_forside}}
+		</div>
+	{{/if}}
+	<div class="brosjyre-signatur js-signatur">
+		{{#if @root.utvidetSoknad}}
+    		<ul class="fakta-liste">
+    			<li>
+    				<ul class="svar-liste">
+    					<li>{{{hentTekstMedParametere "soknasosialhjelp.oppsummering.hvorsendes" "navkontor" @root.mottaker.navEnhetsnavn}}}</li>
+    					<li>{{{hentTekstMedParametere "soknadsosialhjelp.forstesiden.bekreftInfoModal.body"
+    					"navkontor" @root.mottaker.navEnhetsnavn
+    					"navkontor:NAV-kontoret ditt" @root.mottaker.navEnhetsnavn
+    					"navkontor:oppholdskommunen" @root.mottaker.navEnhetsnavn}}}</li>
+    
+    					<h3>Bekreftet av bruker med følgende informasjonstekst</h3>
+    					<li>{{{ hentTekst "soknadsosialhjelp.oppsummering.bekreftOpplysninger" }}}</li>
+    				</ul>
+    			</li>
+			</ul>
+		{{/if}}
+	</div>
 </div>
-<div class="js-signatur"></div>
 {{/with}}
 
 </body>

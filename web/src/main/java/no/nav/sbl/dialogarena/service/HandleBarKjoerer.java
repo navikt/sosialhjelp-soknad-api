@@ -33,6 +33,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
@@ -94,7 +95,9 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         final JsonVedleggSpesifikasjon jsonVedlegg = sosialhjelpVedleggTilJson.toJsonVedleggSpesifikasjon(soknad);
         final JsonInternalSoknad internalSoknad = new JsonInternalSoknad()
                 .withSoknad(jsonSoknad)
-                .withVedlegg(jsonVedlegg);
+                .withVedlegg(jsonVedlegg)
+                .withMottaker(new JsonSoknadsmottaker()
+                        .withNavEnhetsnavn("TODO TESTNAVN SLETTES FØR PROD"));
         return internalSoknad;
     }
 

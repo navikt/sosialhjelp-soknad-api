@@ -93,6 +93,9 @@
 			{{/if}}
 			{{#if forsorgerplikt.harForsorgerplikt.verdi}}
 				<h3>{{ hentTekst "familierelasjon.faktum.sporsmal" }}</h3>
+				{{#if @root.utvidetSoknad}}
+					{{{hentTekstMedParametere "familierelasjon.ingress" "antallBarn" forsorgerplikt.ansvar.size}}}
+				{{/if}}
 				{{#each forsorgerplikt.ansvar}}
 					<h3>{{ hentTekst "system.familie.barn.true.listetittel" }}</h3>
 					{{#with barn}}
