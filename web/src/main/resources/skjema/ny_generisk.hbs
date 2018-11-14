@@ -27,7 +27,7 @@
 <div id="soknad" class="generisk-oppsummering">
 
     <div class="hode">
-        <h1>Søknad om økonomisk sosialhjelp</h1>
+        <h1>{{hentTekst "skjema.tittel"}}</h1>
         <div class="personalia">
             {{#with data.personalia}}
                 <p class ="nvn">{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}</p>
@@ -42,11 +42,7 @@
         </div>
     </div>
     <div>
-        {{#if @root.utvidetSoknad}}
-            {{> skjema/ny_generisk/personalia_utvidet}}
-        {{else}}
-            {{> skjema/ny_generisk/personalia}}
-        {{/if}}
+        {{> skjema/ny_generisk/personalia}}
     </div>
     <div>
         {{> skjema/ny_generisk/begrunnelse}}
