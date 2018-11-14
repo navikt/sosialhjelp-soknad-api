@@ -6,6 +6,7 @@ import java.util.List;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 
 public final class HandlebarContext {
@@ -24,6 +25,10 @@ public final class HandlebarContext {
     
     public JsonVedleggSpesifikasjon getJsonVedleggSpesifikasjon() {
         return internalSoknad.getVedlegg();
+    }
+    
+    public JsonSoknadsmottaker getMottaker() {
+        return internalSoknad.getMottaker();
     }
 
     public boolean getUtvidetSoknad() {
