@@ -75,13 +75,12 @@ public class SoknadsmottakerRessurs {
                 || adresseForslag.kommunenummer.length() != 4) {
             return null;
         }
-
-        Event event = MetricsFactory.createEvent("soknad.startet");
+        
         final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         if (!digisosKommune) {
-            event.addFieldToReport("soknad.ikke.tilgjengelig", "true");
+            Event event = MetricsFactory.createEvent("soknad.ikke.tilgjengelig");
+            event.report();
         }
-        event.report();
         return new NavEnhetFrontend()
                 .withEnhetsId(navEnhet.enhetNr)
                 .withEnhetsnavn(navEnhet.navn)
