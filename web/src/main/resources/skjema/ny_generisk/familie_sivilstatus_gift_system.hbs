@@ -1,0 +1,50 @@
+<h3>{{ hentTekst "system.familie.sivilstatus.sporsmal" }}</h3>
+{{#if @root.utvidetSoknad}}
+    {{hentTekst "system.familie.sivilstatus"}}
+    <h4>{{ hentTekst "system.familie.sivilstatus.label" }}</h4>
+{{else}}
+    <li>
+        <ul class="svar-liste">
+            <li>
+                <span class="verdi verdi--tekst">
+                    {{ hentTekst (concat 'familie.sivilstatus.' sivilstatus.status) }}
+                </span>
+            </li>
+        </ul>
+    </li>
+{{/if}}
+{{#with sivilstatus.ektefelle}}
+    {{#unless @root.utvidetSoknad}}
+        <h3>{{ hentTekst "system.familie.sivilstatus.infotekst" }}</h3>
+    {{/unless}}
+    <li>
+        <span class="label">{{ hentTekst "system.familie.sivilstatus.gift.ektefelle.navn" }}</span>
+        <ul class="svar-liste">
+            <li>
+                <span class="verdi verdi--tekst">
+                    {{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}
+                </span>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <span class="label">{{ hentTekst "system.familie.sivilstatus.gift.ektefelle.fodselsdato" }}</span>
+        <ul class="svar-liste">
+            <li>
+                <span class="verdi verdi--tekst">
+                    {{fodselsdato}}
+                </span>
+            </li>
+        </ul>
+    </li>
+{{/with}}
+<li>
+    <span class="label">{{ hentTekst "system.familie.sivilstatus.gift.ektefelle.folkereg" }}</span>
+    <ul class="svar-liste">
+        <li>
+            <span class="verdi verdi--tekst">
+                {{ hentTekst (concat 'system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.' sivilstatus.folkeregistrertMedEktefelle) }}
+            </span>
+        </li>
+    </ul>
+</li>
