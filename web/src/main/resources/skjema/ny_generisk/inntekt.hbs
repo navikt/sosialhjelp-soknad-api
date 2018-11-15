@@ -117,7 +117,7 @@
                 {{#if @root.utvidetSoknad}}
                     <li>
                         {{{hentSvaralternativer "inntekt.eierandeler"}}}
-                        <span>Under Ja:</span>
+                        <span>Under {{hentTekst "inntekt.eierandeler.true"}}:</span>
                         {{{hentSvaralternativer "inntekt.eierandeler.true.type"}}}
                     </li>
                 {{/if}}
@@ -157,7 +157,7 @@
                 {{#if @root.utvidetSoknad}}
                     <li>
                         {{{hentSvaralternativer "inntekt.inntekter"}}}
-                        <span>Under Ja:</span>
+                        <span>Under {{hentTekst "inntekt.inntekter.true"}}:</span>
                         {{{hentSvaralternativer "inntekt.inntekter.true.type"}}}
                     </li>
                 {{/if}}
