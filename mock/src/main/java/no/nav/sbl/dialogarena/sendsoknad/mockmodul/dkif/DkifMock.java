@@ -25,6 +25,7 @@ public class DkifMock {
     }
 
     public DigitalKontaktinformasjonV1 dkifMock(){
+
         final DigitalKontaktinformasjonV1 mock = mock(DigitalKontaktinformasjonV1.class);
 
         try{
@@ -39,7 +40,8 @@ public class DkifMock {
     private static final WSHentDigitalKontaktinformasjonResponse generateResponse() {
         final WSHentDigitalKontaktinformasjonResponse response = new WSHentDigitalKontaktinformasjonResponse();
 
-        final String telefonnummer = telefonnumre.get(SubjectHandler.getSubjectHandler().getConsumerId());
+        final String telefonnummer = telefonnumre.get(SubjectHandler.getSubjectHandler().getUid());
+
         final WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()
                 .withPersonident(RIKTIG_IDENT)
                 .withEpostadresse(new WSEpostadresse().withValue(EN_EPOST))
@@ -51,6 +53,6 @@ public class DkifMock {
     }
 
     public static final void setTelefonnummer(String telefonnummer) {
-        DkifMock.telefonnumre.put(SubjectHandler.getSubjectHandler().getConsumerId(), telefonnummer);
+        DkifMock.telefonnumre.put(SubjectHandler.getSubjectHandler().getUid(), telefonnummer);
     }
 }
