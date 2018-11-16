@@ -73,7 +73,7 @@
             <li>
                 {{#if fodselsdato}}
                     <span class="verdi verdi--tekst">
-                        {{fodselsdato}}
+                        {{formaterDato fodselsdato}}
                     </span>
                 {{else}}
                     <span class="verdi verdi--ikkeUtfylt">
@@ -89,7 +89,7 @@
             <li>
                 {{#if personIdentifikator}}
                     <span class="verdi verdi--tekst">
-                        {{personIdentifikator}}
+                        {{personnr personIdentifikator}}
                     </span>
                 {{else}}
                     <span class="verdi verdi--ikkeUtfylt">
@@ -99,6 +99,18 @@
             </li>
         </ul>
     </li>
+    {{#if personIdentifikator}}
+	    <li>
+	        <span class="label">{{hentTekst "personalia.fnr"}}</span>
+	        <ul class="svar-liste">
+	            <li>
+                    <span class="verdi verdi--tekst">
+                        {{personIdentifikator}}
+                    </span>
+	            </li>
+	        </ul>
+	    </li>
+	{{/if}}
 {{/with}}
 {{#hvisLik sivilstatus.status "gift"}}
     <li>
