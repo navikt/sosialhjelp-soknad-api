@@ -27,8 +27,10 @@ import com.github.jknack.handlebars.context.MethodValueResolver;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
+import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -59,9 +61,33 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     public String fyllHtmlMalMedInnhold(WebSoknad soknad) throws IOException {
         return fyllHtmlMalMedInnhold(soknad, false);
     }
-
+    
     @Override
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
+        try {
+            SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
+            OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, utvidetSoknad);
+            return getHandlebars()
+                    .infiniteLoops(true)
+                    .compile("/skjema/generisk")
+                    .apply(Context.newBuilder(context)
+                            .resolver(
+                                    JavaBeanValueResolver.INSTANCE,
+                                    FieldValueResolver.INSTANCE,
+                                    MapValueResolver.INSTANCE,
+                                    MethodValueResolver.INSTANCE
+                            )
+                            .build());
+        }catch (IllegalArgumentException e){
+            getLogger(HandleBarKjoerer.class).warn("catch IllegalArgumentException " + e.getMessage()
+                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() + "har faktum med ugyldig datoverdi."
+                    + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
+            throw e;
+        }
+    }
+
+    @Override
+    public String genererHtmlForPdf(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
             final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
             final HandlebarContext context = new HandlebarContext(internalSoknad, utvidetSoknad);
