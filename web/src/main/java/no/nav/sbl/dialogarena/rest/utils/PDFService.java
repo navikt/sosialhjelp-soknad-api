@@ -60,7 +60,7 @@ public class PDFService {
     private byte[] lagPdf(WebSoknad soknad, String servletPath, boolean fullSoknad) {
         String pdfMarkup;
         try {
-            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, fullSoknad);
+            pdfMarkup = pdfTemplate.genererHtmlForPdf(soknad, fullSoknad);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup for skjema", e);
         }
