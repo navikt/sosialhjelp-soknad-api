@@ -17,6 +17,8 @@
             {{/hentOkonomiBekreftelse}}
             <li>
                 {{#if @root.utvidetSoknad}}
+                    {{{hentSvaralternativer "utgifter.boutgift"}}}
+                    <span>Under {{hentTekst "utgifter.boutgift.true"}}:</span>
                     {{{hentSvaralternativer "utgifter.boutgift.true.type"}}}
                 {{/if}}
             </li>
@@ -37,6 +39,8 @@
                 {{/hentOkonomiBekreftelse}}
                 <li>
                     {{#if @root.utvidetSoknad}}
+                        {{{hentSvaralternativer "utgifter.barn"}}}
+                        <span>Under {{hentTekst "utgifter.barn.true"}}:</span>
                         {{{hentSvaralternativer "utgifter.barn.true.utgifter"}}}
                     {{/if}}
                 </li>
