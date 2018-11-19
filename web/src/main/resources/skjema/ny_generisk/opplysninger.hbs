@@ -2,8 +2,11 @@
     {{#with data.okonomi}}
         <h2 class="bolk__tittel">{{ hentTekst "opplysningerbolk.tittel" }}</h2>
         {{#if @root.utvidetSoknad}}
-            {{{ settInnInfotekst "opplysninger.informasjon" }}}
-            {{{ settInnInfotekst "opplysninger.ikkebesvart.melding" }}}
+            {{#if opplysninger.bekreftelse.size}}
+                {{{ settInnInfotekst "opplysninger.informasjon" }}}
+            {{else}}
+                {{{ settInnInfotekst "opplysninger.ikkebesvart.melding" }}}
+            {{/if}}
         {{/if}}
         <ul class="fakta-liste">
             {{> skjema/ny_generisk/opplysninger_inntekt}}
