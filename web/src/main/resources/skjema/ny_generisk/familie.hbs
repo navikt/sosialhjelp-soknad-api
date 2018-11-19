@@ -9,8 +9,10 @@
 	        {{/hvisLik}}
             {{#if @root.utvidetSoknad}}
                 {{#hvisLik sivilstatus.status "gift"}}
-                    {{{ settInnInfotekst "system.familie.sivilstatus.informasjonspanel.tittel" }}}
-                    {{{ settInnInfotekst "system.familie.sivilstatus.informasjonspanel.tekst" }}}
+                    {{#unless sivilstatus.ektefelleHarDiskresjonskode}}
+	                    {{{ settInnInfotekst "system.familie.sivilstatus.informasjonspanel.tittel" }}}
+	                    {{{ settInnInfotekst "system.familie.sivilstatus.informasjonspanel.tekst" }}}
+                    {{/unless}}
                 {{/hvisLik}}
             {{/if}}
             {{#if @root.utvidetSoknad}}
