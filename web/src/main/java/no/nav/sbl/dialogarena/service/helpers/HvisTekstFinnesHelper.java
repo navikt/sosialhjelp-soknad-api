@@ -36,12 +36,9 @@ public class HvisTekstFinnesHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        //WebSoknad soknad = HandlebarsUtils.finnWebSoknad(options.context);
         String sprak = "nb_NO";
         final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         final String bundleName = konfigurasjon.getBundleName();
-        //Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
-        //String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
 
         if(cmsTekst.getCmsTekst(key, new Object[0], konfigurasjon.getSoknadTypePrefix(), bundleName, toLocale(sprak)) != null){
             return options.fn();

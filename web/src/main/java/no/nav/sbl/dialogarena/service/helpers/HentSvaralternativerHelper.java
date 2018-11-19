@@ -59,21 +59,21 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
     private Set<String> findChildPropertyValues(final String parentKey, final Locale locale) {
         final Set<String> result = new HashSet<>();
 
-        final Pattern pattern = directChildPattern(parentKey);
-        for (Entry<String, String> entry : allProperties(locale)) {
-            findMatchingSubKey(pattern, entry, HentSvaralternativerHelper::shouldIncludeSubKey)
+        final Pattern tekstfilNavnStruktur = directChildPattern(parentKey);
+        for (Entry<String, String> tekstfil : allProperties(locale)) {
+            findMatchingSubKey(tekstfilNavnStruktur, tekstfil, HentSvaralternativerHelper::shouldIncludeSubKey)
                 .ifPresent((v) -> result.add(v));
         }
         
         return result;
     }
     
-    private Optional<String> findMatchingSubKey(final Pattern pattern, final Entry<String, String> entry, final Predicate<String> shouldInclude) {
-        final Matcher matcher = pattern.matcher(entry.getKey());
+    private Optional<String> findMatchingSubKey(final Pattern tekstfilNavnStruktur, final Entry<String, String> tekstfil, final Predicate<String> shouldInclude) {
+        final Matcher matcher = tekstfilNavnStruktur.matcher(tekstfil.getKey());
         if (matcher.matches()) {
             final String subKey = matcher.group(1);
             if (shouldInclude.test(subKey)) {
-                return Optional.of(entry.getValue());
+                return Optional.of(tekstfil.getValue());
             }
         }
         return Optional.empty();

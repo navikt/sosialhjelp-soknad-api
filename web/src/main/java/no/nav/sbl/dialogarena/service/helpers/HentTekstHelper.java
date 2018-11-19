@@ -37,9 +37,6 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        //WebSoknad soknad = HandlebarsUtils.finnWebSoknad(options.context);
-        //Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
-        //String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
         String sprak = "nb_NO";
         final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         final String bundleName = konfigurasjon.getBundleName();
