@@ -35,7 +35,7 @@ public class DkifMock {
         return mock;
     }
 
-    private static final WSHentDigitalKontaktinformasjonResponse getOrCreateCurrentUserResponse() {
+    private static WSHentDigitalKontaktinformasjonResponse getOrCreateCurrentUserResponse() {
 
         WSHentDigitalKontaktinformasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
         if (response == null) {
@@ -45,14 +45,14 @@ public class DkifMock {
         return response;
     }
 
-    public static WSHentDigitalKontaktinformasjonResponse createNewResponse(){
+    private static WSHentDigitalKontaktinformasjonResponse createNewResponse(){
         final WSHentDigitalKontaktinformasjonResponse response = new WSHentDigitalKontaktinformasjonResponse();
         final WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon();
         response.setDigitalKontaktinformasjon(kontaktinformasjon);
         return response;
     }
 
-    public static final void setTelefonnummer(String telefonnummer) {
+    public static void setTelefonnummer(String telefonnummer) {
 
         WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse();
 
