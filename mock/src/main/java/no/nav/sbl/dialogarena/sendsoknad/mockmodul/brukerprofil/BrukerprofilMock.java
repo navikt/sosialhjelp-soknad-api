@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -62,56 +61,39 @@ public class BrukerprofilMock {
 
         try{
             when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class)))
-                    .thenAnswer((invocationOnMock) -> generateResponse());
+                    .thenAnswer((invocationOnMock) -> getOrCreateCurrentUserResponse());
         } catch(HentKontaktinformasjonOgPreferanserPersonIkkeFunnet | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
             throw new RuntimeException(e);
         }
-
-        //BrukerprofilPortTypeMock brukerprofilPortTypeMock = BrukerprofilMock.getInstance().getBrukerprofilPortTypeMock();
-
         return mock;
     }
 
-    private static final XMLHentKontaktinformasjonOgPreferanserResponse generateResponse() {
+    private static final XMLHentKontaktinformasjonOgPreferanserResponse getOrCreateCurrentUserResponse() {
         XMLHentKontaktinformasjonOgPreferanserResponse respons = responses.get(SubjectHandler.getSubjectHandler().getUid());
         if (respons == null) {
-            respons = generateStandardRespons();
+            respons = createNewResponse();
             responses.put(SubjectHandler.getSubjectHandler().getUid(), respons);
         }
+
         return respons;
     }
 
-    private static final XMLHentKontaktinformasjonOgPreferanserResponse generateStandardRespons() {
+    private static final XMLHentKontaktinformasjonOgPreferanserResponse createNewResponse() {
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
         xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue(""));
-        xmlBruker.setBankkonto(bankkonto(BANKKONTO_KONTONUMMER));
 
         settPostadresse(xmlBruker, Adressetyper.NORSK);
         settSekundarAdresse(xmlBruker, Adressetyper.UTENLANDSK);
 
-        //settMatrikkeladresse(xmlBruker);
         xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue("midlertidig"));
         settMidlertidigPostadresse(xmlBruker);
 
         return new XMLHentKontaktinformasjonOgPreferanserResponse().withPerson(xmlBruker);
     }
 
-
     public BrukerprofilMock(){
-//        XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
-//        xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue(""));
-//        xmlBruker.setBankkonto(bankkonto());
-//
-//        settPostadresse(xmlBruker, Adressetyper.NORSK);
-//        settSekundarAdresse(xmlBruker, Adressetyper.UTENLANDSK);
-//
-//        //settMatrikkeladresse(xmlBruker);
-//        xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue("midlertidig"));
-//        settMidlertidigPostadresse(xmlBruker);
-//
-//        brukerprofilPortTypeMock.setPerson(xmlBruker);
-    }
 
+    }
 
     public static BrukerprofilMock getInstance(){
         return brukerprofilMock;
@@ -287,7 +269,6 @@ public class BrukerprofilMock {
         return bankkonto;
     }
 
-
     private XMLBankkonto utenlandskBankkonto() {
         XMLLandkoder landkoder = new XMLLandkoder();
         landkoder.setValue(BANKKONTO_LANDKODE);
@@ -303,11 +284,12 @@ public class BrukerprofilMock {
         return bankkonto;
     }
 
-
-
     public static final void setKontonummer(String kontonummer) {
-        final XMLHentKontaktinformasjonOgPreferanserResponse respons = generateResponse();
-        generateResponse().getPerson().setBankkonto(bankkonto(kontonummer));
+        XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
+        if (kontonummer.equals("slett")) {
+            response.getPerson().withBankkonto(null);
+        } else {
+            response.getPerson().setBankkonto(bankkonto(kontonummer));
+        }
     }
-
 }

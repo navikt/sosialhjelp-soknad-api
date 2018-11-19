@@ -42,11 +42,9 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        if (!telefon.isEmpty() && telefon.matches("^\\d{8}")) {
-            DkifMock.setTelefonnummer(telefon);
-        } else if (telefon.equals("slett")){
-            DkifMock.setTelefonnummer(null);
-        }
+
+        DkifMock.setTelefonnummer(telefon);
+
     }
 
 

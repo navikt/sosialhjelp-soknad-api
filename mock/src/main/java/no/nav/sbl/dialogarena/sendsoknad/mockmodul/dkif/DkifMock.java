@@ -19,10 +19,8 @@ public class DkifMock {
 
     private static final String RIKTIG_IDENT = "***REMOVED***";
     private static final String EN_EPOST = "test@epost.com";
-    private static Map<String, String> telefonnumre = new HashMap<>();
-    static {
-        telefonnumre.put(null, "98765432");
-    }
+
+    private static Map<String, WSHentDigitalKontaktinformasjonResponse> responses = new HashMap<>();
 
     public DigitalKontaktinformasjonV1 dkifMock(){
 
@@ -30,29 +28,38 @@ public class DkifMock {
 
         try{
             when(mock.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class)))
-                    .thenAnswer((invocationOnMock) -> generateResponse());
+                    .thenAnswer((invocationOnMock) -> getOrCreateCurrentUserResponse());
         } catch(HentDigitalKontaktinformasjonPersonIkkeFunnet | HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet | HentDigitalKontaktinformasjonSikkerhetsbegrensing e) {
             throw new RuntimeException(e);
         }
         return mock;
     }
 
-    private static final WSHentDigitalKontaktinformasjonResponse generateResponse() {
+    private static final WSHentDigitalKontaktinformasjonResponse getOrCreateCurrentUserResponse() {
+
+        WSHentDigitalKontaktinformasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
+        if (response == null) {
+            response = createNewResponse();
+            responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+        }
+        return response;
+    }
+
+    public static WSHentDigitalKontaktinformasjonResponse createNewResponse(){
         final WSHentDigitalKontaktinformasjonResponse response = new WSHentDigitalKontaktinformasjonResponse();
-
-        final String telefonnummer = telefonnumre.get(SubjectHandler.getSubjectHandler().getUid());
-
-        final WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()
-                .withPersonident(RIKTIG_IDENT)
-                .withEpostadresse(new WSEpostadresse().withValue(EN_EPOST))
-                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(telefonnummer))
-                .withReservasjon("TEST");
-
+        final WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon();
         response.setDigitalKontaktinformasjon(kontaktinformasjon);
         return response;
     }
 
     public static final void setTelefonnummer(String telefonnummer) {
-        DkifMock.telefonnumre.put(SubjectHandler.getSubjectHandler().getUid(), telefonnummer);
+
+        WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse();
+
+        if (!telefonnummer.isEmpty() && telefonnummer.matches("^\\d{8}")) {
+            response.getDigitalKontaktinformasjon().withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(telefonnummer));
+        } else if (telefonnummer.equals("slett")){
+            response.getDigitalKontaktinformasjon().setMobiltelefonnummer(null);
+        }
     }
 }
