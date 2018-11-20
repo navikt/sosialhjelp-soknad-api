@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif;
 
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSMobiltelefonnummer;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
@@ -16,9 +16,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class DkifMock {
-
-    private static final String RIKTIG_IDENT = "***REMOVED***";
-    private static final String EN_EPOST = "test@epost.com";
 
     private static Map<String, WSHentDigitalKontaktinformasjonResponse> responses = new HashMap<>();
 
@@ -52,14 +49,17 @@ public class DkifMock {
         return response;
     }
 
-    public static void setTelefonnummer(String telefonnummer) {
+    public static void setTelefonnummer(JsonTelefonnummer telefonnummer) {
 
         WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse();
+        response
+                .getDigitalKontaktinformasjon()
+                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(telefonnummer.getVerdi()));
+    }
 
-        if (!telefonnummer.isEmpty() && telefonnummer.matches("^\\d{8}")) {
-            response.getDigitalKontaktinformasjon().withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(telefonnummer));
-        } else if (telefonnummer.equals("slett")){
-            response.getDigitalKontaktinformasjon().setMobiltelefonnummer(null);
-        }
+    public static void slettTelefonnummer() {
+
+        WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse();
+        response.getDigitalKontaktinformasjon().setMobiltelefonnummer(null);
     }
 }

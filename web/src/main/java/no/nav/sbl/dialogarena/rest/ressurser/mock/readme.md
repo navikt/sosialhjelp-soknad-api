@@ -1,29 +1,49 @@
 # Bruk av endepunktene for å sette mockdata:
 
 ## Telefonnummer
-Send en POST request med tom body og telefonnummer slik:
+##### Legg til systemregistrert telefonnummer
+Send en POST request til:
 ```
-.../soknadsosialhjelp-server/internal/mock/tjeneste/telefon/{99887766}
+.../soknadsosialhjelp-server/internal/mock/tjeneste/telefon
+```
+med header: content-type: application/json
+
+Og body:
+```
+{
+  "verdi":"99887766"
+}
 ```
 
-Slett systemregistrert telefonnummer slik:
+##### Slett systemregistrert telefonnummer
+Send en DELETE request
 ```
-.../soknadsosialhjelp-server/internal/mock/tjeneste/telefon/slett
+.../soknadsosialhjelp-server/internal/mock/tjeneste/telefon
 ```
 
 ## Kontonummer
-Send en POST request med tom body og kontonummer slik:
+##### Legg til systemregistrert kontonummer
+Send en POST request til:
 ```
-.../soknadsosialhjelp-server/internal/mock/tjeneste/kontonummer/{12345678903}
+.../soknadsosialhjelp-server/internal/mock/tjeneste/kontonummer
 ```
+med header: content-type: application/json
 
-Slett systemregistrert kontonummer slik:
+Og body:
 ```
-.../soknadsosialhjelp-server/internal/mock/tjeneste/kontonummer/slett
+{
+	"verdi" : "12345678903"
+}
+```
+##### Slett systemregistrert kontonummer
+Send en DELETE request til 
+```
+.../soknadsosialhjelp-server/internal/mock/tjeneste/kontonummer
 ```
 
 
 ## Arbeid
+##### Legg til liste av systemregistrert arbeidsforhold
 Send en POST request til:
 ```
 .../soknadsosialhjelp-server/internal/mock/tjeneste/arbeid/forhold
@@ -82,10 +102,11 @@ med body:
 }
 
 ```
+med header: content-type: application/json
 
 
+##### Slett alle systemregistrert arbeidsforhold
 
-Slett systemregistrert kontonummer slik:
 Send en DELETE request til:
 ```
 .../soknadsosialhjelp-server/internal/mock/tjeneste/arbeid/forhold

@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -68,7 +69,7 @@ public class BrukerprofilMock {
         return mock;
     }
 
-    private static final XMLHentKontaktinformasjonOgPreferanserResponse getOrCreateCurrentUserResponse() {
+    private static XMLHentKontaktinformasjonOgPreferanserResponse getOrCreateCurrentUserResponse() {
         XMLHentKontaktinformasjonOgPreferanserResponse respons = responses.get(SubjectHandler.getSubjectHandler().getUid());
         if (respons == null) {
             respons = createNewResponse();
@@ -78,7 +79,7 @@ public class BrukerprofilMock {
         return respons;
     }
 
-    private static final XMLHentKontaktinformasjonOgPreferanserResponse createNewResponse() {
+    private static XMLHentKontaktinformasjonOgPreferanserResponse createNewResponse() {
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
         xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue(""));
 
@@ -112,7 +113,7 @@ public class BrukerprofilMock {
         return xmlGyldighetsperiode;
     }
     
-    public static void settMidlertidigPostadresse(XMLBruker xmlBruker) {
+    private static void settMidlertidigPostadresse(XMLBruker xmlBruker) {
         final XMLMidlertidigPostadresse midlertidigPostadresse = new XMLMidlertidigPostadresseNorge()
                 .withStrukturertAdresse(lagStrukturertPostadresse("42"));
         xmlBruker.setMidlertidigPostadresse(midlertidigPostadresse);
@@ -284,12 +285,13 @@ public class BrukerprofilMock {
         return bankkonto;
     }
 
-    public static final void setKontonummer(String kontonummer) {
+    public static void setKontonummer(JsonKontonummer jsonKontonummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
-        if (kontonummer.equals("slett")) {
-            response.getPerson().withBankkonto(null);
-        } else {
-            response.getPerson().setBankkonto(bankkonto(kontonummer));
-        }
+        response.getPerson().setBankkonto(bankkonto(jsonKontonummer.getVerdi()));
+    }
+
+    public static void slettKontonummer(){
+        XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
+        response.getPerson().withBankkonto(null);
     }
 }
