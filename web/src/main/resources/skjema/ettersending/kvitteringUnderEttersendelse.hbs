@@ -66,31 +66,30 @@
         <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
         <h1>{{ hentTekst "skjema.tittel" }}</h1>
         <hr/>
-        {{#forFaktum "personalia"}}
-            <div class="personalia">
-                        <span>
-                            <span class="nvn">{{properties.navn}}</span>,
-                            <span class="fnr">{{properties.fnr}}</span>
-                        </span>
-            </div>
-        {{/forFaktum}}
+        <div class="personalia">
+            {{#with data.personalia}}
+                <span>
+	                <span class ="nvn">{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}</span>
+	                <span class ="fnr">{{personIdentifikator.verdi}}</span>
+                </span>
+            {{/with}}
+        </div>
         <hr/>
         <br/>
 
-        <h3>Følgende vedlegg er sendt {{toCapitalized
-                (formaterDato dato "EEEE")}} {{hentEttersendelsestidspunkt}}:</h3>
-
 
 <br/>
-        {{#ettersendteVedlegg}}
-            <p>
-            <span>{{{ hentTekst (concat "vedlegg." this.[0].skjemaNummer "." this.[0].skjemanummerTillegg ".tittel") }}}</span><br/>Filer:<br/>
-            {{#each this}}
-                Filnavn : {{this.filnavn}}  <br/>
-            {{/each}}
-            </p>
-        {{/ettersendteVedlegg}}
 
+        {{#each @root.jsonVedleggSpesifikasjon.vedlegg}}
+	        {{#hvisLik status "LastetOpp"}}
+	            <p>
+			    <span>{{ hentTekst (concat 'vedlegg.' type '.' tilleggsinfo '.tittel') }}</span><br/>Filer:<br/>
+		        {{#each filer}}
+		            Filnavn : {{filnavn}}<br/>
+		        {{/each}}
+			    </p>
+	        {{/hvisLik}}
+		{{/each}}
 
     </div>
 </div>
