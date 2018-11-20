@@ -11,7 +11,7 @@
             {{hentTekst "utgifter.boutgift.true.type.sporsmal"}}
         </h4>
         <ul class="svar-liste">
-            {{#each @root.soknad.data.okonomi.opplysninger.utgift}}
+            {{#each @root.opplysningUtgiftstyper}}
                 {{#hvisBoutgift type}}
                     {{#hvisIkkeTom (hentTekst (concat "utgifter.boutgift.true.type." type)) }}
                         <li>
@@ -33,7 +33,7 @@
                     {{/hvisIkkeTom}}
                 {{/hvisBoutgift}}
             {{/each}}
-            {{#each @root.soknad.data.okonomi.oversikt.utgift}}
+            {{#each @root.oversiktUtgiftstyper}}
                 {{#hvisBoutgift type}}
                     {{#hvisIkkeTom (hentTekst (concat "utgifter.boutgift.true.type." type)) }}
                         <li>

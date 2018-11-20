@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.service.context;
 
-public final class Formuetype {
+public final class InntektEllerUtgiftType {
 
     private final String type;
     private final String tittel;
     
     
-    public Formuetype(String type, String tittel) {
+    public InntektEllerUtgiftType(String type, String tittel) {
         this.type = type;
         this.tittel = tittel;
     }
@@ -36,7 +36,7 @@ public final class Formuetype {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Formuetype other = (Formuetype) obj;
+        InntektEllerUtgiftType other = (InntektEllerUtgiftType) obj;
         if (tittel == null) {
             if (other.tittel != null)
                 return false;
