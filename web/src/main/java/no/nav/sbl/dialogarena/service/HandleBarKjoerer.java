@@ -89,6 +89,11 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     @Override
     public String genererHtmlForEttersendelsesPdf(WebSoknad soknad, String file) throws IOException {
         final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
+        return genererHtmlForEttersendelsesPdf(internalSoknad, file);
+    }
+    
+    @Override
+    public String genererHtmlForEttersendelsesPdf(JsonInternalSoknad internalSoknad, String file) throws IOException {
         final HandlebarContext context = new HandlebarContext(internalSoknad, false);
         
         return getHandlebars()
@@ -100,25 +105,30 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     public String genererHtmlForPdf(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
             final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
-            final HandlebarContext context = new HandlebarContext(internalSoknad, utvidetSoknad);
-            
-            return getHandlebars()
-                    .infiniteLoops(true)
-                    .compile("/skjema/ny_generisk")
-                    .apply(Context.newBuilder(context)
-                            .resolver(
-                                    JavaBeanValueResolver.INSTANCE,
-                                    FieldValueResolver.INSTANCE,
-                                    MapValueResolver.INSTANCE,
-                                    MethodValueResolver.INSTANCE
-                            )
-                            .build());
+            return genererHtmlForPdf(internalSoknad, utvidetSoknad);
         }catch (IllegalArgumentException e){
-            getLogger(HandleBarKjoerer.class).warn("catch IllegalArgumentException " + e.getMessage()
+                    getLogger(HandleBarKjoerer.class).warn("catch IllegalArgumentException " + e.getMessage()
                     + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() + "har faktum med ugyldig datoverdi."
                     + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
             throw e;
         }
+    }
+            
+    @Override
+    public String genererHtmlForPdf(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) throws IOException {
+        final HandlebarContext context = new HandlebarContext(internalSoknad, utvidetSoknad);
+        
+        return getHandlebars()
+                .infiniteLoops(true)
+                .compile("/skjema/ny_generisk")
+                .apply(Context.newBuilder(context)
+                        .resolver(
+                                JavaBeanValueResolver.INSTANCE,
+                                FieldValueResolver.INSTANCE,
+                                MapValueResolver.INSTANCE,
+                                MethodValueResolver.INSTANCE
+                        )
+                        .build());
     }
 
     private JsonInternalSoknad legacyGenererJsonInternalSoknad(WebSoknad soknad) {
