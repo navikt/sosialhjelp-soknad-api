@@ -40,29 +40,30 @@
 	            </ul>
 	        </li>
 	    {{/hvisIkkeTom}}
-	    <li>
-	        <span class="label">{{ hentTekst "system.familie.barn.true.barn.deltbosted.sporsmal" }}</span>
-	        {{#if @root.utvidetSoknad}}
-	            {{{settInnHjelpetekst "system.familie.barn.true.barn.deltbosted.hjelpetekst.tekst"}}}
-	        {{/if}}
-	        <ul class="svar-liste">
-	            <li>
-	                {{#hvisIkkeTom harDeltBosted.verdi}}
-	                    <span class="verdi verdi--tekst">
-	                        {{ hentTekst (concat 'system.familie.barn.true.barn.deltbosted.' harDeltBosted.verdi) }}
-	                    </span>
-	                {{else}}
-	                    <span class="verdi verdi--ikkeUtfylt">
-	                        <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-	                    </span>
-	                {{/hvisIkkeTom}}
-	            </li>
-	            {{#if @root.utvidetSoknad}}
-	                {{{hentSvaralternativer "system.familie.barn.true.barn.deltbosted"}}}
-	            {{/if}}
-	        </ul>
-	    </li>
-	    {{#unless erFolkeregistrertSammen.verdi}}
+	    {{#if erFolkeregistrertSammen.verdi}}
+		    <li>
+		        <span class="label">{{ hentTekst "system.familie.barn.true.barn.deltbosted.sporsmal" }}</span>
+		        {{#if @root.utvidetSoknad}}
+		            {{{settInnHjelpetekst "system.familie.barn.true.barn.deltbosted.hjelpetekst.tekst"}}}
+		        {{/if}}
+		        <ul class="svar-liste">
+		            <li>
+		                {{#hvisIkkeTom harDeltBosted.verdi}}
+		                    <span class="verdi verdi--tekst">
+		                        {{ hentTekst (concat 'system.familie.barn.true.barn.deltbosted.' harDeltBosted.verdi) }}
+		                    </span>
+		                {{else}}
+		                    <span class="verdi verdi--ikkeUtfylt">
+		                        <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+		                    </span>
+		                {{/hvisIkkeTom}}
+		            </li>
+		            {{#if @root.utvidetSoknad}}
+		                {{{hentSvaralternativer "system.familie.barn.true.barn.deltbosted"}}}
+		            {{/if}}
+		        </ul>
+		    </li>
+	    {{else}}
 	        <li>
 	            <span class="label">{{ hentTekst "system.familie.barn.true.barn.grad.sporsmal" }}</span>
 	            <ul class="svar-liste">
@@ -82,7 +83,7 @@
 	                {{/if}}
 	            </ul>
 	        </li>
-	    {{/unless}}
+	    {{/if}}
 	{{/unless}}
 {{/each}}
 <li>

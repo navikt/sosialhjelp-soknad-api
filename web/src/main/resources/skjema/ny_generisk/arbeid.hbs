@@ -53,9 +53,6 @@
         {{else}}
             <p>{{ hentTekst "arbeidsforhold.ingen" }}</p>
         {{/if}}
-        {{#if @root.utvidetSoknad}}
-            {{ hentTekst "opplysninger.arbeidsituasjon.kommentarer.label" }}
-        {{/if}}
         {{#if kommentarTilArbeidsforhold.verdi}}
             <ul class="fakta-liste">
                 <span class="label">{{ hentTekst "opplysninger.arbeidsituasjon.kommentarer.label" }}</span>
@@ -67,6 +64,19 @@
                     </li>
                 </ul>
             </ul>
+        {{else}}
+	        {{#if @root.utvidetSoknad}}
+	            {{ hentTekst "opplysninger.arbeidsituasjon.kommentarer.label" }}
+	            <li>
+	                <ul class="svar-liste">
+	                    <li>
+                            <span class="verdi verdi--ikkeUtfylt">
+                                <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                            </span>
+	                    </li>
+	                </ul>
+	            </li>
+	        {{/if}}
         {{/if}}
     {{/with}}
     <h3>{{hentTekst "arbeid.dinsituasjon.studerer.undertittel"}}</h3>
