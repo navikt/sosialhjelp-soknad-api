@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
