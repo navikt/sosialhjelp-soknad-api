@@ -85,6 +85,16 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             throw e;
         }
     }
+    
+    @Override
+    public String genererHtmlForEttersendelsesPdf(WebSoknad soknad, String file) throws IOException {
+        final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
+        final HandlebarContext context = new HandlebarContext(internalSoknad, false);
+        
+        return getHandlebars()
+                .compile(file)
+                .apply(Context.newBuilder(context).build());
+    }
 
     @Override
     public String genererHtmlForPdf(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
