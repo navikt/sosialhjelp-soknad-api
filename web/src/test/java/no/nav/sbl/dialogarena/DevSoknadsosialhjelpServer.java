@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.modig.testcertificates.TestCertificates;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 
 import javax.sql.DataSource;
@@ -24,6 +25,7 @@ public class DevSoknadsosialhjelpServer {
 
         final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/soknadsosialhjelp-server", dataSource);
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        TestCertificates.setupKeyAndTrustStore();
         server.start();
     }
 

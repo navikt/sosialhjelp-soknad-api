@@ -97,5 +97,12 @@ public interface AdresseSokConsumer {
             this.soketype = soketype;
             return this;
         }
+
+        @Override
+        public String toString() {
+            return "Sokedata [adresse=" + adresse + ", husnummer=" + husnummer + ", husbokstav=" + husbokstav
+                    + ", postnummer=" + postnummer + ", poststed=" + poststed + ", kommunenummer=" + kommunenummer
+                    + ", soketype=" + soketype + "]";
+        }
     }
 }
