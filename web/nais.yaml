@@ -48,12 +48,6 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: virksomhet:Maalgruppe_v1
     resourceType: webserviceendpoint
-  - alias: domene.Brukerdialog:Henvendelse_v2
-    resourceType: webserviceendpoint
-  - alias: domene.Brukerdialog:sendsoknadservice_v1
-    resourceType: webserviceendpoint
-  - alias: domene.Brukerdialog:fillagerservice_v1
-    resourceType: webserviceendpoint
   - alias: virksomhet:Kodeverk_v2
     resourceType: webserviceendpoint
   - alias: saksoversikt.link
