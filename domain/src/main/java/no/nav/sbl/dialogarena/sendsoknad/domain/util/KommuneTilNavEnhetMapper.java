@@ -56,7 +56,6 @@ public class KommuneTilNavEnhetMapper {
             .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
             .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
             .put("1165", "973864203")    // Madla, Stavanger kommune
-
             .put("1102", "874610712")    // Sandnes
             .put("1119", "976827961")    // Hå
             .put("1124", "948243113")    // Sola
@@ -306,6 +305,11 @@ public class KommuneTilNavEnhetMapper {
             .put("horten",          new NavEnhet("Horten", null,                "974605171"))
             .put("askoy",           new NavEnhet("Askøy", null,                 "974600889"))
             .put("skien",           new NavEnhet("Skien", null,                 "995509970"))
+            .put("sandnes",         new NavEnhet("Sandnes", null,               "874610712"))
+            .put("ha",              new NavEnhet("Hå", null,                    "976827961"))
+            .put("sola",            new NavEnhet("Sola", null,                  "948243113"))
+            .put("larvik",          new NavEnhet("Larvik", null,                "997784618"))
+            .put("hamar",           new NavEnhet("Hamar", null,                 "974623811"))
 
             .put("arna",            new NavEnhet("Arna", "bergen",              "976829786"))
             .put("bergenhus",       new NavEnhet("Bergenhus", "bergen",         "976830563"))
