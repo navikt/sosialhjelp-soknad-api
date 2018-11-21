@@ -20,10 +20,12 @@ public final class HandlebarContext {
     
     private final JsonInternalSoknad internalSoknad;
     private final boolean utvidetSoknad;
+    private final boolean erEttersending;
 
-    public HandlebarContext(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) {
+    public HandlebarContext(JsonInternalSoknad internalSoknad, boolean utvidetSoknad, boolean erEttersending) {
         this.internalSoknad = internalSoknad;
         this.utvidetSoknad = utvidetSoknad;
+        this.erEttersending = erEttersending;
     }
     
     public JsonSoknad getSoknad() {
@@ -40,6 +42,10 @@ public final class HandlebarContext {
 
     public boolean getUtvidetSoknad() {
         return utvidetSoknad;
+    }
+    
+    public boolean getErEttersending() {
+        return erEttersending;
     }
 
     public Collection<InntektEllerUtgiftType> getFormuetyper() {

@@ -35,18 +35,26 @@ public class PDFService {
     private PdfWatermarker watermarker = new PdfWatermarker();
 
 
-    public byte[] genererKvitteringPdf(WebSoknad soknad, String servletPath) {
+    public byte[] genererKvitteringPdf(WebSoknad soknad, String servletPath, boolean erEttersending) {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String skjemanummer = soknad.getskjemaNummer();
         KravdialogInformasjon kravdialogInformasjon = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer);
-        return lagPdfFraSkjema(soknad, kravdialogInformasjon.getKvitteringTemplate(), servletPath);
+        final String hbsSkjemaPath = kravdialogInformasjon.getKvitteringTemplate();
+        
+        String pdfMarkup;
+        try {
+            pdfMarkup = pdfTemplate.genererHtmlForPdf(soknad, hbsSkjemaPath, erEttersending);
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
+        }
+        return lagPdfFraMarkup(pdfMarkup, servletPath);
     }
 
     public byte[] genererEttersendingPdf(WebSoknad soknad, String servletPath) {
         final String hbsSkjemaPath = "skjema/ettersending/kvitteringUnderEttersendelse";
         final String pdfMarkup;
         try {
-            pdfMarkup = pdfTemplate.genererHtmlForEttersendelsesPdf(soknad, hbsSkjemaPath);
+            pdfMarkup = pdfTemplate.genererHtmlForPdf(soknad, hbsSkjemaPath, true);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
         }

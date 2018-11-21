@@ -137,7 +137,7 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
-        return pdfService.genererKvitteringPdf(soknad, servletPath);
+        return pdfService.genererKvitteringPdf(soknad, servletPath, false); //TODO: Siste parameter er ettersendingsflagg
     }
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {
