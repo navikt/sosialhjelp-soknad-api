@@ -84,7 +84,7 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
-        return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
+        return pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, true);
     }
     
     @Deprecated
@@ -110,7 +110,7 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
-        return pdfService.genererOppsummeringPdf(soknad, servletPath, false);
+        return pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, false);
     }
 
 
@@ -124,7 +124,7 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
-        return pdfService.genererEttersendingPdf(soknad, servletPath);
+        return pdfService.legacyGenererEttersendingPdf(soknad, servletPath);
     }
     
     @Deprecated
@@ -137,7 +137,7 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
-        return pdfService.genererKvitteringPdf(soknad, servletPath, false); //TODO: Siste parameter er ettersendingsflagg
+        return pdfService.legacyGenererKvitteringPdf(soknad, servletPath);
     }
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {

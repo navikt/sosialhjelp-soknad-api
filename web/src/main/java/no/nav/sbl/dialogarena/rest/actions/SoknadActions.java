@@ -70,17 +70,17 @@ public class SoknadActions {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         String servletPath = servletContext.getRealPath("/");
 
-        byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath, false); //TODO: Siste parameter er ettersendingsflagg
+        byte[] kvittering = pdfService.legacyGenererKvitteringPdf(soknad, servletPath);
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
 
         if (soknad.erEttersending()) {
-            byte[] dummyPdfSomHovedskjema = pdfService.genererEttersendingPdf(soknad, servletPath);
+            byte[] dummyPdfSomHovedskjema = pdfService.legacyGenererEttersendingPdf(soknad, servletPath);
             soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
-            byte[] soknadPdf = pdfService.genererOppsummeringPdf(soknad, servletPath, false);
+            byte[] soknadPdf = pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, false);
             byte[] fullSoknad = null;
             if(webSoknadConfig.skalSendeMedFullSoknad(soknad.getSoknadId())){
-                fullSoknad = pdfService.genererOppsummeringPdf(soknad, servletPath, true);
+                fullSoknad = pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, true);
             }
 
             soknadService.sendSoknad(behandlingsId, soknadPdf, fullSoknad);
