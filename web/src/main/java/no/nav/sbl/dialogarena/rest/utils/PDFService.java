@@ -43,7 +43,14 @@ public class PDFService {
     }
 
     public byte[] genererEttersendingPdf(WebSoknad soknad, String servletPath) {
-        return lagPdfFraSkjema(soknad, "skjema/ettersending/kvitteringUnderEttersendelse", servletPath);
+        final String hbsSkjemaPath = "skjema/ettersending/kvitteringUnderEttersendelse";
+        final String pdfMarkup;
+        try {
+            pdfMarkup = pdfTemplate.genererHtmlForEttersendelsesPdf(soknad, hbsSkjemaPath);
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
+        }
+        return lagPdfFraMarkup(pdfMarkup, servletPath);
     }
 
     public byte[] genererOppsummeringPdf(WebSoknad soknad, String servletPath, boolean fullSoknad) {
