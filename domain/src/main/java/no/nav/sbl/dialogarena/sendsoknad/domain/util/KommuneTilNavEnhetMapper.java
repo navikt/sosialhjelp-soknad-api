@@ -56,10 +56,17 @@ public class KommuneTilNavEnhetMapper {
             .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
             .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
             .put("1165", "973864203")    // Madla, Stavanger kommune
+
+            .put("1102", "874610712")    // Sandnes
+            .put("1119", "976827961")    // Hå
+            .put("1124", "948243113")    // Sola
+            .put("0712", "997784618")    // Larvik
+            .put("0403", "974623811")    // Hamar
+
             .build();
     
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
-            .put("0701","910940066")    // Horten
+            .put("0701", "910940066")   // Horten
             .put("1208", "910230964")   // Årstad, Bergen kommune
             .put("1209", "910230158")   // Bergenhus, Bergen kommune
             .put("1210", "910230506")   // Ytrebygda, Bergen kommune
@@ -79,6 +86,13 @@ public class KommuneTilNavEnhetMapper {
             .put("1206", "910230514")   // Laksevåg, Bergen kommune
             .put("5701", "910230646")   // NAV Falkenborg, Trondheim kommune
             .put("5702", "910230611")   // NAV Lerkendal, Trondheim kommunne
+
+            .put("1102", "874610712")   // Sandnes
+            .put("1119", "976827961")   // Hå
+            .put("1124", "948243113")   // Sola
+            .put("0712", "997784618")   // Larvik
+            .put("0403", "974623811")   // Hamar
+
             .build();
     private static final Map<String, Map<String, Boolean>> FEATURES_FOR_ENHET = new HashMap<>();
 
@@ -215,9 +229,41 @@ public class KommuneTilNavEnhetMapper {
         }
     }
 
-    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219", "5001", "1103"));
+    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(
+            asList(
+                    "0701",
+                    "0703",
+                    "0717",
+                    "1201",
+                    "0301",
+                    "1247",
+                    "0219",
+                    "5001",
+                    "1103",
+                    "1102",
+                    "1119",
+                    "1124",
+                    "0712",
+                    "0403"
+            ));
 
-    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "0806", "1201", "0301", "1247", "5001", "1103"));
+    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
+            asList(
+                    "0701",
+                    "0703",
+                    "0717",
+                    "0806",
+                    "1201",
+                    "0301",
+                    "1247",
+                    "5001",
+                    "1103",
+                    "1102",
+                    "1119",
+                    "1124",
+                    "0712",
+                    "0403"
+            ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
