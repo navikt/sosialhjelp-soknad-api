@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.*;
 import no.nav.tjeneste.virksomhet.person.v1.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
@@ -33,7 +34,7 @@ public class PersonService {
     @Named("personSelftestEndpoint")
     private PersonPortType personSelftestEndpoint;
 
-    public no.nav.sbl.dialogarena.sendsoknad.domain.Person hentPerson(String fodselsnummer) {
+    public Person hentPerson(String fodselsnummer) {
         HentKjerneinformasjonResponse response = hentKjerneinformasjon(fodselsnummer);
         return response != null ? mapXmlPersonTilPerson(response.getPerson()) : null;
     }

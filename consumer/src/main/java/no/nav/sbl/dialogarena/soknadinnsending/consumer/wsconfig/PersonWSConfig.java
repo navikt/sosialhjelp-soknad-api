@@ -17,7 +17,6 @@ import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 public class PersonWSConfig {
 
     public static final String PERSON_KEY = "start.person.withmock";
-    private PersonMock personMock = PersonMock.getInstance();
 
     @Value("${soknad.webservice.person.personservice.url}")
     private String personEndpoint;
@@ -34,7 +33,7 @@ public class PersonWSConfig {
 
     @Bean
     public PersonPortType personEndpoint() {
-        PersonPortTypeMock mock = personMock.getPersonPortTypeMock();
+        PersonPortType mock = new  PersonMock().personMock();
         PersonPortType prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Person", prod, mock, PERSON_KEY, PersonPortType.class);
     }

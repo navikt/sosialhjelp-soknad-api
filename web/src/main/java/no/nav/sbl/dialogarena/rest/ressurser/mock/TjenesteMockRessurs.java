@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import org.springframework.cache.CacheManager;
@@ -105,5 +106,26 @@ public class TjenesteMockRessurs {
         }
         clearCache();
         ArbeidsforholdMock.slettAlleArbeidsforhold();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/person")
+    public void settPerson(@RequestBody String jsonPerson) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+        PersonMock.setPerson(jsonPerson);
+    }
+
+    @DELETE
+    @Path("/person")
+    public void settDefaultPerson() {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+        PersonMock.setDefaultPerson();
     }
 }
