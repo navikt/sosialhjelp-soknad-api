@@ -87,13 +87,8 @@ public class KommuneTilNavEnhetMapper {
             .put("5701", "910230646")   // NAV Falkenborg, Trondheim kommune
             .put("5702", "910230611")   // NAV Lerkendal, Trondheim kommunne
 
-            .put("1102", "874610712")   // Sandnes
-            .put("1119", "976827961")   // Hå
-            .put("1124", "948243113")   // Sola
-            .put("0712", "997784618")   // Larvik
-            .put("0403", "974623811")   // Hamar
-
             .build();
+
     private static final Map<String, Map<String, Boolean>> FEATURES_FOR_ENHET = new HashMap<>();
 
     public static String getOrganisasjonsnummer(String enhetNr) {
@@ -239,12 +234,7 @@ public class KommuneTilNavEnhetMapper {
                     "1247",
                     "0219",
                     "5001",
-                    "1103",
-                    "1102",
-                    "1119",
-                    "1124",
-                    "0712",
-                    "0403"
+                    "1103"
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
