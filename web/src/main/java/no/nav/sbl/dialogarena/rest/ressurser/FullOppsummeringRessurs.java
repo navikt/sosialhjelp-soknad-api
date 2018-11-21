@@ -126,6 +126,19 @@ public class FullOppsummeringRessurs {
         String servletPath = servletContext.getRealPath("/");
         return pdfService.genererEttersendingPdf(soknad, servletPath);
     }
+    
+    @Deprecated
+    @GET
+    @Path("/{behandlingsId}/brukerkvittering")
+    @Produces("application/pdf")
+    @SjekkTilgangTilSoknad
+    public byte[] brukerkvittering(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
+        sjekkOmFullOppsummeringErAktivert("brukerkvittering");
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+        String servletPath = servletContext.getRealPath("/");
+        return pdfService.genererKvitteringPdf(soknad, servletPath);
+    }
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {
         LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
