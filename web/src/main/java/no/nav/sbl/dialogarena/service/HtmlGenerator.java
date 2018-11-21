@@ -18,8 +18,8 @@ public interface HtmlGenerator {
 
     String genererHtmlForPdf(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) throws IOException;
 
-    String genererHtmlForEttersendelsesPdf(WebSoknad soknad, String file) throws IOException;
+    String genererHtmlForPdf(WebSoknad soknad, String file, boolean erEttersending) throws IOException;
 
-    String genererHtmlForEttersendelsesPdf(JsonInternalSoknad internalSoknad, String file) throws IOException;
+    String genererHtmlForPdf(JsonInternalSoknad internalSoknad, String file, boolean erEttersending) throws IOException;
 }
 

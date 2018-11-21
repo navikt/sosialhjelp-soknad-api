@@ -70,7 +70,7 @@ public class SoknadActions {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         String servletPath = servletContext.getRealPath("/");
 
-        byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath);
+        byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath, false); //TODO: Siste parameter er ettersendingsflagg
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
 
         if (soknad.erEttersending()) {

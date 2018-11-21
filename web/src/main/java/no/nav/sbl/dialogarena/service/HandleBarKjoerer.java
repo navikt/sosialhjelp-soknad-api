@@ -87,14 +87,14 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     }
     
     @Override
-    public String genererHtmlForEttersendelsesPdf(WebSoknad soknad, String file) throws IOException {
+    public String genererHtmlForPdf(WebSoknad soknad, String file, boolean erEttersending) throws IOException {
         final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
-        return genererHtmlForEttersendelsesPdf(internalSoknad, file);
+        return genererHtmlForPdf(internalSoknad, file, erEttersending);
     }
     
     @Override
-    public String genererHtmlForEttersendelsesPdf(JsonInternalSoknad internalSoknad, String file) throws IOException {
-        final HandlebarContext context = new HandlebarContext(internalSoknad, false);
+    public String genererHtmlForPdf(JsonInternalSoknad internalSoknad, String file, boolean erEttersending) throws IOException {
+        final HandlebarContext context = new HandlebarContext(internalSoknad, false, erEttersending);
         
         return getHandlebars()
                 .compile(file)
@@ -116,7 +116,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             
     @Override
     public String genererHtmlForPdf(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) throws IOException {
-        final HandlebarContext context = new HandlebarContext(internalSoknad, utvidetSoknad);
+        final HandlebarContext context = new HandlebarContext(internalSoknad, utvidetSoknad, false);
         
         return getHandlebars()
                 .infiniteLoops(true)
