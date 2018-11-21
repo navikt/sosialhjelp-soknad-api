@@ -110,14 +110,13 @@ public class PersonMock {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static void setPerson(String jsonPerson){
-
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Person person1 = mapper.readValue(jsonPerson, Person.class);
+            Person person = mapper.readValue(jsonPerson, Person.class);
             HentKjerneinformasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
-            response.setPerson(person1);
+            response.setPerson(person);
         } catch (IOException e) {
             e.printStackTrace();
         }
