@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.service;
 
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 
 import java.io.IOException;
 
@@ -14,5 +15,11 @@ public interface HtmlGenerator {
     String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean visHjelpetekster) throws IOException;
     
     String genererHtmlForPdf(WebSoknad soknad, boolean utvidetSoknad) throws IOException;
+
+    String genererHtmlForPdf(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) throws IOException;
+
+    String genererHtmlForEttersendelsesPdf(WebSoknad soknad, String file) throws IOException;
+
+    String genererHtmlForEttersendelsesPdf(JsonInternalSoknad internalSoknad, String file) throws IOException;
 }
 
