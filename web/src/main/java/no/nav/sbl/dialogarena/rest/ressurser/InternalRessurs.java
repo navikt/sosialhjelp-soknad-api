@@ -23,7 +23,6 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 
-import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 
 @Controller
 @Path("/internal")
@@ -35,8 +34,6 @@ public class InternalRessurs {
     @Inject
     private NavMessageSource messageSource;
 
-    private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
-
     private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
 
     @POST
@@ -45,42 +42,6 @@ public class InternalRessurs {
         logAccess("kjorLagring");
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
-
-
-    @GET
-    @Path(value = "/mocksetup")
-    public String mocksetup(@Context ServletContext servletContext) throws IOException {
-        logAccess("mocksetup");
-        MocksetupFields fields = getMocksetupFields();
-
-        Handlebars handlebars = new Handlebars();
-        handlebars.registerHelper(HvisLikHelper.NAVN, new HvisLikHelper());
-        Template compile = handlebars.compile(new URLTemplateSource("mocksetup.hbs", servletContext.getResource("/WEB-INF/mocksetup.hbs")));
-        com.github.jknack.handlebars.Context context = com.github.jknack.handlebars.Context
-                .newBuilder(fields)
-                .resolver(MethodValueResolver.INSTANCE)
-                .build();
-        return compile.apply(context);
-    }
-
-    @POST
-    @Path(value = "/mocksetup")
-    public Response mocksetup(@FormParam("statsborgerskap") String statsborgerskap,
-                              @FormParam("kode6") String kode6,
-                              @FormParam("primar_adressetype") String primarAdressetype,
-                              @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
-        logAccess("mocksetupPost");
-        Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
-
-        Person person = personPortTypeMock.getPerson();
-        person.setDiskresjonskode(skalHaKode6 ? getDiskresjonskode() : null);
-        person.getStatsborgerskap().getLand().setValue(statsborgerskap.toUpperCase());
-        settPostadressetype(primarAdressetype);
-        settSekundarAdressetype(sekundarAdressetype);
-
-        return Response.seeOther(URI.create("/sendsoknad/internal/mocksetup")).build();
-    }
-
 
     @GET
     @Path(value = "/resetcache")
