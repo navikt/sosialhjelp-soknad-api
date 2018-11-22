@@ -181,7 +181,7 @@ public class SoknadDataFletter {
          *    som er basert på sjekk av lagret faktum.
          */
         if (SosialhjelpInformasjon.SKJEMANUMMER.equals(skjemanummer)) {
-            //faktaService.lagreSystemFaktum(soknadId, arbeidsforhold(soknadId));
+            faktaService.lagreSystemFaktum(soknadId, arbeidsforhold(soknadId));
 
 
         }
