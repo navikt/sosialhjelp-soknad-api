@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 import com.github.jknack.handlebars.Options;
 import org.joda.time.DateTime;
@@ -9,7 +8,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-
+import static no.nav.sbl.dialogarena.service.HandlebarContext.SPRAK;
 
 @Component
 public class HentTidspunktNaaHelper extends RegistryAwareHelper<Object> {
@@ -29,11 +28,10 @@ public class HentTidspunktNaaHelper extends RegistryAwareHelper<Object> {
     @Override
     public CharSequence apply(Object o, Options options) throws IOException {
         
-        String sprak = "nb_NO";
         DateTime now = DateTime.now();
 
-        DateTimeFormatter datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(toLocale(sprak));
-        DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH.mm").withLocale(toLocale(sprak));
+        DateTimeFormatter datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(SPRAK);
+        DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH.mm").withLocale(SPRAK);
 
         return datoFormatter.print(now) + " " + klokkeslettFormatter.print(now);
     }
