@@ -16,15 +16,15 @@ public class SoknadRowMapper implements RowMapper<WebSoknad> {
 
     public WebSoknad mapRow(ResultSet rs, int row) throws SQLException {
         return startSoknad()
-        		.medId(rs.getLong("soknad_id"))
-        		.medBehandlingId(rs.getString("brukerbehandlingid"))
+                .medId(rs.getLong("soknad_id"))
+                .medBehandlingId(rs.getString("brukerbehandlingid"))
                 .medUuid(rs.getString("uuid"))
-        		.medskjemaNummer(rs.getString("navsoknadid"))
-        		.medAktorId(rs.getString("aktorid"))
+                .medskjemaNummer(rs.getString("navsoknadid"))
+                .medAktorId(rs.getString("aktorid"))
                 .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
                 .medBehandlingskjedeId(rs.getString("behandlingskjedeid"))
                 .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))
-        		.medOppretteDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
+                .medOppretteDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
                 .medJournalforendeEnhet(rs.getString("journalforendeenhet"))
                 .sistLagret(rs.getTimestamp("sistlagret"));
     }

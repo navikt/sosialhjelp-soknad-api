@@ -228,7 +228,7 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     @SuppressWarnings("unchecked")
-	private XMLKodeverk readFromDump(String dumpName) {
+    private XMLKodeverk readFromDump(String dumpName) {
         if(dumpDirectory.isPresent() && dumpDirectory.get().exists()){
             File dumpFile = new File(dumpDirectory.get(),dumpName + ".xml");
             try {

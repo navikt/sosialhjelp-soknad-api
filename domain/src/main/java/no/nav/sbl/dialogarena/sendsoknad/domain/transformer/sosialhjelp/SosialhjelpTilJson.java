@@ -33,6 +33,10 @@ public class SosialhjelpTilJson implements AlternativRepresentasjonTransformer {
     public AlternativRepresentasjon apply(WebSoknad webSoknad) {
         return transform(new InputSource(webSoknad, messageSource));
     }
+    
+    public JsonSoknad toJsonSoknad(WebSoknad webSoknad) {
+        return JsonSoknadConverter.tilJsonSoknad(new InputSource(webSoknad, messageSource));
+    }
 
     @Override
     public AlternativRepresentasjonType getRepresentasjonsType() {
