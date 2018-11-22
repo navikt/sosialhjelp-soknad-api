@@ -1,5 +1,19 @@
 package no.nav.sbl.dialogarena.service;
 
+import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
+import static org.apache.commons.lang3.ArrayUtils.reverse;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.split;
+import static org.slf4j.LoggerFactory.getLogger;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -9,25 +23,20 @@ import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
+
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
-import static org.apache.commons.lang3.ArrayUtils.reverse;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.split;
-import static org.slf4j.LoggerFactory.getLogger;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
@@ -36,6 +45,12 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     @Inject
     private WebSoknadConfig webSoknadConfig;
+    
+    @Inject
+    private NavMessageSource messageSource;
+    
+    @Inject
+    private WebSoknadConfig config;
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         return getHandlebars()
@@ -46,7 +61,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     public String fyllHtmlMalMedInnhold(WebSoknad soknad) throws IOException {
         return fyllHtmlMalMedInnhold(soknad, false);
     }
-
+    
     @Override
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
@@ -69,6 +84,67 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
             throw e;
         }
+    }
+    
+    @Override
+    public String genererHtmlForPdf(WebSoknad soknad, String file, boolean erEttersending) throws IOException {
+        final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
+        return genererHtmlForPdf(internalSoknad, file, erEttersending);
+    }
+    
+    @Override
+    public String genererHtmlForPdf(JsonInternalSoknad internalSoknad, String file, boolean erEttersending) throws IOException {
+        final HandlebarContext context = new HandlebarContext(internalSoknad, false, erEttersending);
+        
+        return getHandlebars()
+                .compile(file)
+                .apply(Context.newBuilder(context).build());
+    }
+
+    @Override
+    public String genererHtmlForPdf(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
+        try {
+            final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
+            return genererHtmlForPdf(internalSoknad, utvidetSoknad);
+        }catch (IllegalArgumentException e){
+                    getLogger(HandleBarKjoerer.class).warn("catch IllegalArgumentException " + e.getMessage()
+                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() + "har faktum med ugyldig datoverdi."
+                    + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
+            throw e;
+        }
+    }
+            
+    @Override
+    public String genererHtmlForPdf(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) throws IOException {
+        final HandlebarContext context = new HandlebarContext(internalSoknad, utvidetSoknad, false);
+        
+        return getHandlebars()
+                .infiniteLoops(true)
+                .compile("/skjema/ny_generisk")
+                .apply(Context.newBuilder(context)
+                        .resolver(
+                                JavaBeanValueResolver.INSTANCE,
+                                FieldValueResolver.INSTANCE,
+                                MapValueResolver.INSTANCE,
+                                MethodValueResolver.INSTANCE
+                        )
+                        .build());
+    }
+
+    private JsonInternalSoknad legacyGenererJsonInternalSoknad(WebSoknad soknad) {
+        final SosialhjelpTilJson sosialhjelpTilJson = new SosialhjelpTilJson(messageSource);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
+        
+        final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
+        
+        final JsonSoknad jsonSoknad = sosialhjelpTilJson.toJsonSoknad(soknad);
+        final JsonVedleggSpesifikasjon jsonVedlegg = sosialhjelpVedleggTilJson.toJsonVedleggSpesifikasjon(soknad);
+        final JsonInternalSoknad internalSoknad = new JsonInternalSoknad()
+                .withSoknad(jsonSoknad)
+                .withVedlegg(jsonVedlegg)
+                .withMottaker(new JsonSoknadsmottaker()
+                        .withNavEnhetsnavn("TODO TESTNAVN SLETTES FØR PROD"));
+        return internalSoknad;
     }
 
     @Override

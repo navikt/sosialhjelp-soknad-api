@@ -47,6 +47,19 @@ public class FullOppsummeringRessurs {
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
     }
+    
+    @Deprecated
+    @GET
+    @Path("/{behandlingsId}/gammelfullsoknad")
+    @Produces(TEXT_HTML)
+    @SjekkTilgangTilSoknad
+    public String gammelFullsoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        sjekkOmFullOppsummeringErAktivert("fullSoknad");
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
+    }
 
     @Deprecated
     @GET
@@ -58,7 +71,7 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
+        return pdfTemplate.genererHtmlForPdf(soknad, true);
     }
 
     @Deprecated
@@ -71,7 +84,33 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
-        return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
+        return pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, true);
+    }
+    
+    @Deprecated
+    @GET
+    @Path("/{behandlingsId}/saksbehandler")
+    @Produces(TEXT_HTML)
+    @SjekkTilgangTilSoknad
+    public String saksbehandler(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        sjekkOmFullOppsummeringErAktivert("fullSoknad");
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        return pdfTemplate.genererHtmlForPdf(soknad, false);
+    }
+
+    @Deprecated
+    @GET
+    @Path("/{behandlingsId}/saksbehandlerpdf")
+    @Produces("application/pdf")
+    @SjekkTilgangTilSoknad
+    public byte[] saksbehandlerPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
+        sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+        String servletPath = servletContext.getRealPath("/");
+        return pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, false);
     }
 
 
@@ -85,7 +124,20 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
-        return pdfService.genererEttersendingPdf(soknad, servletPath);
+        return pdfService.legacyGenererEttersendingPdf(soknad, servletPath);
+    }
+    
+    @Deprecated
+    @GET
+    @Path("/{behandlingsId}/brukerkvittering")
+    @Produces("application/pdf")
+    @SjekkTilgangTilSoknad
+    public byte[] brukerkvittering(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
+        sjekkOmFullOppsummeringErAktivert("brukerkvittering");
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+        String servletPath = servletContext.getRealPath("/");
+        return pdfService.legacyGenererKvitteringPdf(soknad, servletPath);
     }
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {

@@ -15,11 +15,11 @@
             </span>
         {{/hvisIkkeTom}}
         {{#if @root.utvidetSoknad}}
-            {{#hvisIkkeTom (hentSvaralternativer key)}}
+            {{#hvisIkkeTom (legacyHentSvaralternativer key)}}
                 <p>
                     <h{{niva}}>Svaralternativer:</h{{niva}}>
                     <strong>
-                        {{hentSvaralternativer key}}
+                        {{legacyHentSvaralternativer key}}
                     </strong>
                 </p>
             {{/hvisIkkeTom}}
