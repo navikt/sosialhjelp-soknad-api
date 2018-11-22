@@ -41,6 +41,7 @@ public class HentTekstHelperTest {
         KravdialogInformasjon kravdialogInformasjon = mock(KravdialogInformasjon.class);
         when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(kravdialogInformasjon);
         when(kravdialogInformasjon.getBundleName()).thenReturn("bundlename");
+        when(kravdialogInformasjon.getSoknadTypePrefix()).thenReturn("mittprefix");
 
         handlebars = new Handlebars();
         handlebars.registerHelper(hentTekstHelper.getNavn(), hentTekstHelper);

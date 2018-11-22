@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 @Component
-public class FormaterDato extends RegistryAwareHelper<String>{
+public class FormaterDatoHelper extends RegistryAwareHelper<String>{
     private final Locale locale = new Locale("nb", "NO");
 
     @Override
