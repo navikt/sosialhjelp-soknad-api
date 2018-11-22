@@ -5,19 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import no.ks.svarut.servicesv9.Dokument;
 import no.nav.sbl.dialogarena.detect.Detect;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.vedlegg.*;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.slf4j.Logger;
 
 import javax.activation.DataHandler;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,50 +117,20 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
-    List<Dokument> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid, JsonInternalSoknad internalSoknad) {
+    List<Dokument> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
         final List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
-        final List<JsonVedlegg> opplastedeJsonVedlegg = hentJsonVedleggFraInternalSoknad(internalSoknad);
-
-        List<Dokument> fiksDokumenter = new ArrayList<>();
-        for (OpplastetVedlegg opplastetVedlegg : opplastedeVedlegg) {
-            for (JsonVedlegg jsonVedlegg : opplastedeJsonVedlegg) {
-                if (opplastetVedlegg.getVedleggType().equals(new VedleggType(jsonVedlegg.getType(), jsonVedlegg.getTilleggsinfo()))) {
-                    for (JsonFiler jsonFil : jsonVedlegg.getFiler()) {
-                        if (jsonFilOgOpplastetVedleggErDetSammeVedlegget(jsonFil, opplastetVedlegg)) {
-                            fiksDokumenter.add(opprettDokumentForVedlegg(opplastetVedlegg, jsonFil));
-                        }
-                    }
-                }
-            }
-        }
-        return fiksDokumenter;
+        return opplastedeVedlegg.stream()
+                .map(this::opprettDokumentForVedlegg)
+                .collect(Collectors.toList());
     }
 
-    boolean jsonFilOgOpplastetVedleggErDetSammeVedlegget(JsonFiler jsonFil, OpplastetVedlegg opplastetVedlegg) {
-        if (jsonFil != null && jsonFil.getSha512().equals(opplastetVedlegg.getSha512()) && jsonFil.getFilnavn().equals(opplastetVedlegg.getFilnavn())) {
-            return true;
-        }
-        return false;
-    }
-
-    Dokument opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg, JsonFiler jsonFil) {
-        final String filnavn = jsonFil.getFilnavn();
+    Dokument opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
+        final String filnavn = opplastetVedlegg.getFilnavn();
         return new Dokument()
                 .withFilnavn(filnavn)
                 .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
                 .withEkskluderesFraPrint(true)
                 .withData(new DataHandler(krypterOgOpprettByteDatasource(filnavn, opplastetVedlegg.getData())));
-    }
-
-    private List<JsonVedlegg> hentJsonVedleggFraInternalSoknad(JsonInternalSoknad internalSoknad) {
-        if (internalSoknad.getVedlegg().getVedlegg() != null && !internalSoknad.getVedlegg().getVedlegg().isEmpty()) {
-            List<JsonVedlegg> alleJsonVedleggFraInternalSoknad = internalSoknad.getVedlegg().getVedlegg();
-            return alleJsonVedleggFraInternalSoknad.stream()
-                    .filter(jsonVedlegg -> Vedlegg.Status.LastetOpp.name().equalsIgnoreCase(jsonVedlegg.getStatus()))
-                    .collect(Collectors.toList());
-        } else {
-            return new ArrayList<>();
-        }
     }
 
     ByteDataSource krypterOgOpprettByteDatasource(String filnavn, byte[] fil) {

@@ -129,14 +129,14 @@ public class FiksSender {
         if (soknadUnderArbeid.erEttersendelse()) {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
-            fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid, internalSoknad));
+            fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
         } else {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad));
-            fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid, internalSoknad));
+            fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
         }
 
         return fiksDokumenter;
