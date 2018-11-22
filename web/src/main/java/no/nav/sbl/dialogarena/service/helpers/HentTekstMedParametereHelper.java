@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
@@ -21,6 +19,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import static no.nav.sbl.dialogarena.service.HandlebarContext.SPRAK;
 import no.nav.sbl.dialogarena.utils.UrlUtils;
 
 @Component
@@ -46,11 +45,10 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        String sprak = "nb_NO";
         final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         final String bundleName = konfigurasjon.getBundleName();
 
-        String tekst = this.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, toLocale(sprak), options);
+        String tekst = this.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK, options);
         
         String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
 

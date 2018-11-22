@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.service;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 
 public final class HandlebarContext {
     
+    public static final Locale SPRAK = new Locale("nb", "NO");
     private final JsonInternalSoknad internalSoknad;
     private final boolean utvidetSoknad;
     private final boolean erEttersending;

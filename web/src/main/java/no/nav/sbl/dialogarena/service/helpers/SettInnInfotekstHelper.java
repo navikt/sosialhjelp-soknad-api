@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 import java.io.IOException;
 
@@ -15,6 +14,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.utils.UrlUtils;
+import static no.nav.sbl.dialogarena.service.HandlebarContext.SPRAK;
 
 @Component
 public class SettInnInfotekstHelper extends RegistryAwareHelper<String> {
@@ -37,24 +37,23 @@ public class SettInnInfotekstHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        String sprak = "nb_NO";
         final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         final String bundleName = konfigurasjon.getBundleName();
 
-        String infotekst = getInfotekst(key, options, sprak, konfigurasjon, bundleName);
+        String infotekst = getInfotekst(key, options, konfigurasjon, bundleName);
         
         if (infotekst == null) {
             return "";
         }
         
-        final String infotekstTittel = this.cmsTekst.getCmsTekst("infotekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, toLocale(sprak));
+        final String infotekstTittel = this.cmsTekst.getCmsTekst("infotekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
         
         return createHtmlLayout(infotekst, infotekstTittel);
     }
 
-    private String getInfotekst(String key, Options options, String sprak, final KravdialogInformasjon konfigurasjon,
+    private String getInfotekst(String key, Options options, final KravdialogInformasjon konfigurasjon,
             final String bundleName) {
-        String infotekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, toLocale(sprak));
+        String infotekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
 
         String nyInfotekst = UrlUtils.endreHyperLenkerTilTekst(infotekst);
 

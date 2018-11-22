@@ -1,9 +1,8 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
+import static no.nav.sbl.dialogarena.service.HandlebarContext.SPRAK;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -20,12 +19,6 @@ import org.springframework.stereotype.Component;
 
 import com.github.jknack.handlebars.Options;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.dialogarena.service.HandlebarsUtils;
-import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsFaktum;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 
 @Component
@@ -47,8 +40,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        String sprak = "nb_NO";
-        final Set<String> svarAlternativer = findChildPropertyValues(key, toLocale(sprak));
+        final Set<String> svarAlternativer = findChildPropertyValues(key, SPRAK);
         
         StringBuilder stringBuilder = new StringBuilder();
         createHtmlLayout(svarAlternativer, stringBuilder);

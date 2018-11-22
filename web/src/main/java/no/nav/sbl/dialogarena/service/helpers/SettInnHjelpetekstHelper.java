@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 import java.io.IOException;
 
@@ -15,6 +14,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.utils.UrlUtils;
+import static no.nav.sbl.dialogarena.service.HandlebarContext.SPRAK;
 
 @Component
 public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> {
@@ -37,24 +37,22 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        String sprak = "nb_NO";
         final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         final String bundleName = konfigurasjon.getBundleName();
 
-        String hjelpetekst = getHjelpetekst(key, options, sprak, konfigurasjon, bundleName);
+        String hjelpetekst = getHjelpetekst(key, options, konfigurasjon, bundleName);
         
         if (hjelpetekst == null) {
             return "";
         }
         
-        final String hjelpetekstTittel = this.cmsTekst.getCmsTekst("hjelpetekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, toLocale(sprak));
+        final String hjelpetekstTittel = this.cmsTekst.getCmsTekst("hjelpetekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
         
         return createHtmlLayout(hjelpetekst, hjelpetekstTittel);
     }
 
-    private String getHjelpetekst(String key, Options options, String sprak, final KravdialogInformasjon konfigurasjon,
-            final String bundleName) {
-        String hjelpeTekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, toLocale(sprak));
+    private String getHjelpetekst(String key, Options options, final KravdialogInformasjon konfigurasjon, final String bundleName) {
+        String hjelpeTekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
 
         String nyHjelpeTekst = UrlUtils.endreHyperLenkerTilTekst(hjelpeTekst);
 
