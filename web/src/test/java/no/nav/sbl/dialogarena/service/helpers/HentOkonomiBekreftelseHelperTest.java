@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.github.jknack.handlebars.Handlebars;
 
+import static org.hamcrest.Matchers.equalTo;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
@@ -45,7 +47,8 @@ public class HentOkonomiBekreftelseHelperTest {
                 .withBekreftelse(bekreftelser);
 
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
-        assertThat(compiled).isEqualTo("Verdi: true");
+//        assertThat(compiled).isEqualTo("Verdi: true");
+        assertThat(compiled, equalTo("Verdi: true"));
     }
     
     @Test
@@ -63,7 +66,7 @@ public class HentOkonomiBekreftelseHelperTest {
                 .withBekreftelse(bekreftelser);
         
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
-        assertThat(compiled).isEqualTo("Verdi: ");
+        assertThat(compiled, equalTo("Verdi: "));
     }
     
     @Test
@@ -73,7 +76,7 @@ public class HentOkonomiBekreftelseHelperTest {
         opplysninger.setBekreftelse(null);
 
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
-        assertThat(compiled).isEqualTo("");
+        assertThat(compiled, equalTo(""));
     }
     
 }
