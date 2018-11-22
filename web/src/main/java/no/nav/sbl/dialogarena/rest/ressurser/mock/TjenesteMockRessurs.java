@@ -4,8 +4,11 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSUtbetaling;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -128,4 +131,28 @@ public class TjenesteMockRessurs {
         clearCache();
         PersonMock.setDefaultPerson();
     }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/utbetaling")
+    public void settUtbetalinger(@RequestBody String jsonWSUtbetaling) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+
+        UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
+    }
+
+    @DELETE
+    @Path("/utbetaling")
+    public void slettUtbetalinger() {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+
+        UtbetalMock.slettUtbetalinger();
+    }
+
 }

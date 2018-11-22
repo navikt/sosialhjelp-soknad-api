@@ -13,11 +13,11 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.P
 import java.io.IOException;
 
 public class AktoerDeserializer extends StdDeserializer<Aktoer> {
-    protected AktoerDeserializer() {
+    public AktoerDeserializer() {
         this(null);
     }
 
-    protected AktoerDeserializer(final Class<?> vc) {
+    public AktoerDeserializer(final Class<?> vc) {
         super(vc);
     }
 
