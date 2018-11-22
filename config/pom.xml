@@ -34,49 +34,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>no.nav.maven.plugins</groupId>
-                <artifactId>aura-maven-plugin</artifactId>
-                <version>3.11.1</version>
-                <configuration>
-                    <!-- enten url eller fil -->
-                    <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
-                    <username>admin</username>
-                    <password>admin</password>
-                    <apps>sendsoknad:${project.version}</apps>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>no.nav.maven.plugins</groupId>
-                <artifactId>jboss-maven-plugin</artifactId>
-                <version>3.4.0</version>
-                <configuration>
-                    <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
-                    <username>admin</username>
-                    <password>admin</password>
-                    <apps>sendsoknad:${project.version}</apps>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>t11</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>no.nav.maven.plugins</groupId>
-                        <artifactId>jboss-maven-plugin</artifactId>
-                        <configuration>
-                            <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
-                            <username>***REMOVED***</username>
-                            <password>xxxxxxxx</password>
-                            <env>t11</env>
-                            <apps>sendsoknad:${project.version}</apps>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
