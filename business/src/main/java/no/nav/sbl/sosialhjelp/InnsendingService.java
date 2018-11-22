@@ -92,7 +92,7 @@ public class InnsendingService {
 
     public List<OpplastetVedlegg> hentAlleOpplastedeVedleggForSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         if (soknadUnderArbeid == null) {
-            return null;
+            throw new RuntimeException("Kan ikke hente vedlegg fordi søknad mangler");
         }
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier());
     }

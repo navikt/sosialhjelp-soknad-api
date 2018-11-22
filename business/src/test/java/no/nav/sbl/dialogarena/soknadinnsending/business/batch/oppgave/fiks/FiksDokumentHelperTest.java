@@ -78,7 +78,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentListeForVedleggReturnererRiktigeVedlegg() {
-        List<Dokument> dokumenter = fiksDokumentHelper.lagDokumentListeForVedlegg(new SoknadUnderArbeid(), lagInternalSoknadForVedlegg());
+        List<Dokument> dokumenter = fiksDokumentHelper.lagDokumentListeForVedlegg(new SoknadUnderArbeid());
 
         assertThat(dokumenter.size(), is(3));
         assertThat(dokumenter.get(0).getFilnavn(), is(FILNAVN));
@@ -87,35 +87,14 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void jsonFilOgOpplastetVedleggErDetSammeVedleggetHvisFilnavnOgShaErLik() {
-        OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg().withFilnavn(FILNAVN).withSha512(SHA512);
-        JsonFiler jsonFiler = new JsonFiler().withFilnavn(FILNAVN).withSha512(SHA512);
-
-        boolean sammeVedlegg = fiksDokumentHelper.jsonFilOgOpplastetVedleggErDetSammeVedlegget(jsonFiler, opplastetVedlegg);
-
-        assertThat(sammeVedlegg, is(true));
-    }
-
-    @Test
-    public void jsonFilOgOpplastetVedleggErIkkeDetSammeVedleggetHvisFilnavnErLiktOgShaErUlik() {
-        OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg().withFilnavn(FILNAVN).withSha512(SHA512);
-        JsonFiler jsonFiler = new JsonFiler().withFilnavn(FILNAVN).withSha512(ANNEN_SHA512);
-
-        boolean sammeVedlegg = fiksDokumentHelper.jsonFilOgOpplastetVedleggErDetSammeVedlegget(jsonFiler, opplastetVedlegg);
-
-        assertThat(sammeVedlegg, is(false));
-    }
-
-    @Test
     public void opprettDokumentForVedleggOppretterDokumentKorrekt() {
-        OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg().withData(DATA);
-        JsonFiler jsonFiler = new JsonFiler().withFilnavn(FILNAVN);
+        OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg().withFilnavn(FILNAVN).withData(DATA);
 
-        Dokument dokument = fiksDokumentHelper.opprettDokumentForVedlegg(opplastetVedlegg, jsonFiler);
+        Dokument dokument = fiksDokumentHelper.opprettDokumentForVedlegg(opplastetVedlegg);
 
         assertThat(dokument.getFilnavn(), is(FILNAVN));
         assertThat(dokument.getData(), notNullValue());
-        assertThat(dokument.getMimetype(), notNullValue());
+        assertThat(dokument.getMimetype(), is("application/octet-stream"));
         assertThat(dokument.isEkskluderesFraPrint(), is(true));
     }
 
