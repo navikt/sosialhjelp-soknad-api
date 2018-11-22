@@ -62,7 +62,7 @@
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
-        <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl002.oera-t.local:1521:sendu</flyway.placeholders.url>
+        <flyway.placeholders.url>placeholder</flyway.placeholders.url>
     </properties>
 
     <dependencyManagement>
