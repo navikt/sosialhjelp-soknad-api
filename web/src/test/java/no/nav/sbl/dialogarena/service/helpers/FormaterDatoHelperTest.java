@@ -8,14 +8,14 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FormaterDatoTest {
+public class FormaterDatoHelperTest {
 
     private Handlebars handlebars;
 
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        FormaterDato helper = new FormaterDato();
+        FormaterDatoHelper helper = new FormaterDatoHelper();
         handlebars.registerHelper(helper.getNavn(), helper);
     }
 

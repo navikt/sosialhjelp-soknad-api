@@ -1,26 +1,25 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.service.HandlebarsUtils;
-import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsFaktum;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.dialogarena.utils.UrlUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import static no.nav.sbl.dialogarena.service.HandlebarContext.SPRAK;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
 
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
+import org.springframework.stereotype.Component;
+
+import com.github.jknack.handlebars.Options;
+
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 
 @Component
 public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
@@ -28,12 +27,6 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
     @Inject
     private NavMessageSource navMessageSource;
-
-    private static final Logger LOG = LoggerFactory.getLogger(no.nav.sbl.dialogarena.service.helpers.HentSvaralternativerHelper.class);
-
-
-    @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     @Override
     public String getNavn() {
@@ -47,80 +40,71 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        WebSoknad soknad = HandlebarsUtils.finnWebSoknad(options.context);
-
-        Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
+        final Set<String> svarAlternativer = findChildPropertyValues(key, SPRAK);
+        
         StringBuilder stringBuilder = new StringBuilder();
-
-        if (options.context.model() instanceof OppsummeringsFaktum) {
-            OppsummeringsFaktum oppsummeringsFaktum = (OppsummeringsFaktum) options.context.model();
-
-            ArrayList<OppsummeringsFaktum> oppsummeringsFakta = new ArrayList<OppsummeringsFaktum>();
-
-            finnFaktaForSvarAlternativer(oppsummeringsFaktum, oppsummeringsFakta
-            );
-
-            stringBuilder = skrivFakta(oppsummeringsFakta, options);
-
-        }
-
+        createHtmlLayout(svarAlternativer, stringBuilder);
+        
         return stringBuilder.toString();
     }
 
-    private StringBuilder skrivFakta(ArrayList<OppsummeringsFaktum> oppsummeringsFakta, Options options) {
+    private Set<String> findChildPropertyValues(final String parentKey, final Locale locale) {
+        final Set<String> result = new HashSet<>();
 
-        StringBuilder stringBuilder = new StringBuilder();
-        WebSoknad soknad = HandlebarsUtils.finnWebSoknad(options.context);
-        Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
-        String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
-        final String bundleName = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getBundleName();
-
-        int antall = 1;
-
-        for (OppsummeringsFaktum oppsummeringsFaktum : oppsummeringsFakta) {
-
-            String tekst = hentTekst(oppsummeringsFaktum.key(), options.params, soknad.getSoknadPrefix(), bundleName, toLocale(sprak));
-
-            String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
-
-            if (tekst != null && !tekst.equals(nyTekst)) {
-                tekst = nyTekst;
-            }
-
-            stringBuilder.append(tekst != null ? antall++ + ") " + tekst + " " : "");
+        final Pattern tekstfilNavnStruktur = directChildPattern(parentKey);
+        for (Entry<String, String> tekstfil : allProperties(locale)) {
+            findMatchingSubKey(tekstfilNavnStruktur, tekstfil, HentSvaralternativerHelper::shouldIncludeSubKey)
+                .ifPresent((v) -> result.add(v));
         }
-
-        return stringBuilder;
+        
+        return result;
     }
-
-    private void finnFaktaForSvarAlternativer(OppsummeringsFaktum oppsummeringsFaktum, List<OppsummeringsFaktum> faktaSomSkalSkrivesUt) {
-
-        if (oppsummeringsFaktum.barneFakta == null || oppsummeringsFaktum.barneFakta.isEmpty()) {
-            faktaSomSkalSkrivesUt.add(oppsummeringsFaktum);
-
-        } else {
-
-            for (OppsummeringsFaktum barnefakta : oppsummeringsFaktum.barneFakta) {
-                finnFaktaForSvarAlternativer(barnefakta, faktaSomSkalSkrivesUt);
+    
+    private Optional<String> findMatchingSubKey(final Pattern tekstfilNavnStruktur, final Entry<String, String> tekstfil, final Predicate<String> shouldInclude) {
+        final Matcher matcher = tekstfilNavnStruktur.matcher(tekstfil.getKey());
+        if (matcher.matches()) {
+            final String subKey = matcher.group(1);
+            if (shouldInclude.test(subKey)) {
+                return Optional.of(tekstfil.getValue());
             }
         }
+        return Optional.empty();
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Set<Entry<String, String>> allProperties(final Locale locale) {
+        final Properties bundle = navMessageSource.getBundleFor("soknadsosialhjelp", locale);
+        return (Set) bundle.entrySet();
     }
 
-    private String hentTekst(String key, Object[] parameters, String soknadTypePrefix, String bundleName, Locale locale) {
-        Properties bundle = navMessageSource.getBundleFor(bundleName, locale);
+    private Pattern directChildPattern(String parentKey) {
+        return Pattern.compile("^" + Pattern.quote(parentKey) + ".([^.]*)$");
+    }
 
-        String tekst = bundle.getProperty(soknadTypePrefix + "." + key);
-
-        if (tekst == null) {
-            tekst = bundle.getProperty(key);
+    private static boolean shouldIncludeSubKey(String subKey) {
+        return !subKey.equals("sporsmal") &&
+                !subKey.equals("infotekst") &&
+                !subKey.equals("hjelpetekst") &&
+                !subKey.equals("label") &&
+                !subKey.equals("feilmelding");
+    }
+    
+    private void createHtmlLayout(final Set<String> svarAlternativer, StringBuilder stringBuilder) {
+        stringBuilder.append("<h4>Svaralternativer:</h4>" +
+                "<li>\n" + 
+                "    <ul class=\"svar-liste\">\n" + 
+                "        ");
+        
+        for (String alternativ : svarAlternativer) {
+            stringBuilder.append("<li>\n" + 
+                    "    <span class=\"verdi verdi--radio\">\n" + 
+                    "        " + alternativ + "\n" + 
+                    "    </span>\n" + 
+                    "</li>");
         }
 
-        if (tekst == null) {
-            LOG.debug(String.format("Fant ikke tekst til oppsummering for nokkel %s i bundelen %s", key, bundleName));
-            return tekst;
-        } else {
-            return MessageFormat.format(tekst, parameters);
-        }
+        stringBuilder.append("    </ul>\n" + 
+                "</li>");
     }
 }
 
