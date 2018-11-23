@@ -11,8 +11,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static javax.ws.rs.core.Response.Status.MOVED_PERMANENTLY;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
+import static no.nav.sbl.sosialhjelp.pdf.UrlUtils.getEttersendelseUrl;
+import static no.nav.sbl.sosialhjelp.pdf.UrlUtils.getFortsettUrl;
 
 @Path("/")
 public class RedirectRessurs {

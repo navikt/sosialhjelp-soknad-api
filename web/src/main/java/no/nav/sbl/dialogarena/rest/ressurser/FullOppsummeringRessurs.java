@@ -1,9 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.sbl.dialogarena.rest.utils.PDFService;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler;
-import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;

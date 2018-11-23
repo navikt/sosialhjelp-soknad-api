@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class FiksSender {
     private FillagerService fillager;
     private DokumentKrypterer dokumentKrypterer;
     private InnsendingService innsendingService;
+    private PDFService pdfService;
     private FiksDokumentHelper fiksDokumentHelper;
 
     @Inject
