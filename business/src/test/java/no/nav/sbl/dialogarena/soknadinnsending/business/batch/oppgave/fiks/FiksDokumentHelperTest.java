@@ -16,6 +16,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.*;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,6 +49,7 @@ public class FiksDokumentHelperTest {
 
     private DokumentKrypterer dokumentKrypterer = mock(DokumentKrypterer.class);
     private InnsendingService innsendingService = mock(InnsendingService.class);
+    private PDFService pdfService = mock(PDFService.class);
 
     private FiksDokumentHelper fiksDokumentHelper;
 
@@ -53,27 +57,71 @@ public class FiksDokumentHelperTest {
     public void setup() {
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastedeVedlegg());
-        fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService);
+        when(pdfService.genereSaksbehandlerPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genereJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, pdfService);
     }
 
     @Test
     public void lagDokumentForSoknadJsonLagerKorrektDokument() {
-        Dokument vedlegg = fiksDokumentHelper.lagDokumentForSoknadJson(lagInternalSoknad());
+        Dokument soknadJson = fiksDokumentHelper.lagDokumentForSoknadJson(lagInternalSoknad());
 
-        assertThat(vedlegg.getFilnavn(), is("soknad.json"));
-        assertThat(vedlegg.getMimetype(), is("application/json"));
-        assertThat(vedlegg.isEkskluderesFraPrint(), is(true));
-        assertThat(vedlegg.getData(), notNullValue());
+        assertThat(soknadJson.getFilnavn(), is("soknad.json"));
+        assertThat(soknadJson.getMimetype(), is("application/json"));
+        assertThat(soknadJson.isEkskluderesFraPrint(), is(true));
+        assertThat(soknadJson.getData(), notNullValue());
     }
 
     @Test
     public void lagDokumentForVedleggJsonLagerKorrektDokument() {
-        Dokument vedlegg = fiksDokumentHelper.lagDokumentForVedleggJson(lagInternalSoknadForVedlegg());
+        Dokument vedleggJson = fiksDokumentHelper.lagDokumentForVedleggJson(lagInternalSoknadForVedlegg());
 
-        assertThat(vedlegg.getFilnavn(), is("vedlegg.json"));
-        assertThat(vedlegg.getMimetype(), is("application/json"));
-        assertThat(vedlegg.isEkskluderesFraPrint(), is(true));
-        assertThat(vedlegg.getData(), notNullValue());
+        assertThat(vedleggJson.getFilnavn(), is("vedlegg.json"));
+        assertThat(vedleggJson.getMimetype(), is("application/json"));
+        assertThat(vedleggJson.isEkskluderesFraPrint(), is(true));
+        assertThat(vedleggJson.getData(), notNullValue());
+    }
+
+    @Test
+    public void lagDokumentForSaksbehandlerPdfLagerKorrektDokument() {
+        Dokument saksbehandlerPdf = fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(lagInternalSoknad());
+
+        assertThat(saksbehandlerPdf.getFilnavn(), is("Soknad.pdf"));
+        assertThat(saksbehandlerPdf.getMimetype(), is("application/pdf"));
+        assertThat(saksbehandlerPdf.isEkskluderesFraPrint(), is(false));
+        assertThat(saksbehandlerPdf.getData(), notNullValue());
+    }
+
+    @Test
+    public void lagDokumentForJuridiskPdfLagerKorrektDokument() {
+        Dokument juridiskPdf = fiksDokumentHelper.lagDokumentForJuridiskPdf(lagInternalSoknad());
+
+        assertThat(juridiskPdf.getFilnavn(), is("Soknad-juridisk.pdf"));
+        assertThat(juridiskPdf.getMimetype(), is("application/pdf"));
+        assertThat(juridiskPdf.isEkskluderesFraPrint(), is(false));
+        assertThat(juridiskPdf.getData(), notNullValue());
+    }
+
+    @Test
+    public void lagDokumentForBrukerkvitteringPdfLagerKorrektDokument() {
+        Dokument brukerkvitteringPdf = fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(lagInternalSoknad(), false);
+
+        assertThat(brukerkvitteringPdf.getFilnavn(), is("Brukerkvittering.pdf"));
+        assertThat(brukerkvitteringPdf.getMimetype(), is("application/pdf"));
+        assertThat(brukerkvitteringPdf.isEkskluderesFraPrint(), is(true));
+        assertThat(brukerkvitteringPdf.getData(), notNullValue());
+    }
+
+    @Test
+    public void lagDokumentForEttersendelsePdfLagerKorrektDokument() {
+        Dokument ettersendelsePdf = fiksDokumentHelper.lagDokumentForEttersendelsePdf(lagInternalSoknad());
+
+        assertThat(ettersendelsePdf.getFilnavn(), is("ettersendelse.pdf"));
+        assertThat(ettersendelsePdf.getMimetype(), is("application/pdf"));
+        assertThat(ettersendelsePdf.isEkskluderesFraPrint(), is(false));
+        assertThat(ettersendelsePdf.getData(), notNullValue());
     }
 
     @Test
@@ -100,7 +148,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void krypterOgOpprettByteDatasourceKryptererHvisSkalKryptereErTrue() {
-        fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService);
+        fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService, pdfService);
 
         ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(FILNAVN, DATA);
 

@@ -12,6 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.slf4j.Logger;
 
@@ -32,11 +33,13 @@ public class FiksDokumentHelper {
     private final boolean skalKryptere;
     private DokumentKrypterer dokumentKrypterer;
     private InnsendingService innsendingService;
+    private PDFService pdfService;
 
-    public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService) {
+    public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService, PDFService pdfService) {
         this.skalKryptere = skalKryptere;
         this.dokumentKrypterer = dokumentKrypterer;
         this.innsendingService = innsendingService;
+        this.pdfService = pdfService;
     }
 
     Dokument lagDokumentForSoknadJson(JsonInternalSoknad internalSoknad) {
@@ -68,7 +71,7 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
-        byte[] soknadPdf = new byte[]{1, 2, 3};//hent fra ny funksjonalitet
+        byte[] soknadPdf = pdfService.genereSaksbehandlerPdf(internalSoknad, "/");
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadPdf);
         return new Dokument()
@@ -81,7 +84,7 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = new byte[]{1, 2, 3};//hent fra ny funksjonalitet
+        byte[] juridiskPdf = pdfService.genereJuridiskPdf(internalSoknad, "/");
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
         return new Dokument()
@@ -91,10 +94,10 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
-    Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse) {
         final String filnavn = "Brukerkvittering.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = new byte[]{1, 2, 3};//hent fra ny funksjonalitet
+        byte[] juridiskPdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
         return new Dokument()
@@ -107,7 +110,7 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "ettersendelse.pdf";
         final String mimetype = "application/pdf";
-        byte[] ettersendelsePdf = new byte[]{1, 2, 3};//hent fra ny funksjonalitet
+        byte[] ettersendelsePdf = pdfService.genererEttersendelsePdf(internalSoknad, "/");
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, ettersendelsePdf);
         return new Dokument()

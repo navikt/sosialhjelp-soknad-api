@@ -18,6 +18,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.*;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -53,6 +54,8 @@ public class FiksSenderTest {
     DokumentKrypterer dokumentKrypterer;
     @Mock
     InnsendingService innsendingService;
+    @Mock
+    PDFService pdfService;
 
     FiksSender fiksSender;
 
@@ -66,9 +69,13 @@ public class FiksSenderTest {
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withFiksforsendelseId(FIKSFORSENDELSE_ID));
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
+        when(pdfService.genereSaksbehandlerPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genereJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
 
         setProperty(FiksSender.KRYPTERING_DISABLED, "");
-        fiksSender = new FiksSender(forsendelsesService, fillager, dokumentKrypterer, innsendingService);
+        fiksSender = new FiksSender(forsendelsesService, fillager, dokumentKrypterer, innsendingService, pdfService);
 
         data = new FiksData();
         data.avsenderFodselsnummer = "1234";
@@ -104,7 +111,7 @@ public class FiksSenderTest {
     @Test
     public void skalIkkeKryptere() {
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
-        fiksSender = new FiksSender(forsendelsesService, fillager, dokumentKrypterer, innsendingService);
+        fiksSender = new FiksSender(forsendelsesService, fillager, dokumentKrypterer, innsendingService, pdfService);
 
         fiksSender.sendTilFiks(data);
 
