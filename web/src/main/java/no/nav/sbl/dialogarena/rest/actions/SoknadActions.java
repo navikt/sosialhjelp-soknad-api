@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.meldinger.FortsettSenere;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
-import no.nav.sbl.dialogarena.rest.utils.PDFService;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.EmailService;
@@ -26,8 +26,8 @@ import java.util.Locale;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Metadata;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
+import static no.nav.sbl.sosialhjelp.pdf.UrlUtils.getEttersendelseUrl;
+import static no.nav.sbl.sosialhjelp.pdf.UrlUtils.getFortsettUrl;
 
 @Controller
 @Path("/soknader/{behandlingsId}/actions")
