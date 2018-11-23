@@ -34,6 +34,10 @@
         <!-- Avhengigheter med scope compile -->
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>soknadsosialhjelp-filformat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-lokalt-kodeverk</artifactId>
         </dependency>
         <dependency>
@@ -358,14 +362,6 @@
             <scope>compile</scope>
             <version>9.4.8.***REMOVED***21</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-jndi</artifactId>
-            <scope>compile</scope>
-            <version>9.0.5.***REMOVED***15</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-security</artifactId>

@@ -9,10 +9,6 @@ import static java.lang.System.getProperty;
 public class UrlUtils {
     public static final String HOSTNAME_REGEX = "(^http.://.*?)/";
 
-    public static String getStartDagpengerUrl() {
-        return getProperty("soknad.dagpenger.fortsett.path") + "/start";
-    }
-
     public static String getFortsettUrl(String behandlingId) {
         return getProperty("soknadinnsending.link.url") + "/soknad/" + behandlingId + "?utm_source=web&utm_medium=email&utm_campaign=2";
     }

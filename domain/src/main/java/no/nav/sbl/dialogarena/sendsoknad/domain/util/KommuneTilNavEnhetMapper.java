@@ -59,7 +59,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1102", "874610712")    // Sandnes
             .put("1119", "976827961")    // Hå
             .put("1124", "948243113")    // Sola
-            .put("0712", "997784618")    // Larvik
+            .put("5303", "997784618")    // Larvik
             .put("0403", "974623811")    // Hamar
 
             .build();
