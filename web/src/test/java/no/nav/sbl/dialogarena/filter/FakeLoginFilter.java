@@ -14,8 +14,8 @@ public class FakeLoginFilter implements Filter {
     private static final Logger logger = getLogger(FakeLoginFilter.class);
     private FilterConfig filterConfig;
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
         this.filterConfig = filterConfig;
     }
 
@@ -56,9 +56,9 @@ public class FakeLoginFilter implements Filter {
         return fnr;
     }
 
-	@Override
-	public void destroy() {
+    @Override
+    public void destroy() {
         this.filterConfig = null;
-	}
+    }
 
 }

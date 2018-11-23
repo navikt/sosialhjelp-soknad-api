@@ -72,14 +72,14 @@ public class ArbeidsforholdTransformerTest {
     
     @Test
     public void skalIgnorereNullVerdierIOrgNavn() throws Exception {
-    	when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponseWithNulls());
+        when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponseWithNulls());
         Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold());
         assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
     }
     
     @Test
     public void skalIgnorereTommeStrengerIOrgNavn() throws Exception {
-    	when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponseWithEmptyStrings());
+        when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponseWithEmptyStrings());
         Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold());
         assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
     }
@@ -146,7 +146,7 @@ public class ArbeidsforholdTransformerTest {
     }
     
     private HentOrganisasjonResponse createOrgResponseWithNulls() {
-    	HentOrganisasjonResponse response = new HentOrganisasjonResponse();
+        HentOrganisasjonResponse response = new HentOrganisasjonResponse();
         no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon org = new no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon();
         UstrukturertNavn value = new UstrukturertNavn();
         value.getNavnelinje().add("Testesen A/S");
@@ -159,7 +159,7 @@ public class ArbeidsforholdTransformerTest {
     }
     
     private HentOrganisasjonResponse createOrgResponseWithEmptyStrings() {
-    	HentOrganisasjonResponse response = new HentOrganisasjonResponse();
+        HentOrganisasjonResponse response = new HentOrganisasjonResponse();
         no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon org = new no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon();
         UstrukturertNavn value = new UstrukturertNavn();
         value.getNavnelinje().add("Testesen A/S");
