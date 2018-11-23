@@ -35,12 +35,14 @@ public class FiksSender {
     private FiksDokumentHelper fiksDokumentHelper;
 
     @Inject
-    public FiksSender(ForsendelsesServiceV9 forsendelsesService, FillagerService fillager, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService) {
+    public FiksSender(ForsendelsesServiceV9 forsendelsesService, FillagerService fillager, DokumentKrypterer dokumentKrypterer,
+                      InnsendingService innsendingService, PDFService pdfService) {
         this.forsendelsesService = forsendelsesService;
         this.fillager = fillager;
         this.dokumentKrypterer = dokumentKrypterer;
         this.innsendingService = innsendingService;
-        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService);
+        this.pdfService = pdfService;
+        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService, pdfService);
     }
 
     private final Printkonfigurasjon fakePrintConfig = new Printkonfigurasjon()
@@ -137,7 +139,7 @@ public class FiksSender {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, false));
             fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
         }
 
