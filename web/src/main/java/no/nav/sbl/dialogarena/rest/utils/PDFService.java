@@ -1,23 +1,19 @@
 package no.nav.sbl.dialogarena.rest.utils;
 
-import no.nav.modig.core.context.SubjectHandler;
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.service.HtmlGenerator;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import static no.nav.sbl.dialogarena.utils.PDFFabrikk.lagPdfFil;
+
+import java.io.IOException;
+
+import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-
-import static no.nav.sbl.dialogarena.utils.PDFFabrikk.lagPdfFil;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.utils.PdfValidator;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 
 @Component
 public class PDFService {
@@ -27,14 +23,6 @@ public class PDFService {
 
     @Inject
     private VedleggService vedleggService;
-
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
-
-    @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-
-    private PdfWatermarker watermarker = new PdfWatermarker();
 
     public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending) {
         try {
@@ -107,9 +95,8 @@ public class PDFService {
     }
 
     private byte[] lagPdfFraMarkup(String pdfMarkup, String servletPath) {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
-        byte[] pdf = lagPdfFil(pdfMarkup, servletPath);
-        //pdf = watermarker.applyOn(pdf, fnr, true);
+        final byte[] pdf = lagPdfFil(pdfMarkup, servletPath);       
+        PdfValidator.softAssertValidPdfA(pdf);
         return pdf;
     }
 
