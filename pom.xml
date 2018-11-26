@@ -959,13 +959,18 @@
             <dependency>
                 <groupId>org.verapdf</groupId>
                 <artifactId>validation-model</artifactId>
-                <version>1.4.5</version>
+                <version>1.12.1</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.cxf</groupId>
                         <artifactId>cxf-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.verapdf</groupId>
+                <artifactId>core</artifactId>
+                <version>1.12.1</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
             <dependency>
