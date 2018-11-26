@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.utils;
+package no.nav.sbl.sosialhjelp.pdf;
 
 
 import java.io.IOException;
