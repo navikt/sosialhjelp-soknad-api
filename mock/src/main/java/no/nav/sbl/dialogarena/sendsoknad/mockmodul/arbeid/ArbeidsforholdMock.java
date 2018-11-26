@@ -40,7 +40,7 @@ public class ArbeidsforholdMock {
         return response;
     }
 
-    public static void leggTilArbeidsforhold(String arbeidsforholdData) {
+    public static void settArbeidsforhold(String arbeidsforholdData) {
 
         try {
             final ObjectMapper mapper = new ObjectMapper();

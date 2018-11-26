@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
@@ -13,10 +12,8 @@ import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRespo
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;
@@ -24,12 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PersonMock {
-    static final String FNR_BARN = "***REMOVED***";
-    static final String FNR_BARN2 = "***REMOVED***";
-    static final String FNR_BARN3 = "***REMOVED***";
-    static final String FNR_EKTEFELLE = "***REMOVED***";
-    private static final String KODE_6 = "SPSF";
-    private static final String KODE_7 = "SPFO";
 
     private static Map<String, HentKjerneinformasjonResponse> responses = new HashMap<>();
 
@@ -111,7 +102,7 @@ public class PersonMock {
         }
     }
     
-    public static void setPerson(String jsonPerson){
+    public static void setPersonMedFamilieforhold(String jsonPerson){
         try {
             ObjectMapper mapper = new ObjectMapper();
             Person person = mapper.readValue(jsonPerson, Person.class);
@@ -122,7 +113,7 @@ public class PersonMock {
         }
     }
 
-    public static void setDefaultPerson(){
+    public static void setDefaultPersonUtenFamilieforhold(){
         Person person = getDefaultPerson();
         HentKjerneinformasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
         response.setPerson(person);

@@ -1,5 +1,25 @@
 # Bruk av endepunktene for å sette mockdata:
 
+For hver gang man setter mockdata så må minimum frontend refresh'es.
+For noen av mock-dataen må man starte søknaden på nytt for at de nye dataene blir lastet inn.
+
+Oversikt:
+
+Kan settes uten å restarte søknad
+    Telefon
+    Konto
+    Arbeid
+
+Kan slettes uten å restarte søknad
+    Telefon
+    Konto
+
+Trenger restart av søknad for å sette
+
+Trenger restart av søknad for å slette
+    Arbeid (tror det kan fikses ved å bruke replace istede for clear....)
+
+
 ## Telefonnummer
 ##### Legg til systemregistrert telefonnummer
 Send en POST request til:

@@ -37,6 +37,7 @@ public class TjenesteMockRessurs {
         return Boolean.parseBoolean(System.getProperty("tillatMockRessurs", "false"));
     }
 
+
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/telefon")
@@ -57,6 +58,7 @@ public class TjenesteMockRessurs {
         clearCache();
         DkifMock.slettTelefonnummer();
     }
+
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -79,30 +81,31 @@ public class TjenesteMockRessurs {
         BrukerprofilMock.slettKontonummer();
     }
 
+
     @POST
     @Consumes(APPLICATION_JSON)
-    @Path("/arbeid/forhold")
-    public void nyttArbeidsforholdJson(@RequestBody String arbeidsforholdData) {
+    @Path("/arbeid")
+    public void settArbeidsforholdJson(@RequestBody String arbeidsforholdData) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        ArbeidsforholdMock.leggTilArbeidsforhold(arbeidsforholdData);
+        ArbeidsforholdMock.settArbeidsforhold(arbeidsforholdData);
     }
 
     @POST
     @Consumes(APPLICATION_XML)
-    @Path("/arbeid/forhold")
-    public void nyttArbeidsforholdXml(@RequestBody String arbeidsforholdData) {
+    @Path("/arbeid")
+    public void settArbeidsforholdXml(@RequestBody String arbeidsforholdData) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        ArbeidsforholdMock.leggTilArbeidsforhold(arbeidsforholdData);
+        ArbeidsforholdMock.settArbeidsforhold(arbeidsforholdData);
     }
 
     @DELETE
-    @Path("/arbeid/forhold")
+    @Path("/arbeid")
     public void slettAlleArbeidsforhold() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
@@ -111,26 +114,28 @@ public class TjenesteMockRessurs {
         ArbeidsforholdMock.slettAlleArbeidsforhold();
     }
 
+
     @POST
     @Consumes(APPLICATION_JSON)
-    @Path("/person")
-    public void settPerson(@RequestBody String jsonPerson) {
+    @Path("/familie")
+    public void settFamilie(@RequestBody String jsonPerson) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        PersonMock.setPerson(jsonPerson);
+        PersonMock.setPersonMedFamilieforhold(jsonPerson);
     }
 
     @DELETE
-    @Path("/person")
-    public void settDefaultPerson() {
+    @Path("/familie")
+    public void slettFamilie() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        PersonMock.setDefaultPerson();
+        PersonMock.setDefaultPersonUtenFamilieforhold();
     }
+
 
     @POST
     @Consumes(APPLICATION_JSON)
