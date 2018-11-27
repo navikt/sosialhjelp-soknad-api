@@ -27,14 +27,12 @@ public class SoknadUnderArbeidService {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    public void settOrgnummerOgNavEnhetsnavnPaNySoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn, String eier) {
+    public void settOrgnummerOgNavEnhetsnavnPaSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn, String eier) {
         if (soknadUnderArbeid == null) {
             throw new RuntimeException("Søknad under arbeid mangler");
         }
 
-        if (soknadUnderArbeid.erEttersendelse()) {
-            throw new IllegalStateException("Har forsøkt å oppdatere mottakerinfo for ettersending, når det skulle ha blitt hentet fra søknaden det ettersendes på.");
-        } else if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
+        if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
             throw new RuntimeException("Informasjon om orgnummer og NAV-enhet mangler");
         } else {
             SoknadUnderArbeid oppdatertSoknadUnderArbeid = oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn);
