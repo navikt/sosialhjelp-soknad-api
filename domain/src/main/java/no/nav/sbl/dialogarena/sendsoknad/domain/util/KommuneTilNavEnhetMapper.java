@@ -85,6 +85,11 @@ public class KommuneTilNavEnhetMapper {
             .put("1206", "910230514")   // Laksevåg, Bergen kommune
             .put("5701", "910230646")   // NAV Falkenborg, Trondheim kommune
             .put("5702", "910230611")   // NAV Lerkendal, Trondheim kommunne
+            .put("1161", "910229567")   // Eiganes og Tasta, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("1164", "910229567")   // Hillevåg og Hinna, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("1162", "910229567")   // Hundvåg og Storhaug, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("1165", "910229567")   // Madla, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0403", "910229567")   // Hamar - OBS: Sendes til vårt orgnummer i FIKS!
 
             .build();
 
@@ -233,7 +238,8 @@ public class KommuneTilNavEnhetMapper {
                     "1247",
                     "0219",
                     "5001",
-                    "1103"
+                    "1103",
+                    "0403"
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
