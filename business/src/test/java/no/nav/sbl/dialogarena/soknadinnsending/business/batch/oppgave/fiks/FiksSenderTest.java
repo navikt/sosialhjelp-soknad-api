@@ -182,10 +182,11 @@ public class FiksSenderTest {
 
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
 
-        assertThat(fiksDokumenter.size(), is(3));
+        assertThat(fiksDokumenter.size(), is(4));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("ettersendelse.pdf"));
         assertThat(fiksDokumenter.get(1).getFilnavn(), is("vedlegg.json"));
-        assertThat(fiksDokumenter.get(2).getFilnavn(), is(FILNAVN));
+        assertThat(fiksDokumenter.get(2).getFilnavn(), is("Brukerkvittering.pdf"));
+        assertThat(fiksDokumenter.get(3).getFilnavn(), is(FILNAVN));
     }
 
     @Test(expected = RuntimeException.class)

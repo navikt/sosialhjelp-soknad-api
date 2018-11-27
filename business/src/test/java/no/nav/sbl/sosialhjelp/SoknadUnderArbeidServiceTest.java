@@ -49,17 +49,10 @@ public class SoknadUnderArbeidServiceTest {
     private SoknadUnderArbeidService soknadUnderArbeidService;
 
     @Test
-    public void settOrgnummerOgNavEnhetsnavnPaNySoknadOppdatererSoknadenIDatabasen() throws SamtidigOppdateringException {
-        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaNySoknad(lagSoknadUnderArbeid(), ORGNR, NAVENHETSNAVN, EIER);
+    public void settOrgnummerOgNavEnhetsnavnPaSoknadOppdatererSoknadenIDatabasen() throws SamtidigOppdateringException {
+        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaSoknad(lagSoknadUnderArbeid(), ORGNR, NAVENHETSNAVN, EIER);
 
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(any(SoknadUnderArbeid.class), eq(EIER));
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void settOrgnummerOgNavEnhetsnavnPaNySoknadKasterFeilHvisSoknadErEttersendelse() {
-        SoknadUnderArbeid ettersendelse = new SoknadUnderArbeid().withTilknyttetBehandlingsId("1234");
-
-        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaNySoknad(ettersendelse, ORGNR, NAVENHETSNAVN, EIER);
     }
 
     @Test
