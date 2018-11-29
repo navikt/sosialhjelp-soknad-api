@@ -8,7 +8,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSou
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -30,9 +32,16 @@ public class WebSoknadConverter {
 
     @Inject
     private NavMessageSource messageSource;
-    private final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+    private final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson;
+    private final ObjectMapper mapper;
+    private final ObjectWriter writer;
+
+    public WebSoknadConverter() {
+        sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
+        mapper = new ObjectMapper();
+        mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
+        writer = mapper.writerWithDefaultPrettyPrinter();
+    }
 
     public SoknadUnderArbeid mapWebSoknadTilSoknadUnderArbeid(WebSoknad webSoknad) {
         if (webSoknad == null) {
