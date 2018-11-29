@@ -55,7 +55,7 @@ public class ArbeidsforholdMock {
     }
 
     public static void slettAlleArbeidsforhold(){
-        FinnArbeidsforholdPrArbeidstakerResponse response = getOrCreateCurrentUserResponse();
-        response.getArbeidsforhold().clear();
+        FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
+        responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
     }
 }

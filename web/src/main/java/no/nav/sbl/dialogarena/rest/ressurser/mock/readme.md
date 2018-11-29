@@ -9,16 +9,68 @@ Kan settes uten å restarte søknad
     Telefon
     Konto
     Arbeid
+    Adresser
+    Familie
 
 Kan slettes uten å restarte søknad
     Telefon
     Konto
+    Adresser
 
 Trenger restart av søknad for å sette
 
 Trenger restart av søknad for å slette
-    Arbeid (tror det kan fikses ved å bruke replace istede for clear....)
-
+    Arbeid 
+    Familie
+    
+    
+## Adresse
+#### Legg til liste med adresser
+Send en POST requiest til 
+```
+http://localhost:8181/soknadsosialhjelp-server/internal/mock/tjeneste/adresser
+```
+med header: content-type: application/json
+Og body
+```
+{
+   "flereTreff": false,
+   "adresseDataList": [
+      {
+         "kommunenummer": "1201",
+         "kommunenavn": "Bergen",
+         "adressenavn": "SANNERGATA",
+         "husnummerFra": "0001",
+         "husnummerTil": "0010",
+         "postnummer": "1337",
+         "poststed": "Leet",
+         "geografiskTilknytning": "120102",
+         "gatekode": "02081",
+         "bydel": "120102",
+         "husnummer": null,
+         "husbokstav": null
+      },
+      {
+         "kommunenummer": "1201",
+         "kommunenavn": "Bergen",
+         "adressenavn": "SANNERGATA",
+         "husnummerFra": "0011",
+         "husnummerTil": "9999",
+         "postnummer": "1337",
+         "poststed": "Leet",
+         "geografiskTilknytning": "120107",
+         "gatekode": "02081",
+         "bydel": "120107",
+         "husnummer": null,
+         "husbokstav": null
+      }
+   ]
+}
+```
+Slett / Tøm listen ved å sende en DELETE request til 
+```
+http://localhost:8181/soknadsosialhjelp-server/internal/mock/tjeneste/adresser
+```
 
 ## Telefonnummer
 ##### Legg til systemregistrert telefonnummer

@@ -1,10 +1,12 @@
 package no.nav.sbl.dialogarena.rest.ressurser.mock;
 
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
@@ -35,6 +37,27 @@ public class TjenesteMockRessurs {
 
     private boolean isTillatMockRessurs() {
         return Boolean.parseBoolean(System.getProperty("tillatMockRessurs", "false"));
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/adresser")
+    public void settAdresser(@RequestBody String jsonAdressesokRespons) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+        AdresseSokConsumerMock.setAdresser(jsonAdressesokRespons);
+    }
+
+    @DELETE
+    @Path("/adresser")
+    public void slettAdresser() {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+        AdresseSokConsumerMock.settDefaultAdresser();
     }
 
 
