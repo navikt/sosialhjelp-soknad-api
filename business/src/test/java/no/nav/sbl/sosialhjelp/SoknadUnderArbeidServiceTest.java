@@ -3,7 +3,9 @@ package no.nav.sbl.sosialhjelp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
@@ -99,6 +101,7 @@ public class SoknadUnderArbeidServiceTest {
     private byte[] lagReelleSoknadUnderArbeidData(JsonInternalSoknad jsonInternalSoknad) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
+            mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
             final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
             final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
             ensureValidInternalSoknad(internalSoknad);

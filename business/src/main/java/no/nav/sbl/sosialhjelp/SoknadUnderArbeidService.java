@@ -3,7 +3,9 @@ package no.nav.sbl.sosialhjelp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -21,11 +23,17 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class SoknadUnderArbeidService {
     private static final Logger logger = getLogger(SoknadUnderArbeidService.class);
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+    private final ObjectMapper mapper;
+    private final ObjectWriter writer;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    public SoknadUnderArbeidService() {
+        mapper = new ObjectMapper();
+        mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
+        writer = mapper.writerWithDefaultPrettyPrinter();
+    }
 
     public void settOrgnummerOgNavEnhetsnavnPaSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn, String eier) {
         if (soknadUnderArbeid == null) {
