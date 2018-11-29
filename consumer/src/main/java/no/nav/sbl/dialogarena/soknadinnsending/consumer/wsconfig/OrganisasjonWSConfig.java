@@ -37,8 +37,7 @@ public class OrganisasjonWSConfig {
 
     @Bean
     public OrganisasjonV4 organisasjonEndpoint() {
-        OrganisasjonV4 mock = new OrganisasjonMock();
-        
+        OrganisasjonV4 mock = new OrganisasjonMock().organisasjonMock();
         OrganisasjonV4 prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Organisasjon", prod, mock, ARBEID_KEY, OrganisasjonV4.class);
     }

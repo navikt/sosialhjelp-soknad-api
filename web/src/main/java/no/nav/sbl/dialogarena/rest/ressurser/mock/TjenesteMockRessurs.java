@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMoc
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -137,6 +138,26 @@ public class TjenesteMockRessurs {
         ArbeidsforholdMock.slettAlleArbeidsforhold();
     }
 
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/organisasjon")
+    public void settOrganisasjon(@RequestBody String jsonOrganisasjon) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+        OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
+    }
+
+    @DELETE
+    @Path("/organisasjon")
+    public void slettOrganisasjon() {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+        OrganisasjonMock.slettOrganisasjon();
+    }
 
     @POST
     @Consumes(APPLICATION_JSON)

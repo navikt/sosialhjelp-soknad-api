@@ -118,7 +118,7 @@ Send en DELETE request til
 ##### Legg til liste av systemregistrert arbeidsforhold
 Send en POST request til:
 ```
-.../soknadsosialhjelp-server/internal/mock/tjeneste/arbeid/forhold
+.../soknadsosialhjelp-server/internal/mock/tjeneste/arbeid
 ```
 med body:
 ```
@@ -181,7 +181,29 @@ med header: content-type: application/json
 
 Send en DELETE request til:
 ```
-.../soknadsosialhjelp-server/internal/mock/tjeneste/arbeid/forhold
+.../soknadsosialhjelp-server/internal/mock/tjeneste/arbeid
+```
+## OrganisasjonsMock
+Send en POST request til:
+```
+.../soknadsosialhjelp-server/internal/mock/tjeneste/organisasjon
+```
+med body:
+```
+{
+   "organisasjon": {
+      "orgnummer": null,
+      "navn": {
+         "navnelinje": [
+            "My life, for Aiur!"
+         ]
+      },
+      "organisasjonDetaljer": null,
+      "bestaarAvOrgledd": [],
+      "inngaarIJuridiskEnhet": [],
+      "virksomhetDetaljer": null
+   }
+}
 ```
 
 ## Person og Familierelasjoner
