@@ -106,7 +106,7 @@ public class PersonMock {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Person person = mapper.readValue(jsonPerson, Person.class);
-            HentKjerneinformasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
+            HentKjerneinformasjonResponse response = getOrCreateCurrentUserResponse();
             response.setPerson(person);
         } catch (IOException e) {
             e.printStackTrace();
@@ -115,7 +115,7 @@ public class PersonMock {
 
     public static void setDefaultPersonUtenFamilieforhold(){
         Person person = getDefaultPerson();
-        HentKjerneinformasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
+        HentKjerneinformasjonResponse response = getOrCreateCurrentUserResponse();
         response.setPerson(person);
     }
 }

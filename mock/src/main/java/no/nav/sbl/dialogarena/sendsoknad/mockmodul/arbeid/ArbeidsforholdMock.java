@@ -26,8 +26,10 @@ public class ArbeidsforholdMock {
         try {
             when(mock.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class)))
                     .thenAnswer((invocationOnMock -> getOrCreateCurrentUserResponse()));
-        } catch (Exception ignored) {
+        } catch (Exception err) {
+            System.out.println(err);
         }
+
         return mock;
     }
 
@@ -37,6 +39,7 @@ public class ArbeidsforholdMock {
             response = new FinnArbeidsforholdPrArbeidstakerResponse();
             responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
         }
+
         return response;
     }
 
@@ -48,7 +51,11 @@ public class ArbeidsforholdMock {
             module.addDeserializer(Aktoer.class, new AktoerDeserializer());
             mapper.registerModule(module);
             final FinnArbeidsforholdPrArbeidstakerResponse response = mapper.readValue(arbeidsforholdData, FinnArbeidsforholdPrArbeidstakerResponse.class);
-            responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+            if (responses.get(SubjectHandler.getSubjectHandler().getUid()) == null){
+                responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            } else {
+                responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -48,7 +48,6 @@ public class OrganisasjonMock {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            System.out.println("Trying to map organisjon _!_!_:L!M!!!#!#!#!#!#!!#!#!#!#!#!#!#!#!##################################");
             mapper.writeValue(new File("./target/organisasjon.json"), response);
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,7 +71,11 @@ public class OrganisasjonMock {
             module.addDeserializer(Organisasjon.class, new OrganisasjonDeserializer());
             mapper.registerModule(module);
             HentOrganisasjonResponse response = mapper.readValue(jsonOrganisasjon, HentOrganisasjonResponse.class);
-            responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+            if (responses.get(SubjectHandler.getSubjectHandler().getUid()) == null){
+                responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            } else {
+                responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -65,7 +65,11 @@ public class AdresseSokConsumerMock {
         try {
             ObjectMapper mapper = new ObjectMapper();
             AdressesokRespons response = mapper.readValue(jsonAdressesokRespons, AdressesokRespons.class);
-            responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            if (responses.get(SubjectHandler.getSubjectHandler().getUid()) == null){
+                responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            } else {
+                responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
