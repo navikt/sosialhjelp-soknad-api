@@ -15,13 +15,12 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.format.DateTimeFormatter;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
-import static java.time.LocalDateTime.now;
 
 
 @Component
@@ -54,8 +53,7 @@ public class SoknadUnderArbeidService {
     
     public void settInnsendingstidspunktPaaJsonInternalSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         JsonInternalSoknad internalSoknad = hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
-        internalSoknad.getSoknad().setInnsendingstidspunkt(now().format(
-                DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSX", SPRAK)));
+        internalSoknad.getSoknad().setInnsendingstidspunkt(OffsetDateTime.now( ZoneOffset.UTC ).toString());
     }
 
     public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
