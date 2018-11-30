@@ -149,16 +149,11 @@ public class InnsendingService {
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         String orgnummer = null;
         String navEnhetsnavn = null;
-        if (soknadUnderArbeid.erEttersendelse()) {
-            SendtSoknad sendtSoknad = finnSendtSoknadForEttersendelse(soknadUnderArbeid);
-            orgnummer = sendtSoknad.getOrgnummer();
-            navEnhetsnavn = sendtSoknad.getNavEnhetsnavn();
-        } else {
-            JsonInternalSoknad internalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
-            if (internalSoknad != null && internalSoknad.getMottaker() != null) {
-                orgnummer = internalSoknad.getMottaker().getOrganisasjonsnummer();
-                navEnhetsnavn = internalSoknad.getMottaker().getNavEnhetsnavn();
-            }
+
+        JsonInternalSoknad internalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
+        if (internalSoknad != null && internalSoknad.getMottaker() != null) {
+            orgnummer = internalSoknad.getMottaker().getOrganisasjonsnummer();
+            navEnhetsnavn = internalSoknad.getMottaker().getNavEnhetsnavn();
         }
 
         if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {

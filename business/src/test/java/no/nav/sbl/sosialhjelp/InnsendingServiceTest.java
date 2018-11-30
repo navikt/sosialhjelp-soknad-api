@@ -125,9 +125,17 @@ public class InnsendingServiceTest {
         assertThat(sendtSoknad.getFiksforsendelseId(), nullValue());
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
+        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
+                .thenReturn(new JsonInternalSoknad().withMottaker(null));
+
+        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidUtenTilknyttetBehandlingsid());
+    }
+
     @Test
-    public void mapSoknadUnderArbeidTilSendtSoknadHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
-        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidForEttersendelse());
+    public void finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
+        SendtSoknad sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(lagSoknadUnderArbeidForEttersendelse());
 
         assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
         assertThat(sendtSoknad.getNavEnhetsnavn(), is(NAVENHETSNAVN));
@@ -135,30 +143,22 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void mapSoknadUnderArbeidTilSendtSoknadHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
+    public void finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(lagSoknadMetadata());
 
-        SendtSoknad soknadMedMottaksinfoFraMetadata = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidForEttersendelse());
+        SendtSoknad soknadMedMottaksinfoFraMetadata = innsendingService.finnSendtSoknadForEttersendelse(lagSoknadUnderArbeidForEttersendelse());
 
         assertThat(soknadMedMottaksinfoFraMetadata.getOrgnummer(), is(ORGNR_METADATA));
         assertThat(soknadMedMottaksinfoFraMetadata.getNavEnhetsnavn(), is(NAVENHETSNAVN_METADATA));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
+    public void finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(null);
 
-        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidForEttersendelse());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
-        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
-                .thenReturn(new JsonInternalSoknad().withMottaker(null));
-
-        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidUtenTilknyttetBehandlingsid());
+        innsendingService.finnSendtSoknadForEttersendelse(lagSoknadUnderArbeidForEttersendelse());
     }
 
     @Test

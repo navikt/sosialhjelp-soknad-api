@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import no.ks.svarut.servicesv9.Dokument;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
@@ -27,8 +29,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class FiksDokumentHelper {
     private static final Logger logger = getLogger(FiksDokumentHelper.class);
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+    private final ObjectMapper mapper;
+    private final ObjectWriter writer;
 
     private final boolean skalKryptere;
     private DokumentKrypterer dokumentKrypterer;
@@ -40,6 +42,10 @@ public class FiksDokumentHelper {
         this.dokumentKrypterer = dokumentKrypterer;
         this.innsendingService = innsendingService;
         this.pdfService = pdfService;
+
+        mapper = new ObjectMapper();
+        mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
+        writer = mapper.writerWithDefaultPrettyPrinter();
     }
 
     Dokument lagDokumentForSoknadJson(JsonInternalSoknad internalSoknad) {
