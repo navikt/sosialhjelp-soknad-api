@@ -3,7 +3,9 @@ package no.nav.sbl.sosialhjelp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -21,20 +23,24 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class SoknadUnderArbeidService {
     private static final Logger logger = getLogger(SoknadUnderArbeidService.class);
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+    private final ObjectMapper mapper;
+    private final ObjectWriter writer;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    public void settOrgnummerOgNavEnhetsnavnPaNySoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn, String eier) {
+    public SoknadUnderArbeidService() {
+        mapper = new ObjectMapper();
+        mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
+        writer = mapper.writerWithDefaultPrettyPrinter();
+    }
+
+    public void settOrgnummerOgNavEnhetsnavnPaSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn, String eier) {
         if (soknadUnderArbeid == null) {
             throw new RuntimeException("Søknad under arbeid mangler");
         }
 
-        if (soknadUnderArbeid.erEttersendelse()) {
-            throw new IllegalStateException("Har forsøkt å oppdatere mottakerinfo for ettersending, når det skulle ha blitt hentet fra søknaden det ettersendes på.");
-        } else if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
+        if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
             throw new RuntimeException("Informasjon om orgnummer og NAV-enhet mangler");
         } else {
             SoknadUnderArbeid oppdatertSoknadUnderArbeid = oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn);
@@ -42,7 +48,10 @@ public class SoknadUnderArbeidService {
         }
     }
 
-    JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
+    public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
+        if (soknadUnderArbeid == null || soknadUnderArbeid.getData() == null) {
+            return null;
+        }
         try {
             return mapper.readValue(soknadUnderArbeid.getData(), JsonInternalSoknad.class);
         } catch (IOException e) {
