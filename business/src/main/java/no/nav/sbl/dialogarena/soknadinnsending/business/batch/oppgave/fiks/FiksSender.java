@@ -133,6 +133,7 @@ public class FiksSender {
         if (soknadUnderArbeid.erEttersendelse()) {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, true));
             fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
         } else {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
