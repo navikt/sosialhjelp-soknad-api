@@ -2,6 +2,7 @@ package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
+import no.nav.sbl.sosialhjelp.SoknadLaastException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -71,17 +72,19 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     @Override
     public void oppdaterSoknadsdata(SoknadUnderArbeid soknadUnderArbeid, String eier) throws SamtidigOppdateringException {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
+        sjekkOmSoknadErLaast(soknadUnderArbeid);
         final Long opprinneligVersjon = soknadUnderArbeid.getVersjon();
         final Long oppdatertVersjon = opprinneligVersjon + 1;
         final LocalDateTime sistEndretDato = now();
         final int antallOppdaterteRader = getJdbcTemplate()
-                .update("update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ?",
+                .update("update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
                         oppdatertVersjon,
                         soknadUnderArbeid.getData(),
                         Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier,
-                        opprinneligVersjon);
+                        opprinneligVersjon,
+                        SoknadInnsendingStatus.UNDER_ARBEID.toString());
         if (antallOppdaterteRader == 0) {
             throw new SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid " +
                     "med behandlingsId " + soknadUnderArbeid.getBehandlingsId() + " fra versjon " + opprinneligVersjon +
@@ -125,6 +128,13 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     private void sjekkOmBrukerEierSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid, String eier) {
         if (eier == null || !eier.equalsIgnoreCase(soknadUnderArbeid.getEier())) {
             throw new RuntimeException("Eier stemmer ikke med søknadens eier");
+        }
+    }
+
+    private void sjekkOmSoknadErLaast(SoknadUnderArbeid soknadUnderArbeid) {
+        if (SoknadInnsendingStatus.LAAST.equals(soknadUnderArbeid.getInnsendingStatus())) {
+            throw new SoknadLaastException("Kan ikke oppdatere søknad med behandlingsid " + soknadUnderArbeid.getBehandlingsId() +
+                    " fordi den er sendt fra bruker");
         }
     }
 
