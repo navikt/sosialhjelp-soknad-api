@@ -34,7 +34,7 @@ public class FormaterDatoHelper extends RegistryAwareHelper<String>{
             String format = options.param(0);
             if (format.toLowerCase().contains("h")) {
                 LocalDateTime date = LocalDateTime.parse(datoStreng, 
-                        DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSX", SPRAK));
+                        DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSXXX", SPRAK));
                 
                 DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern(format);
                 return date.format(datoFormatter);
