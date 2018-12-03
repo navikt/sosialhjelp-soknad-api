@@ -43,7 +43,6 @@
             {{#if @root.utvidetSoknad}}
                 <h3>{{ hentTekst "soknadsmottaker.sporsmal" }}</h3>
                 {{{settInnHjelpetekst "soknadsmottaker.hjelpetekst.tekst"}}}
-                {{{settInnInfotekst "soknadsmottaker.infotekst.tekst"}}}
             {{else}}
                 <h3>{{ hentTekst "kontakt.system.adresse.sporsmal" }}</h3>
             {{/if}}
@@ -52,10 +51,13 @@
                 {{#with folkeregistrertAdresse}}
                     {{> skjema/ny_generisk/adresse}}
                 {{/with}}
-                <span class="label">{{hentTekst "kontakt.system.oppholdsadresse.hvorOppholder"}}</span>
+                {{hentTekst "soknadsmottaker.infotekst.tekst"}}
                 {{#with oppholdsadresse}}
                     {{> skjema/ny_generisk/adresse}}
                 {{/with}}
+	            {{#if @root.utvidetSoknad}}
+	                {{> skjema/ny_generisk/personalia_adresse_svaralternativer}}
+	            {{/if}}
             </li>
             {{#hvisLik telefonnummer.kilde "system"}}
                 <h3>{{ hentTekst "kontakt.system.telefoninfo.sporsmal" }}</h3>
