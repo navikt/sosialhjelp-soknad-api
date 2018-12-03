@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.modig.cache.CacheConfig;
+import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
@@ -20,7 +21,8 @@ import org.springframework.context.annotation.Import;
         ContentConfig.class,
         SoknadInnsendingDBConfig.class,
         HandlebarsHelperConfig.class,
-        MetricsConfig.class
+        MetricsConfig.class,
+        SaksoversiktMetadataService.class
 })
 @ComponentScan(basePackages = "no.nav.sbl.dialogarena.rest")
 public class SoknadinnsendingConfig {

@@ -92,6 +92,10 @@ public class SoknadUnderArbeid {
         return this;
     }
 
+    public void setInnsendingStatus(SoknadInnsendingStatus innsendingStatus) {
+        this.innsendingStatus = innsendingStatus;
+    }
+
     public LocalDateTime getOpprettetDato() {
         return opprettetDato;
     }
