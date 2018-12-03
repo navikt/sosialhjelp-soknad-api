@@ -38,23 +38,6 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void fullSoknad() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/fullsoknad";
-        Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget
-                .queryParam("fnr", ANNEN_BRUKER))
-                .buildGet()
-                .invoke();
-
-        Response responseUtenFnr = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget)
-                .buildGet()
-                .invoke();
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-        assertThat(responseUtenFnr.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-    }
-
-    @Test
     public void fullSoknadPdf() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/fullsoknadpdf";

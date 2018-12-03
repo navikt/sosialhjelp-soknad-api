@@ -74,6 +74,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     @Override
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
+            //oppsummering saksbehandlerpdf, innsending
             SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
             OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, utvidetSoknad);
             return getHandlebars()
@@ -113,6 +114,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     @Override
     public String genererHtmlForPdf(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         try {
+            //saksbehandlerpdf underveis
             final JsonInternalSoknad internalSoknad = legacyGenererJsonInternalSoknad(soknad);
             return genererHtmlForPdf(internalSoknad, utvidetSoknad);
         }catch (IllegalArgumentException e){
