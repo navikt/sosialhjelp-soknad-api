@@ -5,6 +5,7 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class FiksHandterer {
 
     public static final String FIKS_OPPGAVE = "FiksOppgave";
     private static final Logger logger = LoggerFactory.getLogger(FiksHandterer.class);
+    private static final int NY_INNSENDINGSVERSJON = 20;
 
     @Inject
     private MetadataInnfyller metadataInnfyller;
@@ -31,13 +33,68 @@ public class FiksHandterer {
     @Inject
     private InnsendingService innsendingService;
 
-
     public void eksekver(Oppgave oppgaveKjede) {
-        logger.info("Kjører fikskjede for behandlingsid {}, steg {}", oppgaveKjede.behandlingsId, oppgaveKjede.steg);
+        final String behandlingsId = oppgaveKjede.behandlingsId;
+        logger.info("Kjører fikskjede for behandlingsid {}, steg {}", behandlingsId, oppgaveKjede.steg);
 
+        if (oppgaveKjede.steg < NY_INNSENDINGSVERSJON) {
+            eksekverMedGammelStruktur(oppgaveKjede);
+            return;
+        }
+
+        FiksResultat resultat = oppgaveKjede.oppgaveResultat;
+        final String eier = oppgaveKjede.oppgaveData.avsenderFodselsnummer;
+        if (isEmpty(eier)) {
+            throw new IllegalStateException("Søknad med behandlingsid " + behandlingsId + " mangler eier");
+        }
+        if (oppgaveKjede.steg == 21) {
+            sendTilFiks(behandlingsId, resultat, eier);
+            oppgaveKjede.nesteSteg();
+        } else if (oppgaveKjede.steg == 22) {
+            slettSoknadOgFiler(behandlingsId, eier);
+            oppgaveKjede.nesteSteg();
+        } else {
+            lagreResultat(oppgaveKjede, behandlingsId, resultat, eier);
+            oppgaveKjede.ferdigstill();
+        }
+    }
+
+    private void sendTilFiks(String behandlingsId, FiksResultat resultat, String eier) {
+        final SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
+        Event event = lagForsoktSendtTilFiksEvent(sendtSoknad);
+        try {
+            resultat.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad);
+            logger.info("Søknad {} fikk id {} i Fiks", behandlingsId, resultat.fiksForsendelsesId);
+        } catch (Exception e) {
+            resultat.feilmelding = e.getMessage();
+            event.setFailed();
+            throw e;
+        } finally {
+            event.report();
+        }
+    }
+
+    private void slettSoknadOgFiler(String behandlingsId, String eier) {
+        innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId, eier);
+        fillagerService.slettAlle(behandlingsId);
+    }
+
+    private void lagreResultat(Oppgave oppgaveKjede, String behandlingsId, FiksResultat resultat, String eier) {
+        oppgaveKjede.oppgaveData.behandlingsId = behandlingsId;
+        metadataInnfyller.lagreFiksId(oppgaveKjede.oppgaveData, resultat);
+        innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier);
+    }
+
+    private Event lagForsoktSendtTilFiksEvent(SendtSoknad sendtSoknad) {
+        Event event = MetricsFactory.createEvent("digisos.fikshandterer.sendt");
+        event.addTagToReport("ettersendelse", sendtSoknad.erEttersendelse() ? "true" : "false");
+        event.addTagToReport("mottaker", tilInfluxNavn(sendtSoknad.getNavEnhetsnavn()));
+        return event;
+    }
+
+    void eksekverMedGammelStruktur(Oppgave oppgaveKjede) {
         FiksData data = oppgaveKjede.oppgaveData;
         FiksResultat resultat = oppgaveKjede.oppgaveResultat;
-
         if (oppgaveKjede.steg == 0) {
             data.behandlingsId = oppgaveKjede.behandlingsId;
             metadataInnfyller.byggOppFiksData(data);

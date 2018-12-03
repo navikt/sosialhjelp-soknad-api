@@ -38,14 +38,14 @@ public class FiksHandtererTest {
 
     @Test
     public void kjorerKjede() {
-        when(fiksSender.sendTilFiks(any())).thenReturn(FIKSFORSENDELSEID);
+        when(fiksSender.sendTilFiks(any(FiksData.class))).thenReturn(FIKSFORSENDELSEID);
         Oppgave oppgave = opprettOppgave();
 
         fiksHandterer.eksekver(oppgave);
 
         verify(metadataInnfyller, times(1)).byggOppFiksData(any());
         verify(fillagerService, never()).slettAlle(any());
-        verify(fiksSender, never()).sendTilFiks(any());
+        verify(fiksSender, never()).sendTilFiks(any(FiksData.class));
         verify(metadataInnfyller, never()).lagreFiksId(any(), any());
         verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
@@ -53,7 +53,7 @@ public class FiksHandtererTest {
 
         fiksHandterer.eksekver(oppgave);
         verify(fillagerService, never()).slettAlle(any());
-        verify(fiksSender, times(1)).sendTilFiks(any());
+        verify(fiksSender, times(1)).sendTilFiks(any(FiksData.class));
         verify(metadataInnfyller, never()).lagreFiksId(any(), any());
         verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
@@ -77,7 +77,7 @@ public class FiksHandtererTest {
 
     @Test
     public void lagrerFeilmelding() {
-        when(fiksSender.sendTilFiks(any())).thenThrow(new RuntimeException("feilmelding123"));
+        when(fiksSender.sendTilFiks(any(FiksData.class))).thenThrow(new RuntimeException("feilmelding123"));
 
         Oppgave oppgave = new Oppgave();
         oppgave.behandlingsId = BEHANDLINGSID;

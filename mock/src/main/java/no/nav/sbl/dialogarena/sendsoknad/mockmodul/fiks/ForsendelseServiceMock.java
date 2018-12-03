@@ -1,9 +1,10 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.fiks;
 
-import no.ks.svarut.servicesv9.Forsendelse;
-import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
-import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
+import no.ks.svarut.servicesv9.*;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
+
+import java.io.*;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.mockito.Matchers.any;
@@ -33,11 +34,35 @@ public class ForsendelseServiceMock {
                     logger.info("Sendt til Mock-Fiks som ettersendelse på {}", forsendelse.getSvarPaForsendelse());
                 }
 
+                if ("true".equals(System.getProperty("start.fiks.withmock.writetofile"))) {
+                    lagreForsendelsesfilerLokalt(forsendelse, fiksId);
+                }
+
                 return fiksId;
             });
         } catch (Exception ignored) {
         }
         return amock;
+    }
+
+    private void lagreForsendelsesfilerLokalt(Forsendelse forsendelse, String fiksId) {
+        String mappenavn = "mock/target/" + fiksId;
+        File mappeForForsendelse = new File(mappenavn);
+        mappeForForsendelse.mkdir();
+        logger.info("Lagrer filer lokalt i " + mappenavn);
+        for (Dokument dokument : forsendelse.getDokumenter()) {
+            OutputStream os = null;
+            InputStream is = null;
+            try {
+                is = dokument.getData().getInputStream();
+                os = new FileOutputStream(new File(mappenavn + "/" + dokument.getFilnavn()));
+                IOUtils.copy(is, os);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(is);
+        }
     }
 
 }

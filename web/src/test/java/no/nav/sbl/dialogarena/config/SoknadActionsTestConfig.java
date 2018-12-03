@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
-import no.nav.sbl.dialogarena.rest.utils.PDFService;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
-import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
