@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMoc
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
@@ -202,6 +203,29 @@ public class TjenesteMockRessurs {
         clearCache();
 
         UtbetalMock.slettUtbetalinger();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/norg")
+    public void settNorg(@RequestBody String rsNorgEnhetMap) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+
+        NorgConsumerMock.settNorgMap(rsNorgEnhetMap);
+    }
+
+    @DELETE
+    @Path("/norg")
+    public void slettNorg() {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        clearCache();
+
+        NorgConsumerMock.slettNorgMap();
     }
 
 }
