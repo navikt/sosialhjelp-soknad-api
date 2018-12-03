@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -53,7 +52,7 @@ public class SoknadUnderArbeidService {
     
     public void settInnsendingstidspunktPaaJsonInternalSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         JsonInternalSoknad internalSoknad = hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
-        internalSoknad.getSoknad().setInnsendingstidspunkt(OffsetDateTime.now( ZoneOffset.UTC ).toString());
+        internalSoknad.getSoknad().setInnsendingstidspunkt(OffsetDateTime.now().toString());
     }
 
     public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
