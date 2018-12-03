@@ -15,6 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.oppsummering.OppsummeringsContext;
 
 import javax.inject.Inject;
@@ -49,6 +50,25 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad) throws IOException {
         return fyllHtmlMalMedInnhold(soknad, false);
+    }
+
+    public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad) throws IOException {
+        return fyllHtmlMalMedInnhold(jsonInternalSoknad, false);
+    }
+
+    public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) throws IOException {
+        final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false);
+        return getHandlebars()
+                .infiniteLoops(true)
+                .compile("/skjema/ny_generisk")
+                .apply(Context.newBuilder(context)
+                        .resolver(
+                                JavaBeanValueResolver.INSTANCE,
+                                FieldValueResolver.INSTANCE,
+                                MapValueResolver.INSTANCE,
+                                MethodValueResolver.INSTANCE
+                        )
+                        .build());
     }
     
     @Override
