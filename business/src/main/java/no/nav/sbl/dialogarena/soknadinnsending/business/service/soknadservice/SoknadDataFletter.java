@@ -353,11 +353,7 @@ public class SoknadDataFletter {
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
         final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
-        if (!soknadUnderArbeid.erEttersendelse()) {
-            final String orgnummer = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
-            final String navEnhetsnavn = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
-            soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaNySoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn, soknad.getAktoerId());
-        }
+        settSoknadsmottakerPaSoknadUnderArbeid(soknad, ekstraMetadata, soknadUnderArbeid);
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         oppgaveHandterer.leggTilOppgave(behandlingsId, soknad.getAktoerId());
@@ -382,6 +378,20 @@ public class SoknadDataFletter {
             }
         }
         return soknadUnderArbeid;
+    }
+
+    private void settSoknadsmottakerPaSoknadUnderArbeid(WebSoknad soknad, Map<String, String> ekstraMetadata, SoknadUnderArbeid soknadUnderArbeid) {
+        String orgnummer;
+        String navEnhetsnavn;
+        if (soknadUnderArbeid.erEttersendelse()) {
+            SendtSoknad sendtSoknadSomEttersendesPa = innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid);
+            orgnummer = sendtSoknadSomEttersendesPa.getOrgnummer();
+            navEnhetsnavn = sendtSoknadSomEttersendesPa.getNavEnhetsnavn();
+        } else {
+            orgnummer = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
+            navEnhetsnavn = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
+        }
+        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaSoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn, soknad.getAktoerId());
     }
 
     private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg) {
