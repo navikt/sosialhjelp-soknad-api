@@ -1,5 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
@@ -32,9 +37,14 @@ public class FullOppsummeringRessurs {
     private HtmlGenerator pdfTemplate;
     @Inject
     private PDFService pdfService;
+    @Inject
+    private WebSoknadConverter webSoknadConverter;
+    @Inject
+    private SoknadUnderArbeidService soknadUnderArbeidService;
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
     private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
 
-    @Deprecated
     @GET
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
@@ -42,38 +52,14 @@ public class FullOppsummeringRessurs {
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         sjekkOmFullOppsummeringErAktivert("hentOppsummeringNew");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
-    }
-    
-    @Deprecated
-    @GET
-    @Path("/{behandlingsId}/gammelfullsoknad")
-    @Produces(TEXT_HTML)
-    @SjekkTilgangTilSoknad
-    public String gammelFullsoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        sjekkOmFullOppsummeringErAktivert("fullSoknad");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
+        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+        final JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
+        return pdfTemplate.fyllHtmlMalMedInnhold(jsonInternalSoknad);
     }
 
-    @Deprecated
-    @GET
-    @Path("/{behandlingsId}/fullsoknad")
-    @Produces(TEXT_HTML)
-    @SjekkTilgangTilSoknad
-    public String fullSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        sjekkOmFullOppsummeringErAktivert("fullSoknad");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        return pdfTemplate.genererHtmlForPdf(soknad, true);
-    }
-
-    @Deprecated
     @GET
     @Path("/{behandlingsId}/fullsoknadpdf")
     @Produces("application/pdf")
@@ -81,62 +67,13 @@ public class FullOppsummeringRessurs {
     public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
         sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        String servletPath = servletContext.getRealPath("/");
-        return pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, true);
-    }
-    
-    @Deprecated
-    @GET
-    @Path("/{behandlingsId}/saksbehandler")
-    @Produces(TEXT_HTML)
-    @SjekkTilgangTilSoknad
-    public String saksbehandler(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        sjekkOmFullOppsummeringErAktivert("fullSoknad");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        return pdfTemplate.genererHtmlForPdf(soknad, false);
-    }
+        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+        final JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
 
-    @Deprecated
-    @GET
-    @Path("/{behandlingsId}/saksbehandlerpdf")
-    @Produces("application/pdf")
-    @SjekkTilgangTilSoknad
-    public byte[] saksbehandlerPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
-        sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        String servletPath = servletContext.getRealPath("/");
-        return pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, false);
-    }
-
-
-    @Deprecated
-    @GET
-    @Path("/{behandlingsId}/ettersendelsespdf")
-    @Produces("application/pdf")
-    @SjekkTilgangTilSoknad
-    public byte[] ettersendelsepdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
-        sjekkOmFullOppsummeringErAktivert("ettersendelsepdf");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        String servletPath = servletContext.getRealPath("/");
-        return pdfService.legacyGenererEttersendingPdf(soknad, servletPath);
-    }
-    
-    @Deprecated
-    @GET
-    @Path("/{behandlingsId}/brukerkvittering")
-    @Produces("application/pdf")
-    @SjekkTilgangTilSoknad
-    public byte[] brukerkvittering(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
-        sjekkOmFullOppsummeringErAktivert("brukerkvittering");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        String servletPath = servletContext.getRealPath("/");
-        return pdfService.legacyGenererKvitteringPdf(soknad, servletPath);
+        return pdfService.genereJuridiskPdf(jsonInternalSoknad, "/");
     }
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {
@@ -145,5 +82,4 @@ public class FullOppsummeringRessurs {
             throw new NotFoundException("Ikke aktivert fulloppsummering");
         }
     }
-
 }

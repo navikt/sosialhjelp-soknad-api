@@ -58,7 +58,7 @@ public class PDFService {
     public byte[] legacyGenererKvitteringPdf(WebSoknad soknad, String servletPath) {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         final String hbsSkjemaPath = "/skjema/sosialhjelp/legacyKvittering";
-        
+        //innsending
         String pdfMarkup;
         try {
             pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
@@ -70,7 +70,7 @@ public class PDFService {
     
     public byte[] legacyGenererEttersendingPdf(WebSoknad soknad, String servletPath) {
         final String hbsSkjemaPath = "skjema/ettersending/legacyKvitteringUnderEttersendelse";
-        final String pdfMarkup;
+        final String pdfMarkup; //ettersending, insnending
         try {
             pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
         } catch (IOException e) {
@@ -80,6 +80,7 @@ public class PDFService {
     }
 
     public byte[] legacyGenererOppsummeringPdf(WebSoknad soknad, String servletPath, boolean fullSoknad) {
+        // oppsumemring saksbehandlerpdf, innsending
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String pdfMarkup;
         try {
