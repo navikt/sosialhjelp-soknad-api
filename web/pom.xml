@@ -564,7 +564,7 @@
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.eclipse.jetty:jetty-jndi</artifact>
+                                    <artifact>no.nav.sbl.dialogarena:common-jetty</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>

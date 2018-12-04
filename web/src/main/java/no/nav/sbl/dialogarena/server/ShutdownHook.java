@@ -21,9 +21,7 @@ public class ShutdownHook extends Thread {
         @Override
         public void run() {
             try {
-                LOGGER.info("shutdown initialized, allowing incoming requests for 5 seconds before continuing");
-                // https://github.com/kubernetes/kubernetes/issues/64510
-                // https://nav-it.slack.com/archives/C5KUST8N6/p1543497847341300
+                LOGGER.info("shutdown initialized for soknadsosialhjelp-server, allowing incoming requests for 5 seconds before continuing");
                 Thread.sleep(5000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
