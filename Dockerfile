@@ -5,3 +5,4 @@ RUN mvn package -DskipTests
 
 FROM navikt/java:8
 COPY --from=builder /source/web/target/soknadsosialhjelp-server.jar /app/app.jar
+ENV JAVA_OPTS="-Xmx1536m"
