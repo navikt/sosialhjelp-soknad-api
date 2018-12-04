@@ -1,4 +1,7 @@
-FROM docker.adeo.no:5000/soknad/soknad-builder:1.1.0
-ADD / /workspace
+FROM docker.adeo.no:5000/pus/maven as builder
+WORKDIR /source
+ADD / /source
+RUN mvn package -DskipTests
 
-RUN /workspace/build.sh
+FROM navikt/java:8
+COPY --from=builder /source/web/target/soknadsosialhjelp-server.jar /app/app.jar
