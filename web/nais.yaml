@@ -16,9 +16,9 @@ healthcheck:
 resources:
   limits:
     cpu: 3
-    memory: 2Gi
+    memory: 4Gi
   requests:
-    memory: 2Gi
+    memory: 4Gi
 fasitResources:
   exposed:
   - alias: soknadsosialhjelpSaksoversikt
