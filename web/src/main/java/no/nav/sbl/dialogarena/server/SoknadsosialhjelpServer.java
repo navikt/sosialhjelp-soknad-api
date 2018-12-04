@@ -48,6 +48,10 @@ public class SoknadsosialhjelpServer {
                 .addDatasource(ds, "jdbc/SoknadInnsendingDS")
                 .port(listenPort)
                 .buildJetty();
+
+        if (isRunningOnNais()) {
+            Runtime.getRuntime().addShutdownHook(new ShutdownHook(jetty));
+        }
     }
 
     private void databaseSchemaMigration(final DataSource ds) {
