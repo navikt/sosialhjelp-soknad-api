@@ -8,9 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +37,15 @@ public class SoknadsosialhjelpServer {
 
         final String loginConfFile = SoknadsosialhjelpServer.class.getClassLoader().getResource("login.conf").getFile();
         log.info("login.conf location " + loginConfFile);
+
+        InputStream inputStream = SoknadsosialhjelpServer.class.getClassLoader().getResourceAsStream("login.conf");
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = br.readLine()) != null) {
+            log.info(line);
+        }
+
+        br.close();
         setProperty("java.security.auth.login.config", loginConfFile);
         final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
