@@ -38,6 +38,7 @@ public class SoknadsosialhjelpServer {
         }
 
         final String loginConfFile = SoknadsosialhjelpServer.class.getClassLoader().getResource("login.conf").getFile();
+        log.info("login.conf location " + loginConfFile);
         setProperty("java.security.auth.login.config", loginConfFile);
         final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
