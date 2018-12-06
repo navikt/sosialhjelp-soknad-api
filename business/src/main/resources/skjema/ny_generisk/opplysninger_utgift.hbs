@@ -7,27 +7,12 @@
                     <h4>{{tittel}}</h4>
                     <ul class="fakta-liste">
                         <li>
-                            {{#hvisLik type "strom"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.strom.sisteregning.label"}}</span>
-                            {{/hvisLik}}
-                            {{#hvisLik type "kommunalAvgift"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.kommunaleavgifter.sisteregning.label"}}</span>
-                            {{/hvisLik}}
-                            {{#hvisLik type "oppvarming"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.oppvarming.sisteregning.label"}}</span>
-                            {{/hvisLik}}
-                            {{#hvisLik type "annenBoutgift"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.andreutgifter.sisteregning.label"}}</span>
-                            {{/hvisLik}}
-                            {{#hvisLik type "barnFritidsaktiviteter"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.fritidsaktivitet.sisteregning.label"}}</span>
-                            {{/hvisLik}}
-                            {{#hvisLik type "barnTannregulering"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.tannbehandling.sisteregning.label"}}</span>
-                            {{/hvisLik}}
-                            {{#hvisLik type "annenBarneutgift"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.annet.sisteregning.label"}}</span>
-                            {{/hvisLik}}
+                            {{#hvisBarneutgift type}}
+                                <span class="label">{{ hentTekst (concat "opplysninger.utgifter.barn." type ".sisteregning.label") }}</span>
+                            {{/hvisBarneutgift}}
+                            {{#hvisBoutgift type}}
+                                <span class="label">{{ hentTekst (concat "opplysninger.utgifter.boutgift." type ".sisteregning.label") }}</span>
+                            {{/hvisBoutgift}}
                             {{#hvisLik type "annen"}}
                                 <span class="label">{{hentTekst "opplysninger.ekstrainfo.utgifter.utgift.label"}}</span>
                             {{/hvisLik}}
@@ -56,9 +41,13 @@
                     <h4>{{tittel}}</h4>
                     <ul class="fakta-liste">
                         <li>
-                            {{#hvisLik type "barnebidrag"}}
-                                <span class="label">{{hentTekst "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label"}}</span>
-                            {{/hvisLik}}
+                            {{#hvisBarneutgift type}}
+                                {{#hvisLik type "barnebidrag"}}
+                                    <span class="label">{{hentTekst "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label"}}</span>
+                                {{else}}
+                                    <span class="label">{{ hentTekst (concat "opplysninger.utgifter.barn." type ".sistemnd.label") }}</span>
+                                {{/hvisLik}}
+                            {{/hvisBarneutgift}}
                             {{#hvisLik type "husleie"}}
                                 <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.husleie.permnd.label"}}</span>
                             {{/hvisLik}}
@@ -67,12 +56,6 @@
                             {{/hvisLik}}
                             {{#hvisLik type "boliglanRenter"}}
                                 <span class="label">{{hentTekst "opplysninger.utgifter.boutgift.avdraglaan.renter.label"}}</span>
-                            {{/hvisLik}}
-                            {{#hvisLik type "barnehage"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.barnehage.sistemnd.label"}}</span>
-                            {{/hvisLik}}
-                            {{#hvisLik type "sfo"}}
-                                <span class="label">{{hentTekst "opplysninger.utgifter.barn.sfo.sistemnd.label"}}</span>
                             {{/hvisLik}}
                             <ul class="svar-liste">
                                 <li>

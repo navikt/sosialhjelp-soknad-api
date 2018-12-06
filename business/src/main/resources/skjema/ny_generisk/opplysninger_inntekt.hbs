@@ -8,13 +8,13 @@
                     <ul class="fakta-liste">
                         <li>
                             {{#hvisLik type "bostotte"}}
-                                <span class="label">{{hentTekst "opplysninger.inntekt.bostotte.utbetaling.label"}}</span>
+                                <span class="label">{{ hentTekst (concat "opplysninger.inntekt." type ".utbetaling.label") }}</span>
                             {{/hvisLik}}
                             {{#hvisLik type "studielanOgStipend"}}
-                                <span class="label">{{hentTekst "opplysninger.arbeid.student.utbetaling.label"}}</span>
+                                <span class="label">{{ hentTekst (concat "opplysninger.arbeid.student." type ".label") }}</span>
                             {{/hvisLik}}
                             {{#hvisLik type "jobb"}}
-                                <span class="label">{{hentTekst "opplysninger.arbeid.jobb.bruttolonn.label"}}</span>
+                                <span class="label">{{ hentTekst (concat "opplysninger.arbeid." type ".bruttolonn.label") }}</span>
                                 <ul class="svar-liste">
                                     <li>
                                         {{#if brutto}}
@@ -28,10 +28,10 @@
                                         {{/if}}
                                     </li>
                                 </ul>
-                                <span class="label">{{hentTekst "opplysninger.arbeid.jobb.nettolonn.label"}}</span>
+                                <span class="label">{{ hentTekst (concat "opplysninger.arbeid." type ".nettolonn.label") }}</span>
                             {{/hvisLik}}
                             {{#hvisLik type "barnebidrag"}}
-                                <span class="label">{{hentTekst "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label"}}</span>
+                                <span class="label">{{ hentTekst (concat "opplysninger.familiesituasjon." type ".mottar.mottar.label") }}</span>
                             {{/hvisLik}}
                             <ul class="svar-liste">
                                 <li>
@@ -59,24 +59,7 @@
                         <h4>{{tittel}}</h4>
                         <ul class="fakta-liste">
                             <li>
-                                {{#hvisLik type "brukskonto"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.brukskonto.saldo.label"}}</span>
-                                {{/hvisLik}}
-                                {{#hvisLik type "bsu"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.bsu.saldo.label"}}</span>
-                                {{/hvisLik}}
-                                {{#hvisLik type "sparekonto"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.sparekonto.saldo.label"}}</span>
-                                {{/hvisLik}}
-                                {{#hvisLik type "livsforsikringssparedel"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.livsforsikring.saldo.label"}}</span>
-                                {{/hvisLik}}
-                                {{#hvisLik type "verdipapirer"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.aksjer.saldo.label"}}</span>
-                                {{/hvisLik}}
-                                {{#hvisLik type "belop"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.bankinnskudd.annet.saldo.label"}}</span>
-                                {{/hvisLik}}
+                                <span class="label">{{ hentTekst (concat "opplysninger.inntekt.bankinnskudd." type ".saldo.label") }}</span>
                                 <ul class="svar-liste">
                                     <li>
                                         {{#if belop}}
@@ -105,18 +88,7 @@
                         <h4>{{tittel}}</h4>
                         <ul class="fakta-liste">
                             <li>
-                                {{#hvisLik type "salg"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.inntekter.salg.sum.label"}}</span>
-                                {{/hvisLik}}
-                                {{#hvisLik type "utbytte"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.inntekter.utbytte.sum.label"}}</span>
-                                {{/hvisLik}}
-                                {{#hvisLik type "forsikring"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.inntekter.forsikringsutbetalinger.sum.label"}}</span>
-                                {{/hvisLik}}
-                                {{#hvisLik type "annen"}}
-                                    <span class="label">{{hentTekst "opplysninger.inntekt.inntekter.annet.sum.label"}}</span>
-                                {{/hvisLik}}
+                                <span class="label">{{ hentTekst (concat "opplysninger.inntekt.inntekter." type ".sum.label") }}</span>
                                 <ul class="svar-liste">
                                     <li>
                                         {{#if belop}}
