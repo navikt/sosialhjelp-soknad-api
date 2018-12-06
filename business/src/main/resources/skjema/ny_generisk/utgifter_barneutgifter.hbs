@@ -13,27 +13,11 @@
         <ul class="svar-liste">
             {{#each @root.opplysningUtgiftstyper}}
                 {{#hvisBarneutgift type}}
-                    {{#hvisIkkeTom (hentTekst (concat "utgifter.boutgift.true.type." type)) }}
-                        <li>
-                            <span class="verdi verdi--radio">
-                                {{ hentTekst (concat "utgifter.boutgift.true.type." type) }}
-                            </span>
-                        </li>
-                    {{else}}
-                        <li>
-                            <span class="verdi verdi--radio">
-                                {{#hvisLik type "barnFritidsaktiviteter"}}
-                                    {{ hentTekst "utgifter.barn.true.utgifter.fritidsaktivitet" }}
-                                {{/hvisLik}}
-                                {{#hvisLik type "barnTannregulering"}}
-                                    {{ hentTekst "utgifter.barn.true.utgifter.tannbehandling" }}
-                                {{/hvisLik}}
-                                {{#hvisLik type "annenBarneutgift"}}
-                                    {{ hentTekst "utgifter.barn.true.utgifter.annet" }}
-                                {{/hvisLik}}
-                            </span>
-                        </li>
-                    {{/hvisIkkeTom}}
+                    <li>
+                        <span class="verdi verdi--radio">
+                            {{ hentTekst (concat "utgifter.barn.true.utgifter." type) }}
+                        </span>
+                    </li>
                 {{/hvisBarneutgift}}
             {{/each}}
             {{#each @root.oversiktUtgiftstyper}}
