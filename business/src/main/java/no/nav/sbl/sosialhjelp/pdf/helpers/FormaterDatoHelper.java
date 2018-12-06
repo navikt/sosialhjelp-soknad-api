@@ -3,7 +3,8 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -33,11 +34,14 @@ public class FormaterDatoHelper extends RegistryAwareHelper<String>{
         try {
             String format = options.param(0);
             if (format.toLowerCase().contains("h")) {
-                LocalDateTime date = LocalDateTime.parse(datoStreng, 
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(format);
+
+                ZonedDateTime zonedDate = ZonedDateTime.parse(datoStreng,
                         DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSXXX", SPRAK));
-                
-                DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern(format);
-                return date.format(datoFormatter);
+                ZoneId osloZone = ZoneId.of("Europe/Oslo");
+                ZonedDateTime osloZonedDate = zonedDate.withZoneSameInstant(osloZone);
+
+                return osloZonedDate.format(dateFormatter);
             }
             else {
                 LocalDate date = new LocalDate(datoStreng);
