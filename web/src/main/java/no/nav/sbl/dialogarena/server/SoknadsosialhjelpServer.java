@@ -37,7 +37,8 @@ public class SoknadsosialhjelpServer {
             databaseSchemaMigration(ds);
         }
 
-        setProperty("java.security.auth.login.config", "login.conf");
+        final String loginConfFile = SoknadsosialhjelpServer.class.getClassLoader().getResource("login.conf").getFile();
+        setProperty("java.security.auth.login.config", loginConfFile);
         final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
         jetty = new Jetty.JettyBuilder()
