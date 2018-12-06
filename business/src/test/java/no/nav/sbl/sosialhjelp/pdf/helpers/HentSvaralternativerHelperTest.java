@@ -1,7 +1,10 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -54,30 +57,30 @@ public class HentSvaralternativerHelperTest {
         when(navMessageSource.getBundleFor("soknadsosialhjelp", SPRAK)).thenReturn(tekstFiler);
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
-        
-        assertThat(compiled).contains("Eier egen bolig");
-        assertThat(compiled).contains("Leier privat");
-        assertThat(compiled).contains("Annen bosituasjon");
+
+        assertThat(compiled, containsString("Eier egen bolig"));
+        assertThat(compiled, containsString("Leier privat"));
+        assertThat(compiled, containsString("Annen bosituasjon"));
     }
     
     @Test
     public void skalFiltrereBortTeksterSomIkkeErValg() throws IOException {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
-        leggTilTeksterSomIkkeErValg(tekstFiler);
+        leggTilTeksterSomIkkeErValgbare(tekstFiler);
         when(navMessageSource.getBundleFor("soknadsosialhjelp", SPRAK)).thenReturn(tekstFiler);
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
+
+        assertThat(compiled, containsString("Eier egen bolig"));
+        assertThat(compiled, containsString("Leier privat"));
+        assertThat(compiled, containsString("Annen bosituasjon"));
         
-        assertThat(compiled).contains("Eier egen bolig");
-        assertThat(compiled).contains("Leier privat");
-        assertThat(compiled).contains("Annen bosituasjon");
-        
-        assertThat(compiled).doesNotContain("En label");
-        assertThat(compiled).doesNotContain("Et spørsmål");
-        assertThat(compiled).doesNotContain("En feilmelding");
-        assertThat(compiled).doesNotContain("En infotekst");
-        assertThat(compiled).doesNotContain("En hjelpetekst");
+        assertThat(compiled, not(containsString("En label")));
+        assertThat(compiled, not(containsString("Et spørsmål")));
+        assertThat(compiled, not(containsString("En feilmelding")));
+        assertThat(compiled, not(containsString("En infotekst")));
+        assertThat(compiled, not(containsString("En hjelpetekst")));
     }
     
     @Test
@@ -88,14 +91,14 @@ public class HentSvaralternativerHelperTest {
         when(navMessageSource.getBundleFor("soknadsosialhjelp", SPRAK)).thenReturn(tekstFiler);
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
+
+        assertThat(compiled, containsString("Eier egen bolig"));
+        assertThat(compiled, containsString("Leier privat"));
+        assertThat(compiled, containsString("Annen bosituasjon"));
         
-        assertThat(compiled).contains("Eier egen bolig");
-        assertThat(compiled).contains("Leier privat");
-        assertThat(compiled).contains("Annen bosituasjon");
-        
-        assertThat(compiled).doesNotContain("Bor hos foreldre");
-        assertThat(compiled).doesNotContain("Institusjon");
-        assertThat(compiled).doesNotContain("Krisesenter");
+        assertThat(compiled, not(containsString("Bor hos foreldre")));
+        assertThat(compiled, not(containsString("Institusjon")));
+        assertThat(compiled, not(containsString("Krisesenter")));
     }
     
     private void leggTilValgtekster(Properties tekstFiler) {
@@ -105,7 +108,7 @@ public class HentSvaralternativerHelperTest {
     }
 
 
-    private void leggTilTeksterSomIkkeErValg(Properties tekstFiler) {
+    private void leggTilTeksterSomIkkeErValgbare(Properties tekstFiler) {
         tekstFiler.put("bosituasjon.label", "En label");
         tekstFiler.put("bosituasjon.sporsmal", "Et spørsmal");
         tekstFiler.put("bosituasjon.feilmelding", "En feilmelding");

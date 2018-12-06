@@ -61,13 +61,13 @@ public class HentOkonomiBekreftelseHelperTest {
         assertThat(compiled, equalTo(""));
     }
     
-    private JsonOkonomiopplysninger lagOpplysningerMedBostotteBekreftelse(boolean medVerdiLikTrue) {
+    private JsonOkonomiopplysninger lagOpplysningerMedBostotteBekreftelse(boolean bostotteBekreftelseSkalHaVerdiLikTrue) {
         final JsonOkonomibekreftelse bostotteBekreftelse = new JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
                 .withTittel("Søkt eller mottatt bostøtte fra Husbanken.")
                 .withType("bostotte");
         
-        if (medVerdiLikTrue) {
+        if (bostotteBekreftelseSkalHaVerdiLikTrue) {
             bostotteBekreftelse.setVerdi(Boolean.TRUE);
         }
         
