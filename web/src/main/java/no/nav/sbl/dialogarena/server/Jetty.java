@@ -10,6 +10,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -226,6 +227,12 @@ public final class Jetty {
                 }
             }
         }
+
+
+        // When we embed jetty in this way, some classes might be loaded by the default WebAppClassLoader and some by the system class loader.
+        // These classes will be incompatible with each other. Also, Jetty does not consult the classloader of the webapp when resolving resources
+        // such as the swagger-ui. We mitigate both these problems by installing an empty classloader that will always defer to the system classloader
+        webAppContext.setClassLoader(URLClassLoader.newInstance(new URL[0]));
 
         return webAppContext;
     }
