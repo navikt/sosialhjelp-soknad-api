@@ -7,7 +7,7 @@ import com.github.jknack.handlebars.io.URLTemplateSource;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
-import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
+import no.nav.sbl.sosialhjelp.pdf.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.slf4j.Logger;

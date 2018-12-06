@@ -15,7 +15,7 @@ men kjører også automatisk sammen med det vanlige testoppsettet.
 
 #### Ny helper
 
-* Opprette en Spring-annotert klasse (`@Component`) `HelpernavnHelper.java` i pakken `no.nav.sbl.dialogarena.service.helpers`
+* Opprette en Spring-annotert klasse (`@Component`) `HelpernavnHelper.java` i pakken `no.nav.sbl.sosialhjelp.pdf.helpers`
 * La klassen arve fra `RegistryAwareHelper<T>`
 * Implementer de abstrakte metodene
     * Navnet på helperen må returneres fra `getNavn`
