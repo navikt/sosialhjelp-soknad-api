@@ -568,6 +568,13 @@ med body f eks
 ```
 ## NORG
 
+Send en POST til 
+
+```
+/soknadsosialhjelp-server/internal/mock/tjeneste/norg
+```
+med body f eks
+
 ```json
 {
   "0701": {
