@@ -35,9 +35,9 @@ public class FormaterDatoHelperTest {
     }
     
     @Test
-    public void skalViseDatoOgKlokkeslett() throws IOException {
+    public void skalViseDatoOgKlokkeslettINorskTidssone() throws IOException {
         String innhold = handlebars.compileInline("{{formaterDato \"2018-10-04T13:37:00.134Z\" \"d. MMMM yyyy HH:mm\"}}").apply(new Object());
-        assertThat(innhold).isEqualTo("4. oktober 2018 13:37");
+        assertThat(innhold).isEqualTo("4. oktober 2018 15:37");
     }
 
 
