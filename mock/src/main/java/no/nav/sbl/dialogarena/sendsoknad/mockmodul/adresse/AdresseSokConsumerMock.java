@@ -42,21 +42,6 @@ public class AdresseSokConsumerMock {
     private static AdressesokRespons getDefaultRespons(){
         AdressesokRespons response = new AdressesokRespons();
 
-        // Mulig vi ønsker å beholde en adresse i defaulten ?
-//        final AdresseData a1 = new AdresseData();
-//        a1.kommunenummer = "1201";
-//        a1.kommunenavn = "Bergen";
-//        a1.adressenavn = "SANNERGATA";
-//        a1.husnummerFra = "0001";
-//        a1.husnummerTil = "0010";
-//        a1.postnummer = "1337";
-//        a1.poststed = "Leet";
-//        a1.geografiskTilknytning = "120102";
-//        a1.gatekode = "02081";
-//        a1.bydel = "120102";
-//
-//        response.adresseDataList = Arrays.asList(a1);
-
         return response;
     }
 

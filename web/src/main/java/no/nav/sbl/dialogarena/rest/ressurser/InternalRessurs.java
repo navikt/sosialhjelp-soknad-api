@@ -1,27 +1,17 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.context.MethodValueResolver;
-import com.github.jknack.handlebars.io.URLTemplateSource;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
-import no.nav.sbl.sosialhjelp.pdf.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.net.URI;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 
 @Controller

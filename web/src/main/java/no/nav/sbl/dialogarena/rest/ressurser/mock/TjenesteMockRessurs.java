@@ -81,26 +81,25 @@ public class TjenesteMockRessurs {
         DkifMock.slettTelefonnummer();
     }
 
-
     @POST
     @Consumes(APPLICATION_JSON)
-    @Path("/kontonummer")
-    public void settKontonummer(@RequestBody JsonKontonummer jsonKontonummer) {
+    @Path("/brukerprofil")
+    public void settBrukerprofil(@RequestBody String jsonBrukerProfil) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        BrukerprofilMock.setKontonummer(jsonKontonummer);
+        BrukerprofilMock.setBrukerprofil(jsonBrukerProfil);
     }
 
     @DELETE
-    @Path("/kontonummer")
-    public void slettKontonummer() {
+    @Path("/brukerprofil")
+    public void settDefaultBrukerprofil() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        BrukerprofilMock.slettKontonummer();
+        BrukerprofilMock.settDefaultBrukerprofil();
     }
 
 

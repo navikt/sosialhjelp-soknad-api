@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -10,6 +12,9 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinform
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.joda.time.DateTime;
 
+import javax.security.auth.Subject;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 public class BrukerprofilMock {
     private static final String FODSELSNUMMER = "***REMOVED***";
-    private static final String FORNAVN = "Donald";
+    private static final String FORNAVN = "Kerrigan";
     private static final String MELLOMNAVN = "D.";
     private static final String ETTERNAVN = "Mockmann";
     private static final String EPOST = "test@epost.com";
@@ -75,6 +80,7 @@ public class BrukerprofilMock {
             respons = createNewResponse();
             responses.put(SubjectHandler.getSubjectHandler().getUid(), respons);
         }
+
 
         return respons;
     }
@@ -285,13 +291,43 @@ public class BrukerprofilMock {
         return bankkonto;
     }
 
-    public static void setKontonummer(JsonKontonummer jsonKontonummer) {
-        XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
-        response.getPerson().setBankkonto(bankkonto(jsonKontonummer.getVerdi()));
+    public static void setBrukerprofil(String jsonBrukerprofil) {
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+
+            final SimpleModule module = new SimpleModule();
+            module.addDeserializer(XMLStrukturertAdresse.class, new XMLStrukturertAdresseDeserializer());
+            module.addDeserializer(XMLStedsadresse.class, new XMLStedsadresseDeserializer());
+            module.addDeserializer(XMLPostboksadresse.class, new XMLPostboksadresseDeserializer());
+            module.addDeserializer(XMLStedsadresseNorge.class, new XMLStedsadresseNorgeDeserializer());
+            module.addDeserializer(XMLPerson.class, new XMLPersonDeserializer());
+            module.addDeserializer(XMLElektroniskAdresse.class, new XMLElektroniskAdresseDeserializer());
+            module.addDeserializer(XMLMidlertidigPostadresse.class, new XMLMidlertidigPostadresseDeserializer());
+            module.addDeserializer(XMLBankkonto.class, new XMLBankkontoDeserializer());
+
+            mapper.registerModule(module);
+
+            XMLHentKontaktinformasjonOgPreferanserResponse newResponse = mapper.readValue(jsonBrukerprofil, XMLHentKontaktinformasjonOgPreferanserResponse.class);
+
+            XMLHentKontaktinformasjonOgPreferanserResponse currentResponse = getOrCreateCurrentUserResponse();
+            if (currentResponse == null){
+                responses.put(SubjectHandler.getSubjectHandler().getUid(), newResponse);
+            } else {
+                responses.replace(SubjectHandler.getSubjectHandler().getUid(), newResponse);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    public static void slettKontonummer(){
+    public static void settDefaultBrukerprofil(){
         XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
-        response.getPerson().withBankkonto(null);
+        if (response == null){
+            responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+        } else {
+            responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+        }
     }
 }
