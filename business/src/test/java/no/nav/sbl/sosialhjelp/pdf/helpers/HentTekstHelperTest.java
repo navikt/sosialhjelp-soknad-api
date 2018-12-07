@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -53,7 +54,7 @@ public class HentTekstHelperTest {
         WebSoknad webSoknad = new WebSoknad().medSoknadPrefix("mittprefix");
         String compiled = handlebars.compileInline("{{hentTekst \"test\"}}").apply(webSoknad);
 
-        assertThat(compiled).isEqualTo("test");
+        Assert.assertThat(compiled, is("test"));
     }
 
     @Test
