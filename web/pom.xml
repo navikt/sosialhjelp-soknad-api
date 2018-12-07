@@ -14,7 +14,7 @@
     <artifactId>sendsoknad-web</artifactId>
     <version>18.1.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <properties>
         <jetty.port>8080</jetty.port>
@@ -502,6 +502,7 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>soknadsosialhjelp-server</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -531,37 +532,6 @@
             </testResource>
         </testResources>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>appassembler-maven-plugin</artifactId>
-                <version>1.10</version>
-                <configuration>
-                    <extraJvmArguments>-Djavax.net.ssl.trustStore=${NAV_TRUSTSTORE_PATH}
-                        -Djavax.net.ssl.trustStorePassword=${NAV_TRUSTSTORE_PASSWORD}
-                        -Djavax.net.ssl.keyStore=${SRVSOKNADSOSIALHJELP_KEYSTORE}
-                        -Djavax.net.ssl.keyStorePassword=${SRVSOKNADSOSIALHJELP_PASSWORD} -Xmx1024M
-                        -Xms1024M
-                    </extraJvmArguments>
-                    <programs>
-                        <program>
-                            <mainClass>no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer
-                            </mainClass>
-                            <id>app</id>
-                        </program>
-                    </programs>
-                    <configurationDirectory>.</configurationDirectory>
-                    <configurationSourceDirectory>src/main/docker</configurationSourceDirectory>
-                    <copyConfigurationDirectory>true</copyConfigurationDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>assemble</id>
-                        <goals>
-                            <goal>assemble</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
