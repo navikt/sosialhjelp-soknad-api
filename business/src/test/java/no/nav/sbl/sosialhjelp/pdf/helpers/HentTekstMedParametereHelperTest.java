@@ -1,14 +1,9 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.Properties;
-
+import com.github.jknack.handlebars.Handlebars;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,11 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.github.jknack.handlebars.Handlebars;
+import java.io.IOException;
+import java.util.Properties;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HentTekstMedParametereHelperTest {
@@ -57,7 +56,7 @@ public class HentTekstMedParametereHelperTest {
 
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\" \"parameter\" \"verdi\"}}}").apply(new Object());
         
-        assertThat(compiled).isEqualTo("<div>Parameter er satt til: verdi.</div>");
+        assertThat(compiled, is("<div>Parameter er satt til: verdi.</div>"));
     }
 
     @Test
@@ -69,8 +68,8 @@ public class HentTekstMedParametereHelperTest {
         String compiled = handlebars.compileInline(
                 "{{{hentTekstMedParametere \"" + key + "\" \"parameter1\" \"verdi1\" \"parameter2\" \"verdi2\" \"parameter3\" \"verdi3\"}}}")
                 .apply(new Object());
-        
-        assertThat(compiled).isEqualTo("<div>Parametere er satt til: verdi1, verdi2, verdi3.</div>");
+
+        assertThat(compiled, is("<div>Parametere er satt til: verdi1, verdi2, verdi3.</div>"));
     }
     
     @Test
@@ -80,8 +79,8 @@ public class HentTekstMedParametereHelperTest {
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
         
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\" \"parameter\"}}}").apply(new Object());
-        
-        assertThat(compiled).isEqualTo("<div>Parameter er satt til: {parameter}.</div>");
+
+        assertThat(compiled, is("<div>Parameter er satt til: {parameter}.</div>"));
     }
     
     @Test
@@ -91,8 +90,8 @@ public class HentTekstMedParametereHelperTest {
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
         
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\"}}}").apply(new Object());
-        
-        assertThat(compiled).isEqualTo("<div>Parameter er satt til: {parameter}.</div>");
+
+        assertThat(compiled, is("<div>Parameter er satt til: {parameter}.</div>"));
     }
 
     private void lagPropertiesMedTekstOgFilnavnNokkel(String testStreng, String key) {

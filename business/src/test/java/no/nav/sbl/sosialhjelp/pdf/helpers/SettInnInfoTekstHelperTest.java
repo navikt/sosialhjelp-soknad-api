@@ -1,15 +1,9 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.Locale;
-
+import com.github.jknack.handlebars.Handlebars;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,11 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.github.jknack.handlebars.Handlebars;
+import java.io.IOException;
+import java.util.Locale;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SettInnInfoTekstHelperTest {
@@ -55,8 +53,8 @@ public class SettInnInfoTekstHelperTest {
 
         String compiled = handlebars.compileInline("{{{settInnInfotekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled).contains("Infotekst:");
-        assertThat(compiled).contains("Lorem ipsum");
+        assertThat(compiled, containsString("Infotekst:"));
+        assertThat(compiled, containsString("Lorem ipsum"));
     }
     
     @Test
@@ -65,7 +63,7 @@ public class SettInnInfoTekstHelperTest {
 
         String compiled = handlebars.compileInline("{{{settInnInfotekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled).isEqualTo("");
+        assertThat(compiled, is(""));
     }
 
 }
