@@ -3,12 +3,10 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.meldinger.FortsettSenere;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
-import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
@@ -44,16 +42,10 @@ public class SoknadActions {
     private SoknadService soknadService;
 
     @Inject
-    private PDFService pdfService;
-
-    @Inject
     private EmailService emailService;
 
     @Inject
     private NavMessageSource tekster;
-
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
 
     @GET
     @Path("/leggved")
@@ -67,24 +59,7 @@ public class SoknadActions {
     @Path("/send")
     @SjekkTilgangTilSoknad
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
-        String servletPath = servletContext.getRealPath("/");
-
-        byte[] kvittering = pdfService.legacyGenererKvitteringPdf(soknad, servletPath);
-        vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
-
-        if (soknad.erEttersending()) {//innsending
-            byte[] dummyPdfSomHovedskjema = pdfService.legacyGenererEttersendingPdf(soknad, servletPath);
-            soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
-        } else {
-            byte[] soknadPdf = pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, false);
-            byte[] fullSoknad = null;
-            if(webSoknadConfig.skalSendeMedFullSoknad(soknad.getSoknadId())){
-                fullSoknad = pdfService.legacyGenererOppsummeringPdf(soknad, servletPath, true);
-            }
-
-            soknadService.sendSoknad(behandlingsId, soknadPdf, fullSoknad);
-        }
+        soknadService.sendSoknad(behandlingsId);
     }
 
     @POST
