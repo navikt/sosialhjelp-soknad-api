@@ -131,7 +131,18 @@
                         {{/if}}
                     </li>
                     {{#if @root.utvidetSoknad}}
-                        {{{hentSvaralternativer "kontakt.kontonummer"}}}
+                        {{#hvisLik kontonummer.kilde "system"}}
+                            <ul class="svar-liste">
+		                        <li>
+		                            <h4>Knapp tilgjengelig:</h4>
+		                        </li>
+		                        <li>
+		                            <span>{{hentTekst "kontakt.system.kontonummer.endreknapp.label"}}</span>
+		                        </li>
+		                    </ul>
+                        {{else}}
+                            {{{hentSvaralternativer "kontakt.kontonummer"}}}
+                        {{/hvisLik}}
                     {{/if}}
                 </ul>
             </li>
