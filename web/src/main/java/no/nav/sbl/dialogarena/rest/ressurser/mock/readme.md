@@ -1,28 +1,7 @@
 # Bruk av endepunktene for å sette mockdata:
 
-For hver gang man setter mockdata så må minimum frontend refresh'es.
-For noen av mock-dataen må man starte søknaden på nytt for at de nye dataene blir lastet inn.
+For hver gang man setter mockdata så må frontend'en refresh'es.
 
-Oversikt:
-
-Kan settes uten å restarte søknad
-    Telefon
-    Konto
-    Arbeid
-    Adresser
-    Familie
-
-Kan slettes uten å restarte søknad
-    Telefon
-    Konto
-    Adresser
-
-Trenger restart av søknad for å sette
-
-Trenger restart av søknad for å slette
-    Arbeid 
-    Familie
-    
     
 ## Adresse
 #### Legg til liste med adresser
@@ -32,7 +11,7 @@ http://localhost:8181/soknadsosialhjelp-server/internal/mock/tjeneste/adresser
 ```
 med header: content-type: application/json
 Og body
-```
+```json
 {
    "flereTreff": false,
    "adresseDataList": [
@@ -81,7 +60,7 @@ Send en POST request til:
 med header: content-type: application/json
 
 Og body:
-```
+```json
 {
   "verdi":"99887766"
 }
@@ -100,7 +79,7 @@ Send en POST request
 ```
 
 med body:
-```
+```json
 {
   "person": {
     "diskresjonskode": null,
@@ -205,7 +184,7 @@ Send en POST request til:
 .../soknadsosialhjelp-server/internal/mock/tjeneste/arbeid
 ```
 med body:
-```
+```json
 {
   "arbeidsforhold" : [ {
     "arbeidsforholdIDnav" : 0,
@@ -273,7 +252,7 @@ Send en POST request til:
 .../soknadsosialhjelp-server/internal/mock/tjeneste/organisasjon
 ```
 med body:
-```
+```json
 {
    "organisasjon": {
       "orgnummer": null,
@@ -297,7 +276,7 @@ Send en POST til
 /soknadsosialhjelp-server/internal/mock/tjeneste/person
 ```
 med body
-```
+```json
 {
    "diskresjonskode": null,
    "bankkonto": null,
@@ -543,7 +522,7 @@ Send en POST til
 ```
 med body f eks
 
-```
+```json
 {
     "posteringsdato": "2018-02-01",
     "utbetaltTil": {
