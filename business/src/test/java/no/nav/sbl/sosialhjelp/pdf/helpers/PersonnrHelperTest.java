@@ -2,7 +2,6 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +9,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonnrHelperTest {
@@ -32,7 +31,7 @@ public class PersonnrHelperTest {
         ektefelle.setPersonIdentifikator("15059512345");
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
-        assertThat(compiled).isEqualTo("Personnr: 12345");
+        assertThat(compiled, is("Personnr: 12345"));
     }
     
     @Test
@@ -41,12 +40,12 @@ public class PersonnrHelperTest {
         ektefelle.setPersonIdentifikator("1505951234");
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
-        assertThat(compiled).isEqualTo("Personnr: ");
+        assertThat(compiled, is("Personnr: "));
         
         ektefelle.setPersonIdentifikator("");
         compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
-        assertThat(compiled).isEqualTo("Personnr: ");
+        assertThat(compiled, is("Personnr: "));
     }
     
     @Test
@@ -55,7 +54,7 @@ public class PersonnrHelperTest {
         ektefelle.setPersonIdentifikator(null);
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
-        assertThat(compiled).isEqualTo("Personnr: ");
+        assertThat(compiled, is("Personnr: "));
     }
 
 }
