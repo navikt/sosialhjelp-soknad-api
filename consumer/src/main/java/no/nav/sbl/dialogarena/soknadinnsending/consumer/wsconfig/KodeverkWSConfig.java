@@ -24,7 +24,7 @@ public class KodeverkWSConfig {
         return new ServiceBuilder<>(KodeverkPortType.class)
                 .asStandardService()
                 .withAddress(kodeverkEndPoint)
-                .withWsdl("classpath:kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl")
+                .withWsdl("classpath:/kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl")
                 .build()
                 .withHttpsMock();
     }
