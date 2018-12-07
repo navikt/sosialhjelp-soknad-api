@@ -58,7 +58,7 @@ public class PDFService {
     public byte[] legacyGenererKvitteringPdf(WebSoknad soknad, String servletPath) {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         final String hbsSkjemaPath = "/skjema/sosialhjelp/legacyKvittering";
-        //innsending
+        //innsending, ettersending
         String pdfMarkup;
         try {
             pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
