@@ -1,11 +1,19 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.soknadsosialhjelp.soknad.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
+import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.sosialhjelp.pdf.helpers.*;
-import no.nav.sbl.sosialhjelp.pdf.helpers.faktum.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,11 +22,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Locale;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -28,105 +34,84 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HandleBarKjoererTest {
+    private static final String FNR = "***REMOVED***";
     @InjectMocks
     private HandleBarKjoerer handleBarKjoerer;
 
     @InjectMocks
     private HentTekstHelper hentTekstHelper;
-
     @InjectMocks
-    private HentLandHelper hentLandHelper;
-
+    private HentTekstMedParametereHelper hentTekstMedParametereHelper;
+    @InjectMocks
+    private SettInnInfotekstHelper settInnInfotekstHelper;
+    @InjectMocks
+    private SettInnHjelpetekstHelper settInnHjelpetekstHelper;
+    @InjectMocks
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
     @Mock
     private CmsTekst cmsTekst;
-
     @Mock
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-
-
     @Mock
     private Kodeverk kodeverk;
 
     @Before
     public void setup() {
-        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("mock");
         KravdialogInformasjon kravdialogInformasjon = mock(KravdialogInformasjon.class);
         when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(kravdialogInformasjon);
         when(kravdialogInformasjon.getBundleName()).thenReturn("bundlename");
-
-        registerHelper(new HvisSantHelper());
-        registerHelper(new HvisLikHelper());
-        registerHelper(new ForFaktumHelper());
-        registerHelper(new HvisMerHelper());
-        registerHelper(new HvisMindreHelper());
-        registerHelper(new ForFaktaMedPropertySattTilTrueHelper());
-        registerHelper(new ForFaktaHelper());
-        registerHelper(new FormaterLangDatoHelper());
-        registerHelper(new ForFaktumHvisSantHelper());
-        registerHelper(new VariabelHelper());
-        registerHelper(new ForBarnefaktaHelper());
-        registerHelper(new HvisFlereErTrueHelper());
-        registerHelper(new HvisIkkeTomHelper());
-        registerHelper(hentTekstHelper);
-        registerHelper(hentLandHelper);
-    }
-
-    private <T> void registerHelper(RegistryAwareHelper<T> helper) {
-        handleBarKjoerer.registrerHelper(helper.getNavn(), helper);
+        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("mock");
+        handleBarKjoerer.registrerHelper("hentTekst", hentTekstHelper);
+        handleBarKjoerer.registrerHelper("hentTekstMedParametere", hentTekstMedParametereHelper);
+        handleBarKjoerer.registrerHelper("settInnInfotekst", settInnInfotekstHelper);
+        handleBarKjoerer.registrerHelper("settInnHjelpetekst", settInnHjelpetekstHelper);
+        handleBarKjoerer.registrerHelper("hvisLik", new HvisLikHelper());
+        handleBarKjoerer.registrerHelper("hentSvaralternativer", hentSvaralternativerHelper);
+        handleBarKjoerer.registrerHelper("hvisIkkeTom", new HvisIkkeTomHelper());
+        handleBarKjoerer.registrerHelper("concat", new ConcatHelper());
+        handleBarKjoerer.registrerHelper("formaterDato", new FormaterDatoHelper());
+        handleBarKjoerer.registrerHelper("personnr", new PersonnrHelper());
+        handleBarKjoerer.registrerHelper("hvisUtbetalingFinnes", new HvisUtbetalingFinnesHelper());
+        handleBarKjoerer.registrerHelper("hentOkonomiBekreftelse", new HentOkonomiBekreftelseHelper());
+        handleBarKjoerer.registrerHelper("hvisSparing", new HvisSparingHelper());
     }
 
     @Test
-    public void skalKompilereDagpenger() throws IOException {
-        WebSoknad soknad = new WebSoknad()
-                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "***REMOVED***").medProperty("navn", "Test Nordmann").medProperty("alder", "40").medProperty("statsborgerskap", "NOR"))
-                .medFaktum(new Faktum().medKey("arbeidsforhold").medProperty("type", "Arbeidsgiver er konkurs").medProperty("navn", "Test").medProperty("datofra", "2010-01-01").medProperty("datoTil", "2013-01-01"))
-                .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "***REMOVED***").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
-                .medFaktum(new Faktum().medKey("barn").medType(BRUKERREGISTRERT).medProperty("fodselsdato", "2013-01-01").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
-                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigflytte").medValue("true"))
-                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
-                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
-                .medVedlegg(Collections.singletonList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
+    public void fyllHtmlMalMedInnholdLagerHtmlFraJsonInternalSoknad() throws IOException {
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(lagGyldigJsonInternalSoknad());
 
-        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger.ordinaer");
-        assertThat(html, containsString("***REMOVED***"));
+        assertThat(html, containsString(FNR));
     }
 
-    @Test
-    public void skalKompilereTilleggstsstonader() throws IOException {
-        WebSoknad soknad = new WebSoknad()
-                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "***REMOVED***").medProperty("navn", "Test Nordmann").medProperty("alder", "40").medProperty("statsborgerskap", "NOR"))
-                .medFaktum(new Faktum().medKey("informasjonsside.stonad.reiseaktivitet").medValue("true"))
-                .medFaktum(new Faktum().medKey("reise.aktivitet.periode").medProperty("fom", "2015-01-01").medProperty("tom", "2015-02-02"))
-                .medFaktum(new Faktum().medKey("bostotte.periode").medProperty("fom", "2015-01-01").medProperty("tom", "2015-02-03"))
-                .medFaktum(new Faktum().medKey("reise.aktivitet.medisinskeaarsaker").medValue("false"));
-        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/soknadtilleggsstonader");
-        System.out.println(html);
-        assertThat(html, containsString("***REMOVED***"));
-    }
-
-    @Test
-    public void skalReprodusereFeil() throws IOException {
-        WebSoknad soknad = new WebSoknad()
-                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "***REMOVED***").medProperty("navn", "Test Nordmann").medProperty("alder", "40").medProperty("statsborgerskap", "NOR"))
-                .medFaktum(new Faktum().medKey("arbeidsforhold")
-                        .medProperty("type", "Arbeidsgiver er konkurs")
-                        .medProperty("navn", "Test")
-                        .medProperty("datofra", "2010-01-01")
-                        .medProperty("datoTil", "2013-01-01"))
-                .medFaktum(new Faktum().medKey("utdanning").medValue("underUtdanning"))
-                .medFaktum(new Faktum().medKey("utdanning.kveld").medValue("true"))
-                .medFaktum(new Faktum().medKey("utdanning.kveld.progresjonUnder50").medValue("false"))
-                .medFaktum(new Faktum().medKey("utdanning.kveld.navn").medValue("test"))
-                .medFaktum(new Faktum().medKey("utdanning.kveld.PaabegyntUnder6mnd").medValue("true"))
-                .medFaktum(new Faktum().medKey("utdanning.kveld.varighet").medValue(null).medProperty("fom", "2014-02-05"))
-                .medFaktum(new Faktum().medKey("utdanning.kveld.sted").medValue("test"))
-                .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "***REMOVED***").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
-                .medFaktum(new Faktum().medKey("barn").medType(BRUKERREGISTRERT).medProperty("fodselsdato", "2013-01-01").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
-                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigflytte").medValue("true"))
-                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
-                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
-                .medVedlegg(Collections.singletonList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
-        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger.ordinaer");
-        assertThat(html, containsString("***REMOVED***"));
+    private JsonInternalSoknad lagGyldigJsonInternalSoknad() {
+        return new JsonInternalSoknad()
+                .withSoknad(new JsonSoknad()
+                        .withVersion("1.0.0")
+                        .withKompatibilitet(emptyList())
+                        .withDriftsinformasjon("")
+                        .withData(new JsonData()
+                                .withArbeid(new JsonArbeid())
+                                .withBegrunnelse(new JsonBegrunnelse()
+                                        .withHvaSokesOm("")
+                                        .withHvorforSoke(""))
+                                .withBosituasjon(new JsonBosituasjon())
+                                .withFamilie(new JsonFamilie()
+                                        .withForsorgerplikt(new JsonForsorgerplikt()))
+                                .withOkonomi(new JsonOkonomi()
+                                        .withOpplysninger(new JsonOkonomiopplysninger())
+                                        .withOversikt(new JsonOkonomioversikt()))
+                                .withPersonalia(new JsonPersonalia()
+                                        .withKontonummer(new JsonKontonummer()
+                                                .withKilde(JsonKilde.BRUKER))
+                                        .withNavn(new JsonSokernavn()
+                                                .withFornavn("Fornavn")
+                                                .withMellomnavn("")
+                                                .withEtternavn("Etternavn")
+                                                .withKilde(JsonSokernavn.Kilde.SYSTEM))
+                                        .withPersonIdentifikator(new JsonPersonIdentifikator()
+                                                .withVerdi(FNR)
+                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)))
+                                .withUtdanning(new JsonUtdanning()
+                                        .withKilde(JsonKilde.BRUKER))));
     }
 }

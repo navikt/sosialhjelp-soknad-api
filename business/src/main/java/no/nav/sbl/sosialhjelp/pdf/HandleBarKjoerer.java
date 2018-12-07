@@ -5,13 +5,8 @@ import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache;
 import com.github.jknack.handlebars.context.*;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.sosialhjelp.pdf.oppsummering.OppsummeringsContext;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
 
@@ -19,20 +14,10 @@ import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     private Map<String, Helper> helpers = new HashMap<>();
-
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
-
-    public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
-        return getHandlebars()
-                .compile(file)
-                .apply(Context.newBuilder(soknad).build());
-    }
 
     public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad) throws IOException {
         return fyllHtmlMalMedInnhold(jsonInternalSoknad, false);
@@ -51,31 +36,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                                 MethodValueResolver.INSTANCE
                         )
                         .build());
-    }
-    
-    @Override
-    public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
-        try {
-            //oppsummering saksbehandlerpdf, innsending
-            SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
-            OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, utvidetSoknad);
-            return getHandlebars()
-                    .infiniteLoops(true)
-                    .compile("/skjema/generisk")
-                    .apply(Context.newBuilder(context)
-                            .resolver(
-                                    JavaBeanValueResolver.INSTANCE,
-                                    FieldValueResolver.INSTANCE,
-                                    MapValueResolver.INSTANCE,
-                                    MethodValueResolver.INSTANCE
-                            )
-                            .build());
-        }catch (IllegalArgumentException e){
-            getLogger(HandleBarKjoerer.class).warn("catch IllegalArgumentException " + e.getMessage()
-                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() + "har faktum med ugyldig datoverdi."
-                    + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
-            throw e;
-        }
     }
 
     @Override
