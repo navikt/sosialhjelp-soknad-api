@@ -73,7 +73,7 @@ public class SoknadActions {
         byte[] kvittering = pdfService.legacyGenererKvitteringPdf(soknad, servletPath);
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
 
-        if (soknad.erEttersending()) {
+        if (soknad.erEttersending()) {//innsending
             byte[] dummyPdfSomHovedskjema = pdfService.legacyGenererEttersendingPdf(soknad, servletPath);
             soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
