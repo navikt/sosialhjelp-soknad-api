@@ -8,7 +8,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HvisLikHelperTest {
@@ -25,14 +26,14 @@ public class HvisLikHelperTest {
     @Test
     public void viserInnholdVedToLikeStrenger() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisLik \"verdi\" \"verdi\" }}like verdier{{/hvisLik}}").apply(new Object());
-        assertThat(compiled).isEqualTo("like verdier");
+        assertThat(compiled, is("like verdier"));
     }
 
 
     @Test
     public void viserIkkeInnholdVedToUlikeStrenger() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisLik \"noe\" \"noe annet\" }}like verdier{{else}}ulike verdier{{/hvisLik}}").apply(new Object());
-        assertThat(compiled).isEqualTo("ulike verdier");
+        assertThat(compiled, is("ulike verdier"));
     }
 
 }
