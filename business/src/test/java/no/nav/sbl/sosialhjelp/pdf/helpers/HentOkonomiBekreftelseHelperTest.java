@@ -34,38 +34,20 @@ public class HentOkonomiBekreftelseHelperTest {
     
     @Test
     public void hentOkonomiBekreftelseSomLiggerIListe() throws IOException{
-        final JsonOkonomibekreftelse bostotteBekreftelse = new JsonOkonomibekreftelse()
-                .withKilde(JsonKilde.BRUKER)
-                .withTittel("Søkt eller mottatt bostøtte fra Husbanken.")
-                .withType("bostotte")
-                .withVerdi(Boolean.TRUE);
-        
-        final List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<JsonOkonomibekreftelse>();
-        bekreftelser.add(bostotteBekreftelse);
-        
-        final JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger()
-                .withBekreftelse(bekreftelser);
+        final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedBostotteBekreftelse(true);
 
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
-//        assertThat(compiled).isEqualTo("Verdi: true");
+        
         assertThat(compiled, equalTo("Verdi: true"));
     }
-    
+
     @Test
     public void bekreftelseMedVerdiLikNull() throws IOException{
         
-        final JsonOkonomibekreftelse bostotteBekreftelse = new JsonOkonomibekreftelse()
-                .withKilde(JsonKilde.BRUKER)
-                .withTittel("Søkt eller mottatt bostøtte fra Husbanken.")
-                .withType("bostotte");
-        
-        final List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<JsonOkonomibekreftelse>();
-        bekreftelser.add(bostotteBekreftelse);
-        
-        final JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger()
-                .withBekreftelse(bekreftelser);
+        final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedBostotteBekreftelse(false);
         
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
+        
         assertThat(compiled, equalTo("Verdi: "));
     }
     
@@ -79,4 +61,21 @@ public class HentOkonomiBekreftelseHelperTest {
         assertThat(compiled, equalTo(""));
     }
     
+    private JsonOkonomiopplysninger lagOpplysningerMedBostotteBekreftelse(boolean bostotteBekreftelseSkalHaVerdiLikTrue) {
+        final JsonOkonomibekreftelse bostotteBekreftelse = new JsonOkonomibekreftelse()
+                .withKilde(JsonKilde.BRUKER)
+                .withTittel("Søkt eller mottatt bostøtte fra Husbanken.")
+                .withType("bostotte");
+        
+        if (bostotteBekreftelseSkalHaVerdiLikTrue) {
+            bostotteBekreftelse.setVerdi(Boolean.TRUE);
+        }
+        
+        final List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<JsonOkonomibekreftelse>();
+        bekreftelser.add(bostotteBekreftelse);
+        
+        final JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger()
+                .withBekreftelse(bekreftelser);
+        return opplysninger;
+    }
 }

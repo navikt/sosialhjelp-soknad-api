@@ -24,9 +24,7 @@
                     </li>
                     {{#if @root.utvidetSoknad}}
                         {{{hentSvaralternativer "bosituasjon"}}}
-                    {{/if}}
-                    <span>Under {{hentTekst "bosituasjon.annet"}}:</span>
-                    {{#if @root.utvidetSoknad}}
+                        <span>Under {{hentTekst "bosituasjon.annet"}}:</span>
                         {{{hentSvaralternativer "bosituasjon.annet.botype"}}}
                     {{/if}}
                 </ul>
