@@ -127,7 +127,9 @@
                     </span>
                 {{/hvisIkkeTom}}
             </li>
-            {{{hentSvaralternativer "familie.sivilstatus.gift.borsammen"}}}
+            {{#if @root.utvidetSoknad}}
+                {{{hentSvaralternativer "familie.sivilstatus.gift.borsammen"}}}
+            {{/if}}
         </ul>
     </li>
 {{/hvisLik}}
