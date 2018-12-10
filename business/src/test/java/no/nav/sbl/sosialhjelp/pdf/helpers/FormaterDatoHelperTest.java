@@ -31,12 +31,5 @@ public class FormaterDatoHelperTest {
         String compiled = handlebars.compileInline("{{formaterDato \"2015-07-21\" \"EEEE d. MMMM YYYY\"}}").apply(new Object());
         assertThat(compiled, is("tirsdag 21. juli 2015"));
     }
-    
-    @Test
-    public void skalViseDatoOgKlokkeslettINorskTidssone() throws IOException {
-        String compiled = handlebars.compileInline("{{formaterDato \"2018-10-04T13:37:00.134Z\" \"d. MMMM yyyy HH:mm\"}}").apply(new Object());
-        assertThat(compiled, is("4. oktober 2018 15:37"));
-    }
-
 
 }
