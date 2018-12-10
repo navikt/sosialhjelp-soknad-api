@@ -20,6 +20,7 @@ public class HvisBarneutgiftHelper extends RegistryAwareHelper<Object>{
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
         final Set<String> barneutgiftTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("utgifter.barn.true.utgifter", SPRAK);
+        barneutgiftTyper.add("barnebidrag");
 
         if (key != null && barneutgiftTyper.contains(key.toString())){
             return options.fn(this);
