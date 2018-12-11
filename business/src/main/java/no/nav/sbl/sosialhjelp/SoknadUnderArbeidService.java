@@ -52,6 +52,9 @@ public class SoknadUnderArbeidService {
     }
     
     public void settInnsendingstidspunktPaSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+        if (soknadUnderArbeid.erEttersendelse()){
+            return;
+        }
         if (soknadUnderArbeid == null) {
             throw new RuntimeException("Søknad under arbeid mangler");
         }

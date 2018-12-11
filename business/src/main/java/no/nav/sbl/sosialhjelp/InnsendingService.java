@@ -44,9 +44,7 @@ public class InnsendingService {
         if (soknadUnderArbeid == null || soknadUnderArbeid.getSoknadId() == null) {
             throw new IllegalStateException("Kan ikke sende søknad som ikke finnes eller som mangler søknadsid");
         }
-        if (!soknadUnderArbeid.erEttersendelse()){
-            soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid);
-        }
+        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid);
         soknadUnderArbeid.setInnsendingStatus(SoknadInnsendingStatus.LAAST);
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.getEier());
 
