@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
-import no.nav.sbl.soknadsosialhjelp.soknad.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
@@ -13,8 +15,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -44,6 +51,11 @@ public class SoknadUnderArbeidServiceTest {
     private static final String NAVENHETSNAVN = "NAV Enhet";
     private static final String EIER = "12345678910";
     private static final LocalDateTime SIST_ENDRET = now().minusMinutes(5L);
+    private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;
+    private static final String BEHANDLINGSID = "1100001L";
+    private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
+    private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
+    private static final LocalDateTime SIST_ENDRET_DATO = now();
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -55,6 +67,13 @@ public class SoknadUnderArbeidServiceTest {
         soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaSoknad(lagSoknadUnderArbeid(), ORGNR, NAVENHETSNAVN, EIER);
 
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(any(SoknadUnderArbeid.class), eq(EIER));
+    }
+
+
+
+    @Test
+    public void settInnsendingstidspunktPaSoknadSkalHandtereEttersendelse() {
+        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(lagSoknadUnderArbeidForEttersendelse());
     }
 
     @Test
@@ -96,6 +115,16 @@ public class SoknadUnderArbeidServiceTest {
         return new SoknadUnderArbeid()
                 .withData(lagReelleSoknadUnderArbeidData(lagGyldigJsonInternalSoknad()))
                 .withSistEndretDato(SIST_ENDRET);
+    }
+
+    private SoknadUnderArbeid lagSoknadUnderArbeidForEttersendelse() {
+        return new SoknadUnderArbeid()
+                .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
+                .withBehandlingsId(BEHANDLINGSID)
+                .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
+                .withEier(EIER)
+                .withOpprettetDato(OPPRETTET_DATO)
+                .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
     private byte[] lagReelleSoknadUnderArbeidData(JsonInternalSoknad jsonInternalSoknad) {
