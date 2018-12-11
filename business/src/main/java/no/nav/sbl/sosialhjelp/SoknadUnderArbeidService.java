@@ -15,10 +15,13 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
+
 
 @Component
 public class SoknadUnderArbeidService {
@@ -46,6 +49,20 @@ public class SoknadUnderArbeidService {
             SoknadUnderArbeid oppdatertSoknadUnderArbeid = oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn);
             soknadUnderArbeidRepository.oppdaterSoknadsdata(oppdatertSoknadUnderArbeid, eier);
         }
+    }
+    
+    public void settInnsendingstidspunktPaSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+        if (soknadUnderArbeid == null) {
+            throw new RuntimeException("Søknad under arbeid mangler");
+        }
+        if (soknadUnderArbeid.erEttersendelse()){
+            return;
+        }
+        final JsonInternalSoknad jsonInternalSoknad = hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
+        jsonInternalSoknad.getSoknad().setInnsendingstidspunkt(OffsetDateTime.now(ZoneOffset.UTC).toString());
+        final byte[] oppdatertSoknad = mapJsonSoknadInternalTilFil(jsonInternalSoknad);
+        SoknadUnderArbeid oppdatertSoknadUnderArbeid = soknadUnderArbeid.withData(oppdatertSoknad);
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(oppdatertSoknadUnderArbeid, soknadUnderArbeid.getEier());
     }
 
     public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
