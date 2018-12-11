@@ -77,6 +77,7 @@ public class PDFFabrikkTest {
         handleBarKjoerer.registrerHelper("hvisUtbetalingFinnes", new HvisUtbetalingFinnesHelper());
         handleBarKjoerer.registrerHelper("hentOkonomiBekreftelse", new HentOkonomiBekreftelseHelper());
         handleBarKjoerer.registrerHelper("hvisSparing", new HvisSparingHelper());
+        handleBarKjoerer.registrerHelper("formaterDatoKlokkeslett", new FormaterDatoKlokkeslettHelper());
     }
 
     @Test
