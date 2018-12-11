@@ -33,11 +33,11 @@ public class PDFService {
         }
     }
     
-    public byte[] genereSaksbehandlerPdf(JsonInternalSoknad internalSoknad, String servletPath) {
+    public byte[] genererSaksbehandlerPdf(JsonInternalSoknad internalSoknad, String servletPath) {
         return genererOppsummeringPdf(internalSoknad, servletPath, false);
     }
     
-    public byte[] genereJuridiskPdf(JsonInternalSoknad internalSoknad, String servletPath) {
+    public byte[] genererJuridiskPdf(JsonInternalSoknad internalSoknad, String servletPath) {
         return genererOppsummeringPdf(internalSoknad, servletPath, true);
     }
     
