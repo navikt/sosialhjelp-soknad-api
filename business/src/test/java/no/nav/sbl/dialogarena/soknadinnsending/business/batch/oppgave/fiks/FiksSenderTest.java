@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksData.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.*;
@@ -21,7 +20,6 @@ import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -31,12 +29,10 @@ import java.util.List;
 
 import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender.ETTERSENDELSE_TIL_NAV;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender.SOKNAD_TIL_NAV;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -46,10 +42,11 @@ public class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";
     private static final String FILNAVN = "filnavn.jpg";
+    private static final String ORGNUMMER = "9999";
+    private static final String NAVENHETSNAVN = "NAV Sagene";
+    private static final String BEHANDLINGSID = "12345";
     @Mock
     ForsendelsesServiceV9 forsendelsesService;
-    @Mock
-    FillagerService fillager;
     @Mock
     DokumentKrypterer dokumentKrypterer;
     @Mock
@@ -57,14 +54,16 @@ public class FiksSenderTest {
     @Mock
     PDFService pdfService;
 
-    FiksSender fiksSender;
+    private FiksSender fiksSender;
 
-    FiksData data;
+    private static final PostAdresse FAKE_ADRESSE = new PostAdresse()
+            .withNavn(NAVENHETSNAVN)
+            .withPostnr("0000")
+            .withPoststed("Ikke send");
 
     @Before
     public void setUp() {
         when(forsendelsesService.sendForsendelse(any())).thenReturn("id1234");
-        when(fillager.hentFil(any())).thenReturn(new byte[]{1, 2, 3});
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withFiksforsendelseId(FIKSFORSENDELSE_ID));
@@ -75,69 +74,44 @@ public class FiksSenderTest {
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
 
         setProperty(FiksSender.KRYPTERING_DISABLED, "");
-        fiksSender = new FiksSender(forsendelsesService, fillager, dokumentKrypterer, innsendingService, pdfService);
-
-        data = new FiksData();
-        data.avsenderFodselsnummer = "1234";
-        data.mottakerOrgNr = "999999999";
-
-        DokumentInfo etVedlegg = new DokumentInfo("uuid1", "fil1.pdf", "application/pdf");
-        DokumentInfo xml = new DokumentInfo("uuid2", "soknad.xml", "application/xml");
-        data.dokumentInfoer = asList(etVedlegg, xml);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService);
     }
 
     @Test
-    public void senderMeldingTilFiks() {
-        String fiksForsendelsesId = fiksSender.sendTilFiks(data);
-        assertEquals("id1234", fiksForsendelsesId);
+    public void opprettForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
+        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
+        SendtSoknad sendtSoknad = lagSendtSoknad();
 
-        ArgumentCaptor<Forsendelse> captor = ArgumentCaptor.forClass(Forsendelse.class);
-        verify(forsendelsesService).sendForsendelse(captor.capture());
-        Forsendelse sendtForsendelse = captor.getValue();
+        Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
 
-        assertEquals(data.mottakerOrgNr, ((OrganisasjonDigitalAdresse) sendtForsendelse.getMottaker().getDigitalAdresse()).getOrgnr());
-        assertEquals(true, sendtForsendelse.isKryptert());
-        assertEquals(true, sendtForsendelse.isKrevNiva4Innlogging());
-
-        assertEquals(2, sendtForsendelse.getDokumenter().size());
-        assertEquals("application/pdf", sendtForsendelse.getDokumenter().get(0).getMimetype());
-        assertEquals("application/xml", sendtForsendelse.getDokumenter().get(1).getMimetype());
-
-        verify(fillager).hentFil("uuid1");
-        verify(fillager).hentFil("uuid2");
-        verify(dokumentKrypterer, times(2)).krypterData(any());
+        OrganisasjonDigitalAdresse adresse = (OrganisasjonDigitalAdresse) forsendelse.getMottaker().getDigitalAdresse();
+        assertThat(adresse.getOrgnr(), is(ORGNUMMER));
+        assertThat(forsendelse.getMottaker().getPostAdresse().getNavn(), is(NAVENHETSNAVN));
+        assertThat(forsendelse.getAvgivendeSystem(), is("digisos_avsender"));
+        assertThat(forsendelse.getForsendelseType(), is("nav.digisos"));
+        assertThat(forsendelse.getEksternref(), is(BEHANDLINGSID));
+        assertThat(forsendelse.isKunDigitalLevering(), is(false));
+        assertThat(forsendelse.getPrintkonfigurasjon().getBrevtype(), is(Brevtype.APOST));
+        assertThat(forsendelse.isKryptert(), is(true));
+        assertThat(forsendelse.isKrevNiva4Innlogging(), is(true));
+        assertThat(forsendelse.getSvarPaForsendelse(), nullValue());
+        assertThat(forsendelse.getDokumenter().size(), is(5));
+        assertThat(forsendelse.getMetadataFraAvleverendeSystem().getDokumentetsDato(), notNullValue());
+        verify(dokumentKrypterer, times(5)).krypterData(any());
     }
 
     @Test
-    public void skalIkkeKryptere() {
+    public void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
+        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
-        fiksSender = new FiksSender(forsendelsesService, fillager, dokumentKrypterer, innsendingService, pdfService);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService);
+        SendtSoknad sendtSoknad = lagSendtSoknad();
 
-        fiksSender.sendTilFiks(data);
+        Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
 
-        ArgumentCaptor<Forsendelse> captor = ArgumentCaptor.forClass(Forsendelse.class);
-        verify(forsendelsesService).sendForsendelse(captor.capture());
-        Forsendelse sendtForsendelse = captor.getValue();
-
-        assertEquals(false, sendtForsendelse.isKryptert());
-        assertEquals(false, sendtForsendelse.isKrevNiva4Innlogging());
-        verify(dokumentKrypterer, times(0)).krypterData(any());
-    }
-
-    @Test
-    public void opprettForsendelseSetterRiktigTittelForNySoknadForGammelSending() {
-        Forsendelse forsendelse = fiksSender.opprettForsendelse(data, new PostAdresse());
-
-        assertThat(forsendelse.getTittel(), is(SOKNAD_TIL_NAV));
-    }
-
-    @Test
-    public void opprettForsendelseSetterRiktigTittelForEttersendelseForGammelEttersendelse() {
-        data.ettersendelsePa = "12345";
-
-        Forsendelse forsendelse = fiksSender.opprettForsendelse(data, new PostAdresse());
-
-        assertThat(forsendelse.getTittel(), is(ETTERSENDELSE_TIL_NAV));
+        assertThat(forsendelse.isKryptert(), is(false));
+        assertThat(forsendelse.isKrevNiva4Innlogging(), is(false));
+        verify(dokumentKrypterer, never()).krypterData(any());
     }
 
     @Test
@@ -269,8 +243,9 @@ public class FiksSenderTest {
 
     private SendtSoknad lagSendtSoknad() {
         return new SendtSoknad()
-                .withBehandlingsId("12345")
-                .withOrgnummer("9999")
+                .withBehandlingsId(BEHANDLINGSID)
+                .withOrgnummer(ORGNUMMER)
+                .withNavEnhetsnavn(NAVENHETSNAVN)
                 .withBrukerFerdigDato(LocalDateTime.now());
     }
 }
