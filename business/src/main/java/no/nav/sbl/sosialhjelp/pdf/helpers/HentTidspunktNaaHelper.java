@@ -31,7 +31,7 @@ public class HentTidspunktNaaHelper extends RegistryAwareHelper<Object> {
         DateTime now = DateTime.now();
 
         DateTimeFormatter datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(SPRAK);
-        DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH.mm").withLocale(SPRAK);
+        DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH:mm").withLocale(SPRAK);
 
         return datoFormatter.print(now) + " " + klokkeslettFormatter.print(now);
     }
