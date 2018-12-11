@@ -55,6 +55,9 @@ public class SoknadUnderArbeidService {
         if (soknadUnderArbeid == null) {
             throw new RuntimeException("Søknad under arbeid mangler");
         }
+        if (soknadUnderArbeid.erEttersendelse()){
+            return;
+        }
         final JsonInternalSoknad jsonInternalSoknad = hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
         jsonInternalSoknad.getSoknad().setInnsendingstidspunkt(OffsetDateTime.now(ZoneOffset.UTC).toString());
         final byte[] oppdatertSoknad = mapJsonSoknadInternalTilFil(jsonInternalSoknad);
