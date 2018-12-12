@@ -23,6 +23,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         return fyllHtmlMalMedInnhold(jsonInternalSoknad, false);
     }
 
+    @Override
     public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) throws IOException {
         final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false);
         return getHandlebars()
@@ -39,29 +40,12 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     }
 
     @Override
-    public String genererHtmlForPdf(JsonInternalSoknad internalSoknad, String file, boolean erEttersending) throws IOException {
+    public String fyllHtmlMalMedInnhold(JsonInternalSoknad internalSoknad, String file, boolean erEttersending) throws IOException {
         final HandlebarContext context = new HandlebarContext(internalSoknad, false, erEttersending);
         
         return getHandlebars()
                 .compile(file)
                 .apply(Context.newBuilder(context).build());
-    }
-
-    @Override
-    public String genererHtmlForPdf(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) throws IOException {
-        final HandlebarContext context = new HandlebarContext(internalSoknad, utvidetSoknad, false);
-        
-        return getHandlebars()
-                .infiniteLoops(true)
-                .compile("/skjema/soknad")
-                .apply(Context.newBuilder(context)
-                        .resolver(
-                                JavaBeanValueResolver.INSTANCE,
-                                FieldValueResolver.INSTANCE,
-                                MapValueResolver.INSTANCE,
-                                MethodValueResolver.INSTANCE
-                        )
-                        .build());
     }
 
     @Override
