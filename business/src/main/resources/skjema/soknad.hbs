@@ -2,7 +2,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <base href="/sendsoknad/"></base>
-    {{> skjema/generisk/generisk-styling }}
+    {{> skjema/soknad/soknad-styling }}
 </head>
 
 <body>
@@ -24,7 +24,7 @@
     </span>
 </div>
 
-<div id="soknad" class="generisk-oppsummering">
+<div id="soknad" class="soknad-oppsummering">
 
     <div class="hode">
         <h1>{{hentTekst "skjema.tittel"}}</h1>
@@ -36,32 +36,32 @@
         </div>
     </div>
     <div>
-        {{> skjema/ny_generisk/personalia}}
+        {{> skjema/soknad/personalia}}
     </div>
     <div>
-        {{> skjema/ny_generisk/begrunnelse}}
+        {{> skjema/soknad/begrunnelse}}
     </div>
     <div>
-        {{> skjema/ny_generisk/arbeid}}
+        {{> skjema/soknad/arbeid}}
     </div>
     <div>
-        {{> skjema/ny_generisk/familie}}
+        {{> skjema/soknad/familie}}
     </div>
     <div>
-        {{> skjema/ny_generisk/bosituasjon}}
+        {{> skjema/soknad/bosituasjon}}
     </div>
     <div>
-        {{> skjema/ny_generisk/inntekt}}
+        {{> skjema/soknad/inntekt}}
     </div>
     <div>
-        {{> skjema/ny_generisk/utgifter}}
+        {{> skjema/soknad/utgifter}}
     </div>
     <div>
-        {{> skjema/ny_generisk/opplysninger}}
+        {{> skjema/soknad/opplysninger}}
     </div>
     {{#if @root.utvidetSoknad}}
         <div>
-            {{> skjema/ny_generisk/soknad_forside}}
+            {{> skjema/soknad/soknad_forside}}
         </div>
     {{/if}}
     <div class="brosjyre-signatur js-signatur">

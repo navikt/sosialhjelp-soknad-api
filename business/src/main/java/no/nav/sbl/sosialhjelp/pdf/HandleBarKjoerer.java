@@ -27,7 +27,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false);
         return getHandlebars()
                 .infiniteLoops(true)
-                .compile("/skjema/ny_generisk")
+                .compile("/skjema/soknad")
                 .apply(Context.newBuilder(context)
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,
@@ -53,7 +53,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         
         return getHandlebars()
                 .infiniteLoops(true)
-                .compile("/skjema/ny_generisk")
+                .compile("/skjema/soknad")
                 .apply(Context.newBuilder(context)
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,

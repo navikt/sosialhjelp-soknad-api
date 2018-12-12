@@ -17,7 +17,7 @@ public class PDFService {
 
     public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending) {
         try {
-            final String pdfMarkup = pdfTemplate.genererHtmlForPdf(internalSoknad, "/skjema/sosialhjelp/kvittering", erEttersending);
+            final String pdfMarkup = pdfTemplate.genererHtmlForPdf(internalSoknad, "/skjema/kvittering/kvittering", erEttersending);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke generere brukerkvittering (Brukerkvittering.pdf).", e);
