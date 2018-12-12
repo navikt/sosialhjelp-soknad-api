@@ -49,14 +49,14 @@
             <li>
                 <span class="label">{{hentTekst "kontakt.system.oppholdsadresse.folkeregistrertAdresse"}}</span>
                 {{#with folkeregistrertAdresse}}
-                    {{> skjema/ny_generisk/adresse}}
+                    {{> skjema/soknad/adresse}}
                 {{/with}}
                 {{hentTekst "soknadsmottaker.infotekst.tekst"}}
                 {{#with oppholdsadresse}}
-                    {{> skjema/ny_generisk/adresse}}
+                    {{> skjema/soknad/adresse}}
                 {{/with}}
 	            {{#if @root.utvidetSoknad}}
-	                {{> skjema/ny_generisk/personalia_adresse_svaralternativer}}
+	                {{> skjema/soknad/personalia_adresse_svaralternativer}}
 	            {{/if}}
             </li>
             {{#hvisLik telefonnummer.kilde "system"}}
