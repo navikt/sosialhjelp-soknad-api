@@ -22,11 +22,14 @@
             {{/each}}
             {{#each @root.oversiktUtgiftstyper}}
                 {{#hvisBarneutgift type}}
-                    <li>
-                        <span class="verdi verdi--radio">
-                            {{ hentTekst (concat "utgifter.barn.true.utgifter." type) }}
-                        </span>
-                    </li>
+                    {{#hvisLik type "barnebidrag"}}
+                    {{else}}
+                        <li>
+                            <span class="verdi verdi--radio">
+                                {{ hentTekst (concat "utgifter.barn.true.utgifter." type) }}
+                            </span>
+                        </li>
+                    {{/hvisLik}}
                 {{/hvisBarneutgift}}
             {{/each}}
         </ul>
