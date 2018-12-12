@@ -61,6 +61,16 @@ public class KommuneTilNavEnhetMapper {
             .put("1124", "948243113")    // Sola
             .put("5303", "997784618")    // Larvik
             .put("0403", "974623811")    // Hamar
+            .put("1122", "974616564")    // Gjesdal
+            .put("0529", "986838961")    // Vestre Toten
+            .put("0626", "974545861")    // Lier
+            .put("1866", "874052582")    // Hadsel
+            .put("1133", "974549751")    // Hjelmeland
+            .put("1135", "974617250")    // Sauda
+            .put("1130", "974616734")    // Strand
+            .put("0624", "994952854")    // Øvre Eiker
+            .put("1134", "974616998")    // Suldal
+            .put("0532", "974596016")    // Jevnaker
 
             .build();
     
@@ -257,7 +267,17 @@ public class KommuneTilNavEnhetMapper {
                     "1119",
                     "1124",
                     "0712",
-                    "0403"
+                    "0403",
+                    "1122",
+                    "0529",
+                    "0626",
+                    "1866",
+                    "1133",
+                    "1135",
+                    "1130",
+                    "0624",
+                    "1134",
+                    "0532"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
