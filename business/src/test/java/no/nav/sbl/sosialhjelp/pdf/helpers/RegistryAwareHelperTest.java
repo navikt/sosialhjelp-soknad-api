@@ -56,11 +56,6 @@ public class RegistryAwareHelperTest {
         }
     }
 
-    /*
-    * Denne testen har ingen assertions, men genererer fila Handlebars-helpers.md.
-    * Se beskrivelse i Handlebars-helpers.md for å få bakgrunn for testen.
-    * */
-
 
     @Test
     public void registryKaltMedHelper() {
