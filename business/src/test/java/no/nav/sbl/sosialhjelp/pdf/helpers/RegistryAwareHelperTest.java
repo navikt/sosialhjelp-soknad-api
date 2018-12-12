@@ -63,8 +63,8 @@ public class RegistryAwareHelperTest {
 
 
     @Test
-    public void registryKaltMedHelper() throws Exception {
-        verify(registry, atLeastOnce()).registrerHelper(eq(VariabelHelper.NAVN), any(VariabelHelper.class));
+    public void registryKaltMedHelper() {
+        verify(registry, atLeastOnce()).registrerHelper(eq(ConcatHelper.NAVN), any(ConcatHelper.class));
         verify(registry, atLeastOnce()).registrerHelper(anyString(), any(RegistryAwareHelper.class));
     }
 
