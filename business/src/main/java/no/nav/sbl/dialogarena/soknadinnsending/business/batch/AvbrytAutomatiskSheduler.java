@@ -6,6 +6,8 @@ import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,8 @@ public class AvbrytAutomatiskSheduler {
     private FillagerService fillagerService;
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
     public void avbrytGamleSoknader() throws InterruptedException {
@@ -69,7 +73,13 @@ public class AvbrytAutomatiskSheduler {
             soknadMetadata.sistEndretDato = LocalDateTime.now();
             soknadMetadataRepository.oppdater(soknadMetadata);
 
-            fillagerService.slettAlle(soknadMetadata.behandlingsId);
+            final String behandlingsId = soknadMetadata.behandlingsId;
+            final String eier = soknadMetadata.fnr;
+
+            fillagerService.slettAlle(behandlingsId);
+
+            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+            soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
 
             soknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);
             vellykket++;
