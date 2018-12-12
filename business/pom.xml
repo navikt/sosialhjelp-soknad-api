@@ -343,10 +343,6 @@
             <groupId>org.verapdf</groupId>
             <artifactId>core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.bekk.bekkopen</groupId>
-            <artifactId>nocommons</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
