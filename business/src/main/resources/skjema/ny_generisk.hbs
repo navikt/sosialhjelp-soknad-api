@@ -88,6 +88,11 @@
     <div>
         Versjonsnummer: {{version}}
     </div>
+    {{#unless @root.utvidetSoknad}}
+        <div>
+            Sendt til: {{@root.mottaker.navEnhetsnavn}}
+        </div>
+    {{/unless}}
 </div>
 {{/with}}
 
