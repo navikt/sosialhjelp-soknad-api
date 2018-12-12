@@ -98,12 +98,7 @@ public class SoknadService {
     }
 
     @Transactional
-    public void sendSoknad(String behandlingsId, byte[] pdf) {
-        sendSoknad(behandlingsId, pdf, null);
-    }
-
-    @Transactional
-    public void sendSoknad(String behandlingsId, byte[] soknadPdf, byte[] fullSoknad) {
-        soknadDataFletter.sendSoknad(behandlingsId, soknadPdf, fullSoknad);
+    public void sendSoknad(String behandlingsId) {
+        soknadDataFletter.sendSoknad(behandlingsId);
     }
 }

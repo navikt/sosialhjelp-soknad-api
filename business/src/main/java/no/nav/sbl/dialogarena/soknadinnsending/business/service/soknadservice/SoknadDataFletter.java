@@ -6,18 +6,17 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -104,9 +103,6 @@ public class SoknadDataFletter {
 
     @Inject
     private InnsendingService innsendingService;
-
-    @Inject
-    private SoknadUnderArbeidService soknadUnderArbeidService;
 
     private Map<String, BolkService> bolker;
 
@@ -337,23 +333,21 @@ public class SoknadDataFletter {
         return soknad;
     }
 
-    public void sendSoknad(String behandlingsId, byte[] pdf, byte[] fullSoknad) {
+    public void sendSoknad(String behandlingsId) {
         WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
 
-        logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
-        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+        logger.info("Starter innsending av søknad med behandlingsId {}", soknad.getBrukerBehandlingId());
 
-        HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
+        HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(soknad);
         final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
         VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggListe);
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
         final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
-        settSoknadsmottakerPaSoknadUnderArbeid(soknad, ekstraMetadata, soknadUnderArbeid);
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         oppgaveHandterer.leggTilOppgave(behandlingsId, soknad.getAktoerId());
@@ -380,20 +374,6 @@ public class SoknadDataFletter {
         return soknadUnderArbeid;
     }
 
-    private void settSoknadsmottakerPaSoknadUnderArbeid(WebSoknad soknad, Map<String, String> ekstraMetadata, SoknadUnderArbeid soknadUnderArbeid) {
-        String orgnummer;
-        String navEnhetsnavn;
-        if (soknadUnderArbeid.erEttersendelse()) {
-            SendtSoknad sendtSoknadSomEttersendesPa = innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid);
-            orgnummer = sendtSoknadSomEttersendesPa.getOrgnummer();
-            navEnhetsnavn = sendtSoknadSomEttersendesPa.getNavEnhetsnavn();
-        } else {
-            orgnummer = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
-            navEnhetsnavn = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
-        }
-        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaSoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn, soknad.getAktoerId());
-    }
-
     private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid, List<Vedlegg> vedlegg) {
         if (soknadUnderArbeid != null) {
             List<Vedleggstatus> vedleggstatuser = mapVedleggsforventningerTilVedleggstatusListe(vedlegg, soknadUnderArbeid.getEier());
@@ -401,27 +381,14 @@ public class SoknadDataFletter {
         }
     }
 
-    private HovedskjemaMetadata lagHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
+    private HovedskjemaMetadata lagHovedskjemaMedAlternativRepresentasjon(WebSoknad soknad) {
         HovedskjemaMetadata hovedskjema = new HovedskjemaMetadata();
         hovedskjema.filnavn = skjemanummer(soknad);
-        hovedskjema.mimetype = "application/pdf";
-        hovedskjema.filStorrelse = "" + pdf.length;
         hovedskjema.filUuid = soknad.getUuid();
 
         List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
         alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getAktoerId(), alternativeRepresentasjoner);
         hovedskjema.alternativRepresentasjon.addAll(alternativRepresentasjonService.lagXmlFormat(alternativeRepresentasjoner));
-
-        if (fullSoknad != null) {
-            FilData full = new FilData();
-            full.filUuid = UUID.randomUUID().toString();
-            full.filnavn = skjemanummer(soknad);
-            full.mimetype = "application/pdf-fullversjon";
-            full.filStorrelse ="" + fullSoknad.length;
-
-            fillagerService.lagreFil(soknad.getBrukerBehandlingId(), full.filUuid, soknad.getAktoerId(), new ByteArrayInputStream(fullSoknad));
-            hovedskjema.alternativRepresentasjon.add(full);
-        }
 
         return hovedskjema;
     }
