@@ -77,62 +77,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
         }
 
-        handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
-        handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
-        handlebars.registerHelper("inc", new Helper<String>() {
-            @Override
-            public CharSequence apply(String counter, Options options) throws IOException {
-                return "" + (Integer.parseInt(counter) + 1);
-            }
-        });
-
         return handlebars;
-    }
-
-    @Deprecated
-    private Helper<String> generateFormatterFodselsdatoHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String s, Options options) throws IOException {
-                if (s.length() == 11) {
-                    Fodselsnummer fnr = getFodselsnummer(s);
-                    return fnr.getDayInMonth() + "." + fnr.getMonth() + "." + fnr.getBirthYear();
-                } else {
-                    String[] datoSplit = split(s, "-");
-                    reverse(datoSplit);
-                    return join(datoSplit, ".");
-                }
-            }
-        };
-    }
-
-    private Helper<Object> generateSkalViseRotasjonTurnusSporsmaalHelper() {
-        return new Helper<Object>() {
-            private boolean faktumSkalIkkeHaRotasjonssporsmaal(Faktum faktum) {
-                List<String> verdierSomGenerererSporsmaal = Arrays.asList(
-                        "Permittert",
-                        "Sagt opp av arbeidsgiver",
-                        "Kontrakt utgått",
-                        "Sagt opp selv",
-                        "Redusert arbeidstid"
-                );
-                return !verdierSomGenerererSporsmaal.contains(faktum.getProperties().get("type"));
-            }
-
-            @Override
-            public CharSequence apply(Object value, Options options) throws IOException {
-                if (!(options.context.model() instanceof Faktum)) {
-                    return options.inverse(this);
-                }
-
-                Faktum faktum = (Faktum) options.context.model();
-                if (faktumSkalIkkeHaRotasjonssporsmaal(faktum)) {
-                    return options.inverse(this);
-                } else {
-                    return options.fn(this);
-                }
-            }
-        };
     }
 
 }
