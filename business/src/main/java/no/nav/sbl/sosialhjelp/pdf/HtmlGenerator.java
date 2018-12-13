@@ -21,5 +21,7 @@ public interface HtmlGenerator {
     String genererHtmlForPdf(WebSoknad soknad, String file, boolean erEttersending) throws IOException;
 
     String genererHtmlForPdf(JsonInternalSoknad internalSoknad, String file, boolean erEttersending) throws IOException;
+
+    String fyllHtmlMalMedInnhold(JsonInternalSoknad internalSoknad, String file, boolean erEttersending, String eier) throws IOException;
 }
 

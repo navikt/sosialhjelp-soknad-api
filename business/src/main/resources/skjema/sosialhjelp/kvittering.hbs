@@ -31,23 +31,23 @@
             <img class="logo blokk-s" src="img/nav-logo-stor.gif"/>
             <div class="hode">
                 <h1 class="typo-undertittel">{{ hentTekst "kvittering.tittel" }}</h1>
-                {{#if @root.erEttersending}}
+                {{#if erEttersending}}
                     <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
                 {{/if}}
                 <h2 class="typo-element-regular">{{ hentTekst "skjema.tittel" }}</h2>
                 <hr/>
-                {{#with soknad.data.personalia}}
-                    <div class="personalia">
-                            <h1 class="nvn typo-undertittel">{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}</h1>
-                            <h2 class="fnr typo-element">{{personIdentifikator.verdi}}</h2>
-                    </div>
-                {{/with}}
+                <div class="personalia">
+                    {{#with soknad.data.personalia}}
+                        <h1 class="nvn typo-undertittel">{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}</h1>
+                    {{/with}}
+                    <h2 class="fnr typo-element">{{eier}}</h2>
+                </div>
             </div>
             <div class="informasjon">
                 <h2 class="typo-undertittel">{{ hentTekst "kvittering.undertittel" }}</h2>
                 <p>
                     {{ hentTekst "kvittering.tekst.pre"}}
-                    <strong>{{ @root.mottaker.navEnhetsnavn }}</strong>{{ hentTekst "kvittering.tekst.post" }}
+                    <strong>{{ mottaker.navEnhetsnavn }}</strong>{{ hentTekst "kvittering.tekst.post" }}
                 </p>
             </div>
         </div>

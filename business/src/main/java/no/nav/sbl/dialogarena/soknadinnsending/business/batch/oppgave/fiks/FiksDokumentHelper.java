@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import org.apache.cxf.attachment.ByteDataSource;
@@ -100,10 +101,10 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
-    Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse) {
+    Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
         final String filnavn = "Brukerkvittering.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse);
+        byte[] juridiskPdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
         return new Dokument()
@@ -113,10 +114,10 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
-    Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
         final String filnavn = "ettersendelse.pdf";
         final String mimetype = "application/pdf";
-        byte[] ettersendelsePdf = pdfService.genererEttersendelsePdf(internalSoknad, "/");
+        byte[] ettersendelsePdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, ettersendelsePdf);
         return new Dokument()

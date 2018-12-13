@@ -45,6 +45,7 @@ public class FiksDokumentHelperTest {
     private static final String TILLEGGSINFO = "annetboutgift";
     private static final String TYPE2 = "dokumentasjon";
     private static final String TILLEGGSINFO2 = "aksjer";
+    private static final String EIER = "12345678910";
     private static final byte[] DATA = {1, 2, 3};
 
     private DokumentKrypterer dokumentKrypterer = mock(DokumentKrypterer.class);
@@ -59,8 +60,8 @@ public class FiksDokumentHelperTest {
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastedeVedlegg());
         when(pdfService.genereSaksbehandlerPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genereJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
-        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
-        when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
         fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, pdfService);
     }
 
@@ -106,7 +107,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForBrukerkvitteringPdfLagerKorrektDokument() {
-        Dokument brukerkvitteringPdf = fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(lagInternalSoknad(), false);
+        Dokument brukerkvitteringPdf = fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(lagInternalSoknad(), false, EIER);
 
         assertThat(brukerkvitteringPdf.getFilnavn(), is("Brukerkvittering.pdf"));
         assertThat(brukerkvitteringPdf.getMimetype(), is("application/pdf"));
@@ -116,7 +117,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForEttersendelsePdfLagerKorrektDokument() {
-        Dokument ettersendelsePdf = fiksDokumentHelper.lagDokumentForEttersendelsePdf(lagInternalSoknad());
+        Dokument ettersendelsePdf = fiksDokumentHelper.lagDokumentForEttersendelsePdf(lagInternalSoknad(), EIER);
 
         assertThat(ettersendelsePdf.getFilnavn(), is("ettersendelse.pdf"));
         assertThat(ettersendelsePdf.getMimetype(), is("application/pdf"));
