@@ -46,6 +46,7 @@ public class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";
     private static final String FILNAVN = "filnavn.jpg";
+    private static final String EIER = "12345678910";
     @Mock
     ForsendelsesServiceV9 forsendelsesService;
     @Mock
@@ -71,8 +72,8 @@ public class FiksSenderTest {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
         when(pdfService.genereSaksbehandlerPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genereJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
-        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
-        when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
 
         setProperty(FiksSender.KRYPTERING_DISABLED, "");
         fiksSender = new FiksSender(forsendelsesService, fillager, dokumentKrypterer, innsendingService, pdfService);
@@ -165,7 +166,7 @@ public class FiksSenderTest {
     public void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
         when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
 
-        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
+        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid(), EIER);
 
         assertThat(fiksDokumenter.size(), is(5));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("soknad.json"));
@@ -180,7 +181,7 @@ public class FiksSenderTest {
         when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastetVedlegg());
 
-        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
+        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"), EIER);
 
         assertThat(fiksDokumenter.size(), is(4));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("ettersendelse.pdf"));
@@ -193,14 +194,14 @@ public class FiksSenderTest {
     public void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
         when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
 
-        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
+        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid(), EIER);
     }
 
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
         when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadUtenVedleggSpesifikasjon());
 
-        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
+        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"), EIER);
     }
 
     @After
