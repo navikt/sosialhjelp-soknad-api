@@ -1,8 +1,10 @@
 <div class="bolk js-bolk">
     {{#with data.arbeid}}
         <h2 class="bolk__tittel">{{ hentTekst "arbeidbolk.tittel" }}</h2>
-        <h3>{{{hentTekst "arbeidsforhold.sporsmal"}}}</h3>
-        <p>{{{hentTekst "arbeidsforhold.infotekst"}}}</p>
+        <h3>{{hentTekst "arbeidsforhold.sporsmal"}}</h3>
+        {{#if @root.utvidetSoknad}}
+            {{{settInnInfotekst "arbeidsforhold.infotekst"}}}
+        {{/if}}
         {{#if forhold}}
             {{#each forhold}}
                 <ul class="fakta-liste">
