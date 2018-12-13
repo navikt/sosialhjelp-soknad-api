@@ -3,24 +3,25 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Set;
+
+import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
 public class HvisSparingHelper extends RegistryAwareHelper<Object>{
+
+    @Inject
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
     public static final String NAVN = "hvisSparing";
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
-        ArrayList<String> sparingNavn = new ArrayList<>();
-        sparingNavn.add("brukskonto");
-        sparingNavn.add("bsu");
-        sparingNavn.add("sparekonto");
-        sparingNavn.add("livsforsikringssparedel");
-        sparingNavn.add("verdipapirer");
-        sparingNavn.add("belop");
-        if (key != null && sparingNavn.contains(key.toString())){
+        final Set<String> sparingTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.bankinnskudd.true.type", SPRAK);
+
+        if (key != null && sparingTyper.contains(key.toString())){
             return options.fn(this);
         } else {
             return options.inverse(this);
