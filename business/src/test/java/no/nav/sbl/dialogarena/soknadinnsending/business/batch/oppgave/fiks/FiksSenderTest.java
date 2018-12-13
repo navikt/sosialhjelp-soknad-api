@@ -46,7 +46,6 @@ public class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";
     private static final String FILNAVN = "filnavn.jpg";
-    private static final String EIER = "12345678910";
     @Mock
     ForsendelsesServiceV9 forsendelsesService;
     @Mock
@@ -166,7 +165,7 @@ public class FiksSenderTest {
     public void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
         when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
 
-        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid(), EIER);
+        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
 
         assertThat(fiksDokumenter.size(), is(5));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("soknad.json"));
@@ -181,7 +180,7 @@ public class FiksSenderTest {
         when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastetVedlegg());
 
-        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"), EIER);
+        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
 
         assertThat(fiksDokumenter.size(), is(4));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("ettersendelse.pdf"));
@@ -194,14 +193,14 @@ public class FiksSenderTest {
     public void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
         when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
 
-        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid(), EIER);
+        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
     }
 
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
         when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadUtenVedleggSpesifikasjon());
 
-        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"), EIER);
+        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
     }
 
     @After

@@ -112,14 +112,14 @@ public class FiksSender {
                 .withKrevNiva4Innlogging(SKAL_KRYPTERE)
                 .withSvarPaForsendelse(sendtSoknad.erEttersendelse() ?
                         innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).getFiksforsendelseId() : null)
-                .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid, sendtSoknad.getEier()))
+                .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid))
                 .withMetadataFraAvleverendeSystem(
                         new NoarkMetadataFraAvleverendeSakssystem()
                                 .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
                 );
     }
 
-    List<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid, String eier) {
+    List<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         final JsonInternalSoknad internalSoknad = innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
         if (internalSoknad == null) {
             throw new RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler");
@@ -131,16 +131,16 @@ public class FiksSender {
 
         List<Dokument> fiksDokumenter = new ArrayList<>();
         if (soknadUnderArbeid.erEttersendelse()) {
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad, eier));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, true, eier));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, true, soknadUnderArbeid.getEier()));
             fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
         } else {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, false, eier));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
             fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
         }
 
