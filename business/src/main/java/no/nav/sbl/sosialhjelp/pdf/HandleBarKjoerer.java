@@ -40,9 +40,9 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     }
 
     @Override
-    public String fyllHtmlMalMedInnhold(JsonInternalSoknad internalSoknad, String file, boolean erEttersending) throws IOException {
-        final HandlebarContext context = new HandlebarContext(internalSoknad, false, erEttersending);
-        
+    public String fyllHtmlMalMedInnhold(JsonInternalSoknad internalSoknad, String file, boolean erEttersending, String eier) throws IOException {
+        final HandlebarContext context = new HandlebarContext(internalSoknad, false, erEttersending, eier);
+
         return getHandlebars()
                 .compile(file)
                 .apply(Context.newBuilder(context).build());
