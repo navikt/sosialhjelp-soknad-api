@@ -177,7 +177,7 @@ public class SoknadDataFletterTest {
         when(vedleggService.hentVedleggOgKvittering(webSoknad)).thenReturn(mockHentVedleggForventninger(webSoknad));
 
         when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMA_NUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER));
-        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, new byte[]{4,5,6});
+        soknadServiceUtil.sendSoknad(behandlingsId);
 
         ArgumentCaptor<HovedskjemaMetadata> hovedCaptor = ArgumentCaptor.forClass(HovedskjemaMetadata.class);
         ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
