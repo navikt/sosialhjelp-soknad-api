@@ -77,7 +77,7 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
-        byte[] soknadPdf = pdfService.genereSaksbehandlerPdf(internalSoknad, "/");
+        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(internalSoknad, "/");
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadPdf);
         return new Dokument()
@@ -90,7 +90,7 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = pdfService.genereJuridiskPdf(internalSoknad, "/");
+        byte[] juridiskPdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
         return new Dokument()
