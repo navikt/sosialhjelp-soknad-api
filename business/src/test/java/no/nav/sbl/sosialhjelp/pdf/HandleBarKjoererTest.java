@@ -75,6 +75,8 @@ public class HandleBarKjoererTest {
         handleBarKjoerer.registrerHelper("hentOkonomiBekreftelse", new HentOkonomiBekreftelseHelper());
         handleBarKjoerer.registrerHelper("hvisSparing", new HvisSparingHelper());
         handleBarKjoerer.registrerHelper("formaterDatoKlokkeslett", new FormaterDatoKlokkeslettHelper());
+        handleBarKjoerer.registrerHelper("hvisBarneutgift", new HvisBarneutgiftHelper());
+        handleBarKjoerer.registrerHelper("hvisBoutgift", new HvisBoutgiftHelper());
     }
 
     @Test
