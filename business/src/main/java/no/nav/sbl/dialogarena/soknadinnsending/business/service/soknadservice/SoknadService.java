@@ -9,11 +9,14 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Optional;
 
 @Component
 public class SoknadService {
@@ -39,6 +42,9 @@ public class SoknadService {
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
         lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
@@ -82,6 +88,10 @@ public class SoknadService {
         henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId(), false);
         lokalDb.slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
 
+        final String eier = soknad.getAktoerId();
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
+
         soknadMetricsService.avbruttSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
 
@@ -98,12 +108,7 @@ public class SoknadService {
     }
 
     @Transactional
-    public void sendSoknad(String behandlingsId, byte[] pdf) {
-        sendSoknad(behandlingsId, pdf, null);
-    }
-
-    @Transactional
-    public void sendSoknad(String behandlingsId, byte[] soknadPdf, byte[] fullSoknad) {
-        soknadDataFletter.sendSoknad(behandlingsId, soknadPdf, fullSoknad);
+    public void sendSoknad(String behandlingsId) {
+        soknadDataFletter.sendSoknad(behandlingsId);
     }
 }
