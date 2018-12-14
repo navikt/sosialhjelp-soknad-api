@@ -1,11 +1,20 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.sosialhjelp.pdf.helpers.ForFaktaHelper;
-import no.nav.sbl.sosialhjelp.pdf.helpers.faktum.ForFaktumHelper;
-import org.junit.Assert;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.soknadsosialhjelp.soknad.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
+import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
+import no.nav.sbl.sosialhjelp.pdf.helpers.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,13 +23,34 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.MessageSource;
 
 import java.io.IOException;
+import java.util.Locale;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static java.util.Collections.emptyList;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PDFFabrikkTest {
+    @Mock
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+    @Mock
+    private CmsTekst cmsTekst;
     @InjectMocks
     private HandleBarKjoerer handleBarKjoerer;
+    @InjectMocks
+    private HentTekstHelper hentTekstHelper;
+    @InjectMocks
+    private HentTekstMedParametereHelper hentTekstMedParametereHelper;
+    @InjectMocks
+    private SettInnInfotekstHelper settInnInfotekstHelper;
+    @InjectMocks
+    private SettInnHjelpetekstHelper settInnHjelpetekstHelper;
+    @InjectMocks
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
     @Mock
     private MessageSource messageSource;
@@ -28,29 +58,66 @@ public class PDFFabrikkTest {
     @Mock
     private Kodeverk kodeverk;
 
+    @Before
+    public void setup() {
+        KravdialogInformasjon kravdialogInformasjon = mock(KravdialogInformasjon.class);
+        when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(kravdialogInformasjon);
+        when(kravdialogInformasjon.getBundleName()).thenReturn("bundlename");
+        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("mock");
+        handleBarKjoerer.registrerHelper("hentTekst", hentTekstHelper);
+        handleBarKjoerer.registrerHelper("hentTekstMedParametere", hentTekstMedParametereHelper);
+        handleBarKjoerer.registrerHelper("settInnInfotekst", settInnInfotekstHelper);
+        handleBarKjoerer.registrerHelper("settInnHjelpetekst", settInnHjelpetekstHelper);
+        handleBarKjoerer.registrerHelper("hvisLik", new HvisLikHelper());
+        handleBarKjoerer.registrerHelper("hentSvaralternativer", hentSvaralternativerHelper);
+        handleBarKjoerer.registrerHelper("hvisIkkeTom", new HvisIkkeTomHelper());
+        handleBarKjoerer.registrerHelper("concat", new ConcatHelper());
+        handleBarKjoerer.registrerHelper("formaterDato", new FormaterDatoHelper());
+        handleBarKjoerer.registrerHelper("personnr", new PersonnrHelper());
+        handleBarKjoerer.registrerHelper("hvisUtbetalingFinnes", new HvisUtbetalingFinnesHelper());
+        handleBarKjoerer.registrerHelper("hentOkonomiBekreftelse", new HentOkonomiBekreftelseHelper());
+        handleBarKjoerer.registrerHelper("hvisSparing", new HvisSparingHelper());
+        handleBarKjoerer.registrerHelper("formaterDatoKlokkeslett", new FormaterDatoKlokkeslettHelper());
+    }
+
     @Test
-    public void skalKunneLagePDF() {
-        WebSoknad soknad = new WebSoknad();
-        soknad.setSkjemaNummer("NAV-1-1-1");
-        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold" ).medType(BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold2").medType(BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold3").medType(BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold4").medType(BRUKERREGISTRERT));
-        String html;
-        ForFaktumHelper forFaktumHelper = new ForFaktumHelper();
-        ForFaktaHelper forFaktaHelper = new ForFaktaHelper();
-        handleBarKjoerer.registrerHelper(forFaktumHelper.getNavn(), forFaktumHelper);
-        handleBarKjoerer.registrerHelper(forFaktaHelper.getNavn(), forFaktaHelper);
+    public void skalKunneLagePDF() throws IOException {
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(lagGyldigJsonInternalSoknad());
+        String skjemaPath = "file://" + PDFFabrikk.class.getResource("/").getPath();
+        byte[] pdfFil = PDFFabrikk.lagPdfFil(html, skjemaPath);
 
-        try {
-            html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
+        assertThat(pdfFil.length > 0, is(true));
+    }
 
-            String skjemaPath = "file://" + PDFFabrikk.class.getResource("/").getPath();
-            byte[] pdfFil = PDFFabrikk.lagPdfFil(html, skjemaPath);
-
-            Assert.assertTrue(pdfFil.length > 0);
-        } catch (IOException e) {
-            Assert.assertTrue(false);
-        }
+    private JsonInternalSoknad lagGyldigJsonInternalSoknad() {
+        return new JsonInternalSoknad()
+                .withSoknad(new JsonSoknad()
+                        .withVersion("1.0.0")
+                        .withKompatibilitet(emptyList())
+                        .withDriftsinformasjon("")
+                        .withData(new JsonData()
+                                .withArbeid(new JsonArbeid())
+                                .withBegrunnelse(new JsonBegrunnelse()
+                                        .withHvaSokesOm("")
+                                        .withHvorforSoke(""))
+                                .withBosituasjon(new JsonBosituasjon())
+                                .withFamilie(new JsonFamilie()
+                                        .withForsorgerplikt(new JsonForsorgerplikt()))
+                                .withOkonomi(new JsonOkonomi()
+                                        .withOpplysninger(new JsonOkonomiopplysninger())
+                                        .withOversikt(new JsonOkonomioversikt()))
+                                .withPersonalia(new JsonPersonalia()
+                                        .withKontonummer(new JsonKontonummer()
+                                                .withKilde(JsonKilde.BRUKER))
+                                        .withNavn(new JsonSokernavn()
+                                                .withFornavn("Fornavn")
+                                                .withMellomnavn("")
+                                                .withEtternavn("Etternavn")
+                                                .withKilde(JsonSokernavn.Kilde.SYSTEM))
+                                        .withPersonIdentifikator(new JsonPersonIdentifikator()
+                                                .withVerdi("12345678910")
+                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)))
+                                .withUtdanning(new JsonUtdanning()
+                                        .withKilde(JsonKilde.BRUKER))));
     }
 }
