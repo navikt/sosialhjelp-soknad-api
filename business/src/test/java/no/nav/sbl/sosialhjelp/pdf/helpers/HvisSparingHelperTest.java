@@ -50,7 +50,7 @@ public class HvisSparingHelperTest {
 
     @Test
     public void skalIkkeGjenkjenneSparingstype() throws IOException {
-        String compiled = handlebars.compileInline("{{#hvisSparing \"skattekart\"}}brukskonto er en sparingstype{{else}}ikke en sparingstype{{/hvisSparing}}").apply(new Object());
+        String compiled = handlebars.compileInline("{{#hvisSparing \"skattekart\"}}skattekart er en sparingstype{{else}}ikke en sparingstype{{/hvisSparing}}").apply(new Object());
 
         assertThat(compiled, is("ikke en sparingstype"));
     }
