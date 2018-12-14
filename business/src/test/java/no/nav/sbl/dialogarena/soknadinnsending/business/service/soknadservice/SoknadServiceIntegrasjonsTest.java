@@ -3,15 +3,20 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.joda.time.DateTime.now;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.naming.NamingException;
 
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -61,6 +66,9 @@ public class SoknadServiceIntegrasjonsTest {
     @Inject
     private FaktaService faktaService;
 
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
     @BeforeClass
     public static void beforeClass() throws IOException, NamingException {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
@@ -70,6 +78,7 @@ public class SoknadServiceIntegrasjonsTest {
     @Before
     public void setUp() {
         when(soknadMetadataRepository.hent(anyString())).thenReturn(new SoknadMetadata());
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid()));
     }
 
     @Test
@@ -123,6 +132,7 @@ public class SoknadServiceIntegrasjonsTest {
 
         WebSoknad webSoknad = soknadService.hentSoknadFraLokalDb(soknadId);
         assertThat(webSoknad).isNull();
+        verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
     }
 
     @Test

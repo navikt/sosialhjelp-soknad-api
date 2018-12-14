@@ -1,6 +1,8 @@
 package no.nav.sbl.sosialhjelp.midlertidig;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException;
 import no.nav.sbl.soknadsosialhjelp.soknad.*;
@@ -14,6 +16,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -23,8 +27,7 @@ import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 
 import static java.time.Month.AUGUST;
 import static java.util.Collections.emptyList;
@@ -36,6 +39,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,14 +51,22 @@ public class WebSoknadConverterTest {
     private static final String TYPE = "bostotte";
     private static final String TILLEGGSINFO = "annetboutgift";
     private static final String FILNAVN = "dokumentasjon.pdf";
+    private static final String ORGNUMMER = "987654";
+    private static final String NAVENHET = "NAV Moss";
 
     private NavMessageSource messageSource = mock(NavMessageSource.class);
+    private EkstraMetadataService ekstraMetadataService = mock(EkstraMetadataService.class);
+    private InnsendingService innsendingService = mock(InnsendingService.class);
     @InjectMocks
     private WebSoknadConverter webSoknadConverter;
 
     @Before
     public void setUp() {
         when(messageSource.getBundleFor(anyString(), any(Locale.class))).thenReturn(new Properties());
+        when(ekstraMetadataService.hentEkstraMetadata(any(WebSoknad.class))).thenReturn(lagEkstraMetadata());
+        when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
+                .withOrgnummer(ORGNUMMER)
+                .withNavEnhetsnavn(NAVENHET));
     }
 
     @Test
@@ -181,5 +193,12 @@ public class WebSoknadConverterTest {
         return lagGyldigWebSoknad()
                 .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
                 .medVedlegg(vedlegg);
+    }
+
+    private Map<String, String> lagEkstraMetadata() {
+        Map<String, String> ekstraMetadata = new HashMap<>();
+        ekstraMetadata.put(FiksMetadataTransformer.FIKS_ORGNR_KEY, ORGNUMMER);
+        ekstraMetadata.put(FiksMetadataTransformer.FIKS_ENHET_KEY, NAVENHET);
+        return ekstraMetadata;
     }
 }
