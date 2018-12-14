@@ -15,18 +15,18 @@ public class PDFService {
     @Inject
     private HtmlGenerator pdfTemplate;
 
-    public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending) {
+    public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending, String eier) {
         try {
-            final String pdfMarkup = pdfTemplate.genererHtmlForPdf(internalSoknad, "/skjema/sosialhjelp/kvittering", erEttersending);
+            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/sosialhjelp/kvittering", erEttersending, eier);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke generere brukerkvittering (Brukerkvittering.pdf).", e);
         }
     }
     
-    public byte[] genererEttersendelsePdf(JsonInternalSoknad internalSoknad, String servletPath) {
+    public byte[] genererEttersendelsePdf(JsonInternalSoknad internalSoknad, String servletPath, String eier) {
         try {
-            final String pdfMarkup = pdfTemplate.genererHtmlForPdf(internalSoknad, "skjema/ettersending/kvitteringUnderEttersendelse", true);
+            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "skjema/ettersending/kvitteringUnderEttersendelse", true, eier);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage hoveddokument for ettersendelse (ettersendelse.pdf).", e);
