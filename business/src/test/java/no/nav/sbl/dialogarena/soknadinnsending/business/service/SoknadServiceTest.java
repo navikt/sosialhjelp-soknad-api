@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,6 +94,8 @@ public class SoknadServiceTest {
     SoknadDataFletter soknadServiceUtil;
     @Mock
     SoknadMetricsService soknadMetricsService;
+    @Mock
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -114,6 +118,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(Collections.emptyList());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid()));
     }
 
     @Test
@@ -138,9 +143,12 @@ public class SoknadServiceTest {
     public void skalAvbryteSoknad() {
         WebSoknad soknad = new WebSoknad().medBehandlingId("123").medId(11L);
         when(soknadRepository.hentSoknad("123")).thenReturn(soknad);
+
         soknadService.avbrytSoknad("123");
+
         verify(soknadRepository).slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
         verify(henvendelsesConnector).avbrytSoknad("123", false);
+        verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
     }
 
     @Test

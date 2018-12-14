@@ -3,24 +3,26 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Set;
+
+import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
 public class HvisBarneutgiftHelper extends RegistryAwareHelper<Object>{
+
+    @Inject
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
     public static final String NAVN = "hvisBarneutgift";
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
-        ArrayList<String> barneutgiftNavn = new ArrayList<>();
-        barneutgiftNavn.add("barnFritidsaktiviteter");
-        barneutgiftNavn.add("barnTannregulering");
-        barneutgiftNavn.add("annenBarneutgift");
-        barneutgiftNavn.add("barnebidrag");
-        barneutgiftNavn.add("barnehage");
-        barneutgiftNavn.add("sfo");
-        if (key != null && barneutgiftNavn.contains(key.toString())){
+        final Set<String> barneutgiftTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("utgifter.barn.true.utgifter", SPRAK);
+        barneutgiftTyper.add("barnebidrag");
+
+        if (key != null && barneutgiftTyper.contains(key.toString())){
             return options.fn(this);
         } else {
             return options.inverse(this);

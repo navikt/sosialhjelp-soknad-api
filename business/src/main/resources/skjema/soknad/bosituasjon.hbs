@@ -7,13 +7,13 @@
                 <ul class="svar-liste">
                     <li>
                         {{#hvisIkkeTom botype}}
-                            {{#hvisIkkeTom (hentTekst (concat 'bosituasjon.annet.botype.' botype))}}
+                            {{#hvisIkkeTom (hentTekst (concat 'bosituasjon.' botype))}}
                                 <span class="verdi verdi--tekst">
-                                    {{ hentTekst (concat 'bosituasjon.annet.botype.' botype) }}
+                                    {{ hentTekst (concat 'bosituasjon.' botype) }}
                                 </span>
                             {{else}}
                                 <span class="verdi verdi--tekst">
-                                    {{ hentTekst (concat 'bosituasjon.' botype) }}
+                                    {{ hentTekst (concat 'bosituasjon.annet.botype.' botype) }}
                                 </span>
                             {{/hvisIkkeTom}}
                         {{else}}

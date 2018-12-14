@@ -13,43 +13,23 @@
         <ul class="svar-liste">
             {{#each @root.opplysningUtgiftstyper}}
                 {{#hvisBoutgift type}}
-                    {{#hvisIkkeTom (hentTekst (concat "utgifter.boutgift.true.type." type)) }}
-                        <li>
-                            <span class="verdi verdi--radio">
-                                {{ hentTekst (concat "utgifter.boutgift.true.type." type) }}
-                            </span>
-                        </li>
-                    {{else}}
-                        <li>
-                            <span class="verdi verdi--radio">
-                                {{#hvisLik type "kommunalAvgift"}}
-                                    {{ hentTekst "utgifter.boutgift.true.type.kommunaleavgifter" }}
-                                {{/hvisLik}}
-                                {{#hvisLik type "annenBoutgift"}}
-                                    {{ hentTekst "utgifter.boutgift.true.type.andreutgifter" }}
-                                {{/hvisLik}}
-                            </span>
-                        </li>
-                    {{/hvisIkkeTom}}
+                    <li>
+                        <span class="verdi verdi--radio">
+                            {{ hentTekst (concat "utgifter.boutgift.true.type." type) }}
+                        </span>
+                    </li>
                 {{/hvisBoutgift}}
             {{/each}}
             {{#each @root.oversiktUtgiftstyper}}
                 {{#hvisBoutgift type}}
-                    {{#hvisIkkeTom (hentTekst (concat "utgifter.boutgift.true.type." type)) }}
+                    {{#hvisLik type "boliglanRenter"}}
+                    {{else}}
                         <li>
                             <span class="verdi verdi--radio">
                                 {{ hentTekst (concat "utgifter.boutgift.true.type." type) }}
                             </span>
                         </li>
-                    {{else}}
-                        <li>
-                            <span class="verdi verdi--radio">
-                                {{#hvisLik type "boliglanAvdrag"}}
-                                    {{ hentTekst "utgifter.boutgift.true.type.avdraglaan" }}
-                                {{/hvisLik}}
-                            </span>
-                        </li>
-                    {{/hvisIkkeTom}}
+                    {{/hvisLik}}
                 {{/hvisBoutgift}}
             {{/each}}
         </ul>
