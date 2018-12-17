@@ -46,13 +46,6 @@ public class OrganisasjonMock {
             responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writeValue(new File("./target/organisasjon.json"), response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         return response;
     }
 
