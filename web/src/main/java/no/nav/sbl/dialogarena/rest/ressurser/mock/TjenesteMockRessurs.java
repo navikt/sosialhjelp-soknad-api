@@ -68,7 +68,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        if (jsonTelefonnummer.getVerdi().length() > 0){
+        if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer);
         } else {
             DkifMock.slettTelefonnummer();
