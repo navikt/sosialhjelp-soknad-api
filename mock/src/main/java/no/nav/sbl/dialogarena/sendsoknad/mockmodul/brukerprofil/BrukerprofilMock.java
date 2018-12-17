@@ -30,7 +30,7 @@ public class BrukerprofilMock {
     private static final String ETTERNAVN = "Mockmann";
     private static final String EPOST = "test@epost.com";
     private static final String GATENAVN = "SANNERGATA"; // "Grepalida";
-    private static final String HUSNUMMER = "2"; // "44";
+    private static final String HUSNUMMER = "2345"; // "44";
     private static final String BOLIGNUMMER = "1234";
     private static final String POSTNUMMER = "0557"; // "0560";
     private static final String KOMMUNENUMMER = "0701";

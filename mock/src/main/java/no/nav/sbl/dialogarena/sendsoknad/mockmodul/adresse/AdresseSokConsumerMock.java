@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import no.nav.modig.core.context.SubjectHandler;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 
 public class AdresseSokConsumerMock {
@@ -41,6 +43,20 @@ public class AdresseSokConsumerMock {
 
     private static AdressesokRespons getDefaultRespons(){
         AdressesokRespons response = new AdressesokRespons();
+
+        final AdresseData a1 = new AdresseData();
+        a1.kommunenummer = "1201";
+        a1.kommunenavn = "Bergen";
+        a1.adressenavn = "SANNERGATA";
+        a1.husnummerFra = "0001";
+        a1.husnummerTil = "0010";
+        a1.postnummer = "1337";
+        a1.poststed = "Leet";
+        a1.geografiskTilknytning = "120102";
+        a1.gatekode = "02081";
+        a1.bydel = "120102";
+
+        response.adresseDataList = Arrays.asList(a1);
 
         return response;
     }
