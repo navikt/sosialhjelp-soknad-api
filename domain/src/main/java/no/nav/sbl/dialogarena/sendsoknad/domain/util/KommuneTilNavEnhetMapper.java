@@ -66,6 +66,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0626", "974545861")    // Lier
             .put("1866", "874052582")    // Hadsel
             .put("1133", "974549751")    // Hjelmeland
+            .put("1135", "974617250")    // Sauda
             .put("1130", "974616734")    // Strand
             .put("0624", "994952854")    // Øvre Eiker
             .put("1134", "974616998")    // Suldal
@@ -272,6 +273,7 @@ public class KommuneTilNavEnhetMapper {
                     "0626",
                     "1866",
                     "1133",
+                    "1135",
                     "1130",
                     "0624",
                     "1134",
