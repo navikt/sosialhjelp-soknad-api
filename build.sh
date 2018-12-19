@@ -56,7 +56,6 @@ function revert_version() {
 
 function publish() {
     mvn clean deploy --batch-mode -U
-    read -p "Press any key to continue" x
 }
 
 function build_and_deploy_docker() {
