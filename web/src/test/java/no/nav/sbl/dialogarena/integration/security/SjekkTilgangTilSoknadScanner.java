@@ -53,6 +53,8 @@ public class SjekkTilgangTilSoknadScanner {
         // Fjern klasser som enda ikke har fått tester
         classnames.remove("VedleggRessurs");
         classnames.remove("SosialhjelpVedleggRessurs");
+        classnames.remove("SoknadsmottakerRessurs");
+        classnames.remove("EttersendingRessurs");
 
 
         for(String classname : classnames){
