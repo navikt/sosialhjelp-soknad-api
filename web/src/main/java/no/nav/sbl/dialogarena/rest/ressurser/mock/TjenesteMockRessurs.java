@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.mock;
 
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
@@ -8,13 +9,17 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.inject.Inject;
+import javax.security.auth.Subject;
 import javax.ws.rs.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -24,6 +29,9 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 @Path("/internal/mock/tjeneste")
 @Produces(APPLICATION_JSON)
 public class TjenesteMockRessurs {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TjenesteMockRessurs.class);
+
 
     @Inject
     private CacheManager cacheManager;
@@ -68,6 +76,9 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
+
+        LOG.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + SubjectHandler.getSubjectHandler().getUid());
+
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer);
         } else {
