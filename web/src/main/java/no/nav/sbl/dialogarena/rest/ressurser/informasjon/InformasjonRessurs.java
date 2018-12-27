@@ -221,6 +221,7 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = getSubjectHandler().getUid();
+        logger.warn("uid: " + uid);
         Personalia personalia = personaliaBolk.hentPersonalia(uid);
 
         Map<String, Object> resultat = new HashMap<>();
