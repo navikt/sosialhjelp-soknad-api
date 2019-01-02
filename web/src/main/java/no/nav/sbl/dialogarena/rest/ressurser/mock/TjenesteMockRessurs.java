@@ -30,11 +30,12 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 @Produces(APPLICATION_JSON)
 public class TjenesteMockRessurs {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TjenesteMockRessurs.class);
+    private static final Logger logger = LoggerFactory.getLogger(TjenesteMockRessurs.class);
 
 
     @Inject
     private CacheManager cacheManager;
+
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
@@ -77,7 +78,7 @@ public class TjenesteMockRessurs {
         }
         clearCache();
 
-        LOG.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + SubjectHandler.getSubjectHandler().getUid());
+        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + SubjectHandler.getSubjectHandler().getUid());
 
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer);
@@ -149,17 +150,12 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
-        OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
-    }
-
-    @DELETE
-    @Path("/organisasjon")
-    public void slettOrganisasjon() {
-        if (!isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
+        if (jsonOrganisasjon != null){
+            OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
+        } else {
+            OrganisasjonMock.slettOrganisasjon();
         }
-        clearCache();
-        OrganisasjonMock.slettOrganisasjon();
     }
 
     @POST
