@@ -21,7 +21,6 @@ public class HvisSparingHelper extends RegistryAwareHelper<Object>{
     public CharSequence apply(Object key, Options options) throws IOException {
         final Set<String> sparingTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.bankinnskudd.true.type", SPRAK);
         sparingTyper.remove("annet");
-        // TODO: Fjerne linjen over når frontend er oppdatert med nye tekster (annet er erstattet med belop), og gamle tekster er slettet
 
         if (key != null && sparingTyper.contains(key.toString())){
             return options.fn(this);
