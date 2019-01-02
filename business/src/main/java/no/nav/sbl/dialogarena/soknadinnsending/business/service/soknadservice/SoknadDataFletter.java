@@ -359,16 +359,26 @@ public class SoknadDataFletter {
     }
 
     private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe) {
-        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
-        if (soknadUnderArbeid != null) {
-            final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, soknad.getAktoerId());
-            soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
-            final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeidId,
-                    soknadUnderArbeid.getEier(), vedleggListe);
-            if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
-                for (OpplastetVedlegg opplastetVedlegg : opplastedeVedlegg) {
-                    opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, soknadUnderArbeid.getEier());
-                }
+        SoknadUnderArbeid soknadUnderArbeid;
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), soknad.getAktoerId());
+        if (soknadUnderArbeidOptional.isPresent()) {
+            soknadUnderArbeid = soknadUnderArbeidOptional.get();
+        } else {
+            final SoknadUnderArbeid soknadUnderArbeidFraWebSoknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+            if (soknadUnderArbeidFraWebSoknad != null) {
+                soknadUnderArbeid = soknadUnderArbeidFraWebSoknad;
+                final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeidFraWebSoknad, soknad.getAktoerId());
+                soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
+            } else {
+                throw new RuntimeException("Kan ikke konvertere fra websøknad under innsending");
+            }
+        }
+
+        final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeid.getSoknadId(),
+                soknadUnderArbeid.getEier(), vedleggListe);
+        if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
+            for (OpplastetVedlegg opplastetVedlegg : opplastedeVedlegg) {
+                opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, soknadUnderArbeid.getEier());
             }
         }
         return soknadUnderArbeid;
