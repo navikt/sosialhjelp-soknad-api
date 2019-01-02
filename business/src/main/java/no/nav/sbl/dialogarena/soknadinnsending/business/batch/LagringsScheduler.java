@@ -8,6 +8,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -40,6 +42,8 @@ public class LagringsScheduler {
     private FillagerService fillagerService;
     @Inject
     private HenvendelseService henvendelseService;
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
@@ -105,6 +109,8 @@ public class LagringsScheduler {
         WebSoknad soknad = ws.get();
         try {
             henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId(), true);
+            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), soknad.getAktoerId());
+            soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknad.getAktoerId()));
             slettFiler(soknad);
             soknadRepository.slettSoknad(soknad, LAGRET_I_HENVENDELSE);
 

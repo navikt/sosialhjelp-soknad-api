@@ -73,7 +73,7 @@ public class FullOppsummeringRessurs {
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
         final JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
 
-        return pdfService.genereJuridiskPdf(jsonInternalSoknad, "/");
+        return pdfService.genererJuridiskPdf(jsonInternalSoknad, "/");
     }
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {

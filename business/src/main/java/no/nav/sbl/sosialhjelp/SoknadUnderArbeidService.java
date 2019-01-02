@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -55,11 +56,35 @@ public class SoknadUnderArbeidService {
         if (soknadUnderArbeid == null) {
             throw new RuntimeException("Søknad under arbeid mangler");
         }
+        if (soknadUnderArbeid.erEttersendelse()){
+            return;
+        }
         final JsonInternalSoknad jsonInternalSoknad = hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
         jsonInternalSoknad.getSoknad().setInnsendingstidspunkt(OffsetDateTime.now(ZoneOffset.UTC).toString());
         final byte[] oppdatertSoknad = mapJsonSoknadInternalTilFil(jsonInternalSoknad);
         SoknadUnderArbeid oppdatertSoknadUnderArbeid = soknadUnderArbeid.withData(oppdatertSoknad);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(oppdatertSoknadUnderArbeid, soknadUnderArbeid.getEier());
+    }
+
+    public SoknadUnderArbeid oppdaterEllerOpprettSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid, String eier) {
+        if (soknadUnderArbeid == null) {
+            throw new RuntimeException("Søknad under arbeid mangler");
+        } else if (isEmpty(soknadUnderArbeid.getBehandlingsId())) {
+            throw new RuntimeException("Søknad under arbeid mangler behandlingsId");
+        }
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.getBehandlingsId(), eier);
+        if (soknadUnderArbeidOptional.isPresent()) {
+            SoknadUnderArbeid soknadUnderArbeidFraDB = soknadUnderArbeidOptional.get();
+            soknadUnderArbeidFraDB.withData(soknadUnderArbeid.getData());
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeidFraDB, eier);
+        } else {
+            soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier);
+        }
+        Optional<SoknadUnderArbeid> oppdatertSoknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.getBehandlingsId(), eier);
+        if (!oppdatertSoknadUnderArbeidOptional.isPresent()) {
+            throw new RuntimeException("Kunne ikke hente oppdatert søknad under arbeid fra database");
+        }
+        return oppdatertSoknadUnderArbeidOptional.get();
     }
 
     public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {

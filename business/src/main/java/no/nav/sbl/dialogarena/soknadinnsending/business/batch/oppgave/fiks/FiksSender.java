@@ -84,16 +84,16 @@ public class FiksSender {
 
         List<Dokument> fiksDokumenter = new ArrayList<>();
         if (soknadUnderArbeid.erEttersendelse()) {
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, true));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, true, soknadUnderArbeid.getEier()));
             fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
         } else {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, false));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
             fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
         }
 

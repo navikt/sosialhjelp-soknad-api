@@ -7,7 +7,9 @@
                 {{{settInnHjelpetekst "begrunnelse.hva.hjelpetekst.tekst"}}}
             {{/if}}
             <li>
-                <span class="label">{{ hentTekst "begrunnelse.hva.label" }}</span>
+                {{#if @root.utvidetSoknad}}
+                    <span class="label">{{ hentTekst "begrunnelse.hva.label" }}</span>
+                {{/if}}
                 <ul class="svar-liste">
                     <li>
                         {{#if hvaSokesOm}}
