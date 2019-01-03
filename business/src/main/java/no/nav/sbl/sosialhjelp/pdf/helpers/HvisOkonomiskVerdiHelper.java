@@ -3,23 +3,25 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Set;
+
+import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
 public class HvisOkonomiskVerdiHelper extends RegistryAwareHelper<Object>{
+
+    @Inject
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
     public static final String NAVN = "hvisOkonomiskVerdi";
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
-        ArrayList<String> okonomiskVerdiNavn = new ArrayList<>();
-        okonomiskVerdiNavn.add("bolig");
-        okonomiskVerdiNavn.add("campingvogn");
-        okonomiskVerdiNavn.add("kjoretoy");
-        okonomiskVerdiNavn.add("fritidseiendom");
-        okonomiskVerdiNavn.add("annet");
-        if (key != null && okonomiskVerdiNavn.contains(key.toString())){
+        final Set<String> okonomiskVerdiTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.eierandeler.true.type", SPRAK);
+
+        if (key != null && okonomiskVerdiTyper.contains(key.toString())){
             return options.fn(this);
         } else {
             return options.inverse(this);
