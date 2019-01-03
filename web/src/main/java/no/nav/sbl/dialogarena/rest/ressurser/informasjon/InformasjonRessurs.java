@@ -24,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,7 @@ import no.nav.sbl.dialogarena.utils.InnloggetBruker;
  * Klassen håndterer rest kall for å hente informasjon
  */
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/informasjon")
 @Produces(APPLICATION_JSON)
 @Timed

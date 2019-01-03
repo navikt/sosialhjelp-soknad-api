@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService.Forventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedleg
 
 
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/sosialhjelpvedlegg")
 @Timed
 public class SosialhjelpVedleggRessurs {
