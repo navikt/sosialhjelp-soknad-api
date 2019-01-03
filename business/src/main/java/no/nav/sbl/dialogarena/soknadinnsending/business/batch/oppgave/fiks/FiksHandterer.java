@@ -19,10 +19,6 @@ public class FiksHandterer {
 
     public static final String FIKS_OPPGAVE = "FiksOppgave";
     private static final Logger logger = LoggerFactory.getLogger(FiksHandterer.class);
-    private static final int NY_INNSENDINGSVERSJON = 20;
-
-    @Inject
-    private MetadataInnfyller metadataInnfyller;
 
     @Inject
     private FiksSender fiksSender;
@@ -37,11 +33,6 @@ public class FiksHandterer {
         final String behandlingsId = oppgaveKjede.behandlingsId;
         logger.info("Kjører fikskjede for behandlingsid {}, steg {}", behandlingsId, oppgaveKjede.steg);
 
-        if (oppgaveKjede.steg < NY_INNSENDINGSVERSJON) {
-            eksekverMedGammelStruktur(oppgaveKjede);
-            return;
-        }
-
         FiksResultat resultat = oppgaveKjede.oppgaveResultat;
         final String eier = oppgaveKjede.oppgaveData.avsenderFodselsnummer;
         if (isEmpty(eier)) {
@@ -54,7 +45,7 @@ public class FiksHandterer {
             slettSoknadOgFiler(behandlingsId, eier);
             oppgaveKjede.nesteSteg();
         } else {
-            lagreResultat(oppgaveKjede, behandlingsId, resultat, eier);
+            lagreResultat(behandlingsId, resultat, eier);
             oppgaveKjede.ferdigstill();
         }
     }
@@ -79,9 +70,7 @@ public class FiksHandterer {
         fillagerService.slettAlle(behandlingsId);
     }
 
-    private void lagreResultat(Oppgave oppgaveKjede, String behandlingsId, FiksResultat resultat, String eier) {
-        oppgaveKjede.oppgaveData.behandlingsId = behandlingsId;
-        metadataInnfyller.lagreFiksId(oppgaveKjede.oppgaveData, resultat);
+    private void lagreResultat(String behandlingsId, FiksResultat resultat, String eier) {
         innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier);
     }
 
@@ -90,39 +79,6 @@ public class FiksHandterer {
         event.addTagToReport("ettersendelse", sendtSoknad.erEttersendelse() ? "true" : "false");
         event.addTagToReport("mottaker", tilInfluxNavn(sendtSoknad.getNavEnhetsnavn()));
         return event;
-    }
-
-    void eksekverMedGammelStruktur(Oppgave oppgaveKjede) {
-        FiksData data = oppgaveKjede.oppgaveData;
-        FiksResultat resultat = oppgaveKjede.oppgaveResultat;
-        if (oppgaveKjede.steg == 0) {
-            data.behandlingsId = oppgaveKjede.behandlingsId;
-            metadataInnfyller.byggOppFiksData(data);
-            oppgaveKjede.nesteSteg();
-        } else if (oppgaveKjede.steg == 1) {
-            Event event = MetricsFactory.createEvent("digisos.fikshandterer.sendt");
-            event.addTagToReport("ettersendelse", isEmpty(data.ettersendelsePa) ? "false" : "true");
-            event.addTagToReport("mottaker", tilInfluxNavn(data.mottakerNavn));
-            try {
-                resultat.fiksForsendelsesId = fiksSender.sendTilFiks(data);
-                logger.info("Søknad {} fikk id {} i Fiks", data.behandlingsId, resultat.fiksForsendelsesId);
-            } catch (Exception e) {
-                resultat.feilmelding = e.getMessage();
-                event.setFailed();
-                throw e;
-            } finally {
-                event.report();
-            }
-            oppgaveKjede.nesteSteg();
-        } else if (oppgaveKjede.steg == 2) {
-            innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(oppgaveKjede.behandlingsId, oppgaveKjede.oppgaveData.avsenderFodselsnummer);
-            fillagerService.slettAlle(data.behandlingsId);
-            oppgaveKjede.nesteSteg();
-        } else {
-            metadataInnfyller.lagreFiksId(data, resultat);
-            innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, data.behandlingsId, data.avsenderFodselsnummer);
-            oppgaveKjede.ferdigstill();
-        }
     }
 
     private String tilInfluxNavn(String mottaker) {

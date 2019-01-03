@@ -3,13 +3,16 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandtererImpl.FORSTE_STEG_NY_INNSENDING;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -20,12 +23,10 @@ public class FiksHandtererTest {
     private static final String AVSENDER = "123456789010";
     private static final String BEHANDLINGSID = "12345";
     private static final String FIKSFORSENDELSEID = "9876";
+    private static final String NAVENHETSNAVN = "NAV Sagene";
 
     @Mock
     FiksSender fiksSender;
-
-    @Mock
-    MetadataInnfyller metadataInnfyller;
 
     @Mock
     FillagerService fillagerService;
@@ -38,50 +39,37 @@ public class FiksHandtererTest {
 
     @Test
     public void kjorerKjede() {
-        when(fiksSender.sendTilFiks(any(FiksData.class))).thenReturn(FIKSFORSENDELSEID);
+        when(innsendingService.hentSendtSoknad(eq(BEHANDLINGSID), eq(AVSENDER))).thenReturn(lagSendtSoknad());
+        when(fiksSender.sendTilFiks(any(SendtSoknad.class))).thenReturn(FIKSFORSENDELSEID);
         Oppgave oppgave = opprettOppgave();
 
         fiksHandterer.eksekver(oppgave);
 
-        verify(metadataInnfyller, times(1)).byggOppFiksData(any());
         verify(fillagerService, never()).slettAlle(any());
-        verify(fiksSender, never()).sendTilFiks(any(FiksData.class));
-        verify(metadataInnfyller, never()).lagreFiksId(any(), any());
+        verify(fiksSender, times(1)).sendTilFiks(any(SendtSoknad.class));
         verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
-        assertEquals(1, oppgave.steg);
+        assertThat(oppgave.steg, is(22));
 
         fiksHandterer.eksekver(oppgave);
-        verify(fillagerService, never()).slettAlle(any());
-        verify(fiksSender, times(1)).sendTilFiks(any(FiksData.class));
-        verify(metadataInnfyller, never()).lagreFiksId(any(), any());
-        verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
+        verify(fillagerService, times(1)).slettAlle(eq(BEHANDLINGSID));
+        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(eq(BEHANDLINGSID),
+                eq(AVSENDER));
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
-        assertEquals(2, oppgave.steg);
+        assertThat(oppgave.steg, is(23));
 
         fiksHandterer.eksekver(oppgave);
-        verify(fillagerService, times(1)).slettAlle(any());
-        verify(metadataInnfyller, never()).lagreFiksId(any(), any());
-        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(BEHANDLINGSID,
-                AVSENDER);
-        verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
-        assertEquals(3, oppgave.steg);
-
-        fiksHandterer.eksekver(oppgave);
-        verify(metadataInnfyller, times(1)).lagreFiksId(any(), any());
         verify(innsendingService, times(1))
                 .oppdaterSendtSoknadVedSendingTilFiks(anyString(), eq(BEHANDLINGSID), eq(AVSENDER));
-        assertEquals(Oppgave.Status.FERDIG, oppgave.status);
+        assertThat(oppgave.status, is(Oppgave.Status.FERDIG));
 
     }
 
     @Test
     public void lagrerFeilmelding() {
-        when(fiksSender.sendTilFiks(any(FiksData.class))).thenThrow(new RuntimeException("feilmelding123"));
-
-        Oppgave oppgave = new Oppgave();
-        oppgave.behandlingsId = BEHANDLINGSID;
-        oppgave.steg = 1;
+        when(innsendingService.hentSendtSoknad(eq(BEHANDLINGSID), eq(AVSENDER))).thenReturn(new SendtSoknad());
+        when(fiksSender.sendTilFiks(any(SendtSoknad.class))).thenThrow(new RuntimeException("feilmelding123"));
+        Oppgave oppgave = opprettOppgave();
 
         try {
             fiksHandterer.eksekver(oppgave);
@@ -89,7 +77,7 @@ public class FiksHandtererTest {
         } catch (Exception e) {
         }
 
-        assertEquals("feilmelding123", oppgave.oppgaveResultat.feilmelding);
+        assertThat(oppgave.oppgaveResultat.feilmelding, is("feilmelding123"));
     }
 
     private Oppgave opprettOppgave() {
@@ -98,6 +86,14 @@ public class FiksHandtererTest {
         FiksData oppgaveData = new FiksData();
         oppgaveData.avsenderFodselsnummer = AVSENDER;
         oppgave.oppgaveData = oppgaveData;
+        oppgave.steg = FORSTE_STEG_NY_INNSENDING;
         return oppgave;
+    }
+
+    private SendtSoknad lagSendtSoknad() {
+        return new SendtSoknad()
+                .withEier(AVSENDER)
+                .withBehandlingsId(BEHANDLINGSID)
+                .withNavEnhetsnavn(NAVENHETSNAVN);
     }
 }
