@@ -9,8 +9,6 @@ import javax.inject.Inject;
 /*
 * Superklasse for å lette implementasjon av helpers til Handlebars.
 *
-* Dokumentasjon i Handlebars-helpers.md
-*
 * */
 
 public abstract class RegistryAwareHelper<T> implements Helper<T> {
