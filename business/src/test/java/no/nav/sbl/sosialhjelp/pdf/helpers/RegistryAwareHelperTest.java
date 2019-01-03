@@ -56,15 +56,10 @@ public class RegistryAwareHelperTest {
         }
     }
 
-    /*
-    * Denne testen har ingen assertions, men genererer fila Handlebars-helpers.md.
-    * Se beskrivelse i Handlebars-helpers.md for å få bakgrunn for testen.
-    * */
-
 
     @Test
-    public void registryKaltMedHelper() throws Exception {
-        verify(registry, atLeastOnce()).registrerHelper(eq(VariabelHelper.NAVN), any(VariabelHelper.class));
+    public void registryKaltMedHelper() {
+        verify(registry, atLeastOnce()).registrerHelper(eq(ConcatHelper.NAVN), any(ConcatHelper.class));
         verify(registry, atLeastOnce()).registrerHelper(anyString(), any(RegistryAwareHelper.class));
     }
 
