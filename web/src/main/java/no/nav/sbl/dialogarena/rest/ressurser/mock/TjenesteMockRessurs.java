@@ -118,6 +118,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
+        logger.info("Setter arbeidsforhold: " + arbeidsforholdData);
         ArbeidsforholdMock.settArbeidsforhold(arbeidsforholdData);
     }
 
@@ -166,6 +167,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         clearCache();
+        logger.info("Setter mock familieforhold med data: " + jsonPerson);
         PersonMock.setPersonMedFamilieforhold(jsonPerson);
     }
 
