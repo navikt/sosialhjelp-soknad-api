@@ -18,6 +18,16 @@ public class LandMedFulltNavnHelper extends RegistryAwareHelper<String>{
         return "landMedFulltNavn";
     }
 
+
+    public LandMedFulltNavnHelper() {
+
+    }
+
+    public LandMedFulltNavnHelper(Adressekodeverk adressekodeverk) {
+        this.adressekodeverk = adressekodeverk;
+    }
+
+
     @Override
     public String getBeskrivelse() {
         return "Returnerer fullt navn på land som sendes inn med trebokstav-forkortelse ifølge ISO 3166";
