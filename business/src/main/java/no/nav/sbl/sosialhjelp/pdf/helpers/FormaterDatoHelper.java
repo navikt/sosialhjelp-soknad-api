@@ -1,15 +1,16 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import com.github.jknack.handlebars.Options;
+import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+
+import java.io.IOException;
+
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Locale;
+import com.github.jknack.handlebars.Options;
 
 @Component
 public class FormaterDatoHelper extends RegistryAwareHelper<String>{
-    private final Locale locale = new Locale("nb", "NO");
 
     @Override
     public String getNavn() {
@@ -23,9 +24,13 @@ public class FormaterDatoHelper extends RegistryAwareHelper<String>{
 
     @Override
     public CharSequence apply(String datoStreng, Options options) throws IOException {
-        LocalDate date = new LocalDate(datoStreng);
-        String format = options.param(0);
+        if (datoStreng == null) {
+            return "";
+        }
 
-        return date.toString(format, locale);
+        final String format = options.param(0);
+        final LocalDate date = new LocalDate(datoStreng);
+        
+        return date.toString(format, SPRAK);            
     }
 }

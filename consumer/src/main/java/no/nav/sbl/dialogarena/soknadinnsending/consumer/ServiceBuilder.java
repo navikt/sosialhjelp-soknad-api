@@ -35,6 +35,7 @@ public final class ServiceBuilder<T> {
     public static final int CONNECTION_TIMEOUT = 10000;
     public Class<T> resultClass;
     private JaxWsProxyFactoryBean factoryBean;
+    private TimeoutFeature timeoutFeature = null;
 
     public ServiceBuilder(Class<T> resultClass) {
         factoryBean = new JaxWsProxyFactoryBean();
@@ -42,7 +43,7 @@ public final class ServiceBuilder<T> {
         this.resultClass = resultClass;
     }
 
-    public ServiceBuilder<T> withExtraClasses(Class[] classes) {
+    public ServiceBuilder<T> withExtraClasses(Class<?>[] classes) {
         factoryBean.getProperties().put("jaxb.additionalContextClasses", classes);
         return this;
     }
@@ -78,12 +79,12 @@ public final class ServiceBuilder<T> {
     }
 
     public ServiceBuilder<T> withTimeout() {
-        factoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
-        return this;
+        return withTimeout(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT);
     }
-
-    public JaxWsProxyFactoryBean get() {
-        return factoryBean;
+    
+    public ServiceBuilder<T> withTimeout(int receiveTimeout, int connectionTimeout) {
+        timeoutFeature = new TimeoutFeature(receiveTimeout, connectionTimeout);
+        return this;
     }
 
     public ServiceBuilder<T> withProperties() {
@@ -98,6 +99,10 @@ public final class ServiceBuilder<T> {
     }
 
     public PortTypeBuilder<T> build() {
+        if (timeoutFeature != null) {
+            factoryBean.getFeatures().add(timeoutFeature);
+        }
+        
         return new PortTypeBuilder<>(factoryBean.create(resultClass));
     }
 
@@ -113,32 +118,33 @@ public final class ServiceBuilder<T> {
                 .withProperties();
     }
 
-    public final class PortTypeBuilder<T> {
-        public final T portType;
+    public final class PortTypeBuilder<U> {
+        public final U portType;
 
-        private PortTypeBuilder(T factoryBean) {
+        private PortTypeBuilder(U factoryBean) {
             this.portType = factoryBean;
         }
 
-        public PortTypeBuilder<T> withUserSecurity() {
+        public PortTypeBuilder<U> withUserSecurity() {
             configureStsForExternalSSO(ClientProxy.getClient(portType));
             return this;
         }
 
-        public PortTypeBuilder<T> withSystemSecurity() {
+        public PortTypeBuilder<U> withSystemSecurity() {
             configureStsForSystemUser(ClientProxy.getClient(portType));
             return this;
         }
 
-        public PortTypeBuilder<T> withMDC() {
+        public PortTypeBuilder<U> withMDC() {
             MDCOutHandler sh = new MDCOutHandler();
+            @SuppressWarnings("rawtypes")
             List<Handler> handlerChain = new ArrayList<>();
             handlerChain.add(sh);
             ((BindingProvider) portType).getBinding().setHandlerChain(handlerChain);
             return this;
         }
 
-        public PortTypeBuilder<T> withHttpsMock() {
+        public PortTypeBuilder<U> withHttpsMock() {
             HTTPConduit httpConduit = (HTTPConduit) getClient(portType).getConduit();
             String property = getProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock");
             if (property != null && property.equals("true")) {
@@ -151,7 +157,7 @@ public final class ServiceBuilder<T> {
             return this;
         }
 
-        public T get() {
+        public U get() {
             return portType;
         }
     }
