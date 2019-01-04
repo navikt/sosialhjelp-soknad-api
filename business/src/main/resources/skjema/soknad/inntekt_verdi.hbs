@@ -13,45 +13,14 @@
                     {{hentTekst "inntekt.eierandeler.true.type.sporsmal"}}
                 </h4>
                 <ul class="svar-liste">
-                    {{#each @root.soknad.data.okonomi.oversikt.formue}}
+                    {{#each @root.formuetyper}}
                         {{#hvisOkonomiskVerdi type}}
-                            {{#hvisLik type "annet"}}
-                            {{else}}
-                                <li>
-                                    <span class="verdi verdi--radio">
-                                        {{ tittel }}
-                                    </span>
-                                </li>
-                            {{/hvisLik}}
+                            {{>skjema/soknad/inntekt_verdi_hovedtyper}}
                         {{/hvisOkonomiskVerdi}}
                     {{/each}}
-                    {{#each @root.soknad.data.okonomi.oversikt.formue}}
+                    {{#each @root.formuetyper}}
                         {{#hvisOkonomiskVerdi type}}
-                            {{#hvisLik type "annet"}}
-                                <li>
-                                    <span class="verdi verdi--radio">
-                                        {{ tittel }}
-                                    </span>
-                                    <ul class="fakta-liste">
-                                        <span class="label">
-                                            {{hentTekst "inntekt.eierandeler.true.type.annet.true.beskrivelse.label"}}
-                                        </span>
-                                        <ul class="svar-liste">
-                                            <li>
-                                                {{#if @root.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi}}
-                                                    <span class="verdi verdi--tekst">
-                                                        {{@root.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi}}
-                                                    </span>
-                                                {{else}}
-                                                    <span class="verdi verdi--ikkeUtfylt">
-                                                        <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-                                                    </span>
-                                                {{/if}}
-                                            </li>
-                                        </ul>
-                                    </ul>
-                                </li>
-                            {{/hvisLik}}
+                            {{>skjema/soknad/inntekt_verdi_annet}}
                         {{/hvisOkonomiskVerdi}}
                     {{/each}}
                 </ul>
