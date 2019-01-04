@@ -15,11 +15,23 @@
                 <ul class="svar-liste">
                     {{#each @root.soknad.data.okonomi.oversikt.formue}}
                         {{#hvisOkonomiskVerdi type}}
-                            <li>
-                                <span class="verdi verdi--radio">
-                                    {{ tittel }}
-                                </span>
-                                {{#hvisLik type "annet"}}
+                            {{#hvisLik type "annet"}}
+                            {{else}}
+                                <li>
+                                    <span class="verdi verdi--radio">
+                                        {{ tittel }}
+                                    </span>
+                                </li>
+                            {{/hvisLik}}
+                        {{/hvisOkonomiskVerdi}}
+                    {{/each}}
+                    {{#each @root.soknad.data.okonomi.oversikt.formue}}
+                        {{#hvisOkonomiskVerdi type}}
+                            {{#hvisLik type "annet"}}
+                                <li>
+                                    <span class="verdi verdi--radio">
+                                        {{ tittel }}
+                                    </span>
                                     <ul class="fakta-liste">
                                         <span class="label">
                                             {{hentTekst "inntekt.eierandeler.true.type.annet.true.beskrivelse.label"}}
@@ -38,8 +50,8 @@
                                             </li>
                                         </ul>
                                     </ul>
-                                {{/hvisLik}}
-                            </li>
+                                </li>
+                            {{/hvisLik}}
                         {{/hvisOkonomiskVerdi}}
                     {{/each}}
                 </ul>
