@@ -11,6 +11,8 @@ import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonRequest;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
 import org.joda.time.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -30,6 +32,8 @@ public class UtbetalMock {
     private static final LocalDateTime UTBETALINGSDATO_INNENFOR_PERIODE2 = LocalDateTime.now().minusDays(15);
     private static final LocalDateTime UTBETALINGSDATO_UTENFOR_PERIODE = LocalDateTime.now().minusDays(35);
     private static final LocalDateTime FORFALLSDATO = LocalDateTime.now().minusDays(25);
+
+    private static final Logger logger = LoggerFactory.getLogger(UtbetalMock.class);
 
     private static Map<String, WSHentUtbetalingsinformasjonResponse> responses = new HashMap<>();
 
@@ -65,9 +69,10 @@ public class UtbetalMock {
 
     public static void setUtbetalinger(String jsonWSUtbetaling){
 
-        try {
-            WSHentUtbetalingsinformasjonResponse response = getOrCreateCurrentUserResponse();
+        WSHentUtbetalingsinformasjonResponse newResponse = new WSHentUtbetalingsinformasjonResponse();
+        WSHentUtbetalingsinformasjonResponse currentResponse = getOrCreateCurrentUserResponse();
 
+        try {
             ObjectMapper mapper = new ObjectMapper();
             final SimpleModule module = new SimpleModule();
             module.addDeserializer(WSAktoer.class, new WSAktoerDeserializer());
@@ -76,11 +81,14 @@ public class UtbetalMock {
 
             WSUtbetaling wsUtbetaling = mapper.readValue(jsonWSUtbetaling, WSUtbetaling.class);
 
-            response.withUtbetalingListe(wsUtbetaling);
+            newResponse.withUtbetalingListe(wsUtbetaling);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        logger.info("Setter utbetalingsresponse: " + jsonWSUtbetaling);
+        responses.replace(SubjectHandler.getSubjectHandler().getUid(), newResponse);
 
     }
 
