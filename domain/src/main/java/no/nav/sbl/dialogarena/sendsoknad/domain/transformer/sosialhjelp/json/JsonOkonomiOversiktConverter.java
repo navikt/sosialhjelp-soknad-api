@@ -41,13 +41,13 @@ public class JsonOkonomiOversiktConverter {
                 webSoknad.getFaktaMedKey(key),
                 "permnd"));
 
-        key = "opplysninger.utgifter.boutgift.avdraglaan";
+        key = "opplysninger.utgifter.boutgift.boliglanAvdrag";
         result.addAll(oversiktUtgift("boliglanAvdrag",
                 getTittel(key + ".boliglanAvdrag", navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "avdrag"));
 
-        key = "opplysninger.utgifter.boutgift.avdraglaan";
+        key = "opplysninger.utgifter.boutgift.boliglanAvdrag";
         result.addAll(oversiktUtgift("boliglanRenter",
                 getTittel(key + ".boliglanRenter", navMessageSource),
                 webSoknad.getFaktaMedKey(key),
@@ -103,19 +103,19 @@ public class JsonOkonomiOversiktConverter {
                 webSoknad.getFaktaMedKey(key),
                 "saldo"));
 
-        key = "opplysninger.inntekt.bankinnskudd.livsforsikring";
+        key = "opplysninger.inntekt.bankinnskudd.livsforsikringssparedel";
         result.addAll(oversiktFormue("livsforsikringssparedel",
                 getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "saldo"));
 
-        key = "opplysninger.inntekt.bankinnskudd.aksjer";
+        key = "opplysninger.inntekt.bankinnskudd.verdipapirer";
         result.addAll(oversiktFormue("verdipapirer",
                 getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "saldo"));
 
-        key = "opplysninger.inntekt.bankinnskudd.annet";
+        key = "opplysninger.inntekt.bankinnskudd.belop";
         result.addAll(oversiktFormue("belop",
                 getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),

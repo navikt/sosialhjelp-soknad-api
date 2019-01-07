@@ -42,17 +42,6 @@ public class VedleggForFaktumStrukturTest {
         assertThat(vedlegg.trengerVedlegg(sagtOppAvArbeidsgiver), is(false));
     }
 
-    @Test
-    public void testConfigForArbeidsforhold(){
-        SoknadStruktur struktur = hentStruktur("dagpenger/dagpenger_ordinaer");
-        List<VedleggForFaktumStruktur> arbeidsforhold = struktur.vedleggFor(new Faktum().medKey("arbeidsforhold"));
-        assertThat(arbeidsforhold.get(0).trengerVedlegg(sagtOppAvArbeidsgiver), is(true));
-        assertThat(arbeidsforhold.get(1).trengerVedlegg(kontraktUtgaat), is(true));
-        assertThat(arbeidsforhold.get(2).trengerVedlegg(sagtOppSelv), is(true));
-        assertThat(arbeidsforhold.get(3).trengerVedlegg(redusertArbeidstid), is(true));
-        assertThat(arbeidsforhold.get(4).trengerVedlegg(avskjediget), is(true));
-    }
-
     private static class ErSkjema implements Predicate<VedleggForFaktumStruktur> {
         private String kode;
         public ErSkjema(String kode){

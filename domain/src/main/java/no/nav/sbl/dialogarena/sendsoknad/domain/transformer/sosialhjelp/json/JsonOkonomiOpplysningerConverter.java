@@ -42,16 +42,16 @@ public class JsonOkonomiOpplysningerConverter {
         jsonOkonomibeskrivelserAvAnnet.setVerdi(webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.annet.true.beskrivelse"));
 
         // 6 - Hva har du av innskudd og/eller sparing? Annet
-        jsonOkonomibeskrivelserAvAnnet.setSparing(webSoknad.getValueForFaktum("inntekt.bankinnskudd.true.type.annet.true.beskrivelse"));
+        jsonOkonomibeskrivelserAvAnnet.setSparing(webSoknad.getValueForFaktum("inntekt.bankinnskudd.true.type.belop.true.beskrivelse"));
 
         // 6 - Har du de siste tre månedene fått utbetalt penger som ikke er lønn og/eller penger fra NAV? Annet
-        jsonOkonomibeskrivelserAvAnnet.setUtbetaling(webSoknad.getValueForFaktum("inntekt.inntekter.true.type.annet.true.beskrivelse"));
+        jsonOkonomibeskrivelserAvAnnet.setUtbetaling(webSoknad.getValueForFaktum("inntekt.inntekter.true.type.annen.true.beskrivelse"));
 
         // 7 - Har du boutgifter? Andre utgifter
-        jsonOkonomibeskrivelserAvAnnet.setBoutgifter(webSoknad.getValueForFaktum("utgifter.boutgift.true.type.andreutgifter.true.beskrivelse"));
+        jsonOkonomibeskrivelserAvAnnet.setBoutgifter(webSoknad.getValueForFaktum("utgifter.boutgift.true.type.annenBoutgift.true.beskrivelse"));
 
         //7 Har du utgifter til barn? Annet
-        jsonOkonomibeskrivelserAvAnnet.setBarneutgifter(webSoknad.getValueForFaktum("utgifter.barn.true.utgifter.annet.true.beskrivelse"));
+        jsonOkonomibeskrivelserAvAnnet.setBarneutgifter(webSoknad.getValueForFaktum("utgifter.barn.true.utgifter.annenBarneutgift.true.beskrivelse"));
 
         return jsonOkonomibeskrivelserAvAnnet;
     }
@@ -102,13 +102,13 @@ public class JsonOkonomiOpplysningerConverter {
                 webSoknad.getFaktaMedKey(key),
                 "sum"));
 
-        key = "opplysninger.inntekt.inntekter.forsikringsutbetalinger";
+        key = "opplysninger.inntekt.inntekter.forsikring";
         result.addAll(opplysningUtbetaling("forsikring",
                 getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "sum"));
 
-        key = "opplysninger.inntekt.inntekter.annet";
+        key = "opplysninger.inntekt.inntekter.annen";
         result.addAll(opplysningUtbetaling("annen",
                 getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
@@ -138,7 +138,7 @@ public class JsonOkonomiOpplysningerConverter {
                 webSoknad.getFaktaMedKey(key),
                 "sisteregning"));
 
-        key = "opplysninger.utgifter.boutgift.kommunaleavgifter";
+        key = "opplysninger.utgifter.boutgift.kommunalAvgift";
         result.addAll(opplysningUtgift("kommunalAvgift", getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "sisteregning"));
@@ -148,32 +148,32 @@ public class JsonOkonomiOpplysningerConverter {
                 webSoknad.getFaktaMedKey(key),
                 "sisteregning"));
 
-        key = "opplysninger.utgifter.boutgift.andreutgifter";
+        key = "opplysninger.utgifter.boutgift.annenBoutgift";
         result.addAll(opplysningUtgift("annenBoutgift", getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "sisteregning", "type"));
 
-        key = "opplysninger.utgifter.barn.fritidsaktivitet";
-        result.addAll(opplysningUtgift("barnFritidsaktiviteter", getTittel(key, navMessageSource),
+        key = "opplysninger.utgifter.barn.barnFritidsaktiviteter";
+        result.addAll(opplysningUtgift("barnbarnFritidsaktiviteterer", getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "sisteregning", "type"));
 
-        key = "opplysninger.utgifter.barn.tannbehandling";
+        key = "opplysninger.utgifter.barn.barnTannregulering";
         result.addAll(opplysningUtgift("barnTannregulering", getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "sisteregning"));
 
-        key = "opplysninger.utgifter.barn.annet";
+        key = "opplysninger.utgifter.barn.annenBarneutgift";
         result.addAll(opplysningUtgift("annenBarneutgift", getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "sisteregning", "type"));
 
         key = "opplysninger.ekstrainfo.utgifter";
-        final Collection<? extends JsonOkonomiOpplysningUtgift> andreUtgifter = opplysningUtgift("annen", getTittel(key, navMessageSource),
+        final Collection<? extends JsonOkonomiOpplysningUtgift> annenBoutgift = opplysningUtgift("annen", getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "utgift", "beskrivelse", true);
-        result.addAll(andreUtgifter);
-        if (andreUtgifter.size() == 0 && harVedlegg(webSoknad, "annet", "annet")) {
+        result.addAll(annenBoutgift);
+        if (annenBoutgift.size() == 0 && harVedlegg(webSoknad, "annet", "annet")) {
             extracted(result, navMessageSource, key);
         }
 

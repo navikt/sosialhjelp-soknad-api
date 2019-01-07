@@ -28,7 +28,7 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.true.type.kommunaleavgifter</id>
+        <id>utgifter.boutgift.true.type.kommunalAvgift</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
         <optional>true</optional>
@@ -40,22 +40,22 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.true.type.avdraglaan</id>
+        <id>utgifter.boutgift.true.type.boliglanAvdrag</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.true.type.andreutgifter</id>
+        <id>utgifter.boutgift.true.type.annenBoutgift</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
         <optional>true</optional>
     </faktum>
 
     <faktum>
-        <id>utgifter.boutgift.true.type.andreutgifter.true.beskrivelse</id>
+        <id>utgifter.boutgift.true.type.annenBoutgift.true.beskrivelse</id>
         <type>hidden</type>
-        <dependOn>utgifter.boutgift.true.type.andreutgifter</dependOn>
+        <dependOn>utgifter.boutgift.true.type.annenBoutgift</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -86,7 +86,7 @@
     </faktum>
 
     <faktum>
-        <id>utgifter.barn.true.utgifter.fritidsaktivitet</id>
+        <id>utgifter.barn.true.utgifter.barnFritidsaktiviteter</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
         <optional>true</optional>
@@ -104,21 +104,21 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>utgifter.barn.true.utgifter.tannbehandling</id>
+        <id>utgifter.barn.true.utgifter.barnTannregulering</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>utgifter.barn.true.utgifter.annet</id>
+        <id>utgifter.barn.true.utgifter.annenBarneutgift</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>utgifter.barn.true.utgifter.annet.true.beskrivelse</id>
+        <id>utgifter.barn.true.utgifter.annenBarneutgift.true.beskrivelse</id>
         <type>hidden</type>
-        <dependOn>utgifter.barn.true.utgifter.annet</dependOn>
+        <dependOn>utgifter.barn.true.utgifter.annenBarneutgift</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>

@@ -579,12 +579,12 @@
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.inntekt.bankinnskudd.livsforsikring</id>
+        <id>opplysninger.inntekt.bankinnskudd.livsforsikringssparedel</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.bankinnskudd.true.type.livsforsikring</faktum>
+                <faktum>inntekt.bankinnskudd.true.type.livsforsikringssparedel</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -598,26 +598,26 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.inntekt.bankinnskudd.livsforsikring.vedlegg</id>
+        <id>opplysninger.inntekt.bankinnskudd.livsforsikringssparedel.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.inntekt.bankinnskudd.livsforsikring</dependOn>
+        <dependOn>opplysninger.inntekt.bankinnskudd.livsforsikringssparedel</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.inntekt.bankinnskudd.livsforsikring.vedlegg</faktum>
+        <faktum>opplysninger.inntekt.bankinnskudd.livsforsikringssparedel.vedlegg</faktum>
         <skjemaNummer>kontooversikt</skjemaNummer>
-        <skjemanummerTillegg>livsforsikring</skjemanummerTillegg>
+        <skjemanummerTillegg>livsforsikringssparedel</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.inntekt.bankinnskudd.aksjer</id>
+        <id>opplysninger.inntekt.bankinnskudd.verdipapirer</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.bankinnskudd.true.type.aksjer</faktum>
+                <faktum>inntekt.bankinnskudd.true.type.verdipapirer</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -631,26 +631,26 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.inntekt.bankinnskudd.aksjer.vedlegg</id>
+        <id>opplysninger.inntekt.bankinnskudd.verdipapirer.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.inntekt.bankinnskudd.aksjer</dependOn>
+        <dependOn>opplysninger.inntekt.bankinnskudd.verdipapirer</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.inntekt.bankinnskudd.aksjer.vedlegg</faktum>
+        <faktum>opplysninger.inntekt.bankinnskudd.verdipapirer.vedlegg</faktum>
         <skjemaNummer>kontooversikt</skjemaNummer>
-        <skjemanummerTillegg>aksjer</skjemanummerTillegg>
+        <skjemanummerTillegg>verdipapirer</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.inntekt.bankinnskudd.annet</id>
+        <id>opplysninger.inntekt.bankinnskudd.belop</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.bankinnskudd.true.type.annet</faktum>
+                <faktum>inntekt.bankinnskudd.true.type.belop</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -664,14 +664,14 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.inntekt.bankinnskudd.annet.vedlegg</id>
+        <id>opplysninger.inntekt.bankinnskudd.belop.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.inntekt.bankinnskudd.annet</dependOn>
+        <dependOn>opplysninger.inntekt.bankinnskudd.belop</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.inntekt.bankinnskudd.annet.vedlegg</faktum>
+        <faktum>opplysninger.inntekt.bankinnskudd.belop.vedlegg</faktum>
         <skjemaNummer>kontooversikt</skjemaNummer>
         <skjemanummerTillegg>annet</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
@@ -744,12 +744,12 @@
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.inntekt.inntekter.forsikringsutbetalinger</id>
+        <id>opplysninger.inntekt.inntekter.forsikring</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.inntekter.true.type.forsikringsutbetalinger</faktum>
+                <faktum>inntekt.inntekter.true.type.forsikring</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -763,26 +763,26 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.inntekt.inntekter.forsikringsutbetalinger.vedlegg</id>
+        <id>opplysninger.inntekt.inntekter.forsikring.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.inntekt.inntekter.forsikringsutbetalinger</dependOn>
+        <dependOn>opplysninger.inntekt.inntekter.forsikring</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.inntekt.inntekter.forsikringsutbetalinger.vedlegg</faktum>
+        <faktum>opplysninger.inntekt.inntekter.forsikring.vedlegg</faktum>
         <skjemaNummer>dokumentasjon</skjemaNummer>
         <skjemanummerTillegg>forsikringsutbetaling</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.inntekt.inntekter.annet</id>
+        <id>opplysninger.inntekt.inntekter.annen</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.inntekter.true.type.annet</faktum>
+                <faktum>inntekt.inntekter.true.type.annen</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -796,14 +796,14 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.inntekt.inntekter.annet.vedlegg</id>
+        <id>opplysninger.inntekt.inntekter.annen.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.inntekt.inntekter.annet</dependOn>
+        <dependOn>opplysninger.inntekt.inntekter.annen</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.inntekt.inntekter.annet.vedlegg</faktum>
+        <faktum>opplysninger.inntekt.inntekter.annen.vedlegg</faktum>
         <skjemaNummer>dokumentasjon</skjemaNummer>
         <skjemanummerTillegg>annetinntekter</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
@@ -882,12 +882,12 @@
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.utgifter.boutgift.kommunaleavgifter</id>
+        <id>opplysninger.utgifter.boutgift.kommunalAvgift</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <faktum>utgifter.boutgift.true.type.kommunaleavgifter</faktum>
+                <faktum>utgifter.boutgift.true.type.kommunalAvgift</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -900,16 +900,16 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>opplysninger.utgifter.boutgift.kommunaleavgifter.vedlegg</id>
+        <id>opplysninger.utgifter.boutgift.kommunalAvgift.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.utgifter.boutgift.kommunaleavgifter</dependOn>
+        <dependOn>opplysninger.utgifter.boutgift.kommunalAvgift</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.utgifter.boutgift.kommunaleavgifter.vedlegg</faktum>
+        <faktum>opplysninger.utgifter.boutgift.kommunalAvgift.vedlegg</faktum>
         <skjemaNummer>faktura</skjemaNummer>
-        <skjemanummerTillegg>kommunaleavgifter</skjemanummerTillegg>
+        <skjemanummerTillegg>kommunalAvgift</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
@@ -946,12 +946,12 @@
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.utgifter.boutgift.avdraglaan</id>
+        <id>opplysninger.utgifter.boutgift.boliglanAvdrag</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <faktum>utgifter.boutgift.true.type.avdraglaan</faktum>
+                <faktum>utgifter.boutgift.true.type.boliglanAvdrag</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -969,26 +969,26 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.utgifter.boutgift.avdraglaan.vedlegg</id>
+        <id>opplysninger.utgifter.boutgift.boliglanAvdrag.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.utgifter.boutgift.avdraglaan</dependOn>
+        <dependOn>opplysninger.utgifter.boutgift.boliglanAvdrag</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.utgifter.boutgift.avdraglaan.vedlegg</faktum>
+        <faktum>opplysninger.utgifter.boutgift.boliglanAvdrag.vedlegg</faktum>
         <skjemaNummer>nedbetalingsplan</skjemaNummer>
         <skjemanummerTillegg>avdraglaan</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.utgifter.boutgift.andreutgifter</id>
+        <id>opplysninger.utgifter.boutgift.annenBoutgift</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <faktum>utgifter.boutgift.true.type.andreutgifter</faktum>
+                <faktum>utgifter.boutgift.true.type.annenBoutgift</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -1012,14 +1012,14 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.utgifter.boutgift.andreutgifter.vedlegg</id>
+        <id>opplysninger.utgifter.boutgift.annenBoutgift.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.utgifter.boutgift.andreutgifter</dependOn>
+        <dependOn>opplysninger.utgifter.boutgift.annenBoutgift</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.utgifter.boutgift.andreutgifter.vedlegg</faktum>
+        <faktum>opplysninger.utgifter.boutgift.annenBoutgift.vedlegg</faktum>
         <skjemaNummer>dokumentasjon</skjemaNummer>
         <skjemanummerTillegg>annetboutgift</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
@@ -1027,12 +1027,12 @@
 
 
     <faktum>
-        <id>opplysninger.utgifter.barn.fritidsaktivitet</id>
+        <id>opplysninger.utgifter.barn.barnFritidsaktiviteter</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <faktum>utgifter.barn.true.utgifter.fritidsaktivitet</faktum>
+                <faktum>utgifter.barn.true.utgifter.barnFritidsaktiviteter</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -1056,16 +1056,16 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.utgifter.barn.fritidsaktivitet.vedlegg</id>
+        <id>opplysninger.utgifter.barn.barnFritidsaktiviteter.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.utgifter.barn.fritidsaktivitet</dependOn>
+        <dependOn>opplysninger.utgifter.barn.barnFritidsaktiviteter</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.utgifter.barn.fritidsaktivitet.vedlegg</faktum>
+        <faktum>opplysninger.utgifter.barn.barnFritidsaktiviteter.vedlegg</faktum>
         <skjemaNummer>faktura</skjemaNummer>
-        <skjemanummerTillegg>fritidsaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>barnFritidsaktiviteter</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
@@ -1136,12 +1136,12 @@
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.utgifter.barn.tannbehandling</id>
+        <id>opplysninger.utgifter.barn.barnTannregulering</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <faktum>utgifter.barn.true.utgifter.tannbehandling</faktum>
+                <faktum>utgifter.barn.true.utgifter.barnTannregulering</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -1155,26 +1155,26 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.utgifter.barn.tannbehandling.vedlegg</id>
+        <id>opplysninger.utgifter.barn.barnTannregulering.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.utgifter.barn.tannbehandling</dependOn>
+        <dependOn>opplysninger.utgifter.barn.barnTannregulering</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.utgifter.barn.tannbehandling.vedlegg</faktum>
+        <faktum>opplysninger.utgifter.barn.barnTannregulering.vedlegg</faktum>
         <skjemaNummer>faktura</skjemaNummer>
-        <skjemanummerTillegg>tannbehandling</skjemanummerTillegg>
+        <skjemanummerTillegg>barnTannregulering</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.utgifter.barn.annet</id>
+        <id>opplysninger.utgifter.barn.annenBarneutgift</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <faktum>utgifter.barn.true.utgifter.annet</faktum>
+                <faktum>utgifter.barn.true.utgifter.annenBarneutgift</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -1198,14 +1198,14 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.utgifter.barn.annet.vedlegg</id>
+        <id>opplysninger.utgifter.barn.annenBarneutgift.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.utgifter.barn.annet</dependOn>
+        <dependOn>opplysninger.utgifter.barn.annenBarneutgift</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.utgifter.barn.annet.vedlegg</faktum>
+        <faktum>opplysninger.utgifter.barn.annenBarneutgift.vedlegg</faktum>
         <skjemaNummer>faktura</skjemaNummer>
         <skjemanummerTillegg>annetbarnutgift</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>

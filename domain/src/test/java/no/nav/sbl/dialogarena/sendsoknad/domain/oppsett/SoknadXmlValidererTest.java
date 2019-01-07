@@ -27,51 +27,6 @@ public class SoknadXmlValidererTest {
     }
 
     @Test
-    public void testDagpengerXml() throws Exception {
-        testOmXmlValiderer("dagpenger/dagpenger_ordinaer.xml");
-    }
-
-    @Test
-    public void testDagpengerGjenopptakXml() throws Exception {
-        testOmXmlValiderer("dagpenger/dagpenger_gjenopptak.xml");
-    }
-
-    @Test
-    public void testForeldrepengerXml() throws Exception {
-        testOmXmlValiderer("foreldrepenger/foreldrepenger.xml");
-    }
-
-    @Test
-    public void testTilleggStonaderXml() throws Exception {
-        testOmXmlValiderer("soknadtilleggsstonader.xml");
-    }
-
-    @Test
-    public void testRefusjonXml() throws Exception {
-        testOmXmlValiderer("refusjondagligreise.xml");
-    }
-
-    @Test
-    public void testTiltakspengerXml() throws Exception {
-        testOmXmlValiderer("tiltakspenger.xml");
-    }
-
-    @Test
-    public void testBilstonadXml() throws Exception {
-        testOmXmlValiderer("bilstonad.xml");
-    }
-
-    @Test
-    public void testAapOrdinaerXml() throws Exception {
-        testOmXmlValiderer("aap/aap_ordinaer.xml");
-    }
-
-    @Test
-    public void testAapGjenopptakXml() throws Exception {
-        testOmXmlValiderer("aap/aap_gjenopptak.xml");
-    }
-
-    @Test
     public void testSosialhjelpXml() throws Exception {
         testOmXmlValiderer("sosialhjelp/sosialhjelp.xml");
     }

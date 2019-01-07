@@ -200,13 +200,13 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.livsforsikring</id>
+        <id>inntekt.bankinnskudd.true.type.livsforsikringssparedel</id>
         <type>bool</type>
         <dependOn>inntekt.bankinnskudd.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.aksjer</id>
+        <id>inntekt.bankinnskudd.true.type.verdipapirer</id>
         <type>bool</type>
         <dependOn>inntekt.bankinnskudd.true.type</dependOn>
         <optional>true</optional>
@@ -218,16 +218,16 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.annet</id>
+        <id>inntekt.bankinnskudd.true.type.belop</id>
         <type>bool</type>
         <dependOn>inntekt.bankinnskudd.true.type</dependOn>
         <optional>true</optional>
     </faktum>
 
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.annet.true.beskrivelse</id>
+        <id>inntekt.bankinnskudd.true.type.belop.true.beskrivelse</id>
         <type>textbox</type>
-        <dependOn>inntekt.bankinnskudd.true.type.annet</dependOn>
+        <dependOn>inntekt.bankinnskudd.true.type.belop</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -264,22 +264,22 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.inntekter.true.type.forsikringsutbetalinger</id>
+        <id>inntekt.inntekter.true.type.forsikring</id>
         <type>bool</type>
         <dependOn>inntekt.inntekter.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.inntekter.true.type.annet</id>
+        <id>inntekt.inntekter.true.type.annen</id>
         <type>bool</type>
         <dependOn>inntekt.inntekter.true.type</dependOn>
         <optional>true</optional>
     </faktum>
 
     <faktum>
-        <id>inntekt.inntekter.true.type.annet.true.beskrivelse</id>
+        <id>inntekt.inntekter.true.type.annen.true.beskrivelse</id>
         <type>textbox</type>
-        <dependOn>inntekt.inntekter.true.type.annet</dependOn>
+        <dependOn>inntekt.inntekter.true.type.annen</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
