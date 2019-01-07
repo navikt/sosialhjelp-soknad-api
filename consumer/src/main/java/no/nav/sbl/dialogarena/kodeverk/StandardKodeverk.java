@@ -11,10 +11,7 @@ import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.KOMMUNE
 import static org.joda.time.DateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.text.Collator;
 import java.util.HashMap;
 import java.util.List;
@@ -219,7 +216,11 @@ public class StandardKodeverk implements Kodeverk {
             }
             logger.warn("Kodeverktjeneste feilet ({})! Forsøker fallback", kodeverkfeil.getMessage());
             try {
-                kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
+                if (Boolean.parseBoolean(System.getProperty("start.kodeverk.withmock", "false"))) {
+                    kodeverket = (XMLEnkeltKodeverk) readFromClasspath(navn);
+                } else {
+                    kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
+                }
             } catch (RuntimeException dumpException) {
                 logger.warn("Fallback feilet ({}), avbryter.", dumpException.getMessage());
                 kodeverkfeil.addSuppressed(dumpException);
@@ -260,6 +261,15 @@ public class StandardKodeverk implements Kodeverk {
             }
         }
         throw new IllegalStateException("Forsøkte å laste fildump '" + dumpName + ".xml', men fant ikke filen");
+    }
+
+    private XMLKodeverk readFromClasspath(String dumpName) {
+        final String name = "kodeverk/" + dumpName + ".xml";
+        try (InputStream is = StandardKodeverk.class.getClassLoader().getResourceAsStream(name)) {
+            return ((JAXBElement<XMLKodeverk>) JAXB.createUnmarshaller().unmarshal(is)).getValue();
+        } catch (JAXBException | IOException | RuntimeException e) {
+            throw new RuntimeException("Feil ved innlasting av dump " + name + ": " + e.getMessage(), e);
+        }
     }
 
     private void dumpIfPossible(String dumpName, XMLKodeverk kodeverket) {

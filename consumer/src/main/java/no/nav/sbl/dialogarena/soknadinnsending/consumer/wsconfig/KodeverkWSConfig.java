@@ -21,9 +21,11 @@ public class KodeverkWSConfig {
     private String kodeverkEndPoint;
 
     private ServiceBuilder<KodeverkPortType>.PortTypeBuilder<KodeverkPortType> factory() {
+        final boolean useMock = Boolean.parseBoolean(System.getProperty("start.kodeverk.withmock", "false"));
+        final String endpoint = useMock ? null : kodeverkEndPoint;
         return new ServiceBuilder<>(KodeverkPortType.class)
                 .asStandardService()
-                .withAddress(kodeverkEndPoint)
+                .withAddress(endpoint)
                 .withWsdl("classpath:/kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl")
                 .build()
                 .withHttpsMock();
@@ -32,8 +34,11 @@ public class KodeverkWSConfig {
     @Bean
     public KodeverkPortType kodeverkEndpoint() {
         KodeverkPortType prod = factory().withSystemSecurity().get();
+        /*
         KodeverkPortType mock = new KodeverkMock().kodeverkMock();
         return createMetricsProxyWithInstanceSwitcher("Kodeverk", prod, mock, KODEVERK_KEY, KodeverkPortType.class);
+        */
+        return prod;
     }
 
     @Bean
