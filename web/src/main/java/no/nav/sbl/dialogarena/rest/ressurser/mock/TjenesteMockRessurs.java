@@ -54,8 +54,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         AdresseSokConsumerMock.setAdresser(jsonAdressesokRespons);
+        clearCache();
     }
 
     @DELETE
@@ -64,8 +64,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         AdresseSokConsumerMock.settDefaultAdresser();
+        clearCache();
     }
 
 
@@ -76,15 +76,13 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
-
         logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + SubjectHandler.getSubjectHandler().getUid());
-
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer);
         } else {
             DkifMock.slettTelefonnummer();
         }
+        clearCache();
     }
 
 
@@ -95,8 +93,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         BrukerprofilMock.setBrukerprofil(jsonBrukerProfil);
+        clearCache();
     }
 
     @DELETE
@@ -105,8 +103,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         BrukerprofilMock.settDefaultBrukerprofil();
+        clearCache();
     }
 
 
@@ -117,9 +115,9 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         logger.info("Setter arbeidsforhold: " + arbeidsforholdData);
         ArbeidsforholdMock.settArbeidsforhold(arbeidsforholdData);
+        clearCache();
     }
 
     @POST
@@ -129,8 +127,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         ArbeidsforholdMock.settArbeidsforhold(arbeidsforholdData);
+        clearCache();
     }
 
     @DELETE
@@ -139,8 +137,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         ArbeidsforholdMock.slettAlleArbeidsforhold();
+        clearCache();
     }
 
     @POST
@@ -150,13 +148,13 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
         if (jsonOrganisasjon != null){
             OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
         } else {
             OrganisasjonMock.slettOrganisasjon();
         }
+        clearCache();
     }
 
     @POST
@@ -166,9 +164,9 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         logger.info("Setter mock familieforhold med data: " + jsonPerson);
         PersonMock.setPersonMedFamilieforhold(jsonPerson);
+        clearCache();
     }
 
     @DELETE
@@ -177,8 +175,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
         PersonMock.setDefaultPersonUtenFamilieforhold();
+        clearCache();
     }
 
 
@@ -189,9 +187,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
-
         UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
+        clearCache();
     }
 
     @DELETE
@@ -200,9 +197,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
-
         UtbetalMock.slettUtbetalinger();
+        clearCache();
     }
 
     @POST
@@ -212,9 +208,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
-
         NorgConsumerMock.settNorgMap(rsNorgEnhetMap);
+        clearCache();
     }
 
     @DELETE
@@ -223,9 +218,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        clearCache();
-
         NorgConsumerMock.slettNorgMap();
+        clearCache();
     }
 
 }
