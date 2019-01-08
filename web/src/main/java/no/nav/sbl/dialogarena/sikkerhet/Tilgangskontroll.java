@@ -22,7 +22,7 @@ import javax.inject.Named;
 import java.util.Objects;
 
 import static java.util.Arrays.asList;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.*;
 import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
 import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forRequest;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -75,7 +75,7 @@ public class Tilgangskontroll {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
-        String aktorId = getSubjectHandler().getUid();
+        String aktorId = getSubjectHandler().getUserIdFromToken();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
 

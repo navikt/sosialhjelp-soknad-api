@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -31,18 +31,18 @@ public class TjenesterRessurs {
     @GET
     @Path("/aktiviteter")
     public List<Faktum> hentAktiviteter() {
-        return aktivitetService.hentAktiviteter(getSubjectHandler().getUid());
+        return aktivitetService.hentAktiviteter(getSubjectHandler().getUserIdFromToken());
     }
 
     @GET
     @Path("/vedtak")
     public List<Faktum> hentVedtak() {
-        return aktivitetService.hentVedtak(getSubjectHandler().getUid());
+        return aktivitetService.hentVedtak(getSubjectHandler().getUserIdFromToken());
     }
 
     @GET
     @Path("/maalgrupper")
     public List<Faktum> hentMaalgrupper() {
-        return maalgrupperService.hentMaalgrupper(getSubjectHandler().getUid());
+        return maalgrupperService.hentMaalgrupper(getSubjectHandler().getUserIdFromToken());
     }
 }

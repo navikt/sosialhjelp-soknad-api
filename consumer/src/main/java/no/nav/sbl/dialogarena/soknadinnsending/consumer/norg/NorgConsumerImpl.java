@@ -10,7 +10,6 @@ import javax.ws.rs.client.*;
 import javax.ws.rs.core.Response;
 
 import static java.lang.System.getenv;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -99,7 +98,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     }
 
     private Invocation.Builder lagRequest(String endpoint) {
-        String consumerId = getSubjectHandler().getConsumerId();
+        String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
 

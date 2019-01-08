@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.getSubjectHandler;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
@@ -187,7 +187,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/utslagskriterier")
     public Map<String, Object> hentUtslagskriterier() {
-        String uid = getSubjectHandler().getUid();
+        String uid = getSubjectHandler().getUserIdFromToken();
         Map<String, Object> utslagskriterierResultat = new HashMap<>();
         utslagskriterierResultat.put("arbeidssokerstatus", personInfoService.hentArbeidssokerStatus(uid));
         utslagskriterierResultat.put("arbeidssokertatusFraSBLArbeid", arbeidssokerInfoService.getArbeidssokerArenaStatus(uid));
@@ -214,7 +214,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/utslagskriterier/alder")
     public int hentAlder() {
-        String uid = getSubjectHandler().getUid();
+        String uid = getSubjectHandler().getUserIdFromToken();
 
         return new PersonAlder(uid).getAlder();
     }
@@ -222,7 +222,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
-        String uid = getSubjectHandler().getUid();
+        String uid = getSubjectHandler().getUserIdFromToken();
         Personalia personalia = personaliaBolk.hentPersonalia(uid);
 
         Map<String, Object> resultat = new HashMap<>();

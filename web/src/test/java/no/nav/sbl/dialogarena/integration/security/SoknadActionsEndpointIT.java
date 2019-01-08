@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response;
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,12 +59,12 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     @Test
     public void sendEpost_fortsettsenere() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
+        String token = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER).serialize();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
         Response responseMedBrukersEgenXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget)
-                .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken("BRUKER_2_SIN_BEHANDLINGSID"))
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
+                .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken("BRUKER_2_SIN_BEHANDLINGSID", new DateTime().toString("yyyyMMdd"), token))
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token)
                 .buildPost(Entity.json(""))
                 .invoke();
 
@@ -72,7 +73,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
         Response responseMedStjeltXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget)
                 .header("X-XSRF-TOKEN", soknadTester.getXhrHeader())
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token)
                 .buildPost(Entity.json(""))
                 .invoke();
 

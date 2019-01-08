@@ -38,7 +38,8 @@ public class OidcTokenValidationTestConfig {
     }
 
     private boolean isOidcMock() {
-        return "true".equalsIgnoreCase(System.getProperty("start.oidc.withmock"));
+        return "true".equalsIgnoreCase(System.getProperty("tillatmock")) &&
+                "true".equalsIgnoreCase(System.getProperty("start.oidc.withmock"));
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OidcResourceFilteringFeature implements DynamicFeature {
-    private static final List<Class> WHITELISTED_CLASSES = Arrays.asList();
+    private static final List<Class> WHITELISTED_CLASSES = Arrays.asList(); // Add Resource-classes from external libraries we need to use but can't annotate with @unprotected.
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
@@ -20,7 +20,7 @@ public class OidcResourceFilteringFeature implements DynamicFeature {
     }
 
     private boolean isOidcMock() {
-        return "true".equalsIgnoreCase(System.getProperty("start.oidc.withmock")) && 
+        return "true".equalsIgnoreCase(System.getProperty("tillatmock")) &&
                 "true".equalsIgnoreCase(System.getProperty("start.oidc.withmock"));
     }
 }
