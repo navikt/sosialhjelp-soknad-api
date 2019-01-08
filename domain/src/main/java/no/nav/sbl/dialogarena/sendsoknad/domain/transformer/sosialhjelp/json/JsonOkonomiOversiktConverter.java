@@ -41,13 +41,13 @@ public class JsonOkonomiOversiktConverter {
                 webSoknad.getFaktaMedKey(key),
                 "permnd"));
 
-        key = "opplysninger.utgifter.boutgift.boliglanAvdrag";
+        key = "opplysninger.utgifter.boutgift.avdraglaan";
         result.addAll(oversiktUtgift("boliglanAvdrag",
                 getTittel(key + ".boliglanAvdrag", navMessageSource),
                 webSoknad.getFaktaMedKey(key),
                 "avdrag"));
 
-        key = "opplysninger.utgifter.boutgift.boliglanAvdrag";
+        key = "opplysninger.utgifter.boutgift.avdraglaan";
         result.addAll(oversiktUtgift("boliglanRenter",
                 getTittel(key + ".boliglanRenter", navMessageSource),
                 webSoknad.getFaktaMedKey(key),

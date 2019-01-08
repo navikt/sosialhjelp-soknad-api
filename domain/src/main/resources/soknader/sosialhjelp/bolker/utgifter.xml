@@ -40,7 +40,7 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.true.type.boliglanAvdrag</id>
+        <id>utgifter.boutgift.true.type.avdraglaan</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
         <optional>true</optional>

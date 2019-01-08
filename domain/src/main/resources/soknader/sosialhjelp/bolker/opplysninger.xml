@@ -607,7 +607,7 @@
     <vedlegg>
         <faktum>opplysninger.inntekt.bankinnskudd.livsforsikringssparedel.vedlegg</faktum>
         <skjemaNummer>kontooversikt</skjemaNummer>
-        <skjemanummerTillegg>livsforsikringssparedel</skjemanummerTillegg>
+        <skjemanummerTillegg>livsforsikring</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
@@ -640,7 +640,7 @@
     <vedlegg>
         <faktum>opplysninger.inntekt.bankinnskudd.verdipapirer.vedlegg</faktum>
         <skjemaNummer>kontooversikt</skjemaNummer>
-        <skjemanummerTillegg>verdipapirer</skjemanummerTillegg>
+        <skjemanummerTillegg>aksjer</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
@@ -909,7 +909,7 @@
     <vedlegg>
         <faktum>opplysninger.utgifter.boutgift.kommunalAvgift.vedlegg</faktum>
         <skjemaNummer>faktura</skjemaNummer>
-        <skjemanummerTillegg>kommunalAvgift</skjemanummerTillegg>
+        <skjemanummerTillegg>kommunaleavgifter</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
@@ -946,12 +946,12 @@
     </vedlegg>
 
     <faktum>
-        <id>opplysninger.utgifter.boutgift.boliglanAvdrag</id>
+        <id>opplysninger.utgifter.boutgift.avdraglaan</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <faktum>utgifter.boutgift.true.type.boliglanAvdrag</faktum>
+                <faktum>utgifter.boutgift.true.type.avdraglaan</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -969,14 +969,14 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>opplysninger.utgifter.boutgift.boliglanAvdrag.vedlegg</id>
+        <id>opplysninger.utgifter.boutgift.avdraglaan.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.utgifter.boutgift.boliglanAvdrag</dependOn>
+        <dependOn>opplysninger.utgifter.boutgift.avdraglaan</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <faktum>opplysninger.utgifter.boutgift.boliglanAvdrag.vedlegg</faktum>
+        <faktum>opplysninger.utgifter.boutgift.avdraglaan.vedlegg</faktum>
         <skjemaNummer>nedbetalingsplan</skjemaNummer>
         <skjemanummerTillegg>avdraglaan</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
@@ -1065,7 +1065,7 @@
     <vedlegg>
         <faktum>opplysninger.utgifter.barn.barnFritidsaktiviteter.vedlegg</faktum>
         <skjemaNummer>faktura</skjemaNummer>
-        <skjemanummerTillegg>barnFritidsaktiviteter</skjemanummerTillegg>
+        <skjemanummerTillegg>fritidsaktivitet</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
@@ -1164,7 +1164,7 @@
     <vedlegg>
         <faktum>opplysninger.utgifter.barn.barnTannregulering.vedlegg</faktum>
         <skjemaNummer>faktura</skjemaNummer>
-        <skjemanummerTillegg>barnTannregulering</skjemanummerTillegg>
+        <skjemanummerTillegg>tannbehandling</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
