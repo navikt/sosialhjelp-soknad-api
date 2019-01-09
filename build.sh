@@ -42,10 +42,6 @@ function go_to_project_root() {
     cd $PROJECT_ROOT
 }
 
-function build_backend() {
-    mvn clean package dependency:tree help:effective-pom --batch-mode -U
-}
-
 function set_version() {
     if [[ ${versjon+x} ]]; then
         mvn versions:set -U -DnewVersion=${versjon}
@@ -59,7 +55,7 @@ function revert_version() {
 }
 
 function publish() {
-    mvn deploy --batch-mode -DskipTests
+    mvn clean deploy --batch-mode -U
 }
 
 function build_and_deploy_docker() {
@@ -249,7 +245,6 @@ function deploy_if_requested_by_committer() {
 
 go_to_project_root
 set_version
-build_backend
 publish
 build_and_deploy_docker
 update_nais_settings
