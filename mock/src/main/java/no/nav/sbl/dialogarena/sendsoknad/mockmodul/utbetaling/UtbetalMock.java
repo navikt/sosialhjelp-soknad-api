@@ -62,9 +62,7 @@ public class UtbetalMock {
     }
 
     public static WSHentUtbetalingsinformasjonResponse getDefaultResponse(){
-        WSHentUtbetalingsinformasjonResponse response = new WSHentUtbetalingsinformasjonResponse();
-
-        return response;
+        return new WSHentUtbetalingsinformasjonResponse();
     }
 
     public static void setUtbetalinger(String jsonWSUtbetaling){

@@ -27,5 +27,3 @@ public class WSAktoerDeserializer extends StdDeserializer<WSAktoer> {
         return mapper.treeToValue(node, WSPerson.class);
     }
 }
-
-// WSSamhandler.class, WSOrganisasjon.class, WSPerson.class
