@@ -84,6 +84,6 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
 
     @Override
     public String getKvitteringTemplate() {
-        return "/skjema/sosialhjelp/kvittering";
+        return "/skjema/kvittering/kvittering";
     }
 }

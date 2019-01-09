@@ -28,6 +28,8 @@ public interface Kodeverk extends Adressekodeverk {
 
     void lastInnNyeKodeverk();
 
+    public String gjettKommunenummer(String kommunenavn);
+    
     public List<String> hentAlleKodenavnFraKodeverk(EksponertKodeverk kodeverknavn);
 
     public Map<String, String> hentAlleKodenavnMedForsteTerm(EksponertKodeverk kodeverknavn);
