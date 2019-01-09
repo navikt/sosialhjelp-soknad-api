@@ -16,15 +16,20 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.slf4j.Logger;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+
 import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
 import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forRequest;
+import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.sjekkXsrfToken;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -48,8 +53,22 @@ public class Tilgangskontroll {
         pep = new PEPImpl(pdp);
         ((PEPImpl) pep).setRequestEnrichers(asList(new EnvironmentRequestEnricher(), new SecurityContextRequestEnricher()));
     }
+    
+    public void verifiserAtBrukerKanEndreSoknad(String behandlingsId) {
+        if ("local".equals(System.getProperty("environment.name"))) {
+            return;
+        }
+                
+        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
+        verifiserBrukerHarTilgangTilSoknad(behandlingsId);
+    }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
+        if ("local".equals(System.getProperty("environment.name"))) {
+            return;
+        }
+        
         String aktoerId = "undefined";
         try {
             WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
@@ -61,6 +80,10 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilMetadata(String behandlingsId) {
+        if ("local".equals(System.getProperty("environment.name"))) {
+            return;
+        }
+        
         String aktoerId = "undefined";
         try {
             SoknadMetadata metadata = soknadMetadataRepository.hent(behandlingsId);
@@ -72,6 +95,10 @@ public class Tilgangskontroll {
     }
 
     public void verifiserTilgangMotPep(String eier, String behandlingsId) {
+        if ("local".equals(System.getProperty("environment.name"))) {
+            return;
+        }
+        
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
