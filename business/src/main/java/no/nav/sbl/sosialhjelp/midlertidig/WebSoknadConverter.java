@@ -71,7 +71,7 @@ public class WebSoknadConverter {
         return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
     }
 
-    JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
+    public JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
         final List<JsonVedlegg> jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
         if (webSoknad.erEttersending()) {
             return new JsonInternalSoknad()
