@@ -1,0 +1,30 @@
+<div class="bolk js-bolk">
+    {{#with data.familie}}
+        <h2 class="bolk__tittel">{{ hentTekst "familiebolk.tittel" }}</h2>
+        <ul class="fakta-liste">
+	        {{#hvisLik sivilstatus.kilde "system"}}
+	            {{> skjema/soknad/familie_sivilstatus_gift_system}}
+	        {{else}}
+	            {{> skjema/soknad/familie_sivilstatus_bruker}}
+	        {{/hvisLik}}
+            {{#if @root.utvidetSoknad}}
+                {{#hvisLik sivilstatus.status "gift"}}
+                    {{#unless sivilstatus.ektefelleHarDiskresjonskode}}
+	                    {{{ settInnInfotekst "system.familie.sivilstatus.informasjonspanel.tittel" }}}
+	                    {{{ settInnInfotekst "system.familie.sivilstatus.informasjonspanel.tekst" }}}
+                    {{/unless}}
+                {{/hvisLik}}
+            {{/if}}
+            {{#if @root.utvidetSoknad}}
+                <h3>{{ hentTekst "familierelasjon.faktum.sporsmal" }}</h3>
+            {{/if}}
+            {{#if forsorgerplikt.harForsorgerplikt.verdi}}
+                {{> skjema/soknad/familie_har_barn}}
+            {{else}}
+                {{#if @root.utvidetSoknad}}
+                    {{{hentTekst "familierelasjon.ingen_registrerte_barn"}}}
+                {{/if}}
+            {{/if}}
+        </ul>
+    {{/with}}
+</div>

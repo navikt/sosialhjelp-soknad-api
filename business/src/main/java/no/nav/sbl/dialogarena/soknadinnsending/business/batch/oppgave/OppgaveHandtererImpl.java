@@ -21,17 +21,17 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Service
 @Import({
         FiksHandterer.class,
-        MetadataInnfyller.class,
         FiksSender.class
 })
 public class OppgaveHandtererImpl implements OppgaveHandterer {
+
+    public static final int FORSTE_STEG_NY_INNSENDING = 21;
 
     private static final Logger logger = getLogger(OppgaveHandtererImpl.class);
 
     private static final int FEIL_THRESHOLD = 20;
     private static final int PROSESS_RATE = 10 * 1000; // 10 sek etter forrige
     private static final int RAPPORTER_RATE = 15 * 60 * 1000; // hvert kvarter
-    private static final int FORSTE_STEG_NY_INNSENDING = 21;
 
     @Inject
     private

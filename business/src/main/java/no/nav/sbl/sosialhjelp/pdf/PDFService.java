@@ -17,7 +17,7 @@ public class PDFService {
 
     public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending, String eier) {
         try {
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/sosialhjelp/kvittering", erEttersending, eier);
+            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/kvittering/kvittering", erEttersending, eier);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke generere brukerkvittering (Brukerkvittering.pdf).", e);
@@ -43,7 +43,7 @@ public class PDFService {
     
     private byte[] genererOppsummeringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean fullSoknad) {
         try {
-            final String pdfMarkup = pdfTemplate.genererHtmlForPdf(internalSoknad, fullSoknad);
+            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, fullSoknad);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage PDF for saksbehandler/juridisk. Fullsoknad: " + fullSoknad, e);
