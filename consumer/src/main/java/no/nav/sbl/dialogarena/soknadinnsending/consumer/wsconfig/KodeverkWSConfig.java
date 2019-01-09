@@ -34,10 +34,7 @@ public class KodeverkWSConfig {
     @Bean
     public KodeverkPortType kodeverkEndpoint() {
         KodeverkPortType prod = factory().withSystemSecurity().get();
-        /*
-        KodeverkPortType mock = new KodeverkMock().kodeverkMock();
-        return createMetricsProxyWithInstanceSwitcher("Kodeverk", prod, mock, KODEVERK_KEY, KodeverkPortType.class);
-        */
+
         return prod;
     }
 
