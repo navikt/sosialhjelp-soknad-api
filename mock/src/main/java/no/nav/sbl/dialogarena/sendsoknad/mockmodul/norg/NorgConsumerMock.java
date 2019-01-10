@@ -54,7 +54,7 @@ public class NorgConsumerMock {
         return defaultMap;
     }
 
-    public static void settNorgMap(String rsNorgEnhetMap){
+    public static void setNorgMap(String rsNorgEnhetMap){
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -74,7 +74,7 @@ public class NorgConsumerMock {
         }
     }
 
-    public static void slettNorgMap(){
+    public static void resetNorgMap(){
         responses.replace(SubjectHandler.getSubjectHandler().getUid(), getDefaultMap());
     }
 }

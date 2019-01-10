@@ -75,7 +75,7 @@ public class OrganisasjonMock {
 
     }
 
-    public static void slettOrganisasjon(){
+    public static void resetOrganisasjon(){
         responses.replace(SubjectHandler.getSubjectHandler().getUid(), new HentOrganisasjonResponse());
     }
 

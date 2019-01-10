@@ -322,7 +322,7 @@ public class BrukerprofilMock {
 
     }
 
-    public static void settDefaultBrukerprofil(){
+    public static void resetBrukerprofil(){
         XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
         if (response == null){
             responses.put(SubjectHandler.getSubjectHandler().getUid(), response);

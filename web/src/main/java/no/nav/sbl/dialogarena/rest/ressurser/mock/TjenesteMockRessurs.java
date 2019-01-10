@@ -9,8 +9,6 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.inject.Inject;
-import javax.security.auth.Subject;
 import javax.ws.rs.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -50,7 +47,7 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/adresser")
-    public void settAdresser(@RequestBody String jsonAdressesokRespons) {
+    public void setAdresser(@RequestBody String jsonAdressesokRespons) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
@@ -60,11 +57,11 @@ public class TjenesteMockRessurs {
 
     @DELETE
     @Path("/adresser")
-    public void slettAdresser() {
+    public void resetAdresser() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        AdresseSokConsumerMock.settDefaultAdresser();
+        AdresseSokConsumerMock.resetAdresser();
         clearCache();
     }
 
@@ -72,7 +69,7 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/telefon")
-    public void settTelefon(@RequestBody JsonTelefonnummer jsonTelefonnummer) {
+    public void setTelefon(@RequestBody JsonTelefonnummer jsonTelefonnummer) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
@@ -80,7 +77,7 @@ public class TjenesteMockRessurs {
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer);
         } else {
-            DkifMock.slettTelefonnummer();
+            DkifMock.resetTelefonnummer();
         }
         clearCache();
     }
@@ -89,7 +86,7 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/brukerprofil")
-    public void settBrukerprofil(@RequestBody String jsonBrukerProfil) {
+    public void setBrukerprofil(@RequestBody String jsonBrukerProfil) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
@@ -99,11 +96,11 @@ public class TjenesteMockRessurs {
 
     @DELETE
     @Path("/brukerprofil")
-    public void settDefaultBrukerprofil() {
+    public void setDefaultBrukerprofil() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        BrukerprofilMock.settDefaultBrukerprofil();
+        BrukerprofilMock.resetBrukerprofil();
         clearCache();
     }
 
@@ -111,40 +108,40 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/arbeid")
-    public void settArbeidsforholdJson(@RequestBody String arbeidsforholdData) {
+    public void setArbeidsforholdJson(@RequestBody String arbeidsforholdData) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter arbeidsforhold: " + arbeidsforholdData);
-        ArbeidsforholdMock.settArbeidsforhold(arbeidsforholdData);
+        ArbeidsforholdMock.setArbeidsforhold(arbeidsforholdData);
         clearCache();
     }
 
     @POST
     @Consumes(APPLICATION_XML)
     @Path("/arbeid")
-    public void settArbeidsforholdXml(@RequestBody String arbeidsforholdData) {
+    public void setArbeidsforholdXml(@RequestBody String arbeidsforholdData) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        ArbeidsforholdMock.settArbeidsforhold(arbeidsforholdData);
+        ArbeidsforholdMock.setArbeidsforhold(arbeidsforholdData);
         clearCache();
     }
 
     @DELETE
     @Path("/arbeid")
-    public void slettAlleArbeidsforhold() {
+    public void resetAlleArbeidsforhold() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        ArbeidsforholdMock.slettAlleArbeidsforhold();
+        ArbeidsforholdMock.resetArbeidsforhold();
         clearCache();
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/organisasjon")
-    public void settOrganisasjon(@RequestBody String jsonOrganisasjon) {
+    public void setOrganisasjon(@RequestBody String jsonOrganisasjon) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
@@ -152,7 +149,7 @@ public class TjenesteMockRessurs {
         if (jsonOrganisasjon != null){
             OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
         } else {
-            OrganisasjonMock.slettOrganisasjon();
+            OrganisasjonMock.resetOrganisasjon();
         }
         clearCache();
     }
@@ -160,7 +157,7 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/familie")
-    public void settFamilie(@RequestBody String jsonPerson) {
+    public void setFamilie(@RequestBody String jsonPerson) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
@@ -171,11 +168,11 @@ public class TjenesteMockRessurs {
 
     @DELETE
     @Path("/familie")
-    public void slettFamilie() {
+    public void resetFamilie() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        PersonMock.setDefaultPersonUtenFamilieforhold();
+        PersonMock.resetFamilieforhold();
         clearCache();
     }
 
@@ -183,7 +180,7 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/utbetaling")
-    public void settUtbetalinger(@RequestBody String jsonWSUtbetaling) {
+    public void setUtbetalinger(@RequestBody String jsonWSUtbetaling) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
@@ -193,32 +190,32 @@ public class TjenesteMockRessurs {
 
     @DELETE
     @Path("/utbetaling")
-    public void slettUtbetalinger() {
+    public void resetUtbetalinger() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        UtbetalMock.slettUtbetalinger();
+        UtbetalMock.resetUtbetalinger();
         clearCache();
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/norg")
-    public void settNorg(@RequestBody String rsNorgEnhetMap) {
+    public void setNorg(@RequestBody String rsNorgEnhetMap) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        NorgConsumerMock.settNorgMap(rsNorgEnhetMap);
+        NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
         clearCache();
     }
 
     @DELETE
     @Path("/norg")
-    public void slettNorg() {
+    public void resetNorg() {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        NorgConsumerMock.slettNorgMap();
+        NorgConsumerMock.resetNorgMap();
         clearCache();
     }
 

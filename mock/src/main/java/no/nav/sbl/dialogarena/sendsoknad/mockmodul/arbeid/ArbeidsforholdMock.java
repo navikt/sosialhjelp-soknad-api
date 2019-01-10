@@ -43,7 +43,7 @@ public class ArbeidsforholdMock {
         return response;
     }
 
-    public static void settArbeidsforhold(String arbeidsforholdData) {
+    public static void setArbeidsforhold(String arbeidsforholdData) {
 
         try {
             final ObjectMapper mapper = new ObjectMapper();
@@ -61,7 +61,7 @@ public class ArbeidsforholdMock {
         }
     }
 
-    public static void slettAlleArbeidsforhold(){
+    public static void resetArbeidsforhold(){
         FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
         responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
     }

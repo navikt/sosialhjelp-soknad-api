@@ -114,7 +114,7 @@ public class PersonMock {
         }
     }
 
-    public static void setDefaultPersonUtenFamilieforhold(){
+    public static void resetFamilieforhold(){
         Person person = getDefaultPerson();
         HentKjerneinformasjonResponse response = getOrCreateCurrentUserResponse();
         response.setPerson(person);

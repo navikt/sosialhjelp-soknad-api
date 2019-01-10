@@ -57,7 +57,7 @@ public class DkifMock {
                 .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(telefonnummer.getVerdi()));
     }
 
-    public static void slettTelefonnummer() {
+    public static void resetTelefonnummer() {
 
         WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse();
         response.getDigitalKontaktinformasjon().setMobiltelefonnummer(null);

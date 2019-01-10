@@ -90,7 +90,7 @@ public class UtbetalMock {
 
     }
 
-    public static void slettUtbetalinger(){
+    public static void resetUtbetalinger(){
         responses.replace(SubjectHandler.getSubjectHandler().getUid(), new WSHentUtbetalingsinformasjonResponse());
     }
 

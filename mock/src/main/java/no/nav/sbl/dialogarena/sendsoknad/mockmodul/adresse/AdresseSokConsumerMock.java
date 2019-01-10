@@ -76,7 +76,7 @@ public class AdresseSokConsumerMock {
         }
     }
 
-    public static void settDefaultAdresser(){
+    public static void resetAdresser(){
         AdressesokRespons defaultRespons = new AdressesokRespons();
         responses.replace(SubjectHandler.getSubjectHandler().getUid(), defaultRespons);
     }
