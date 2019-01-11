@@ -55,20 +55,12 @@ public class Tilgangskontroll {
     }
     
     public void verifiserAtBrukerKanEndreSoknad(String behandlingsId) {
-        if ("local".equals(System.getProperty("environment.name"))) {
-            return;
-        }
-                
         final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
         verifiserBrukerHarTilgangTilSoknad(behandlingsId);
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        if ("local".equals(System.getProperty("environment.name"))) {
-            return;
-        }
-        
         String aktoerId = "undefined";
         try {
             WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
@@ -80,10 +72,6 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilMetadata(String behandlingsId) {
-        if ("local".equals(System.getProperty("environment.name"))) {
-            return;
-        }
-        
         String aktoerId = "undefined";
         try {
             SoknadMetadata metadata = soknadMetadataRepository.hent(behandlingsId);
@@ -95,10 +83,6 @@ public class Tilgangskontroll {
     }
 
     public void verifiserTilgangMotPep(String eier, String behandlingsId) {
-        if ("local".equals(System.getProperty("environment.name"))) {
-            return;
-        }
-        
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
