@@ -59,11 +59,8 @@ public class SoknadUnderArbeidService {
         if (soknadUnderArbeid.erEttersendelse()){
             return;
         }
-        final JsonInternalSoknad jsonInternalSoknad = hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
-        jsonInternalSoknad.getSoknad().setInnsendingstidspunkt(OffsetDateTime.now(ZoneOffset.UTC).toString());
-        final byte[] oppdatertSoknad = mapJsonSoknadInternalTilFil(jsonInternalSoknad);
-        SoknadUnderArbeid oppdatertSoknadUnderArbeid = soknadUnderArbeid.withData(oppdatertSoknad);
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(oppdatertSoknadUnderArbeid, soknadUnderArbeid.getEier());
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setInnsendingstidspunkt(OffsetDateTime.now(ZoneOffset.UTC).toString());
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.getEier());
     }
 
     public SoknadUnderArbeid oppdaterEllerOpprettSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid, String eier) {
@@ -75,7 +72,7 @@ public class SoknadUnderArbeidService {
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.getBehandlingsId(), eier);
         if (soknadUnderArbeidOptional.isPresent()) {
             SoknadUnderArbeid soknadUnderArbeidFraDB = soknadUnderArbeidOptional.get();
-            soknadUnderArbeidFraDB.withData(soknadUnderArbeid.getData());
+            soknadUnderArbeidFraDB.withJsonInternalSoknad(soknadUnderArbeid.getJsonInternalSoknad());
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeidFraDB, eier);
         } else {
             soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier);
@@ -87,8 +84,8 @@ public class SoknadUnderArbeidService {
         return oppdatertSoknadUnderArbeidOptional.get();
     }
 
-    public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
-        if (soknadUnderArbeid == null || soknadUnderArbeid.getData() == null) {
+    /*public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
+        if (soknadUnderArbeid == null || soknadUnderArbeid.getJsonInternalSoknad() == null) {
             return null;
         }
         try {
@@ -97,18 +94,28 @@ public class SoknadUnderArbeidService {
             logger.error("Kunne ikke finne søknad", e);
             throw new RuntimeException(e);
         }
+    }*/
+
+    public JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
+        if (data == null){
+            return null;
+        }
+        try {
+            return mapper.readValue(data, JsonInternalSoknad.class);
+        } catch (IOException e) {
+            logger.error("Kunne ikke finne søknad", e);
+            throw new RuntimeException(e);
+        }
     }
 
     SoknadUnderArbeid oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn) {
-        final JsonInternalSoknad jsonInternalSoknad = hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
-        jsonInternalSoknad.setMottaker(new JsonSoknadsmottaker()
+        soknadUnderArbeid.getJsonInternalSoknad().setMottaker(new JsonSoknadsmottaker()
                 .withOrganisasjonsnummer(orgnummer)
                 .withNavEnhetsnavn(navEnhetsnavn));
-        final byte[] oppdatertSoknad = mapJsonSoknadInternalTilFil(jsonInternalSoknad);
-        return soknadUnderArbeid.withData(oppdatertSoknad);
+        return soknadUnderArbeid;
     }
 
-    byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
+    public byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
         try {
             final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
             ensureValidInternalSoknad(internalSoknad);

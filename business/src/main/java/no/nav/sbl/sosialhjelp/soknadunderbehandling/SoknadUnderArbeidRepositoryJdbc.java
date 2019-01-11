@@ -1,8 +1,11 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.SoknadLaastException;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -14,6 +17,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -38,6 +42,9 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         super.setDataSource(ds);
     }
 
+    @Inject
+    SoknadUnderArbeidService soknadUnderArbeidService;
+
     @Override
     public Long opprettSoknad(SoknadUnderArbeid soknadUnderArbeid, String eier) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
@@ -50,7 +57,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         soknadUnderArbeid.getBehandlingsId(),
                         soknadUnderArbeid.getTilknyttetBehandlingsId(),
                         soknadUnderArbeid.getEier(),
-                        soknadUnderArbeid.getData(),
+                        soknadUnderArbeidService.mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
                         soknadUnderArbeid.getInnsendingStatus().toString(),
                         Date.from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
@@ -79,7 +86,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         final int antallOppdaterteRader = getJdbcTemplate()
                 .update("update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
                         oppdatertVersjon,
-                        soknadUnderArbeid.getData(),
+                        soknadUnderArbeidService.mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
                         Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier,
@@ -156,7 +163,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withBehandlingsId(rs.getString("behandlingsid"))
                     .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
                     .withEier(rs.getString("eier"))
-                    .withData(rs.getBytes("data"))
+                    .withJsonInternalSoknad(soknadUnderArbeidService.mapDataToJsonInternalSoknad(rs.getBytes("data")))
                     .withInnsendingStatus(status)
                     .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
                             rs.getTimestamp("opprettetdato").toLocalDateTime() : null)
@@ -164,4 +171,6 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                             rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
         }
     }
+
+
 }

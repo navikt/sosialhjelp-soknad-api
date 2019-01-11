@@ -1,13 +1,18 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.SoknadLaastException;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.*;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -21,6 +26,9 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.LA
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -41,8 +49,17 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @InjectMocks
+    SoknadUnderArbeidService soknadUnderArbeidService;
+
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
+
+    @Before
+    public void setUp() {
+        when(soknadUnderArbeidService.mapJsonSoknadInternalTilFil(any(JsonInternalSoknad.class))).thenReturn(DATA);
+        when(soknadUnderArbeidService.mapDataToJsonInternalSoknad(any(byte[].class))).thenReturn(new JsonInternalSoknad());
+    }
 
     @After
     public void cleanUp() {
@@ -59,7 +76,8 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
     @Test
     public void hentSoknadHenterSoknadUnderArbeidGittRiktigEierOgSoknadId() {
-        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER);
+        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID)
+                .withJsonInternalSoknad(new JsonInternalSoknad()), EIER);
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
 
@@ -68,7 +86,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getEier(), is(EIER));
-        assertThat(soknadUnderArbeid.getData(), is(DATA));
+        assertThat(soknadUnderArbeid.getJsonInternalSoknad(), is(any(JsonInternalSoknad.class)));
         assertThat(soknadUnderArbeid.getInnsendingStatus(), is(UNDER_ARBEID));
         assertThat(soknadUnderArbeid.getOpprettetDato(), is(OPPRETTET_DATO));
         assertThat(soknadUnderArbeid.getSistEndretDato(), is(SIST_ENDRET_DATO));
@@ -100,7 +118,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
         Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER);
 
-        assertThat(soknadUnderArbeid.get().getData(), nullValue());
+        assertThat(soknadUnderArbeid.get().getJsonInternalSoknad(), nullValue());
     }
 
     @Test

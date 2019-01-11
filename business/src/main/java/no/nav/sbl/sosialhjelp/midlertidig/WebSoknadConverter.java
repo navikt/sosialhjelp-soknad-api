@@ -60,7 +60,7 @@ public class WebSoknadConverter {
                 .withBehandlingsId(webSoknad.getBrukerBehandlingId())
                 .withTilknyttetBehandlingsId(webSoknad.getBehandlingskjedeId())
                 .withEier(webSoknad.getAktoerId())
-                .withData(webSoknadTilJson(webSoknad))
+                .withJsonInternalSoknad(mapWebSoknadTilJsonSoknadInternal(webSoknad))
                 .withInnsendingStatus(webSoknad.getStatus())
                 .withOpprettetDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getOpprettetDato()))
                 .withSistEndretDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getSistLagret()));

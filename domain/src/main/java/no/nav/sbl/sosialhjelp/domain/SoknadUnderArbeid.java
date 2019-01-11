@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp.domain;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ public class SoknadUnderArbeid {
     private String tilknyttetBehandlingsId;
     private String eier;
     private byte[] data;
+    private JsonInternalSoknad jsonInternalSoknad;
     private SoknadInnsendingStatus innsendingStatus;
     private LocalDateTime opprettetDato;
     private LocalDateTime sistEndretDato;
@@ -116,5 +118,12 @@ public class SoknadUnderArbeid {
 
     public void setSistEndretDato(LocalDateTime sistEndretDato) {
         this.sistEndretDato = sistEndretDato;
+    }
+
+    public JsonInternalSoknad getJsonInternalSoknad() { return jsonInternalSoknad; }
+
+    public SoknadUnderArbeid withJsonInternalSoknad(JsonInternalSoknad jsonInternalSoknad) {
+        this.jsonInternalSoknad = jsonInternalSoknad;
+        return this;
     }
 }

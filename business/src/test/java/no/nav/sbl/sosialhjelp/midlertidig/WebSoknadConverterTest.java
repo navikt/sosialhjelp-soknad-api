@@ -77,7 +77,7 @@ public class WebSoknadConverterTest {
         assertThat(soknadUnderArbeid.getVersjon(), is(1L));
         assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getEier(), is(EIER));
-        assertThat(soknadUnderArbeid.getData().length, not(0));
+        assertThat(soknadUnderArbeid.getJsonInternalSoknad(), notNullValue());
         assertThat(soknadUnderArbeid.getInnsendingStatus(), is(UNDER_ARBEID));
         assertThat(soknadUnderArbeid.getOpprettetDato(), notNullValue());
         assertThat(soknadUnderArbeid.getSistEndretDato(), notNullValue());
