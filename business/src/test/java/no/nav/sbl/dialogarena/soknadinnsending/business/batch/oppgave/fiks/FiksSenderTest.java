@@ -79,7 +79,7 @@ public class FiksSenderTest {
 
     @Test
     public void opprettForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
+        when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknad());
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
@@ -102,7 +102,7 @@ public class FiksSenderTest {
 
     @Test
     public void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
+        when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknad());
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
         fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService);
         SendtSoknad sendtSoknad = lagSendtSoknad();
@@ -116,7 +116,7 @@ public class FiksSenderTest {
 
     @Test
     public void opprettForsendelseSetterRiktigTittelForNySoknad() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
+        when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknad());
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
@@ -127,7 +127,7 @@ public class FiksSenderTest {
     @Test
     public void opprettForsendelseSetterRiktigTittelForEttersendelse() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid().withTilknyttetBehandlingsId("12345"));
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
+        when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
         SendtSoknad sendtSoknad = lagSendtSoknad().withTilknyttetBehandlingsId("12345");
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
@@ -137,7 +137,7 @@ public class FiksSenderTest {
 
     @Test
     public void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
+        when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknad());
 
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
 
@@ -151,7 +151,7 @@ public class FiksSenderTest {
 
     @Test
     public void hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
+        when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastetVedlegg());
 
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
@@ -165,14 +165,14 @@ public class FiksSenderTest {
 
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
+        when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
 
         fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
     }
 
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadUtenVedleggSpesifikasjon());
+        when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadUtenVedleggSpesifikasjon());
 
         fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
     }

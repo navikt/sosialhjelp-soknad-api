@@ -69,7 +69,8 @@ public class SoknadUnderArbeidServiceTest {
 
     @Test
     public void settOrgnummerOgNavEnhetsnavnPaSoknadOppdatererSoknadenIDatabasen() throws SamtidigOppdateringException {
-        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaSoknad(lagSoknadUnderArbeid(), ORGNR, NAVENHETSNAVN, EIER);
+        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaSoknad(lagSoknadUnderArbeid()
+                .withJsonInternalSoknad(lagGyldigJsonInternalSoknad()), ORGNR, NAVENHETSNAVN, EIER);
 
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(any(SoknadUnderArbeid.class), eq(EIER));
     }
@@ -80,20 +81,12 @@ public class SoknadUnderArbeidServiceTest {
     }
 
     @Test
-    public void hentJsonInternalSoknadFraSoknadUnderArbeidOppretterInternalSoknadForGyldigData() {
-        JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(lagSoknadUnderArbeid());
-
-        assertThat(jsonInternalSoknad.getSoknad().getVersion(), is("1.0.0"));
-        assertThat(jsonInternalSoknad.getSoknad().getDriftsinformasjon(), isEmptyString());
-        assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia(), notNullValue());
-    }
-
-    @Test
     public void oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknadSetterMottakerinfo() {
-        SoknadUnderArbeid oppdatertSoknadUnderArbeid = soknadUnderArbeidService.oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(lagSoknadUnderArbeid(),
+        SoknadUnderArbeid oppdatertSoknadUnderArbeid = soknadUnderArbeidService.oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(
+                lagSoknadUnderArbeid().withJsonInternalSoknad(lagGyldigJsonInternalSoknad()),
                 ORGNR, NAVENHETSNAVN);
 
-        JsonInternalSoknad oppdatertInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(oppdatertSoknadUnderArbeid);
+        JsonInternalSoknad oppdatertInternalSoknad = oppdatertSoknadUnderArbeid.getJsonInternalSoknad();
         assertThat(oppdatertInternalSoknad.getMottaker().getOrganisasjonsnummer(), is(ORGNR));
         assertThat(oppdatertInternalSoknad.getMottaker().getNavEnhetsnavn(), is(NAVENHETSNAVN));
     }
@@ -113,7 +106,7 @@ public class SoknadUnderArbeidServiceTest {
 
     @Test
     public void oppdaterEllerOpprettSoknadUnderArbeidOppdatererSoknadHvisDenFinnes() {
-        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid();
+        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid().withJsonInternalSoknad(lagGyldigJsonInternalSoknad());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString()))
                 .thenReturn(Optional.of(soknadUnderArbeid))
                 .thenReturn(Optional.of(soknadUnderArbeid.withVersjon(2L)));

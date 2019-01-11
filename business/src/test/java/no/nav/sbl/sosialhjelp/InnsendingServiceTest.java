@@ -77,15 +77,16 @@ public class InnsendingServiceTest {
         when(sendtSoknadRepository.opprettSendtSoknad(any(), anyString())).thenReturn(SENDT_SOKNAD_ID);
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(lagSendtSoknad());
         when(vedleggstatusRepository.opprettVedlegg(any(), anyString())).thenReturn(5L);
-        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
+        /*when(any(SoknadUnderArbeid.class).getJsonInternalSoknad())
                 .thenReturn(new JsonInternalSoknad().withMottaker(new JsonSoknadsmottaker()
                         .withOrganisasjonsnummer(ORGNR)
-                        .withNavEnhetsnavn(NAVENHETSNAVN)));
+                        .withNavEnhetsnavn(NAVENHETSNAVN)));*/
     }
 
     @Test
     public void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
-        innsendingService.opprettSendtSoknad(lagSoknadUnderArbeid(), new ArrayList<>());
+        innsendingService.opprettSendtSoknad(lagSoknadUnderArbeid().
+                withJsonInternalSoknad(createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()), new ArrayList<>());
 
         verify(soknadUnderArbeidRepository, times(1)).oppdaterInnsendingStatus(any(SoknadUnderArbeid.class), eq(EIER));
         verify(sendtSoknadRepository, times(1)).opprettSendtSoknad(any(SendtSoknad.class), eq(EIER));
@@ -112,7 +113,9 @@ public class InnsendingServiceTest {
 
     @Test
     public void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
-        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid());
+        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid().withJsonInternalSoknad(
+                createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()
+        ));
 
         assertThat(sendtSoknad.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(sendtSoknad.getTilknyttetBehandlingsId(), nullValue());
@@ -125,11 +128,14 @@ public class InnsendingServiceTest {
         assertThat(sendtSoknad.getFiksforsendelseId(), nullValue());
     }
 
+    private JsonInternalSoknad createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn() {
+        return new JsonInternalSoknad().withMottaker(new JsonSoknadsmottaker()
+                .withOrganisasjonsnummer(ORGNR)
+                .withNavEnhetsnavn(NAVENHETSNAVN));
+    }
+
     @Test(expected = IllegalStateException.class)
     public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
-        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
-                .thenReturn(new JsonInternalSoknad().withMottaker(null));
-
         innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidUtenTilknyttetBehandlingsid());
     }
 
