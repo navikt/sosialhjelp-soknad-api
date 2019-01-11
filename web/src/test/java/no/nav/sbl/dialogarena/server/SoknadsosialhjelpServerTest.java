@@ -20,6 +20,20 @@ public class SoknadsosialhjelpServerTest {
         final String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.property} med to ${SoknadsosialhjelpServerTest.property}");
         Assert.assertEquals("Test foobar med to foobar", value);
     }
+
+    @Test
+    public void withEnvironmentVariableExpansionHandlesDefaultValueNotBeingUsed() {
+        System.setProperty("SoknadsosialhjelpServerTest.property", "foobar");
+
+        final String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.property:2} med to ${SoknadsosialhjelpServerTest.property:lala}");
+        Assert.assertEquals("Test foobar med to foobar", value);
+    }
+
+    @Test
+    public void withEnvironmentVariableExpansionHandlesDefaultValueBeingUsed() {
+        final String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.nonExistantProperty:2} med to ${SoknadsosialhjelpServerTest.nonExistantPropert:lala}");
+        Assert.assertEquals("Test 2 med to lala", value);
+    }
     
     
     private void assertUnchanged(String input) {

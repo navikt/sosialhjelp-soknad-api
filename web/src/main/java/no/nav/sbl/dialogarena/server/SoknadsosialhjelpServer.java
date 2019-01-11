@@ -84,7 +84,7 @@ public class SoknadsosialhjelpServer {
 
         for (String env : props.stringPropertyNames()) {
             final String interntNavn = props.getProperty(env);
-            final String value = findVariableValue(env);
+            final String value = findVariableValue(env, null);
             if (value != null) {
                 System.setProperty(interntNavn, value);
             }
@@ -129,12 +129,13 @@ public class SoknadsosialhjelpServer {
             return null;
         }
 
-        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}");
+        final Pattern p = Pattern.compile("\\$\\{([^}:]*):?([^}]*)?\\}");
         final Matcher m = p.matcher(value);
         final StringBuffer sb = new StringBuffer();
         while (m.find()) {
             final String variableName = m.group(1);
-            final String replacement = Matcher.quoteReplacement(findVariableValue(variableName));
+            final String defaultValue = (m.groupCount() > 1) ? m.group(2) : null;
+            final String replacement = Matcher.quoteReplacement(findVariableValue(variableName, defaultValue));
             m.appendReplacement(sb, replacement);
         }
         m.appendTail(sb);
@@ -142,7 +143,7 @@ public class SoknadsosialhjelpServer {
         return sb.toString();
     }
 
-    private static String findVariableValue(final String variableName) {
+    private static String findVariableValue(final String variableName, final String defaultValue) {
         final String envValue = System.getenv(variableName);
         if (envValue != null) {
             return envValue;
@@ -151,7 +152,9 @@ public class SoknadsosialhjelpServer {
         if (propValue != null) {
             return propValue;
         }
-        
+        if (defaultValue != null) {
+            return defaultValue;
+        }
         throw new IllegalStateException("Kunne ikke finne referert variabel med navn: " + variableName);
     }
 
