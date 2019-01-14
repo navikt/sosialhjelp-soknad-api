@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.integration.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
 import com.nimbusds.jwt.SignedJWT;
@@ -28,20 +29,12 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     @Test
     public void accessDeniedMedAnnenBruker_xmlRepresentasjon() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
         SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
-        String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
-        Response responseForAnnenBruker = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget)
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWTforAnnenBruker.serialize())
-                .buildGet()
-                .invoke();
 
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget)
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
-                .buildGet()
-                .invoke();
+        Response responseForAnnenBruker = sendGetRequest(soknadTester, subUrl, signedJWTforAnnenBruker);
+        Response response = sendGetRequest(soknadTester, subUrl, signedJWT);
 
         assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
         assertThat(response.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
@@ -50,20 +43,12 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     @Test
     public void accessDeniedMedAnnenBruker_jsonRepresentasjon() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
         SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
-        String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
-        Response responseForAnnenBruker = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget)
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWTforAnnenBruker.serialize())
-                .buildGet()
-                .invoke();
 
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget)
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
-                .buildGet()
-                .invoke();
+        Response responseForAnnenBruker = sendGetRequest(soknadTester, subUrl, signedJWTforAnnenBruker);
+        Response response = sendGetRequest(soknadTester, subUrl, signedJWT);
 
         assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
         assertThat(response.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
@@ -74,11 +59,19 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
 
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget)
-                .buildGet()
-                .invoke();
-
+        Response response = sendGetRequest(soknadTester, subUrl, null);
         assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+
+    private Response sendGetRequest(SoknadTester soknadTester, String subUrl, SignedJWT signedJWT){
+        Invocation.Builder builder = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget);
+
+        if(signedJWT != null) {
+            builder.header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize());
+        }
+
+        return builder.buildGet()
+                .invoke();
     }
 }
