@@ -28,11 +28,11 @@
 
     <logger name="no.nav.modig.security.sts.client.NAVSTSClient" level="OFF"></logger>
 
-    <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="OFF"></logger>
+    <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="info"></logger>
 
     <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"></logger>
 
-    <logger name="org.apache.cxf" level="OFF"></logger>
+    <logger name="org.apache.cxf" level="info"></logger>
 
     <root level="${ROOT_LOG_LEVEL:-INFO}">
         <appender-ref ref="stdout_json"/>
