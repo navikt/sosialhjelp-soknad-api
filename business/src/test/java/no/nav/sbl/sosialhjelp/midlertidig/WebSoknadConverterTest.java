@@ -106,23 +106,6 @@ public class WebSoknadConverterTest {
     }
 
     @Test
-    public void mapJsonSoknadInternalTilFilMapperGyldigSoknadTilFil() {
-        byte[] fil = webSoknadConverter.mapJsonSoknadInternalTilFil(lagGyldigJsonInternalSoknad());
-
-        assertThat(fil, notNullValue());
-    }
-
-    @Test(expected = JsonSosialhjelpValidationException.class)
-    public void mapJsonSoknadInternalTilFilKasterExceptionVedUgyldigSoknad() {
-        JsonInternalSoknad ugyldigInternalSoknad = new JsonInternalSoknad()
-                .withSoknad(new JsonSoknad()
-                        .withVersion("1")
-                        .withData(new JsonData()));
-
-        webSoknadConverter.mapJsonSoknadInternalTilFil(ugyldigInternalSoknad);
-    }
-
-    @Test
     public void fraJodaDateTimeTilLocalDateTimeKonvertererDatoRiktig() {
         final DateTime dateTime = new DateTime(2017, 8, 22, 11, 43, 0);
 
