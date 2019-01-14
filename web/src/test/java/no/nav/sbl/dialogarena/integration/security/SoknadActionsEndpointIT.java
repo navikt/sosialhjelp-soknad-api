@@ -41,7 +41,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void sendSoknad() {
+    public void sendSoknad_skalGiForbiddenMedAnnenBruker() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
@@ -52,15 +52,24 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void sendEpost_fortsettsenere() {
+    public void sendEpost_fortsettsenere_skalGiForbiddenMedAnnenBruker() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
         String token = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER).serialize();
 
         Response responseMedBrukersEgenXSRFToken = sendPostRequest(soknadTester, subUrl, Entity.json(""), token, XsrfGenerator.generateXsrfToken("BRUKER_2_SIN_BEHANDLINGSID", new DateTime().toString("yyyyMMdd"), token));
-        Response responseMedStjeltXSRFToken = sendPostRequest(soknadTester, subUrl, Entity.json(""), token, soknadTester.getXhrHeader());
 
         assertThat(responseMedBrukersEgenXSRFToken.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    public void sendEpost_fortsettsenere_skalGiForbiddenTilAnnenBrukerMedStjeltXSRF() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
+        String token = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER).serialize();
+
+        Response responseMedStjeltXSRFToken = sendPostRequest(soknadTester, subUrl, Entity.json(""), token, soknadTester.getXhrHeader());
+
         assertThat(responseMedStjeltXSRFToken.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 

@@ -26,31 +26,63 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
         EndpointDataMocking.setupMockWsEndpointData();
     }
 
+
+    /* XmlRepresentasjon */
+
     @Test
-    public void accessDeniedMedAnnenBruker_xmlRepresentasjon() {
+    public void xmlRepresentasjon_skalGiForbiddenMedAnnenBruker() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
-        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
         Response responseForAnnenBruker = sendGetRequest(soknadTester, subUrl, signedJWTforAnnenBruker);
-        Response response = sendGetRequest(soknadTester, subUrl, signedJWT);
 
         assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    public void xmlRepresentasjon_skalIkkeGiForbiddenMedRettBruker() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
+
+        Response response = sendGetRequest(soknadTester, subUrl, signedJWT);
+
         assertThat(response.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
     @Test
-    public void accessDeniedMedAnnenBruker_jsonRepresentasjon() {
+    public void xmlRepresentasjon_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "representasjon/xml/"  + soknadTester.getBrukerBehandlingId();
+
+        Response response = sendGetRequest(soknadTester, subUrl, null);
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+
+    /* JsonRepresentasjon */
+
+    @Test
+    public void jsonRepresentasjon_skalGiForbiddenMedAnnenBruker() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
-        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
         Response responseForAnnenBruker = sendGetRequest(soknadTester, subUrl, signedJWTforAnnenBruker);
-        Response response = sendGetRequest(soknadTester, subUrl, signedJWT);
 
         assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    public void jsonRepresentasjon_skalIkkeGiForbiddenMedRettBruker() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
+
+        Response response = sendGetRequest(soknadTester, subUrl, signedJWT);
+
         assertThat(response.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
@@ -60,6 +92,7 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
 
         Response response = sendGetRequest(soknadTester, subUrl, null);
+
         assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 
