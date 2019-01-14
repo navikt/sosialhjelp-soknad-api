@@ -13,7 +13,6 @@ public class SoknadUnderArbeid {
     private String behandlingsId;
     private String tilknyttetBehandlingsId;
     private String eier;
-    private byte[] data;
     private JsonInternalSoknad jsonInternalSoknad;
     private SoknadInnsendingStatus innsendingStatus;
     private LocalDateTime opprettetDato;
@@ -73,15 +72,6 @@ public class SoknadUnderArbeid {
 
     public SoknadUnderArbeid withEier(String eier) {
         this.eier = eier;
-        return this;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public SoknadUnderArbeid withData(byte[] data) {
-        this.data = data;
         return this;
     }
 
