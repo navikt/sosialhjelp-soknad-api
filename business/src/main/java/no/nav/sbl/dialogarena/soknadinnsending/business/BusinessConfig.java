@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -47,7 +48,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         AvbrytAutomatiskSheduler.class,
         SoknadsmottakerService.class,
         SystemdataUpdater.class,
-        KontonummerSystemdata.class
+        KontonummerSystemdata.class,
+        TelefonnummerSystemdata.class
 })
 public class BusinessConfig {
 
