@@ -1,10 +1,11 @@
 package no.nav.sbl.sosialhjelp.midlertidig;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
@@ -22,12 +23,12 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.nio.charset.StandardCharsets;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -60,18 +61,13 @@ public class WebSoknadConverter {
                 .withBehandlingsId(webSoknad.getBrukerBehandlingId())
                 .withTilknyttetBehandlingsId(webSoknad.getBehandlingskjedeId())
                 .withEier(webSoknad.getAktoerId())
-                .withData(webSoknadTilJson(webSoknad))
+                .withJsonInternalSoknad(mapWebSoknadTilJsonSoknadInternal(webSoknad))
                 .withInnsendingStatus(webSoknad.getStatus())
                 .withOpprettetDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getOpprettetDato()))
                 .withSistEndretDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getSistLagret()));
     }
 
-    byte[] webSoknadTilJson(WebSoknad webSoknad) {
-        final JsonInternalSoknad jsonInternalSoknad = mapWebSoknadTilJsonSoknadInternal(webSoknad);
-        return mapJsonSoknadInternalTilFil(jsonInternalSoknad);
-    }
-
-    public JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
+    JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
         final List<JsonVedlegg> jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
         if (webSoknad.erEttersending()) {
             return new JsonInternalSoknad()
@@ -101,17 +97,6 @@ public class WebSoknadConverter {
         return new JsonSoknadsmottaker()
                 .withOrganisasjonsnummer(orgnummer)
                 .withNavEnhetsnavn(navEnhetsnavn);
-    }
-
-    byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
-        try {
-            final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
-            ensureValidInternalSoknad(internalSoknad);
-            return internalSoknad.getBytes(StandardCharsets.UTF_8);
-        } catch (JsonProcessingException e) {
-            logger.error("Kunne ikke konvertere søknadsobjekt til tekststreng", e);
-        }
-        return null;
     }
 
     LocalDateTime fraJodaDateTimeTilLocalDateTime(DateTime jodaDateTime) {
