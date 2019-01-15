@@ -14,17 +14,20 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import org.springframework.stereotype.Controller;
 
 import no.nav.metrics.aspects.Timed;
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 
 @Controller
 @Path("/soknader/{behandlingsId}/personalia/kontonummer")
@@ -34,29 +37,29 @@ public class KontonummerRessurs {
 
     @Inject
     private SoknadService soknadService;
-        
-    @Inject
-    private PersonaliaFletter personaliaFletter;
     
     @Inject
     private FaktaService faktaService;
     
     @Inject
+    private LegacyHelper legacyHelper;
+
+    @Inject
     private Tilgangskontroll tilgangskontroll;
     
     @Inject
-    private LegacyHelper legacyHelper;
-
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    
+    @Inject
+    private KontonummerSystemdata kontonummerService;
+    
     
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-        
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId);
-        final String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonKontonummer kontonummer = soknad.getSoknad().getData().getPersonalia().getKontonummer();
-
-        final String systemverdi = innhentSystemverdiKontonummer(personIdentifikator); 
+        final String systemverdi = kontonummerService.innhentSystemverdiKontonummer(eier); 
         
         return new KontonummerFrontend()
                 .withBrukerdefinert(kontonummer.getKilde() == JsonKilde.BRUKER)
@@ -66,9 +69,32 @@ public class KontonummerRessurs {
     }
     
     @PUT
-    public void endreKontonummer(@PathParam("behandlingsId") String behandlingsId, KontonummerFrontend kontonummerFrontend) {
+    public void updateKontonummer(@PathParam("behandlingsId") String behandlingsId, KontonummerFrontend kontonummerFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        
+        update(behandlingsId, kontonummerFrontend);
+        legacyUpdate(behandlingsId, kontonummerFrontend);
+    }
+    
+
+    private void update(String behandlingsId, KontonummerFrontend kontonummerFrontend) {
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        final JsonKontonummer kontonummer = personalia.getKontonummer();
+        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        if (kontonummerFrontend.brukerdefinert) {
+            kontonummer.setKilde(JsonKilde.BRUKER);
+            kontonummer.setVerdi(kontonummerFrontend.verdi);
+            kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto);
+        } else if (kontonummer.getKilde() == JsonKilde.BRUKER) {
+            kontonummer.setKilde(JsonKilde.SYSTEM);
+            kontonummer.setVerdi(kontonummerService.innhentSystemverdiKontonummer(personIdentifikator));
+            kontonummer.setHarIkkeKonto(null);
+        }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    private void legacyUpdate(String behandlingsId, KontonummerFrontend kontonummerFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
         
         final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.kontonummer.brukerendrettoggle");
@@ -91,21 +117,6 @@ public class KontonummerRessurs {
         }
         return b.toString();
     }
-
-    private String innhentSystemverdiKontonummer(final String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        final String systemVerdi = norskKontonummer(personalia);
-        return systemVerdi;
-    }
-    
-    private String norskKontonummer(Personalia personalia) {
-        if (personalia.getErUtenlandskBankkonto() != null && personalia.getErUtenlandskBankkonto()) {
-            return "";
-        } else {
-            return personalia.getKontonummer();
-        }
-    }
-   
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class KontonummerFrontend {
