@@ -12,11 +12,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHan
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp.SosialhjelpKontaktBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
 
 @Configuration
 @Import({
@@ -39,7 +45,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
         SosialhjelpKontaktBolk.class,
         OppgaveHandtererImpl.class,
         AvbrytAutomatiskSheduler.class,
-        SoknadsmottakerService.class
+        SoknadsmottakerService.class,
+        SystemdataUpdater.class,
+        KontonummerSystemdata.class
 })
 public class BusinessConfig {
 
