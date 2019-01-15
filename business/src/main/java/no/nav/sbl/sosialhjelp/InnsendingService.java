@@ -98,10 +98,6 @@ public class InnsendingService {
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier());
     }
 
-    public JsonInternalSoknad hentJsonInternalSoknadFraSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid) {
-        return soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
-    }
-
     public SendtSoknad finnSendtSoknadForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
         final String tilknyttetBehandlingsId = soknadUnderArbeid.getTilknyttetBehandlingsId();
         Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId,
@@ -150,7 +146,7 @@ public class InnsendingService {
         String orgnummer = null;
         String navEnhetsnavn = null;
 
-        JsonInternalSoknad internalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
+        JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         if (internalSoknad != null && internalSoknad.getMottaker() != null) {
             orgnummer = internalSoknad.getMottaker().getOrganisasjonsnummer();
             navEnhetsnavn = internalSoknad.getMottaker().getNavEnhetsnavn();
