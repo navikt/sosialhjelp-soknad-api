@@ -67,11 +67,9 @@ public class BegrunnelseRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
-        if (begrunnelseFrontend.brukerdefinert) {
-            begrunnelse.setKilde(JsonKildeBruker.BRUKER);
-            begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvaSokesOm);
-            begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvorforSoke);
-        }
+        begrunnelse.setKilde(begrunnelseFrontend.brukerdefinert ? JsonKildeBruker.BRUKER : JsonKildeBruker.UTDATERT);
+        begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvaSokesOm);
+        begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvorforSoke);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
