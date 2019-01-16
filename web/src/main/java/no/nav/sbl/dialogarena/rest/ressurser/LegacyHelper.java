@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Component;
 
 import no.nav.modig.core.context.SubjectHandler;
@@ -30,15 +31,24 @@ public class LegacyHelper {
 
     @Inject
     private WebSoknadConverter webSoknadConverter;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     
     @Inject
     private Tilgangskontroll tilgangskontroll;
+
+    private static final boolean brukNyModell = false;
 
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
-        
+
+        if (brukNyModell){
+            return soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        }
+
         /* Dette burde egentlig være unødvendig, men sjekker i tilfelle lesing av WebSoknad kan ha sideeffekter: */
         if (eier == null || !eier.equals(SubjectHandler.getSubjectHandler().getUid())) {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");

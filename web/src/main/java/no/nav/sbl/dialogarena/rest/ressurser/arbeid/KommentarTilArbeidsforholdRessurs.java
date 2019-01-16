@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -51,8 +52,8 @@ public class KommentarTilArbeidsforholdRessurs {
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
 
         return new KommentarTilArbeidsforholdFrontend()
-                .withBrukerdefinert(kommentarTilArbeidsforhold.getKilde() == JsonKildeBruker.BRUKER)
-                .withKommentarTilArbeidsforhold(kommentarTilArbeidsforhold != null ? kommentarTilArbeidsforhold.getVerdi() : null);
+                .withBrukerdefinert(true)
+                .withKommentarTilArbeidsforhold(kommentarTilArbeidsforhold != null ? kommentarTilArbeidsforhold.getVerdi() : "");
     }
 
     @PUT
@@ -65,7 +66,10 @@ public class KommentarTilArbeidsforholdRessurs {
     private void update(String behandlingsId, KommentarTilArbeidsforholdFrontend kommentarTilArbeidsforholdFrontend) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
+        final JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
+        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = arbeid.getKommentarTilArbeidsforhold() != null ?
+                arbeid.getKommentarTilArbeidsforhold() :
+                arbeid.withKommentarTilArbeidsforhold(new JsonKommentarTilArbeidsforhold()).getKommentarTilArbeidsforhold();
         kommentarTilArbeidsforhold.setKilde(kommentarTilArbeidsforholdFrontend.brukerdefinert ? JsonKildeBruker.BRUKER : JsonKildeBruker.UTDATERT);
         kommentarTilArbeidsforhold.setVerdi(kommentarTilArbeidsforholdFrontend.kommentarTilArbeidsforhold);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
