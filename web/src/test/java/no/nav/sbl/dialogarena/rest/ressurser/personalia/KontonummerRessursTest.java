@@ -1,0 +1,223 @@
+package no.nav.sbl.dialogarena.rest.ressurser.personalia;
+
+import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.KontonummerRessurs.KontonummerFrontend;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
+public class KontonummerRessursTest {
+
+    private static final String BEHANDLINGSID = "123";
+    private static final String EIER = "123456789101";
+    private static final String KONTONUMMER_BRUKER = "***REMOVED***";
+    private static final String KONTONUMMER_SYSTEM = "44333222111";
+    private static final String KONTONUMMER_SYSTEM_OPPDATERT = "44333222123";
+
+    @Mock
+    private LegacyHelper legacyHelper;
+
+    @Mock
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Mock
+    private KontonummerSystemdata kontonummerSystemdata;
+
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
+
+    @Mock
+    private SoknadService soknadService;
+
+    @Mock
+    private FaktaService faktaService;
+
+    @InjectMocks
+    private KontonummerRessurs kontonummerRessurs;
+
+    @Before
+    public void setUp() {
+        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
+    }
+
+    @Test
+    public void getKontonummerSkalReturnereSystemKontonummer(){
+        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
+        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
+
+        KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+
+        assertThat(kontonummerFrontend.verdi, is(KONTONUMMER_SYSTEM));
+        assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM));
+        assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
+        assertThat(kontonummerFrontend.brukerdefinert, is(false));
+    }
+
+    @Test
+    public void getKontonummerSkalReturnereOppdatertSystemKontonummerFraTPS(){
+        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
+        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM_OPPDATERT);
+
+        KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+
+        assertThat(kontonummerFrontend.verdi, is(KONTONUMMER_SYSTEM));
+        assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM_OPPDATERT));
+        assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
+        assertThat(kontonummerFrontend.brukerdefinert, is(false));
+    }
+
+    @Test
+    public void getKontonummerSkalReturnereBrukerutfyltKontonummer(){
+        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER));
+        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
+
+        KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+
+        assertThat(kontonummerFrontend.verdi, is(KONTONUMMER_BRUKER));
+        assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM));
+        assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
+        assertThat(kontonummerFrontend.brukerdefinert, is(true));
+    }
+
+    @Test
+    public void getKontonummerSkalReturnereKontonummerLikNull(){
+        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithEmptyKontonummer());
+        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
+
+        KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+
+        assertThat(kontonummerFrontend.verdi, nullValue());
+        assertThat(kontonummerFrontend.systemverdi, nullValue());
+        assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
+        assertThat(kontonummerFrontend.brukerdefinert, is(false));
+    }
+
+    @Test
+    public void putKontonummerSkalSetteBrukerutfyltKontonummer(){
+        startWithEmptyKontonummerAndNoSystemKontonummer();
+        ignoreTilgangskontrollAndLegacyUpdate();
+
+        KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
+                .withBrukerdefinert(true)
+                .withVerdi(KONTONUMMER_BRUKER);
+        kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
+
+        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
+
+        JsonKontonummer kontonummer = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        assertThat(kontonummer.getKilde(), is(JsonKilde.BRUKER));
+        assertThat(kontonummer.getHarIkkeKonto(), nullValue());
+        assertThat(kontonummer.getVerdi(), is(KONTONUMMER_BRUKER));
+    }
+
+    @Test
+    public void putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer(){
+        startWithBrukerKontonummerAndSystemKontonummerInTPS();
+        ignoreTilgangskontrollAndLegacyUpdate();
+
+        KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
+                .withBrukerdefinert(false)
+                .withVerdi(KONTONUMMER_BRUKER);
+        kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
+
+        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
+
+        JsonKontonummer kontonummer = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        assertThat(kontonummer.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(kontonummer.getHarIkkeKonto(), nullValue());
+        assertThat(kontonummer.getVerdi(), is(KONTONUMMER_SYSTEM));
+    }
+
+    private void startWithBrukerKontonummerAndSystemKontonummerInTPS() {
+        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER)));
+    }
+
+    private void startWithEmptyKontonummerAndNoSystemKontonummer() {
+        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithEmptyKontonummer()));
+    }
+
+    private void ignoreTilgangskontrollAndLegacyUpdate() {
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
+        when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
+        when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
+    }
+
+    private SoknadUnderArbeid createJsonInternalSoknadWithKontonummer(JsonKilde kilde, String verdi) {
+        return new SoknadUnderArbeid()
+                .withJsonInternalSoknad(new JsonInternalSoknad()
+                        .withSoknad(new JsonSoknad()
+                                .withData(new JsonData()
+                                        .withPersonalia(new JsonPersonalia()
+                                                .withKontonummer(new JsonKontonummer()
+                                                        .withKilde(kilde)
+                                                        .withVerdi(verdi)
+                                                )
+                                                .withPersonIdentifikator(new JsonPersonIdentifikator()
+                                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                                        .withVerdi(EIER)
+                                                )
+                                        )
+                                )
+                        )
+                );
+    }
+
+    private SoknadUnderArbeid createJsonInternalSoknadWithEmptyKontonummer() {
+        return new SoknadUnderArbeid()
+                .withJsonInternalSoknad(new JsonInternalSoknad()
+                        .withSoknad(new JsonSoknad()
+                                .withData(new JsonData()
+                                        .withPersonalia(new JsonPersonalia()
+                                                .withKontonummer(new JsonKontonummer()
+                                                        .withKilde(JsonKilde.SYSTEM)
+                                                )
+                                                .withPersonIdentifikator(new JsonPersonIdentifikator()
+                                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                                        .withVerdi(EIER)
+                                                )
+                                        )
+                                )
+                        )
+                );
+    }
+}
