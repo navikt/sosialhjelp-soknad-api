@@ -65,7 +65,7 @@ public class TelefonnummerRessurs {
     }
     
     @PUT
-    public void endreTelefonnummer(@PathParam("behandlingsId") String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
+    public void updateTelefonnummer(@PathParam("behandlingsId") String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, telefonnummerFrontend);
         legacyUpdate(behandlingsId, telefonnummerFrontend);
