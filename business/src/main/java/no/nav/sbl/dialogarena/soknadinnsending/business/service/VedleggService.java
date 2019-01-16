@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel.TITTEL;
@@ -60,6 +59,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.SKJEMA_VALI
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.PAAKREVDE_VEDLEGG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.UnderBehandling;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -244,7 +244,7 @@ public class VedleggService {
             bytes.add(vedleggRepository.hentVedleggData(vedlegg.getVedleggId()));
         }
         byte[] doc = pdfMerger.transform(bytes);
-        doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
+        doc = watermarker.forIdent(getSubjectHandler().getUserIdFromToken(), false).transform(doc);
 
         try {
             doc = komprimerPdfMedIText(doc).toByteArray();

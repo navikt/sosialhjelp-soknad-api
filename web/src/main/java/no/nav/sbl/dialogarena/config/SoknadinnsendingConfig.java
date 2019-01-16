@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.modig.cache.CacheConfig;
+import no.nav.sbl.dialogarena.oidc.OidcTokenValidatorConfig;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Import;
         ContentConfig.class,
         SoknadInnsendingDBConfig.class,
         HandlebarsHelperConfig.class,
+        OidcTokenValidatorConfig.class,
         MetricsConfig.class,
         SaksoversiktMetadataService.class
 })

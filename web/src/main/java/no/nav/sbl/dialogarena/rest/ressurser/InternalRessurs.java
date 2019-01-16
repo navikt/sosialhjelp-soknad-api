@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.security.oidc.api.Unprotected;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -15,6 +17,7 @@ import javax.ws.rs.QueryParam;
 
 
 @Controller
+@Unprotected // Internal-endepunkter krever ikke oidc-token. Disse skal ikke være eksponert utenfor NAV-nettverket. Snakk med ATOM om de er eksponert.
 @Path("/internal")
 public class InternalRessurs {
     @Inject

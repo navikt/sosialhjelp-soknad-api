@@ -29,6 +29,9 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.nimbusds.jwt.SignedJWT;
+import no.nav.security.oidc.OIDCConstants;
+import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -47,6 +50,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 public class SoknadTester extends JerseyTest {
     private final String skjemaNummer;
     private String user;
+    private String token;
 
     private String brukerBehandlingId;
 
@@ -56,6 +60,7 @@ public class SoknadTester extends JerseyTest {
         super();
         this.skjemaNummer = skjemaNummer;
         this.user = "***REMOVED***";
+        this.token = JwtTokenGenerator.createSignedJWT(this.user).serialize();
     }
 
     public static SoknadTester startSoknad(String skjemaNummer) throws Exception {
@@ -77,6 +82,7 @@ public class SoknadTester extends JerseyTest {
         Response response = sendsoknad().path("soknader")
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token)
                 .buildPost(sokEntity)
                 .invoke();
         checkResponse(response, SC_OK);
@@ -96,6 +102,7 @@ public class SoknadTester extends JerseyTest {
     public SoknadTester settDelstegstatus(String status) {
         Response invoke = soknadResource("", webTarget -> webTarget.queryParam("delsteg", status))
                 .header(this.xhrHeader.getLeft(), this.xhrHeader.getRight())
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token)
                 .buildPut(Entity.json(""))
                 .invoke();
         checkResponse(invoke, SC_NO_CONTENT);
@@ -110,7 +117,8 @@ public class SoknadTester extends JerseyTest {
         WebTarget target = sendsoknad().path("soknader/").path(brukerBehandlingId).path(suburl);
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
-                .accept(APPLICATION_JSON_TYPE);
+                .accept(APPLICATION_JSON_TYPE)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token);
     }
 
 
@@ -408,6 +416,10 @@ public class SoknadTester extends JerseyTest {
 
     public String getXhrHeader() {
         return xhrHeader.getValue();
+    }
+
+    public String getUser() {
+        return user;
     }
 
 }
