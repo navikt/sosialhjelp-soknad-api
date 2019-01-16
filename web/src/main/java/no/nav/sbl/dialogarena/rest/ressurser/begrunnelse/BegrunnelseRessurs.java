@@ -51,9 +51,8 @@ public class BegrunnelseRessurs {
         final JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
 
         return new BegrunnelseFrontend()
-                .withBrukerdefinert(begrunnelse.getKilde() == JsonKildeBruker.BRUKER)
-                .withHvaSokesOm(begrunnelse != null ? begrunnelse.getHvaSokesOm() : null)
-                .withHvorforSoke(begrunnelse != null ? begrunnelse.getHvorforSoke() : null);
+                .withHvaSokesOm(begrunnelse.getHvaSokesOm())
+                .withHvorforSoke(begrunnelse.getHvorforSoke());
     }
 
     @PUT
@@ -67,7 +66,7 @@ public class BegrunnelseRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
-        begrunnelse.setKilde(begrunnelseFrontend.brukerdefinert ? JsonKildeBruker.BRUKER : JsonKildeBruker.UTDATERT);
+        begrunnelse.setKilde(JsonKildeBruker.BRUKER);
         begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvaSokesOm);
         begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvorforSoke);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
@@ -88,14 +87,8 @@ public class BegrunnelseRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BegrunnelseFrontend {
-        public boolean brukerdefinert;
         public String hvaSokesOm;
         public String hvorforSoke;
-
-        public BegrunnelseFrontend withBrukerdefinert(boolean brukerdefinert) {
-            this.brukerdefinert = brukerdefinert;
-            return this;
-        }
 
         public BegrunnelseFrontend withHvaSokesOm(String hvaSokesOm) {
             this.hvaSokesOm = hvaSokesOm;

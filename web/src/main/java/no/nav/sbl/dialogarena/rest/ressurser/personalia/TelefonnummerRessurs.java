@@ -59,7 +59,7 @@ public class TelefonnummerRessurs {
         final String systemverdi = telefonnummerService.innhentSystemverdiTelefonnummer(personIdentifikator);
         
         return new TelefonnummerFrontend()
-                .withBrukerdefinert(telefonnummer.getKilde() == JsonKilde.BRUKER)
+                .withBrukerdefinert(telefonnummer != null ? telefonnummer.getKilde() == JsonKilde.BRUKER : true)
                 .withSystemverdi(systemverdi)
                 .withVerdi(telefonnummer != null ? telefonnummer.getVerdi() : null);
     }
@@ -75,7 +75,8 @@ public class TelefonnummerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer();
+        final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
+                personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (telefonnummerFrontend.brukerdefinert) {
             telefonnummer.setKilde(JsonKilde.BRUKER);
