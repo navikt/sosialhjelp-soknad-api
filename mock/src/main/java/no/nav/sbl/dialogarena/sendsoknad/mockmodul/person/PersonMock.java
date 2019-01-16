@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
@@ -41,10 +41,10 @@ public class PersonMock {
     }
 
     private static HentKjerneinformasjonResponse getOrCreateCurrentUserResponse(){
-        HentKjerneinformasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
+        HentKjerneinformasjonResponse response = responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
         if (response == null){
             response = createNewResponse();
-            responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
         }
 
         return response;

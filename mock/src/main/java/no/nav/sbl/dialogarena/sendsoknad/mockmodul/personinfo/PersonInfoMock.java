@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 public class PersonInfoMock {
 
-    //public static final String ARBEIDSSOKERSTATUS = "ARBS";
     public static final String ARBEIDSSOKERSTATUS = "ARBS";
     public static final String YTELSE = "DAGP";
 

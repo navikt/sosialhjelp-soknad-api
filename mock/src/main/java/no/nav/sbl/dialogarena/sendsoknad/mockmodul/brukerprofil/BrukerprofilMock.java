@@ -2,8 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -12,8 +11,6 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinform
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.joda.time.DateTime;
 
-import javax.security.auth.Subject;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -75,10 +72,10 @@ public class BrukerprofilMock {
     }
 
     private static XMLHentKontaktinformasjonOgPreferanserResponse getOrCreateCurrentUserResponse() {
-        XMLHentKontaktinformasjonOgPreferanserResponse respons = responses.get(SubjectHandler.getSubjectHandler().getUid());
+        XMLHentKontaktinformasjonOgPreferanserResponse respons = responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
         if (respons == null) {
             respons = createNewResponse();
-            responses.put(SubjectHandler.getSubjectHandler().getUid(), respons);
+            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), respons);
         }
 
 
@@ -312,9 +309,9 @@ public class BrukerprofilMock {
 
             XMLHentKontaktinformasjonOgPreferanserResponse currentResponse = getOrCreateCurrentUserResponse();
             if (currentResponse == null){
-                responses.put(SubjectHandler.getSubjectHandler().getUid(), newResponse);
+                responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), newResponse);
             } else {
-                responses.replace(SubjectHandler.getSubjectHandler().getUid(), newResponse);
+                responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), newResponse);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -325,9 +322,9 @@ public class BrukerprofilMock {
     public static void resetBrukerprofil(){
         XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
         if (response == null){
-            responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
         } else {
-            responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+            responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
         }
     }
 }

@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonIkkeTilgang;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPeriodeIkkeGyldig;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPersonIkkeFunnet;
@@ -53,10 +53,10 @@ public class UtbetalMock {
     }
 
     public static WSHentUtbetalingsinformasjonResponse getOrCreateCurrentUserResponse(){
-        WSHentUtbetalingsinformasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
+        WSHentUtbetalingsinformasjonResponse response = responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
         if (response == null){
             response = getDefaultResponse();
-            responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
         }
         return response;
     }
@@ -86,12 +86,12 @@ public class UtbetalMock {
         }
 
         logger.info("Setter utbetalingsresponse: " + jsonWSUtbetaling);
-        responses.replace(SubjectHandler.getSubjectHandler().getUid(), newResponse);
+        responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), newResponse);
 
     }
 
     public static void resetUtbetalinger(){
-        responses.replace(SubjectHandler.getSubjectHandler().getUid(), new WSHentUtbetalingsinformasjonResponse());
+        responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), new WSHentUtbetalingsinformasjonResponse());
     }
 
     // Ikke i bruk, men har beholdt funksjonen her i tilfelle den kan bli nyttig senere.

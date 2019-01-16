@@ -2,6 +2,9 @@ package no.nav.sbl.dialogarena.server;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import no.nav.sbl.dialogarena.mock.MockSubjectHandler;
+import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -30,6 +33,10 @@ public class SoknadsosialhjelpServer {
 
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
         configure();
+
+        if ("p".equals(System.getProperty("environment.name")) && Boolean.parseBoolean(System.getProperty("tillatMockRessurs", "false"))) {
+            throw new Error("tillatMockRessurs har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
+        }
 
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
         
@@ -72,6 +79,13 @@ public class SoknadsosialhjelpServer {
         if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
+
+            if (TjenesteMockRessurs.isTillatMockRessurs()){
+                setProperty(OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY, MockSubjectHandler.class.getName());
+            } else {
+                setProperty(OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY, OidcSubjectHandler.class.getName());
+            }
+
             System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         } else {
             log.info("Running with DEVELOPER (local) setup.");

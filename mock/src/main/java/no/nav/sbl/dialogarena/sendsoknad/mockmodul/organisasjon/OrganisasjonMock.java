@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonOrganisasjonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonUgyldigInput;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
@@ -11,7 +11,6 @@ import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.SammensattNavn;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +39,10 @@ public class OrganisasjonMock {
 
     private static HentOrganisasjonResponse getOrCreateCurrentUserResponse(){
 
-        HentOrganisasjonResponse response = responses.get(SubjectHandler.getSubjectHandler().getUid());
+        HentOrganisasjonResponse response = responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
         if (response == null ){
             response = getDefaultResponse();
-            responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
         }
 
         return response;
@@ -64,10 +63,10 @@ public class OrganisasjonMock {
             module.addDeserializer(Organisasjon.class, new OrganisasjonDeserializer());
             mapper.registerModule(module);
             HentOrganisasjonResponse response = mapper.readValue(jsonOrganisasjon, HentOrganisasjonResponse.class);
-            if (responses.get(SubjectHandler.getSubjectHandler().getUid()) == null){
-                responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            if (responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken()) == null){
+                responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
             } else {
-                responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+                responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,7 +75,7 @@ public class OrganisasjonMock {
     }
 
     public static void resetOrganisasjon(){
-        responses.replace(SubjectHandler.getSubjectHandler().getUid(), new HentOrganisasjonResponse());
+        responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), new HentOrganisasjonResponse());
     }
 
 

@@ -1,6 +1,6 @@
-package no.nav.sbl.dialogarena.rest.ressurser.mock;
+package no.nav.sbl.dialogarena.mock;
 
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
@@ -26,7 +26,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 @Path("/internal/mock/tjeneste")
 @Produces(APPLICATION_JSON)
 public class TjenesteMockRessurs {
-
     private static final Logger logger = LoggerFactory.getLogger(TjenesteMockRessurs.class);
 
 
@@ -40,7 +39,7 @@ public class TjenesteMockRessurs {
         }
     }
 
-    private boolean isTillatMockRessurs() {
+    public static boolean isTillatMockRessurs() {
         return Boolean.parseBoolean(System.getProperty("tillatMockRessurs", "false"));
     }
 
@@ -73,7 +72,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + SubjectHandler.getSubjectHandler().getUid());
+        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer);
         } else {

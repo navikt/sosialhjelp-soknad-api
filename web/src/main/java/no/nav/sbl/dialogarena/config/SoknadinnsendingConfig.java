@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.modig.cache.CacheConfig;
+import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
 import no.nav.sbl.dialogarena.oidc.OidcTokenValidatorConfig;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
@@ -24,7 +25,8 @@ import org.springframework.context.annotation.Import;
         HandlebarsHelperConfig.class,
         OidcTokenValidatorConfig.class,
         MetricsConfig.class,
-        SaksoversiktMetadataService.class
+        SaksoversiktMetadataService.class,
+        TjenesteMockRessurs.class
 })
 @ComponentScan(basePackages = "no.nav.sbl.dialogarena.rest")
 public class SoknadinnsendingConfig {

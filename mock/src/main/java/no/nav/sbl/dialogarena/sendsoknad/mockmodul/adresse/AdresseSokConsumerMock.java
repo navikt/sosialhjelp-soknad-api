@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.modig.core.context.SubjectHandler;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
 
 public class AdresseSokConsumerMock {
 
@@ -32,10 +32,10 @@ public class AdresseSokConsumerMock {
     }
 
     private static AdressesokRespons getOrCreateCurrentUserResponse() {
-        AdressesokRespons response = responses.get(SubjectHandler.getSubjectHandler().getUid());
+        AdressesokRespons response = responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
         if (response == null){
             response = getDefaultRespons();
-            responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
         }
 
         return response;
@@ -66,10 +66,10 @@ public class AdresseSokConsumerMock {
         try {
             ObjectMapper mapper = new ObjectMapper();
             AdressesokRespons response = mapper.readValue(jsonAdressesokRespons, AdressesokRespons.class);
-            if (responses.get(SubjectHandler.getSubjectHandler().getUid()) == null){
-                responses.put(SubjectHandler.getSubjectHandler().getUid(), response);
+            if (responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken()) == null){
+                responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
             } else {
-                responses.replace(SubjectHandler.getSubjectHandler().getUid(), response);
+                responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,6 +78,6 @@ public class AdresseSokConsumerMock {
 
     public static void resetAdresser(){
         AdressesokRespons defaultRespons = new AdressesokRespons();
-        responses.replace(SubjectHandler.getSubjectHandler().getUid(), defaultRespons);
+        responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), defaultRespons);
     }
 }
