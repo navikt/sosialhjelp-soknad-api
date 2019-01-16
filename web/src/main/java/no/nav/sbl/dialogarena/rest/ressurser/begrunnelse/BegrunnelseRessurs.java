@@ -57,7 +57,7 @@ public class BegrunnelseRessurs {
     }
 
     @PUT
-    public void updateTelefonnummer(@PathParam("behandlingsId") String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
+    public void updateBegrunnelse(@PathParam("behandlingsId") String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, begrunnelseFrontend);
         legacyUpdate(behandlingsId, begrunnelseFrontend);
