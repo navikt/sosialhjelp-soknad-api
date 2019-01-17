@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -14,7 +15,6 @@ import javax.ws.rs.Produces;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -31,18 +31,18 @@ public class TjenesterRessurs {
     @GET
     @Path("/aktiviteter")
     public List<Faktum> hentAktiviteter() {
-        return aktivitetService.hentAktiviteter(getSubjectHandler().getUserIdFromToken());
+        return aktivitetService.hentAktiviteter(SubjectHandler.getUserIdFromToken());
     }
 
     @GET
     @Path("/vedtak")
     public List<Faktum> hentVedtak() {
-        return aktivitetService.hentVedtak(getSubjectHandler().getUserIdFromToken());
+        return aktivitetService.hentVedtak(SubjectHandler.getUserIdFromToken());
     }
 
     @GET
     @Path("/maalgrupper")
     public List<Faktum> hentMaalgrupper() {
-        return maalgrupperService.hentMaalgrupper(getSubjectHandler().getUserIdFromToken());
+        return maalgrupperService.hentMaalgrupper(SubjectHandler.getUserIdFromToken());
     }
 }

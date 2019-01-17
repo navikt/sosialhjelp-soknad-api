@@ -73,19 +73,16 @@ public class InnsendingServiceTest {
             TransactionCallbackWithoutResult arg = (TransactionCallbackWithoutResult) args[0];
             return arg.doInTransaction(new SimpleTransactionStatus());
         });
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(lagOpplastetVedleggListe());
+        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(createOpplastetVedleggListe());
         when(sendtSoknadRepository.opprettSendtSoknad(any(), anyString())).thenReturn(SENDT_SOKNAD_ID);
-        when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(lagSendtSoknad());
+        when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(createSendtSoknad());
         when(vedleggstatusRepository.opprettVedlegg(any(), anyString())).thenReturn(5L);
-        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
-                .thenReturn(new JsonInternalSoknad().withMottaker(new JsonSoknadsmottaker()
-                        .withOrganisasjonsnummer(ORGNR)
-                        .withNavEnhetsnavn(NAVENHETSNAVN)));
     }
 
     @Test
     public void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
-        innsendingService.opprettSendtSoknad(lagSoknadUnderArbeid(), new ArrayList<>());
+        innsendingService.opprettSendtSoknad(createSoknadUnderArbeid().
+                withJsonInternalSoknad(createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()), new ArrayList<>());
 
         verify(soknadUnderArbeidRepository, times(1)).oppdaterInnsendingStatus(any(SoknadUnderArbeid.class), eq(EIER));
         verify(sendtSoknadRepository, times(1)).opprettSendtSoknad(any(SendtSoknad.class), eq(EIER));
@@ -94,25 +91,27 @@ public class InnsendingServiceTest {
 
     @Test
     public void finnAlleVedleggHenterAlleOpplastedeOgManglendeVedlegg() {
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(lagOpplastetVedleggListe());
+        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(createOpplastetVedleggListe());
 
-        List<Vedleggstatus> alleVedlegg = innsendingService.finnAlleVedlegg(lagSoknadUnderArbeid(), lagIkkeOpplastedePaakrevdeVedlegg());
+        List<Vedleggstatus> alleVedlegg = innsendingService.finnAlleVedlegg(createSoknadUnderArbeid(), createIkkeOpplastedePaakrevdeVedlegg());
 
         assertThat(alleVedlegg.size(), is(2));
     }
 
     @Test
     public void finnAlleVedleggHenterHenterBareOpplastedeVedleggVedEttersendelse() {
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(lagOpplastetVedleggListe());
+        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(createOpplastetVedleggListe());
 
-        List<Vedleggstatus> alleVedlegg = innsendingService.finnAlleVedlegg(lagSoknadUnderArbeidForEttersendelse(), lagIkkeOpplastedePaakrevdeVedlegg());
+        List<Vedleggstatus> alleVedlegg = innsendingService.finnAlleVedlegg(createSoknadUnderArbeidForEttersendelse(), createIkkeOpplastedePaakrevdeVedlegg());
 
         assertThat(alleVedlegg.size(), is(1));
     }
 
     @Test
     public void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
-        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeid());
+        SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(createSoknadUnderArbeid().withJsonInternalSoknad(
+                createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()
+        ));
 
         assertThat(sendtSoknad.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(sendtSoknad.getTilknyttetBehandlingsId(), nullValue());
@@ -127,15 +126,13 @@ public class InnsendingServiceTest {
 
     @Test(expected = IllegalStateException.class)
     public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
-        when(soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class)))
-                .thenReturn(new JsonInternalSoknad().withMottaker(null));
-
-        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(lagSoknadUnderArbeidUtenTilknyttetBehandlingsid());
+        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(createSoknadUnderArbeidUtenTilknyttetBehandlingsid()
+                .withJsonInternalSoknad(new JsonInternalSoknad().withMottaker(null)));
     }
 
     @Test
     public void finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
-        SendtSoknad sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(lagSoknadUnderArbeidForEttersendelse());
+        SendtSoknad sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
 
         assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
         assertThat(sendtSoknad.getNavEnhetsnavn(), is(NAVENHETSNAVN));
@@ -145,9 +142,9 @@ public class InnsendingServiceTest {
     @Test
     public void finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
-        when(soknadMetadataRepository.hent(anyString())).thenReturn(lagSoknadMetadata());
+        when(soknadMetadataRepository.hent(anyString())).thenReturn(createSoknadMetadata());
 
-        SendtSoknad soknadMedMottaksinfoFraMetadata = innsendingService.finnSendtSoknadForEttersendelse(lagSoknadUnderArbeidForEttersendelse());
+        SendtSoknad soknadMedMottaksinfoFraMetadata = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
 
         assertThat(soknadMedMottaksinfoFraMetadata.getOrgnummer(), is(ORGNR_METADATA));
         assertThat(soknadMedMottaksinfoFraMetadata.getNavEnhetsnavn(), is(NAVENHETSNAVN_METADATA));
@@ -158,12 +155,12 @@ public class InnsendingServiceTest {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(null);
 
-        innsendingService.finnSendtSoknadForEttersendelse(lagSoknadUnderArbeidForEttersendelse());
+        innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
     }
 
     @Test
     public void mapOpplastedeVedleggTilVedleggstatusListeMapperInfoRiktig() {
-        List<OpplastetVedlegg> opplastedeVedlegg = lagOpplastetVedleggListe();
+        List<OpplastetVedlegg> opplastedeVedlegg = createOpplastetVedleggListe();
 
         List<Vedleggstatus> vedleggstatuser = innsendingService.mapOpplastedeVedleggTilVedleggstatusListe(opplastedeVedlegg);
         Vedleggstatus vedleggstatus = vedleggstatuser.get(0);
@@ -177,7 +174,7 @@ public class InnsendingServiceTest {
 
     @Test
     public void fjernDuplikateVedleggstatuserFjernerVedleggstatuserMedSammeVedleggType() {
-        List<Vedleggstatus> vedleggstatuserUtenDuplikater = innsendingService.fjernDuplikateVedleggstatuser(lagVedleggstatusListeMedDuplikater());
+        List<Vedleggstatus> vedleggstatuserUtenDuplikater = innsendingService.fjernDuplikateVedleggstatuser(createVedleggstatusListeMedDuplikater());
 
         assertThat(vedleggstatuserUtenDuplikater.size(), is(4));
         assertThat(vedleggstatuserUtenDuplikater.get(0).getVedleggType(), is(VEDLEGGTYPE));
@@ -186,15 +183,15 @@ public class InnsendingServiceTest {
         assertThat(vedleggstatuserUtenDuplikater.get(3).getVedleggType(), nullValue());
     }
 
-    private List<OpplastetVedlegg> lagOpplastetVedleggListe() {
+    private List<OpplastetVedlegg> createOpplastetVedleggListe() {
         List<OpplastetVedlegg> opplastedeVedlegg = new ArrayList<>();
-        opplastedeVedlegg.add(lagOpplastetVedlegg());
-        opplastedeVedlegg.add(lagOpplastetVedlegg());
+        opplastedeVedlegg.add(createOpplastetVedlegg());
+        opplastedeVedlegg.add(createOpplastetVedlegg());
         opplastedeVedlegg.add(null);
         return opplastedeVedlegg;
     }
 
-    private List<Vedleggstatus> lagVedleggstatusListeMedDuplikater() {
+    private List<Vedleggstatus> createVedleggstatusListeMedDuplikater() {
         List<Vedleggstatus> vedleggstatuser = new ArrayList<>();
         vedleggstatuser.add(new Vedleggstatus()
                 .withVedleggType(VEDLEGGTYPE));
@@ -209,7 +206,7 @@ public class InnsendingServiceTest {
         return vedleggstatuser;
     }
 
-    private SoknadUnderArbeid lagSoknadUnderArbeid() {
+    private SoknadUnderArbeid createSoknadUnderArbeid() {
         return new SoknadUnderArbeid()
                 .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
                 .withBehandlingsId(BEHANDLINGSID)
@@ -218,7 +215,13 @@ public class InnsendingServiceTest {
                 .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
-    private SoknadUnderArbeid lagSoknadUnderArbeidForEttersendelse() {
+    private JsonInternalSoknad createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn() {
+        return new JsonInternalSoknad().withMottaker(new JsonSoknadsmottaker()
+                .withOrganisasjonsnummer(ORGNR)
+                .withNavEnhetsnavn(NAVENHETSNAVN));
+    }
+
+    private SoknadUnderArbeid createSoknadUnderArbeidForEttersendelse() {
         return new SoknadUnderArbeid()
                 .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
                 .withBehandlingsId(BEHANDLINGSID)
@@ -228,7 +231,7 @@ public class InnsendingServiceTest {
                 .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
-    private SoknadUnderArbeid lagSoknadUnderArbeidUtenTilknyttetBehandlingsid() {
+    private SoknadUnderArbeid createSoknadUnderArbeidUtenTilknyttetBehandlingsid() {
         return new SoknadUnderArbeid()
                 .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
                 .withBehandlingsId(BEHANDLINGSID)
@@ -237,13 +240,13 @@ public class InnsendingServiceTest {
                 .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
-    private OpplastetVedlegg lagOpplastetVedlegg() {
+    private OpplastetVedlegg createOpplastetVedlegg() {
         return new OpplastetVedlegg()
                 .withVedleggType(VEDLEGGTYPE)
                 .withEier(EIER);
     }
 
-    private List<Vedleggstatus> lagIkkeOpplastedePaakrevdeVedlegg() {
+    private List<Vedleggstatus> createIkkeOpplastedePaakrevdeVedlegg() {
         List<Vedleggstatus> paakrevdeVedlegg = new ArrayList<>();
         paakrevdeVedlegg.add(new Vedleggstatus()
                 .withEier(EIER)
@@ -254,7 +257,7 @@ public class InnsendingServiceTest {
         return paakrevdeVedlegg;
     }
 
-    private Optional<SendtSoknad> lagSendtSoknad() {
+    private Optional<SendtSoknad> createSendtSoknad() {
         return Optional.of(new SendtSoknad().withEier(EIER)
                 .withBehandlingsId(BEHANDLINGSID)
                 .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
@@ -266,7 +269,7 @@ public class InnsendingServiceTest {
                 .withSendtDato(now()));
     }
 
-    private SoknadMetadata lagSoknadMetadata() {
+    private SoknadMetadata createSoknadMetadata() {
         SoknadMetadata soknadMetadata = new SoknadMetadata();
         soknadMetadata.orgnr = ORGNR_METADATA;
         soknadMetadata.navEnhet = NAVENHETSNAVN_METADATA;

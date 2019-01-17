@@ -11,6 +11,7 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.slf4j.Logger;
 
 import no.nav.modig.common.MDCOperations;
@@ -55,7 +56,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public void ping() {
-        final String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        final String consumerId = SubjectHandler.getConsumerId();
         final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
@@ -151,7 +152,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     }
 
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata, String soketype) {
-        String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         

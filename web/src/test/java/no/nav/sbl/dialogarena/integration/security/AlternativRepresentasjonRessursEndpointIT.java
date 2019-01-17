@@ -6,6 +6,9 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
 import com.nimbusds.jwt.SignedJWT;
+import no.nav.sbl.dialogarena.oidc.OidcConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.junit.Before;

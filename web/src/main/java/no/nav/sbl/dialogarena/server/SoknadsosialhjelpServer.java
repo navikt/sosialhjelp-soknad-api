@@ -86,7 +86,7 @@ public class SoknadsosialhjelpServer {
                 setProperty(OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY, OidcSubjectHandler.class.getName());
             }
 
-            System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+            System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs
         } else {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalEnvironment();

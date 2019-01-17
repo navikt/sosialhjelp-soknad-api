@@ -74,7 +74,7 @@ public class StandardKodeverk implements Kodeverk {
     
     @Override
     public String gjettKommunenummer(String kommunenavn) {
-        return finnKodenavnFraFoersteTermnavn(kommunenavn, KOMMUNE.toString());
+        return finnSisteKodenavnFraFoersteTermnavn(kommunenavn, KOMMUNE.toString());
     }
 
     @Override
@@ -188,13 +188,14 @@ public class StandardKodeverk implements Kodeverk {
         return null;
     }
     
-    private String finnKodenavnFraFoersteTermnavn(String termnavn, String kodeverknavn) {
+    private String finnSisteKodenavnFraFoersteTermnavn(String termnavn, String kodeverknavn) {
+        String navn = null;
         for (XMLKode kode : kodeverkMedNavn(kodeverknavn).getKode()) {
             if (kode.getTerm().get(0).getNavn().equalsIgnoreCase(termnavn)) {
-                return kode.getNavn();
+                navn = kode.getNavn();
             }
         }
-        return null;
+        return navn;
     }
 
     private XMLEnkeltKodeverk hentKodeverk(String navn) {

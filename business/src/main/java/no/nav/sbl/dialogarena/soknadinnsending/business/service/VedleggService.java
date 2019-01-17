@@ -20,6 +20,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
@@ -59,7 +60,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.SKJEMA_VALI
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.PAAKREVDE_VEDLEGG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.UnderBehandling;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -244,7 +244,7 @@ public class VedleggService {
             bytes.add(vedleggRepository.hentVedleggData(vedlegg.getVedleggId()));
         }
         byte[] doc = pdfMerger.transform(bytes);
-        doc = watermarker.forIdent(getSubjectHandler().getUserIdFromToken(), false).transform(doc);
+        doc = watermarker.forIdent(SubjectHandler.getUserIdFromToken(), false).transform(doc);
 
         try {
             doc = komprimerPdfMedIText(doc).toByteArray();

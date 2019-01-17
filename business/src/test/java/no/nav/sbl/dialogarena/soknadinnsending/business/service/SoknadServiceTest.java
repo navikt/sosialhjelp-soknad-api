@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
-import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -19,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.StaticOidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.commons.io.IOUtils;
@@ -113,7 +112,7 @@ public class SoknadServiceTest {
         bolker.put(ArbeidsforholdBolk.class.getName(), arbeidsforholdBolk);
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 
-        setProperty(OIDC_SUBJECT_HANDLER_KEY, StaticOidcSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(Collections.emptyList());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());

@@ -1,6 +1,6 @@
-package no.nav.sbl.dialogarena.sendsoknad.domain.util;
+package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
-public class StaticOidcSubjectHandler extends OidcSubjectHandler {
+public class StaticSubjectHandlerService implements SubjectHandlerService {
     private final static String DEFAULT_USER = "***REMOVED***";
     private final static String DEFAULT_TOKEN = "***REMOVED***";
     private String user = DEFAULT_USER;
@@ -12,6 +12,10 @@ public class StaticOidcSubjectHandler extends OidcSubjectHandler {
 
     public String getToken() {
         return fakeToken; //JwtTokenGenerator.createSignedJWT(user).serialize();
+    }
+
+    public String getConsumerId() {
+        return "StaticConsumerId"; 
     }
 
     public void setUser(String user) {

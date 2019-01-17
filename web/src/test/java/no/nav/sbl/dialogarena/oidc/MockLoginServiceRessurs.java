@@ -18,7 +18,7 @@ import java.net.URI;
  * NB: this resource should only be used when running locally. */
 
 @Path("/local")
-public class MockLoginServiceResource {
+public class MockLoginServiceRessurs {
     private final static int tenYears = 10*365*24*60*60;
 
     /** This api should only be used when running locally. */

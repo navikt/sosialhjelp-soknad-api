@@ -1,7 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.StaticOidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
 import org.junit.Before;
@@ -11,9 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.getSubjectHandler;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,8 +29,8 @@ public class TjenesterRessursTest {
 
     @Before
     public void setUp() {
-        setProperty(OIDC_SUBJECT_HANDLER_KEY, StaticOidcSubjectHandler.class.getName());
-        fodselsnummer = getSubjectHandler().getUserIdFromToken();
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        fodselsnummer = SubjectHandler.getUserIdFromToken();
     }
 
     @Test
