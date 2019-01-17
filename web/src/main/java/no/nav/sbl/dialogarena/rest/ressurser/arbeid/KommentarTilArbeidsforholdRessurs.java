@@ -52,7 +52,6 @@ public class KommentarTilArbeidsforholdRessurs {
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
 
         return new KommentarTilArbeidsforholdFrontend()
-                .withBrukerdefinert(true)
                 .withKommentarTilArbeidsforhold(kommentarTilArbeidsforhold != null ? kommentarTilArbeidsforhold.getVerdi() : "");
     }
 
@@ -70,7 +69,7 @@ public class KommentarTilArbeidsforholdRessurs {
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = arbeid.getKommentarTilArbeidsforhold() != null ?
                 arbeid.getKommentarTilArbeidsforhold() :
                 arbeid.withKommentarTilArbeidsforhold(new JsonKommentarTilArbeidsforhold()).getKommentarTilArbeidsforhold();
-        kommentarTilArbeidsforhold.setKilde(kommentarTilArbeidsforholdFrontend.brukerdefinert ? JsonKildeBruker.BRUKER : JsonKildeBruker.UTDATERT);
+        kommentarTilArbeidsforhold.setKilde(JsonKildeBruker.BRUKER);
         kommentarTilArbeidsforhold.setVerdi(kommentarTilArbeidsforholdFrontend.kommentarTilArbeidsforhold);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
@@ -86,13 +85,7 @@ public class KommentarTilArbeidsforholdRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class KommentarTilArbeidsforholdFrontend {
-        public boolean brukerdefinert;
         public String kommentarTilArbeidsforhold;
-
-        public KommentarTilArbeidsforholdFrontend withBrukerdefinert(boolean brukerdefinert) {
-            this.brukerdefinert = brukerdefinert;
-            return this;
-        }
 
         public KommentarTilArbeidsforholdFrontend withKommentarTilArbeidsforhold(String kommentarTilArbeidsforhold) {
             this.kommentarTilArbeidsforhold = kommentarTilArbeidsforhold;
