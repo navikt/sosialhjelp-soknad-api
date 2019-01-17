@@ -16,7 +16,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>no.nav.sbl.dialogarena.config.SoknadinnsendingConfig,no.nav.sbl.dialogarena.config.IntegrationConfig,no.nav.sbl.dialogarena.config.SikkerhetsConfig,no.nav.sbl.dialogarena.oidc.OidcTokenValidationTestConfig</param-value>
+        <param-value>no.nav.sbl.dialogarena.config.SoknadinnsendingConfig,no.nav.sbl.dialogarena.config.IntegrationConfig,no.nav.sbl.dialogarena.config.SikkerhetsConfig,no.nav.sbl.dialogarena.oidc.OidcConfig</param-value>
     </context-param>
 
     <servlet>

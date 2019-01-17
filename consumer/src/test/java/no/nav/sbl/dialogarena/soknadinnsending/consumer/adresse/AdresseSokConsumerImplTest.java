@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -18,7 +17,9 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.StaticOidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerService;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -36,20 +37,21 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallCont
 
 public class AdresseSokConsumerImplTest {
 
-    private static String oldSubjectHandlerImplementationClass;
+    private static SubjectHandlerService oldSubjectHandlerService;
 
 
     @BeforeClass
     public static void oppsettForInnloggetBruker() {
-        oldSubjectHandlerImplementationClass = System.setProperty(OIDC_SUBJECT_HANDLER_KEY, StaticOidcSubjectHandler.class.getName());
+        oldSubjectHandlerService = SubjectHandler.getSubjectHandlerService();
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
     @AfterClass
     public static void fjernOppsettForInnloggetBruker() {
-        if (oldSubjectHandlerImplementationClass == null) {
-            System.clearProperty(OIDC_SUBJECT_HANDLER_KEY);
+        if (oldSubjectHandlerService == null) {
+            SubjectHandler.resetOidcSubjectHandlerService();
         } else {
-            System.setProperty(OIDC_SUBJECT_HANDLER_KEY, oldSubjectHandlerImplementationClass);
+            SubjectHandler.setSubjectHandlerService(oldSubjectHandlerService);
         }
     }
 

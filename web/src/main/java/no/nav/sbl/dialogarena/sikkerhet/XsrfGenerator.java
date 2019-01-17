@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 
@@ -22,7 +22,7 @@ public class XsrfGenerator {
     }
 
     public static String generateXsrfToken(String behandlingsId, String date) {
-            return generateXsrfToken(behandlingsId, date, OidcSubjectHandler.getSubjectHandler().getToken());
+            return generateXsrfToken(behandlingsId, date, SubjectHandler.getToken());
     }
 
     public static String generateXsrfToken(String behandlingsId, String date, String token) {

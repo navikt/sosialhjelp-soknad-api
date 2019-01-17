@@ -2,6 +2,9 @@ package no.nav.sbl.dialogarena;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.testcertificates.TestCertificates;
+import no.nav.sbl.dialogarena.oidc.OidcConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 
 import javax.sql.DataSource;
@@ -24,6 +27,9 @@ public class DevSoknadsosialhjelpServer {
         }
 
         final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/soknadsosialhjelp-server", dataSource);
+        if (OidcConfig.isOidcMock()) {
+            SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        }
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // Er med pga SaksoversiktMetadataRessurs.
         TestCertificates.setupKeyAndTrustStore();
         server.start();

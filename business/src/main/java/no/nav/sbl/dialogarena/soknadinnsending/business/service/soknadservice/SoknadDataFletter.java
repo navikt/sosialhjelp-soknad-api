@@ -6,6 +6,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
@@ -41,7 +42,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERR
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
 import static no.nav.sbl.sosialhjelp.midlertidig.VedleggsforventningConverter.mapVedleggsforventningerTilVedleggstatusListe;
@@ -145,7 +145,7 @@ public class SoknadDataFletter {
 
         Timer startTimer = createDebugTimer("startTimer", soknadnavn, mainUid);
 
-        String aktorId = getSubjectHandler().getUserIdFromToken();
+        String aktorId = SubjectHandler.getUserIdFromToken();
         Timer henvendelseTimer = createDebugTimer("startHenvendelse", soknadnavn, mainUid);
         String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid, soknadType);
         henvendelseTimer.stop();
@@ -315,11 +315,11 @@ public class SoknadDataFletter {
 
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
-                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUserIdFromToken(), soknad.getSoknadId()));
+                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(SubjectHandler.getUserIdFromToken(), soknad.getSoknadId()));
             } else {
                 List<Faktum> systemfaktum = new ArrayList<>();
                 for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
-                    systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUserIdFromToken(), soknad.getSoknadId()));
+                    systemfaktum.addAll(bolk.genererSystemFakta(SubjectHandler.getUserIdFromToken(), soknad.getSoknadId()));
                 }
                 faktaService.lagreSystemFakta(soknad, systemfaktum);
             }

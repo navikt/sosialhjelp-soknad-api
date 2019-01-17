@@ -3,8 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.StaticOidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
@@ -30,12 +31,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.getSubjectHandler;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
@@ -109,7 +107,7 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.initBolker();
         soknadServiceUtil.alternativRepresentasjonService = alternativRepresentasjonService;
         soknadServiceUtil.ekstraMetadataService = ekstraMetadataService;
-        setProperty(OIDC_SUBJECT_HANDLER_KEY, StaticOidcSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(Collections.emptyList());
         when(config.hentStruktur(any(String.class))).thenReturn(new SoknadStruktur());
@@ -129,7 +127,7 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.startSoknad(SosialhjelpInformasjon.SKJEMANUMMER);
 
         ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
-        String bruker = getSubjectHandler().getUserIdFromToken();
+        String bruker = SubjectHandler.getUserIdFromToken();
         verify(henvendelsesConnector).startSoknad(eq(bruker), eq(SosialhjelpInformasjon.SKJEMANUMMER), uid.capture(), Matchers.any(SoknadType.class));
         WebSoknad soknad = new WebSoknad()
                 .medId(soknadId)

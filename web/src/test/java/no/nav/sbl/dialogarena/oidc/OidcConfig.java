@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
-public class OidcTokenValidationTestConfig {
+public class OidcConfig {
 
     /**
      * Overskriver måten å hente ut OIDC-metadata. Istedenfor å hente det fra en internettadresse henter man det fra filsystemet.
@@ -37,7 +37,7 @@ public class OidcTokenValidationTestConfig {
         return new JwkGenerator();
     }
 
-    private boolean isOidcMock() {
+    public static boolean isOidcMock() {
         return "true".equalsIgnoreCase(System.getProperty("tillatmock")) &&
                 "true".equalsIgnoreCase(System.getProperty("start.oidc.withmock"));
     }
