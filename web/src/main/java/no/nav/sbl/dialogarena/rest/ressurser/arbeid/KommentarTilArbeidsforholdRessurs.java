@@ -52,7 +52,7 @@ public class KommentarTilArbeidsforholdRessurs {
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
 
         return new KommentarTilArbeidsforholdFrontend()
-                .withKommentarTilArbeidsforhold(kommentarTilArbeidsforhold != null ? kommentarTilArbeidsforhold.getVerdi() : "");
+                .withKommentarTilArbeidsforhold(kommentarTilArbeidsforhold != null ? kommentarTilArbeidsforhold.getVerdi() : null);
     }
 
     @PUT

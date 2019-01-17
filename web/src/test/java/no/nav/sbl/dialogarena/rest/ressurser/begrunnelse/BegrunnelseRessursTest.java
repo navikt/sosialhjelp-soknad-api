@@ -11,6 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.Before;
@@ -94,6 +95,7 @@ public class BegrunnelseRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonBegrunnelse begrunnelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
+        assertThat(begrunnelse.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(begrunnelse.getHvaSokesOm(), is(SOKER_OM));
         assertThat(begrunnelse.getHvorforSoke(), is(SOKER_FORDI));
     }
