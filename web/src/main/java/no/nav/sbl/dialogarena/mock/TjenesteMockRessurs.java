@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.mock;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
@@ -91,7 +91,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + MockSubjectHandler.getSubjectHandler().getToken());
+        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + SubjectHandler.getUserIdFromToken());
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer);
         } else {

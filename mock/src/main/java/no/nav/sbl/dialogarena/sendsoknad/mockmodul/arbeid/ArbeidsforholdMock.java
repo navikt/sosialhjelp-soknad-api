@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
@@ -34,10 +34,10 @@ public class ArbeidsforholdMock {
     }
 
     private static FinnArbeidsforholdPrArbeidstakerResponse getOrCreateCurrentUserResponse() {
-        FinnArbeidsforholdPrArbeidstakerResponse response = responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
+        FinnArbeidsforholdPrArbeidstakerResponse response = responses.get(SubjectHandler.getUserIdFromToken());
         if (response == null) {
             response = new FinnArbeidsforholdPrArbeidstakerResponse();
-            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
+            responses.put(SubjectHandler.getUserIdFromToken(), response);
         }
 
         return response;
@@ -51,10 +51,10 @@ public class ArbeidsforholdMock {
             module.addDeserializer(Aktoer.class, new AktoerDeserializer());
             mapper.registerModule(module);
             final FinnArbeidsforholdPrArbeidstakerResponse response = mapper.readValue(arbeidsforholdData, FinnArbeidsforholdPrArbeidstakerResponse.class);
-            if (responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken()) == null){
-                responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
+            if (responses.get(SubjectHandler.getUserIdFromToken()) == null){
+                responses.put(SubjectHandler.getUserIdFromToken(), response);
             } else {
-                responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
+                responses.replace(SubjectHandler.getUserIdFromToken(), response);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -63,6 +63,6 @@ public class ArbeidsforholdMock {
 
     public static void resetArbeidsforhold(){
         FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
-        responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
+        responses.replace(SubjectHandler.getUserIdFromToken(), response);
     }
 }

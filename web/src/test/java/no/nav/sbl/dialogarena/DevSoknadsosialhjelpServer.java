@@ -5,7 +5,7 @@ import no.nav.modig.testcertificates.TestCertificates;
 import no.nav.sbl.dialogarena.oidc.OidcConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.mock.MockSubjectHandler;
+import no.nav.sbl.dialogarena.mock.MockSubjectHandlerService;
 import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 
@@ -33,7 +33,7 @@ public class DevSoknadsosialhjelpServer {
         if (OidcConfig.isOidcMock()) {
             SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         } else if (TjenesteMockRessurs.isTillatMockRessurs()) {
-            SubjectHandler.setSubjectHandlerService(new MockSubjectHandler());
+            SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
         }
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // Er med pga SaksoversiktMetadataRessurs.
         TestCertificates.setupKeyAndTrustStore();

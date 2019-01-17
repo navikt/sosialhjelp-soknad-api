@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -72,10 +72,10 @@ public class BrukerprofilMock {
     }
 
     private static XMLHentKontaktinformasjonOgPreferanserResponse getOrCreateCurrentUserResponse() {
-        XMLHentKontaktinformasjonOgPreferanserResponse respons = responses.get(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
+        XMLHentKontaktinformasjonOgPreferanserResponse respons = responses.get(SubjectHandler.getUserIdFromToken());
         if (respons == null) {
             respons = createNewResponse();
-            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), respons);
+            responses.put(SubjectHandler.getUserIdFromToken(), respons);
         }
 
 
@@ -309,9 +309,9 @@ public class BrukerprofilMock {
 
             XMLHentKontaktinformasjonOgPreferanserResponse currentResponse = getOrCreateCurrentUserResponse();
             if (currentResponse == null){
-                responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), newResponse);
+                responses.put(SubjectHandler.getUserIdFromToken(), newResponse);
             } else {
-                responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), newResponse);
+                responses.replace(SubjectHandler.getUserIdFromToken(), newResponse);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -322,9 +322,9 @@ public class BrukerprofilMock {
     public static void resetBrukerprofil(){
         XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
         if (response == null){
-            responses.put(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
+            responses.put(SubjectHandler.getUserIdFromToken(), response);
         } else {
-            responses.replace(OidcSubjectHandler.getSubjectHandler().getUserIdFromToken(), response);
+            responses.replace(SubjectHandler.getUserIdFromToken(), response);
         }
     }
 }

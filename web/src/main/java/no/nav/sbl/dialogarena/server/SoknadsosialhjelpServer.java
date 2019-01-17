@@ -2,9 +2,10 @@ package no.nav.sbl.dialogarena.server;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import no.nav.sbl.dialogarena.mock.MockSubjectHandler;
+import no.nav.sbl.dialogarena.mock.MockSubjectHandlerService;
 import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -81,9 +82,9 @@ public class SoknadsosialhjelpServer {
             setFrom("environment/environment.properties");
 
             if (TjenesteMockRessurs.isTillatMockRessurs()){
-                setProperty(OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY, MockSubjectHandler.class.getName());
+                SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
             } else {
-                setProperty(OidcSubjectHandler.OIDC_SUBJECT_HANDLER_KEY, OidcSubjectHandler.class.getName());
+                SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
             }
 
             System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs

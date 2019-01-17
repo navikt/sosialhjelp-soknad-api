@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
@@ -10,7 +11,6 @@ import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentD
 import java.util.HashMap;
 import java.util.Map;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler.getSubjectHandler;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,10 +34,10 @@ public class DkifMock {
 
     private static WSHentDigitalKontaktinformasjonResponse getOrCreateCurrentUserResponse() {
 
-        WSHentDigitalKontaktinformasjonResponse response = responses.get(getSubjectHandler().getUserIdFromToken());
+        WSHentDigitalKontaktinformasjonResponse response = responses.get(SubjectHandler.getUserIdFromToken());
         if (response == null) {
             response = createNewResponse();
-            responses.put(getSubjectHandler().getUserIdFromToken(), response);
+            responses.put(SubjectHandler.getUserIdFromToken(), response);
         }
         return response;
     }

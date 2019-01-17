@@ -1,14 +1,13 @@
 package no.nav.sbl.dialogarena.mock;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.OidcSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerService;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
 
-public class MockSubjectHandler extends OidcSubjectHandler {
+public class MockSubjectHandlerService implements SubjectHandlerService {
 
-    @Override
     public String getUserIdFromToken() {
         if (!TjenesteMockRessurs.isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
@@ -25,8 +24,11 @@ public class MockSubjectHandler extends OidcSubjectHandler {
         }
     }
 
-    @Override
     public String getToken() {
         return getUserIdFromToken();
+    }
+
+    public String getConsumerId() {
+        return "MockedConsumerId";
     }
 }
