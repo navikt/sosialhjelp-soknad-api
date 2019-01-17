@@ -15,8 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -42,6 +45,22 @@ public class TjenesteMockRessurs {
     public static boolean isTillatMockRessurs() {
         return Boolean.parseBoolean(System.getProperty("tillatMockRessurs", "false"));
     }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/uid")
+    public void setUid(@RequestBody String uid) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+
+        final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpSession session = attr.getRequest().getSession(true);
+        session.setAttribute("mockRessursUid", uid);
+
+        clearCache();
+    }
+
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -72,7 +91,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + OidcSubjectHandler.getSubjectHandler().getUserIdFromToken());
+        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + MockSubjectHandler.getSubjectHandler().getToken());
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer);
         } else {

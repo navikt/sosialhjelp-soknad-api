@@ -22,9 +22,10 @@ public class OidcTokenValidatorFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (TjenesteMockRessurs.isTillatMockRessurs()) {
             filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            jaxrsOIDCTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain);
         }
 
-        jaxrsOIDCTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain);
     }
 
     @Override

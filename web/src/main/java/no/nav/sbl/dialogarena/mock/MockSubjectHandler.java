@@ -18,6 +18,7 @@ public class MockSubjectHandler extends OidcSubjectHandler {
             final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             final HttpSession session = attr.getRequest().getSession(true);
 
+
             return (String) session.getAttribute("mockRessursUid");
         } catch (RuntimeException e) {
             return null;
