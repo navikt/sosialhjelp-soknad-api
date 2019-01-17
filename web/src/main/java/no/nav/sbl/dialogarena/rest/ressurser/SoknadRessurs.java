@@ -106,9 +106,8 @@ public class SoknadRessurs {
 
         final String eier = SubjectHandler.getUserIdFromToken();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
-        final JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
 
-        return pdfTemplate.fyllHtmlMalMedInnhold(jsonInternalSoknad);
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
     }
 
     @POST

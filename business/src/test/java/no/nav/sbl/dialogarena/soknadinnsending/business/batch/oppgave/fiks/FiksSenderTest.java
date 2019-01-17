@@ -2,23 +2,36 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
-import no.nav.sbl.soknadsosialhjelp.soknad.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
-import no.nav.sbl.soknadsosialhjelp.vedlegg.*;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -79,7 +92,8 @@ public class FiksSenderTest {
 
     @Test
     public void opprettForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
+        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknad()));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
@@ -102,7 +116,8 @@ public class FiksSenderTest {
 
     @Test
     public void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
+        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknad()));
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
         fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService);
         SendtSoknad sendtSoknad = lagSendtSoknad();
@@ -116,7 +131,8 @@ public class FiksSenderTest {
 
     @Test
     public void opprettForsendelseSetterRiktigTittelForNySoknad() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
+        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknad()));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
@@ -126,8 +142,10 @@ public class FiksSenderTest {
 
     @Test
     public void opprettForsendelseSetterRiktigTittelForEttersendelse() {
-        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid().withTilknyttetBehandlingsId("12345"));
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
+        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid()
+                .withTilknyttetBehandlingsId("12345")
+                .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
+        //when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
         SendtSoknad sendtSoknad = lagSendtSoknad().withTilknyttetBehandlingsId("12345");
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
@@ -137,9 +155,8 @@ public class FiksSenderTest {
 
     @Test
     public void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknad());
-
-        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
+        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
+                .withJsonInternalSoknad(lagInternalSoknad()));
 
         assertThat(fiksDokumenter.size(), is(5));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("soknad.json"));
@@ -151,10 +168,11 @@ public class FiksSenderTest {
 
     @Test
     public void hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastetVedlegg());
 
-        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
+        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
+                .withTilknyttetBehandlingsId("123")
+                .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
 
         assertThat(fiksDokumenter.size(), is(4));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("ettersendelse.pdf"));
@@ -165,14 +183,16 @@ public class FiksSenderTest {
 
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadForEttersending());
+        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknadForEttersending()));
 
         fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
     }
 
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
-        when(innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(any(SoknadUnderArbeid.class))).thenReturn(lagInternalSoknadUtenVedleggSpesifikasjon());
+        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknadForEttersending()));
 
         fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
     }
