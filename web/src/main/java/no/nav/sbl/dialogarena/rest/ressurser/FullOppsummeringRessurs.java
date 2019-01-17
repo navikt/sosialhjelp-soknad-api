@@ -58,8 +58,7 @@ public class FullOppsummeringRessurs {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
-        final JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
-        return pdfTemplate.fyllHtmlMalMedInnhold(jsonInternalSoknad);
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
     }
 
     @GET
@@ -73,9 +72,8 @@ public class FullOppsummeringRessurs {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
-        final JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
 
-        return pdfService.genererJuridiskPdf(jsonInternalSoknad, "/");
+        return pdfService.genererJuridiskPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
     }
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {
