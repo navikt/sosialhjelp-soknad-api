@@ -68,7 +68,7 @@ public class BegrunnelseRessurs {
         final JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
         begrunnelse.setKilde(JsonKildeBruker.BRUKER);
         begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvaSokesOm);
-        begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvorforSoke);
+        begrunnelse.setHvorforSoke(begrunnelseFrontend.hvorforSoke);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
