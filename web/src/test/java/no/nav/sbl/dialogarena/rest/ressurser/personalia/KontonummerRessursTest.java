@@ -135,10 +135,8 @@ public class KontonummerRessursTest {
                 .withVerdi(KONTONUMMER_BRUKER);
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
 
-        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
-        verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
-
-        JsonKontonummer kontonummer = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
         assertThat(kontonummer.getKilde(), is(JsonKilde.BRUKER));
         assertThat(kontonummer.getHarIkkeKonto(), nullValue());
         assertThat(kontonummer.getVerdi(), is(KONTONUMMER_BRUKER));
@@ -150,17 +148,20 @@ public class KontonummerRessursTest {
         ignoreTilgangskontrollAndLegacyUpdate();
 
         KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
-                .withBrukerdefinert(false)
-                .withVerdi(KONTONUMMER_BRUKER);
+                .withBrukerdefinert(false);
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
 
-        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
-        verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
-
-        JsonKontonummer kontonummer = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
         assertThat(kontonummer.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(kontonummer.getHarIkkeKonto(), nullValue());
         assertThat(kontonummer.getVerdi(), is(KONTONUMMER_SYSTEM));
+    }
+
+    private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
+        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
+        return argument.getValue();
     }
 
     private void startWithBrukerKontonummerAndSystemKontonummerInTPS() {
