@@ -51,7 +51,7 @@ public class KontonummerRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     
     @Inject
-    private KontonummerSystemdata kontonummerService;
+    private KontonummerSystemdata kontonummerSystemdata;
     
     
     @GET
@@ -59,7 +59,7 @@ public class KontonummerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonKontonummer kontonummer = soknad.getSoknad().getData().getPersonalia().getKontonummer();
-        final String systemverdi = kontonummerService.innhentSystemverdiKontonummer(eier); 
+        final String systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
         
         return new KontonummerFrontend()
                 .withBrukerdefinert(kontonummer.getKilde() == JsonKilde.BRUKER)
@@ -88,7 +88,7 @@ public class KontonummerRessurs {
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto);
         } else if (kontonummer.getKilde() == JsonKilde.BRUKER) {
             kontonummer.setKilde(JsonKilde.SYSTEM);
-            kontonummer.setVerdi(kontonummerService.innhentSystemverdiKontonummer(personIdentifikator));
+            kontonummer.setVerdi(kontonummerSystemdata.innhentSystemverdiKontonummer(personIdentifikator));
             kontonummer.setHarIkkeKonto(null);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
