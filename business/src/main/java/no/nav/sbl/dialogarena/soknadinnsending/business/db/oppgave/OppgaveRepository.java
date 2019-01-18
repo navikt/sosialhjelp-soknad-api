@@ -15,5 +15,7 @@ public interface OppgaveRepository {
 
     Map<String, Integer> hentStatus();
 
+    int retryOppgaveStuckUnderArbeid();
+
 
 }
