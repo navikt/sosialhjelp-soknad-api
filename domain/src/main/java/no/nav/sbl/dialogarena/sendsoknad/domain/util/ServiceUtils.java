@@ -46,7 +46,7 @@ public class ServiceUtils {
         return Hex.toHexString(sha512.digest());
     }
 
-    public static boolean envIsNotProd(){
-        return !"p".equals(System.getenv("FASIT_ENVIRONMENT_NAME"));
+    public static boolean isRunningInProd(){
+        return "p".equals(System.getenv("FASIT_ENVIRONMENT_NAME"));
     }
 }

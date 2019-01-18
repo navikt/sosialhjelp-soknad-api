@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.aspectj.lang.annotation.Aspect;
@@ -62,7 +63,7 @@ public class SikkerhetsAspect {
         }
 
         logger.debug("Sjekker tilgang til ressurs med behandlingsId {} og type {}", behandlingsId, tilgang.type());
-        if (tilgang.sjekkXsrf() && skrivOperasjon(request)) {
+        if (ServiceUtils.isRunningInProd() && tilgang.sjekkXsrf() && skrivOperasjon(request)) {
             sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
         }
 

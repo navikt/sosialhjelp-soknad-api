@@ -20,7 +20,7 @@ public class CORSFilter implements Filter {
             origin = httpRequest.getHeader("Origin");
         }
 
-        if (ServiceUtils.envIsNotProd()) {
+        if (!ServiceUtils.isRunningInProd()) {
             HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
             httpResponse.setHeader("Access-Control-Allow-Origin", origin);
             httpResponse.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, X-XSRF-TOKEN");
