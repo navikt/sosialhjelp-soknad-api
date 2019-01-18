@@ -73,16 +73,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-    @DELETE
-    @Path("/adresser")
-    public void resetAdresser() {
-        if (!isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
-        }
-        AdresseSokConsumerMock.resetAdresser();
-        clearCache();
-    }
-
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -112,16 +102,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-    @DELETE
-    @Path("/brukerprofil")
-    public void setDefaultBrukerprofil() {
-        if (!isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
-        }
-        BrukerprofilMock.resetBrukerprofil();
-        clearCache();
-    }
-
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -135,6 +115,7 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
+
     @POST
     @Consumes(APPLICATION_XML)
     @Path("/arbeid")
@@ -146,15 +127,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-    @DELETE
-    @Path("/arbeid")
-    public void resetAlleArbeidsforhold() {
-        if (!isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
-        }
-        ArbeidsforholdMock.resetArbeidsforhold();
-        clearCache();
-    }
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -184,16 +156,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-    @DELETE
-    @Path("/familie")
-    public void resetFamilie() {
-        if (!isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
-        }
-        PersonMock.resetFamilieforhold();
-        clearCache();
-    }
-
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -206,15 +168,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-    @DELETE
-    @Path("/utbetaling")
-    public void resetUtbetalinger() {
-        if (!isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
-        }
-        UtbetalMock.resetUtbetalinger();
-        clearCache();
-    }
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -224,16 +177,6 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
-        clearCache();
-    }
-
-    @DELETE
-    @Path("/norg")
-    public void resetNorg() {
-        if (!isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
-        }
-        NorgConsumerMock.resetNorgMap();
         clearCache();
     }
 
