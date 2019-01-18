@@ -1,21 +1,13 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-
-import static java.util.Arrays.asList;
 
 public class CORSFilter implements Filter {
-
-    private static final List<String> ALLOWED_ORIGINS = asList(
-            "http://localhost:3000",
-            "http://localhost:8080",
-            "https://soknadsosialhjelp-t1.nais.oera-q.local",
-            "https://soknadsosialhjelp-q0.nais.oera-q.local"
-            );
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {}
@@ -28,7 +20,7 @@ public class CORSFilter implements Filter {
             origin = httpRequest.getHeader("Origin");
         }
 
-        if (ALLOWED_ORIGINS.contains(origin)) {
+        if (ServiceUtils.envIsNotProd()) {
             HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
             httpResponse.setHeader("Access-Control-Allow-Origin", origin);
             httpResponse.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, X-XSRF-TOKEN");
