@@ -43,7 +43,7 @@ public class TelefonnummerRessurs {
     private LegacyHelper legacyHelper;
 
     @Inject
-    TelefonnummerSystemdata telefonnummerService;
+    TelefonnummerSystemdata telefonnummerSystemdata;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -56,7 +56,7 @@ public class TelefonnummerRessurs {
         final String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
         final JsonTelefonnummer telefonnummer = soknad.getSoknad().getData().getPersonalia().getTelefonnummer();
 
-        final String systemverdi = telefonnummerService.innhentSystemverdiTelefonnummer(personIdentifikator);
+        final String systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
         
         return new TelefonnummerFrontend()
                 .withBrukerdefinert(telefonnummer != null ? telefonnummer.getKilde() == JsonKilde.BRUKER : true)
@@ -83,7 +83,7 @@ public class TelefonnummerRessurs {
             telefonnummer.setVerdi(telefonnummerFrontend.verdi);
         } else if (telefonnummer.getKilde() == JsonKilde.BRUKER) {
             telefonnummer.setKilde(JsonKilde.SYSTEM);
-            telefonnummer.setVerdi(telefonnummerService.innhentSystemverdiTelefonnummer(personIdentifikator));
+            telefonnummer.setVerdi(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator));
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
