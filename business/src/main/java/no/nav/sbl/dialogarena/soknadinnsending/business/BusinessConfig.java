@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.ArbeidsforholdSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -51,7 +52,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         SystemdataUpdater.class,
         KontonummerSystemdata.class,
         TelefonnummerSystemdata.class,
-        ArbeidsforholdSystemdata.class
+        ArbeidsforholdSystemdata.class,
+        BasisPersonaliaSystemdata.class
 })
 public class BusinessConfig {
 
