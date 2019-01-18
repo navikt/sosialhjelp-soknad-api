@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
-@Path("/soknader/{behandlingsId}/personalia/arbeidsforhold")
+@Path("/soknader/{behandlingsId}/arbeid/arbeidsforhold")
 @Timed
 @Produces(APPLICATION_JSON)
 public class ArbeidsforholdRessurs {
