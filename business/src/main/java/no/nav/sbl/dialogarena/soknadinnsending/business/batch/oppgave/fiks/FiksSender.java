@@ -73,7 +73,7 @@ public class FiksSender {
     }
 
     List<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid) {
-        final JsonInternalSoknad internalSoknad = innsendingService.hentJsonInternalSoknadFraSoknadUnderArbeid(soknadUnderArbeid);
+        final JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         if (internalSoknad == null) {
             throw new RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler");
         } else if (!soknadUnderArbeid.erEttersendelse() && internalSoknad.getSoknad() == null) {

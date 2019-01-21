@@ -15,7 +15,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -40,15 +39,9 @@ import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadUnderArbeidServiceTest {
@@ -69,7 +62,8 @@ public class SoknadUnderArbeidServiceTest {
 
     @Test
     public void settOrgnummerOgNavEnhetsnavnPaSoknadOppdatererSoknadenIDatabasen() throws SamtidigOppdateringException {
-        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaSoknad(lagSoknadUnderArbeid(), ORGNR, NAVENHETSNAVN, EIER);
+        soknadUnderArbeidService.settOrgnummerOgNavEnhetsnavnPaSoknad(lagSoknadUnderArbeid()
+                .withJsonInternalSoknad(lagGyldigJsonInternalSoknad()), ORGNR, NAVENHETSNAVN, EIER);
 
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(any(SoknadUnderArbeid.class), eq(EIER));
     }
@@ -80,20 +74,12 @@ public class SoknadUnderArbeidServiceTest {
     }
 
     @Test
-    public void hentJsonInternalSoknadFraSoknadUnderArbeidOppretterInternalSoknadForGyldigData() {
-        JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(lagSoknadUnderArbeid());
-
-        assertThat(jsonInternalSoknad.getSoknad().getVersion(), is("1.0.0"));
-        assertThat(jsonInternalSoknad.getSoknad().getDriftsinformasjon(), isEmptyString());
-        assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia(), notNullValue());
-    }
-
-    @Test
     public void oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknadSetterMottakerinfo() {
-        SoknadUnderArbeid oppdatertSoknadUnderArbeid = soknadUnderArbeidService.oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(lagSoknadUnderArbeid(),
+        SoknadUnderArbeid oppdatertSoknadUnderArbeid = soknadUnderArbeidService.oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(
+                lagSoknadUnderArbeid().withJsonInternalSoknad(lagGyldigJsonInternalSoknad()),
                 ORGNR, NAVENHETSNAVN);
 
-        JsonInternalSoknad oppdatertInternalSoknad = soknadUnderArbeidService.hentJsonInternalSoknadFraSoknadUnderArbeid(oppdatertSoknadUnderArbeid);
+        JsonInternalSoknad oppdatertInternalSoknad = oppdatertSoknadUnderArbeid.getJsonInternalSoknad();
         assertThat(oppdatertInternalSoknad.getMottaker().getOrganisasjonsnummer(), is(ORGNR));
         assertThat(oppdatertInternalSoknad.getMottaker().getNavEnhetsnavn(), is(NAVENHETSNAVN));
     }
@@ -113,7 +99,7 @@ public class SoknadUnderArbeidServiceTest {
 
     @Test
     public void oppdaterEllerOpprettSoknadUnderArbeidOppdatererSoknadHvisDenFinnes() {
-        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid();
+        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid().withJsonInternalSoknad(lagGyldigJsonInternalSoknad());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString()))
                 .thenReturn(Optional.of(soknadUnderArbeid))
                 .thenReturn(Optional.of(soknadUnderArbeid.withVersjon(2L)));
@@ -124,29 +110,13 @@ public class SoknadUnderArbeidServiceTest {
         verify(soknadUnderArbeidRepository, times(1)).oppdaterSoknadsdata(eq(soknadUnderArbeid), eq(EIER));
     }
 
-    @Test
-    public void mapJsonSoknadInternalTilFilReturnererByteArrayHvisInternalSoknadErGyldig() {
-        byte[] data = soknadUnderArbeidService.mapJsonSoknadInternalTilFil(lagGyldigJsonInternalSoknad());
-
-        assertThat(data, notNullValue());
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void mapJsonSoknadInternalTilFilFeilerHvisInternalSoknadErUgyldig() {
-        JsonInternalSoknad ugyldigJsonInternalSoknad = new JsonInternalSoknad()
-                .withSoknad(new JsonSoknad())
-                .withMottaker(new JsonSoknadsmottaker());
-
-        soknadUnderArbeidService.mapJsonSoknadInternalTilFil(ugyldigJsonInternalSoknad);
-    }
-
     private SoknadUnderArbeid lagSoknadUnderArbeid() {
         return new SoknadUnderArbeid()
                 .withBehandlingsId(BEHANDLINGSID)
                 .withEier(EIER)
                 .withVersjon(1L)
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
-                .withData(lagReelleSoknadUnderArbeidData(lagGyldigJsonInternalSoknad()))
+                .withJsonInternalSoknad(lagGyldigJsonInternalSoknad())
                 .withSistEndretDato(SIST_ENDRET);
     }
 
@@ -158,19 +128,6 @@ public class SoknadUnderArbeidServiceTest {
                 .withEier(EIER)
                 .withOpprettetDato(OPPRETTET_DATO)
                 .withSistEndretDato(SIST_ENDRET_DATO);
-    }
-
-    private byte[] lagReelleSoknadUnderArbeidData(JsonInternalSoknad jsonInternalSoknad) {
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
-            final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
-            final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
-            ensureValidInternalSoknad(internalSoknad);
-            return internalSoknad.getBytes(StandardCharsets.UTF_8);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private JsonInternalSoknad lagGyldigJsonInternalSoknad() {

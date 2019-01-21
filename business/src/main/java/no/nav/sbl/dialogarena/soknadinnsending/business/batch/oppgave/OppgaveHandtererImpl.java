@@ -32,6 +32,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     private static final int FEIL_THRESHOLD = 20;
     private static final int PROSESS_RATE = 10 * 1000; // 10 sek etter forrige
     private static final int RAPPORTER_RATE = 15 * 60 * 1000; // hvert kvarter
+    private static final int RETRY_STUCK_RATE = 15 * 60 * 1000; // hvert kvarter
 
     @Inject
     private
@@ -71,6 +72,19 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
             oppgaveRepository.oppdater(oppgave);
         }
 
+    }
+    
+    @Scheduled(fixedDelay = RETRY_STUCK_RATE)
+    public void retryStuckUnderArbeid() {
+        try {
+            final int antall = oppgaveRepository.retryOppgaveStuckUnderArbeid();
+            if (antall > 0) {
+                logger.info("Har satt " + antall + " oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.");
+            }
+        } catch (Exception e) {
+            logger.error("Uventet feil ved oppdatering av oppgaver som er stuck i UNDER_ARBEID");
+        }
+        
     }
 
     @Scheduled(fixedRate = RAPPORTER_RATE)
