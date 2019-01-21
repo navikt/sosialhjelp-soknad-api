@@ -39,8 +39,16 @@ public class SoknadUnderArbeidService {
         if (soknadUnderArbeid.erEttersendelse()){
             return;
         }
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setInnsendingstidspunkt(OffsetDateTime.now(ZoneOffset.UTC).toString());
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setInnsendingstidspunkt(nowWithMilliseconds());
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.getEier());
+    }
+
+    private String nowWithMilliseconds() {
+        final OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+        if (now.getNano() == 0) {
+            return now.plusNanos(1_000_000).toString();
+        }
+        return now.toString();
     }
 
     public SoknadUnderArbeid oppdaterEllerOpprettSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid, String eier) {
