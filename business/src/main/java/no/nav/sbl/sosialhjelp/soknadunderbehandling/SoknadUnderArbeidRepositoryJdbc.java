@@ -1,9 +1,17 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.SoknadLaastException;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -14,6 +22,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -21,11 +31,23 @@ import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
+import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("SoknadUnderArbeidRepository")
 @Component
 public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadUnderArbeidRepository {
+
+    private static final Logger logger = getLogger(SoknadUnderArbeidRepository.class);
+    private final ObjectMapper mapper;
+    private final ObjectWriter writer;
+    
+    {
+        mapper = new ObjectMapper();
+        mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
+        writer = mapper.writerWithDefaultPrettyPrinter();
+    }
 
     @Inject
     private TransactionTemplate transactionTemplate;
@@ -50,7 +72,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         soknadUnderArbeid.getBehandlingsId(),
                         soknadUnderArbeid.getTilknyttetBehandlingsId(),
                         soknadUnderArbeid.getEier(),
-                        soknadUnderArbeid.getData(),
+                        mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
                         soknadUnderArbeid.getInnsendingStatus().toString(),
                         Date.from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
@@ -79,7 +101,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         final int antallOppdaterteRader = getJdbcTemplate()
                 .update("update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
                         oppdatertVersjon,
-                        soknadUnderArbeid.getData(),
+                        mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
                         Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier,
@@ -156,7 +178,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withBehandlingsId(rs.getString("behandlingsid"))
                     .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
                     .withEier(rs.getString("eier"))
-                    .withData(rs.getBytes("data"))
+                    .withJsonInternalSoknad(mapDataToJsonInternalSoknad(rs.getBytes("data")))
                     .withInnsendingStatus(status)
                     .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
                             rs.getTimestamp("opprettetdato").toLocalDateTime() : null)
@@ -164,4 +186,29 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                             rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
         }
     }
+    
+    private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
+        if (data == null){
+            return null;
+        }
+        try {
+            return mapper.readValue(data, JsonInternalSoknad.class);
+        } catch (IOException e) {
+            logger.error("Kunne ikke finne søknad", e);
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
+        try {
+            final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
+            ensureValidInternalSoknad(internalSoknad);
+            return internalSoknad.getBytes(StandardCharsets.UTF_8);
+        } catch (JsonProcessingException e) {
+            logger.error("Kunne ikke konvertere søknadsobjekt til tekststreng", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
