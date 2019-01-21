@@ -3,7 +3,8 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata.BasisPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -28,30 +29,36 @@ public class BasisPersonaliaRessurs {
     @GET
     public BasisPersonaliaFrontend hentBasisPersonalia(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        BasisPersonalia basisPersonalia = basisPersonaliaSystemdata.innhentSystemBasisPersonalia(eier);
+        JsonPersonalia jsonPersonalia = basisPersonaliaSystemdata.innhentSystemBasisPersonalia(eier);
 
-        return mapToBasisPersonaliaFrontend(basisPersonalia);
+        return mapToBasisPersonaliaFrontend(jsonPersonalia);
     }
 
-    private BasisPersonaliaFrontend mapToBasisPersonaliaFrontend(BasisPersonalia basisPersonalia) {
+    private BasisPersonaliaFrontend mapToBasisPersonaliaFrontend(JsonPersonalia jsonPersonalia) {
         return new BasisPersonaliaFrontend()
-                .withPersonIdentifikator(basisPersonalia.personIdentifikator)
-                .withNavn(toSammensattNavn(basisPersonalia))
-                .withStatsborgerskap(basisPersonalia.statsborgerskap)
-                .withNordiskBorger(basisPersonalia.nordiskBorger);
+                .withPersonIdentifikator(jsonPersonalia.getPersonIdentifikator().getVerdi())
+                .withFornavn(jsonPersonalia.getNavn().getFornavn())
+                .withMellomnavn(jsonPersonalia.getNavn().getMellomnavn())
+                .withEtternavn(jsonPersonalia.getNavn().getEtternavn())
+                .withFulltNavn(toFulltNavn(jsonPersonalia.getNavn()))
+                .withStatsborgerskap(jsonPersonalia.getStatsborgerskap() != null ? jsonPersonalia.getStatsborgerskap().getVerdi() : null)
+                .withNordiskBorger(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null);
     }
 
-    private String toSammensattNavn(BasisPersonalia base){
-        final String f = base.fornavn != null ? base.fornavn : "";
-        final String m = base.mellomnavn != null ? " " + base.mellomnavn : "";
-        final String e = base.etternavn != null ? " " + base.etternavn : "";
+    private String toFulltNavn(JsonSokernavn jsonSokernavn){
+        final String f = jsonSokernavn.getFornavn() != null ? jsonSokernavn.getFornavn() : "";
+        final String m = jsonSokernavn.getMellomnavn() != null ? " " + jsonSokernavn.getMellomnavn() : "";
+        final String e = jsonSokernavn.getEtternavn() != null ? " " + jsonSokernavn.getEtternavn() : "";
         return f + m + e;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BasisPersonaliaFrontend {
         public String personIdentifikator;
-        public String navn;
+        public String fornavn;
+        public String mellomnavn;
+        public String etternavn;
+        public String fulltNavn;
         public String statsborgerskap;
         public Boolean nordiskBorger;
 
@@ -60,8 +67,23 @@ public class BasisPersonaliaRessurs {
             return this;
         }
 
-        public BasisPersonaliaFrontend withNavn(String navn) {
-            this.navn = navn;
+        public BasisPersonaliaFrontend withFornavn(String fornavn) {
+            this.fornavn = fornavn;
+            return this;
+        }
+
+        public BasisPersonaliaFrontend withMellomnavn(String mellomnavn) {
+            this.mellomnavn = mellomnavn;
+            return this;
+        }
+
+        public BasisPersonaliaFrontend withEtternavn(String etternavn) {
+            this.etternavn = etternavn;
+            return this;
+        }
+
+        public BasisPersonaliaFrontend withFulltNavn(String fulltNavn) {
+            this.fulltNavn = fulltNavn;
             return this;
         }
 
