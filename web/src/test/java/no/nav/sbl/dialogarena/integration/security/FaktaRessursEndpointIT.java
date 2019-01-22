@@ -6,6 +6,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
+import com.nimbusds.jwt.SignedJWT;
+import no.nav.security.oidc.OIDCConstants;
+import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,8 +30,9 @@ public class FaktaRessursEndpointIT extends AbstractSecurityIT {
     @Test
     public void nektetTilgang_hentFaktum() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-            Response response = soknadTester.sendsoknadResource("fakta/1", webTarget -> webTarget
-                    .queryParam("fnr", ANNEN_BRUKER)) //fake annen bruker, se FakeLoginFilter
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
+            Response response = soknadTester.sendsoknadResource("fakta/1", webTarget -> webTarget)
+                    .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
                     .buildGet()
                     .invoke();
             assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
@@ -37,12 +41,23 @@ public class FaktaRessursEndpointIT extends AbstractSecurityIT {
     @Test
     public void nektetTilgangUtenToken_opprettFaktum() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         Response response = soknadTester.sendsoknadResource("fakta", webTarget -> webTarget
-                .queryParam("fnr", ANNEN_BRUKER) //fake annen bruker, se FakeLoginFilter
                 .queryParam("behandlingsId", soknadTester.getBrukerBehandlingId()))
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
                 .buildPost(Entity.json(faktum()))
                 .invoke();
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    public void opprettFaktum_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        Response response = soknadTester.sendsoknadResource("fakta", webTarget -> webTarget
+                .queryParam("behandlingsId", soknadTester.getBrukerBehandlingId()))
+                .buildPost(Entity.json(faktum()))
+                .invoke();
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 
     private static final Faktum faktum() {

@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.ws.rs.core.Response;
 
+import com.nimbusds.jwt.SignedJWT;
+import no.nav.security.oidc.OIDCConstants;
+import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,36 +28,57 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     @Test
     public void accessDeniedMedAnnenBruker_xmlRepresentasjon() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
+        SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
-                .buildGet()
-                .invoke();
-
-        Response responseUtenFnr = soknadTester.sendsoknadResource(subUrl, webTarget ->
+        Response responseForAnnenBruker = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWTforAnnenBruker.serialize())
                 .buildGet()
                 .invoke();
 
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-        assertThat(responseUtenFnr.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
+                .buildGet()
+                .invoke();
+
+        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
     @Test
     public void accessDeniedMedAnnenBruker_jsonRepresentasjon() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
+        SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
+        Response responseForAnnenBruker = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWTforAnnenBruker.serialize())
                 .buildGet()
                 .invoke();
 
-        Response responseUtenFnr = soknadTester.sendsoknadResource(subUrl, webTarget ->
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
+                .buildGet()
+                .invoke();
+
+        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    public void jsonRepresentasjon_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
+
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget)
                 .buildGet()
                 .invoke();
 
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-        assertThat(responseUtenFnr.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 }

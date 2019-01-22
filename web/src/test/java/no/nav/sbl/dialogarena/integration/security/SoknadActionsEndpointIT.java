@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
+import com.nimbusds.jwt.SignedJWT;
+import no.nav.security.oidc.OIDCConstants;
+import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,9 +30,11 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     @Test
     public void leggVedVedlegg() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/leggved";
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-            webTarget.queryParam("fnr", ANNEN_BRUKER))
+                webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
                 .buildGet()
                 .invoke();
 
@@ -39,9 +44,11 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     @Test
     public void sendSoknad() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
+                webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
                 .buildPost(Entity.json(""))
                 .invoke();
 
@@ -51,18 +58,21 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     @Test
     public void sendEpost_fortsettsenere() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
         Response responseMedBrukersEgenXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
+                webTarget)
                 .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken("BRUKER_2_SIN_BEHANDLINGSID"))
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
                 .buildPost(Entity.json(""))
                 .invoke();
 
         assertThat(responseMedBrukersEgenXSRFToken.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
 
         Response responseMedStjeltXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
+                webTarget)
                 .header("X-XSRF-TOKEN", soknadTester.getXhrHeader())
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
                 .buildPost(Entity.json(""))
                 .invoke();
 
@@ -72,12 +82,62 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     @Test
     public void sendEpost_bekreftinnsending() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/bekreftinnsending";
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
+                webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
                 .buildPost(Entity.json(""))
                 .invoke();
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    public void leggVedVedlegg_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/leggved";
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .buildGet()
+                .invoke();
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    @Test
+    public void sendSoknad_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .buildPost(Entity.json(""))
+                .invoke();
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    @Test
+    public void fortsettsenere_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .buildPost(Entity.json(""))
+                .invoke();
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    @Test
+    public void bekreftinnsending_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/bekreftinnsending";
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .buildPost(Entity.json(""))
+                .invoke();
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 }

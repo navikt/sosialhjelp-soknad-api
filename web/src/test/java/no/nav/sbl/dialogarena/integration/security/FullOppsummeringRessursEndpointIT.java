@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.ws.rs.core.Response;
 
+import com.nimbusds.jwt.SignedJWT;
+import no.nav.security.oidc.OIDCConstants;
+import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,27 +27,53 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
     @Test
     public void hentOppsummeringNew() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
+        SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/nyoppsummering";
-        Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget
-                .queryParam("fnr", ANNEN_BRUKER))
+        Response responseForAnnenBruker = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWTforAnnenBruker.serialize())
                 .buildGet()
                 .invoke();
-        Response responseUtenFnr = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget)
+        Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
                 .buildGet()
                 .invoke();
 
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-        assertThat(responseUtenFnr.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
     @Test
     public void fullSoknadPdf() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/fullsoknadpdf";
-        Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget
-                .queryParam("fnr", ANNEN_BRUKER))
+        Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget)
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWTforAnnenBruker.serialize())
                 .buildGet()
                 .invoke();
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    public void fullSoknadPdf_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/fullsoknadpdf";
+        Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget)
+                .buildGet()
+                .invoke();
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    @Test
+    public void hentOppsummeringNew_skalGi401UtenToken() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/nyoppsummering";
+
+        Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget)
+                .buildGet()
+                .invoke();
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 }
