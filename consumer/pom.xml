@@ -138,20 +138,56 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-sts</artifactId>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-policy</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.neethi</groupId>
+            <artifactId>neethi</artifactId>
+            <version>3.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.axiom</groupId>
+                    <artifactId>axiom-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.axiom</groupId>
+                    <artifactId>axiom-parent</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.axiom</groupId>
+                    <artifactId>axiom-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>woodstox</groupId>
+                    <artifactId>wstx-asl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>woodstox</groupId>
+                    <artifactId>wstx-asl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>wsdl4j</groupId>
+                    <artifactId>wsdl4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.woodstox</groupId>
+                    <artifactId>woodstox-core-asl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-cxf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-log-jaxws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-log-common</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>

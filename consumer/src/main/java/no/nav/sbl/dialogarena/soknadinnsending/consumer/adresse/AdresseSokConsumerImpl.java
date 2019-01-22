@@ -11,10 +11,10 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.slf4j.Logger;
 
-import no.nav.modig.common.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallUtils;
