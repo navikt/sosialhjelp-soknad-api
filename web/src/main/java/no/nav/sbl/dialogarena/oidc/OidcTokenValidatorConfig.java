@@ -17,8 +17,6 @@ import java.util.*;
 public class OidcTokenValidatorConfig {
     private static final Logger log = LoggerFactory.getLogger(OidcTokenValidatorConfig.class);
 
-    private final Map<String, IssuerProperties> issuerMap = new HashMap<>();
-
     @Bean
     public JaxrsOIDCTokenValidationFilter jaxrsOIDCTokenValidationFilter(MultiIssuerConfiguration multiIssuerConfiguration) {
         return new JaxrsOIDCTokenValidationFilter(multiIssuerConfiguration);
@@ -26,10 +24,7 @@ public class OidcTokenValidatorConfig {
 
     @Bean
     public MultiIssuerConfiguration MultiIssuerConfiguration(OIDCResourceRetriever resourceRetriever) {
-        String[] issuers = {"selvbetjening"};
-        Arrays.stream(issuers)
-                .forEach(this::addIssuerToMap);
-        return new MultiIssuerConfiguration(issuerMap, resourceRetriever);
+        return new MultiIssuerConfiguration(getIssuerPropertiesMap(), resourceRetriever);
     }
 
     /** Is overridden in test scope **/
@@ -38,10 +33,18 @@ public class OidcTokenValidatorConfig {
         return new OIDCResourceRetriever();
     }
 
-    private void addIssuerToMap(String issuer) {
+    private Map<String, IssuerProperties> getIssuerPropertiesMap() {
+        Map<String, IssuerProperties> issuerPropertiesMap = new HashMap<>();
+        String[] issuers = {"selvbetjening"};
+        Arrays.stream(issuers)
+                .forEach(i -> addIssuerToMap(i, issuerPropertiesMap));
+        return issuerPropertiesMap;
+    }
+
+    private void addIssuerToMap(String issuer, Map<String, IssuerProperties> issuerPropertiesMap ) {
         IssuerProperties issuerProperties = new IssuerProperties(getDiscoveryUrl(issuer), getAcceptedAudiences(issuer), getCookieName(issuer));
         issuerProperties.setProxyUrl(getProxyUrl(issuer));
-        issuerMap.put(issuer, issuerProperties);
+        issuerPropertiesMap.put(issuer, issuerProperties);
     }
 
     private String getCookieName(String issuer) {

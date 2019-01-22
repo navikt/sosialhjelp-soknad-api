@@ -26,10 +26,11 @@ public class OidcConfig {
     @Primary
     @Bean
     JaxrsOIDCTokenValidationFilter FakeOidcTokenValidatorFilter(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") MultiIssuerConfiguration multiIssuerConfiguration) {
-        if (isOidcMock())
+        if (isOidcMock()) {
             return new FakeOidcTokenValidatorFilter(multiIssuerConfiguration);
-        else
+        } else {
             return new JaxrsOIDCTokenValidationFilter(multiIssuerConfiguration);
+        }
     }
 
     @Bean
