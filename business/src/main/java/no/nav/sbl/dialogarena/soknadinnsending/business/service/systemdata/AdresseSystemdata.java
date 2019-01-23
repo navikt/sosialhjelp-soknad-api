@@ -4,10 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -18,19 +15,45 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Component
-public class FolkerregistrertAdresseSystemdata implements Systemdata {
+public class AdresseSystemdata implements Systemdata {
 
     @Inject
     private PersonaliaFletter personaliaFletter;
-
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-        personalia.setFolkeregistrertAdresse(innhentFolkeregistrertAdresse(personIdentifikator));
-        if (personalia.getOppholdsadresse() == null || personalia.getOppholdsadresse().getKilde() == JsonKilde.SYSTEM){
-            personalia.setOppholdsadresse(innhentGjeldendeAdresse(personIdentifikator));
+        final JsonAdresse folkeregistrertAdresse = innhentFolkeregistrertAdresse(personIdentifikator);
+        final JsonAdresse midlertidigAdresse = innhentMidlertidigAdresse(personIdentifikator);
+        personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
+        updateOppholdsadresse(personalia, personIdentifikator, folkeregistrertAdresse, midlertidigAdresse);
+        updatePostadresse(personalia, personIdentifikator, folkeregistrertAdresse, midlertidigAdresse);
+    }
+
+    private void updatePostadresse(JsonPersonalia personalia, String personIdentifikator, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
+        final JsonAdresse postadresse = personalia.getPostadresse();
+        if (postadresse == null){
+            return;
+        }
+        if (postadresse.getAdresseValg() == JsonAdresseValg.FOLKEREGISTRERT){
+            personalia.setPostadresse(folkeregistrertAdresse);
+        }
+        if (postadresse.getAdresseValg() == JsonAdresseValg.MIDLERTIDIG){
+            personalia.setPostadresse(midlertidigAdresse);
+        }
+    }
+
+    private void updateOppholdsadresse(JsonPersonalia personalia, String personIdentifikator, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
+        final JsonAdresse oppholdsadresse = personalia.getOppholdsadresse();
+        if (oppholdsadresse == null){
+            return;
+        }
+        if (oppholdsadresse.getAdresseValg() == JsonAdresseValg.FOLKEREGISTRERT){
+            personalia.setOppholdsadresse(folkeregistrertAdresse);
+        }
+        if (oppholdsadresse.getAdresseValg() == JsonAdresseValg.MIDLERTIDIG){
+            personalia.setOppholdsadresse(midlertidigAdresse);
         }
     }
 
@@ -39,14 +62,9 @@ public class FolkerregistrertAdresseSystemdata implements Systemdata {
         return mapToJsonAdresse(personalia.getFolkeregistrertAdresse());
     }
 
-    public JsonAdresse innhentGjeldendeAdresse(final String personIdentifikator) {
+    public JsonAdresse innhentMidlertidigAdresse(final String personIdentifikator) {
         final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        return mapToJsonAdresse(personalia.getGjeldendeAdresse());
-    }
-
-    public JsonAdresse innhentSekundarAdresse(final String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        return mapToJsonAdresse(personalia.getSekundarAdresse());
+        return mapToJsonAdresse(personalia.getMidlertidigAdresse());
     }
 
     private JsonAdresse mapToJsonAdresse(Adresse adresse) {
