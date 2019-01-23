@@ -49,6 +49,9 @@ public class Personalia {
     private String statsborgerskap;
     private String kjonn;
     private Adresse gjeldendeAdresse;
+
+    private Adresse midlertidigAdresse;
+
     private Adresse sekundarAdresse;
     private Adresse folkeregistrertAdresse;
     private String kontonummer;
@@ -59,7 +62,6 @@ public class Personalia {
     private String mobiltelefonnummer;
     private String sivilstatus;
     private Ektefelle ektefelle;
-
     public Personalia() {
     }
 
@@ -126,11 +128,11 @@ public class Personalia {
     public void setDiskresjonskode(String diskresjonskode) {
         this.diskresjonskode = diskresjonskode;
     }
-    
+
     public String getMobiltelefonnummer() {
         return mobiltelefonnummer;
     }
-    
+
     public void setMobiltelefonnummer(String mobiltelefonnummer) {
         this.mobiltelefonnummer = mobiltelefonnummer;
     }
@@ -167,6 +169,10 @@ public class Personalia {
         this.gjeldendeAdresse = gjeldendeAdresse;
     }
 
+    public Adresse getMidlertidigAdresse() { return midlertidigAdresse; }
+
+    public void setMidlertidigAdresse(Adresse midlertidigAdresse) { this.midlertidigAdresse = midlertidigAdresse; }
+
     public Adresse getSekundarAdresse() {
         return sekundarAdresse;
     }
@@ -174,11 +180,11 @@ public class Personalia {
     public void setSekundarAdresse(Adresse sekundarAdresse) {
         this.sekundarAdresse = sekundarAdresse;
     }
-    
+
     public Adresse getFolkeregistrertAdresse() {
         return folkeregistrertAdresse;
     }
-    
+
     public void setFolkeregistrertAdresse(Adresse folkeregistrertAdresse) {
         this.folkeregistrertAdresse = folkeregistrertAdresse;
     }
