@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.ArbeidsforholdSystemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -18,7 +16,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp.SosialhjelpKontaktBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
@@ -53,7 +50,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         KontonummerSystemdata.class,
         TelefonnummerSystemdata.class,
         ArbeidsforholdSystemdata.class,
-        BasisPersonaliaSystemdata.class
+        BasisPersonaliaSystemdata.class,
+        AdresseSystemdata.class
 })
 public class BusinessConfig {
 

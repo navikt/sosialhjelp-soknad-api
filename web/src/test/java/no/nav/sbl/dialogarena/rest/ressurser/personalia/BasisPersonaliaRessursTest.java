@@ -113,8 +113,9 @@ public class BasisPersonaliaRessursTest {
         assertThat("etternavn feilet", personaliaFrontend.etternavn, is(jsonPersonalia.getNavn().getEtternavn()));
         assertThat("fullt navn feilet", personaliaFrontend.fulltNavn, is(FULLT_NAVN));
         assertThat("statsborgerskap feilet", personaliaFrontend.statsborgerskap,
-                is(jsonPersonalia.getStatsborgerskap().getVerdi()));
-        assertThat("nordiskBorger feilet", personaliaFrontend.nordiskBorger, is(jsonPersonalia.getNordiskBorger().getVerdi()));
+                is(jsonPersonalia.getStatsborgerskap() != null ? jsonPersonalia.getStatsborgerskap().getVerdi() : null));
+        assertThat("nordiskBorger feilet", personaliaFrontend.nordiskBorger,
+                is(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null));
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithBasisPersonalia(boolean withStatsborgerskap, boolean withNordiskBorger, boolean erNordisk) {
