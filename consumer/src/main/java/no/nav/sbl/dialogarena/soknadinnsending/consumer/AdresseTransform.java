@@ -46,6 +46,7 @@ public class AdresseTransform {
     }
 
     public Adresse mapMidlertidigAdresse(XMLBruker soapPerson, Kodeverk kodeverk){
+        this.kodeverk = kodeverk;
         if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
         } else {
