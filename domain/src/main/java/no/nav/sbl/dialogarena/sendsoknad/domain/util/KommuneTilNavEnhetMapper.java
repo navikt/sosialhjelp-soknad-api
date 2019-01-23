@@ -71,9 +71,11 @@ public class KommuneTilNavEnhetMapper {
             .put("0624", "994952854")    // Øvre Eiker
             .put("1134", "974616998")    // Suldal
             .put("0532", "974596016")    // Jevnaker
+            .put("1401", "974551918")    // Flora
+            .put("1238", "973953621")    // Kvam
 
             .build();
-    
+
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "910940066")   // Horten
             .put("1208", "910230964")   // Årstad, Bergen kommune
@@ -277,7 +279,9 @@ public class KommuneTilNavEnhetMapper {
                     "1130",
                     "0624",
                     "1134",
-                    "0532"
+                    "0532",
+                    "1401",
+                    "1238"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
