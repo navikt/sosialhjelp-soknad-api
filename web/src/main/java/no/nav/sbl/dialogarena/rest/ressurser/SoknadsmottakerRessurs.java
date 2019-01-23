@@ -55,7 +55,7 @@ public class SoknadsmottakerRessurs {
     public List<NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg){
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad, valg);
+        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad, valg);
 
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom

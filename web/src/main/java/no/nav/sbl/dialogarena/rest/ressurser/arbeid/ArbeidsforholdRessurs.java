@@ -30,9 +30,6 @@ public class ArbeidsforholdRessurs {
     @Inject
     private LegacyHelper legacyHelper;
 
-    @Inject
-    private ArbeidsforholdSystemdata arbeidsforholdSystemdata;
-
     @GET
     public List<ArbeidsforholdFrontend> hentArbeidsforhold(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
