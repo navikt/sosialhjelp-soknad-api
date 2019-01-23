@@ -49,10 +49,14 @@ public class SoknadsmottakerRessurs {
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
     public List<NavEnhetFrontend> hentSoknadsmottaker(@PathParam("behandlingsId") String behandlingsId, @QueryParam("valg") String valg, @Context HttpServletResponse response) {
+        return findSoknadsmottaker(behandlingsId, valg);
+    }
+
+    public List<NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg){
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
         final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad, valg);
-        
+
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
