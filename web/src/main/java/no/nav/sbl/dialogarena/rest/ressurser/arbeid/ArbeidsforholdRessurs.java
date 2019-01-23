@@ -38,9 +38,6 @@ public class ArbeidsforholdRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
-        arbeid.setForhold(
-                arbeidsforholdSystemdata.innhentSystemArbeidsforhold(eier)
-        );
 
         if (arbeid.getForhold() == null){
             return null;
