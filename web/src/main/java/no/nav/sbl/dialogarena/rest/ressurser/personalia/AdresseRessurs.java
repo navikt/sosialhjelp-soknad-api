@@ -94,7 +94,7 @@ public class AdresseRessurs {
                 .stream().map(this::mapFromLegacyNavEnhetFrontend).collect(Collectors.toList());
     }
 
-    private NavEnhetFrontend mapFromLegacyNavEnhetFrontend(SoknadsmottakerRessurs.NavEnhetFrontend legacyNavEnhetFrontend) {
+    private NavEnhetFrontend mapFromLegacyNavEnhetFrontend(SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend) {
         return new NavEnhetFrontend()
                 .withEnhetsId(legacyNavEnhetFrontend.enhetsId)
                 .withEnhetsnavn(legacyNavEnhetFrontend.enhetsnavn)
@@ -579,7 +579,7 @@ public class AdresseRessurs {
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            SoknadsmottakerRessurs.NavEnhetFrontend other = (SoknadsmottakerRessurs.NavEnhetFrontend) obj;
+            SoknadsmottakerRessurs.LegacyNavEnhetFrontend other = (SoknadsmottakerRessurs.LegacyNavEnhetFrontend) obj;
             if (enhetsId == null) {
                 if (other.enhetsId != null)
                     return false;
