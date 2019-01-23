@@ -8,7 +8,7 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 	<Policy name="SoknadsosialhjelpServer_001" referralPolicy="false" active="true" >
 		<Rule name="rule_SendSoknad_001_02">
 			<ServiceName name="iPlanetAMWebAgentService" />
-			<ResourceName name="https://${DomainName}/soknadsosialhjelp-server/*?*" />
+			<ResourceName name="https://${DomainName}/soknad-api/*?*" />
 			<AttributeValuePair>
 				<Attribute name="POST" />
 				<Value>allow</Value>
@@ -32,7 +32,7 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 		</Rule>
 		<Rule name="rule_SoknadsosialhjelpServer_001_01">
 			<ServiceName name="iPlanetAMWebAgentService" />
-			<ResourceName name="https://${DomainName}/soknadsosialhjelp-server/*" />
+			<ResourceName name="https://${DomainName}/soknad-api/*" />
 			<AttributeValuePair>
 				<Attribute name="POST" />
 				<Value>allow</Value>
@@ -56,7 +56,7 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 		</Rule>
 		<Rule name="rule_SoknadsosialhjelpServer_001_04">
 			<ServiceName name="iPlanetAMWebAgentService" />
-			<ResourceName name="https://${DomainName}/soknadsosialhjelp-server/" />
+			<ResourceName name="https://${DomainName}/soknad-api/" />
 			<AttributeValuePair>
 				<Attribute name="POST" />
 				<Value>allow</Value>
@@ -80,7 +80,7 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 		</Rule>
 		<Rule name="rule_SoknadsosialhjelpServer_001_03">
 			<ServiceName name="iPlanetAMWebAgentService" />
-			<ResourceName name="https://${DomainName}/soknadsosialhjelp-server" />
+			<ResourceName name="https://${DomainName}/soknad-api" />
 			<AttributeValuePair>
 				<Attribute name="POST" />
 				<Value>allow</Value>
