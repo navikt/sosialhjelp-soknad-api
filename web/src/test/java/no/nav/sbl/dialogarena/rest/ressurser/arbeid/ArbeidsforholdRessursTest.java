@@ -82,22 +82,6 @@ public class ArbeidsforholdRessursTest {
     }
 
     @Test
-    public void getArbeidsforholdSkalReturnereOppdatertSystemArbeidsforholdFraTPS(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithoutArbeidsforhold());
-        when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(createArbeidsforholdListe());
-
-        final List<ArbeidsforholdFrontend> arbeidsforholdFrontends = arbeidsforholdRessurs.hentArbeidsforhold(BEHANDLINGSID);
-
-        assertThat(arbeidsforholdFrontends.size(), is(2));
-        final ArbeidsforholdFrontend arbeidsforhold_1 = arbeidsforholdFrontends.get(0);
-        final ArbeidsforholdFrontend arbeidsforhold_2 = arbeidsforholdFrontends.get(1);
-
-        assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold_1, ARBEIDSFORHOLD_1);
-        assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold_2, ARBEIDSFORHOLD_2);
-    }
-
-    @Test
     public void getArbeidsforholdSkalReturnereArbeidsforholdLikNull(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithoutArbeidsforhold());
@@ -105,7 +89,7 @@ public class ArbeidsforholdRessursTest {
 
         final List<ArbeidsforholdFrontend> arbeidsforholdFrontends = arbeidsforholdRessurs.hentArbeidsforhold(BEHANDLINGSID);
 
-        assertThat(arbeidsforholdFrontends, nullValue());
+        assertThat(arbeidsforholdFrontends.size(), is(0));
     }
 
     private void assertThatArbeidsforholdIsCorrectlyConverted(ArbeidsforholdFrontend forholdFrontend, JsonArbeidsforhold jsonForhold) {
