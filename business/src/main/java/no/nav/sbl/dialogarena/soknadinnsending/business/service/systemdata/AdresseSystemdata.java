@@ -27,16 +27,26 @@ public class FolkerregistrertAdresseSystemdata implements Systemdata {
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final JsonAdresse folkeregistrertAdresse = personalia.getFolkeregistrertAdresse();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-        if (folkeregistrertAdresse.getKilde() == JsonKilde.SYSTEM) {
-            folkeregistrertAdresse.setVerdi(innhentFolkeregistrertAdresse(personIdentifikator));
+        personalia.setFolkeregistrertAdresse(innhentFolkeregistrertAdresse(personIdentifikator));
+        if (personalia.getOppholdsadresse() == null || personalia.getOppholdsadresse().getKilde() == JsonKilde.SYSTEM){
+            personalia.setOppholdsadresse(innhentGjeldendeAdresse(personIdentifikator));
         }
     }
 
     public JsonAdresse innhentFolkeregistrertAdresse(final String personIdentifikator) {
         final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
         return mapToJsonAdresse(personalia.getFolkeregistrertAdresse());
+    }
+
+    public JsonAdresse innhentGjeldendeAdresse(final String personIdentifikator) {
+        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
+        return mapToJsonAdresse(personalia.getGjeldendeAdresse());
+    }
+
+    public JsonAdresse innhentSekundarAdresse(final String personIdentifikator) {
+        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
+        return mapToJsonAdresse(personalia.getSekundarAdresse());
     }
 
     private JsonAdresse mapToJsonAdresse(Adresse adresse) {
@@ -72,21 +82,6 @@ public class FolkerregistrertAdresseSystemdata implements Systemdata {
         return jsonAdresse;
     }
 
-    private static JsonAdresse tilUstrukturertAdresse(Adresse adresse) {
-        if (adresse.getAdresse() == null) {
-            return null;
-        }
-
-        final JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
-        ustrukturertAdresse.setType(JsonAdresse.Type.USTRUKTURERT);
-
-        ustrukturertAdresse.setAdresse(Arrays.stream(adresse.getAdresse().split(","))
-                .map(s -> s.trim())
-                .collect(Collectors.toList()));
-
-        return ustrukturertAdresse;
-    }
-
     private static JsonAdresse tilGateAdresse(final Adresse adresse) {
         final Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) adresse.getStrukturertAdresse();
         final JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
@@ -113,6 +108,21 @@ public class FolkerregistrertAdresseSystemdata implements Systemdata {
         jsonMatrikkelAdresse.setSeksjonsnummer(matrikkelAdresse.seksjonsnummer);
         jsonMatrikkelAdresse.setUndernummer(matrikkelAdresse.undernummer);
         return jsonMatrikkelAdresse;
+    }
+
+    private static JsonAdresse tilUstrukturertAdresse(Adresse adresse) {
+        if (adresse.getAdresse() == null) {
+            return null;
+        }
+
+        final JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
+        ustrukturertAdresse.setType(JsonAdresse.Type.USTRUKTURERT);
+
+        ustrukturertAdresse.setAdresse(Arrays.stream(adresse.getAdresse().split(","))
+                .map(s -> s.trim())
+                .collect(Collectors.toList()));
+
+        return ustrukturertAdresse;
     }
 
     private boolean isUtenlandskAdresse(final Adresse adresse) {
