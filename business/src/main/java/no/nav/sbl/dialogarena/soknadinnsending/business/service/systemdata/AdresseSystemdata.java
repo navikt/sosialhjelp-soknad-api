@@ -27,11 +27,11 @@ public class AdresseSystemdata implements Systemdata {
         final JsonAdresse folkeregistrertAdresse = innhentFolkeregistrertAdresse(personIdentifikator);
         final JsonAdresse midlertidigAdresse = innhentMidlertidigAdresse(personIdentifikator);
         personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
-        updateOppholdsadresse(personalia, personIdentifikator, folkeregistrertAdresse, midlertidigAdresse);
-        updatePostadresse(personalia, personIdentifikator, folkeregistrertAdresse, midlertidigAdresse);
+        updateOppholdsadresse(personalia, folkeregistrertAdresse, midlertidigAdresse);
+        updatePostadresse(personalia, folkeregistrertAdresse, midlertidigAdresse);
     }
 
-    private void updatePostadresse(JsonPersonalia personalia, String personIdentifikator, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
+    private void updatePostadresse(JsonPersonalia personalia, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
         final JsonAdresse postadresse = personalia.getPostadresse();
         if (postadresse == null){
             return;
@@ -44,7 +44,7 @@ public class AdresseSystemdata implements Systemdata {
         }
     }
 
-    private void updateOppholdsadresse(JsonPersonalia personalia, String personIdentifikator, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
+    private void updateOppholdsadresse(JsonPersonalia personalia, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
         final JsonAdresse oppholdsadresse = personalia.getOppholdsadresse();
         if (oppholdsadresse == null){
             return;
