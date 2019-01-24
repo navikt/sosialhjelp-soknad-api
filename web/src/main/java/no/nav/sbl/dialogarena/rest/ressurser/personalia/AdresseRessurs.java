@@ -151,12 +151,15 @@ public class AdresseRessurs {
         switch (adresseFrontend.valg){
             case FOLKEREGISTRERT:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentFolkeregistrertAdresse(eier));
+                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.FOLKEREGISTRERT);
                 break;
             case MIDLERTIDIG:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentMidlertidigAdresse(eier));
+                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.MIDLERTIDIG);
                 break;
             case SOKNAD:
                 personalia.setOppholdsadresse(mapToJsonAdresse(adresseFrontend));
+                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.SOKNAD);
                 break;
         }
 
@@ -248,13 +251,16 @@ public class AdresseRessurs {
 
     private AdresserFrontend mapToAdresserFrontend(JsonAdresse sysFolkeregistrert, JsonAdresse sysMidlertidig, JsonAdresse jsonOpphold) {
         return new AdresserFrontend()
-                .withValg(jsonOpphold.getAdresseValg())
+                .withValg(jsonOpphold != null ? jsonOpphold.getAdresseValg() : null)
                 .withFolkeregistrert(mapToAdresseFrontend(sysFolkeregistrert))
                 .withMidlertidig(mapToAdresseFrontend(sysMidlertidig))
                 .withSoknad(mapToAdresseFrontend(jsonOpphold));
     }
 
     private AdresseFrontend mapToAdresseFrontend(JsonAdresse adresse) {
+        if (adresse == null){
+            return null;
+        }
         AdresseFrontend adresseFrontend = new AdresseFrontend();
         switch (adresse.getType()){
             case GATEADRESSE:
@@ -385,6 +391,7 @@ public class AdresseRessurs {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class AdresseFrontend {
         public String type; // "gateadresse/matrikkeladresse"
+
         public JsonAdresseValg valg;
         public GateadresseFrontend gateadresse;
         public MatrikkeladresseFrontend matrikkeladresse;
@@ -392,6 +399,10 @@ public class AdresseRessurs {
 
         public void setType(String type) {
             this.type = type;
+        }
+
+        public void setValg(JsonAdresseValg valg) {
+            this.valg = valg;
         }
 
         public void setGateadresse(GateadresseFrontend gateadresse) {

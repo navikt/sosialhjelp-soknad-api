@@ -102,37 +102,37 @@ public class SoknadsmottakerRessurs {
 
         }
 
-        LegacyNavEnhetFrontend withEnhetsId(String enhetsId) {
+        public LegacyNavEnhetFrontend withEnhetsId(String enhetsId) {
             this.enhetsId = enhetsId;
             return this;
         }
 
-        LegacyNavEnhetFrontend withEnhetsnavn(String enhetsnavn) {
+        public LegacyNavEnhetFrontend withEnhetsnavn(String enhetsnavn) {
             this.enhetsnavn = enhetsnavn;
             return this;
         }
 
-        LegacyNavEnhetFrontend withKommunenummer(String kommunenummer) {
+        public LegacyNavEnhetFrontend withKommunenummer(String kommunenummer) {
             this.kommunenummer = kommunenummer;
             return this;
         }
 
-        LegacyNavEnhetFrontend withKommunenavn(String kommunenavn) {
+        public LegacyNavEnhetFrontend withKommunenavn(String kommunenavn) {
             this.kommunenavn = kommunenavn;
             return this;
         }
 
-        LegacyNavEnhetFrontend withBydelsnummer(String bydelsnummer) {
+        public LegacyNavEnhetFrontend withBydelsnummer(String bydelsnummer) {
             this.bydelsnummer = bydelsnummer;
             return this;
         }
 
-        LegacyNavEnhetFrontend withSosialOrgnr(String sosialOrgnr) {
+        public LegacyNavEnhetFrontend withSosialOrgnr(String sosialOrgnr) {
             this.sosialOrgnr = sosialOrgnr;
             return this;
         }
 
-        LegacyNavEnhetFrontend withFeatures(Map<String, Boolean> features) {
+        public LegacyNavEnhetFrontend withFeatures(Map<String, Boolean> features) {
             this.features = features;
             return this;
         }
