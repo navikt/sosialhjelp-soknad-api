@@ -3,8 +3,8 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
-import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.AdresserFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.adresse.AdresseMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -28,7 +28,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -91,9 +94,15 @@ public class AdresseRessursTest {
     @InjectMocks
     private AdresseRessurs adresseRessurs;
 
+    @Mock
+    private AdresseMapper adresseMapper;
+
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
+        when(adresseMapper.mapToAdresserFrontend(any(JsonAdresse.class), any(JsonAdresse.class), any(JsonAdresse.class))).thenCallRealMethod();
+        when(adresseMapper.mapToJsonAdresse(any(AdresseFrontend.class))).thenCallRealMethod();
+        when(adresseMapper.mapValgToString(any(JsonAdresseValg.class))).thenCallRealMethod();
     }
 
     @Test
@@ -186,7 +195,7 @@ public class AdresseRessursTest {
         assertThat(navEnheter.get(0).enhetsnavn, is("Midlertidig NavEnhet"));
     }
 
-    /*@Test
+    @Test
     public void putAdresseSkalSetteOppholdsAdresseLikSoknadsadresseOgReturnereTilhorendeNavenhet(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)));
@@ -202,13 +211,11 @@ public class AdresseRessursTest {
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         assertThat(oppholdsadresse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(oppholdsadresse, is(JSON_SYS_USTRUKTURERT_ADRESSE));
-        Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) oppholdsadresse;
-        assertThat((Adresse.Gateadresse) oppholdsadresse);
-        assertThat(oppholdsadresse.getAdresseValg(), is(JsonAdresseValg.MIDLERTIDIG));
+        assertThat(((JsonGateAdresse) oppholdsadresse).getGatenavn(), is("Søknadsgata"));
+        assertThat(oppholdsadresse.getAdresseValg(), is(JsonAdresseValg.SOKNAD));
         assertThat(navEnheter.size(), is(1));
-        assertThat(navEnheter.get(0).enhetsnavn, is("Midlertidig NavEnhet"));
-    }*/
+        assertThat(navEnheter.get(0).enhetsnavn, is("Soknad NavEnhet"));
+    }
 
     private void legacyReturnerNavEnhetTilhorendeValgtAdresse() {
         when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "folkeregistrert")).thenReturn(
