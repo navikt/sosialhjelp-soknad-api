@@ -114,7 +114,7 @@ public class KontonummerRessursTest {
     @Test
     public void getKontonummerSkalReturnereKontonummerLikNull(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithEmptyKontonummer());
+                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -173,7 +173,7 @@ public class KontonummerRessursTest {
     private void startWithEmptyKontonummerAndNoSystemKontonummer() {
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithEmptyKontonummer()));
+                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null)));
     }
 
     private void ignoreTilgangskontrollAndLegacyUpdate() {
@@ -203,22 +203,4 @@ public class KontonummerRessursTest {
                 );
     }
 
-    private SoknadUnderArbeid createJsonInternalSoknadWithEmptyKontonummer() {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withPersonalia(new JsonPersonalia()
-                                                .withKontonummer(new JsonKontonummer()
-                                                        .withKilde(JsonKilde.SYSTEM)
-                                                )
-                                                .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                        .withVerdi(EIER)
-                                                )
-                                        )
-                                )
-                        )
-                );
-    }
 }

@@ -98,7 +98,7 @@ public class TelefonnummerRessursTest {
     @Test
     public void getTelefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithoutTelefonnummer());
+                createJsonInternalSoknadWithTelefonnummer(null, null));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
@@ -190,7 +190,7 @@ public class TelefonnummerRessursTest {
     private void startWithoutTelefonnummerAndNoSystemTelefonnummer() {
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithoutTelefonnummer()));
+                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithTelefonnummer(JsonKilde kilde, String verdi) {
@@ -199,26 +199,10 @@ public class TelefonnummerRessursTest {
                         .withSoknad(new JsonSoknad()
                                 .withData(new JsonData()
                                         .withPersonalia(new JsonPersonalia()
-                                                .withTelefonnummer(new JsonTelefonnummer()
+                                                .withTelefonnummer(verdi == null ? null : new JsonTelefonnummer()
                                                         .withKilde(kilde)
                                                         .withVerdi(verdi)
                                                 )
-                                                .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                        .withVerdi(EIER)
-                                                )
-                                        )
-                                )
-                        )
-                );
-    }
-
-    private SoknadUnderArbeid createJsonInternalSoknadWithoutTelefonnummer() {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withPersonalia(new JsonPersonalia()
                                                 .withPersonIdentifikator(new JsonPersonIdentifikator()
                                                         .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
                                                         .withVerdi(EIER)
