@@ -10,39 +10,21 @@ public class NavnFrontend {
     public String etternavn;
     public String fulltNavn;
 
-    public void setFornavn(String fornavn) {
+    public NavnFrontend() {
+    }
+
+    public NavnFrontend(String fornavn, String mellomnavn, String etternavn) {
         this.fornavn = fornavn;
-    }
-
-    public void setMellomnavn(String mellomnavn) {
         this.mellomnavn = mellomnavn;
-    }
-
-    public void setEtternavn(String etternavn) {
         this.etternavn = etternavn;
+        updateFulltNavn();
     }
 
-    public void setFulltNavn(String fulltNavn) {
-        this.fulltNavn = fulltNavn;
+    private void updateFulltNavn(){
+        final String f = this.fornavn != null ? this.fornavn : "";
+        final String m = this.mellomnavn != null ? " " + this.mellomnavn : "";
+        final String e = this.etternavn != null ? " " + this.etternavn : "";
+        this.fulltNavn = f + m + e;
     }
 
-    public NavnFrontend withFornavn(String fornavn) {
-        this.fornavn = fornavn;
-        return this;
-    }
-
-    public NavnFrontend withMellomnavn(String mellomnavn) {
-        this.mellomnavn = mellomnavn;
-        return this;
-    }
-
-    public NavnFrontend withEtternavn(String etternavn) {
-        this.etternavn = etternavn;
-        return this;
-    }
-
-    public NavnFrontend withFulltNavn(String fulltNavn) {
-        this.fulltNavn = fulltNavn;
-        return this;
-    }
 }
