@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
@@ -55,10 +56,7 @@ public class BasisPersonaliaRessurs {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BasisPersonaliaFrontend {
         public String personIdentifikator;
-        public String fornavn;
-        public String mellomnavn;
-        public String etternavn;
-        public String fulltNavn;
+        public NavnFrontend navn = new NavnFrontend();
         public String statsborgerskap;
         public Boolean nordiskBorger;
 
@@ -68,22 +66,22 @@ public class BasisPersonaliaRessurs {
         }
 
         public BasisPersonaliaFrontend withFornavn(String fornavn) {
-            this.fornavn = fornavn;
+            this.navn.setFornavn(fornavn);
             return this;
         }
 
         public BasisPersonaliaFrontend withMellomnavn(String mellomnavn) {
-            this.mellomnavn = mellomnavn;
+            this.navn.setMellomnavn(mellomnavn);
             return this;
         }
 
         public BasisPersonaliaFrontend withEtternavn(String etternavn) {
-            this.etternavn = etternavn;
+            this.navn.setEtternavn(etternavn);
             return this;
         }
 
         public BasisPersonaliaFrontend withFulltNavn(String fulltNavn) {
-            this.fulltNavn = fulltNavn;
+            this.navn.setFulltNavn(fulltNavn);
             return this;
         }
 
