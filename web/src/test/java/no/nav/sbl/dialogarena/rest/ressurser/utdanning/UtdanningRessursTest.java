@@ -62,7 +62,7 @@ public class UtdanningRessursTest {
     @Test
     public void getUtdanningSkalReturnereBrukerutfyltUtdanningUtenErStudentOgStudentgrad(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithoutErStudentAndStudentgrad());
+                createJsonInternalSoknadWithUtdanning(null, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
 
@@ -123,7 +123,7 @@ public class UtdanningRessursTest {
     public void putUtdanningSkalSetteBrukerutfyltUtdanningMedErStudent(){
         ignoreTilgangskontrollAndLegacyUpdate();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithoutErStudentAndStudentgrad()));
+                Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
 
         final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
                 .withBrukerdefinert(true)
@@ -141,7 +141,7 @@ public class UtdanningRessursTest {
     public void putUtdanningSkalSetteBrukerutfyltUtdanningMedErStudentOgStudentgrad(){
         ignoreTilgangskontrollAndLegacyUpdate();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithoutErStudentAndStudentgrad()));
+                Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
 
         final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
                 .withBrukerdefinert(true)
@@ -178,18 +178,6 @@ public class UtdanningRessursTest {
                                                 .withKilde(JsonKilde.BRUKER)
                                                 .withErStudent(erStudent)
                                                 .withStudentgrad(studentgrad))
-                                )
-                        )
-                );
-    }
-
-    private SoknadUnderArbeid createJsonInternalSoknadWithoutErStudentAndStudentgrad() {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withUtdanning(new JsonUtdanning()
-                                                .withKilde(JsonKilde.BRUKER))
                                 )
                         )
                 );
