@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.adresse.AdresseMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
@@ -16,8 +17,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -71,6 +72,9 @@ public class AdresseRessurs {
     @Inject
     private NorgService norgService;
 
+    @Inject
+    private AdresseMapper mapper;
+
     @GET
     public AdresserFrontend hentAdresser(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
@@ -81,7 +85,7 @@ public class AdresseRessurs {
         final JsonAdresse sysFolkeregistrertAdresse = adresseSystemdata.innhentFolkeregistrertAdresse(personIdentifikator);
         final JsonAdresse sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator);
 
-        return mapToAdresserFrontend(sysFolkeregistrertAdresse, sysMidlertidigAdresse, jsonOppholdsadresse);
+        return mapper.mapToAdresserFrontend(sysFolkeregistrertAdresse, sysMidlertidigAdresse, jsonOppholdsadresse);
     }
 
     @PUT
@@ -89,8 +93,8 @@ public class AdresseRessurs {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, adresseFrontend);
         legacyUpdate(behandlingsId, adresseFrontend);
-        //findSoknadsmottaker(behandlingsId, mapValgToString(adresseFrontend.valg));
-        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, mapValgToString(adresseFrontend.valg))
+        /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg)); Bruk når faktum er fjernet*/
+        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg))
                 .stream().map(this::mapFromLegacyNavEnhetFrontend).collect(Collectors.toList());
     }
 
@@ -158,7 +162,7 @@ public class AdresseRessurs {
                 personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.MIDLERTIDIG);
                 break;
             case SOKNAD:
-                personalia.setOppholdsadresse(mapToJsonAdresse(adresseFrontend));
+                personalia.setOppholdsadresse(mapper.mapToJsonAdresse(adresseFrontend));
                 personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.SOKNAD);
                 break;
         }
@@ -247,116 +251,6 @@ public class AdresseRessurs {
                 .medSystemProperty("festenummer", matrikkeladresse.festenummer)
                 .medSystemProperty("seksjonsnummer", matrikkeladresse.seksjonsnummer)
                 .medSystemProperty("undernummer", matrikkeladresse.undernummer);
-    }
-
-    private AdresserFrontend mapToAdresserFrontend(JsonAdresse sysFolkeregistrert, JsonAdresse sysMidlertidig, JsonAdresse jsonOpphold) {
-        return new AdresserFrontend()
-                .withValg(jsonOpphold != null ? jsonOpphold.getAdresseValg() : null)
-                .withFolkeregistrert(mapToAdresseFrontend(sysFolkeregistrert))
-                .withMidlertidig(mapToAdresseFrontend(sysMidlertidig))
-                .withSoknad(mapToAdresseFrontend(jsonOpphold));
-    }
-
-    private AdresseFrontend mapToAdresseFrontend(JsonAdresse adresse) {
-        if (adresse == null){
-            return null;
-        }
-        AdresseFrontend adresseFrontend = new AdresseFrontend();
-        switch (adresse.getType()){
-            case GATEADRESSE:
-                adresseFrontend.setType("gateadresse");
-                adresseFrontend.setGateadresse(mapToGateadresseFrontend(adresse));
-                break;
-            case MATRIKKELADRESSE:
-                adresseFrontend.setType("matrikkeladresse");
-                adresseFrontend.setMatrikkeladresse(mapToMatrikkeladresseFrontend(adresse));
-                break;
-            case USTRUKTURERT:
-                adresseFrontend.setType("ustrukturert");
-                adresseFrontend.setUstrukturert(mapToUstrukturertAdresseFrontend(adresse));
-                break;
-        }
-        return adresseFrontend;
-    }
-
-    private GateadresseFrontend mapToGateadresseFrontend(JsonAdresse adresse) {
-        JsonGateAdresse gateAdresse = (JsonGateAdresse) adresse;
-        return new GateadresseFrontend()
-                .withLandkode(gateAdresse.getLandkode())
-                .withKommunenummer(gateAdresse.getKommunenummer())
-                .withAdresselinjer(gateAdresse.getAdresselinjer())
-                .withBolignummer(gateAdresse.getBolignummer())
-                .withPostnummer(gateAdresse.getPostnummer())
-                .withPoststed(gateAdresse.getPoststed())
-                .withGatenavn(gateAdresse.getGatenavn())
-                .withHusnummer(gateAdresse.getHusnummer())
-                .withHusbokstav(gateAdresse.getHusbokstav());
-    }
-
-    private MatrikkeladresseFrontend mapToMatrikkeladresseFrontend(JsonAdresse adresse) {
-        JsonMatrikkelAdresse matrikkelAdresse = (JsonMatrikkelAdresse) adresse;
-        return new MatrikkeladresseFrontend()
-                .withKommunenummer(matrikkelAdresse.getKommunenummer())
-                .withGaardsnummer(matrikkelAdresse.getGaardsnummer())
-                .withBruksnummer(matrikkelAdresse.getBruksnummer())
-                .withFestenummer(matrikkelAdresse.getFestenummer())
-                .withSeksjonsnummer(matrikkelAdresse.getSeksjonsnummer())
-                .withUndernummer(matrikkelAdresse.getUndernummer());
-    }
-
-    private UstrukturertAdresseFrontend mapToUstrukturertAdresseFrontend(JsonAdresse adresse){
-        JsonUstrukturertAdresse ustrukturertAdresse = (JsonUstrukturertAdresse) adresse;
-        return new UstrukturertAdresseFrontend().withAdresse(ustrukturertAdresse.getAdresse());
-    }
-
-    private JsonAdresse mapToJsonAdresse(AdresseFrontend adresseFrontend) {
-        JsonAdresse adresse;
-        switch (adresseFrontend.type){
-            case "gateadresse":
-                GateadresseFrontend gateadresse = adresseFrontend.gateadresse;
-                adresse = new JsonGateAdresse()
-                        .withKilde(JsonKilde.BRUKER)
-                        .withType(JsonAdresse.Type.GATEADRESSE)
-                        .withLandkode(gateadresse.landkode)
-                        .withKommunenummer(gateadresse.kommunenummer)
-                        .withAdresselinjer(gateadresse.adresselinjer)
-                        .withBolignummer(gateadresse.bolignummer)
-                        .withPostnummer(gateadresse.postnummer)
-                        .withPoststed(gateadresse.poststed)
-                        .withGatenavn(gateadresse.gatenavn)
-                        .withHusnummer(gateadresse.husnummer)
-                        .withHusbokstav(gateadresse.husbokstav);
-                break;
-            case "matrikkeladresse":
-                MatrikkeladresseFrontend matrikkeladresse = adresseFrontend.matrikkeladresse;
-                adresse = new JsonMatrikkelAdresse()
-                        .withKilde(JsonKilde.BRUKER)
-                        .withType(JsonAdresse.Type.MATRIKKELADRESSE)
-                        .withKommunenummer(matrikkeladresse.kommunenummer)
-                        .withGaardsnummer(matrikkeladresse.gaardsnummer)
-                        .withBruksnummer(matrikkeladresse.bruksnummer)
-                        .withFestenummer(matrikkeladresse.festenummer)
-                        .withSeksjonsnummer(matrikkeladresse.seksjonsnummer)
-                        .withUndernummer(matrikkeladresse.undernummer);
-                break;
-            default:
-                throw new IllegalStateException("Ukjent adressetype: \"" + adresseFrontend.type + "\".");
-        }
-        return adresse;
-    }
-
-    private String mapValgToString(JsonAdresseValg valg) {
-        switch (valg){
-            case FOLKEREGISTRERT:
-                return "folkeregistrert";
-            case MIDLERTIDIG:
-                return "midlertidig";
-            case SOKNAD:
-                return "soknad";
-            default:
-                return null;
-
-        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
