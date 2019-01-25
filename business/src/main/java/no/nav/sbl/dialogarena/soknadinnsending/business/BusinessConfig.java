@@ -51,7 +51,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         TelefonnummerSystemdata.class,
         ArbeidsforholdSystemdata.class,
         BasisPersonaliaSystemdata.class,
-        AdresseSystemdata.class
+        AdresseSystemdata.class,
+        FamilieSystemdata.class
 })
 public class BusinessConfig {
 
