@@ -108,10 +108,10 @@ public class BasisPersonaliaRessursTest {
     private void assertThatPersonaliaIsCorrectlyConverted(BasisPersonaliaFrontend personaliaFrontend, JsonPersonalia jsonPersonalia) {
         assertThat("personIdentifikator feilet", personaliaFrontend.personIdentifikator,
                 is(jsonPersonalia.getPersonIdentifikator().getVerdi()));
-        assertThat("fornavn feilet", personaliaFrontend.fornavn, is(jsonPersonalia.getNavn().getFornavn()));
-        assertThat("mellomnavn feilet", personaliaFrontend.mellomnavn, is(jsonPersonalia.getNavn().getMellomnavn()));
-        assertThat("etternavn feilet", personaliaFrontend.etternavn, is(jsonPersonalia.getNavn().getEtternavn()));
-        assertThat("fullt navn feilet", personaliaFrontend.fulltNavn, is(FULLT_NAVN));
+        assertThat("fornavn feilet", personaliaFrontend.navn.fornavn, is(jsonPersonalia.getNavn().getFornavn()));
+        assertThat("mellomnavn feilet", personaliaFrontend.navn.mellomnavn, is(jsonPersonalia.getNavn().getMellomnavn()));
+        assertThat("etternavn feilet", personaliaFrontend.navn.etternavn, is(jsonPersonalia.getNavn().getEtternavn()));
+        assertThat("fullt navn feilet", personaliaFrontend.navn.fulltNavn, is(FULLT_NAVN));
         assertThat("statsborgerskap feilet", personaliaFrontend.statsborgerskap,
                 is(jsonPersonalia.getStatsborgerskap() != null ? jsonPersonalia.getStatsborgerskap().getVerdi() : null));
         assertThat("nordiskBorger feilet", personaliaFrontend.nordiskBorger,
