@@ -284,8 +284,7 @@ public class AdresseRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class AdresseFrontend {
-        public String type; // "gateadresse/matrikkeladresse"
-
+        public String type; // "gateadresse/matrikkeladresse/ustrukturert"
         public JsonAdresseValg valg;
         public GateadresseFrontend gateadresse;
         public MatrikkeladresseFrontend matrikkeladresse;
