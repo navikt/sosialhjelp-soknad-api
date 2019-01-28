@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.filter;
+package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 
