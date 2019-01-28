@@ -51,7 +51,6 @@ public class UtdanningRessurs {
         final JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
 
         return new UtdanningFrontend()
-                .withBrukerdefinert(utdanning.getKilde() == JsonKilde.BRUKER)
                 .withErStudent(utdanning.getErStudent())
                 .withStudengradErHeltid(toStudentgradErHeltid(utdanning.getStudentgrad()));
     }
@@ -109,14 +108,8 @@ public class UtdanningRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class UtdanningFrontend {
-        public boolean brukerdefinert;
         public Boolean erStudent;
         public Boolean studengradErHeltid;
-
-        public UtdanningFrontend withBrukerdefinert(boolean brukerdefinert) {
-            this.brukerdefinert = brukerdefinert;
-            return this;
-        }
 
         public UtdanningFrontend withErStudent(Boolean erStudent) {
             this.erStudent = erStudent;

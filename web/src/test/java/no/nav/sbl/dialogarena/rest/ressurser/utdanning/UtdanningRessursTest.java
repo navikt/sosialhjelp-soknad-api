@@ -60,73 +60,67 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void getUtdanningSkalReturnereBrukerutfyltUtdanningUtenErStudentOgStudentgrad(){
+    public void getUtdanningSkalReturnereUtdanningUtenErStudentOgStudentgrad(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(null, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
-
-        assertThat(utdanningFrontend.brukerdefinert, is(true));
+        
         assertThat(utdanningFrontend.erStudent, nullValue());
         assertThat(utdanningFrontend.studengradErHeltid, nullValue());
     }
 
     @Test
-    public void getUtdanningSkalReturnereBrukerutfyltUtdanningMedErIkkeStudent(){
+    public void getUtdanningSkalReturnereUtdanningMedErIkkeStudent(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.FALSE, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
-
-        assertThat(utdanningFrontend.brukerdefinert, is(true));
+        
         assertThat(utdanningFrontend.erStudent, is(Boolean.FALSE));
         assertThat(utdanningFrontend.studengradErHeltid, nullValue());
     }
 
     @Test
-    public void getUtdanningSkalReturnereBrukerutfyltUtdanningMedErStudent(){
+    public void getUtdanningSkalReturnereUtdanningMedErStudent(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
-
-        assertThat(utdanningFrontend.brukerdefinert, is(true));
+        
         assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
         assertThat(utdanningFrontend.studengradErHeltid, nullValue());
     }
 
     @Test
-    public void getUtdanningSkalReturnereBrukerutfyltUtdanningMedErStudentOgStudentgradHeltid(){
+    public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradHeltid(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.HELTID));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
-
-        assertThat(utdanningFrontend.brukerdefinert, is(true));
+        
         assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
         assertThat(utdanningFrontend.studengradErHeltid, is(Boolean.TRUE));
     }
 
     @Test
-    public void getUtdanningSkalReturnereBrukerutfyltUtdanningMedErStudentOgStudentgradDeltid(){
+    public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradDeltid(){
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.DELTID));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
-
-        assertThat(utdanningFrontend.brukerdefinert, is(true));
+        
         assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
         assertThat(utdanningFrontend.studengradErHeltid, is(Boolean.FALSE));
     }
 
     @Test
-    public void putUtdanningSkalSetteBrukerutfyltUtdanningMedErStudent(){
+    public void putUtdanningSkalSetteUtdanningMedErStudent(){
         ignoreTilgangskontrollAndLegacyUpdate();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
 
         final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
-                .withBrukerdefinert(true)
                 .withErStudent(Boolean.TRUE);
         utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend);
 
@@ -138,13 +132,12 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void putUtdanningSkalSetteBrukerutfyltUtdanningMedErStudentOgStudentgrad(){
+    public void putUtdanningSkalSetteUtdanningMedErStudentOgStudentgrad(){
         ignoreTilgangskontrollAndLegacyUpdate();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
 
         final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
-                .withBrukerdefinert(true)
                 .withErStudent(Boolean.TRUE)
                 .withStudengradErHeltid(Boolean.TRUE);
         utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend);
