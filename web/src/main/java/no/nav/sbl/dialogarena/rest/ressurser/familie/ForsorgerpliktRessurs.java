@@ -68,17 +68,22 @@ public class ForsorgerpliktRessurs {
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonForsorgerplikt forsorgerplikt = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
 
-        if (forsorgerplikt.getBarnebidrag() == null){
-            forsorgerplikt.setBarnebidrag(new JsonBarnebidrag().withKilde(JsonKildeBruker.BRUKER).withVerdi(forsorgerpliktFrontend.barnebidrag));
-        } else {
-            forsorgerplikt.getBarnebidrag().setVerdi(forsorgerpliktFrontend.barnebidrag);
+        if(forsorgerpliktFrontend.barnebidrag != null) {
+            if (forsorgerplikt.getBarnebidrag() == null) {
+                forsorgerplikt.setBarnebidrag(new JsonBarnebidrag().withKilde(JsonKildeBruker.BRUKER).withVerdi(forsorgerpliktFrontend.barnebidrag));
+            } else {
+                forsorgerplikt.getBarnebidrag().setVerdi(forsorgerpliktFrontend.barnebidrag);
+            }
         }
 
-        for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvarFrontends){
-            for (JsonAnsvar ansvar : forsorgerplikt.getAnsvar()){
-                if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barnFrontend.personIdentifikator)){
-                    ansvar.setHarDeltBosted(new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.harDeltBosted));
-                    ansvar.setSamvarsgrad(new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad));
+        if (forsorgerpliktFrontend.ansvarFrontends != null && !forsorgerpliktFrontend.ansvarFrontends.isEmpty()){
+            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvarFrontends){
+                for (JsonAnsvar ansvar : forsorgerplikt.getAnsvar()){
+                    if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barnFrontend.personIdentifikator)){
+                        ansvar.setBorSammenMed(new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
+                        ansvar.setHarDeltBosted(new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.harDeltBosted));
+                        ansvar.setSamvarsgrad(new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad));
+                    }
                 }
             }
         }
@@ -89,23 +94,27 @@ public class ForsorgerpliktRessurs {
     private void legacyUpdate(String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum barnebidrag = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.barn.true.barnebidrag");
-        barnebidrag.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-        barnebidrag.setValue(forsorgerpliktFrontend.barnebidrag.toString());
-        faktaService.lagreBrukerFaktum(barnebidrag);
+        if(forsorgerpliktFrontend.barnebidrag != null) {
+            final Faktum barnebidrag = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.barn.true.barnebidrag");
+            barnebidrag.setType(Faktum.FaktumType.BRUKERREGISTRERT);
+            barnebidrag.setValue(forsorgerpliktFrontend.barnebidrag.toString());
+            faktaService.lagreBrukerFaktum(barnebidrag);
+        }
 
-        List<Faktum> barnefakta = webSoknad.getFaktaMedKey("system.familie.barn.true.barn");
-        for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvarFrontends){
-            for (Faktum faktum : barnefakta){
-                Map<String, String> barn = faktum.getProperties();
-                if (barn.get("fnr").equals(ansvarFrontend.barnFrontend.personIdentifikator)){
-                    barn.put("grad", ansvarFrontend.samvarsgrad != null ? ansvarFrontend.samvarsgrad.toString() : null);
-                    barn.put("deltbosted", ansvarFrontend.harDeltBosted != null ? ansvarFrontend.harDeltBosted.toString() : null);
-                    faktum.setProperties(barn);
+        if (forsorgerpliktFrontend.ansvarFrontends != null && !forsorgerpliktFrontend.ansvarFrontends.isEmpty()){
+            List<Faktum> barnefakta = webSoknad.getFaktaMedKey("system.familie.barn.true.barn");
+            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvarFrontends) {
+                for (Faktum faktum : barnefakta) {
+                    Map<String, String> barn = faktum.getProperties();
+                    if (barn.get("fnr").equals(ansvarFrontend.barnFrontend.personIdentifikator)) {
+                        barn.put("grad", ansvarFrontend.samvarsgrad != null ? ansvarFrontend.samvarsgrad.toString() : null);
+                        barn.put("deltbosted", ansvarFrontend.harDeltBosted != null ? ansvarFrontend.harDeltBosted.toString() : null);
+                        faktum.setProperties(barn);
+                    }
                 }
             }
+            faktaService.lagreSystemFakta(webSoknad, barnefakta);
         }
-        faktaService.lagreSystemFakta(webSoknad, barnefakta);
     }
 
     private ForsorgerpliktFrontend mapToForsorgerpliktFrontend(JsonForsorgerplikt jsonForsorgerplikt) {
@@ -128,6 +137,7 @@ public class ForsorgerpliktRessurs {
         return new AnsvarFrontend().withBarnFrontend(mapToBarnFrontend(jsonAnsvar.getBarn()))
                 .withErFolkeregistrertSammen(jsonAnsvar.getErFolkeregistrertSammen() == null ? null :
                         jsonAnsvar.getErFolkeregistrertSammen().getVerdi())
+                .withBorSammenMed(jsonAnsvar.getBorSammenMed() == null ? null : jsonAnsvar.getBorSammenMed().getVerdi())
                 .withHarDeltBosted(jsonAnsvar.getHarDeltBosted() == null ? null : jsonAnsvar.getHarDeltBosted().getVerdi())
                 .withSamvarsgrad(jsonAnsvar.getSamvarsgrad() == null ? null : jsonAnsvar.getSamvarsgrad().getVerdi());
     }
@@ -169,12 +179,18 @@ public class ForsorgerpliktRessurs {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class AnsvarFrontend {
         public BarnFrontend barnFrontend;
+        public Boolean borSammenMed;
         public Boolean erFolkeregistrertSammen;
         public Boolean harDeltBosted;
         public Integer samvarsgrad;
 
         public AnsvarFrontend withBarnFrontend(BarnFrontend barnFrontend) {
             this.barnFrontend = barnFrontend;
+            return this;
+        }
+
+        public AnsvarFrontend withBorSammenMed(Boolean borSammenMed) {
+            this.borSammenMed = borSammenMed;
             return this;
         }
 
