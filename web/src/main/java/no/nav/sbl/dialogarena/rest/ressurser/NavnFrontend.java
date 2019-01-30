@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class NavnFrontend {
+public final class NavnFrontend {
     public String fornavn;
     public String mellomnavn;
     public String etternavn;

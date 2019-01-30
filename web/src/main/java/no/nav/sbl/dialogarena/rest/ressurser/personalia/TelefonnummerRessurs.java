@@ -96,7 +96,7 @@ public class TelefonnummerRessurs {
         faktaService.lagreBrukerFaktum(brukerdefinert);
         
         final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
-        telefon.setValue(telefonnummerFrontend.verdi);
+        telefon.setValue(telefonnummerFrontend.verdi.substring(3));
         faktaService.lagreBrukerFaktum(telefon);
     }
 
