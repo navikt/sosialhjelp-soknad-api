@@ -95,9 +95,11 @@ public class TelefonnummerRessurs {
         brukerdefinert.setValue(Boolean.toString(telefonnummerFrontend.brukerdefinert));
         faktaService.lagreBrukerFaktum(brukerdefinert);
         
-        final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
-        telefon.setValue(telefonnummerFrontend.verdi.substring(3));
-        faktaService.lagreBrukerFaktum(telefon);
+        if (telefonnummerFrontend.verdi != null){
+            final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
+            telefon.setValue(telefonnummerFrontend.verdi.substring(3));
+            faktaService.lagreBrukerFaktum(telefon);
+        }
     }
 
 
