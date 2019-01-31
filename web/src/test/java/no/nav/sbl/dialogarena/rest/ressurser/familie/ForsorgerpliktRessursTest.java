@@ -101,7 +101,7 @@ public class ForsorgerpliktRessursTest {
 
         assertThat(forsorgerpliktFrontend.harForsorgerplikt, nullValue());
         assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvarFrontends, nullValue());
+        assertThat(forsorgerpliktFrontend.ansvar, nullValue());
     }
 
     @Test
@@ -116,8 +116,8 @@ public class ForsorgerpliktRessursTest {
 
         assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
         assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvarFrontends.size(), is(1));
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvarFrontends.get(0), jsonAnsvar);
+        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
     @Test
@@ -132,8 +132,8 @@ public class ForsorgerpliktRessursTest {
 
         assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
         assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvarFrontends.size(), is(1));
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvarFrontends.get(0), jsonAnsvar);
+        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
     @Test
@@ -147,9 +147,9 @@ public class ForsorgerpliktRessursTest {
 
         assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
         assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvarFrontends.size(), is(2));
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvarFrontends.get(0), jsonAnsvar);
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvarFrontends.get(1), jsonAnsvar_2);
+        assertThat(forsorgerpliktFrontend.ansvar.size(), is(2));
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(1), jsonAnsvar_2);
     }
 
     @Test
@@ -162,8 +162,8 @@ public class ForsorgerpliktRessursTest {
 
         assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
         assertThat(forsorgerpliktFrontend.barnebidrag, is(JsonBarnebidrag.Verdi.BEGGE));
-        assertThat(forsorgerpliktFrontend.ansvarFrontends.size(), is(1));
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvarFrontends.get(0), jsonAnsvar);
+        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
     @Test
@@ -176,8 +176,8 @@ public class ForsorgerpliktRessursTest {
 
         assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
         assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvarFrontends.size(), is(1));
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvarFrontends.get(0), jsonAnsvar);
+        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
     @Test
@@ -207,7 +207,7 @@ public class ForsorgerpliktRessursTest {
                 Optional.of(createJsonInternalSoknadWithForsorgerplikt(true, null, Arrays.asList(jsonAnsvar, jsonAnsvar_2))));
 
         final ForsorgerpliktFrontend forsorgerpliktFrontend = new ForsorgerpliktFrontend()
-                .withAnsvarFrontends(Arrays.asList(createBarnMedDeltBosted(), createBarnMedSamvarsgrad()));
+                .withAnsvar(Arrays.asList(createBarnMedDeltBosted(), createBarnMedSamvarsgrad()));
 
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend);
 

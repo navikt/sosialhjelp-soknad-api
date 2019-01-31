@@ -96,7 +96,7 @@ public class ArbeidRessursTest {
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(createArbeidsforholdListe());
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
-        final List<ArbeidsforholdFrontend> arbeidsforholdFrontends = arbeidFrontend.arbeidsforholdFrontends;
+        final List<ArbeidsforholdFrontend> arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold;
 
         assertThat(arbeidsforholdFrontends.size(), is(2));
         final ArbeidsforholdFrontend arbeidsforhold_1 = arbeidsforholdFrontends.get(0);
@@ -114,7 +114,7 @@ public class ArbeidRessursTest {
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
-        assertThat(arbeidFrontend.arbeidsforholdFrontends, nullValue());
+        assertThat(arbeidFrontend.arbeidsforhold, nullValue());
     }
 
     @Test
