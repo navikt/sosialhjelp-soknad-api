@@ -4,6 +4,10 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
@@ -14,18 +18,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -36,7 +37,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Produces(APPLICATION_JSON)
 public class OkonomiskeOpplysningerRessurs {
 
-    final static private Map<String,String> tilleggsinfoToJsonType = new HashMap<String,String>();
+    final static private Map<String,String> tilleggsinfoToJsonType = new HashMap<>();
     static {
         tilleggsinfoToJsonType.put("aksjer", "verdipapirer");
         tilleggsinfoToJsonType.put("annetbarnutgift", "annenBarneutgift");
@@ -66,8 +67,43 @@ public class OkonomiskeOpplysningerRessurs {
         tilleggsinfoToJsonType.put("utbytte", "utbytte");
     }
 
+    private final static Set<String> opplysningerUtgift = new HashSet<>();
+    static  {
+        opplysningerUtgift.addAll(Arrays.asList("annetbarnutgift", "annetboutgift", "tannbehandling", "kommunaleavgifter",
+                "fritidsaktivitet", "oppvarming", "strom"));
+    }
+
+    private final static Set<String> oversiktUtgift = new HashSet<>();
+    static  {
+        oversiktUtgift.addAll(Arrays.asList("sfo", "barnehage", "betaler", "husleie"));
+    }
+
+    private final static Set<String> formue = new HashSet<>();
+    static  {
+        formue.addAll(Arrays.asList("kjoretoy", "campingvogn", "fritidseiendom",
+                "brukskonto", "bsu", "sparekonto", "kjopekontrakt", "livsforsikring",
+                "annetverdi", "aksjer"));
+    }
+
+    private final static Set<String> utbetaling = new HashSet<>();
+    static  {
+        utbetaling.addAll(Arrays.asList("eiendom", "forsikringsutbetaling", "annetinntekter", "utbytte"));
+    }
+
     @Inject
     private LegacyHelper legacyHelper;
+
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
+
+    @Inject
+    private SoknadService soknadService;
+
+    @Inject
+    private FaktaService faktaService;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
@@ -77,10 +113,28 @@ public class OkonomiskeOpplysningerRessurs {
         final JsonOkonomi jsonOkonomi = soknad.getSoknad().getData().getOkonomi();
 
         if (jsonVedleggs != null && !jsonVedleggs.isEmpty()){
-            return new VedleggFrontends().withVedleggFrontends(jsonVedleggs.stream()
+            return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
                     .map(vedlegg -> mapToVedleggFrontend(vedlegg, jsonOkonomi)).collect(Collectors.toList()));
         }
         return new VedleggFrontends();
+    }
+
+    @PUT
+    public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend){
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        update(behandlingsId, vedleggFrontend);
+        legacyUpdate(behandlingsId, vedleggFrontend);
+    }
+
+    private void update(String behandlingsId, VedleggFrontend vedleggFrontend) {
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+
+    }
+
+    private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) {
+        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
     }
 
     private VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi) {
@@ -115,115 +169,65 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private String getGruppe(String type, String tilleggsinfo) {
-        switch (tilleggsinfo){
-            case "arbeid":
-                if(type.equals("lonnslipp")){
-                    return "inntekt";
-                } else if (type.equals("sluttoppgjor")){
-                    return "arbeid";
-                }
-            case "husleiekontrakt":
-                return "bosituasjon";
-            case "vedtak":
-                if(type.equals("bostotte")){
-                    return "inntekt";
-                } else if (type.equals("student")){
-                    return "arbeid";
-                }
-            case "annet":
-                if (type.equals("kontooversikt")){
-                    return "inntekt";
-                } else if (type.equals("annet")){
-                    return "utgifter";
-                }
-            case "mottar":
-            case "betaler":
-            case "barn":
-                return "familie";
-            case "eiendom":
-            case "forsikringsutbetaling":
-            case "annetinntekter":
-            case "utbytte":
-            case "kjoretoy":
-            case "campingvogn":
-            case "fritidseiendom":
-            case "brukskonto":
-            case "bsu":
-            case "sparekonto":
-            case "kjopekontrakt":
-            case "livsforsikring":
-            case "annetverdi":
-            case "aksjer":
-                return "inntekt";
-            case "sfo":
-            case "barnehage":
-            case "husleie":
-            case "annetbarnutgift":
-            case "annetboutgift":
-            case "tannbehandling":
-            case "kommunaleavgifter":
-            case "fritidsaktivitet":
-            case "oppvarming":
-            case "strom":
-                return "utgifter";
+        if (tilleggsinfo.equals("mottar") || tilleggsinfo.equals("betaler") || tilleggsinfo.equals("barn")){
+            return "familie";
+        } else if (tilleggsinfo.equals("husleiekontrakt")){
+            return "bosituasjon";
+        } else if (tilleggsinfo.equals("arbeid") && type.equals("sluttoppgjor")){
+            return "arbeid";
+        } else if (tilleggsinfo.equals("vedtak") && type.equals("student")){
+            return "arbeid";
+        } else if (tilleggsinfo.equals("arbeid") && type.equals("lonnslipp")){
+            return "inntekt";
+        } else if (tilleggsinfo.equals("vedtak") && type.equals("bostotte")){
+            return "inntekt";
+        } else if (tilleggsinfo.equals("annet") && type.equals("kontooversikt")){
+            return "inntekt";
+        } else if (tilleggsinfo.equals("annet") && type.equals("annet")){
+            return "utgifter";
         }
+
+        if (utbetaling.contains(tilleggsinfo) || formue.contains(tilleggsinfo)){
+            return "inntekt";
+        }
+        if (opplysningerUtgift.contains(tilleggsinfo) || oversiktUtgift.contains(tilleggsinfo)){
+            return "utgifter";
+        }
+
         return null;
     }
 
     private List<Integer> getBelop(JsonOkonomi jsonOkonomi, String type, String tilleggsinfo) {
-        switch (tilleggsinfo){
-            case "mottar":
-                return getBelopListFromInntekt(jsonOkonomi, "barnebidrag");
-            case "vedtak":
-                if(type.equals("bostotte")){
-                    return getBelopListFromInntekt(jsonOkonomi, "bostotte");
-                } else if (type.equals("student")){
-                    return getBelopListFromInntekt(jsonOkonomi, "studielanOgStipend");
-                }
-            case "arbeid":
-                if(type.equals("lonnslipp")){
-                    return getBelopListFromInntekt(jsonOkonomi, "jobb");
-                } else if (type.equals("sluttoppgjor")){
-                    return getBelopListFromUtbetaling(jsonOkonomi, "sluttoppgjoer");
-                }
-            case "eiendom":
-            case "forsikringsutbetaling":
-            case "annetinntekter":
-            case "utbytte":
-                return getBelopListFromUtbetaling(jsonOkonomi, tilleggsinfoToJsonType.get(tilleggsinfo));
-            case "sfo":
-            case "barnehage":
-            case "betaler":
-            case "husleie":
-                return getBelopListFromOversiktUtgift(jsonOkonomi, tilleggsinfoToJsonType.get(tilleggsinfo));
-            case "kjoretoy":
-            case "campingvogn":
-            case "fritidseiendom":
-            case "brukskonto":
-            case "bsu":
-            case "sparekonto":
-            case "kjopekontrakt":
-            case "livsforsikring":
-            case "annetverdi":
-            case "aksjer":
-                return getBelopListFromFormue(jsonOkonomi, tilleggsinfoToJsonType.get(tilleggsinfo));
-            case "annet":
-                if (type.equals("kontooversikt")){
-                    return getBelopListFromFormue(jsonOkonomi, "belop");
-                } else if (type.equals("annet")){
-                    return getBelopListFromOpplysningerUtgift(jsonOkonomi, "annen");
-                }
-            case "annetbarnutgift":
-            case "annetboutgift":
-            case "tannbehandling":
-            case "kommunaleavgifter":
-            case "fritidsaktivitet":
-            case "oppvarming":
-            case "strom":
-                return getBelopListFromOpplysningerUtgift(jsonOkonomi, tilleggsinfoToJsonType.get(tilleggsinfo));
-            default:
-                return null;
+        if (utbetaling.contains(tilleggsinfo)){
+            return getBelopListFromUtbetaling(jsonOkonomi, tilleggsinfoToJsonType.get(tilleggsinfo));
         }
+        if (opplysningerUtgift.contains(tilleggsinfo)){
+            return getBelopListFromOpplysningerUtgift(jsonOkonomi, tilleggsinfoToJsonType.get(tilleggsinfo));
+        }
+        if (oversiktUtgift.contains(tilleggsinfo)){
+            return getBelopListFromOversiktUtgift(jsonOkonomi, tilleggsinfoToJsonType.get(tilleggsinfo));
+        }
+        if (formue.contains(tilleggsinfo)){
+            return getBelopListFromFormue(jsonOkonomi, tilleggsinfoToJsonType.get(tilleggsinfo));
+        }
+
+        if (tilleggsinfo.equals("mottar")){
+            return getBelopListFromInntekt(jsonOkonomi, "barnebidrag");
+        } else if (tilleggsinfo.equals("vedtak") && type.equals("bostotte")){
+            return getBelopListFromInntekt(jsonOkonomi, "bostotte");
+        } else if (tilleggsinfo.equals("vedtak") && type.equals("student")){
+            return getBelopListFromInntekt(jsonOkonomi, "studielanOgStipend");
+        } else if (tilleggsinfo.equals("arbeid") && type.equals("lonnslipp")){
+            return getBelopListFromInntekt(jsonOkonomi, "jobb");
+        } else if (tilleggsinfo.equals("arbeid") && type.equals("sluttoppgjor")){
+            return getBelopListFromUtbetaling(jsonOkonomi, "sluttoppgjoer");
+        } else if (tilleggsinfo.equals("annet") && type.equals("kontooversikt")){
+            return getBelopListFromFormue(jsonOkonomi, "belop");
+        } else if (tilleggsinfo.equals("annet") && type.equals("annet")){
+            return getBelopListFromOpplysningerUtgift(jsonOkonomi, "annen");
+        }
+
+        return null;
     }
 
     private List<Integer> getAvdrag(JsonOkonomi jsonOkonomi, String tilleggsinfo) {
@@ -317,10 +321,10 @@ public class OkonomiskeOpplysningerRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class VedleggFrontends {
-        public List<VedleggFrontend> vedleggFrontends;
+        public List<VedleggFrontend> okonomiskeOpplysninger;
 
-        public VedleggFrontends withVedleggFrontends(List<VedleggFrontend> vedleggFrontends) {
-            this.vedleggFrontends = vedleggFrontends;
+        public VedleggFrontends withOkonomiskeOpplysninger(List<VedleggFrontend> okonomiskeOpplysninger) {
+            this.okonomiskeOpplysninger = okonomiskeOpplysninger;
             return this;
         }
     }
