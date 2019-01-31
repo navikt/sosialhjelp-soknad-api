@@ -76,8 +76,8 @@ public class ForsorgerpliktRessurs {
             }
         }
 
-        if (forsorgerpliktFrontend.ansvarFrontends != null && !forsorgerpliktFrontend.ansvarFrontends.isEmpty()){
-            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvarFrontends){
+        if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
+            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar){
                 for (JsonAnsvar ansvar : forsorgerplikt.getAnsvar()){
                     if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barnFrontend.personIdentifikator)){
                         ansvar.setBorSammenMed(new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
@@ -101,9 +101,9 @@ public class ForsorgerpliktRessurs {
             faktaService.lagreBrukerFaktum(barnebidrag);
         }
 
-        if (forsorgerpliktFrontend.ansvarFrontends != null && !forsorgerpliktFrontend.ansvarFrontends.isEmpty()){
+        if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
             List<Faktum> barnefakta = webSoknad.getFaktaMedKey("system.familie.barn.true.barn");
-            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvarFrontends) {
+            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar) {
                 for (Faktum faktum : barnefakta) {
                     Map<String, String> barn = faktum.getProperties();
                     if (barn.get("fnr").equals(ansvarFrontend.barnFrontend.personIdentifikator)) {
@@ -126,7 +126,7 @@ public class ForsorgerpliktRessurs {
                         jsonForsorgerplikt.getHarForsorgerplikt().getVerdi())
                 .withBarnebidrag(jsonForsorgerplikt.getBarnebidrag() == null ? null :
                         jsonForsorgerplikt.getBarnebidrag().getVerdi())
-                .withAnsvarFrontends(ansvar);
+                .withAnsvar(ansvar);
     }
 
     private AnsvarFrontend mapToAnsvarFrontend(JsonAnsvar jsonAnsvar) {
@@ -158,7 +158,7 @@ public class ForsorgerpliktRessurs {
     public static final class ForsorgerpliktFrontend {
         public Boolean harForsorgerplikt;
         public JsonBarnebidrag.Verdi barnebidrag;
-        public List<AnsvarFrontend> ansvarFrontends;
+        public List<AnsvarFrontend> ansvar;
 
         public ForsorgerpliktFrontend withHarForsorgerplikt(Boolean harForsorgerplikt) {
             this.harForsorgerplikt = harForsorgerplikt;
@@ -170,8 +170,8 @@ public class ForsorgerpliktRessurs {
             return this;
         }
 
-        public ForsorgerpliktFrontend withAnsvarFrontends(List<AnsvarFrontend> ansvarFrontends) {
-            this.ansvarFrontends = ansvarFrontends;
+        public ForsorgerpliktFrontend withAnsvar(List<AnsvarFrontend> ansvar) {
+            this.ansvar = ansvar;
             return this;
         }
     }
