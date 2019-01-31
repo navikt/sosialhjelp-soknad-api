@@ -113,11 +113,11 @@ public class ArbeidRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class ArbeidFrontend {
-        public List<ArbeidsforholdFrontend> arbeidsforholdFrontends;
+        public List<ArbeidsforholdFrontend> arbeidsforhold;
         public String kommentarTilArbeidsforhold;
 
-        public ArbeidFrontend withArbeidsforhold(List<ArbeidsforholdFrontend> arbeidsforholdFrontends){
-            this.arbeidsforholdFrontends = arbeidsforholdFrontends;
+        public ArbeidFrontend withArbeidsforhold(List<ArbeidsforholdFrontend> arbeidsforhold){
+            this.arbeidsforhold = arbeidsforhold;
             return this;
         }
 
