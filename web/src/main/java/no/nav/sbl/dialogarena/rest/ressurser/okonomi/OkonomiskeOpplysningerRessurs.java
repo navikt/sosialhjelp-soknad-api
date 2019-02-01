@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
@@ -121,7 +122,131 @@ public class OkonomiskeOpplysningerRessurs {
     private void update(String behandlingsId, VedleggFrontend vedleggFrontend) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("."));
+        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf(".") + 1);
+
+        if (vedleggFrontend.vedleggStatus != null){
+            updateVedleggStatus(vedleggFrontend, jsonVedleggs, type, tilleggsinfo);
+        }
+
+        if (opplysningerUtgift.contains(tilleggsinfo)){
+            final Optional<JsonOkonomiOpplysningUtgift> eksisterendeUtgift = jsonOkonomi.getOpplysninger().getUtgift().stream()
+                    .filter(utgift -> utgift.getType().equals(tilleggsinfoToJsonType.get(tilleggsinfo)))
+                    .findFirst();
+
+            // Dersom det ikke er en eksisterende utgift er det ikke mulig for bruker å fylle ut informasjon på vedlegget.
+            if (eksisterendeUtgift.isPresent()) {
+                List<JsonOkonomiOpplysningUtgift> utgifter = jsonOkonomi.getOpplysninger().getUtgift().stream()
+                        .filter(utgift -> !utgift.getType().equals(tilleggsinfoToJsonType.get(tilleggsinfo)))
+                        .collect(Collectors.toList());
+
+                // Frontend må ikke sende med rader = null eller tom liste. Må heller sende med en rad med null verdier
+                utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, eksisterendeUtgift.get()));
+                jsonOkonomi.getOpplysninger().setUtgift(utgifter);
+            }
+        } else if (oversiktUtgift.contains(tilleggsinfo)){ // På tilleggsinfo.equals("avdraglaan") må man kjøre kode under for jsonTyper boliglanAvdrag og boliglanRenter
+            final Optional<JsonOkonomioversiktUtgift> eksisterendeUtgift = jsonOkonomi.getOversikt().getUtgift().stream()
+                    .filter(utgift -> utgift.getType().equals(tilleggsinfoToJsonType.get(tilleggsinfo)))
+                    .findFirst();
+
+            if (eksisterendeUtgift.isPresent()) {
+                List<JsonOkonomioversiktUtgift> utgifter = jsonOkonomi.getOversikt().getUtgift().stream()
+                        .filter(utgift -> !utgift.getType().equals(tilleggsinfoToJsonType.get(tilleggsinfo)))
+                        .collect(Collectors.toList());
+
+                utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, eksisterendeUtgift.get()));
+                jsonOkonomi.getOversikt().setUtgift(utgifter);
+            }
+        } else if (formue.contains(tilleggsinfo)){
+            final Optional<JsonOkonomioversiktFormue> eksisterendeFormue = jsonOkonomi.getOversikt().getFormue().stream()
+                    .filter(formue -> formue.getType().equals(tilleggsinfoToJsonType.get(tilleggsinfo)))
+                    .findFirst();
+
+            if (eksisterendeFormue.isPresent()) {
+                List<JsonOkonomioversiktFormue> formuer = jsonOkonomi.getOversikt().getFormue().stream()
+                        .filter(formue -> !formue.getType().equals(tilleggsinfoToJsonType.get(tilleggsinfo)))
+                        .collect(Collectors.toList());
+
+                formuer.addAll(mapToFormueList(vedleggFrontend.rader, eksisterendeFormue.get()));
+                jsonOkonomi.getOversikt().setFormue(formuer);
+            }
+        } else if (utbetaling.contains(tilleggsinfo)){
+            final Optional<JsonOkonomiOpplysningUtbetaling> eksisterendeUtbetaling = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
+                    .filter(utbetaling -> utbetaling.getType().equals(tilleggsinfoToJsonType.get(tilleggsinfo)))
+                    .findFirst();
+
+            if (eksisterendeUtbetaling.isPresent()) {
+                List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
+                        .filter(utbetaling -> !utbetaling.getType().equals(tilleggsinfoToJsonType.get(tilleggsinfo)))
+                        .collect(Collectors.toList());
+
+                utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling.get()));
+                jsonOkonomi.getOpplysninger().setUtbetaling(utbetalinger);
+            }
+        }
+
+        // Legg til spesialtilfeller av type og tilleggsinfo
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    private List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalingList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling) {
+        return rader.stream().map(rad -> mapToUtbetaling(rad, eksisterendeUtbetaling)).collect(Collectors.toList());
+    }
+
+    private JsonOkonomiOpplysningUtbetaling mapToUtbetaling(VedleggRadFrontend rad, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling) {
+        return new JsonOkonomiOpplysningUtbetaling()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(eksisterendeUtbetaling.getType())
+                .withTittel(eksisterendeUtbetaling.getTittel())
+                .withBelop(rad.belop) // Sjekk hvilke av disse som skal settes
+                .withBrutto(Double.valueOf(rad.belop))
+                .withNetto(Double.valueOf(rad.belop));
+    }
+
+    private List<JsonOkonomioversiktFormue> mapToFormueList(List<VedleggRadFrontend> rader, JsonOkonomioversiktFormue eksisterendeFormue) {
+        return rader.stream().map(rad -> mapToFormue(rad, eksisterendeFormue)).collect(Collectors.toList());
+    }
+
+    private JsonOkonomioversiktFormue mapToFormue(VedleggRadFrontend radFrontend, JsonOkonomioversiktFormue eksisterendeFormue) {
+        return new JsonOkonomioversiktFormue().withKilde(JsonKilde.BRUKER)
+                .withType(eksisterendeFormue.getType())
+                .withTittel(eksisterendeFormue.getTittel())
+                .withBelop(radFrontend.belop);
+    }
+
+    private List<JsonOkonomioversiktUtgift> mapToOversiktUtgiftList(List<VedleggRadFrontend> rader, JsonOkonomioversiktUtgift eksisterendeUtgift) {
+        return rader.stream().map(rad -> mapToOversiktUtgift(rad, eksisterendeUtgift)).collect(Collectors.toList());
+    }
+
+    private JsonOkonomioversiktUtgift mapToOversiktUtgift(VedleggRadFrontend radFrontend, JsonOkonomioversiktUtgift eksisterendeUtgift) {
+        final String tittel = eksisterendeUtgift.getTittel();
+        final String typetittel = !tittel.contains(":") ? tittel : tittel.substring(0, tittel.indexOf(":") + 2);
+
+        return new JsonOkonomioversiktUtgift().withKilde(JsonKilde.BRUKER)
+                .withType(eksisterendeUtgift.getType())
+                .withTittel(radFrontend.beskrivelse != null ? typetittel + radFrontend.beskrivelse : typetittel)
+                .withBelop(radFrontend.belop);
+    }
+
+    private List<JsonOkonomiOpplysningUtgift> mapToOppysningUtgiftList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtgift eksisterendeUtgift) {
+        return rader.stream().map(rad -> mapToOppysningUtgift(rad, eksisterendeUtgift)).collect(Collectors.toList());
+    }
+
+    private JsonOkonomiOpplysningUtgift mapToOppysningUtgift(VedleggRadFrontend radFrontend, JsonOkonomiOpplysningUtgift eksisterendeUtgift) {
+        return new JsonOkonomiOpplysningUtgift().withKilde(JsonKilde.BRUKER)
+                .withType(eksisterendeUtgift.getType())
+                .withTittel(eksisterendeUtgift.getTittel())
+                .withBelop(radFrontend.belop);
+    }
+
+    private void updateVedleggStatus(VedleggFrontend vedleggFrontend, List<JsonVedlegg> jsonVedleggs, String type, String tilleggsinfo) {
+        jsonVedleggs.stream()
+                .filter(vedlegg -> vedlegg.getType().equals(type))
+                .filter(vedlegg -> vedlegg.getTilleggsinfo().equals(tilleggsinfo))
+                .findFirst().get().setStatus(vedleggFrontend.vedleggStatus);
     }
 
     private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) {
