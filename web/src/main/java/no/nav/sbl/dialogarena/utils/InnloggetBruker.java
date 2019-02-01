@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.utils;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import org.slf4j.Logger;
 
@@ -17,7 +17,7 @@ public class InnloggetBruker {
     private static final Logger logger = getLogger(InnloggetBruker.class);
 
     public Personalia hentPersonalia() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        String fnr = SubjectHandler.getUserIdFromToken();
         Personalia personalia = null;
         try {
             personalia = personaliaBolk.hentPersonalia(fnr);

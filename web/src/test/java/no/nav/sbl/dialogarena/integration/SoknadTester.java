@@ -50,6 +50,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 public class SoknadTester extends JerseyTest {
     private final String skjemaNummer;
     private String user;
+    private String token;
 
     private String brukerBehandlingId;
 
@@ -59,6 +60,7 @@ public class SoknadTester extends JerseyTest {
         super();
         this.skjemaNummer = skjemaNummer;
         this.user = "***REMOVED***";
+        this.token = JwtTokenGenerator.createSignedJWT(this.user).serialize();
     }
 
     public static SoknadTester startSoknad(String skjemaNummer) throws Exception {
@@ -74,15 +76,13 @@ public class SoknadTester extends JerseyTest {
         setUp();
         client().register(GsonProvider.class);
 
-        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(this.user);
-
         StartSoknad soknadType = new StartSoknad();
         soknadType.setSoknadType(skjemaNummer);
         Entity sokEntity = Entity.json(soknadType);
         Response response = sendsoknad().path("soknader")
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token)
                 .buildPost(sokEntity)
                 .invoke();
         checkResponse(response, SC_OK);
@@ -100,10 +100,9 @@ public class SoknadTester extends JerseyTest {
     }
 
     public SoknadTester settDelstegstatus(String status) {
-        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(this.user);
         Response invoke = soknadResource("", webTarget -> webTarget.queryParam("delsteg", status))
                 .header(this.xhrHeader.getLeft(), this.xhrHeader.getRight())
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize())
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token)
                 .buildPut(Entity.json(""))
                 .invoke();
         checkResponse(invoke, SC_NO_CONTENT);
@@ -115,12 +114,11 @@ public class SoknadTester extends JerseyTest {
     }
 
     private Invocation.Builder soknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
-        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(this.user);
         WebTarget target = sendsoknad().path("soknader/").path(brukerBehandlingId).path(suburl);
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize());
+                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token);
     }
 
 

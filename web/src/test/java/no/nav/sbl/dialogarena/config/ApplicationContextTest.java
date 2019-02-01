@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
-import no.nav.sbl.dialogarena.oidc.OidcTokenValidationTestConfig;
+import no.nav.sbl.dialogarena.oidc.OidcConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMO
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcTokenValidationTestConfig.class})
+@ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcConfig.class})
 public class ApplicationContextTest {
 
     @BeforeClass

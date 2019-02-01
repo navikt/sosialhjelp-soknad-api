@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
 import no.nav.modig.common.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
@@ -10,7 +12,6 @@ import javax.ws.rs.client.*;
 import javax.ws.rs.core.Response;
 
 import static java.lang.System.getenv;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -58,7 +59,7 @@ public class NorgConsumerImpl implements NorgConsumer {
          * urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
          * at vi når tjenesten).
          */
-        final String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        final String consumerId = SubjectHandler.getConsumerId();
         final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
 
@@ -99,7 +100,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     }
 
     private Invocation.Builder lagRequest(String endpoint) {
-        String consumerId = getSubjectHandler().getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
 

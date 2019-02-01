@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -36,7 +37,7 @@ public class VedleggRessursTest {
 
     @Before
     public void setUp() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
 
         Vedlegg vedlegg = new Vedlegg();
         vedlegg.setStorrelse(MAKS_TOTAL_FILSTORRELSE + 1L);

@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -13,14 +11,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import javax.security.auth.Subject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerService;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -30,7 +29,6 @@ import org.slf4j.MDC.MDCCloseable;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
@@ -38,25 +36,26 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.LoggingTestUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 
 public class AdresseSokConsumerImplTest {
-    
-    private static String oldSubjectHandlerImplementationClass;
-    
-    
+
+    private static SubjectHandlerService oldSubjectHandlerService;
+
+
     @BeforeClass
     public static void oppsettForInnloggetBruker() {
-        oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
+        oldSubjectHandlerService = SubjectHandler.getSubjectHandlerService();
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
-    
+
     @AfterClass
     public static void fjernOppsettForInnloggetBruker() {
-        if (oldSubjectHandlerImplementationClass == null) {
-            System.clearProperty(SubjectHandler.SUBJECTHANDLER_KEY);
+        if (oldSubjectHandlerService == null) {
+            SubjectHandler.resetOidcSubjectHandlerService();
         } else {
-            System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, oldSubjectHandlerImplementationClass);
+            SubjectHandler.setSubjectHandlerService(oldSubjectHandlerService);
         }
     }
-    
-    
+
+
     @Test
     public void simpleRestCallWith404() {
         final ClientMock mock = mockClient();
@@ -66,7 +65,7 @@ public class AdresseSokConsumerImplTest {
         final AdressesokRespons adressesokRespons = adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
         
         assertTrue(adressesokRespons.adresseDataList.isEmpty());
-        assertEquals(false, adressesokRespons.flereTreff);
+        assertFalse(adressesokRespons.flereTreff);
     }
     
     @Test
@@ -273,13 +272,6 @@ public class AdresseSokConsumerImplTest {
         when(builder.get()).thenReturn(response);
 
         return new ClientMock(client, webTarget, builder, response);
-    }
-    
-    public static class TestSubjectHandler extends SubjectHandler {
-        @Override
-        public Subject getSubject() {
-            return null;
-        }
     }
     
     private static final class ClientMock {

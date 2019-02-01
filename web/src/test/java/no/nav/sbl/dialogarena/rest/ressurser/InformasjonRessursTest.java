@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
@@ -49,8 +49,6 @@ public class InformasjonRessursTest {
     @Mock
     PersonInfoService personInfoService;
     @Mock
-    ThreadLocalSubjectHandler subjectHandler;
-    @Mock
     NavMessageSource messageSource;
     @Mock
     WebSoknadConfig soknadConfig;
@@ -68,7 +66,7 @@ public class InformasjonRessursTest {
 
     @Before
     public void setUp() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
         when(personaliaBolk.hentPersonalia(anyString())).thenReturn(personalia());
 
