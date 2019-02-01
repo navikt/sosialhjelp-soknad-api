@@ -8,10 +8,7 @@ import java.util.List;
 public final class VedleggFrontend {
     public String type;
     public String gruppe;
-    public String beskrivelse;
-    public List<Integer> belop;
-    public List<Integer> avdrag;
-    public List<Integer> renter;
+    public List<VedleggRadFrontend> rader;
     public String vedleggStatus;
     public List<String> filNavn;
 
@@ -25,23 +22,8 @@ public final class VedleggFrontend {
         return this;
     }
 
-    public VedleggFrontend withBeskrivelse(String beskrivelse) {
-        this.beskrivelse = beskrivelse;
-        return this;
-    }
-
-    public VedleggFrontend withBelop(List<Integer> belop) {
-        this.belop = belop;
-        return this;
-    }
-
-    public VedleggFrontend withAvdrag(List<Integer> avdrag) {
-        this.avdrag = avdrag;
-        return this;
-    }
-
-    public VedleggFrontend withRenter(List<Integer> renter) {
-        this.renter = renter;
+    public VedleggFrontend withRader(List<VedleggRadFrontend> rader) {
+        this.rader = rader;
         return this;
     }
 
