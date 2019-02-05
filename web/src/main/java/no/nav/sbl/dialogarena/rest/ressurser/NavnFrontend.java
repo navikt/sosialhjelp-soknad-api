@@ -23,7 +23,7 @@ public final class NavnFrontend {
         final String f = !StringUtils.isEmpty(this.fornavn) ? this.fornavn : "";
         final String m = !StringUtils.isEmpty(this.mellomnavn) ? " " + this.mellomnavn : "";
         final String e = !StringUtils.isEmpty(this.etternavn) ? " " + this.etternavn : "";
-        this.fulltNavn = f + m + e;
+        this.fulltNavn = (f + m + e).trim();
     }
 
 }
