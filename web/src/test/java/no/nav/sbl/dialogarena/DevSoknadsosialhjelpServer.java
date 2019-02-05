@@ -8,13 +8,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.mock.MockSubjectHandlerService;
 import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
 
 import javax.sql.DataSource;
 import java.io.File;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.test.util.FilesAndDirs.TEST_RESOURCES;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 
 public class DevSoknadsosialhjelpServer {
 
@@ -25,7 +25,7 @@ public class DevSoknadsosialhjelpServer {
         DataSource dataSource = null;
 
         if (System.getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb").equals("true")) {
-            dataSource = buildDataSource("hsqldb.properties");
+            dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
         }
 
         final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/soknadsosialhjelp-server", dataSource);

@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.mock.MockSubjectHandlerService;
 import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -39,9 +40,18 @@ public class SoknadsosialhjelpServer {
             throw new Error("tillatMockRessurs har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
+        if (isRunningAsTestAppWithMockingActivated()) {
+            dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
+        }
+
+        if (!isRunningOnNais() && isRunningAsTestAppWithMockingActivated()) {
+            System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        }
+
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
-        
-        if (isRunningOnNais()) {
+
+
+        if (isRunningOnNais() && !isRunningAsTestAppWithMockingActivated()) {
             databaseSchemaMigration(ds);
         }
 
@@ -77,7 +87,14 @@ public class SoknadsosialhjelpServer {
     }
 
     private void configure() throws IOException {
-        if (isRunningOnNais()) {
+        if (isRunningAsTestAppWithMockingActivated()){
+            log.info("Running with mocking activated. Totally isolated.");
+            setFrom("environment/mock-test.properties");
+            if (!TjenesteMockRessurs.isTillatMockRessurs()) {
+                throw new Error("Mocking må være aktivert når applikasjonen skal kjøre isolert.");
+            }
+            SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
+        } else if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
 
@@ -92,6 +109,10 @@ public class SoknadsosialhjelpServer {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalEnvironment();
         }
+    }
+
+    private boolean isRunningAsTestAppWithMockingActivated() {
+        return System.getenv("dockerWithDefaultMockActivated") != null && Boolean.parseBoolean(System.getenv("dockerWithDefaultMockActivated"));
     }
 
     private void mapNaisProperties() throws IOException {

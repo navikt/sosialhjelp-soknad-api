@@ -53,6 +53,7 @@ public class DatabaseTestContext {
         //
         //dataSource.setSuppressClose(true);
         Properties env = dbProperties(propertyFileName);
+        String property = env.getProperty("db.driverClassName");
         dataSource.setDriverClassName(env.getProperty("db.driverClassName"));
         dataSource.setUrl(env.getProperty("db.url"));
         dataSource.setUsername(env.getProperty("db.username"));

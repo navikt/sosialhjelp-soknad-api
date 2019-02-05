@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.oidc;
 
+import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
 import no.nav.security.oidc.configuration.IssuerProperties;
 import no.nav.security.oidc.configuration.MultiIssuerConfiguration;
 import no.nav.security.oidc.configuration.OIDCResourceRetriever;
@@ -26,6 +27,9 @@ public class OidcTokenValidatorConfig {
 
     @Bean
     public MultiIssuerConfiguration MultiIssuerConfiguration(OIDCResourceRetriever resourceRetriever) {
+        if (TjenesteMockRessurs.isTillatMockRessurs())
+            return new MultiIssuerConfiguration(new HashMap<>(), resourceRetriever);
+
         String[] issuers = {"selvbetjening"};
         Arrays.stream(issuers)
                 .forEach(this::addIssuerToMap);
