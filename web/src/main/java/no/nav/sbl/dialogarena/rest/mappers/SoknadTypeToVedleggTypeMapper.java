@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest.ressurser;
+package no.nav.sbl.dialogarena.rest.mappers;
 
 import java.util.*;
 
@@ -79,6 +79,8 @@ public class SoknadTypeToVedleggTypeMapper {
             return new SoknadTypeAndPath("belop", "formue");
         } else if (tilleggsinfo.equals("annet") && type.equals("annet")){
             return new SoknadTypeAndPath("annen", "opplysningerUtgift");
+        } else if (tilleggsinfo.equals("annet") && type.equals("dokumentasjon")){
+            return new SoknadTypeAndPath("annen", "utbetaling");
         }
 
         throw new IllegalStateException("Vedleggstypen eksisterer ikke eller mangler mapping");

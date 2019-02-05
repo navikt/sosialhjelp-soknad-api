@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest.ressurser;
+package no.nav.sbl.dialogarena.rest.mappers;
 
 public class SoknadTypeAndPath {
     private String type;
