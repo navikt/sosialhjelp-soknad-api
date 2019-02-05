@@ -96,7 +96,7 @@ public class SivilstatusRessurs {
         faktaService.lagreBrukerFaktum(sivilstatus);
 
         final Faktum ektefelle = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.sivilstatus.gift.ektefelle");
-        sivilstatus.setType(Faktum.FaktumType.BRUKERREGISTRERT);
+        ektefelle.setType(Faktum.FaktumType.BRUKERREGISTRERT);
 
         final Map<String, String> ektefelleProperties = getFaktumProperties(ektefelle);
         EktefelleFrontend ektefelleFrontend = sivilstatusFrontend.ektefelle;

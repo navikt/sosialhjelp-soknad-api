@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -10,9 +12,6 @@ public final class NavnFrontend {
     public String etternavn;
     public String fulltNavn;
 
-    public NavnFrontend() {
-    }
-
     public NavnFrontend(String fornavn, String mellomnavn, String etternavn) {
         this.fornavn = fornavn;
         this.mellomnavn = mellomnavn;
@@ -21,10 +20,10 @@ public final class NavnFrontend {
     }
 
     private void updateFulltNavn(){
-        final String f = this.fornavn != null ? this.fornavn : "";
-        final String m = this.mellomnavn != null ? " " + this.mellomnavn : "";
-        final String e = this.etternavn != null ? " " + this.etternavn : "";
-        this.fulltNavn = f + m + e;
+        final String f = !StringUtils.isEmpty(this.fornavn) ? this.fornavn : "";
+        final String m = !StringUtils.isEmpty(this.mellomnavn) ? " " + this.mellomnavn : "";
+        final String e = !StringUtils.isEmpty(this.etternavn) ? " " + this.etternavn : "";
+        this.fulltNavn = (f + m + e).trim();
     }
 
 }
