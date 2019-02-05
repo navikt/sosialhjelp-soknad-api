@@ -44,7 +44,7 @@ public class OkonomiMapper {
                 .findFirst();
 
         if (eksisterendeInntekt.isPresent()) {
-            List<JsonOkonomioversiktInntekt> inntekter = jsonOkonomi.getOversikt().getInntekt().stream()
+            final List<JsonOkonomioversiktInntekt> inntekter = jsonOkonomi.getOversikt().getInntekt().stream()
                     .filter(inntekt -> !inntekt.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -59,7 +59,7 @@ public class OkonomiMapper {
                 .findFirst();
 
         if (eksisterendeFormue.isPresent()) {
-            List<JsonOkonomioversiktFormue> formuer = jsonOkonomi.getOversikt().getFormue().stream()
+            final List<JsonOkonomioversiktFormue> formuer = jsonOkonomi.getOversikt().getFormue().stream()
                     .filter(formue -> !formue.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -74,7 +74,7 @@ public class OkonomiMapper {
                 .findFirst();
 
         if (eksisterendeOversiktUtgift.isPresent()) {
-            List<JsonOkonomioversiktUtgift> utgifter = jsonOkonomi.getOversikt().getUtgift().stream()
+            final List<JsonOkonomioversiktUtgift> utgifter = jsonOkonomi.getOversikt().getUtgift().stream()
                     .filter(utgift -> !utgift.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -97,7 +97,7 @@ public class OkonomiMapper {
 
         // Dersom det ikke er en eksisterende utgift er det ikke mulig for bruker å fylle ut informasjon på vedlegget.
         if (eksisterendeOpplysningUtgift.isPresent()) {
-            List<JsonOkonomiOpplysningUtgift> utgifter = jsonOkonomi.getOpplysninger().getUtgift().stream()
+            final List<JsonOkonomiOpplysningUtgift> utgifter = jsonOkonomi.getOpplysninger().getUtgift().stream()
                     .filter(utgift -> !utgift.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -113,7 +113,7 @@ public class OkonomiMapper {
                 .findFirst();
 
         if (eksisterendeUtbetaling.isPresent()) {
-            List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
+            final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
                     .filter(utbetaling -> !utbetaling.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -128,9 +128,9 @@ public class OkonomiMapper {
                 .findFirst();
 
         if (eksisterendeRenter.isPresent()) {
-            utgifter = utgifter.stream()
-                    .filter(utgift -> !utgift.getType().equals("boliglanRenter"))
-                    .collect(Collectors.toList());
+            utgifter.removeAll(utgifter.stream()
+                    .filter(utgift -> utgift.getType().equals("boliglanRenter"))
+                    .collect(Collectors.toList()));
 
             utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, eksisterendeRenter.get()));
         }
@@ -318,7 +318,9 @@ public class OkonomiMapper {
     private List<VedleggRadFrontend> getRadListFromFormue(JsonOkonomi jsonOkonomi, String jsonType) {
         return jsonOkonomi.getOversikt().getFormue().stream()
                 .filter(utgift -> utgift.getType().equals(jsonType))
-                .map(formue -> getRadFromFormue(formue, jsonType)).collect(Collectors.toList());
+                .map(formue -> new VedleggRadFrontend()
+                        .withBelop(formue.getBelop()))
+                .collect(Collectors.toList());
     }
 
     private VedleggRadFrontend getRadFromUtbetaling(JsonOkonomiOpplysningUtbetaling utbetaling) {
@@ -361,10 +363,6 @@ public class OkonomiMapper {
             return new VedleggRadFrontend().withRenter(utgift.getBelop());
         }
         return new VedleggRadFrontend().withBelop(utgift.getBelop());
-    }
-
-    private VedleggRadFrontend getRadFromFormue(JsonOkonomioversiktFormue formue, String jsonType) {
-        return new VedleggRadFrontend().withBelop(formue.getBelop());
     }
 
     private String getGruppe(String type, String tilleggsinfo) {
