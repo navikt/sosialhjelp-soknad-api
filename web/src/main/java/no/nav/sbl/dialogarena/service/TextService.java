@@ -1,17 +1,13 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.Locale;
 import java.util.Properties;
 
-@Component
 public class TextService {
 
-    @Inject
-    private NavMessageSource navMessageSource;
+    private NavMessageSource navMessageSource = new NavMessageSource();
 
     public String getJsonOkonomiTittel(String key) {
         Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));

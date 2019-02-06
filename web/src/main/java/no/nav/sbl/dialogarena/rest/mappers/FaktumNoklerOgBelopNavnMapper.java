@@ -1,11 +1,8 @@
 package no.nav.sbl.dialogarena.rest.mappers;
 
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class FaktumNoklerOgBelopNavnMapper {
     public static final Map<String, String> jsonTypeToFaktumKey = new HashMap<>();
     public static final Map<String, String> jsonTypeToBelopNavn = new HashMap<>();

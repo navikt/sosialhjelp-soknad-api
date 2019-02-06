@@ -5,12 +5,11 @@ import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.service.TextService;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -21,10 +20,13 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Properties;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.rest.mappers.BekreftelseMapper.setBekreftelse;
 
 @Controller
 @Path("/soknader/{behandlingsId}/inntekt/bostotte")
@@ -42,7 +44,7 @@ public class BostotteRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private TextService textService;
+    private NavMessageSource navMessageSource;
 
     @Inject
     private SoknadService soknadService;
@@ -54,14 +56,16 @@ public class BostotteRessurs {
     public BostotteFrontend hentBostotteBekreftelse(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final Optional<JsonOkonomibekreftelse> bostotteBekreftelse = soknad.getSoknad()
-                .getData().getOkonomi().getOpplysninger().getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("bostotte")).findFirst();
-        if (bostotteBekreftelse.isPresent()){
-            return new BostotteFrontend().withBostotteBekreftelse(bostotteBekreftelse.get().getVerdi());
+        final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
+        final BostotteFrontend bostotteFrontend = new BostotteFrontend();
+
+        if (opplysninger.getBekreftelse() == null){
+            return bostotteFrontend;
         }
 
-        return new BostotteFrontend();
+        setBekreftelseOnBostotteFrontend(opplysninger, bostotteFrontend);
+
+        return bostotteFrontend;
     }
 
     @PUT
@@ -75,18 +79,13 @@ public class BostotteRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
-        final Optional<JsonOkonomibekreftelse> bostotteBekreftelse = opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("bostotte")).findFirst();
-        if (bostotteBekreftelse.isPresent()){
-            bostotteBekreftelse.get().withKilde(JsonKilde.BRUKER).withVerdi(bostotteFrontend.bostotteBekreftelse);
-        } else {
-            List<JsonOkonomibekreftelse> bekreftelser = opplysninger.getBekreftelse();
-            bekreftelser.add(new JsonOkonomibekreftelse()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType("bostotte")
-                    .withTittel(textService.getJsonOkonomiTittel("inntekt.bostotte"))
-                    .withVerdi(bostotteFrontend.bostotteBekreftelse));
+
+        if (opplysninger.getBekreftelse() == null){
+            opplysninger.setBekreftelse(new ArrayList<>());
         }
+
+        setBekreftelse(opplysninger, "bostotte", bostotteFrontend.bekreftelse, getJsonOkonomiTittel("inntekt.bostotte"));
+
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
@@ -94,16 +93,30 @@ public class BostotteRessurs {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
         final Faktum bostotte = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bostotte");
-        bostotte.setValue(bostotteFrontend.bostotteBekreftelse.toString());
+        bostotte.setValue(bostotteFrontend.bekreftelse.toString());
         faktaService.lagreBrukerFaktum(bostotte);
+    }
+
+    private void setBekreftelseOnBostotteFrontend(JsonOkonomiopplysninger opplysninger, BostotteFrontend bostotteFrontend) {
+        final Optional<JsonOkonomibekreftelse> bostotteBekreftelse = opplysninger.getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals("bostotte")).findFirst();
+        if (bostotteBekreftelse.isPresent()){
+            bostotteFrontend.withBekreftelse(bostotteBekreftelse.get().getVerdi());
+        }
+    }
+
+    private String getJsonOkonomiTittel(String key) {
+        Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
+
+        return properties.getProperty("json.okonomi." + key);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BostotteFrontend {
-        public Boolean bostotteBekreftelse;
+        public Boolean bekreftelse;
 
-        public BostotteFrontend withBostotteBekreftelse(Boolean bostotteBekreftelse) {
-            this.bostotteBekreftelse = bostotteBekreftelse;
+        public BostotteFrontend withBekreftelse(Boolean bekreftelse) {
+            this.bekreftelse = bekreftelse;
             return this;
         }
     }
