@@ -74,7 +74,6 @@ public class KommuneTilNavEnhetMapper {
             .put("1401", "974551918")    // Flora
             .put("1238", "944233199")    // Kvam
             .put("1933", "921858361")    // Balsfjord & Storfjord
-            .put("1824", "991379657")    // Vefsn
 
             .build();
 
@@ -286,7 +285,6 @@ public class KommuneTilNavEnhetMapper {
                     "1238",
                     "1933",
                     "1939",
-                    "1824",
                     "5030"
             ));
 
