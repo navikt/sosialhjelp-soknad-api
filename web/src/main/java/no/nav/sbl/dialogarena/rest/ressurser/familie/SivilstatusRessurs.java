@@ -91,7 +91,7 @@ public class SivilstatusRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    private void legacyUpdate(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) {
+    private void legacyUpdate(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
         final Faktum sivilstatus = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.sivilstatus");
@@ -108,10 +108,9 @@ public class SivilstatusRessurs {
             ektefelleProperties.put("fornavn", ektefelleFrontend.navn.fornavn);
             ektefelleProperties.put("mellomnavn", ektefelleFrontend.navn.mellomnavn);
             ektefelleProperties.put("etternavn", ektefelleFrontend.navn.etternavn);
+            ektefelleProperties.put("fnr", format_ddmmyyyy(ektefelleFrontend.fodselsdato));
             ektefelleProperties.put("fodselsdato", ektefelleFrontend.fodselsdato);
-            if (ektefelleFrontend.fodselsdato != null && ektefelleFrontend.personIdentifikator != null){
-                ektefelleProperties.put("fnr", ektefelleFrontend.fodselsdato + ektefelleFrontend.personIdentifikator);
-            }
+            ektefelleProperties.put("pnr", ektefelleFrontend.personIdentifikator);
         }
         ektefelleProperties.put("borsammen", sivilstatusFrontend.borSammenMed != null ? sivilstatusFrontend.borSammenMed.toString() : null);
         if (!ektefelleProperties.isEmpty()){
@@ -142,6 +141,16 @@ public class SivilstatusRessurs {
         return new JsonEktefelle().withNavn(mapToJsonNavn(ektefelle.navn))
                 .withFodselsdato(ektefelle.fodselsdato)
                 .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personIdentifikator));
+    }
+
+    private String format_ddmmyyyy(String fodselsdato) throws ParseException {
+        if (fodselsdato == null){
+            return null;
+        }
+        final DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+        final DateFormat targetFormat = new SimpleDateFormat("ddMMyyyy");
+        final Date date = originalFormat.parse(fodselsdato);
+        return targetFormat.format(date);
     }
 
     private String getFnr(String fodselsdato, String personIdentifikator) throws ParseException {
