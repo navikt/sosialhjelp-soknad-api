@@ -23,6 +23,10 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,13 +67,13 @@ public class SivilstatusRessurs {
     }
 
     @PUT
-    public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) {
+    public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, sivilstatusFrontend);
         legacyUpdate(behandlingsId, sivilstatusFrontend);
     }
 
-    private void update(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) {
+    private void update(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();
@@ -105,7 +109,9 @@ public class SivilstatusRessurs {
             ektefelleProperties.put("mellomnavn", ektefelleFrontend.navn.mellomnavn);
             ektefelleProperties.put("etternavn", ektefelleFrontend.navn.etternavn);
             ektefelleProperties.put("fodselsdato", ektefelleFrontend.fodselsdato);
-            ektefelleProperties.put("fnr", ektefelleFrontend.personIdentifikator);
+            if (ektefelleFrontend.fodselsdato != null && ektefelleFrontend.personIdentifikator != null){
+                ektefelleProperties.put("fnr", ektefelleFrontend.fodselsdato + ektefelleFrontend.personIdentifikator);
+            }
         }
         ektefelleProperties.put("borsammen", sivilstatusFrontend.borSammenMed != null ? sivilstatusFrontend.borSammenMed.toString() : null);
         if (!ektefelleProperties.isEmpty()){
@@ -126,16 +132,26 @@ public class SivilstatusRessurs {
         return new EktefelleFrontend()
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withFodselsdato(jsonEktefelle.getFodselsdato())
-                .withPersonIdentifikator(jsonEktefelle.getPersonIdentifikator());
+                .withPersonIdentifikator(jsonEktefelle.getPersonIdentifikator().substring(6));
     }
 
-    private JsonEktefelle mapToJsonEktefelle(EktefelleFrontend ektefelle) {
+    private JsonEktefelle mapToJsonEktefelle(EktefelleFrontend ektefelle) throws ParseException {
         if(ektefelle == null){
             return null;
         }
         return new JsonEktefelle().withNavn(mapToJsonNavn(ektefelle.navn))
                 .withFodselsdato(ektefelle.fodselsdato)
-                .withPersonIdentifikator(ektefelle.personIdentifikator);
+                .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personIdentifikator));
+    }
+
+    private String getFnr(String fodselsdato, String personIdentifikator) throws ParseException {
+        if (fodselsdato == null || personIdentifikator == null){
+            return null;
+        }
+        final DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+        final DateFormat targetFormat = new SimpleDateFormat("ddMMyy");
+        final Date date = originalFormat.parse(fodselsdato);
+        return targetFormat.format(date) + personIdentifikator;
     }
 
     private SivilstatusFrontend mapToSivilstatusFrontend(JsonSivilstatus jsonSivilstatus) {

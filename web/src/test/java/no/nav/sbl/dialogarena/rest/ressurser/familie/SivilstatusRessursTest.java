@@ -28,6 +28,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.text.ParseException;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -51,7 +52,7 @@ public class SivilstatusRessursTest {
     private static final EktefelleFrontend EKTEFELLE_FRONTEND = new EktefelleFrontend()
             .withNavn(new NavnFrontend("Alfred", "Thaddeus Crane", "Pennyworth"))
             .withFodselsdato("1940-01-01")
-            .withPersonIdentifikator("***REMOVED***");
+            .withPersonIdentifikator("12345");
 
     @Mock
     private LegacyHelper legacyHelper;
@@ -151,7 +152,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus(){
+    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() throws ParseException {
         ignoreTilgangskontrollAndLegacyUpdate();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithSivilstatus(null, null, null,
@@ -166,7 +167,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void putSivilstatusSkalSetteStatusGiftOgEktefelle(){
+    public void putSivilstatusSkalSetteStatusGiftOgEktefelle() throws ParseException {
         ignoreTilgangskontrollAndLegacyUpdate();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithSivilstatus(null, null, null,
@@ -187,13 +188,13 @@ public class SivilstatusRessursTest {
 
     private void assertThatEktefelleIsCorrectlyConverted(EktefelleFrontend ektefelle, JsonEktefelle jsonEktefelle) {
         assertThat("fodselsdato", ektefelle.fodselsdato, is(jsonEktefelle.getFodselsdato()));
-        assertThat("personIdentifikator", ektefelle.personIdentifikator, is(jsonEktefelle.getPersonIdentifikator()));
+        assertThat("personIdentifikator", ektefelle.personIdentifikator, is(jsonEktefelle.getPersonIdentifikator().substring(6)));
         assertThat("fornavn", ektefelle.navn.fornavn, is(jsonEktefelle.getNavn().getFornavn()));
         assertThat("mellomnavn", ektefelle.navn.mellomnavn, is(jsonEktefelle.getNavn().getMellomnavn()));
         assertThat("etternavn", ektefelle.navn.etternavn, is(jsonEktefelle.getNavn().getEtternavn()));
     }
 
-    private void assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status status) {
+    private void assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status status) throws ParseException {
         final SivilstatusFrontend sivilstatusFrontend = new SivilstatusFrontend()
                 .withKildeErSystem(false).withSivilstatus(status);
 
