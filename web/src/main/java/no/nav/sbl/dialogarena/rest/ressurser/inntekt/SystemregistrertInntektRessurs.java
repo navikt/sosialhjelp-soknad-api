@@ -30,7 +30,7 @@ public class SystemregistrertInntektRessurs {
     private LegacyHelper legacyHelper;
 
     @GET
-    public SysteminntektFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
+    public SysteminntektFrontends hentSystemregistrertInntekt(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
