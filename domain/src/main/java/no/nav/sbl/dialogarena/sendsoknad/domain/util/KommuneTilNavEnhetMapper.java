@@ -74,6 +74,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1401", "974551918")    // Flora
             .put("1238", "944233199")    // Kvam
             .put("1933", "921858361")    // Balsfjord & Storfjord
+            .put("0516", "974543303")    // Nord-Fron Sor-Fron Ringebu
 
             .build();
 
@@ -103,6 +104,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1162", "910229567")   // Hundvåg og Storhaug, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
             .put("1165", "910229567")   // Madla, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0403", "910229567")   // Hamar - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0516", "974543303")   // Nord-Fron Sor-Fron Ringebu
 
             .build();
 
@@ -252,7 +254,10 @@ public class KommuneTilNavEnhetMapper {
                     "0219",
                     "5001",
                     "1103",
-                    "0403"
+                    "0403",
+                    "0516",
+                    "0519",
+                    "0520"
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
@@ -285,7 +290,10 @@ public class KommuneTilNavEnhetMapper {
                     "1238",
                     "1933",
                     "1939",
-                    "5030"
+                    "5030",
+                    "0516",
+                    "0519",
+                    "0520"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
