@@ -11,12 +11,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalF
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -75,10 +73,6 @@ public class BoutgiftRessurs {
         setBekreftelseOnBoutgifterFrontend(okonomi.getOpplysninger(), boutgifterFrontend);
         setUtgiftstyperOnBoutgifterFrontend(okonomi, boutgifterFrontend);
 
-        if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null){
-            boutgifterFrontend.setBeskrivelseAvAnnet(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling());
-        }
-
         return boutgifterFrontend;
     }
 
@@ -100,7 +94,6 @@ public class BoutgiftRessurs {
 
         setBekreftelse(okonomi.getOpplysninger(), "boutgifter", boutgifterFrontend.bekreftelse, getJsonOkonomiTittel("utgifter.boutgift"));
         setBoutgifter(okonomi, boutgifterFrontend);
-        setBeskrivelseAvAnnet(okonomi.getOpplysninger(), boutgifterFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
@@ -135,10 +128,6 @@ public class BoutgiftRessurs {
         final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.andreutgifter");
         annet.setValue(String.valueOf(boutgifterFrontend.annet));
         faktaService.lagreBrukerFaktum(annet);
-
-        final Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.andreutgifter.true.beskrivelse");
-        beskrivelse.setValue(boutgifterFrontend.beskrivelseAvAnnet != null ? boutgifterFrontend.beskrivelseAvAnnet : "");
-        faktaService.lagreBrukerFaktum(beskrivelse);
     }
 
     private void setBoutgifter(JsonOkonomi okonomi, BoutgifterFrontend boutgifterFrontend) {
@@ -178,19 +167,6 @@ public class BoutgiftRessurs {
             final String tittel = getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
-    }
-
-    private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, BoutgifterFrontend boutgifterFrontend) {
-        if (opplysninger.getBeskrivelseAvAnnet() == null){
-            opplysninger.withBeskrivelseAvAnnet(new JsonOkonomibeskrivelserAvAnnet()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi("")
-                    .withSparing("")
-                    .withUtbetaling("")
-                    .withBoutgifter("")
-                    .withBarneutgifter(""));
-        }
-        opplysninger.getBeskrivelseAvAnnet().setUtbetaling(boutgifterFrontend.beskrivelseAvAnnet != null ? boutgifterFrontend.beskrivelseAvAnnet : "");
     }
 
     private void setBekreftelseOnBoutgifterFrontend(JsonOkonomiopplysninger opplysninger, BoutgifterFrontend boutgifterFrontend) {
@@ -246,7 +222,6 @@ public class BoutgiftRessurs {
         public boolean oppvarming;
         public boolean boliglan;
         public boolean annet;
-        public String beskrivelseAvAnnet;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
@@ -274,10 +249,6 @@ public class BoutgiftRessurs {
 
         public void setAnnet(boolean annet) {
             this.annet = annet;
-        }
-
-        public void setBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
-            this.beskrivelseAvAnnet = beskrivelseAvAnnet;
         }
     }
 }
