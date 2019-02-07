@@ -31,7 +31,7 @@ import static no.nav.sbl.dialogarena.rest.mappers.BekreftelseMapper.setBekreftel
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
 
 @Controller
-@Path("/soknader/{behandlingsId}/inntekt/utbetalt")
+@Path("/soknader/{behandlingsId}/inntekt/utbetalinger")
 @Timed
 @Produces(APPLICATION_JSON)
 public class UtbetalingerRessurs {
@@ -101,9 +101,9 @@ public class UtbetalingerRessurs {
     private void legacyUpdate(String behandlingsId, UtbetalingerFrontend utbetalingerFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum utbetalt = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter");
-        utbetalt.setValue(utbetalingerFrontend.bekreftelse.toString());
-        faktaService.lagreBrukerFaktum(utbetalt);
+        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter");
+        bekreftelse.setValue(utbetalingerFrontend.bekreftelse.toString());
+        faktaService.lagreBrukerFaktum(bekreftelse);
 
         final Faktum utbytte = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.utbytte");
         utbytte.setValue(String.valueOf(utbetalingerFrontend.utbytte));
@@ -118,7 +118,7 @@ public class UtbetalingerRessurs {
         faktaService.lagreBrukerFaktum(forsikringsutbetalinger);
 
         final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet");
-        annet.setValue(String.valueOf(utbetalingerFrontend.annen));
+        annet.setValue(String.valueOf(utbetalingerFrontend.annet));
         faktaService.lagreBrukerFaktum(annet);
 
         final Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet.true.beskrivelse");
@@ -134,17 +134,17 @@ public class UtbetalingerRessurs {
             final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(opplysninger, utbetalinger, type, tittel);
         }
-        if(utbetalingerFrontend.utbytte){
-            final String type = "utbytte";
+        if(utbetalingerFrontend.salg){
+            final String type = "salg";
             final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(opplysninger, utbetalinger, type, tittel);
         }
-        if(utbetalingerFrontend.utbytte){
-            final String type = "utbytte";
+        if(utbetalingerFrontend.forsikring){
+            final String type = "forsikring";
             final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(opplysninger, utbetalinger, type, tittel);
         }
-        if(utbetalingerFrontend.annen){
+        if(utbetalingerFrontend.annet){
             final String type = "annen";
             final String tittel = getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
             addUtbetalingIfNotPresentInOpplysninger(opplysninger, utbetalinger, type, tittel);
@@ -198,7 +198,7 @@ public class UtbetalingerRessurs {
                             utbetalingerFrontend.withForsikring(true);
                             break;
                         case "annen":
-                            utbetalingerFrontend.withAnnen(true);
+                            utbetalingerFrontend.withAnnet(true);
                             break;
                     }
                 });
@@ -216,7 +216,7 @@ public class UtbetalingerRessurs {
         public boolean utbytte;
         public boolean salg;
         public boolean forsikring;
-        public boolean annen;
+        public boolean annet;
         public String beskrivelseAvAnnet;
 
         public UtbetalingerFrontend withBekreftelse(Boolean bekreftelse) {
@@ -239,8 +239,8 @@ public class UtbetalingerRessurs {
             return this;
         }
 
-        public UtbetalingerFrontend withAnnen(boolean annen) {
-            this.annen = annen;
+        public UtbetalingerFrontend withAnnet(boolean annet) {
+            this.annet = annet;
             return this;
         }
 
