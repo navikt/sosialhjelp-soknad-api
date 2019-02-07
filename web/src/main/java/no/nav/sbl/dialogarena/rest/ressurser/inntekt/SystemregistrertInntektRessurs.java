@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +29,13 @@ public class SystemregistrertInntektRessurs {
     @Inject
     private LegacyHelper legacyHelper;
 
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
     @GET
     public SysteminntektFrontends hentSystemregistrertInntekt(@PathParam("behandlingsId") String behandlingsId){
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
+
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();

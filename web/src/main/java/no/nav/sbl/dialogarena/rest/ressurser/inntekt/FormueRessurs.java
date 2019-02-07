@@ -3,14 +3,16 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
+import no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -28,9 +30,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.addFormueIfNotPresentInOversikt;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
 
 @Controller
 @Path("/soknader/{behandlingsId}/inntekt/formue")
@@ -56,8 +58,19 @@ public class FormueRessurs {
     @Inject
     private FaktaService faktaService;
 
+    @Inject
+    private SynligeFaktaService synligeFaktaService;
+
+    @Inject
+    private SoknadRessurs vedleggService;
+
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
     @GET
     public FormueFrontend hentFormue(@PathParam("behandlingsId") String behandlingsId){
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
+
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
@@ -68,7 +81,6 @@ public class FormueRessurs {
             return formueFrontend;
         }
 
-        setBekreftelseOnFormueFrontend(opplysninger, formueFrontend);
         setFormuetyperOnFormueFrontend(oversikt, formueFrontend);
 
         if (opplysninger.getBeskrivelseAvAnnet() != null){
@@ -95,7 +107,13 @@ public class FormueRessurs {
             opplysninger.setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(opplysninger, "sparing", formueFrontend.bekreftelse, getJsonOkonomiTittel("inntekt.bankinnskudd"));
+        boolean hasAnyFormueType = false;
+        if (formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
+                formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet){
+            hasAnyFormueType = true;
+        }
+
+        setBekreftelse(opplysninger, "sparing", hasAnyFormueType, getJsonOkonomiTittel("inntekt.bankinnskudd"));
         setFormue(oversikt, formueFrontend);
         setBeskrivelseAvAnnet(opplysninger, formueFrontend);
 
@@ -105,9 +123,12 @@ public class FormueRessurs {
     private void legacyUpdate(String behandlingsId, FormueFrontend formueFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd");
-        bekreftelse.setValue(formueFrontend.bekreftelse.toString());
-        faktaService.lagreBrukerFaktum(bekreftelse);
+        if (formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
+                formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet){
+            final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd");
+            bekreftelse.setValue(String.valueOf(true));
+            faktaService.lagreBrukerFaktum(bekreftelse);
+        }
 
         final Faktum brukskonto = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.brukskonto");
         brukskonto.setValue(String.valueOf(formueFrontend.brukskonto));
@@ -124,6 +145,10 @@ public class FormueRessurs {
         final Faktum livsforsikring = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.livsforsikring");
         livsforsikring.setValue(String.valueOf(formueFrontend.livsforsikring));
         faktaService.lagreBrukerFaktum(livsforsikring);
+
+        final Faktum aksjer = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.aksjer");
+        aksjer.setValue(String.valueOf(formueFrontend.verdipapirer));
+        faktaService.lagreBrukerFaktum(aksjer);
 
         final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.annet");
         annet.setValue(String.valueOf(formueFrontend.annet));
@@ -148,7 +173,7 @@ public class FormueRessurs {
             addFormueIfNotPresentInOversikt(formue, type, tittel);
         }
         if(formueFrontend.livsforsikring){
-            final String type = "livsforsikring";
+            final String type = "livsforsikringssparedel";
             final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(formue, type, tittel);
         }
@@ -182,14 +207,6 @@ public class FormueRessurs {
         opplysninger.getBeskrivelseAvAnnet().setSparing(formueFrontend.beskrivelseAvAnnet != null ? formueFrontend.beskrivelseAvAnnet : "");
     }
 
-    private void setBekreftelseOnFormueFrontend(JsonOkonomiopplysninger opplysninger, FormueFrontend formueFrontend) {
-        final Optional<JsonOkonomibekreftelse> formueBekreftelse = opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("sparing")).findFirst();
-        if (formueBekreftelse.isPresent()){
-            formueFrontend.withBekreftelse(formueBekreftelse.get().getVerdi());
-        }
-    }
-
     private void setFormuetyperOnFormueFrontend(JsonOkonomioversikt oversikt, FormueFrontend formueFrontend) {
         oversikt.getFormue().forEach(
                 formue -> {
@@ -203,7 +220,7 @@ public class FormueRessurs {
                         case "sparekonto":
                             formueFrontend.withSparekonto(true);
                             break;
-                        case "livsforsikring":
+                        case "livsforsikringssparedel":
                             formueFrontend.withLivsforsikring(true);
                             break;
                         case "verdipapirer":
@@ -224,7 +241,6 @@ public class FormueRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class FormueFrontend {
-        public Boolean bekreftelse;
         public boolean brukskonto;
         public boolean sparekonto;
         public boolean bsu;
@@ -232,11 +248,6 @@ public class FormueRessurs {
         public boolean verdipapirer;
         public boolean annet;
         public String beskrivelseAvAnnet;
-
-        public FormueFrontend withBekreftelse(Boolean bekreftelse) {
-            this.bekreftelse = bekreftelse;
-            return this;
-        }
 
         public FormueFrontend withBrukskonto(boolean brukskonto) {
             this.brukskonto = brukskonto;
