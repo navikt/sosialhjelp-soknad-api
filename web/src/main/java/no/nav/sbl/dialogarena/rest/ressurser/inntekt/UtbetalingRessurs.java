@@ -75,7 +75,7 @@ public class UtbetalingRessurs {
         setUtbetalingstyperOnUtbetalingerFrontend(opplysninger, utbetalingerFrontend);
 
         if (opplysninger.getBeskrivelseAvAnnet() != null){
-            utbetalingerFrontend.withBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getUtbetaling());
+            utbetalingerFrontend.setBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getUtbetaling());
         }
 
         return utbetalingerFrontend;
@@ -174,7 +174,7 @@ public class UtbetalingRessurs {
         final Optional<JsonOkonomibekreftelse> utbetalingBekreftelse = opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals("utbetaling")).findFirst();
         if (utbetalingBekreftelse.isPresent()){
-            utbetalingerFrontend.withBekreftelse(utbetalingBekreftelse.get().getVerdi());
+            utbetalingerFrontend.setBekreftelse(utbetalingBekreftelse.get().getVerdi());
         }
     }
 
@@ -183,16 +183,16 @@ public class UtbetalingRessurs {
                 utbetaling -> {
                     switch(utbetaling.getType()){
                         case "utbytte":
-                            utbetalingerFrontend.withUtbytte(true);
+                            utbetalingerFrontend.setUtbytte(true);
                             break;
                         case "salg":
-                            utbetalingerFrontend.withSalg(true);
+                            utbetalingerFrontend.setSalg(true);
                             break;
                         case "forsikring":
-                            utbetalingerFrontend.withForsikring(true);
+                            utbetalingerFrontend.setForsikring(true);
                             break;
                         case "annen":
-                            utbetalingerFrontend.withAnnet(true);
+                            utbetalingerFrontend.setAnnet(true);
                             break;
                     }
                 });
@@ -213,34 +213,28 @@ public class UtbetalingRessurs {
         public boolean annet;
         public String beskrivelseAvAnnet;
 
-        public UtbetalingerFrontend withBekreftelse(Boolean bekreftelse) {
+        public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
-            return this;
         }
 
-        public UtbetalingerFrontend withUtbytte(boolean utbytte) {
+        public void setUtbytte(boolean utbytte) {
             this.utbytte = utbytte;
-            return this;
         }
 
-        public UtbetalingerFrontend withSalg(boolean salg) {
+        public void setSalg(boolean salg) {
             this.salg = salg;
-            return this;
         }
 
-        public UtbetalingerFrontend withForsikring(boolean forsikring) {
+        public void setForsikring(boolean forsikring) {
             this.forsikring = forsikring;
-            return this;
         }
 
-        public UtbetalingerFrontend withAnnet(boolean annet) {
+        public void setAnnet(boolean annet) {
             this.annet = annet;
-            return this;
         }
 
-        public UtbetalingerFrontend withBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
+        public void setBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
             this.beskrivelseAvAnnet = beskrivelseAvAnnet;
-            return this;
         }
     }
 }

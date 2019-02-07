@@ -77,7 +77,7 @@ public class VerdiRessurs {
         setVerdityperOnVerdierFrontend(oversikt, verdierFrontend);
 
         if (opplysninger.getBeskrivelseAvAnnet() != null){
-            verdierFrontend.withBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getVerdi());
+            verdierFrontend.setBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getVerdi());
         }
 
         return verdierFrontend;
@@ -186,7 +186,7 @@ public class VerdiRessurs {
         final Optional<JsonOkonomibekreftelse> verdiBekreftelse = opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals("verdi")).findFirst();
         if (verdiBekreftelse.isPresent()){
-            verdierFrontend.withBekreftelse(verdiBekreftelse.get().getVerdi());
+            verdierFrontend.setBekreftelse(verdiBekreftelse.get().getVerdi());
         }
     }
 
@@ -195,19 +195,19 @@ public class VerdiRessurs {
                 formue -> {
                     switch(formue.getType()){
                         case "bolig":
-                            verdierFrontend.withBolig(true);
+                            verdierFrontend.setBolig(true);
                             break;
                         case "campingvogn":
-                            verdierFrontend.withCampingvogn(true);
+                            verdierFrontend.setCampingvogn(true);
                             break;
                         case "kjoretoy":
-                            verdierFrontend.withKjoretoy(true);
+                            verdierFrontend.setKjoretoy(true);
                             break;
                         case "fritidseiendom":
-                            verdierFrontend.withFritidseiendom(true);
+                            verdierFrontend.setFritidseiendom(true);
                             break;
                         case "annet":
-                            verdierFrontend.withAnnet(true);
+                            verdierFrontend.setAnnet(true);
                             break;
                     }
                 });
@@ -229,39 +229,32 @@ public class VerdiRessurs {
         public boolean annet;
         public String beskrivelseAvAnnet;
 
-        public VerdierFrontend withBekreftelse(Boolean bekreftelse) {
+        public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
-            return this;
         }
 
-        public VerdierFrontend withBolig(boolean bolig) {
+        public void setBolig(boolean bolig) {
             this.bolig = bolig;
-            return this;
         }
 
-        public VerdierFrontend withCampingvogn(boolean campingvogn) {
+        public void setCampingvogn(boolean campingvogn) {
             this.campingvogn = campingvogn;
-            return this;
         }
 
-        public VerdierFrontend withKjoretoy(boolean kjoretoy) {
+        public void setKjoretoy(boolean kjoretoy) {
             this.kjoretoy = kjoretoy;
-            return this;
         }
 
-        public VerdierFrontend withFritidseiendom(boolean fritidseiendom) {
+        public void setFritidseiendom(boolean fritidseiendom) {
             this.fritidseiendom = fritidseiendom;
-            return this;
         }
 
-        public VerdierFrontend withAnnet(boolean annet) {
+        public void setAnnet(boolean annet) {
             this.annet = annet;
-            return this;
         }
 
-        public VerdierFrontend withBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
+        public void setBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
             this.beskrivelseAvAnnet = beskrivelseAvAnnet;
-            return this;
         }
     }
 }

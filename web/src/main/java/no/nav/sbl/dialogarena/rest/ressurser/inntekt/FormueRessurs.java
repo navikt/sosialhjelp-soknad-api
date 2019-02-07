@@ -84,7 +84,7 @@ public class FormueRessurs {
         setFormuetyperOnFormueFrontend(oversikt, formueFrontend);
 
         if (opplysninger.getBeskrivelseAvAnnet() != null){
-            formueFrontend.withBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getSparing());
+            formueFrontend.setBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getSparing());
         }
 
         return formueFrontend;
@@ -212,22 +212,22 @@ public class FormueRessurs {
                 formue -> {
                     switch(formue.getType()){
                         case "brukskonto":
-                            formueFrontend.withBrukskonto(true);
+                            formueFrontend.setBrukskonto(true);
                             break;
                         case "bsu":
-                            formueFrontend.withBsu(true);
+                            formueFrontend.setBsu(true);
                             break;
                         case "sparekonto":
-                            formueFrontend.withSparekonto(true);
+                            formueFrontend.setSparekonto(true);
                             break;
                         case "livsforsikringssparedel":
-                            formueFrontend.withLivsforsikring(true);
+                            formueFrontend.setLivsforsikring(true);
                             break;
                         case "verdipapirer":
-                            formueFrontend.withVerdipapirer(true);
+                            formueFrontend.setVerdipapirer(true);
                             break;
                         case "belop":
-                            formueFrontend.withAnnet(true);
+                            formueFrontend.setAnnet(true);
                             break;
                     }
                 });
@@ -249,41 +249,32 @@ public class FormueRessurs {
         public boolean annet;
         public String beskrivelseAvAnnet;
 
-        public FormueFrontend withBrukskonto(boolean brukskonto) {
+        public void setBrukskonto(boolean brukskonto) {
             this.brukskonto = brukskonto;
-            return this;
         }
 
-        public FormueFrontend withSparekonto(boolean sparekonto) {
+        public void setSparekonto(boolean sparekonto) {
             this.sparekonto = sparekonto;
-            return this;
         }
 
-        public FormueFrontend withBsu(boolean bsu) {
+        public void setBsu(boolean bsu) {
             this.bsu = bsu;
-            return this;
         }
 
-        public FormueFrontend withLivsforsikring(boolean livsforsikring) {
+        public void setLivsforsikring(boolean livsforsikring) {
             this.livsforsikring = livsforsikring;
-            return this;
         }
 
-        public FormueFrontend withVerdipapirer(boolean verdipapirer) {
+        public void setVerdipapirer(boolean verdipapirer) {
             this.verdipapirer = verdipapirer;
-            return this;
         }
 
-        public FormueFrontend withAnnet(boolean annet) {
+        public void setAnnet(boolean annet) {
             this.annet = annet;
-            return this;
         }
 
-
-
-        public FormueFrontend withBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
+        public void setBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
             this.beskrivelseAvAnnet = beskrivelseAvAnnet;
-            return this;
         }
     }
 }

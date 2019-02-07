@@ -101,7 +101,7 @@ public class BostotteRessurs {
         final Optional<JsonOkonomibekreftelse> bostotteBekreftelse = opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals("bostotte")).findFirst();
         if (bostotteBekreftelse.isPresent()){
-            bostotteFrontend.withBekreftelse(bostotteBekreftelse.get().getVerdi());
+            bostotteFrontend.setBekreftelse(bostotteBekreftelse.get().getVerdi());
         }
     }
 
@@ -115,9 +115,8 @@ public class BostotteRessurs {
     public static final class BostotteFrontend {
         public Boolean bekreftelse;
 
-        public BostotteFrontend withBekreftelse(Boolean bekreftelse) {
+        public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
-            return this;
         }
     }
 }
