@@ -27,14 +27,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.BekreftelseMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
 
 @Controller
 @Path("/soknader/{behandlingsId}/inntekt/utbetalinger")
 @Timed
 @Produces(APPLICATION_JSON)
-public class UtbetalingerRessurs {
+public class UtbetalingRessurs {
 
     @Inject
     private LegacyHelper legacyHelper;
@@ -65,8 +66,8 @@ public class UtbetalingerRessurs {
             return utbetalingerFrontend;
         }
 
-        setBekreftelseOnUtbetaltFrontend(opplysninger, utbetalingerFrontend);
-        setUtbetalingstyperOnUtbetaltFrontend(opplysninger, utbetalingerFrontend);
+        setBekreftelseOnUtbetalingerFrontend(opplysninger, utbetalingerFrontend);
+        setUtbetalingstyperOnUtbetalingerFrontend(opplysninger, utbetalingerFrontend);
 
         if (opplysninger.getBeskrivelseAvAnnet() != null){
             utbetalingerFrontend.withBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getUtbetaling());
@@ -76,7 +77,7 @@ public class UtbetalingerRessurs {
     }
 
     @PUT
-    public void updateUtbetaltinger(@PathParam("behandlingsId") String behandlingsId, UtbetalingerFrontend utbetalingerFrontend){
+    public void updateUtbetalinger(@PathParam("behandlingsId") String behandlingsId, UtbetalingerFrontend utbetalingerFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, utbetalingerFrontend);
         legacyUpdate(behandlingsId, utbetalingerFrontend);
@@ -132,34 +133,22 @@ public class UtbetalingerRessurs {
         if(utbetalingerFrontend.utbytte){
             final String type = "utbytte";
             final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(opplysninger, utbetalinger, type, tittel);
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.salg){
             final String type = "salg";
             final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(opplysninger, utbetalinger, type, tittel);
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.forsikring){
             final String type = "forsikring";
             final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(opplysninger, utbetalinger, type, tittel);
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.annet){
             final String type = "annen";
             final String tittel = getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
-            addUtbetalingIfNotPresentInOpplysninger(opplysninger, utbetalinger, type, tittel);
-        }
-    }
-
-    private void addUtbetalingIfNotPresentInOpplysninger(JsonOkonomiopplysninger opplysninger, List<JsonOkonomiOpplysningUtbetaling> utbetalinger, String type, String tittel) {
-        Optional<JsonOkonomiOpplysningUtbetaling> jsonUtbetaling = opplysninger.getUtbetaling().stream()
-                .filter(utbetaling -> utbetaling.getType().equals(type)).findFirst();
-        if (!jsonUtbetaling.isPresent()){
-            utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType(type)
-                    .withTittel(tittel)
-                    .withOverstyrtAvBruker(false));
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
     }
 
@@ -176,15 +165,15 @@ public class UtbetalingerRessurs {
         opplysninger.getBeskrivelseAvAnnet().setUtbetaling(utbetalingerFrontend.beskrivelseAvAnnet != null ? utbetalingerFrontend.beskrivelseAvAnnet : "");
     }
 
-    private void setBekreftelseOnUtbetaltFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
-        final Optional<JsonOkonomibekreftelse> utbetaltBekreftelse = opplysninger.getBekreftelse().stream()
+    private void setBekreftelseOnUtbetalingerFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
+        final Optional<JsonOkonomibekreftelse> utbetalingBekreftelse = opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals("utbetaling")).findFirst();
-        if (utbetaltBekreftelse.isPresent()){
-            utbetalingerFrontend.withBekreftelse(utbetaltBekreftelse.get().getVerdi());
+        if (utbetalingBekreftelse.isPresent()){
+            utbetalingerFrontend.withBekreftelse(utbetalingBekreftelse.get().getVerdi());
         }
     }
 
-    private void setUtbetalingstyperOnUtbetaltFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
+    private void setUtbetalingstyperOnUtbetalingerFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
         opplysninger.getUtbetaling().forEach(
                 utbetaling -> {
                     switch(utbetaling.getType()){

@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.BekreftelseMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
 
 @Controller
 @Path("/soknader/{behandlingsId}/inntekt/bostotte")

@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper;
+import no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.mappers.SoknadTypeAndPath;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
@@ -54,7 +54,7 @@ public class OkonomiskeOpplysningerRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private OkonomiMapper mapper;
+    private OkonomiskeOpplysningerMapper mapper;
 
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
