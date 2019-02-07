@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
@@ -65,19 +66,18 @@ public class VerdiRessurs {
 
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
-        final JsonOkonomioversikt oversikt = soknad.getSoknad().getData().getOkonomi().getOversikt();
+        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final VerdierFrontend verdierFrontend = new VerdierFrontend();
 
-        if (opplysninger.getBekreftelse() == null){
+        if (okonomi.getOpplysninger().getBekreftelse() == null){
             return verdierFrontend;
         }
 
-        setBekreftelseOnVerdierFrontend(opplysninger, verdierFrontend);
-        setVerdityperOnVerdierFrontend(oversikt, verdierFrontend);
+        setBekreftelseOnVerdierFrontend(okonomi.getOpplysninger(), verdierFrontend);
+        setVerdityperOnVerdierFrontend(okonomi.getOversikt(), verdierFrontend);
 
-        if (opplysninger.getBeskrivelseAvAnnet() != null){
-            verdierFrontend.setBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getVerdi());
+        if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null){
+            verdierFrontend.setBeskrivelseAvAnnet(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getVerdi());
         }
 
         return verdierFrontend;
@@ -93,16 +93,15 @@ public class VerdiRessurs {
     private void update(String behandlingsId, VerdierFrontend verdierFrontend) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
-        final JsonOkonomioversikt oversikt = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt();
+        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
-        if (opplysninger.getBekreftelse() == null){
-            opplysninger.setBekreftelse(new ArrayList<>());
+        if (okonomi.getOpplysninger().getBekreftelse() == null){
+            okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(opplysninger, "verdi", verdierFrontend.bekreftelse, getJsonOkonomiTittel("inntekt.eierandeler"));
-        setVerdier(oversikt, verdierFrontend);
-        setBeskrivelseAvAnnet(opplysninger, verdierFrontend);
+        setBekreftelse(okonomi.getOpplysninger(), "verdi", verdierFrontend.bekreftelse, getJsonOkonomiTittel("inntekt.eierandeler"));
+        setVerdier(okonomi.getOversikt(), verdierFrontend);
+        setBeskrivelseAvAnnet(okonomi.getOpplysninger(), verdierFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }

@@ -3,20 +3,18 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -27,7 +25,10 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
@@ -59,12 +60,6 @@ public class FormueRessurs {
     private FaktaService faktaService;
 
     @Inject
-    private SynligeFaktaService synligeFaktaService;
-
-    @Inject
-    private SoknadRessurs vedleggService;
-
-    @Inject
     private VedleggOriginalFilerService vedleggOriginalFilerService;
 
     @GET
@@ -73,18 +68,17 @@ public class FormueRessurs {
 
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
-        final JsonOkonomioversikt oversikt = soknad.getSoknad().getData().getOkonomi().getOversikt();
+        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final FormueFrontend formueFrontend = new FormueFrontend();
 
-        if (opplysninger.getBekreftelse() == null){
+        if (okonomi.getOpplysninger().getBekreftelse() == null){
             return formueFrontend;
         }
 
-        setFormuetyperOnFormueFrontend(oversikt, formueFrontend);
+        setFormuetyperOnFormueFrontend(okonomi.getOversikt(), formueFrontend);
 
-        if (opplysninger.getBeskrivelseAvAnnet() != null){
-            formueFrontend.setBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getSparing());
+        if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null){
+            formueFrontend.setBeskrivelseAvAnnet(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getSparing());
         }
 
         return formueFrontend;
@@ -100,11 +94,10 @@ public class FormueRessurs {
     private void update(String behandlingsId, FormueFrontend formueFrontend) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
-        final JsonOkonomioversikt oversikt = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt();
+        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
-        if (opplysninger.getBekreftelse() == null){
-            opplysninger.setBekreftelse(new ArrayList<>());
+        if (okonomi.getOpplysninger().getBekreftelse() == null){
+            okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
         boolean hasAnyFormueType = false;
@@ -113,9 +106,9 @@ public class FormueRessurs {
             hasAnyFormueType = true;
         }
 
-        setBekreftelse(opplysninger, "sparing", hasAnyFormueType, getJsonOkonomiTittel("inntekt.bankinnskudd"));
-        setFormue(oversikt, formueFrontend);
-        setBeskrivelseAvAnnet(opplysninger, formueFrontend);
+        setBekreftelse(okonomi.getOpplysninger(), "sparing", hasAnyFormueType, getJsonOkonomiTittel("inntekt.bankinnskudd"));
+        setFormue(okonomi.getOversikt(), formueFrontend);
+        setBeskrivelseAvAnnet(okonomi.getOpplysninger(), formueFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
