@@ -12,6 +12,10 @@ public final class NavnFrontend {
     public String etternavn;
     public String fulltNavn;
 
+    public NavnFrontend(){
+
+    }
+
     public NavnFrontend(String fornavn, String mellomnavn, String etternavn) {
         this.fornavn = fornavn;
         this.mellomnavn = mellomnavn;

@@ -23,6 +23,10 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,13 +67,13 @@ public class SivilstatusRessurs {
     }
 
     @PUT
-    public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) {
+    public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, sivilstatusFrontend);
         legacyUpdate(behandlingsId, sivilstatusFrontend);
     }
 
-    private void update(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) {
+    private void update(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();
@@ -82,12 +86,12 @@ public class SivilstatusRessurs {
         sivilstatus.setKilde(JsonKilde.BRUKER);
         sivilstatus.setStatus(sivilstatusFrontend.sivilstatus);
         sivilstatus.setEktefelle(mapToJsonEktefelle(sivilstatusFrontend.ektefelle));
-        sivilstatus.setBorSammenMed(sivilstatusFrontend.borSammenMed);
+        sivilstatus.setBorSammenMed(sivilstatusFrontend.ektefelle == null ? null :sivilstatusFrontend.ektefelle.borSammenMed);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    private void legacyUpdate(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) {
+    private void legacyUpdate(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
         final Faktum sivilstatus = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.sivilstatus");
@@ -95,23 +99,32 @@ public class SivilstatusRessurs {
         sivilstatus.setValue(sivilstatusFrontend.sivilstatus.toString());
         faktaService.lagreBrukerFaktum(sivilstatus);
 
-        final Faktum ektefelle = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.sivilstatus.gift.ektefelle");
-        ektefelle.setType(Faktum.FaktumType.BRUKERREGISTRERT);
+        final EktefelleFrontend ektefelleFrontend = sivilstatusFrontend.ektefelle;
+        if (ektefelleFrontend != null) {
+            final Faktum ektefelle = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.sivilstatus.gift.ektefelle");
+            ektefelle.setType(Faktum.FaktumType.BRUKERREGISTRERT);
 
-        final Map<String, String> ektefelleProperties = getFaktumProperties(ektefelle);
-        EktefelleFrontend ektefelleFrontend = sivilstatusFrontend.ektefelle;
-        if (ektefelleFrontend != null){
-            ektefelleProperties.put("fornavn", ektefelleFrontend.navn.fornavn);
-            ektefelleProperties.put("mellomnavn", ektefelleFrontend.navn.mellomnavn);
-            ektefelleProperties.put("etternavn", ektefelleFrontend.navn.etternavn);
-            ektefelleProperties.put("fodselsdato", ektefelleFrontend.fodselsdato);
-            ektefelleProperties.put("fnr", ektefelleFrontend.personIdentifikator);
+            final Map<String, String> ektefelleProperties = getFaktumProperties(ektefelle);
+            if (ektefelleFrontend.navn != null){
+                ektefelleProperties.put("fornavn", ektefelleFrontend.navn.fornavn != null ? ektefelleFrontend.navn.fornavn : "");
+                ektefelleProperties.put("mellomnavn", ektefelleFrontend.navn.mellomnavn != null ? ektefelleFrontend.navn.mellomnavn : "");
+                ektefelleProperties.put("etternavn", ektefelleFrontend.navn.etternavn != null ? ektefelleFrontend.navn.etternavn : "");
+            }
+            if (ektefelleFrontend.fodselsdato != null){
+                ektefelleProperties.put("fnr", format_ddmmyyyy(ektefelleFrontend.fodselsdato));
+                ektefelleProperties.put("fodselsdato", ektefelleFrontend.fodselsdato);
+            }
+            if (ektefelleFrontend.personIdentifikator != null){
+                ektefelleProperties.put("pnr", ektefelleFrontend.personIdentifikator);
+            }
+            if (sivilstatusFrontend.ektefelle.borSammenMed != null){
+                ektefelleProperties.put("borsammen", sivilstatusFrontend.ektefelle.borSammenMed.toString());
+            }
+            if (!ektefelleProperties.isEmpty()) {
+                ektefelle.setProperties(ektefelleProperties);
+            }
+            faktaService.lagreBrukerFaktum(ektefelle);
         }
-        ektefelleProperties.put("borsammen", sivilstatusFrontend.borSammenMed != null ? sivilstatusFrontend.borSammenMed.toString() : null);
-        if (!ektefelleProperties.isEmpty()){
-            ektefelle.setProperties(ektefelleProperties);
-        }
-        faktaService.lagreBrukerFaktum(ektefelle);
     }
 
     private static Map<String, String> getFaktumProperties(Faktum faktum) {
@@ -121,34 +134,58 @@ public class SivilstatusRessurs {
         return faktum.getProperties();
     }
 
-    private EktefelleFrontend addEktefelleFrontend(JsonEktefelle jsonEktefelle) {
+    private EktefelleFrontend addEktefelleFrontend(JsonEktefelle jsonEktefelle, Boolean borSammenMed) {
         final JsonNavn navn = jsonEktefelle.getNavn();
         return new EktefelleFrontend()
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withFodselsdato(jsonEktefelle.getFodselsdato())
-                .withPersonIdentifikator(jsonEktefelle.getPersonIdentifikator());
+                .withPersonIdentifikator(jsonEktefelle.getPersonIdentifikator().substring(6))
+                .withBorSammenMed(borSammenMed);
     }
 
-    private JsonEktefelle mapToJsonEktefelle(EktefelleFrontend ektefelle) {
+    private JsonEktefelle mapToJsonEktefelle(EktefelleFrontend ektefelle) throws ParseException {
         if(ektefelle == null){
             return null;
         }
         return new JsonEktefelle().withNavn(mapToJsonNavn(ektefelle.navn))
                 .withFodselsdato(ektefelle.fodselsdato)
-                .withPersonIdentifikator(ektefelle.personIdentifikator);
+                .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personIdentifikator));
+    }
+
+    private String format_ddmmyyyy(String fodselsdato) throws ParseException {
+        if (fodselsdato == null){
+            return null;
+        }
+        final DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+        final DateFormat targetFormat = new SimpleDateFormat("ddMMyyyy");
+        final Date date = originalFormat.parse(fodselsdato);
+        return targetFormat.format(date);
+    }
+
+    private String getFnr(String fodselsdato, String personIdentifikator) throws ParseException {
+        if (fodselsdato == null || personIdentifikator == null){
+            return null;
+        }
+        final DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+        final DateFormat targetFormat = new SimpleDateFormat("ddMMyy");
+        final Date date = originalFormat.parse(fodselsdato);
+        return targetFormat.format(date) + personIdentifikator;
     }
 
     private SivilstatusFrontend mapToSivilstatusFrontend(JsonSivilstatus jsonSivilstatus) {
         return new SivilstatusFrontend()
                 .withKildeErSystem(mapToSystemBoolean(jsonSivilstatus.getKilde()))
                 .withSivilstatus(jsonSivilstatus.getStatus())
-                .withEktefelle(jsonSivilstatus.getEktefelle() == null ? null : addEktefelleFrontend(jsonSivilstatus.getEktefelle()))
+                .withEktefelle(jsonSivilstatus.getEktefelle() == null ? null :
+                        addEktefelleFrontend(jsonSivilstatus.getEktefelle(), jsonSivilstatus.getBorSammenMed()))
                 .withEktefelleHarDiskresjonskode(jsonSivilstatus.getEktefelleHarDiskresjonskode())
-                .withFolkeregistrertMedEktefelle(jsonSivilstatus.getFolkeregistrertMedEktefelle())
-                .withBorSammenMed(jsonSivilstatus.getBorSammenMed());
+                .withFolkeregistrertMedEktefelle(jsonSivilstatus.getFolkeregistrertMedEktefelle());
     }
 
     private JsonNavn mapToJsonNavn(NavnFrontend navn) {
+        if (navn == null){
+            return null;
+        }
         return new JsonNavn()
                 .withFornavn(navn.fornavn != null ? navn.fornavn : "")
                 .withMellomnavn(navn.mellomnavn != null ? navn.mellomnavn : "")
@@ -173,7 +210,6 @@ public class SivilstatusRessurs {
         public EktefelleFrontend ektefelle;
         public Boolean ektefelleHarDiskresjonskode;
         public Boolean folkeregistrertMedEktefelle;
-        public Boolean borSammenMed;
 
         public SivilstatusFrontend withKildeErSystem(Boolean kildeErSystem) {
             this.kildeErSystem = kildeErSystem;
@@ -199,12 +235,6 @@ public class SivilstatusRessurs {
             this.folkeregistrertMedEktefelle = folkeregistrertMedEktefelle;
             return this;
         }
-
-        public SivilstatusFrontend withBorSammenMed(Boolean borSammenMed) {
-            this.borSammenMed = borSammenMed;
-            return this;
-        }
-
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -212,6 +242,7 @@ public class SivilstatusRessurs {
         public NavnFrontend navn;
         public String fodselsdato;
         public String personIdentifikator;
+        public Boolean borSammenMed;
 
         public EktefelleFrontend withNavn(NavnFrontend navn) {
             this.navn = navn;
@@ -225,6 +256,11 @@ public class SivilstatusRessurs {
 
         public EktefelleFrontend withPersonIdentifikator(String personIdentifikator) {
             this.personIdentifikator = personIdentifikator;
+            return this;
+        }
+
+        public EktefelleFrontend withBorSammenMed(Boolean borSammenMed) {
+            this.borSammenMed = borSammenMed;
             return this;
         }
     }
