@@ -73,7 +73,6 @@ public class KommuneTilNavEnhetMapper {
             .put("0532", "974596016")    // Jevnaker
             .put("1401", "974551918")    // Flora
             .put("1238", "944233199")    // Kvam
-            .put("1824", "991379657")    // Vefsn
 
             .build();
 
@@ -284,7 +283,6 @@ public class KommuneTilNavEnhetMapper {
                     "1401",
                     "1238",
                     "1939",
-                    "1824",
                     "5030"
             ));
 
