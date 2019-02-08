@@ -99,12 +99,12 @@ public class ArbeidRessurs {
                 .withArbeidsgivernavn(arbeidsforhold.getArbeidsgivernavn())
                 .withFom(arbeidsforhold.getFom())
                 .withTom(arbeidsforhold.getTom())
-                .withStillingstypeErHeltid(tilStillingstypeErHeltid(arbeidsforhold.getStillingstype()))
+                .withStillingstypeErHeltid(isStillingstypeErHeltid(arbeidsforhold.getStillingstype()))
                 .withStillingsprosent(arbeidsforhold.getStillingsprosent())
                 .withOverstyrtAvBruker(Boolean.FALSE);
     }
 
-    private static Boolean tilStillingstypeErHeltid(JsonArbeidsforhold.Stillingstype stillingstype) {
+    private static Boolean isStillingstypeErHeltid(JsonArbeidsforhold.Stillingstype stillingstype) {
         if (stillingstype == null){
             return null;
         }
