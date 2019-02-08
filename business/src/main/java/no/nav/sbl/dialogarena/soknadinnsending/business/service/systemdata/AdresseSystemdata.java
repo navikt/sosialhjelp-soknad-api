@@ -101,6 +101,11 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     private static JsonAdresse tilGateAdresse(final Adresse adresse) {
+        if (adresse.getStrukturertAdresse() == null) {
+            // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
+            throw new IllegalStateException("Adresse er ikke strukturert");
+        }
+
         final Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) adresse.getStrukturertAdresse();
         final JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
         jsonGateAdresse.setType(JsonAdresse.Type.GATEADRESSE);
@@ -116,6 +121,11 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     private static JsonAdresse tilMatrikkelAdresse(final Adresse adresse) {
+        if (adresse.getStrukturertAdresse() == null) {
+            // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
+            throw new IllegalStateException("Adresse er ikke strukturert");
+        }
+
         final Adresse.MatrikkelAdresse matrikkelAdresse = (Adresse.MatrikkelAdresse) adresse.getStrukturertAdresse();
         final JsonMatrikkelAdresse jsonMatrikkelAdresse = new JsonMatrikkelAdresse();
         jsonMatrikkelAdresse.setType(JsonAdresse.Type.MATRIKKELADRESSE);
