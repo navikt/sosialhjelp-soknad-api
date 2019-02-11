@@ -3,8 +3,8 @@ package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.mappers.SoknadTypeAndPath;
+import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToBelopNavn;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
 
 @Controller
 @Path("/soknader/{behandlingsId}/okonomiskeOpplysninger")
@@ -73,7 +73,7 @@ public class OkonomiskeOpplysningerRessurs {
     @PUT
     public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, vedleggFrontend);
+//        update(behandlingsId, vedleggFrontend);
         legacyUpdate(behandlingsId, vedleggFrontend);
     }
 
@@ -114,7 +114,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
         final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("."));
         final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf(".") + 1);
@@ -126,13 +126,18 @@ public class OkonomiskeOpplysningerRessurs {
 
         final List<Faktum> fakta = webSoknad.getFaktaMedKey(key);
 
-        mapper.makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta);
+        mapper.makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad.getBrukerBehandlingId());
 
         for (int i = 0; i < vedleggFrontend.rader.size(); i++){
             Faktum faktum = fakta.get(i);
             final VedleggRadFrontend vedleggRad = vedleggFrontend.rader.get(i);
             final Map<String, String> properties = faktum.getProperties();
-            properties.put(belopNavn, vedleggRad.belop.toString());
+            if (type.equals("nedbetalingsplan") && tilleggsinfo.equals("avdraglaan")){
+                properties.put("avdrag", vedleggRad.avdrag.toString());
+                properties.put("renter", vedleggRad.renter.toString());
+            } else {
+                properties.put(belopNavn, vedleggRad.belop.toString());
+            }
 
             mapper.putNettolonnOnPropertiesForJsonTypeJobb(belopNavn, vedleggRad, properties);
             mapper.putBeskrivelseOnRelevantTypes(soknadTypeAndPath, jsonType, vedleggRad, properties);

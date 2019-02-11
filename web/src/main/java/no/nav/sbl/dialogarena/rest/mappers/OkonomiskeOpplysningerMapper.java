@@ -18,14 +18,11 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToTittelDelNavn;
+import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 
 @Component
@@ -150,17 +147,19 @@ public class OkonomiskeOpplysningerMapper {
         }
     }
 
-    public void makeFaktumListEqualSizeToFrontendRader(VedleggFrontend vedleggFrontend, List<Faktum> fakta) {
+    public void makeFaktumListEqualSizeToFrontendRader(VedleggFrontend vedleggFrontend, List<Faktum> fakta, String behandlingsId) {
         final int sizeDiff = vedleggFrontend.rader.size() - fakta.size();
         if (sizeDiff > 0){
             Iterator<Long> faktumIder = repository.hentLedigeFaktumIder(sizeDiff).iterator();
             for (int i = 0; i < sizeDiff; i++){
-                fakta.add(new Faktum()
+                final Faktum faktum = new Faktum()
                         .medFaktumId(faktumIder.next())
                         .medParrentFaktumId(fakta.get(0).getParrentFaktum())
                         .medKey(fakta.get(0).getKey())
                         .medType(BRUKERREGISTRERT)
-                        .medSoknadId(fakta.get(0).getSoknadId()));
+                        .medSoknadId(fakta.get(0).getSoknadId());
+                faktaService.opprettBrukerFaktum(behandlingsId, faktum);
+                fakta.add(faktum);
             }
         } else if (sizeDiff < 0){
             for (int i = 0; i < -sizeDiff; i++){
@@ -255,6 +254,8 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private List<VedleggRadFrontend> getRader(JsonOkonomi jsonOkonomi, String type, String tilleggsinfo) {
+        if (isTypeWithoutRader(type, tilleggsinfo)) return Collections.emptyList();
+
         final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
 
         // Spesialtilfelle for avdrag og renter
@@ -366,6 +367,9 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private String getGruppe(String type, String tilleggsinfo) {
+        final String gruppe = getGruppeFromTypesWithoutRader(type, tilleggsinfo);
+        if (gruppe != null) return gruppe;
+
         final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
         final String path = soknadTypeAndPath.getPath();
 
@@ -387,5 +391,25 @@ public class OkonomiskeOpplysningerMapper {
         }
 
         return null;
+    }
+
+    private String getGruppeFromTypesWithoutRader(String type, String tilleggsinfo) {
+        if (type.equals("samvarsavtale") && tilleggsinfo.equals("barn")){
+            return "familie";
+        } else if (type.equals("husleiekontrakt")){
+            return "bosituasjon";
+        } else if (type.equals("skattemelding") && tilleggsinfo.equals("skattemelding")){
+            return "generelle vedlegg";
+        }
+        return null;
+    }
+
+    private boolean isTypeWithoutRader(String type, String tilleggsinfo) {
+        if (type.equals("samvarsavtale") && tilleggsinfo.equals("barn") ||
+                type.equals("husleiekontrakt") ||
+                type.equals("skattemelding") && tilleggsinfo.equals("skattemelding")){
+            return true;
+        }
+        return false;
     }
 }
