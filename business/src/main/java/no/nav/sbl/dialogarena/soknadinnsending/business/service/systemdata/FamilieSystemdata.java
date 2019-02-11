@@ -42,7 +42,7 @@ public class FamilieSystemdata implements Systemdata {
         }
         final JsonHarForsorgerplikt harForsorgerplikt = familie.getForsorgerplikt().getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getKilde() == null ||
-                (harForsorgerplikt.getKilde() == JsonKilde.SYSTEM && harForsorgerplikt.getVerdi())){
+                harForsorgerplikt.getKilde() == JsonKilde.SYSTEM){
             final JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
             if(systemverdiForsorgerplikt != null){
                 familie.setForsorgerplikt(systemverdiForsorgerplikt);
@@ -72,10 +72,10 @@ public class FamilieSystemdata implements Systemdata {
             jsonSivilstatus.getEktefelle()
                     .withFodselsdato(ektefelle.getFodselsdato() != null ? ektefelle.getFodselsdato().toString() : null)
                     .withPersonIdentifikator(ektefelle.getFnr());
+            jsonSivilstatus
+                    .withEktefelleHarDiskresjonskode(ektefelle.harIkketilgangtilektefelle())
+                    .withFolkeregistrertMedEktefelle(ektefelle.erFolkeregistrertsammen());
         }
-        jsonSivilstatus
-                .withEktefelleHarDiskresjonskode(ektefelle.harIkketilgangtilektefelle())
-                .withFolkeregistrertMedEktefelle(ektefelle.erFolkeregistrertsammen());
         return jsonSivilstatus;
     }
 

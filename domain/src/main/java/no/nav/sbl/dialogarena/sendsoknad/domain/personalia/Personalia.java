@@ -49,9 +49,7 @@ public class Personalia {
     private String statsborgerskap;
     private String kjonn;
     private Adresse gjeldendeAdresse;
-
     private Adresse midlertidigAdresse;
-
     private Adresse sekundarAdresse;
     private Adresse folkeregistrertAdresse;
     private String kontonummer;
