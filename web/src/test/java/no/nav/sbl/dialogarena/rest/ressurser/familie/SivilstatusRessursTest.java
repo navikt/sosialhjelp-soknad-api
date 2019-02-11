@@ -52,7 +52,7 @@ public class SivilstatusRessursTest {
     private static final EktefelleFrontend EKTEFELLE_FRONTEND = new EktefelleFrontend()
             .withNavn(new NavnFrontend("Alfred", "Thaddeus Crane", "Pennyworth"))
             .withFodselsdato("1940-01-01")
-            .withPersonIdentifikator("12345");
+            .withPersonnummer("12345");
 
     @Mock
     private LegacyHelper legacyHelper;
@@ -187,7 +187,7 @@ public class SivilstatusRessursTest {
 
     private void assertThatEktefelleIsCorrectlyConverted(EktefelleFrontend ektefelle, JsonEktefelle jsonEktefelle) {
         assertThat("fodselsdato", ektefelle.fodselsdato, is(jsonEktefelle.getFodselsdato()));
-        assertThat("personIdentifikator", ektefelle.personIdentifikator, is(jsonEktefelle.getPersonIdentifikator().substring(6)));
+        assertThat("personIdentifikator", ektefelle.personnummer, is(jsonEktefelle.getPersonIdentifikator().substring(6)));
         assertThat("fornavn", ektefelle.navn.fornavn, is(jsonEktefelle.getNavn().getFornavn()));
         assertThat("mellomnavn", ektefelle.navn.mellomnavn, is(jsonEktefelle.getNavn().getMellomnavn()));
         assertThat("etternavn", ektefelle.navn.etternavn, is(jsonEktefelle.getNavn().getEtternavn()));

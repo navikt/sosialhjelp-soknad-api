@@ -114,8 +114,8 @@ public class SivilstatusRessurs {
                 ektefelleProperties.put("fnr", format_ddmmyyyy(ektefelleFrontend.fodselsdato));
                 ektefelleProperties.put("fodselsdato", ektefelleFrontend.fodselsdato);
             }
-            if (ektefelleFrontend.personIdentifikator != null){
-                ektefelleProperties.put("pnr", ektefelleFrontend.personIdentifikator);
+            if (ektefelleFrontend.personnummer != null){
+                ektefelleProperties.put("pnr", ektefelleFrontend.personnummer);
             }
             if (sivilstatusFrontend.ektefelle.borSammenMed != null){
                 ektefelleProperties.put("borsammen", sivilstatusFrontend.ektefelle.borSammenMed.toString());
@@ -139,7 +139,7 @@ public class SivilstatusRessurs {
         return new EktefelleFrontend()
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withFodselsdato(jsonEktefelle.getFodselsdato())
-                .withPersonIdentifikator(jsonEktefelle.getPersonIdentifikator().substring(6))
+                .withPersonnummer(jsonEktefelle.getPersonIdentifikator().substring(6))
                 .withBorSammenMed(borSammenMed);
     }
 
@@ -149,7 +149,7 @@ public class SivilstatusRessurs {
         }
         return new JsonEktefelle().withNavn(mapToJsonNavn(ektefelle.navn))
                 .withFodselsdato(ektefelle.fodselsdato)
-                .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personIdentifikator));
+                .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personnummer));
     }
 
     private String format_ddmmyyyy(String fodselsdato) throws ParseException {
@@ -162,14 +162,14 @@ public class SivilstatusRessurs {
         return targetFormat.format(date);
     }
 
-    private String getFnr(String fodselsdato, String personIdentifikator) throws ParseException {
-        if (fodselsdato == null || personIdentifikator == null){
+    private String getFnr(String fodselsdato, String personnummer) throws ParseException {
+        if (fodselsdato == null || personnummer == null){
             return null;
         }
         final DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
         final DateFormat targetFormat = new SimpleDateFormat("ddMMyy");
         final Date date = originalFormat.parse(fodselsdato);
-        return targetFormat.format(date) + personIdentifikator;
+        return targetFormat.format(date) + personnummer;
     }
 
     private SivilstatusFrontend mapToSivilstatusFrontend(JsonSivilstatus jsonSivilstatus) {
@@ -241,7 +241,7 @@ public class SivilstatusRessurs {
     public static final class EktefelleFrontend {
         public NavnFrontend navn;
         public String fodselsdato;
-        public String personIdentifikator;
+        public String personnummer;
         public Boolean borSammenMed;
 
         public EktefelleFrontend withNavn(NavnFrontend navn) {
@@ -254,8 +254,8 @@ public class SivilstatusRessurs {
             return this;
         }
 
-        public EktefelleFrontend withPersonIdentifikator(String personIdentifikator) {
-            this.personIdentifikator = personIdentifikator;
+        public EktefelleFrontend withPersonnummer(String personnummer) {
+            this.personnummer = personnummer;
             return this;
         }
 
