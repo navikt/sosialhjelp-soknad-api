@@ -31,8 +31,7 @@ public class KontonummerSystemdata implements Systemdata {
     
     public String innhentSystemverdiKontonummer(final String personIdentifikator) {
         final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        final String systemVerdi = norskKontonummer(personalia);
-        return systemVerdi;
+        return norskKontonummer(personalia);
     }
     
     
