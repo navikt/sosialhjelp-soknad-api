@@ -6,6 +6,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,22 +28,78 @@ public class SoknadsmottakerService {
     @Inject
     private AdresseSokService adresseSokService;
 
-    public List<AdresseForslag> finnAdresseFraSoknad(final WebSoknad webSoknad) {
-        return finnAdresseFraSoknad(webSoknad, null);
+    public List<AdresseForslag> legacyFinnAdresseFraSoknad(final WebSoknad webSoknad) {
+        return legacyFinnAdresseFraSoknad(webSoknad, null);
     }
 
-    public List<AdresseForslag> finnAdresseFraSoknad(final WebSoknad webSoknad, String valg) {
+    public List<AdresseForslag> legacyFinnAdresseFraSoknad(final WebSoknad webSoknad, String valg) {
         final Faktum adresseFaktum = hentAdresseFaktum(webSoknad, valg);
         if (adresseFaktum == null) {
             return Collections.emptyList();
         }
         
         final Map<String, String> adresse = adresseFaktum.getProperties();
+        return legacySoknadsmottakerGitt(adresse);
+    }
+
+    public List<AdresseForslag> finnAdresseFraSoknad(final JsonPersonalia personalia, String valg) {
+        final JsonAdresse adresse = hentValgtAdresse(personalia, valg);
+
         return soknadsmottakerGitt(adresse);
     }
 
-    
-    private List<AdresseForslag> soknadsmottakerGitt(final Map<String, String> adresse) {
+    private JsonAdresse hentValgtAdresse(JsonPersonalia personalia, String valg) {
+        switch (valg){
+            case "folkeregistrert":
+                return personalia.getFolkeregistrertAdresse();
+            case "midlertidig":
+            case "soknad":
+                return personalia.getOppholdsadresse();
+            default:
+                return null;
+        }
+    }
+
+    private List<AdresseForslag> soknadsmottakerGitt(final JsonAdresse adresse) {
+        if (adresse == null) {
+            return Collections.emptyList();
+        }
+
+        if (adresse.getType().equals(JsonAdresse.Type.MATRIKKELADRESSE)) {
+            final JsonMatrikkelAdresse matrikkelAdresse = (JsonMatrikkelAdresse) adresse;
+            final String kommunenummer = matrikkelAdresse.getKommunenummer();
+            if (kommunenummer == null || kommunenummer.trim().equals("")) {
+                return Collections.emptyList();
+            }
+
+            return adresseSokService.sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenummer));
+        } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
+            final JsonGateAdresse gateAdresse = (JsonGateAdresse) adresse;
+            final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
+                    .withSoketype(Soketype.EKSAKT)
+                    .withAdresse(gateAdresse.getGatenavn())
+                    .withHusnummer(gateAdresse.getHusnummer())
+                    .withHusbokstav(gateAdresse.getHusbokstav())
+                    .withPostnummer(gateAdresse.getPostnummer())
+                    .withPoststed(gateAdresse.getPoststed())
+            );
+
+            if (adresser.size() <= 1) {
+                return adresser;
+            }
+
+            if (hasIkkeUnikGate(adresser)) {
+                return Collections.emptyList();
+            }
+
+            return adresser;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+
+    private List<AdresseForslag> legacySoknadsmottakerGitt(final Map<String, String> adresse) {
         if (adresse == null || adresse.isEmpty()) {
             return Collections.emptyList();
         }
