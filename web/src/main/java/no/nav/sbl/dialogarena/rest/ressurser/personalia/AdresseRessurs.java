@@ -94,7 +94,7 @@ public class AdresseRessurs {
         update(behandlingsId, adresseFrontend);
         legacyUpdate(behandlingsId, adresseFrontend);
         /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg)); Bruk når faktum er fjernet*/
-        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg))
+        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresseFrontend.valg.toString())
                 .stream().map(this::mapFromLegacyNavEnhetFrontend).collect(Collectors.toList());
     }
 

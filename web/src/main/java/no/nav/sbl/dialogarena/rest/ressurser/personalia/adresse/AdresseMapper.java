@@ -102,18 +102,4 @@ public class AdresseMapper {
         }
         return adresse;
     }
-
-    public String mapValgToString(JsonAdresseValg valg) {
-        switch (valg){
-            case FOLKEREGISTRERT:
-                return "folkeregistrert";
-            case MIDLERTIDIG:
-                return "midlertidig";
-            case SOKNAD:
-                return "soknad";
-            default:
-                return null;
-
-        }
-    }
 }

@@ -102,7 +102,6 @@ public class AdresseRessursTest {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
         when(adresseMapper.mapToAdresserFrontend(any(JsonAdresse.class), any(JsonAdresse.class), any(JsonAdresse.class))).thenCallRealMethod();
         when(adresseMapper.mapToJsonAdresse(any(AdresseFrontend.class))).thenCallRealMethod();
-        when(adresseMapper.mapValgToString(any(JsonAdresseValg.class))).thenCallRealMethod();
     }
 
     @Test
