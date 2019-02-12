@@ -155,18 +155,16 @@ public class AdresseRessurs {
         switch (adresseFrontend.valg){
             case FOLKEREGISTRERT:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentFolkeregistrertAdresse(eier));
-                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.FOLKEREGISTRERT);
                 break;
             case MIDLERTIDIG:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentMidlertidigAdresse(eier));
-                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.MIDLERTIDIG);
                 break;
             case SOKNAD:
                 personalia.setOppholdsadresse(mapper.mapToJsonAdresse(adresseFrontend));
-                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.SOKNAD);
                 break;
         }
 
+        personalia.getOppholdsadresse().setAdresseValg(adresseFrontend.valg);
         personalia.setPostadresse(midlertidigLosningForPostadresse(personalia.getOppholdsadresse()));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
@@ -175,20 +173,18 @@ public class AdresseRessurs {
     private void legacyUpdate(String behandlingsId, AdresseFrontend adresseFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.brukerendrettoggle");
         final Faktum valg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.system.oppholdsadresse.valg");
+        valg.setValue(adresseFrontend.valg.toString());
+        faktaService.lagreBrukerFaktum(valg);
+
+        final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.brukerendrettoggle");
 
         switch (adresseFrontend.valg){
             case FOLKEREGISTRERT:
-                valg.setValue("folkerregistrert");
-                brukerdefinert.setValue(Boolean.toString(false));
-                break;
             case MIDLERTIDIG:
-                valg.setValue("midlertidig");
                 brukerdefinert.setValue(Boolean.toString(false));
                 break;
             case SOKNAD:
-                valg.setValue("soknad");
                 brukerdefinert.setValue(Boolean.toString(true));
                 final Faktum brukerAdresse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.bruker");
                 populerAdresse(brukerAdresse, adresseFrontend);
@@ -197,7 +193,6 @@ public class AdresseRessurs {
         }
 
         faktaService.lagreBrukerFaktum(brukerdefinert);
-        faktaService.lagreBrukerFaktum(valg);
     }
 
     private JsonAdresse midlertidigLosningForPostadresse(JsonAdresse oppholdsadresse) {

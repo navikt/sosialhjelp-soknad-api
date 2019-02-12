@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn.Kilde;
@@ -53,6 +54,9 @@ public final class JsonPersonaliaConverter {
         personalia.setFolkeregistrertAdresse(JsonAdresseConverter.tilFolkeregistrertAdresse(webSoknad));
         personalia.setOppholdsadresse(JsonAdresseConverter.tilOppholdsadresse(webSoknad));
         personalia.setPostadresse(JsonAdresseConverter.tilPostadresse(webSoknad));
+
+        personalia.getOppholdsadresse().setAdresseValg(
+                JsonAdresseValg.fromValue(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg")));
 
         return personalia;
     }
