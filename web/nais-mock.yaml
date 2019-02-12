@@ -6,11 +6,11 @@ metadata:
   labels:
     team: digisos
 spec:
-  image: docker.adeo.no:5000/soknadsosialhjelp-server-test:1.21
+  image: docker.adeo.no:5000/sosialhjelp-soknad-api-test:1.21
   port: 8080
   ingresses:
   - "https://sosialhjelp-test.nais.io/soknad-api"
-  - "https://sosialhjelp-test.dev-sbs.nais.io/soknad-api"
+  - "https://sosialhjelp-api-test.dev-sbs.nais.io"
   prometheus:
     enabled: true
     path: /prometheus

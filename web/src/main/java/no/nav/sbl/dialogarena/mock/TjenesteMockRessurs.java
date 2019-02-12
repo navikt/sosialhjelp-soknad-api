@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.mock;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
@@ -9,7 +11,11 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
+import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -19,8 +25,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+
+import java.io.*;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -29,11 +43,17 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 @Path("/internal/mock/tjeneste")
 @Produces(APPLICATION_JSON)
 public class TjenesteMockRessurs {
-    private static final Logger logger = LoggerFactory.getLogger(TjenesteMockRessurs.class);
 
+    private static final Logger logger = LoggerFactory.getLogger(TjenesteMockRessurs.class);
 
     @Inject
     private CacheManager cacheManager;
+
+    @Inject
+    private InnsendingService innsendingService;
+
+    @Inject
+    private FiksSender fiksSender;
 
 
     private void clearCache() {
@@ -54,11 +74,66 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpSession session = attr.getRequest().getSession(true);
-        session.setAttribute("mockRessursUid", uid);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            MockUid mockUid = mapper.readValue(uid, MockUid.class);
+            final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            final HttpSession session = attr.getRequest().getSession(true);
+            session.setAttribute("mockRessursUid", mockUid.getUid());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        clearCache();
+    }
+
+
+    public byte[] createZipByteArray(List<Dokument> dokumenter) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+        try {
+            for (Dokument dokument : dokumenter) {
+                ZipEntry zipEntry = new ZipEntry(dokument.getFilnavn());
+                zipOutputStream.putNextEntry(zipEntry);
+                zipOutputStream.write(IOUtils.toByteArray(dokument.getData().getInputStream()));
+                zipOutputStream.closeEntry();
+            }
+        } finally {
+            zipOutputStream.close();
+        }
+        return byteArrayOutputStream.toByteArray();
+    }
+
+
+    @GET
+    @Consumes(APPLICATION_JSON)
+    @Path("/downloadzip/{behandlingsId}")
+    public Response downloadZip(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+
+        String eier = SubjectHandler.getUserIdFromToken();
+        final SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
+        PostAdresse fakeAdresse = new PostAdresse()
+                .withNavn(sendtSoknad.getNavEnhetsnavn())
+                .withPostnr("0000")
+                .withPoststed("Ikke send");
+
+        Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, fakeAdresse);
+
+        try {
+            byte[] zipByteArray = createZipByteArray(forsendelse.getDokumenter());
+            return Response
+                    .ok(zipByteArray)
+                    .type("application/zip")
+                    .header("Content-Disposition", "attachment; filename=\"fiks_forsendelse_" + eier + ".zip\"")
+                    .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         clearCache();
+        return Response.noContent().build();
     }
 
 
@@ -179,5 +254,4 @@ public class TjenesteMockRessurs {
         NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
         clearCache();
     }
-
 }

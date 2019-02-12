@@ -30,11 +30,12 @@ public class DevSoknadsosialhjelpServer {
 
         final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/soknadsosialhjelp-server", dataSource);
 
-        if (OidcConfig.isOidcMock()) {
-            SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        } else if (TjenesteMockRessurs.isTillatMockRessurs()) {
+        if (TjenesteMockRessurs.isTillatMockRessurs()) {
             SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
+        } else if (OidcConfig.isOidcMock()) {
+            SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         }
+
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // Er med pga SaksoversiktMetadataRessurs.
         TestCertificates.setupKeyAndTrustStore();
         server.start();

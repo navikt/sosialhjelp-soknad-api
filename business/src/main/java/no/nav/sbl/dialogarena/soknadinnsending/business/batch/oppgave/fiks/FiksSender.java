@@ -48,7 +48,7 @@ public class FiksSender {
         return forsendelsesService.sendForsendelse(forsendelse);
     }
 
-    Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
+    public Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
         final SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
         return new Forsendelse()
                 .withMottaker(new Adresse()
@@ -72,7 +72,7 @@ public class FiksSender {
                 );
     }
 
-    List<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+    public List<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         final JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         if (internalSoknad == null) {
             throw new RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler");
