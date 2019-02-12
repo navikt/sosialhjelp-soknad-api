@@ -79,7 +79,7 @@ public class ForsorgerpliktRessurs {
         if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
             for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar){
                 for (JsonAnsvar ansvar : forsorgerplikt.getAnsvar()){
-                    if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barnFrontend.personIdentifikator)){
+                    if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barn.fodselsnummer)){
                         ansvar.setBorSammenMed(new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
                         ansvar.setHarDeltBosted(new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.harDeltBosted));
                         ansvar.setSamvarsgrad(new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad));
@@ -106,7 +106,7 @@ public class ForsorgerpliktRessurs {
             for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar) {
                 for (Faktum faktum : barnefakta) {
                     Map<String, String> barn = faktum.getProperties();
-                    if (barn.get("fnr").equals(ansvarFrontend.barnFrontend.personIdentifikator)) {
+                    if (barn.get("fnr").equals(ansvarFrontend.barn.fodselsnummer)) {
                         barn.put("grad", ansvarFrontend.samvarsgrad != null ? ansvarFrontend.samvarsgrad.toString() : null);
                         barn.put("deltbosted", ansvarFrontend.harDeltBosted != null ? ansvarFrontend.harDeltBosted.toString() : null);
                         faktum.setProperties(barn);
@@ -134,7 +134,8 @@ public class ForsorgerpliktRessurs {
             return null;
         }
 
-        return new AnsvarFrontend().withBarnFrontend(mapToBarnFrontend(jsonAnsvar.getBarn()))
+        return new AnsvarFrontend().withBarn(mapToBarnFrontend(jsonAnsvar.getBarn()))
+                .withHarDiskresjonskode(jsonAnsvar.getBarn() != null ? jsonAnsvar.getBarn().getHarDiskresjonskode() : null)
                 .withErFolkeregistrertSammen(jsonAnsvar.getErFolkeregistrertSammen() == null ? null :
                         jsonAnsvar.getErFolkeregistrertSammen().getVerdi())
                 .withBorSammenMed(jsonAnsvar.getBorSammenMed() == null ? null : jsonAnsvar.getBorSammenMed().getVerdi())
@@ -150,8 +151,8 @@ public class ForsorgerpliktRessurs {
         return new BarnFrontend()
                 .withNavn(new NavnFrontend(barn.getNavn().getFornavn(), barn.getNavn().getMellomnavn(), barn.getNavn().getEtternavn()))
                 .withFodselsdato(barn.getFodselsdato())
-                .withPersonIdentifikator(barn.getPersonIdentifikator())
-                .withHarDiskresjonskode(barn.getHarDiskresjonskode());
+                .withPersonnummer(barn.getPersonIdentifikator() != null ? barn.getPersonIdentifikator().substring(6) : null)
+                .withFodselsnummer(barn.getPersonIdentifikator());
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -178,14 +179,20 @@ public class ForsorgerpliktRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class AnsvarFrontend {
-        public BarnFrontend barnFrontend;
+        public BarnFrontend barn;
+        public Boolean harDiskresjonskode;
         public Boolean borSammenMed;
         public Boolean erFolkeregistrertSammen;
         public Boolean harDeltBosted;
         public Integer samvarsgrad;
 
-        public AnsvarFrontend withBarnFrontend(BarnFrontend barnFrontend) {
-            this.barnFrontend = barnFrontend;
+        public AnsvarFrontend withBarn(BarnFrontend barn) {
+            this.barn = barn;
+            return this;
+        }
+
+        public AnsvarFrontend withHarDiskresjonskode(Boolean harDiskresjonskode) {
+            this.harDiskresjonskode = harDiskresjonskode;
             return this;
         }
 
@@ -214,8 +221,8 @@ public class ForsorgerpliktRessurs {
     public static final class BarnFrontend {
         public NavnFrontend navn;
         public String fodselsdato;
-        public String personIdentifikator;
-        public Boolean harDiskresjonskode;
+        public String personnummer;
+        public String fodselsnummer;
 
         public BarnFrontend withNavn(NavnFrontend navn) {
             this.navn = navn;
@@ -227,13 +234,13 @@ public class ForsorgerpliktRessurs {
             return this;
         }
 
-        public BarnFrontend withPersonIdentifikator(String personIdentifikator) {
-            this.personIdentifikator = personIdentifikator;
+        public BarnFrontend withPersonnummer(String personnummer) {
+            this.personnummer = personnummer;
             return this;
         }
 
-        public BarnFrontend withHarDiskresjonskode(Boolean harDiskresjonskode) {
-            this.harDiskresjonskode = harDiskresjonskode;
+        public BarnFrontend withFodselsnummer(String fodselsnummer) {
+            this.fodselsnummer = fodselsnummer;
             return this;
         }
     }

@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -39,7 +38,7 @@ public class BasisPersonaliaRessurs {
     private BasisPersonaliaFrontend mapToBasisPersonaliaFrontend(JsonPersonalia jsonPersonalia) {
         final JsonNavn navn = jsonPersonalia.getNavn();
         return new BasisPersonaliaFrontend()
-                .withPersonIdentifikator(jsonPersonalia.getPersonIdentifikator().getVerdi())
+                .withFodselsnummer(jsonPersonalia.getPersonIdentifikator().getVerdi())
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withStatsborgerskap(jsonPersonalia.getStatsborgerskap() != null ? jsonPersonalia.getStatsborgerskap().getVerdi() : null)
                 .withNordiskBorger(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null);
@@ -47,13 +46,13 @@ public class BasisPersonaliaRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BasisPersonaliaFrontend {
-        public String personIdentifikator;
+        public String fodselsnummer;
         public NavnFrontend navn;
         public String statsborgerskap;
         public Boolean nordiskBorger;
 
-        public BasisPersonaliaFrontend withPersonIdentifikator(String personIdentifikator) {
-            this.personIdentifikator = personIdentifikator;
+        public BasisPersonaliaFrontend withFodselsnummer(String fodselsnummer) {
+            this.fodselsnummer = fodselsnummer;
             return this;
         }
 
