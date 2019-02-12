@@ -6,10 +6,11 @@ metadata:
   labels:
     team: digisos
 spec:
-  image: docker.adeo.no:5000/soknadsosialhjelp-server:
+  image: docker.adeo.no:5000/soknadsosialhjelp-server-test:1.21
   port: 8080
   ingresses:
-  - "https://sosialhjelp-test.nais.io/soknadsosialhjelp-server"
+  - "https://sosialhjelp-test.nais.io/soknad-api"
+  - "https://sosialhjelp-test.dev-sbs.nais.io/soknad-api"
   prometheus:
     enabled: true
     path: /prometheus
@@ -33,5 +34,5 @@ spec:
     min: 1
     max: 1
   env:
-  - name: MY_CUSTOM_VAR
-    value: some_value
+  - name: dockerWithDefaultMockActivated
+    value: "true"
