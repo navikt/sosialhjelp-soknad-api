@@ -163,6 +163,7 @@ public class WebSoknadConverterTest {
         webSoknad.medFaktum(new Faktum().medKey("kontakt.system.adresse")
                 .medSystemProperty("type", "gateadresse")
                 .medSystemProperty("gatenavn", "Adresseveien"));
+        webSoknad.medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("midlertidig"));
         return webSoknad;
     }
 
