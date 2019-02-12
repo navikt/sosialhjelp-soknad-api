@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
@@ -27,6 +28,9 @@ public class BasisPersonaliaRessurs {
     @Inject
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
 
+    @Inject
+    private Adressekodeverk adressekodeverk;
+
     @GET
     public BasisPersonaliaFrontend hentBasisPersonalia(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
@@ -38,26 +42,27 @@ public class BasisPersonaliaRessurs {
     private BasisPersonaliaFrontend mapToBasisPersonaliaFrontend(JsonPersonalia jsonPersonalia) {
         final JsonNavn navn = jsonPersonalia.getNavn();
         return new BasisPersonaliaFrontend()
-                .withFodselsnummer(jsonPersonalia.getPersonIdentifikator().getVerdi())
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
-                .withStatsborgerskap(jsonPersonalia.getStatsborgerskap() != null ? jsonPersonalia.getStatsborgerskap().getVerdi() : null)
+                .withFodselsnummer(jsonPersonalia.getPersonIdentifikator().getVerdi())
+                .withStatsborgerskap(jsonPersonalia.getStatsborgerskap() == null ? null :
+                        adressekodeverk.getLand(jsonPersonalia.getStatsborgerskap().getVerdi()))
                 .withNordiskBorger(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BasisPersonaliaFrontend {
-        public String fodselsnummer;
         public NavnFrontend navn;
+        public String fodselsnummer;
         public String statsborgerskap;
         public Boolean nordiskBorger;
 
-        public BasisPersonaliaFrontend withFodselsnummer(String fodselsnummer) {
-            this.fodselsnummer = fodselsnummer;
+        public BasisPersonaliaFrontend withNavn(NavnFrontend navn) {
+            this.navn = navn;
             return this;
         }
 
-        public BasisPersonaliaFrontend withNavn(NavnFrontend navn) {
-            this.navn = navn;
+        public BasisPersonaliaFrontend withFodselsnummer(String fodselsnummer) {
+            this.fodselsnummer = fodselsnummer;
             return this;
         }
 
