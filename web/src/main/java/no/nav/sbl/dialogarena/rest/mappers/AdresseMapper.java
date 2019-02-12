@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest.ressurser.personalia.adresse;
+package no.nav.sbl.dialogarena.rest.mappers;
 
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;

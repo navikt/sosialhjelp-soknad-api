@@ -4,7 +4,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
-import no.nav.sbl.dialogarena.rest.ressurser.personalia.adresse.AdresseMapper;
+import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;

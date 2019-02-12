@@ -4,7 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
-import no.nav.sbl.dialogarena.rest.ressurser.personalia.adresse.AdresseMapper;
+import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
