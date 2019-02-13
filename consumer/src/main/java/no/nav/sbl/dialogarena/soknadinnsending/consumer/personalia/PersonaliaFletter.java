@@ -68,6 +68,7 @@ public class PersonaliaFletter {
                 .epost(digitalKontaktinfo.getEpostadresse())
                 .mobiltelefon(digitalKontaktinfo.getMobilnummer())
                 .gjeldendeAdresse(adresserOgKontonummer.getGjeldendeAdresse())
+                .midlertidigAdresse(adresserOgKontonummer.getMidlertidigAdresse())
                 .sekundarAdresse(adresserOgKontonummer.getSekundarAdresse())
                 .folkeregistrertAdresse(adresserOgKontonummer.getFolkeregistrertAdresse())
                 .kontonummer(adresserOgKontonummer.getKontonummer())

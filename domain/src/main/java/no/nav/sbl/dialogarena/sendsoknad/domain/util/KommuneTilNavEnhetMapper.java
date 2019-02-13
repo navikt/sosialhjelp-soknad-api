@@ -51,7 +51,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0334", "970145311")    // Vestre Aker, Oslo kommune
             .put("0321", "974778807")    // Østensjø, Oslo kommune
             .put("5701", "892284792")    // Falkenborg, Trondheim kommune
-            .put("5702", "992284838")    // Lerkendal, Trondheim kommune
+            .put("5702", "992284838")    // Lerkendal, Trondheim kommune & Klæbu
             .put("1161", "873864192")    // Eiganes og Tasta, Stavanger kommune
             .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
             .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
@@ -146,6 +146,9 @@ public class KommuneTilNavEnhetMapper {
         }
 
         final NavEnhet navEnhet = getNavEnhetFromWebSoknad(webSoknad);
+        if (navEnhet == null) {
+            return null;
+        }
         return new Soknadsmottaker(navEnhet.getOrgnummer(), "NAV " + navEnhet.getKontornavn(), navEnhet.getKommunenavn());
     }
 
@@ -281,7 +284,9 @@ public class KommuneTilNavEnhetMapper {
                     "1134",
                     "0532",
                     "1401",
-                    "1238"
+                    "1238",
+                    "1939",
+                    "5030"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
@@ -398,7 +403,11 @@ public class KommuneTilNavEnhetMapper {
     private static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
         String key;
         if (webSoknad.getFaktumMedKey("personalia.bydel") == null || isEmpty(webSoknad.getFaktumMedKey("personalia.bydel").getValue())) {
-            key = webSoknad.getFaktumMedKey("personalia.kommune").getValue();
+            final Faktum kommuneFaktum = webSoknad.getFaktumMedKey("personalia.kommune");
+            if (kommuneFaktum == null) {
+                return null;
+            }
+            key = kommuneFaktum.getValue();
         } else {
             key = webSoknad.getFaktumMedKey("personalia.bydel").getValue();
         }

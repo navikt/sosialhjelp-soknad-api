@@ -1,39 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.metrics.MetricsFactory;
-import no.nav.metrics.Timer;
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.domain.*;
-import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
-import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.ByteArrayInputStream;
-import java.util.*;
-
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
@@ -46,6 +12,81 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transform
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
 import static no.nav.sbl.sosialhjelp.midlertidig.VedleggsforventningConverter.mapVedleggsforventningerTilVedleggstatusListe;
 import static org.slf4j.LoggerFactory.getLogger;
+
+import java.io.ByteArrayInputStream;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
+import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
+import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
+import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 
 
 @Component
@@ -103,6 +144,12 @@ public class SoknadDataFletter {
 
     @Inject
     private InnsendingService innsendingService;
+    
+    @Inject
+    private SoknadUnderArbeidService soknadUnderArbeidService;
+    
+    @Inject
+    private SystemdataUpdater systemdata;
 
     private Map<String, BolkService> bolker;
 
@@ -189,9 +236,70 @@ public class SoknadDataFletter {
 
         soknadMetricsService.startetSoknad(skjemanummer, false);
 
+        final SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withVersjon(1L)
+                .withEier(aktorId)
+                .withBehandlingsId(behandlingsId)
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
+                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .withOpprettetDato(LocalDateTime.now())
+                .withSistEndretDato(LocalDateTime.now());
+        soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
+        
         startTimer.stop();
         startTimer.report();
+        
         return behandlingsId;
+    }
+    
+    private JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
+        return new JsonInternalSoknad().withSoknad(new JsonSoknad()
+                    .withData(new JsonData()
+                        .withPersonalia(new JsonPersonalia()
+                            .withPersonIdentifikator(new JsonPersonIdentifikator()
+                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                .withVerdi(eier)
+                            )
+                            .withNavn(new JsonSokernavn()
+                                .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                                .withFornavn("")
+                                .withMellomnavn("")
+                                .withEtternavn("")
+                            )
+                            .withKontonummer(new JsonKontonummer()
+                                .withKilde(JsonKilde.SYSTEM)
+                            )
+                        )
+                        .withArbeid(new JsonArbeid())
+                        .withUtdanning(new JsonUtdanning()
+                            .withKilde(JsonKilde.BRUKER)
+                        )
+                        .withFamilie(new JsonFamilie()
+                            .withForsorgerplikt(new JsonForsorgerplikt())
+                        )
+                        .withBegrunnelse(new JsonBegrunnelse()
+                            .withKilde(JsonKildeBruker.BRUKER)
+                            .withHvorforSoke("")
+                            .withHvaSokesOm("")
+                        )
+                        .withBosituasjon(new JsonBosituasjon()
+                            .withKilde(JsonKildeBruker.BRUKER)
+                        )
+                        .withOkonomi(new JsonOkonomi()
+                            .withOpplysninger(new JsonOkonomiopplysninger()
+                                .withUtbetaling(Collections.emptyList())
+                                .withUtgift(Collections.emptyList())
+                            )
+                            .withOversikt(new JsonOkonomioversikt()
+                                .withInntekt(Collections.emptyList())
+                                .withUtgift(Collections.emptyList())
+                                .withFormue(Collections.emptyList())
+                            )
+                        )
+                    )
+                    .withDriftsinformasjon("")
+                    .withKompatibilitet(Collections.emptyList())
+                );
     }
 
     private Timer createDebugTimer(String name, String soknadsType, String id) {

@@ -18,6 +18,7 @@ public class PersonaliaBuilder {
     private String statsborgerskap;
     private String kjonn;
     private Adresse gjeldendeAdresse;
+    private Adresse midlertidigAdresse;
     private Adresse sekundarAdresse;
     private Adresse folkeregistrertAdresse;
     private String kontonummer;
@@ -151,6 +152,7 @@ public class PersonaliaBuilder {
         personalia.setStatsborgerskap(statsborgerskap);
         personalia.setKjonn(kjonn);
         personalia.setGjeldendeAdresse(gjeldendeAdresse);
+        personalia.setMidlertidigAdresse(midlertidigAdresse);
         personalia.setSekundarAdresse(sekundarAdresse);
         personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
         personalia.setDiskresjonskode(diskresjonskode);
@@ -163,5 +165,10 @@ public class PersonaliaBuilder {
         personalia.setEktefelle(ektefelle);
 
         return personalia;
+    }
+
+    public PersonaliaBuilder midlertidigAdresse(Adresse midlertidigAdresse) {
+        this.midlertidigAdresse = midlertidigAdresse;
+        return this;
     }
 }
