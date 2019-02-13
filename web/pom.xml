@@ -311,6 +311,10 @@
             <artifactId>gson</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+        </dependency>
 
         <!-- Avhengigheter med scope test -->
 
@@ -561,7 +565,6 @@
                             <goal>analyze-only</goal>
                         </goals>
                         <configuration>
-                            <failOnWarning>false</failOnWarning>
                             <usedDependencies>
                                 <usedDependency>org.apache.httpcomponents:httpclient
                                 </usedDependency>
