@@ -466,10 +466,6 @@
                     <artifactId>mockserver-netty</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>no.nav.modig</groupId>
                     <artifactId>modig-log-common</artifactId>
                 </exclusion>
@@ -482,8 +478,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>svarut-ks-forsendelsesservice</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -565,6 +561,7 @@
                             <goal>analyze-only</goal>
                         </goals>
                         <configuration>
+                            <failOnWarning>false</failOnWarning>
                             <usedDependencies>
                                 <usedDependency>org.apache.httpcomponents:httpclient
                                 </usedDependency>
