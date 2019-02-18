@@ -43,7 +43,7 @@
         <spring.version>3.2.18.RELEASE</spring.version>
         <jersey.version>2.25.1</jersey.version>
         <cxf.version>3.2.1</cxf.version>
-        <cxf-rt-transports-http.version>3.2.6</cxf-rt-transports-http.version>
+        <cxf-rt-transports-http.version>3.2.1</cxf-rt-transports-http.version>
         <modig-security.version>3.0.6</modig-security.version>
         <wss4j.version>2.2.0</wss4j.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
