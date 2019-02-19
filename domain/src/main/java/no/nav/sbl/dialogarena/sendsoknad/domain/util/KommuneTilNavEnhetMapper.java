@@ -72,7 +72,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1134", "974616998")    // Suldal
             .put("0532", "974596016")    // Jevnaker
             .put("1401", "974551918")    // Flora
-            .put("1238", "944233199")    // Kvam
+            .put("1238", "944233199")    // Kvam.
 
             .build();
 
