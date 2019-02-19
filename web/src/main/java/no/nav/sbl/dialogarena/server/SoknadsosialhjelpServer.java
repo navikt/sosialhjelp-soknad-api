@@ -25,7 +25,7 @@ import static java.lang.System.setProperty;
 public class SoknadsosialhjelpServer {
 
     private static final Logger log = LoggerFactory.getLogger(SoknadsosialhjelpServer.class);
-    public static final int PORT = 8080;
+    public static final int PORT = isRunningOnHeroku() ? Integer.parseInt(System.getenv("PORT")) : 8080;
     public final Jetty jetty;
 
 
@@ -59,6 +59,7 @@ public class SoknadsosialhjelpServer {
         setProperty("java.security.auth.login.config", loginConfFile);
         final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
+
         jetty = new Jetty.JettyBuilder()
                 .at(contextPath)
                 .withLoginService(jaasLoginService)
@@ -113,6 +114,11 @@ public class SoknadsosialhjelpServer {
 
     private boolean isRunningAsTestAppWithMockingActivated() {
         return System.getenv("dockerWithDefaultMockActivated") != null && Boolean.parseBoolean(System.getenv("dockerWithDefaultMockActivated"));
+    }
+
+
+    public static boolean isRunningOnHeroku(){
+        return System.getenv("HEROKU") != null && Boolean.parseBoolean(System.getenv("HEROKU"));
     }
 
     private void mapNaisProperties() throws IOException {
@@ -227,6 +233,7 @@ public class SoknadsosialhjelpServer {
         return new HikariDataSource(config);
 
     }
+
 
     public static void main(String[] args) {
         try {
