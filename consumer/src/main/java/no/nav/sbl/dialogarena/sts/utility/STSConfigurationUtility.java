@@ -72,9 +72,9 @@ public class STSConfigurationUtility {
     }
 
     private static void configureStsClient(Client client, StsType stsType) {
-        String location = requireProperty(StsSecurityConstants.STS_URL_KEY);
-        String username = requireProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
-        String password = requireProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD);
+        final String location = requireProperty(StsSecurityConstants.STS_URL_KEY);
+        final String username = requireProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
+        final String password = requireProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD);
 
         new WSAddressingFeature().initialize(client, client.getBus());
 
