@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.oidc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.security.oidc.jaxrs.OidcContainerRequestFilter;
+import org.glassfish.jersey.server.wadl.processor.OptionsMethodProcessor;
+import org.glassfish.jersey.server.wadl.processor.WadlModelProcessor;
 
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
@@ -10,13 +13,30 @@ import java.util.List;
 
 public class OidcResourceFilteringFeature implements DynamicFeature {
     private static final List<Class> WHITELISTED_CLASSES = Arrays.asList(); // Add Resource-classes from external libraries we need to use but can't annotate with @unprotected.
+    private static final List<Class> WHITELISTED_PARENT_CLASSES = Arrays.asList();
+
+    private static final List<Class> WHITELISTED_CLASSES_TEST = Arrays.asList(WadlModelProcessor.OptionsHandler.class); // Added for CORS-support
+    private static final List<Class> WHITELISTED_PARENT_CLASSES_TEST = Arrays.asList(OptionsMethodProcessor.class);
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-        if(WHITELISTED_CLASSES.contains(resourceInfo.getResourceClass()) || isOidcMock()) {
+        if( isWhitelistedInProd(resourceInfo) || isWhitelistedWhenNotRunningInProd(resourceInfo)) {
             return;
         }
         context.register(OidcContainerRequestFilter.class);
+    }
+
+    private boolean isWhitelistedInProd(ResourceInfo resourceInfo) {
+        return WHITELISTED_CLASSES.contains(resourceInfo.getResourceClass())
+                || WHITELISTED_PARENT_CLASSES.contains(resourceInfo.getResourceClass().getEnclosingClass());
+    }
+
+    private boolean isWhitelistedWhenNotRunningInProd(ResourceInfo resourceInfo) {
+        return !ServiceUtils.isRunningInProd() &&
+                (isOidcMock()
+                        || WHITELISTED_CLASSES_TEST.contains(resourceInfo.getResourceClass())
+                        || WHITELISTED_PARENT_CLASSES_TEST.contains(resourceInfo.getResourceClass().getEnclosingClass())
+                );
     }
 
     private boolean isOidcMock() {

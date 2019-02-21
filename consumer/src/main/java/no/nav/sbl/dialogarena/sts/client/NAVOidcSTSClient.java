@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.sts.client;
 /* Originally from common-java-modules (no.nav.sbl.dialogarena.common.cxf) */
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.StringUtils;
 import no.nav.sbl.dialogarena.sts.StsType;
 import org.apache.cxf.Bus;
 import org.apache.cxf.ws.security.SecurityConstants;
@@ -39,8 +38,8 @@ public class NAVOidcSTSClient extends STSClient {
     public SecurityToken requestSecurityToken(String appliesTo, String action, String requestType, String binaryExchange) throws Exception {
         ensureTokenStoreExists();
 
-        String userId = getUserId();
-        String key = getTokenStoreKey();
+        final String userId = getUserId();
+        final String key = getTokenStoreKey();
 
         SecurityToken token = tokenStore.getToken(key);
         if (token == null) {
@@ -70,7 +69,11 @@ public class NAVOidcSTSClient extends STSClient {
     }
 
     private String getUserId() {
-        return stsType == SYSTEM_USER_IN_FSS ? StringUtils.toString(getProperty(SecurityConstants.USERNAME)) : SubjectHandler.getUserIdFromToken();
+        return stsType == SYSTEM_USER_IN_FSS ? toString(getProperty(SecurityConstants.USERNAME)) : SubjectHandler.getUserIdFromToken();
+    }
+
+    public static String toString(Object o) {
+        return o != null ? o.toString() : "";
     }
 
     private void ensureTokenStoreExists() {
