@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
-import no.nav.modig.common.MDCOperations;
+import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
