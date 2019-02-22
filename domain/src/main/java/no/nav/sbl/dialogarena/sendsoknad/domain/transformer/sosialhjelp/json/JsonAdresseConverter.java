@@ -60,6 +60,9 @@ public final class JsonAdresseConverter {
                 // "midlertidig" eller gammel løsning (null):
                 
                 final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.adresse");
+                if (faktum == null)
+                    return null;
+
                 final JsonAdresse adresse = tilSystemAdresse(faktum);
                 if (adresse.getType() == Type.POSTBOKS) {
                     return null;
