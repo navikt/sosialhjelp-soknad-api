@@ -4,13 +4,13 @@ prometheus:
   path: /prometheus
 healthcheck:
   liveness:
-    path: /soknad-api/internal/isAlive
+    path: /sosialhjelp/soknad-api/internal/isAlive
     initialDelay: 60
     timeout: 1
     periodSeconds: 10
     failureThreshold: 10
   readiness:
-    path: /soknad-api/internal/isAlive
+    path: /sosialhjelp/soknad-api/internal/isAlive
     initialDelay: 60
     timeout: 1
 resources:
@@ -23,7 +23,7 @@ fasitResources:
   exposed:
   - alias: soknadsosialhjelpSaksoversikt_new
     resourceType: restservice
-    path: /soknad-api/metadata
+    path: /sosialhjelp/soknad-api/metadata
   used:
   - alias: srvsoknadsosialhjelp-server
     resourceType: credential

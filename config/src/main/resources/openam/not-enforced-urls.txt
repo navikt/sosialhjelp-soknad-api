@@ -1,6 +1,6 @@
-https://${DomainName}/soknad-api/internal/selftest*
-https://${DomainName}/soknad-api/internal/isAlive*
-https://${DomainName}/soknad-api/css/*
-https://${DomainName}/soknad-api/img/*
-https://${DomainName}/soknad-api/js/*
-https://${DomainName}/soknad-api/font/*
+https://${DomainName}/sosialhjelp/soknad-api/internal/selftest*
+https://${DomainName}/sosialhjelp/soknad-api/internal/isAlive*
+https://${DomainName}/sosialhjelp/soknad-api/css/*
+https://${DomainName}/sosialhjelp/soknad-api/img/*
+https://${DomainName}/sosialhjelp/soknad-api/js/*
+https://${DomainName}/sosialhjelp/soknad-api/font/*

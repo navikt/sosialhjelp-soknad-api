@@ -26,7 +26,7 @@ public class DevSoknadsosialhjelpServer {
             dataSource = buildDataSource("hsqldb.properties");
         }
 
-        final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/soknad-api", dataSource);
+        final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/sosialhjelp/soknad-api", dataSource);
         if (OidcConfig.isOidcMock()) {
             SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         }

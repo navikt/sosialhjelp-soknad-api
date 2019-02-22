@@ -41,7 +41,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 @Produces(APPLICATION_JSON)
 public class SoknadRessurs {
 
-    public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
+    public static final String XSRF_TOKEN = "XSRF-TOKEN-SOSIALHJELP-SOKNAD-API";
     private static final Logger LOG = LoggerFactory.getLogger(SoknadRessurs.class);
 
     @Inject
