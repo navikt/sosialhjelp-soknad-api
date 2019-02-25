@@ -72,7 +72,11 @@ public class KommuneTilNavEnhetMapper {
             .put("1134", "974616998")    // Suldal
             .put("0532", "974596016")    // Jevnaker
             .put("1401", "974551918")    // Flora
-            .put("1238", "944233199")    // Kvam.
+            .put("1238", "944233199")    // Kvam
+            .put("1933", "921858361")    // Balsfjord og Storfjord
+            .put("0221", "991359583")    // Aurskog-Høland
+            .put("1224", "993975192")    // Kvinnherad
+            .put("1824", "876834162")    // Vefsn
 
             .build();
 
@@ -286,7 +290,12 @@ public class KommuneTilNavEnhetMapper {
                     "1401",
                     "1238",
                     "1939",
-                    "5030"
+                    "5030",
+                    "1933",
+                    "1939",
+                    "0221",
+                    "1224",
+                    "1824"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
