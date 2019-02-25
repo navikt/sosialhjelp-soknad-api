@@ -77,6 +77,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0221", "991359583")    // Aurskog-Høland
             .put("1224", "993975192")    // Kvinnherad
             .put("1824", "876834162")    // Vefsn
+            .put("0815", "979525095")   // Kragerø
 
             .build();
 
@@ -295,7 +296,8 @@ public class KommuneTilNavEnhetMapper {
                     "1939",
                     "0221",
                     "1224",
-                    "1824"
+                    "1824",
+                    "0815"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
