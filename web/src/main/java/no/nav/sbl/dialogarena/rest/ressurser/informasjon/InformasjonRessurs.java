@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.oidc.api.Unprotected;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +132,7 @@ public class InformasjonRessurs {
         return kodeverk.getPoststed(postnummer);
     }
 
+    @Unprotected
     @GET
     @Path("/tekster")
     public Properties hentTekster(@QueryParam("type") String type, @QueryParam("sprak") String sprak) {
