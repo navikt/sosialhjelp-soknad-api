@@ -74,7 +74,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1401", "974551918")    // Flora
             .put("1238", "944233199")    // Kvam
             .put("1933", "921858361")    // Balsfjord og Storfjord
-            .put("0221", "991359583")    // Aurskog-Høland
+            .put("0221", "976637216")    // Aurskog-Høland
             .put("1224", "993975192")    // Kvinnherad
             .put("1824", "876834162")    // Vefsn
             .put("0815", "979525095")   // Kragerø
