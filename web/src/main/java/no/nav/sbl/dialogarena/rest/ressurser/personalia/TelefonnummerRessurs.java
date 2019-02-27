@@ -78,6 +78,12 @@ public class TelefonnummerRessurs {
         final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
                 personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+
+        boolean erEndret = erEndret(telefonnummerFrontend, telefonnummer, personIdentifikator);
+        if (erEndret == false) {
+            return;
+        }
+
         if (telefonnummerFrontend.brukerdefinert) {
             telefonnummer.setKilde(JsonKilde.BRUKER);
             telefonnummer.setVerdi(telefonnummerFrontend.verdi);
@@ -86,6 +92,20 @@ public class TelefonnummerRessurs {
             telefonnummer.setVerdi(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator));
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    private boolean erEndret(TelefonnummerFrontend telefonFrontend, JsonTelefonnummer telefonnummer, String personIdentifikator) {
+        boolean erEndret = true;
+        final boolean brukerdefinert = telefonnummer != null ? telefonnummer.getKilde() == JsonKilde.BRUKER : true;
+        final String systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
+        final String verdi = telefonnummer != null ? telefonnummer.getVerdi() : null;
+
+        if (telefonFrontend.brukerdefinert == brukerdefinert &&
+                telefonFrontend.systemverdi == systemverdi &&
+                telefonFrontend.verdi == verdi) {
+            erEndret = false;
+        }
+        return erEndret;
     }
 
     private void legacyUpdate(String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {

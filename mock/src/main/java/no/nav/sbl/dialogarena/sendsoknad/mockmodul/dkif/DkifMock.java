@@ -25,7 +25,7 @@ public class DkifMock {
         WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()
                 .withPersonident(RIKTIG_IDENT)
                 .withEpostadresse(new WSEpostadresse().withValue(EN_EPOST))
-                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(ET_TELEFONNUMMER))
+                // .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(ET_TELEFONNUMMER))
                 .withReservasjon("TEST");
 
         response.setDigitalKontaktinformasjon(kontaktinformasjon);
