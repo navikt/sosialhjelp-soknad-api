@@ -59,15 +59,11 @@ public class AlternativRepresentasjonRessurs {
     @SjekkTilgangTilSoknad
     public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         erRessursAktiv("jsonRepresentasjon");
+
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         List<AlternativRepresentasjon> representasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
-
-        return representasjoner.stream()
-                .filter(r -> r.getRepresentasjonsType().equals(AlternativRepresentasjonType.JSON))
-                .filter(r -> !r.getFilnavn().contains("vedlegg"))
-                .findFirst()
-                .map(AlternativRepresentasjon::getContent)
-                .orElseThrow(() -> new NotFoundException(String.format("Ingen alternativ representasjon for [%s] funnet (%s)", behandlingsId, soknad.getSoknadPrefix())));
+        byte[] jsonRepresentasjon = getJsonRepresentasjon(representasjoner, behandlingsId, soknad);
+        return jsonRepresentasjon;
     }
 
     private void erRessursAktiv(String metode) {
@@ -77,5 +73,13 @@ public class AlternativRepresentasjonRessurs {
         }
     }
 
+    public static byte[] getJsonRepresentasjon(List<AlternativRepresentasjon> representasjoner, String behandlingsId, WebSoknad soknad){
+        return representasjoner.stream()
+                .filter(r -> r.getRepresentasjonsType().equals(AlternativRepresentasjonType.JSON))
+                .filter(r -> !r.getFilnavn().contains("vedlegg"))
+                .findFirst()
+                .map(AlternativRepresentasjon::getContent)
+                .orElseThrow(() -> new NotFoundException(String.format("Ingen alternativ representasjon for [%s] funnet (%s)", behandlingsId, soknad.getSoknadPrefix())));
+    }
 
 }

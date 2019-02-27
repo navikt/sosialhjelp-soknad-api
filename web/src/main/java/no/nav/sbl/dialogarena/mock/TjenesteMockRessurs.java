@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.svarut.servicesv9.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
@@ -12,9 +14,13 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.AlternativRepresentasjonService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.security.oidc.api.Unprotected;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +44,7 @@ import java.util.zip.ZipOutputStream;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static no.nav.sbl.dialogarena.rest.ressurser.AlternativRepresentasjonRessurs.getJsonRepresentasjon;
 
 @Controller
 @Path("/internal/mock/tjeneste")
@@ -48,12 +55,16 @@ public class TjenesteMockRessurs {
 
     @Inject
     private CacheManager cacheManager;
-
     @Inject
     private InnsendingService innsendingService;
-
     @Inject
     private FiksSender fiksSender;
+    @Inject
+    private AlternativRepresentasjonService alternativRepresentasjonService;
+    @Inject
+    private NavMessageSource messageSource;
+    @Inject
+    private SoknadDataFletter soknadDataFletter;
 
 
     private void clearCache() {
@@ -86,19 +97,25 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
+    @GET
+    @Path("/json/{behandlingsId}")
+    @Unprotected
+    @Produces(APPLICATION_JSON)
+    public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        List<AlternativRepresentasjon> representasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
+        return getJsonRepresentasjon(representasjoner, behandlingsId, soknad);
+    }
 
-    public byte[] createZipByteArray(List<Dokument> dokumenter) throws IOException {
+    private byte[] createZipByteArray(List<Dokument> dokumenter) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
-        try {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
             for (Dokument dokument : dokumenter) {
                 ZipEntry zipEntry = new ZipEntry(dokument.getFilnavn());
                 zipOutputStream.putNextEntry(zipEntry);
                 zipOutputStream.write(IOUtils.toByteArray(dokument.getData().getInputStream()));
                 zipOutputStream.closeEntry();
             }
-        } finally {
-            zipOutputStream.close();
         }
         return byteArrayOutputStream.toByteArray();
     }
