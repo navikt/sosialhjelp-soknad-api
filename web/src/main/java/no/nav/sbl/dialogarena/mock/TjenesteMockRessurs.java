@@ -80,20 +80,14 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/uid")
-    public void setUid(@RequestBody String uid) {
+    public void setUid(@RequestBody MockUid uid) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            MockUid mockUid = mapper.readValue(uid, MockUid.class);
-            final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-            final HttpSession session = attr.getRequest().getSession(true);
-            session.setAttribute("mockRessursUid", mockUid.getUid());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpSession session = attr.getRequest().getSession(true);
+        session.setAttribute("mockRessursUid", uid.getUid());
         clearCache();
     }
 
@@ -169,15 +163,17 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/telefon")
-    public void setTelefon(@RequestBody JsonTelefonnummer jsonTelefonnummer) {
+    public void setTelefon(@RequestBody JsonTelefonnummer jsonTelefonnummer, @QueryParam("fnr") String fnr ) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med uid: " + SubjectHandler.getUserIdFromToken());
+
+        fnr = SubjectHandler.getUserIdFromToken() != null ? SubjectHandler.getUserIdFromToken() : fnr;
+        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med fnr: " + fnr);
         if (jsonTelefonnummer != null){
-            DkifMock.setTelefonnummer(jsonTelefonnummer);
+            DkifMock.setTelefonnummer(jsonTelefonnummer, fnr);
         } else {
-            DkifMock.resetTelefonnummer();
+            DkifMock.resetTelefonnummer(fnr);
         }
         clearCache();
     }

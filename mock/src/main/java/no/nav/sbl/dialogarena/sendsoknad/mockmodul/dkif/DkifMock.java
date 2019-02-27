@@ -25,20 +25,21 @@ public class DkifMock {
 
         try{
             when(mock.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class)))
-                    .thenAnswer((invocationOnMock) -> getOrCreateCurrentUserResponse());
+                    .thenAnswer((invocationOnMock) -> getOrCreateCurrentUserResponse(SubjectHandler.getUserIdFromToken()));
         } catch(HentDigitalKontaktinformasjonPersonIkkeFunnet | HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet | HentDigitalKontaktinformasjonSikkerhetsbegrensing e) {
             throw new RuntimeException(e);
         }
         return mock;
     }
 
-    private static WSHentDigitalKontaktinformasjonResponse getOrCreateCurrentUserResponse() {
+    private static WSHentDigitalKontaktinformasjonResponse getOrCreateCurrentUserResponse(String fnr) {
 
-        WSHentDigitalKontaktinformasjonResponse response = responses.get(SubjectHandler.getUserIdFromToken());
+        WSHentDigitalKontaktinformasjonResponse response = responses.get(fnr);
         if (response == null) {
             response = createNewResponse();
-            responses.put(SubjectHandler.getUserIdFromToken(), response);
+            responses.put(fnr, response);
         }
+        System.out.println(responses);
         return response;
     }
 
@@ -49,17 +50,17 @@ public class DkifMock {
         return response;
     }
 
-    public static void setTelefonnummer(JsonTelefonnummer telefonnummer) {
+    public static void setTelefonnummer(JsonTelefonnummer telefonnummer, String fnr) {
 
-        WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse();
+        WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse(fnr);
         response
                 .getDigitalKontaktinformasjon()
                 .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(telefonnummer.getVerdi()));
     }
 
-    public static void resetTelefonnummer() {
+    public static void resetTelefonnummer(String fnr) {
 
-        WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse();
+        WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse(fnr);
         response.getDigitalKontaktinformasjon().setMobiltelefonnummer(null);
     }
 }
