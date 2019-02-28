@@ -75,15 +75,19 @@ public class TelefonnummerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
-                personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
-        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-        if (telefonnummerFrontend.brukerdefinert) {
-            telefonnummer.setKilde(JsonKilde.BRUKER);
-            telefonnummer.setVerdi(telefonnummerFrontend.verdi);
-        } else if (telefonnummer.getKilde() == JsonKilde.BRUKER) {
-            telefonnummer.setKilde(JsonKilde.SYSTEM);
-            telefonnummer.setVerdi(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator));
+        if (telefonnummerFrontend.verdi == null || telefonnummerFrontend.verdi.equals("")) {
+            personalia.setTelefonnummer(null);
+        } else {
+            final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
+                    personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
+            final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+            if (telefonnummerFrontend.brukerdefinert) {
+                telefonnummer.setKilde(JsonKilde.BRUKER);
+                telefonnummer.setVerdi(telefonnummerFrontend.verdi);
+            } else if (telefonnummer.getKilde() == JsonKilde.BRUKER) {
+                telefonnummer.setKilde(JsonKilde.SYSTEM);
+                telefonnummer.setVerdi(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator));
+            }
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
