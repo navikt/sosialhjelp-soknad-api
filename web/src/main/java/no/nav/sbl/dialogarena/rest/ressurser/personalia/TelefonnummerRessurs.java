@@ -67,10 +67,10 @@ public class TelefonnummerRessurs {
     @PUT
     public void updateTelefonnummer(@PathParam("behandlingsId") String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, telefonnummerFrontend);
         if(telefonnummerFrontend.verdi != null && telefonnummerFrontend.verdi.equals("")) {
             telefonnummerFrontend.verdi = null;
         }
+        update(behandlingsId, telefonnummerFrontend);
         legacyUpdate(behandlingsId, telefonnummerFrontend);
     }
 
@@ -78,18 +78,23 @@ public class TelefonnummerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        if (telefonnummerFrontend.verdi == null || telefonnummerFrontend.verdi.equals("")) {
-            personalia.setTelefonnummer(null);
+        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        final JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
+                personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
+        if (telefonnummerFrontend.brukerdefinert) {
+            if (telefonnummerFrontend.verdi == null) {
+                personalia.setTelefonnummer(null);
+            } else {
+                jsonTelefonnummer.setKilde(JsonKilde.BRUKER);
+                jsonTelefonnummer.setVerdi(telefonnummerFrontend.verdi);
+            }
         } else {
-            final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
-                    personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
-            final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-            if (telefonnummerFrontend.brukerdefinert) {
-                telefonnummer.setKilde(JsonKilde.BRUKER);
-                telefonnummer.setVerdi(telefonnummerFrontend.verdi);
-            } else if (telefonnummer.getKilde() == JsonKilde.BRUKER) {
-                telefonnummer.setKilde(JsonKilde.SYSTEM);
-                telefonnummer.setVerdi(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator));
+            String systemverdiTelefonnummer = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
+            if (systemverdiTelefonnummer == null) {
+                personalia.setTelefonnummer(null);
+            } else {
+                jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
+                jsonTelefonnummer.setVerdi(systemverdiTelefonnummer);
             }
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
