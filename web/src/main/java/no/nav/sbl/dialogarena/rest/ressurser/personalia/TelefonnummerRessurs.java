@@ -68,6 +68,9 @@ public class TelefonnummerRessurs {
     public void updateTelefonnummer(@PathParam("behandlingsId") String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, telefonnummerFrontend);
+        if(telefonnummerFrontend.verdi != null && telefonnummerFrontend.verdi.equals("")) {
+            telefonnummerFrontend.verdi = null;
+        }
         legacyUpdate(behandlingsId, telefonnummerFrontend);
     }
 
@@ -97,11 +100,14 @@ public class TelefonnummerRessurs {
         
         final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon.brukerendrettoggle");
         brukerdefinert.setValue(Boolean.toString(telefonnummerFrontend.brukerdefinert));
+
         faktaService.lagreBrukerFaktum(brukerdefinert);
-        
+        final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
         if (telefonnummerFrontend.verdi != null){
-            final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
             telefon.setValue(telefonnummerFrontend.verdi.substring(3));
+            faktaService.lagreBrukerFaktum(telefon);
+        } else {
+            telefon.setValue(null);
             faktaService.lagreBrukerFaktum(telefon);
         }
     }
