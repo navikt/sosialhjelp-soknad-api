@@ -77,7 +77,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0221", "976637216")    // Aurskog-Høland
             .put("1224", "993975192")    // Kvinnherad
             .put("1824", "876834162")    // Vefsn
-            .put("0815", "979525095")   // Kragerø
+            .put("0815", "979525095")    // Kragerø
 
             .build();
 
@@ -95,7 +95,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0314", "910565338")   // Sagene, Oslo kommune
             .put("0318", "910309935")   // Nordstrand, Oslo kommune
             .put("0319", "910723499")   // Søndre Nordstrand, Oslo kommune
-            .put("0219", "910230484")   // Bærum
+            .put("0219", "910231065")   // Bærum
             .put("1204", "910230905")   // Arna, Bergen kommune
             .put("1203", "910230530")   // Åsane, Bergen kommune
             .put("1205", "910230948")   // Fyllingsdalen, Bergen kommune
