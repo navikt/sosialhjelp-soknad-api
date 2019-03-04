@@ -78,6 +78,9 @@ public class KommuneTilNavEnhetMapper {
             .put("1224", "993975192")    // Kvinnherad
             .put("1824", "876834162")    // Vefsn
             .put("0815", "979525095")    // Kragerø
+            .put("2004", "974601753")    // Hammerfest
+            .put("1127","988052310")     // Randaberg-Kvitsøy
+            
 
             .build();
 
@@ -93,6 +96,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0328", "910229702")   // Grorud, Oslo kommune
             .put("0327", "910589792")   // Stovner, Oslo kommune
             .put("0314", "910565338")   // Sagene, Oslo kommune
+            
             .put("0318", "910309935")   // Nordstrand, Oslo kommune
             .put("0319", "910723499")   // Søndre Nordstrand, Oslo kommune
             .put("0219", "910231065")   // Bærum
@@ -297,7 +301,10 @@ public class KommuneTilNavEnhetMapper {
                     "0221",
                     "1224",
                     "1824",
-                    "0815"
+                    "0815",
+                    "2004",
+                    "1127",
+                    "1144"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
