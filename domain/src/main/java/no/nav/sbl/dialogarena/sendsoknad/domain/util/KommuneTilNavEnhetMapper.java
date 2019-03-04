@@ -73,6 +73,14 @@ public class KommuneTilNavEnhetMapper {
             .put("0532", "974596016")    // Jevnaker
             .put("1401", "974551918")    // Flora
             .put("1238", "944233199")    // Kvam
+            .put("1933", "921858361")    // Balsfjord og Storfjord
+            .put("0221", "976637216")    // Aurskog-Høland
+            .put("1224", "993975192")    // Kvinnherad
+            .put("1824", "876834162")    // Vefsn
+            .put("0815", "979525095")    // Kragerø
+            .put("2004", "974601753")    // Hammerfest
+            .put("1127","988052310")     // Randaberg-Kvitsøy
+            
 
             .build();
 
@@ -88,9 +96,10 @@ public class KommuneTilNavEnhetMapper {
             .put("0328", "910229702")   // Grorud, Oslo kommune
             .put("0327", "910589792")   // Stovner, Oslo kommune
             .put("0314", "910565338")   // Sagene, Oslo kommune
+            
             .put("0318", "910309935")   // Nordstrand, Oslo kommune
             .put("0319", "910723499")   // Søndre Nordstrand, Oslo kommune
-            .put("0219", "910230484")   // Bærum
+            .put("0219", "910231065")   // Bærum
             .put("1204", "910230905")   // Arna, Bergen kommune
             .put("1203", "910230530")   // Åsane, Bergen kommune
             .put("1205", "910230948")   // Fyllingsdalen, Bergen kommune
@@ -286,7 +295,16 @@ public class KommuneTilNavEnhetMapper {
                     "1401",
                     "1238",
                     "1939",
-                    "5030"
+                    "5030",
+                    "1933",
+                    "1939",
+                    "0221",
+                    "1224",
+                    "1824",
+                    "0815",
+                    "2004",
+                    "1127",
+                    "1144"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
