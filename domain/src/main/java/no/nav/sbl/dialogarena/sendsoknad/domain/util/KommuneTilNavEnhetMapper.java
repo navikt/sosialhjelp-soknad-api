@@ -23,6 +23,11 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
 
+    public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
+            .put("0516", "Sør-Fron")
+            .put("0520", "Sør-Fron")
+            .build();
+
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "974605171")    // Horten
             .put("1247", "974600889")    // Askøy
@@ -78,6 +83,9 @@ public class KommuneTilNavEnhetMapper {
             .put("1224", "993975192")    // Kvinnherad
             .put("1824", "876834162")    // Vefsn
             .put("0815", "979525095")    // Kragerø
+            .put("0516", "974543303")    // Nord-Fron
+            .put("0519", "974543303")    // Sør-Fron
+            .put("0820", "974543303")    // Ringebu
 
             .build();
 
