@@ -80,14 +80,9 @@ public class OkonomiskeOpplysningerRessurs {
     private void update(String behandlingsId, VedleggFrontend vedleggFrontend) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("."));
         final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf(".") + 1);
-
-        if (vedleggFrontend.vedleggStatus != null){
-            mapper.updateVedleggStatus(vedleggFrontend, jsonVedleggs, type, tilleggsinfo);
-        }
 
         final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
         final String jsonType = soknadTypeAndPath.getType();
@@ -142,7 +137,6 @@ public class OkonomiskeOpplysningerRessurs {
             mapper.putNettolonnOnPropertiesForJsonTypeJobb(belopNavn, vedleggRad, properties);
             mapper.putBeskrivelseOnRelevantTypes(soknadTypeAndPath, jsonType, vedleggRad, properties);
 
-            faktum.setProperties(properties);
             faktaService.lagreBrukerFaktum(faktum);
         }
     }

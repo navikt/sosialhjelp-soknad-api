@@ -234,13 +234,6 @@ public class OkonomiskeOpplysningerMapper {
                 .withBelop(radFrontend.belop);
     }
 
-    public void updateVedleggStatus(VedleggFrontend vedleggFrontend, List<JsonVedlegg> jsonVedleggs, String type, String tilleggsinfo) {
-        jsonVedleggs.stream()
-                .filter(vedlegg -> vedlegg.getType().equals(type))
-                .filter(vedlegg -> vedlegg.getTilleggsinfo().equals(tilleggsinfo))
-                .findFirst().get().setStatus(vedleggFrontend.vedleggStatus);
-    }
-
     public VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi) {
         final List<String> filer = vedlegg.getFiler().stream().map(JsonFiler::getFilnavn)
                 .collect(Collectors.toList());
