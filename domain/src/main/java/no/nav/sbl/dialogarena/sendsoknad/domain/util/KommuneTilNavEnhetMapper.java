@@ -83,13 +83,11 @@ public class KommuneTilNavEnhetMapper {
             .put("1224", "993975192")    // Kvinnherad
             .put("1824", "876834162")    // Vefsn
             .put("0815", "979525095")    // Kragerø
-            .put("0516", "974543303")    // Nord-Fron
-            .put("0519", "974543303")    // Sør-Fron
-            .put("0820", "974543303")    // Ringebu
+         //   .put("0516", "974543303")    // Nord-Fron
+         //   .put("0519", "974543303")    // Sør-Fron
+         //   .put("0520", "974543303")    // Ringebu
             .put("2004", "974601753")    // Hammerfest
             .put("1127","988052310")     // Randaberg-Kvitsøy
-
-
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -119,6 +117,9 @@ public class KommuneTilNavEnhetMapper {
             .put("1162", "910229567")   // Hundvåg og Storhaug, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
             .put("1165", "910229567")   // Madla, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0403", "910229567")   // Hamar - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0516", "910229567")   // Nord-Fron - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0519", "910229567")   // Sør-Fron - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0520", "910229567")   // Ringebu - OBS: Sendes til vårt orgnummer i FIKS!
 
             .build();
 

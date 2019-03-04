@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AdresseSokServiceTest {
 
     @Test
-    public void skal_bytte_ut_kommunenavn_for_iks_kommuner_soer_fron_til_nord_fron() {
+    public void skalBytteUtKommunenavnForIKSKommunerSoerFronTilNordFron() {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "0519";
         AdresseForslag adresseForslag = AdresseSokService.toAdresseForslag(adresseData);
@@ -18,10 +18,19 @@ public class AdresseSokServiceTest {
     }
 
     @Test
-    public void skal_bytte_ut_kommunenavn_for_iks_kommuner_ringebu_til_nord_fron() {
+    public void skalBytteUtKommunenavnForIKSKommunerRingebuTilNordFron() {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "0520";
         AdresseForslag adresseForslag = AdresseSokService.toAdresseForslag(adresseData);
         assertThat(adresseForslag.kommunenavn).isEqualTo("Nord-Fron");
+    }
+
+    @Test
+    public void skalBytteUtKommunenavnDersomKommunenIkkeErIKSKommune() {
+        AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
+        adresseData.kommunenummer = "2004";
+        adresseData.kommunenavn = "IkkeIKS";
+        AdresseForslag adresseForslag = AdresseSokService.toAdresseForslag(adresseData);
+        assertThat(adresseForslag.kommunenavn).isEqualTo("IkkeIKS");
     }
 }
