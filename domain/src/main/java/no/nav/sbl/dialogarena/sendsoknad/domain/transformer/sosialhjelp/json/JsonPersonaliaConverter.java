@@ -9,8 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn.Kilde;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erIkkeTom;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.faktumVerdiErTrue;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.*;
 
 public final class JsonPersonaliaConverter {
 
@@ -55,8 +54,10 @@ public final class JsonPersonaliaConverter {
         personalia.setOppholdsadresse(JsonAdresseConverter.tilOppholdsadresse(webSoknad));
         personalia.setPostadresse(JsonAdresseConverter.tilPostadresse(webSoknad));
 
-        personalia.getOppholdsadresse().setAdresseValg(
-                JsonAdresseValg.fromValue(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg")));
+        if(!erTom(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg"))){
+            personalia.getOppholdsadresse().setAdresseValg(
+                    JsonAdresseValg.fromValue(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg")));
+        }
 
         return personalia;
     }
