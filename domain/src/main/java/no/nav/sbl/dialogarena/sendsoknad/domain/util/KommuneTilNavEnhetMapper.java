@@ -24,8 +24,8 @@ public class KommuneTilNavEnhetMapper {
     private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
 
     public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
-            .put("0516", "Sør-Fron")
-            .put("0520", "Sør-Fron")
+            .put("0519", "Nord-Fron")
+            .put("0520", "Nord-Fron")
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
