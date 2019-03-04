@@ -272,7 +272,10 @@ public class KommuneTilNavEnhetMapper {
                     "0219",
                     "5001",
                     "1103",
-                    "0403"
+                    "0403",
+                    "0516",
+                    "0519",
+                    "0520"
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
