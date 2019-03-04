@@ -92,7 +92,7 @@ public class ForsorgerpliktRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
         if(forsorgerpliktFrontend.barnebidrag != null) {
             final Faktum barnebidrag = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.barn.true.barnebidrag");
@@ -109,11 +109,10 @@ public class ForsorgerpliktRessurs {
                     if (barn.get("fnr").equals(ansvarFrontend.barn.fodselsnummer)) {
                         barn.put("grad", ansvarFrontend.samvarsgrad != null ? ansvarFrontend.samvarsgrad.toString() : null);
                         barn.put("deltbosted", ansvarFrontend.harDeltBosted != null ? ansvarFrontend.harDeltBosted.toString() : null);
-                        faktum.setProperties(barn);
                     }
+                    faktaService.lagreBrukerFaktum(faktum);
                 }
             }
-            faktaService.lagreSystemFakta(webSoknad, barnefakta);
         }
     }
 
