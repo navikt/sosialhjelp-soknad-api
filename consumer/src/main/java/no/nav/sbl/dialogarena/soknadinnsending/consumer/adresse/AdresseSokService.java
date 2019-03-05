@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import org.springframework.stereotype.Service;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
@@ -47,7 +48,6 @@ public class AdresseSokService {
                 .map(AdresseSokService::toAdresseForslag) // "gateadresse" er hardkodet.
                 .filter(distinkte())
                 .collect(toList());
-
         return forslag;
     }
     
@@ -65,13 +65,13 @@ public class AdresseSokService {
         return forslag;
     }
 
-    private static AdresseForslag toAdresseForslag(AdresseData data) {
+    static AdresseForslag toAdresseForslag(AdresseData data) {
         final AdresseForslag adresse = new AdresseForslag();
         adresse.adresse = data.adressenavn;
         adresse.husnummer = data.husnummer;
         adresse.husbokstav = upperCase(data.husbokstav);
         adresse.kommunenummer = data.kommunenummer;
-        adresse.kommunenavn = data.kommunenavn;
+        adresse.kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(data.kommunenummer, data.kommunenavn);
         adresse.postnummer = data.postnummer;
         adresse.poststed = data.poststed;
         adresse.geografiskTilknytning = data.geografiskTilknytning;
