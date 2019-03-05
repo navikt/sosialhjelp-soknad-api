@@ -44,7 +44,16 @@ public class AdresseTransform {
             return new Adresse();
         }
     }
-    
+
+    public Adresse mapMidlertidigAdresse(XMLBruker soapPerson, Kodeverk kodeverk){
+        this.kodeverk = kodeverk;
+        if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
+            return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
+        } else {
+            return null;
+        }
+    }
+
     public Adresse mapGjeldendeAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 

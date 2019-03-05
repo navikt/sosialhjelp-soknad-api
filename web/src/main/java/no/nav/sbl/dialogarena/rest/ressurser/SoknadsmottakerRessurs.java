@@ -50,11 +50,15 @@ public class SoknadsmottakerRessurs {
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public List<NavEnhetFrontend> hentSoknadsmottaker(@PathParam("behandlingsId") String behandlingsId, @QueryParam("valg") String valg, @Context HttpServletResponse response) {
+    public List<LegacyNavEnhetFrontend> hentSoknadsmottaker(@PathParam("behandlingsId") String behandlingsId, @QueryParam("valg") String valg, @Context HttpServletResponse response) {
+        return findSoknadsmottaker(behandlingsId, valg);
+    }
+
+    public List<LegacyNavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg){
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(webSoknad, valg);
-        
+        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad, valg);
+
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
@@ -66,7 +70,7 @@ public class SoknadsmottakerRessurs {
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
 
-    NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
+    LegacyNavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
         if (navEnhet == null) {
             logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
@@ -77,7 +81,7 @@ public class SoknadsmottakerRessurs {
         }
         
         final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
-        return new NavEnhetFrontend()
+        return new LegacyNavEnhetFrontend()
                 .withEnhetsId(navEnhet.enhetNr)
                 .withEnhetsnavn(navEnhet.navn)
                 .withBydelsnummer(adresseForslag.bydel)
@@ -87,7 +91,7 @@ public class SoknadsmottakerRessurs {
                 .withFeatures(getFeaturesForEnhet(navEnhet.enhetNr));
     }
 
-    public static class NavEnhetFrontend {
+    public static class LegacyNavEnhetFrontend {
         public String enhetsId;
         public String enhetsnavn;
         public String kommunenummer;
@@ -96,41 +100,41 @@ public class SoknadsmottakerRessurs {
         public String sosialOrgnr;
         public Map<String, Boolean> features;
 
-        public NavEnhetFrontend() {
+        public LegacyNavEnhetFrontend() {
 
         }
 
-        NavEnhetFrontend withEnhetsId(String enhetsId) {
+        public LegacyNavEnhetFrontend withEnhetsId(String enhetsId) {
             this.enhetsId = enhetsId;
             return this;
         }
 
-        NavEnhetFrontend withEnhetsnavn(String enhetsnavn) {
+        public LegacyNavEnhetFrontend withEnhetsnavn(String enhetsnavn) {
             this.enhetsnavn = enhetsnavn;
             return this;
         }
 
-        NavEnhetFrontend withKommunenummer(String kommunenummer) {
+        public LegacyNavEnhetFrontend withKommunenummer(String kommunenummer) {
             this.kommunenummer = kommunenummer;
             return this;
         }
 
-        NavEnhetFrontend withKommunenavn(String kommunenavn) {
+        public LegacyNavEnhetFrontend withKommunenavn(String kommunenavn) {
             this.kommunenavn = kommunenavn;
             return this;
         }
 
-        NavEnhetFrontend withBydelsnummer(String bydelsnummer) {
+        public LegacyNavEnhetFrontend withBydelsnummer(String bydelsnummer) {
             this.bydelsnummer = bydelsnummer;
             return this;
         }
 
-        NavEnhetFrontend withSosialOrgnr(String sosialOrgnr) {
+        public LegacyNavEnhetFrontend withSosialOrgnr(String sosialOrgnr) {
             this.sosialOrgnr = sosialOrgnr;
             return this;
         }
 
-        NavEnhetFrontend withFeatures(Map<String, Boolean> features) {
+        public LegacyNavEnhetFrontend withFeatures(Map<String, Boolean> features) {
             this.features = features;
             return this;
         }
@@ -151,7 +155,7 @@ public class SoknadsmottakerRessurs {
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            NavEnhetFrontend other = (NavEnhetFrontend) obj;
+            LegacyNavEnhetFrontend other = (LegacyNavEnhetFrontend) obj;
             if (enhetsId == null) {
                 if (other.enhetsId != null)
                     return false;

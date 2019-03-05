@@ -55,12 +55,17 @@ public class BrukerprofilService {
         XMLBruker xmlBruker = (XMLBruker) response.getPerson();
         return new AdresserOgKontonummer()
                 .withGjeldendeAdresse(finnGjeldendeAdresse(xmlBruker))
+                .withMidlertidigAdresse(finnMidlertidigAdresse(xmlBruker))
                 .withFolkeregistrertAdresse(finnFolkeregistrertAdresse(xmlBruker))
                 .withSekundarAdresse(finnSekundarAdresse(xmlBruker))
                 .withKontonummer(finnKontonummer(xmlBruker))
                 .withUtenlandskBankkonto(erUtenlandskKonto(xmlBruker))
                 .withUtenlandskKontoBanknavn(finnUtenlandsKontoNavn(xmlBruker))
                 .withUtenlandskKontoLand(finnUtenlandskKontoLand(xmlBruker));
+    }
+
+    Adresse finnMidlertidigAdresse(XMLBruker xmlBruker) {
+        return new AdresseTransform().mapMidlertidigAdresse(xmlBruker, kodeverk);
     }
 
     Adresse finnGjeldendeAdresse(XMLBruker xmlBruker) {

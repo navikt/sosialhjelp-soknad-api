@@ -8,10 +8,13 @@ public class AdresserOgKontonummer {
     private boolean utenlandskBankkonto;
     private String utenlandskKontoBanknavn;
     private String utenlandskKontoLand;
+    private Adresse midlertidigAdresse;
 
     public Adresse getGjeldendeAdresse() {
         return gjeldendeAdresse;
     }
+
+    public Adresse getMidlertidigAdresse() { return midlertidigAdresse; }
 
     public Adresse getSekundarAdresse() {
         return sekundarAdresse;
@@ -36,6 +39,8 @@ public class AdresserOgKontonummer {
     public String getUtenlandskKontoLand() {
         return utenlandskKontoLand;
     }
+
+
 
     public AdresserOgKontonummer withGjeldendeAdresse(Adresse gjeldendeAdresse) {
         this.gjeldendeAdresse = gjeldendeAdresse;
@@ -69,6 +74,11 @@ public class AdresserOgKontonummer {
 
     public AdresserOgKontonummer withUtenlandskKontoLand(String utenlandskKontoLand) {
         this.utenlandskKontoLand = utenlandskKontoLand;
+        return this;
+    }
+
+    public AdresserOgKontonummer withMidlertidigAdresse(Adresse midlertidigAdresse) {
+        this.midlertidigAdresse = midlertidigAdresse;
         return this;
     }
 }

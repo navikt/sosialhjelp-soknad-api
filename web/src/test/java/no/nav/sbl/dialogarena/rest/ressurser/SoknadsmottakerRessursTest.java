@@ -18,15 +18,15 @@ public class SoknadsmottakerRessursTest {
         AdresseForslag adresseForslagGateadresse = getAdresseForslagGateadresse();
         NavEnhet navEnhet = getNavEnhet();
 
-        SoknadsmottakerRessurs.NavEnhetFrontend navEnhetFrontend = soknadsmottakerRessurs.mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslagGateadresse, navEnhet);
+        SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend = soknadsmottakerRessurs.mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslagGateadresse, navEnhet);
 
-        assertThat(navEnhetFrontend.enhetsId, is(navEnhet.enhetNr));
-        assertThat(navEnhetFrontend.enhetsnavn, is(navEnhet.navn));
-        assertThat(navEnhetFrontend.kommunenummer, is(adresseForslagGateadresse.kommunenummer));
-        assertThat(navEnhetFrontend.kommunenavn, is(adresseForslagGateadresse.kommunenavn));
-        assertThat(navEnhetFrontend.bydelsnummer, is(adresseForslagGateadresse.bydel));
-        assertThat(navEnhetFrontend.sosialOrgnr, is(navEnhet.sosialOrgnr));
-        assertThat(navEnhetFrontend.features, is(notNullValue()));
+        assertThat(legacyNavEnhetFrontend.enhetsId, is(navEnhet.enhetNr));
+        assertThat(legacyNavEnhetFrontend.enhetsnavn, is(navEnhet.navn));
+        assertThat(legacyNavEnhetFrontend.kommunenummer, is(adresseForslagGateadresse.kommunenummer));
+        assertThat(legacyNavEnhetFrontend.kommunenavn, is(adresseForslagGateadresse.kommunenavn));
+        assertThat(legacyNavEnhetFrontend.bydelsnummer, is(adresseForslagGateadresse.bydel));
+        assertThat(legacyNavEnhetFrontend.sosialOrgnr, is(navEnhet.sosialOrgnr));
+        assertThat(legacyNavEnhetFrontend.features, is(notNullValue()));
 
     }
 
@@ -35,15 +35,15 @@ public class SoknadsmottakerRessursTest {
         AdresseForslag adresseForslagMatrikkeladresse = getAdresseForslagMatrikkeladresse();
         NavEnhet navEnhet = getNavEnhet();
 
-        SoknadsmottakerRessurs.NavEnhetFrontend navEnhetFrontend = soknadsmottakerRessurs.mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslagMatrikkeladresse, navEnhet);
+        SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend = soknadsmottakerRessurs.mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslagMatrikkeladresse, navEnhet);
 
-        assertThat(navEnhetFrontend.enhetsId, is(navEnhet.enhetNr));
-        assertThat(navEnhetFrontend.enhetsnavn, is(navEnhet.navn));
-        assertThat(navEnhetFrontend.kommunenummer, is(adresseForslagMatrikkeladresse.kommunenummer));
-        assertThat(navEnhetFrontend.kommunenavn, is(nullValue()));
-        assertThat(navEnhetFrontend.bydelsnummer, is(nullValue()));
-        assertThat(navEnhetFrontend.sosialOrgnr, is(navEnhet.sosialOrgnr));
-        assertThat(navEnhetFrontend.features, is(notNullValue()));
+        assertThat(legacyNavEnhetFrontend.enhetsId, is(navEnhet.enhetNr));
+        assertThat(legacyNavEnhetFrontend.enhetsnavn, is(navEnhet.navn));
+        assertThat(legacyNavEnhetFrontend.kommunenummer, is(adresseForslagMatrikkeladresse.kommunenummer));
+        assertThat(legacyNavEnhetFrontend.kommunenavn, is(nullValue()));
+        assertThat(legacyNavEnhetFrontend.bydelsnummer, is(nullValue()));
+        assertThat(legacyNavEnhetFrontend.sosialOrgnr, is(navEnhet.sosialOrgnr));
+        assertThat(legacyNavEnhetFrontend.features, is(notNullValue()));
 
     }
 
