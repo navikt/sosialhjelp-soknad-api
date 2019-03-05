@@ -1,13 +1,19 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.inntektsogskatteopplysninger.InntektOgskatteopplysningerConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.Response;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
