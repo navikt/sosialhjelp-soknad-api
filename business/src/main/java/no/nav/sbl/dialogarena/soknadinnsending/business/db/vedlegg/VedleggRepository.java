@@ -27,6 +27,8 @@ public interface VedleggRepository {
 
     Vedlegg hentVedleggMedInnhold(Long vedleggId);
 
+    Long opprettEllerEndreVedleggFromJsonVedlegg(Vedlegg vedlegg, byte[] content);
+
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
     /**

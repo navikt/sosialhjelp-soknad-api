@@ -113,6 +113,33 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
+    public Long opprettEllerEndreVedleggFromJsonVedlegg(final Vedlegg vedlegg, final byte[] content) {
+        if (vedlegg.getVedleggId() == null) {
+            vedlegg.setVedleggId(getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class));
+        }
+        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, " +
+                        " fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
+
+                new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
+                    @Override
+                    protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
+                        Vedlegg.Status opprinneligInnsendingsvalg = vedlegg.getOpprinneligInnsendingsvalg();
+
+                        ps.setLong(1, vedlegg.getVedleggId());
+                        ps.setLong(2, vedlegg.getSoknadId());
+                        ps.setString(3, getSkjemanummerMedTillegg(vedlegg));
+                        ps.setString(4, vedlegg.getNavn());
+                        ps.setString(5, vedlegg.getInnsendingsvalg().toString());
+                        ps.setString(6, opprinneligInnsendingsvalg != null ? opprinneligInnsendingsvalg.toString() : null);
+                        ps.setLong(7, 0);
+                        ps.setString(8, vedlegg.getFillagerReferanse());
+                        lobCreator.setBlobAsBytes(ps, 9, content);
+                    }
+                });
+        return vedlegg.getVedleggId();
+    }
+
+    @Override
     public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
         getJdbcTemplate().update("update vedlegg set navn = ?, innsendingsvalg = ?, aarsak = ?, sha512 = ? where soknad_id = ? and vedlegg_id = ?",
                 vedlegg.getNavn(), vedlegg.getInnsendingsvalg().toString(), vedlegg.getAarsak(), vedlegg.getSha512(), soknadId, vedleggId);

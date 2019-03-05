@@ -30,6 +30,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -276,6 +279,22 @@ public class VedleggService {
         leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
 
         return paakrevdeVedleggVedNyUthenting;
+    }
+
+    public List<Vedlegg> hentPaakrevdeJsonVedlegg(String behandlingsId, JsonInternalSoknad soknad) {
+        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad);
+        jsonVedleggs.forEach(
+                jsonVedlegg -> vedleggRepository.opprettEllerEndreVedleggFromJsonVedlegg(mapToVedlegg(jsonVedlegg, behandlingsId), null));
+        return jsonVedleggs.stream().map(jsonVedlegg -> mapToVedlegg(jsonVedlegg, behandlingsId)).collect(Collectors.toList());
+    }
+
+    private Vedlegg mapToVedlegg(JsonVedlegg jsonVedlegg, String behandlingsId) {
+        return new Vedlegg()
+                .medSkjemaNummer(jsonVedlegg.getType())
+                .medSkjemanummerTillegg(jsonVedlegg.getTilleggsinfo())
+                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves)
+                .medSoknadId(Long.valueOf(behandlingsId))
+                .medNavn("");
     }
 
     private static final VedleggForFaktumStruktur N6_FORVENTNING = new VedleggForFaktumStruktur()

@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
@@ -65,6 +66,9 @@ public class SoknadRessurs {
 
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
+
+    @Inject
+    private LegacyHelper legacyHelper;
 
     @GET
     @Path("/{behandlingsId}")
@@ -175,6 +179,15 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
+    }
+
+    @GET
+    @Path("/{behandlingsId}/jsonVedlegg")
+    @SjekkTilgangTilSoknad
+    public List<Vedlegg> hentPaakrevdeJsonVedlegg(@PathParam("behandlingsId") String behandlingsId) {
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        return vedleggService.hentPaakrevdeJsonVedlegg(behandlingsId, soknad);
     }
 
     @GET
