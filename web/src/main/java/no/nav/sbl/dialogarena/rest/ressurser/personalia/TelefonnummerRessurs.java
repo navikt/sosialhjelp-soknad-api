@@ -67,7 +67,7 @@ public class TelefonnummerRessurs {
     @PUT
     public void updateTelefonnummer(@PathParam("behandlingsId") String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        if(telefonnummerFrontend.verdi != null && telefonnummerFrontend.verdi.equals("")) {
+        if ("".equals(telefonnummerFrontend.verdi)) {
             telefonnummerFrontend.verdi = null;
         }
         update(behandlingsId, telefonnummerFrontend);
