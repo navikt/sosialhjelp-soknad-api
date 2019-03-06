@@ -14,11 +14,13 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Controller;
 
@@ -65,22 +67,28 @@ public class OkonomiskeOpplysningerRessurs {
     @Inject
     private VedleggConverter vedleggConverter;
 
+    @Inject
+    private OpplastetVedleggRepository opplastetVedleggRepository;
+
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier);
-        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
+        final List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
 
         final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
         final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
-        List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
+        final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
 
-        if (jsonVedleggs != null && !jsonVedleggs.isEmpty()){
-            return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
-                    .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()));
-        }
-        return new VedleggFrontends();
+        removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
+        addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
+//        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+//        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+
+        return new VedleggFrontends().withOkonomiskeOpplysninger(paakrevdeVedlegg.stream()
+                .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()));
     }
 
     @PUT
@@ -129,8 +137,18 @@ public class OkonomiskeOpplysningerRessurs {
 
         final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
         final String jsonType = soknadTypeAndPath.getType();
-        final String key = jsonTypeToFaktumKey.get(jsonType);
-        final String belopNavn = jsonTypeToBelopNavn.get(jsonType);
+        String key = jsonTypeToFaktumKey.get(jsonType);
+        String belopNavn = jsonTypeToBelopNavn.get(jsonType);
+
+        if (key == null){
+            if (soknadTypeAndPath.getType().equals("annen") && soknadTypeAndPath.getPath().equals("opplysningerUtgift")){
+                key = "opplysninger.ekstrainfo.utgifter";
+                belopNavn = "utgift";
+            } else if (soknadTypeAndPath.getType().equals("annen") && soknadTypeAndPath.getPath().equals("utbetaling")){
+                key = "opplysninger.inntekt.inntekter.annet";
+                belopNavn = "sum";
+            }
+        }
 
         final List<Faktum> fakta = webSoknad.getFaktaMedKey(key);
 
@@ -152,6 +170,29 @@ public class OkonomiskeOpplysningerRessurs {
 
             faktaService.lagreBrukerFaktum(faktum);
         }
+    }
+
+    private void removeIkkePaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg, List<OpplastetVedlegg> opplastedeVedlegg) {
+        final List<JsonVedlegg> ikkeLengerPaakrevdeVedlegg = jsonVedleggs.stream().filter(vedlegg -> paakrevdeVedlegg.stream().noneMatch(
+                pVedlegg -> vedlegg.getType().equals(pVedlegg.getType()) && vedlegg.getTilleggsinfo().equals(pVedlegg.getTilleggsinfo())
+        )).collect(Collectors.toList());
+
+        jsonVedleggs.removeAll(ikkeLengerPaakrevdeVedlegg);
+
+        for (JsonVedlegg ikkePaakrevdVedlegg : ikkeLengerPaakrevdeVedlegg) {
+            for (OpplastetVedlegg oVedlegg : opplastedeVedlegg) {
+                if (oVedlegg.getVedleggType().getType().equals(ikkePaakrevdVedlegg.getType())
+                        && oVedlegg.getVedleggType().getTilleggsinfo().equals(ikkePaakrevdVedlegg.getTilleggsinfo())){
+                    opplastetVedleggRepository.slettVedlegg(oVedlegg.getUuid(), oVedlegg.getEier());
+                }
+            }
+        }
+    }
+
+    private void addPaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg) {
+        jsonVedleggs.addAll(paakrevdeVedlegg.stream().filter(pVedlegg -> jsonVedleggs.stream().noneMatch(
+                vedlegg -> vedlegg.getType().equals(pVedlegg.getType()) && vedlegg.getTilleggsinfo().equals(pVedlegg.getTilleggsinfo())
+        )).collect(Collectors.toList()));
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

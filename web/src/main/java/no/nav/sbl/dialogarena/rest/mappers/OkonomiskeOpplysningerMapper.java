@@ -143,7 +143,8 @@ public class OkonomiskeOpplysningerMapper {
     public void putBeskrivelseOnRelevantTypes(SoknadTypeAndPath soknadTypeAndPath, String jsonType, VedleggRadFrontend vedleggRad, Map<String, String> properties) {
         if (jsonType.equals("annenBoutgift") || jsonType.equals("barnFritidsaktiviteter") ||
                 jsonType.equals("annenBarneutgift") ||
-                (jsonType.equals("annen") && soknadTypeAndPath.getPath().equals("utbetaling"))){
+                (jsonType.equals("annen") && soknadTypeAndPath.getPath().equals("utbetaling")) ||
+                (jsonType.equals("annen") && soknadTypeAndPath.getPath().equals("opplysningerUtgift"))){
             properties.put(jsonTypeToTittelDelNavn.get(jsonType), vedleggRad.beskrivelse);
         }
     }
@@ -378,6 +379,8 @@ public class OkonomiskeOpplysningerMapper {
             return "arbeid";
         } else if (tilleggsinfo.equals("vedtak") && type.equals("student")){
             return "arbeid";
+        } else if (tilleggsinfo.equals("vedtak") && type.equals("bostotte")){
+            return "inntekt";
         } else {
             if (path.equals("utbetaling") || path.equals("formue")){
                 return "inntekt";
