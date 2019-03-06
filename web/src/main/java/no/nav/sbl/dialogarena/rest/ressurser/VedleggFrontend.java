@@ -10,7 +10,7 @@ public final class VedleggFrontend {
     public String gruppe;
     public List<VedleggRadFrontend> rader;
     public String vedleggStatus;
-    public List<String> filNavn;
+    public List<FilFrontend> filer;
 
     public VedleggFrontend withType(String type) {
         this.type = type;
@@ -32,8 +32,8 @@ public final class VedleggFrontend {
         return this;
     }
 
-    public VedleggFrontend withFilNavn(List<String> filNavn) {
-        this.filNavn = filNavn;
+    public VedleggFrontend withFiler(List<FilFrontend> filer) {
+        this.filer = filer;
         return this;
     }
 }

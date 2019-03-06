@@ -8,14 +8,17 @@ import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Controller;
 
@@ -56,16 +59,26 @@ public class OkonomiskeOpplysningerRessurs {
     @Inject
     private OkonomiskeOpplysningerMapper mapper;
 
+    @Inject
+    private VedleggService vedleggService;
+
+    @Inject
+    private VedleggConverter vedleggConverter;
+
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final List<JsonVedlegg> jsonVedleggs = soknad.getVedlegg().getVedlegg();
-        final JsonOkonomi jsonOkonomi = soknad.getSoknad().getData().getOkonomi();
+        final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier);
+        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
+        final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+
+        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
+        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
+        List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
 
         if (jsonVedleggs != null && !jsonVedleggs.isEmpty()){
             return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
-                    .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi)).collect(Collectors.toList()));
+                    .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()));
         }
         return new VedleggFrontends();
     }

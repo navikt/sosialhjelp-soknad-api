@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.mappers;
 
+import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -12,8 +13,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -234,16 +235,19 @@ public class OkonomiskeOpplysningerMapper {
                 .withBelop(radFrontend.belop);
     }
 
-    public VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi) {
-        final List<String> filer = vedlegg.getFiler().stream().map(JsonFiler::getFilnavn)
-                .collect(Collectors.toList());
+    public VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi, List<OpplastetVedlegg> opplastedeVedlegg) {
+        final List<FilFrontend> filer = vedlegg.getFiler().stream().map(fil -> {
+            final OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn())).findFirst().get();
+            return new FilFrontend().withFilNavn(fil.getFilnavn()).withUuid(opplastetVedlegg.getUuid());
+        }).collect(Collectors.toList());
+
         final List<VedleggRadFrontend> rader = getRader(jsonOkonomi, vedlegg.getType(), vedlegg.getTilleggsinfo());
 
         return new VedleggFrontend().withType(vedlegg.getType() + "." + vedlegg.getTilleggsinfo())
                 .withGruppe(getGruppe(vedlegg.getType(), vedlegg.getTilleggsinfo()))
                 .withRader(rader)
                 .withVedleggStatus(vedlegg.getStatus())
-                .withFilNavn(filer);
+                .withFiler(filer);
     }
 
     private List<VedleggRadFrontend> getRader(JsonOkonomi jsonOkonomi, String type, String tilleggsinfo) {
