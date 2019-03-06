@@ -84,6 +84,9 @@ public class KontonummerRessurs {
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.setKilde(JsonKilde.BRUKER);
+            if ("".equals(kontonummerFrontend.verdi)) {
+                kontonummerFrontend.verdi = null;
+            }
             kontonummer.setVerdi(kontonummerFrontend.verdi);
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto);
         } else if (kontonummer.getKilde() == JsonKilde.BRUKER) {
