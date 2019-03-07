@@ -17,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -75,7 +77,9 @@ public class OkonomiskeOpplysningerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
-        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
+        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
+                soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
+                soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
         final List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
 
         final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
@@ -84,8 +88,11 @@ public class OkonomiskeOpplysningerRessurs {
 
         removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
-//        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-//        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+
+        final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        utenFaktumSoknad.getJsonInternalSoknad().setVedlegg(jsonVedleggs.isEmpty() ? null : new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(utenFaktumSoknad, eier);
 
         return new VedleggFrontends().withOkonomiskeOpplysninger(paakrevdeVedlegg.stream()
                 .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()));
@@ -94,7 +101,7 @@ public class OkonomiskeOpplysningerRessurs {
     @PUT
     public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-//        update(behandlingsId, vedleggFrontend);
+        update(behandlingsId, vedleggFrontend);
         legacyUpdate(behandlingsId, vedleggFrontend);
     }
 
@@ -176,6 +183,9 @@ public class OkonomiskeOpplysningerRessurs {
         final List<JsonVedlegg> ikkeLengerPaakrevdeVedlegg = jsonVedleggs.stream().filter(vedlegg -> paakrevdeVedlegg.stream().noneMatch(
                 pVedlegg -> vedlegg.getType().equals(pVedlegg.getType()) && vedlegg.getTilleggsinfo().equals(pVedlegg.getTilleggsinfo())
         )).collect(Collectors.toList());
+
+        ikkeLengerPaakrevdeVedlegg.removeAll(ikkeLengerPaakrevdeVedlegg.stream()
+                .filter(vedlegg -> vedlegg.getType().equals("annet") && vedlegg.getTilleggsinfo().equals("annet")).collect(Collectors.toList()));
 
         jsonVedleggs.removeAll(ikkeLengerPaakrevdeVedlegg);
 
