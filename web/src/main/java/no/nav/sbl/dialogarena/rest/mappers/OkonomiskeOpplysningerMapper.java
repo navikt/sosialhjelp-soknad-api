@@ -291,31 +291,36 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private List<VedleggRadFrontend> getRadListFromUtbetaling(JsonOkonomi jsonOkonomi, String jsonType) {
-        return jsonOkonomi.getOpplysninger().getUtbetaling().stream()
+        return jsonOkonomi.getOpplysninger().getUtbetaling().isEmpty() ? Collections.singletonList(new VedleggRadFrontend()) :
+                jsonOkonomi.getOpplysninger().getUtbetaling().stream()
                 .filter(inntekt -> inntekt.getType().equals(jsonType))
                 .map(this::getRadFromUtbetaling).collect(Collectors.toList());
     }
 
     private List<VedleggRadFrontend> getRadListFromOpplysningerUtgift(JsonOkonomi jsonOkonomi, String jsonType) {
-        return jsonOkonomi.getOpplysninger().getUtgift().stream()
+        return jsonOkonomi.getOpplysninger().getUtgift().isEmpty() ? Collections.singletonList(new VedleggRadFrontend()) :
+                jsonOkonomi.getOpplysninger().getUtgift().stream()
                 .filter(utgift -> utgift.getType().equals(jsonType))
                 .map(utgift -> getRadFromOpplysningerUtgift(utgift, jsonType)).collect(Collectors.toList());
     }
 
     private List<VedleggRadFrontend> getRadListFromInntekt(JsonOkonomi jsonOkonomi, String jsonType) {
-        return jsonOkonomi.getOversikt().getInntekt().stream()
+        return jsonOkonomi.getOversikt().getInntekt().isEmpty() ? Collections.singletonList(new VedleggRadFrontend()) :
+                jsonOkonomi.getOversikt().getInntekt().stream()
                 .filter(inntekt-> inntekt.getType().equals(jsonType))
                 .map(inntekt -> getRadFromInntekt(inntekt, jsonType)).collect(Collectors.toList());
     }
 
     private List<VedleggRadFrontend> getRadListFromOversiktUtgift(JsonOkonomi jsonOkonomi, String jsonType) {
-        return jsonOkonomi.getOversikt().getUtgift().stream()
+        return jsonOkonomi.getOversikt().getUtgift().isEmpty() ? Collections.singletonList(new VedleggRadFrontend()) :
+                jsonOkonomi.getOversikt().getUtgift().stream()
                 .filter(utgift -> utgift.getType().equals(jsonType))
                 .map(utgift -> getRadFromOversiktUtgift(utgift, jsonType)).collect(Collectors.toList());
     }
 
     private List<VedleggRadFrontend> getRadListFromFormue(JsonOkonomi jsonOkonomi, String jsonType) {
-        return jsonOkonomi.getOversikt().getFormue().stream()
+        return jsonOkonomi.getOversikt().getFormue().isEmpty() ? Collections.singletonList(new VedleggRadFrontend()) :
+                jsonOkonomi.getOversikt().getFormue().stream()
                 .filter(utgift -> utgift.getType().equals(jsonType))
                 .map(formue -> new VedleggRadFrontend()
                         .withBelop(formue.getBelop()))
@@ -330,7 +335,7 @@ public class OkonomiskeOpplysningerMapper {
         } else if (utbetaling.getNetto() != null) {
             return new VedleggRadFrontend().withBelop(new Integer(String.valueOf(utbetaling.getNetto())));
         }
-        return null;
+        return new VedleggRadFrontend();
     }
 
     private VedleggRadFrontend getRadFromOpplysningerUtgift(JsonOkonomiOpplysningUtgift utgift, String jsonType) {
@@ -352,7 +357,7 @@ public class OkonomiskeOpplysningerMapper {
         } else if (inntekt.getNetto() != null) {
             return new VedleggRadFrontend().withBelop(inntekt.getNetto());
         }
-        return null;
+        return new VedleggRadFrontend();
     }
 
     private VedleggRadFrontend getRadFromOversiktUtgift(JsonOkonomioversiktUtgift utgift, String jsonType) {
