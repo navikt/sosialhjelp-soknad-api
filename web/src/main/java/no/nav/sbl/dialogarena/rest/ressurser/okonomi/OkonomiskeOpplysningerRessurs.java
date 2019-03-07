@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper;
 import no.nav.sbl.dialogarena.rest.mappers.SoknadTypeAndPath;
+import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
@@ -86,7 +87,7 @@ public class OkonomiskeOpplysningerRessurs {
         final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
         final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
 
-        removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
+        final List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
 
         final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
@@ -94,8 +95,9 @@ public class OkonomiskeOpplysningerRessurs {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(utenFaktumSoknad, eier);
 
-        return new VedleggFrontends().withOkonomiskeOpplysninger(paakrevdeVedlegg.stream()
-                .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()));
+        return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
+                .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()))
+                .withSlettedeVedlegg(slettedeVedlegg);
     }
 
     @PUT
@@ -109,8 +111,8 @@ public class OkonomiskeOpplysningerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
-        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("."));
-        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf(".") + 1);
+        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));
+        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf("|") + 1);
 
         final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
         final String jsonType = soknadTypeAndPath.getType();
@@ -139,8 +141,8 @@ public class OkonomiskeOpplysningerRessurs {
     private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("."));
-        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf(".") + 1);
+        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));
+        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf("|") + 1);
 
         final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
         final String jsonType = soknadTypeAndPath.getType();
@@ -179,7 +181,7 @@ public class OkonomiskeOpplysningerRessurs {
         }
     }
 
-    private void removeIkkePaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg, List<OpplastetVedlegg> opplastedeVedlegg) {
+    private List<VedleggFrontend> removeIkkePaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg, List<OpplastetVedlegg> opplastedeVedlegg) {
         final List<JsonVedlegg> ikkeLengerPaakrevdeVedlegg = jsonVedleggs.stream().filter(vedlegg -> paakrevdeVedlegg.stream().noneMatch(
                 pVedlegg -> vedlegg.getType().equals(pVedlegg.getType()) && vedlegg.getTilleggsinfo().equals(pVedlegg.getTilleggsinfo())
         )).collect(Collectors.toList());
@@ -189,6 +191,8 @@ public class OkonomiskeOpplysningerRessurs {
 
         jsonVedleggs.removeAll(ikkeLengerPaakrevdeVedlegg);
 
+        final List<VedleggFrontend> slettedeVedlegg = new ArrayList<>();
+
         for (JsonVedlegg ikkePaakrevdVedlegg : ikkeLengerPaakrevdeVedlegg) {
             for (OpplastetVedlegg oVedlegg : opplastedeVedlegg) {
                 if (oVedlegg.getVedleggType().getType().equals(ikkePaakrevdVedlegg.getType())
@@ -196,7 +200,17 @@ public class OkonomiskeOpplysningerRessurs {
                     opplastetVedleggRepository.slettVedlegg(oVedlegg.getUuid(), oVedlegg.getEier());
                 }
             }
+
+            if (ikkePaakrevdVedlegg.getFiler() != null && !ikkePaakrevdVedlegg.getFiler().isEmpty()){
+                slettedeVedlegg.add(new VedleggFrontend()
+                        .withType(ikkePaakrevdVedlegg.getType() + "|" + ikkePaakrevdVedlegg.getTilleggsinfo())
+                        .withFiler(ikkePaakrevdVedlegg.getFiler().stream()
+                                .map(fil -> new FilFrontend().withFilNavn(fil.getFilnavn()))
+                                .collect(Collectors.toList())));
+            }
         }
+
+        return slettedeVedlegg;
     }
 
     private void addPaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg) {
@@ -208,9 +222,15 @@ public class OkonomiskeOpplysningerRessurs {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class VedleggFrontends {
         public List<VedleggFrontend> okonomiskeOpplysninger;
+        public List<VedleggFrontend> slettedeVedlegg;
 
         public VedleggFrontends withOkonomiskeOpplysninger(List<VedleggFrontend> okonomiskeOpplysninger) {
             this.okonomiskeOpplysninger = okonomiskeOpplysninger;
+            return this;
+        }
+
+        public VedleggFrontends withSlettedeVedlegg(List<VedleggFrontend> slettedeVedlegg) {
+            this.slettedeVedlegg = slettedeVedlegg;
             return this;
         }
     }

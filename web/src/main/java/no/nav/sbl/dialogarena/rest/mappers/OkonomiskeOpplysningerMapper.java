@@ -244,7 +244,7 @@ public class OkonomiskeOpplysningerMapper {
 
         final List<VedleggRadFrontend> rader = getRader(jsonOkonomi, vedlegg.getType(), vedlegg.getTilleggsinfo());
 
-        return new VedleggFrontend().withType(vedlegg.getType() + "." + vedlegg.getTilleggsinfo())
+        return new VedleggFrontend().withType(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo())
                 .withGruppe(getGruppe(vedlegg.getType(), vedlegg.getTilleggsinfo()))
                 .withRader(rader)
                 .withVedleggStatus(vedlegg.getStatus())
