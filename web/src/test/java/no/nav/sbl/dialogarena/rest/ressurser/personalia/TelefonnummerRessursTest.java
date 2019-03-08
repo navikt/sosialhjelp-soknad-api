@@ -77,7 +77,7 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.verdi, is(TELEFONNUMMER_SYSTEM));
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi, is(TELEFONNUMMER_SYSTEM));
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM));
         assertThat(telefonnummerFrontend.brukerdefinert, is(false));
     }
@@ -90,7 +90,7 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.verdi, is(TELEFONNUMMER_SYSTEM));
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi, is(TELEFONNUMMER_SYSTEM));
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM_OPPDATERT));
         assertThat(telefonnummerFrontend.brukerdefinert, is(false));
     }
@@ -103,7 +103,7 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.verdi, nullValue());
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(telefonnummerFrontend.systemverdi, nullValue());
         assertThat(telefonnummerFrontend.brukerdefinert, is(true));
     }
@@ -116,7 +116,7 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.verdi, is(TELEFONNUMMER_BRUKER));
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi, is(TELEFONNUMMER_BRUKER));
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM));
         assertThat(telefonnummerFrontend.brukerdefinert, is(true));
     }
@@ -128,7 +128,7 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
                 .withBrukerdefinert(true)
-                .withVerdi(TELEFONNUMMER_BRUKER);
+                .withBrukerutfyltVerdi(TELEFONNUMMER_BRUKER);
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend);
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
@@ -144,7 +144,7 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
                 .withBrukerdefinert(true)
-                .withVerdi(TELEFONNUMMER_BRUKER);
+                .withBrukerutfyltVerdi(TELEFONNUMMER_BRUKER);
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
