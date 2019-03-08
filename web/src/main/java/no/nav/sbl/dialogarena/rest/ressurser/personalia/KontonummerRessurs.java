@@ -91,7 +91,9 @@ public class KontonummerRessurs {
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto);
         } else if (kontonummer.getKilde() == JsonKilde.BRUKER) {
             kontonummer.setKilde(JsonKilde.SYSTEM);
-            kontonummer.setVerdi(kontonummerSystemdata.innhentSystemverdiKontonummer(personIdentifikator));
+            String systemverdiKontonummer = kontonummerSystemdata.innhentSystemverdiKontonummer(personIdentifikator);
+            String verdi = systemverdiKontonummer.replaceAll("[ \\.]", "");
+            kontonummer.setVerdi(verdi);
             kontonummer.setHarIkkeKonto(null);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);

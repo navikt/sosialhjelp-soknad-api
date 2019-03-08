@@ -31,7 +31,8 @@ public class BrukerprofilMock {
 
     private static final String BANKKONTO_LANDKODE = "NOR";
     private static final String BANKKONTO_BANK = "Nordea";
-    private static final String BANKKONTO_KONTONUMMER = "9876 98 98765";
+    private static final String BANKKONTO_KONTONUMMER = "98769898765";
+    private static final String BANKKONTO_KONTONUMMER_NORGE = "49250000005"; // Gyldig testnummer
 
     public static final String POSTTYPE_NORSK = "BOSTEDSADRESSE";
     public static final String POSTTYPE_UTENLANDSK = "UTENLANDSK_ADRESSE";
@@ -210,7 +211,7 @@ public class BrukerprofilMock {
         xmlNorskIdent.setIdent(FODSELSNUMMER);
         xmlBruker.setIdent(xmlNorskIdent);
 
-        xmlBruker.setBankkonto(utenlandskBankkonto());
+        xmlBruker.setBankkonto(norskBankkonto());
 
         return xmlBruker;
     }
@@ -229,4 +230,18 @@ public class BrukerprofilMock {
 
         return bankkonto;
     }
+
+    private XMLBankkonto norskBankkonto() {
+        XMLLandkoder landkoder = new XMLLandkoder();
+        landkoder.setValue(BANKKONTO_LANDKODE);
+
+        XMLBankkontonummerUtland bankkontonummer = new XMLBankkontonummerUtland();
+        bankkontonummer.setBanknavn(BANKKONTO_BANK);
+        bankkontonummer.setBankkontonummer(BANKKONTO_KONTONUMMER_NORGE);
+
+        XMLBankkontoNorge bankkonto = new XMLBankkontoNorge();
+        bankkonto.setBankkonto(bankkontonummer);
+        return bankkonto;
+    }
+
 }
