@@ -77,7 +77,7 @@ public class KontonummerRessursTest {
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
-        assertThat(kontonummerFrontend.verdi, is(KONTONUMMER_SYSTEM));
+        assertThat(kontonummerFrontend.brukerutfyltVerdi, is(KONTONUMMER_SYSTEM));
         assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM));
         assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
         assertThat(kontonummerFrontend.brukerdefinert, is(false));
@@ -91,7 +91,7 @@ public class KontonummerRessursTest {
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
-        assertThat(kontonummerFrontend.verdi, is(KONTONUMMER_SYSTEM));
+        assertThat(kontonummerFrontend.brukerutfyltVerdi, is(KONTONUMMER_SYSTEM));
         assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM_OPPDATERT));
         assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
         assertThat(kontonummerFrontend.brukerdefinert, is(false));
@@ -105,7 +105,7 @@ public class KontonummerRessursTest {
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
-        assertThat(kontonummerFrontend.verdi, is(KONTONUMMER_BRUKER));
+        assertThat(kontonummerFrontend.brukerutfyltVerdi, is(KONTONUMMER_BRUKER));
         assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM));
         assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
         assertThat(kontonummerFrontend.brukerdefinert, is(true));
@@ -119,7 +119,7 @@ public class KontonummerRessursTest {
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
-        assertThat(kontonummerFrontend.verdi, nullValue());
+        assertThat(kontonummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(kontonummerFrontend.systemverdi, nullValue());
         assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
         assertThat(kontonummerFrontend.brukerdefinert, is(false));
@@ -132,7 +132,7 @@ public class KontonummerRessursTest {
 
         final KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
                 .withBrukerdefinert(true)
-                .withVerdi(KONTONUMMER_BRUKER);
+                .withBrukerutfyltVerdi(KONTONUMMER_BRUKER);
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
