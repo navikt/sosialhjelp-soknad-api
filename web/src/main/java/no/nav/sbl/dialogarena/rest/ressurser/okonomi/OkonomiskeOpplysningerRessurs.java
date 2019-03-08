@@ -80,7 +80,7 @@ public class OkonomiskeOpplysningerRessurs {
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
                 soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
-                soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
+                        soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
         final List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
 
         final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
@@ -134,6 +134,8 @@ public class OkonomiskeOpplysningerRessurs {
                 mapper.addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
                 break;
         }
+
+        setVedleggStatus(vedleggFrontend, soknad, type, tilleggsinfo);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
@@ -217,6 +219,15 @@ public class OkonomiskeOpplysningerRessurs {
         jsonVedleggs.addAll(paakrevdeVedlegg.stream().filter(pVedlegg -> jsonVedleggs.stream().noneMatch(
                 vedlegg -> vedlegg.getType().equals(pVedlegg.getType()) && vedlegg.getTilleggsinfo().equals(pVedlegg.getTilleggsinfo())
         )).collect(Collectors.toList()));
+    }
+
+    private void setVedleggStatus(VedleggFrontend vedleggFrontend, SoknadUnderArbeid soknad, String type, String tilleggsinfo) {
+        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
+                soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
+                        soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
+
+        jsonVedleggs.stream().filter(vedlegg -> vedlegg.getType().equals(type) && vedlegg.getTilleggsinfo().equals(tilleggsinfo))
+                .findFirst().get().setStatus(vedleggFrontend.vedleggStatus);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

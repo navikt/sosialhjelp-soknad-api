@@ -391,6 +391,9 @@ public class OkonomiskeOpplysningerMapper {
                 return "inntekt";
             }
             if (path.equals("opplysningerUtgift") || path.equals("oversiktUtgift")){
+                if (type.equals("annet") && tilleggsinfo.equals("annet")){
+                    return "andre utgifter";
+                }
                 return "utgifter";
             }
         }
