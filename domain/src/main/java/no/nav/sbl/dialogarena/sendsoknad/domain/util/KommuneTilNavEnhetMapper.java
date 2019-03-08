@@ -28,7 +28,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0520", "Nord-Fron") // Ringebu
             .build();
 
-    private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
+    public static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "974605171")    // Horten
             .put("1247", "974600889")    // Askøy
             .put("0806", "995509970")    // Skien
