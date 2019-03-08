@@ -77,7 +77,7 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.brukerutfyltVerdi, is(TELEFONNUMMER_SYSTEM));
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM));
         assertThat(telefonnummerFrontend.brukerdefinert, is(false));
     }
@@ -90,7 +90,7 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.brukerutfyltVerdi, is(TELEFONNUMMER_SYSTEM));
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM_OPPDATERT));
         assertThat(telefonnummerFrontend.brukerdefinert, is(false));
     }
