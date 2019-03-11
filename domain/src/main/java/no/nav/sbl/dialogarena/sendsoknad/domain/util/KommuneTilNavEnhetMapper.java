@@ -90,7 +90,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1127","988052310")     // Randaberg-Kvitsøy
             .build();
 
-    private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
+    public static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "910940066")   // Horten
             .put("1208", "910230964")   // Årstad, Bergen kommune
             .put("1209", "910230158")   // Bergenhus, Bergen kommune
@@ -453,7 +453,7 @@ public class KommuneTilNavEnhetMapper {
         return isProduction() ? PROD_ORGNR : TEST_ORGNR;
     }
 
-    private static boolean isProduction() {
+    public static boolean isProduction() {
         return "p".equals(System.getProperty("environment.name"));
     }
 }
