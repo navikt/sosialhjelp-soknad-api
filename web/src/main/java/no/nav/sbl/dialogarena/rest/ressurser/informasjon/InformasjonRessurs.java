@@ -312,22 +312,27 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/tilgjengelige_kommuner")
-    public ArrayList<TilgjengeligKommuneFrontend> hentAktiviteter() {
+    public List<TilgjengeligKommuneFrontend> hentAktiviteter() {
         final Map<String, String> tilgjengeligeKommuner = KommuneTilNavEnhetMapper.isProduction() ? PROD_ORGANISASJONSNUMMER : TEST_ORGANISASJONSNUMMER;
-        ArrayList<TilgjengeligKommuneFrontend> tilgjengeligKommunerFrontend = new ArrayList<>();
-        tilgjengeligeKommuner.forEach((kommune, orgnummer) ->{
-            TilgjengeligKommuneFrontend tilgjengeligKommuneFrontend = new TilgjengeligKommuneFrontend();
-            tilgjengeligKommuneFrontend.kommune = kommune;
-            tilgjengeligKommuneFrontend.orgnummer = orgnummer;
-            tilgjengeligKommunerFrontend.add(tilgjengeligKommuneFrontend);
-        });
-        return tilgjengeligKommunerFrontend;
+        return tilgjengeligeKommuner.entrySet().stream().map((entry) ->
+                new TilgjengeligKommuneFrontend().withKommune(entry.getKey()).withOrgnummer(entry.getValue()))
+                .collect(Collectors.toList());
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class TilgjengeligKommuneFrontend {
         public String kommune;
         public String orgnummer;
+
+        public TilgjengeligKommuneFrontend withKommune(String kommune) {
+            this.kommune = kommune;
+            return this;
+        }
+
+        public TilgjengeligKommuneFrontend withOrgnummer(String orgnummer) {
+            this.orgnummer = orgnummer;
+            return this;
+        }
 
     }
 
