@@ -313,7 +313,8 @@ public class InformasjonRessurs {
     @GET
     @Path("/tilgjengelige_kommuner")
     public List<TilgjengeligKommuneFrontend> hentAktiviteter() {
-        final Map<String, String> tilgjengeligeKommuner = KommuneTilNavEnhetMapper.isProduction() ? PROD_ORGANISASJONSNUMMER : TEST_ORGANISASJONSNUMMER;
+        final Map<String, String> tilgjengeligeKommuner = KommuneTilNavEnhetMapper.isProduction() ?
+                PROD_ORGANISASJONSNUMMER : TEST_ORGANISASJONSNUMMER;
         return tilgjengeligeKommuner.entrySet().stream().map((entry) ->
                 new TilgjengeligKommuneFrontend().withKommune(entry.getKey()).withOrgnummer(entry.getValue()))
                 .collect(Collectors.toList());
