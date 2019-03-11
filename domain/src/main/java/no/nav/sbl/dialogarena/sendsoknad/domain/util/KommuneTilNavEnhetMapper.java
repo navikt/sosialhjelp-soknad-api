@@ -24,11 +24,11 @@ public class KommuneTilNavEnhetMapper {
     private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
 
     public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
-            .put("0519", "Nord-Fron") // Sør-Fron
-            .put("0520", "Nord-Fron") // Ringebu
+            .put("0519", "Nord-Fron")
+            .put("0520", "Nord-Fron")
             .build();
 
-    public static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
+    private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "974605171")    // Horten
             .put("1247", "974600889")    // Askøy
             .put("0806", "995509970")    // Skien
@@ -90,7 +90,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1127","988052310")     // Randaberg-Kvitsøy
             .build();
 
-    public static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
+    private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "910940066")   // Horten
             .put("1208", "910230964")   // Årstad, Bergen kommune
             .put("1209", "910230158")   // Bergenhus, Bergen kommune
@@ -453,7 +453,7 @@ public class KommuneTilNavEnhetMapper {
         return isProduction() ? PROD_ORGNR : TEST_ORGNR;
     }
 
-    public static boolean isProduction() {
+    private static boolean isProduction() {
         return "p".equals(System.getProperty("environment.name"));
     }
 }
