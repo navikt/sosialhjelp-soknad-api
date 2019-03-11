@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.PROD_ORGANISASJONSNUMMER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.TEST_ORGANISASJONSNUMMER;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
@@ -312,7 +313,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/tilgjengelige_kommuner")
     public Map<String, String> hentAktiviteter() {
-        return PROD_ORGANISASJONSNUMMER;
+        return KommuneTilNavEnhetMapper.isProduction() ? PROD_ORGANISASJONSNUMMER : TEST_ORGANISASJONSNUMMER;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
