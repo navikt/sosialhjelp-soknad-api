@@ -316,7 +316,10 @@ public class KommuneTilNavEnhetMapper {
                     "0815",
                     "2004",
                     "1127",
-                    "1144"
+                    "1144",
+                    "0516",
+                    "0519",
+                    "0520"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
