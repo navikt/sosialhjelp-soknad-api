@@ -21,9 +21,12 @@ resources:
     memory: 2Gi
 fasitResources:
   exposed:
-  - alias: soknadsosialhjelpSaksoversikt_new
+  - alias: sosialhjelpSoknadSaksoversikt
     resourceType: restservice
     path: /sosialhjelp/soknad-api/metadata
+  - alias: sosialhjelpSoknadSaksoversiktOidc
+    resourceType: restservice
+    path: /sosialhjelp/soknad-api/metadata/oidc
   used:
   - alias: srvsoknadsosialhjelp-server
     resourceType: credential
