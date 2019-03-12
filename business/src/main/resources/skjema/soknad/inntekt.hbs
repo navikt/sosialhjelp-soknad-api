@@ -98,6 +98,12 @@
                                 </span>
                             </li>
                         </ul>
+                        {{#if @root.utvidetSoknad}}
+                            {{#if verdi}}
+                            {{else}}
+                                {{{settInnInfotekst "informasjon.husbanken.bostotte"}}}
+                            {{/if}}
+                        {{/if}}
                     </li>
                 {{else}}
                     <li>
