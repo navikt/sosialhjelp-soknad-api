@@ -87,6 +87,8 @@ public class BosituasjonRessurs {
                 annenBosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
                 annenBosituasjon.setValue(tilBotypeStreng(bosituasjonFrontend.botype));
             } else {
+                annenBosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
+                annenBosituasjon.setValue(null);
                 bosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
                 bosituasjon.setValue(tilBotypeStreng(bosituasjonFrontend.botype));
             }
