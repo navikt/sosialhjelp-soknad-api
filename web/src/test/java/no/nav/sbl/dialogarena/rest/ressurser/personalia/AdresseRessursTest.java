@@ -161,7 +161,7 @@ public class AdresseRessursTest {
 
         AdresseFrontend adresseFrontend = new AdresseFrontend();
         adresseFrontend.setValg(JsonAdresseValg.FOLKEREGISTRERT);
-        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -182,7 +182,7 @@ public class AdresseRessursTest {
 
         AdresseFrontend adresseFrontend = new AdresseFrontend();
         adresseFrontend.setValg(JsonAdresseValg.MIDLERTIDIG);
-        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -204,7 +204,7 @@ public class AdresseRessursTest {
         adresseFrontend.setType("gateadresse");
         adresseFrontend.setGateadresse(new GateadresseFrontend().withGatenavn("Søknadsgata"));
         adresseFrontend.setValg(JsonAdresseValg.SOKNAD);
-        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();

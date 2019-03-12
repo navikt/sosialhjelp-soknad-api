@@ -89,7 +89,7 @@ public class AdresseRessurs {
     }
 
     @PUT
-    public List<NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresseFrontend adresseFrontend) {
+    public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresseFrontend adresseFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, adresseFrontend);
         legacyUpdate(behandlingsId, adresseFrontend);
@@ -98,18 +98,14 @@ public class AdresseRessurs {
                 .stream().map(this::mapFromLegacyNavEnhetFrontend).collect(Collectors.toList());
     }
 
-    private NavEnhetFrontend mapFromLegacyNavEnhetFrontend(SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend) {
-        return new NavEnhetFrontend()
-                .withEnhetsId(legacyNavEnhetFrontend.enhetsId)
+    private NavEnhetRessurs.NavEnhetFrontend mapFromLegacyNavEnhetFrontend(SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend) {
+        return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(legacyNavEnhetFrontend.enhetsnavn)
-                .withBydelsnummer(legacyNavEnhetFrontend.bydelsnummer)
-                .withKommunenummer(legacyNavEnhetFrontend.kommunenummer)
                 .withKommunenavn(legacyNavEnhetFrontend.kommunenavn)
-                .withSosialOrgnr(legacyNavEnhetFrontend.sosialOrgnr)
-                .withFeatures(legacyNavEnhetFrontend.features);
+                .withOrgnr(legacyNavEnhetFrontend.sosialOrgnr);
     }
 
-    private List<NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg) {
+    private List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
@@ -126,7 +122,7 @@ public class AdresseRessurs {
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
 
-    private NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
+    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
         if (navEnhet == null) {
             logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
@@ -137,14 +133,10 @@ public class AdresseRessurs {
         }
 
         final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
-        return new NavEnhetFrontend()
-                .withEnhetsId(navEnhet.enhetNr)
+        return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
-                .withBydelsnummer(adresseForslag.bydel)
-                .withKommunenummer(adresseForslag.kommunenummer)
                 .withKommunenavn(adresseForslag.kommunenavn)
-                .withSosialOrgnr((digisosKommune) ? navEnhet.sosialOrgnr : null)
-                .withFeatures(getFeaturesForEnhet(navEnhet.enhetNr));
+                .withOrgnr((digisosKommune) ? navEnhet.sosialOrgnr : null);
     }
 
     private void update(String behandlingsId, AdresseFrontend adresseFrontend) {
@@ -414,77 +406,6 @@ public class AdresseRessurs {
         public UstrukturertAdresseFrontend withAdresse(List<String> adresse) {
             this.adresse = adresse;
             return this;
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    public static class NavEnhetFrontend {
-        public String enhetsId;
-        public String enhetsnavn;
-        public String kommunenummer;
-        public String kommunenavn;
-        public String bydelsnummer;
-        public String sosialOrgnr;
-        public Map<String, Boolean> features;
-
-        NavEnhetFrontend withEnhetsId(String enhetsId) {
-            this.enhetsId = enhetsId;
-            return this;
-        }
-
-        NavEnhetFrontend withEnhetsnavn(String enhetsnavn) {
-            this.enhetsnavn = enhetsnavn;
-            return this;
-        }
-
-        NavEnhetFrontend withKommunenummer(String kommunenummer) {
-            this.kommunenummer = kommunenummer;
-            return this;
-        }
-
-        NavEnhetFrontend withKommunenavn(String kommunenavn) {
-            this.kommunenavn = kommunenavn;
-            return this;
-        }
-
-        NavEnhetFrontend withBydelsnummer(String bydelsnummer) {
-            this.bydelsnummer = bydelsnummer;
-            return this;
-        }
-
-        NavEnhetFrontend withSosialOrgnr(String sosialOrgnr) {
-            this.sosialOrgnr = sosialOrgnr;
-            return this;
-        }
-
-        NavEnhetFrontend withFeatures(Map<String, Boolean> features) {
-            this.features = features;
-            return this;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((enhetsId == null) ? 0 : enhetsId.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            SoknadsmottakerRessurs.LegacyNavEnhetFrontend other = (SoknadsmottakerRessurs.LegacyNavEnhetFrontend) obj;
-            if (enhetsId == null) {
-                if (other.enhetsId != null)
-                    return false;
-            } else if (!enhetsId.equals(other.enhetsId))
-                return false;
-            return true;
         }
     }
 }
