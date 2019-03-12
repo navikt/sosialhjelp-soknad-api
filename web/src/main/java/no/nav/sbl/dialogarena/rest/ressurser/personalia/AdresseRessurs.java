@@ -2,28 +2,21 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
-import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -31,19 +24,15 @@ import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getFeaturesForEnhet;
 
 @Controller
 @Path("/soknader/{behandlingsId}/personalia/adresser")
 @Timed
 @Produces(APPLICATION_JSON)
 public class AdresseRessurs {
-    private static final Logger logger = LoggerFactory.getLogger(AdresseRessurs.class);
 
     @Inject
     private SoknadService soknadService;
@@ -67,13 +56,10 @@ public class AdresseRessurs {
     private SoknadsmottakerRessurs soknadsmottakerRessurs;
 
     @Inject
-    private SoknadsmottakerService soknadsmottakerService;
-
-    @Inject
-    private NorgService norgService;
-
-    @Inject
     private AdresseMapper mapper;
+
+    @Inject
+    private NavEnhetRessurs navEnhetRessurs;
 
     @GET
     public AdresserFrontend hentAdresser(@PathParam("behandlingsId") String behandlingsId) {
@@ -93,50 +79,10 @@ public class AdresseRessurs {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, adresseFrontend);
         legacyUpdate(behandlingsId, adresseFrontend);
+
         /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg)); Bruk når faktum er fjernet*/
         return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresseFrontend.valg.toString())
-                .stream().map(this::mapFromLegacyNavEnhetFrontend).collect(Collectors.toList());
-    }
-
-    private NavEnhetRessurs.NavEnhetFrontend mapFromLegacyNavEnhetFrontend(SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend) {
-        return new NavEnhetRessurs.NavEnhetFrontend()
-                .withEnhetsnavn(legacyNavEnhetFrontend.enhetsnavn)
-                .withKommunenavn(legacyNavEnhetFrontend.kommunenavn)
-                .withOrgnr(legacyNavEnhetFrontend.sosialOrgnr);
-    }
-
-    private List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
-        /*
-         * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
-         * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
-         * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
-         */
-        return adresseForslagene.stream().map((adresseForslag) -> {
-            final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
-        }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-    }
-
-    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
-        if (navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
-            return null;
-        }
-        if (adresseForslag.kommunenummer == null
-                || adresseForslag.kommunenummer.length() != 4) {
-            return null;
-        }
-
-        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
-        return new NavEnhetRessurs.NavEnhetFrontend()
-                .withEnhetsnavn(navEnhet.navn)
-                .withKommunenavn(adresseForslag.kommunenavn)
-                .withOrgnr((digisosKommune) ? navEnhet.sosialOrgnr : null);
+                .stream().map(navEnhet -> navEnhetRessurs.mapFromLegacyNavEnhetFrontend(navEnhet, null)).collect(Collectors.toList());
     }
 
     private void update(String behandlingsId, AdresseFrontend adresseFrontend) {
