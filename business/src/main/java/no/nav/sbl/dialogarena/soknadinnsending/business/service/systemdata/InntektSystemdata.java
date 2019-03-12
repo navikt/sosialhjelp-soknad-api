@@ -31,14 +31,20 @@ public class InntektSystemdata implements Systemdata {
         final List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalings = jsonData.getOkonomi().getOpplysninger()
                 .getUtbetaling().stream().filter(utbetaling -> !utbetaling.getType().equals("navytelse"))
                 .collect(Collectors.toList());
-        okonomiOpplysningUtbetalings.addAll(innhentSystemregistrertInntekt(personIdentifikator));
+        final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = innhentSystemregistrertInntekt(personIdentifikator);
+        if (utbetalinger == null){
+            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente utbetalinger fra NAV");
+        } else {
+            okonomiOpplysningUtbetalings.removeAll(utbetalinger);
+            okonomiOpplysningUtbetalings.addAll(utbetalinger);
+        }
     }
 
     public List<JsonOkonomiOpplysningUtbetaling> innhentSystemregistrertInntekt(String personIdentifikator){
         List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
 
         if (utbetalinger == null) {
-            return Collections.emptyList();
+            return null;
         } else {
             return utbetalinger.stream().map(this::mapToJsonUtbetaling).collect(Collectors.toList());
         }
