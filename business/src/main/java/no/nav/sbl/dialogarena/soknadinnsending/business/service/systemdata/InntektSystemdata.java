@@ -45,9 +45,8 @@ public class InntektSystemdata implements Systemdata {
 
         if (utbetalinger == null) {
             return null;
-        } else {
-            return utbetalinger.stream().map(this::mapToJsonUtbetaling).collect(Collectors.toList());
         }
+        return utbetalinger.stream().map(this::mapToJsonUtbetaling).collect(Collectors.toList());
     }
 
     private JsonOkonomiOpplysningUtbetaling mapToJsonUtbetaling(Utbetaling utbetaling) {

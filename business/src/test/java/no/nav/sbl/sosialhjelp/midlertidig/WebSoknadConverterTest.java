@@ -140,6 +140,21 @@ public class WebSoknadConverterTest {
     }
 
     @Test
+    public void mapWebSoknadTilJsonSoknadInternalReturnererKunVedleggForEttersendelseFraNyModell() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(
+                new JsonInternalSoknad().withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(
+                        Collections.singletonList(new JsonVedlegg().withType("jobb").withTilleggsinfo("sluttoppgjor")))))));
+
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending());
+
+        JsonVedlegg vedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
+        assertThat(jsonInternalSoknad.getSoknad(), nullValue());
+        assertThat(jsonInternalSoknad.getVedlegg().getVedlegg().size(), is(1));
+        assertThat(vedlegg.getType(), is("jobb"));
+        assertThat(vedlegg.getTilleggsinfo(), is("sluttoppgjor"));
+    }
+
+    @Test
     public void fraJodaDateTimeTilLocalDateTimeKonvertererDatoRiktig() {
         final DateTime dateTime = new DateTime(2017, 8, 22, 11, 43, 0);
 

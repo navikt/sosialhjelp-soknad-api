@@ -54,7 +54,7 @@ public final class JsonPersonaliaConverter {
         personalia.setOppholdsadresse(JsonAdresseConverter.tilOppholdsadresse(webSoknad));
         personalia.setPostadresse(JsonAdresseConverter.tilPostadresse(webSoknad));
 
-        if(!erTom(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg"))){
+        if(erIkkeTom(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg"))){
             personalia.getOppholdsadresse().setAdresseValg(
                     JsonAdresseValg.fromValue(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg")));
         }

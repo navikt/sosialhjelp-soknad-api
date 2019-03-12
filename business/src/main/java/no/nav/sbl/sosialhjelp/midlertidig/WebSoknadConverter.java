@@ -40,7 +40,6 @@ public class WebSoknadConverter {
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
     @Inject
     private NavMessageSource messageSource;
     @Inject

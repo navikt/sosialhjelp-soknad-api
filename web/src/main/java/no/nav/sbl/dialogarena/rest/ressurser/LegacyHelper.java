@@ -29,36 +29,12 @@ public class LegacyHelper {
 
     @Inject
     private WebSoknadConverter webSoknadConverter;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
-    private static final boolean brukNyModell = false;
-
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
-        if (Objects.isNull(eier)) {
-            throw new AuthorizationException("");
-        }
-
-        if (brukNyModell){
-            return soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        }
-
-        /* Dette burde egentlig være unødvendig, men sjekker i tilfelle lesing av WebSoknad kan ha sideeffekter: */
-        if (eier == null || !eier.equals(SubjectHandler.getSubjectHandler().getUid())) {
-            throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
-        }
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-        
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
-        if (!eier.equals(webSoknad.getAktoerId())) {
-            throw new AuthorizationException("Ingen tilgang til angitt søknad for angitt bruker");
-        }
-        webSoknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(webSoknad.getskjemaNummer()));
-        vedleggService.leggTilKodeverkFelter(webSoknad.hentPaakrevdeVedlegg());
+        final WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier);
 
         final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad);
         if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {
