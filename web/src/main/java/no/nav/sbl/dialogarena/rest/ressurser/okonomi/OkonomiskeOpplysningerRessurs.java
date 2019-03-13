@@ -83,9 +83,7 @@ public class OkonomiskeOpplysningerRessurs {
                         soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
         final List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
 
-        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
-        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
-        final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
+        final List<OpplastetVedlegg> opplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, soknad);
 
         final List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
@@ -98,6 +96,12 @@ public class OkonomiskeOpplysningerRessurs {
         return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
                 .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()))
                 .withSlettedeVedlegg(slettedeVedlegg);
+    }
+
+    private List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad) {
+        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
+        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
+        return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
     }
 
     @PUT
