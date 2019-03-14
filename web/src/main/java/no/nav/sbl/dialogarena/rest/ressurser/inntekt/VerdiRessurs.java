@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
@@ -49,7 +50,7 @@ public class VerdiRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private NavMessageSource navMessageSource;
+    private TextService textService;
 
     @Inject
     private SoknadService soknadService;
@@ -99,7 +100,7 @@ public class VerdiRessurs {
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(okonomi.getOpplysninger(), "verdi", verdierFrontend.bekreftelse, getJsonOkonomiTittel("inntekt.eierandeler"));
+        setBekreftelse(okonomi.getOpplysninger(), "verdi", verdierFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.eierandeler"));
         setVerdier(okonomi.getOversikt(), verdierFrontend);
         setBeskrivelseAvAnnet(okonomi.getOpplysninger(), verdierFrontend);
 
@@ -143,27 +144,27 @@ public class VerdiRessurs {
 
         if(verdierFrontend.bolig){
             final String type = "bolig";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(verdier, type, tittel);
         }
         if(verdierFrontend.campingvogn){
             final String type = "campingvogn";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(verdier, type, tittel);
         }
         if(verdierFrontend.kjoretoy){
             final String type = "kjoretoy";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(verdier, type, tittel);
         }
         if(verdierFrontend.fritidseiendom){
             final String type = "fritidseiendom";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(verdier, type, tittel);
         }
         if(verdierFrontend.annet){
             final String type = "annet";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(verdier, type, tittel);
         }
     }
@@ -210,12 +211,6 @@ public class VerdiRessurs {
                             break;
                     }
                 });
-    }
-
-    private String getJsonOkonomiTittel(String key) {
-        Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
-
-        return properties.getProperty("json.okonomi." + key);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

@@ -7,9 +7,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
@@ -24,7 +24,9 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
@@ -46,9 +48,6 @@ public class BoutgiftRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private NavMessageSource navMessageSource;
-
-    @Inject
     private SoknadService soknadService;
 
     @Inject
@@ -56,6 +55,9 @@ public class BoutgiftRessurs {
 
     @Inject
     private VedleggOriginalFilerService vedleggOriginalFilerService;
+    
+    @Inject
+    private TextService textService;
 
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
@@ -92,7 +94,7 @@ public class BoutgiftRessurs {
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(okonomi.getOpplysninger(), "boutgifter", boutgifterFrontend.bekreftelse, getJsonOkonomiTittel("utgifter.boutgift"));
+        setBekreftelse(okonomi.getOpplysninger(), "boutgifter", boutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.boutgift"));
         setBoutgifter(okonomi, boutgifterFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
@@ -136,35 +138,35 @@ public class BoutgiftRessurs {
 
         if(boutgifterFrontend.husleie){
             final String type = "husleie";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.strom){
             final String type = "strom";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.kommunalAvgift){
             final String type = "kommunalAvgift";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.oppvarming){
             final String type = "oppvarming";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.boliglan){
             String type = "boliglanAvdrag";
-            String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanAvdrag");
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanAvdrag");
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
             type = "boliglanRenter";
-            tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanRenter");
+            tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanRenter");
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.annet){
             final String type = "annenBoutgift";
-            final String tittel = getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+            final String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
     }
@@ -205,12 +207,6 @@ public class BoutgiftRessurs {
                             break;
                     }
                 });
-    }
-
-    private String getJsonOkonomiTittel(String key) {
-        Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
-
-        return properties.getProperty("json.okonomi." + key);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
