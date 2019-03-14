@@ -396,7 +396,7 @@ public class SoknadDataFletter {
             soknad = populerSoknadMedData(populerSystemfakta, soknad);
         }
 
-        lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(soknad, null);
+        lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(soknad);
 
         return soknad;
     }
@@ -438,12 +438,11 @@ public class SoknadDataFletter {
 
         logger.info("Starter innsending av søknad med behandlingsId {}", soknad.getBrukerBehandlingId());
 
-        HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(soknad);
-        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
-        VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggListe);
-        Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
+        final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(soknad);
 
-        final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(soknad, vedleggListe);
+        HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(soknad);
+        final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
+        final Map<String, String> ekstraMetadata = hentEkstraMetadata(soknadUnderArbeid);
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         oppgaveHandterer.leggTilOppgave(behandlingsId, soknad.getAktoerId());
@@ -454,7 +453,32 @@ public class SoknadDataFletter {
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
 
-    private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(WebSoknad soknad, List<Vedlegg> vedleggListe) {
+    private Map<String, String> hentEkstraMetadata(SoknadUnderArbeid soknadUnderArbeid) {
+        final Map<String, String> ekstraMetadata = new HashMap<>();
+        ekstraMetadata.put("fiksorgnr", soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getOrganisasjonsnummer());
+        ekstraMetadata.put("fiksenhet", soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getNavEnhetsnavn());
+        return ekstraMetadata;
+    }
+
+    private VedleggMetadataListe convertToVedleggMetadataListe(SoknadUnderArbeid soknadUnderArbeid) {
+        final List<JsonVedlegg> jsonVedleggs = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
+                soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
+                        soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg();
+        VedleggMetadataListe vedlegg = new VedleggMetadataListe();
+
+        vedlegg.vedleggListe = jsonVedleggs.stream().map(jsonVedlegg -> {
+            SoknadMetadata.VedleggMetadata m = new SoknadMetadata.VedleggMetadata();
+            m.skjema = jsonVedlegg.getType();
+            m.tillegg = jsonVedlegg.getTilleggsinfo();
+            m.filnavn = jsonVedlegg.getType();
+            m.status = Vedlegg.Status.valueOf(jsonVedlegg.getStatus());
+            return m;
+        }).collect(Collectors.toList());
+
+        return vedlegg;
+    }
+
+    private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(WebSoknad soknad) {
         SoknadUnderArbeid soknadUnderArbeid;
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), soknad.getAktoerId());
         if (soknadUnderArbeidOptional.isPresent()) {
@@ -474,9 +498,8 @@ public class SoknadDataFletter {
         opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier());
 
         if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
-            if (vedleggListe == null){
-                vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
-            }
+            final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
+
             opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeid.getSoknadId(),
                     soknadUnderArbeid.getEier(), vedleggListe);
             if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
