@@ -34,7 +34,8 @@ import org.springframework.context.annotation.Import;
         VedleggConverter.class,
         WebSoknadConverter.class,
         InnsendingService.class,
-        SoknadUnderArbeidService.class
+        SoknadUnderArbeidService.class,
+        OpplastetVedleggService.class
 })
 public class ServiceConfig {
 }
