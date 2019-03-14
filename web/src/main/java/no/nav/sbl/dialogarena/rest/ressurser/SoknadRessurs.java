@@ -13,7 +13,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
 import no.nav.security.oidc.api.ProtectedWithClaims;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -41,7 +40,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 @Produces(APPLICATION_JSON)
 public class SoknadRessurs {
 
-    public static final String XSRF_TOKEN = "XSRF-TOKEN-SOSIALHJELP-SOKNAD-API";
+    public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
     private static final Logger LOG = LoggerFactory.getLogger(SoknadRessurs.class);
 
     @Inject
