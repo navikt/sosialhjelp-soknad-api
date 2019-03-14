@@ -62,7 +62,6 @@ public class WebSoknadConverter {
             return null;
         }
         return new SoknadUnderArbeid()
-                .withSoknadId(webSoknad.getSoknadId())
                 .withVersjon(1L)
                 .withBehandlingsId(webSoknad.getBrukerBehandlingId())
                 .withTilknyttetBehandlingsId(webSoknad.getBehandlingskjedeId())
