@@ -56,9 +56,6 @@ public class AdresseRessurs {
     private SoknadsmottakerRessurs soknadsmottakerRessurs;
 
     @Inject
-    private AdresseMapper mapper;
-
-    @Inject
     private NavEnhetRessurs navEnhetRessurs;
 
     @GET
@@ -71,7 +68,7 @@ public class AdresseRessurs {
         final JsonAdresse sysFolkeregistrertAdresse = adresseSystemdata.innhentFolkeregistrertAdresse(personIdentifikator);
         final JsonAdresse sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator);
 
-        return mapper.mapToAdresserFrontend(sysFolkeregistrertAdresse, sysMidlertidigAdresse, jsonOppholdsadresse);
+        return AdresseMapper.mapToAdresserFrontend(sysFolkeregistrertAdresse, sysMidlertidigAdresse, jsonOppholdsadresse);
     }
 
     @PUT
@@ -98,7 +95,7 @@ public class AdresseRessurs {
                 personalia.setOppholdsadresse(adresseSystemdata.innhentMidlertidigAdresse(eier));
                 break;
             case SOKNAD:
-                personalia.setOppholdsadresse(mapper.mapToJsonAdresse(adresserFrontend.soknad));
+                personalia.setOppholdsadresse(AdresseMapper.mapToJsonAdresse(adresserFrontend.soknad));
                 break;
         }
 

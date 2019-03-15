@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 
 @Controller
 @Path("/soknader/{behandlingsId}/familie/forsorgerplikt")
@@ -150,7 +151,7 @@ public class ForsorgerpliktRessurs {
         return new BarnFrontend()
                 .withNavn(new NavnFrontend(barn.getNavn().getFornavn(), barn.getNavn().getMellomnavn(), barn.getNavn().getEtternavn()))
                 .withFodselsdato(barn.getFodselsdato())
-                .withPersonnummer(barn.getPersonIdentifikator() != null ? barn.getPersonIdentifikator().substring(6) : null)
+                .withPersonnummer(getPersonnummerFromFnr(barn.getPersonIdentifikator()))
                 .withFodselsnummer(barn.getPersonIdentifikator());
     }
 

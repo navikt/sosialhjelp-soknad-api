@@ -94,16 +94,11 @@ public class AdresseRessursTest {
     private AdresseRessurs adresseRessurs;
 
     @Mock
-    private AdresseMapper adresseMapper;
-
-    @Mock
     private NavEnhetRessurs navEnhetRessurs;
 
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
-        when(adresseMapper.mapToAdresserFrontend(any(JsonAdresse.class), any(JsonAdresse.class), any(JsonAdresse.class))).thenCallRealMethod();
-        when(adresseMapper.mapToJsonAdresse(any(AdresseFrontend.class))).thenCallRealMethod();
         when(navEnhetRessurs.mapFromLegacyNavEnhetFrontend(any(SoknadsmottakerRessurs.LegacyNavEnhetFrontend.class), anyString())).thenCallRealMethod();
     }
 
