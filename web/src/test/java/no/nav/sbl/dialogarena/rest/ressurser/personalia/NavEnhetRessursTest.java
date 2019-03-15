@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs.LegacyNavEnhetFrontend;
@@ -108,14 +107,9 @@ public class NavEnhetRessursTest {
     @InjectMocks
     private NavEnhetRessurs navEnhetRessurs;
 
-    @Mock
-    private AdresseMapper adresseMapper;
-
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
-        when(adresseMapper.mapToAdresserFrontend(any(JsonAdresse.class), any(JsonAdresse.class), any(JsonAdresse.class))).thenCallRealMethod();
-        when(adresseMapper.mapToJsonAdresse(any(AdresseRessurs.AdresseFrontend.class))).thenCallRealMethod();
     }
 
     @Test
