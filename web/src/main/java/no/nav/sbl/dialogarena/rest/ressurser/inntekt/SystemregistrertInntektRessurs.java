@@ -33,14 +33,14 @@ public class SystemregistrertInntektRessurs {
     private VedleggOriginalFilerService vedleggOriginalFilerService;
 
     @GET
-    public SysteminntektFrontends hentSystemregistrertInntekt(@PathParam("behandlingsId") String behandlingsId){
+    public SysteminntekterFrontend hentSystemregistrerteInntekter(@PathParam("behandlingsId") String behandlingsId){
         vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
 
-        return new SysteminntektFrontends().withSysteminntekt(utbetalinger.stream()
+        return new SysteminntekterFrontend().withSysteminntekter(utbetalinger.stream()
                         .filter(utbetaling -> utbetaling.getType().equals("navytelse"))
                         .map(this::mapToUtbetalingFrontend).collect(Collectors.toList()));
     }
@@ -52,11 +52,11 @@ public class SystemregistrertInntektRessurs {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static final class SysteminntektFrontends {
-        public List<SysteminntektFrontend> systeminntekt;
+    public static final class SysteminntekterFrontend {
+        public List<SysteminntektFrontend> systeminntekter;
 
-        public SysteminntektFrontends withSysteminntekt(List<SysteminntektFrontend> systeminntekt) {
-            this.systeminntekt = systeminntekt;
+        public SysteminntekterFrontend withSysteminntekter(List<SysteminntektFrontend> systeminntekter) {
+            this.systeminntekter = systeminntekter;
             return this;
         }
     }

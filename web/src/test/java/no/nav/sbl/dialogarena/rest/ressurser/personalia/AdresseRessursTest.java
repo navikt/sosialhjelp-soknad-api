@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
