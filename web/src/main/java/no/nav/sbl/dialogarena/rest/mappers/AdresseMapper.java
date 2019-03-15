@@ -22,15 +22,15 @@ public class AdresseMapper {
         AdresseRessurs.AdresseFrontend adresseFrontend = new AdresseRessurs.AdresseFrontend();
         switch (adresse.getType()){
             case GATEADRESSE:
-                adresseFrontend.setType("gateadresse");
+                adresseFrontend.setType(JsonAdresse.Type.GATEADRESSE);
                 adresseFrontend.setGateadresse(mapToGateadresseFrontend(adresse));
                 break;
             case MATRIKKELADRESSE:
-                adresseFrontend.setType("matrikkeladresse");
+                adresseFrontend.setType(JsonAdresse.Type.MATRIKKELADRESSE);
                 adresseFrontend.setMatrikkeladresse(mapToMatrikkeladresseFrontend(adresse));
                 break;
             case USTRUKTURERT:
-                adresseFrontend.setType("ustrukturert");
+                adresseFrontend.setType(JsonAdresse.Type.USTRUKTURERT);
                 adresseFrontend.setUstrukturert(mapToUstrukturertAdresseFrontend(adresse));
                 break;
         }
@@ -70,7 +70,7 @@ public class AdresseMapper {
     public JsonAdresse mapToJsonAdresse(AdresseRessurs.AdresseFrontend adresseFrontend) {
         JsonAdresse adresse;
         switch (adresseFrontend.type){
-            case "gateadresse":
+            case GATEADRESSE:
                 AdresseRessurs.GateadresseFrontend gateadresse = adresseFrontend.gateadresse;
                 adresse = new JsonGateAdresse()
                         .withKilde(JsonKilde.BRUKER)
@@ -85,7 +85,7 @@ public class AdresseMapper {
                         .withHusnummer(gateadresse.husnummer)
                         .withHusbokstav(gateadresse.husbokstav);
                 break;
-            case "matrikkeladresse":
+            case MATRIKKELADRESSE:
                 AdresseRessurs.MatrikkeladresseFrontend matrikkeladresse = adresseFrontend.matrikkeladresse;
                 adresse = new JsonMatrikkelAdresse()
                         .withKilde(JsonKilde.BRUKER)
