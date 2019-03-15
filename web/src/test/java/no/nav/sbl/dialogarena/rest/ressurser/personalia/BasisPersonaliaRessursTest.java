@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
@@ -64,6 +65,9 @@ public class BasisPersonaliaRessursTest {
     @Mock
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
 
+    @Mock
+    private Adressekodeverk adressekodeverk;
+
     @InjectMocks
     private BasisPersonaliaRessurs basisPersonaliaRessurs;
 
@@ -77,6 +81,7 @@ public class BasisPersonaliaRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(true, true, true));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
+        when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
 
         final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
 
@@ -88,6 +93,7 @@ public class BasisPersonaliaRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(false, false, false));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
+        when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
 
         final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
 
@@ -106,15 +112,16 @@ public class BasisPersonaliaRessursTest {
     }
 
     private void assertThatPersonaliaIsCorrectlyConverted(BasisPersonaliaFrontend personaliaFrontend, JsonPersonalia jsonPersonalia) {
-        assertThat("personIdentifikator feilet", personaliaFrontend.personIdentifikator,
+        assertThat("fodselsnummer", personaliaFrontend.fodselsnummer,
                 is(jsonPersonalia.getPersonIdentifikator().getVerdi()));
-        assertThat("fornavn feilet", personaliaFrontend.navn.fornavn, is(jsonPersonalia.getNavn().getFornavn()));
-        assertThat("mellomnavn feilet", personaliaFrontend.navn.mellomnavn, is(jsonPersonalia.getNavn().getMellomnavn()));
-        assertThat("etternavn feilet", personaliaFrontend.navn.etternavn, is(jsonPersonalia.getNavn().getEtternavn()));
-        assertThat("fullt navn feilet", personaliaFrontend.navn.fulltNavn, is(FULLT_NAVN));
-        assertThat("statsborgerskap feilet", personaliaFrontend.statsborgerskap,
-                is(jsonPersonalia.getStatsborgerskap() != null ? jsonPersonalia.getStatsborgerskap().getVerdi() : null));
-        assertThat("nordiskBorger feilet", personaliaFrontend.nordiskBorger,
+        assertThat("fornavn", personaliaFrontend.navn.fornavn, is(jsonPersonalia.getNavn().getFornavn()));
+        assertThat("mellomnavn", personaliaFrontend.navn.mellomnavn, is(jsonPersonalia.getNavn().getMellomnavn()));
+        assertThat("etternavn", personaliaFrontend.navn.etternavn, is(jsonPersonalia.getNavn().getEtternavn()));
+        assertThat("fullt navn", personaliaFrontend.navn.fulltNavn, is(FULLT_NAVN));
+        assertThat("statsborgerskap", personaliaFrontend.statsborgerskap,
+                is(jsonPersonalia.getStatsborgerskap() == null ? null :
+                        jsonPersonalia.getStatsborgerskap().getVerdi().equals("NOR") ? "Norge" : jsonPersonalia.getStatsborgerskap().getVerdi()));
+        assertThat("nordiskBorger", personaliaFrontend.nordiskBorger,
                 is(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null));
     }
 
@@ -147,6 +154,4 @@ public class BasisPersonaliaRessursTest {
                         )
                 );
     }
-
-
 }

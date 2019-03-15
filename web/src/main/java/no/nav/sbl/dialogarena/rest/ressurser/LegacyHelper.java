@@ -1,12 +1,5 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import java.util.Objects;
-
-import javax.inject.Inject;
-
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.springframework.stereotype.Component;
-
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -16,6 +9,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.util.Objects;
 
 @Component
 public class LegacyHelper {
@@ -31,22 +29,23 @@ public class LegacyHelper {
 
     @Inject
     private WebSoknadConverter webSoknadConverter;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
-    private static final boolean brukNyModell = false;
-
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
+        final WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier);
+
+        final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad);
+        if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {
+            throw new IllegalStateException("Feillagrede brukerdata for søknad: " + behandlingsId);
+        }
+        return soknad;
+    }
+
+    public WebSoknad hentWebSoknad(String behandlingsId, String eier) {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
-        }
-
-        if (brukNyModell){
-            return soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         }
 
         /* Dette burde egentlig være unødvendig, men sjekker i tilfelle lesing av WebSoknad kan ha sideeffekter: */
@@ -54,7 +53,7 @@ public class LegacyHelper {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-        
+
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
         if (!eier.equals(webSoknad.getAktoerId())) {
             throw new AuthorizationException("Ingen tilgang til angitt søknad for angitt bruker");
@@ -62,10 +61,6 @@ public class LegacyHelper {
         webSoknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(webSoknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(webSoknad.hentPaakrevdeVedlegg());
 
-        final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad);
-        if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {
-            throw new IllegalStateException("Feillagrede brukerdata for søknad: " + behandlingsId);
-        }
-        return soknad;
+        return webSoknad;
     }
 }

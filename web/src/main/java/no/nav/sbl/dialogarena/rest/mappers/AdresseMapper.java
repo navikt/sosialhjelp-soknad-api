@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest.ressurser.personalia.adresse;
+package no.nav.sbl.dialogarena.rest.mappers;
 
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
@@ -101,19 +101,5 @@ public class AdresseMapper {
                 throw new IllegalStateException("Ukjent adressetype: \"" + adresseFrontend.type + "\".");
         }
         return adresse;
-    }
-
-    public String mapValgToString(JsonAdresseValg valg) {
-        switch (valg){
-            case FOLKEREGISTRERT:
-                return "folkeregistrert";
-            case MIDLERTIDIG:
-                return "midlertidig";
-            case SOKNAD:
-                return "soknad";
-            default:
-                return null;
-
-        }
     }
 }

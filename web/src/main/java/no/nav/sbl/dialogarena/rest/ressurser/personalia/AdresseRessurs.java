@@ -2,28 +2,21 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
-import no.nav.sbl.dialogarena.rest.ressurser.personalia.adresse.AdresseMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -31,19 +24,15 @@ import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getFeaturesForEnhet;
 
 @Controller
 @Path("/soknader/{behandlingsId}/personalia/adresser")
 @Timed
 @Produces(APPLICATION_JSON)
 public class AdresseRessurs {
-    private static final Logger logger = LoggerFactory.getLogger(AdresseRessurs.class);
 
     @Inject
     private SoknadService soknadService;
@@ -67,13 +56,10 @@ public class AdresseRessurs {
     private SoknadsmottakerRessurs soknadsmottakerRessurs;
 
     @Inject
-    private SoknadsmottakerService soknadsmottakerService;
-
-    @Inject
-    private NorgService norgService;
-
-    @Inject
     private AdresseMapper mapper;
+
+    @Inject
+    private NavEnhetRessurs navEnhetRessurs;
 
     @GET
     public AdresserFrontend hentAdresser(@PathParam("behandlingsId") String behandlingsId) {
@@ -89,62 +75,14 @@ public class AdresseRessurs {
     }
 
     @PUT
-    public List<NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresseFrontend adresseFrontend) {
+    public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresseFrontend adresseFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, adresseFrontend);
         legacyUpdate(behandlingsId, adresseFrontend);
+
         /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg)); Bruk når faktum er fjernet*/
-        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg))
-                .stream().map(this::mapFromLegacyNavEnhetFrontend).collect(Collectors.toList());
-    }
-
-    private NavEnhetFrontend mapFromLegacyNavEnhetFrontend(SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend) {
-        return new NavEnhetFrontend()
-                .withEnhetsId(legacyNavEnhetFrontend.enhetsId)
-                .withEnhetsnavn(legacyNavEnhetFrontend.enhetsnavn)
-                .withBydelsnummer(legacyNavEnhetFrontend.bydelsnummer)
-                .withKommunenummer(legacyNavEnhetFrontend.kommunenummer)
-                .withKommunenavn(legacyNavEnhetFrontend.kommunenavn)
-                .withSosialOrgnr(legacyNavEnhetFrontend.sosialOrgnr)
-                .withFeatures(legacyNavEnhetFrontend.features);
-    }
-
-    private List<NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
-        /*
-         * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
-         * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
-         * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
-         */
-        return adresseForslagene.stream().map((adresseForslag) -> {
-            final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
-        }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-    }
-
-    private NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
-        if (navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
-            return null;
-        }
-        if (adresseForslag.kommunenummer == null
-                || adresseForslag.kommunenummer.length() != 4) {
-            return null;
-        }
-
-        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
-        return new NavEnhetFrontend()
-                .withEnhetsId(navEnhet.enhetNr)
-                .withEnhetsnavn(navEnhet.navn)
-                .withBydelsnummer(adresseForslag.bydel)
-                .withKommunenummer(adresseForslag.kommunenummer)
-                .withKommunenavn(adresseForslag.kommunenavn)
-                .withSosialOrgnr((digisosKommune) ? navEnhet.sosialOrgnr : null)
-                .withFeatures(getFeaturesForEnhet(navEnhet.enhetNr));
+        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresseFrontend.valg.toString())
+                .stream().map(navEnhet -> navEnhetRessurs.mapFromLegacyNavEnhetFrontend(navEnhet, null)).collect(Collectors.toList());
     }
 
     private void update(String behandlingsId, AdresseFrontend adresseFrontend) {
@@ -155,18 +93,16 @@ public class AdresseRessurs {
         switch (adresseFrontend.valg){
             case FOLKEREGISTRERT:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentFolkeregistrertAdresse(eier));
-                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.FOLKEREGISTRERT);
                 break;
             case MIDLERTIDIG:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentMidlertidigAdresse(eier));
-                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.MIDLERTIDIG);
                 break;
             case SOKNAD:
                 personalia.setOppholdsadresse(mapper.mapToJsonAdresse(adresseFrontend));
-                personalia.getOppholdsadresse().setAdresseValg(JsonAdresseValg.SOKNAD);
                 break;
         }
 
+        personalia.getOppholdsadresse().setAdresseValg(adresseFrontend.valg);
         personalia.setPostadresse(midlertidigLosningForPostadresse(personalia.getOppholdsadresse()));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
@@ -175,20 +111,18 @@ public class AdresseRessurs {
     private void legacyUpdate(String behandlingsId, AdresseFrontend adresseFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.brukerendrettoggle");
         final Faktum valg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.system.oppholdsadresse.valg");
+        valg.setValue(adresseFrontend.valg.toString());
+        faktaService.lagreBrukerFaktum(valg);
+
+        final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.brukerendrettoggle");
 
         switch (adresseFrontend.valg){
             case FOLKEREGISTRERT:
-                valg.setValue("folkerregistrert");
-                brukerdefinert.setValue(Boolean.toString(false));
-                break;
             case MIDLERTIDIG:
-                valg.setValue("midlertidig");
                 brukerdefinert.setValue(Boolean.toString(false));
                 break;
             case SOKNAD:
-                valg.setValue("soknad");
                 brukerdefinert.setValue(Boolean.toString(true));
                 final Faktum brukerAdresse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.bruker");
                 populerAdresse(brukerAdresse, adresseFrontend);
@@ -197,7 +131,6 @@ public class AdresseRessurs {
         }
 
         faktaService.lagreBrukerFaktum(brukerdefinert);
-        faktaService.lagreBrukerFaktum(valg);
     }
 
     private JsonAdresse midlertidigLosningForPostadresse(JsonAdresse oppholdsadresse) {
@@ -419,77 +352,6 @@ public class AdresseRessurs {
         public UstrukturertAdresseFrontend withAdresse(List<String> adresse) {
             this.adresse = adresse;
             return this;
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    public static class NavEnhetFrontend {
-        public String enhetsId;
-        public String enhetsnavn;
-        public String kommunenummer;
-        public String kommunenavn;
-        public String bydelsnummer;
-        public String sosialOrgnr;
-        public Map<String, Boolean> features;
-
-        NavEnhetFrontend withEnhetsId(String enhetsId) {
-            this.enhetsId = enhetsId;
-            return this;
-        }
-
-        NavEnhetFrontend withEnhetsnavn(String enhetsnavn) {
-            this.enhetsnavn = enhetsnavn;
-            return this;
-        }
-
-        NavEnhetFrontend withKommunenummer(String kommunenummer) {
-            this.kommunenummer = kommunenummer;
-            return this;
-        }
-
-        NavEnhetFrontend withKommunenavn(String kommunenavn) {
-            this.kommunenavn = kommunenavn;
-            return this;
-        }
-
-        NavEnhetFrontend withBydelsnummer(String bydelsnummer) {
-            this.bydelsnummer = bydelsnummer;
-            return this;
-        }
-
-        NavEnhetFrontend withSosialOrgnr(String sosialOrgnr) {
-            this.sosialOrgnr = sosialOrgnr;
-            return this;
-        }
-
-        NavEnhetFrontend withFeatures(Map<String, Boolean> features) {
-            this.features = features;
-            return this;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((enhetsId == null) ? 0 : enhetsId.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            SoknadsmottakerRessurs.LegacyNavEnhetFrontend other = (SoknadsmottakerRessurs.LegacyNavEnhetFrontend) obj;
-            if (enhetsId == null) {
-                if (other.enhetsId != null)
-                    return false;
-            } else if (!enhetsId.equals(other.enhetsId))
-                return false;
-            return true;
         }
     }
 }

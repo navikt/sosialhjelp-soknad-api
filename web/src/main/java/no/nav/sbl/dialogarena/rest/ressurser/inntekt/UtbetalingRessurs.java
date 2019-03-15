@@ -1,0 +1,235 @@
+package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
+
+import no.nav.metrics.aspects.Timed;
+import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import java.util.*;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
+
+@Controller
+@Path("/soknader/{behandlingsId}/inntekt/utbetalinger")
+@Timed
+@Produces(APPLICATION_JSON)
+public class UtbetalingRessurs {
+
+    @Inject
+    private LegacyHelper legacyHelper;
+
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Inject
+    private TextService textService;
+
+    @Inject
+    private SoknadService soknadService;
+
+    @Inject
+    private FaktaService faktaService;
+
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
+    @GET
+    public UtbetalingerFrontend hentUtbetalinger(@PathParam("behandlingsId") String behandlingsId){
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
+
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
+        final UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+
+        if (opplysninger.getBekreftelse() == null){
+            return utbetalingerFrontend;
+        }
+
+        setBekreftelseOnUtbetalingerFrontend(opplysninger, utbetalingerFrontend);
+        setUtbetalingstyperOnUtbetalingerFrontend(opplysninger, utbetalingerFrontend);
+
+        if (opplysninger.getBeskrivelseAvAnnet() != null){
+            utbetalingerFrontend.setBeskrivelseAvAnnet(opplysninger.getBeskrivelseAvAnnet().getUtbetaling());
+        }
+
+        return utbetalingerFrontend;
+    }
+
+    @PUT
+    public void updateUtbetalinger(@PathParam("behandlingsId") String behandlingsId, UtbetalingerFrontend utbetalingerFrontend){
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        update(behandlingsId, utbetalingerFrontend);
+        legacyUpdate(behandlingsId, utbetalingerFrontend);
+    }
+
+    private void update(String behandlingsId, UtbetalingerFrontend utbetalingerFrontend) {
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+
+        if (opplysninger.getBekreftelse() == null){
+            opplysninger.setBekreftelse(new ArrayList<>());
+        }
+
+        setBekreftelse(opplysninger, "utbetaling", utbetalingerFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.inntekter"));
+        setUtbetalinger(opplysninger, utbetalingerFrontend);
+        setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend);
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    private void legacyUpdate(String behandlingsId, UtbetalingerFrontend utbetalingerFrontend) {
+        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+
+        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter");
+        bekreftelse.setValue(utbetalingerFrontend.bekreftelse.toString());
+        faktaService.lagreBrukerFaktum(bekreftelse);
+
+        final Faktum utbytte = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.utbytte");
+        utbytte.setValue(String.valueOf(utbetalingerFrontend.utbytte));
+        faktaService.lagreBrukerFaktum(utbytte);
+
+        final Faktum salg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.salg");
+        salg.setValue(String.valueOf(utbetalingerFrontend.salg));
+        faktaService.lagreBrukerFaktum(salg);
+
+        final Faktum forsikringsutbetalinger = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.forsikringsutbetalinger");
+        forsikringsutbetalinger.setValue(String.valueOf(utbetalingerFrontend.forsikring));
+        faktaService.lagreBrukerFaktum(forsikringsutbetalinger);
+
+        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet");
+        annet.setValue(String.valueOf(utbetalingerFrontend.annet));
+        faktaService.lagreBrukerFaktum(annet);
+
+        final Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet.true.beskrivelse");
+        beskrivelse.setValue(utbetalingerFrontend.beskrivelseAvAnnet != null ? utbetalingerFrontend.beskrivelseAvAnnet : "");
+        faktaService.lagreBrukerFaktum(beskrivelse);
+    }
+
+    private void setUtbetalinger(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = opplysninger.getUtbetaling();
+
+        if(utbetalingerFrontend.utbytte){
+            final String type = "utbytte";
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
+        }
+        if(utbetalingerFrontend.salg){
+            final String type = "salg";
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
+        }
+        if(utbetalingerFrontend.forsikring){
+            final String type = "forsikring";
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
+        }
+        if(utbetalingerFrontend.annet){
+            final String type = "annen";
+            final String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
+        }
+    }
+
+    private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
+        if (opplysninger.getBeskrivelseAvAnnet() == null){
+            opplysninger.withBeskrivelseAvAnnet(new JsonOkonomibeskrivelserAvAnnet()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi("")
+                    .withSparing("")
+                    .withUtbetaling("")
+                    .withBoutgifter("")
+                    .withBarneutgifter(""));
+        }
+        opplysninger.getBeskrivelseAvAnnet().setUtbetaling(utbetalingerFrontend.beskrivelseAvAnnet != null ? utbetalingerFrontend.beskrivelseAvAnnet : "");
+    }
+
+    private void setBekreftelseOnUtbetalingerFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
+        final Optional<JsonOkonomibekreftelse> utbetalingBekreftelse = opplysninger.getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals("utbetaling")).findFirst();
+        if (utbetalingBekreftelse.isPresent()){
+            utbetalingerFrontend.setBekreftelse(utbetalingBekreftelse.get().getVerdi());
+        }
+    }
+
+    private void setUtbetalingstyperOnUtbetalingerFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
+        opplysninger.getUtbetaling().forEach(
+                utbetaling -> {
+                    switch(utbetaling.getType()){
+                        case "utbytte":
+                            utbetalingerFrontend.setUtbytte(true);
+                            break;
+                        case "salg":
+                            utbetalingerFrontend.setSalg(true);
+                            break;
+                        case "forsikring":
+                            utbetalingerFrontend.setForsikring(true);
+                            break;
+                        case "annen":
+                            utbetalingerFrontend.setAnnet(true);
+                            break;
+                    }
+                });
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static final class UtbetalingerFrontend {
+        public Boolean bekreftelse;
+        public boolean utbytte;
+        public boolean salg;
+        public boolean forsikring;
+        public boolean annet;
+        public String beskrivelseAvAnnet;
+
+        public void setBekreftelse(Boolean bekreftelse) {
+            this.bekreftelse = bekreftelse;
+        }
+
+        public void setUtbytte(boolean utbytte) {
+            this.utbytte = utbytte;
+        }
+
+        public void setSalg(boolean salg) {
+            this.salg = salg;
+        }
+
+        public void setForsikring(boolean forsikring) {
+            this.forsikring = forsikring;
+        }
+
+        public void setAnnet(boolean annet) {
+            this.annet = annet;
+        }
+
+        public void setBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
+            this.beskrivelseAvAnnet = beskrivelseAvAnnet;
+        }
+    }
+}

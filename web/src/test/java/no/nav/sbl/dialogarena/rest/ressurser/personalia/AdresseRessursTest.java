@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
-import no.nav.sbl.dialogarena.rest.ressurser.personalia.adresse.AdresseMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -97,12 +96,15 @@ public class AdresseRessursTest {
     @Mock
     private AdresseMapper adresseMapper;
 
+    @Mock
+    private NavEnhetRessurs navEnhetRessurs;
+
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
         when(adresseMapper.mapToAdresserFrontend(any(JsonAdresse.class), any(JsonAdresse.class), any(JsonAdresse.class))).thenCallRealMethod();
         when(adresseMapper.mapToJsonAdresse(any(AdresseFrontend.class))).thenCallRealMethod();
-        when(adresseMapper.mapValgToString(any(JsonAdresseValg.class))).thenCallRealMethod();
+        when(navEnhetRessurs.mapFromLegacyNavEnhetFrontend(any(SoknadsmottakerRessurs.LegacyNavEnhetFrontend.class), anyString())).thenCallRealMethod();
     }
 
     @Test
@@ -163,7 +165,7 @@ public class AdresseRessursTest {
 
         AdresseFrontend adresseFrontend = new AdresseFrontend();
         adresseFrontend.setValg(JsonAdresseValg.FOLKEREGISTRERT);
-        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -184,7 +186,7 @@ public class AdresseRessursTest {
 
         AdresseFrontend adresseFrontend = new AdresseFrontend();
         adresseFrontend.setValg(JsonAdresseValg.MIDLERTIDIG);
-        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -206,7 +208,7 @@ public class AdresseRessursTest {
         adresseFrontend.setType("gateadresse");
         adresseFrontend.setGateadresse(new GateadresseFrontend().withGatenavn("Søknadsgata"));
         adresseFrontend.setValg(JsonAdresseValg.SOKNAD);
-        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -219,11 +221,11 @@ public class AdresseRessursTest {
 
     private void legacyReturnerNavEnhetTilhorendeValgtAdresse() {
         when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "folkeregistrert")).thenReturn(
-                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet")));
+                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet").withSosialOrgnr("1")));
         when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "midlertidig")).thenReturn(
-                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet")));
+                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withSosialOrgnr("2")));
         when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "soknad")).thenReturn(
-                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet")));
+                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withSosialOrgnr("3")));
     }
 
     private void assertThatAdresserAreCorrectlyConverted(AdresserFrontend adresserFrontend, JsonAdresse folkeregAdresse, JsonAdresse midlertidigAdresse, JsonAdresse valgtAdresse){

@@ -99,8 +99,8 @@ public class SivilstatusRessursTest {
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
         assertThat(sivilstatusFrontend.kildeErSystem, is(false));
         assertThat(sivilstatusFrontend.ektefelle, nullValue());
-        assertThat(sivilstatusFrontend.ektefelleHarDiskresjonskode, nullValue());
-        assertThat(sivilstatusFrontend.folkeregistrertMedEktefelle, nullValue());
+        assertThat(sivilstatusFrontend.harDiskresjonskode, nullValue());
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
     }
 
     @Test
@@ -114,9 +114,9 @@ public class SivilstatusRessursTest {
         assertThat(sivilstatusFrontend.kildeErSystem, is(false));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
         assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend.ektefelle, JSON_EKTEFELLE);
-        assertThat(sivilstatusFrontend.ektefelleHarDiskresjonskode, nullValue());
-        assertThat(sivilstatusFrontend.folkeregistrertMedEktefelle, nullValue());
-        assertThat(sivilstatusFrontend.ektefelle.borSammenMed, is(true));
+        assertThat(sivilstatusFrontend.harDiskresjonskode, nullValue());
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
+        assertThat(sivilstatusFrontend.borSammenMed, is(true));
     }
 
     @Test
@@ -130,9 +130,9 @@ public class SivilstatusRessursTest {
         assertThat(sivilstatusFrontend.kildeErSystem, is(true));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
         assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend.ektefelle, JSON_EKTEFELLE);
-        assertThat(sivilstatusFrontend.ektefelleHarDiskresjonskode, is(false));
-        assertThat(sivilstatusFrontend.folkeregistrertMedEktefelle, is(true));
-        assertThat(sivilstatusFrontend.ektefelle.borSammenMed, nullValue());
+        assertThat(sivilstatusFrontend.harDiskresjonskode, is(false));
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, is(true));
+        assertThat(sivilstatusFrontend.borSammenMed, nullValue());
     }
 
     @Test
@@ -145,9 +145,9 @@ public class SivilstatusRessursTest {
 
         assertThat(sivilstatusFrontend.kildeErSystem, is(true));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
-        assertThat(sivilstatusFrontend.ektefelleHarDiskresjonskode, is(true));
-        assertThat(sivilstatusFrontend.folkeregistrertMedEktefelle, nullValue());
-        assertThat(sivilstatusFrontend.ektefelle.borSammenMed, nullValue());
+        assertThat(sivilstatusFrontend.harDiskresjonskode, is(true));
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
+        assertThat(sivilstatusFrontend.borSammenMed, nullValue());
     }
 
     @Test
