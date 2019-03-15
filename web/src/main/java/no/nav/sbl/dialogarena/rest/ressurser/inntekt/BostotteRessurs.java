@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -44,7 +45,7 @@ public class BostotteRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private NavMessageSource navMessageSource;
+    private TextService textService;
 
     @Inject
     private SoknadService soknadService;
@@ -84,7 +85,7 @@ public class BostotteRessurs {
             opplysninger.setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(opplysninger, "bostotte", bostotteFrontend.bekreftelse, getJsonOkonomiTittel("inntekt.bostotte"));
+        setBekreftelse(opplysninger, "bostotte", bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
@@ -103,12 +104,6 @@ public class BostotteRessurs {
         if (bostotteBekreftelse.isPresent()){
             bostotteFrontend.setBekreftelse(bostotteBekreftelse.get().getVerdi());
         }
-    }
-
-    private String getJsonOkonomiTittel(String key) {
-        Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
-
-        return properties.getProperty("json.okonomi." + key);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

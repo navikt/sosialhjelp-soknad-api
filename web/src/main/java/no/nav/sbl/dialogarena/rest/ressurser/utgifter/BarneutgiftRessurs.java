@@ -7,9 +7,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
@@ -24,7 +24,9 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
@@ -46,7 +48,7 @@ public class BarneutgiftRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private NavMessageSource navMessageSource;
+    private TextService textService;
 
     @Inject
     private SoknadService soknadService;
@@ -92,7 +94,7 @@ public class BarneutgiftRessurs {
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(okonomi.getOpplysninger(), "barneutgifter", barneutgifterFrontend.bekreftelse, getJsonOkonomiTittel("utgifter.barn"));
+        setBekreftelse(okonomi.getOpplysninger(), "barneutgifter", barneutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.barn"));
         setBarneutgifter(okonomi, barneutgifterFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
@@ -132,27 +134,27 @@ public class BarneutgiftRessurs {
 
         if(barneutgifterFrontend.barnehage){
             final String type = "barnehage";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
         }
         if(barneutgifterFrontend.sfo){
             final String type = "sfo";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
         }
         if(barneutgifterFrontend.fritidsaktiviteter){
             final String type = "barnFritidsaktiviteter";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
         }
         if(barneutgifterFrontend.tannregulering){
             final String type = "barnTannregulering";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
         }
         if(barneutgifterFrontend.annet){
             final String type = "annenBarneutgift";
-            final String tittel = getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
         }
     }
@@ -190,12 +192,6 @@ public class BarneutgiftRessurs {
                             break;
                     }
                 });
-    }
-
-    private String getJsonOkonomiTittel(String key) {
-        Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
-
-        return properties.getProperty("json.okonomi." + key);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

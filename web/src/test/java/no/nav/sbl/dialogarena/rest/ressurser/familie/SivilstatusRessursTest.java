@@ -31,6 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.text.ParseException;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -187,7 +188,7 @@ public class SivilstatusRessursTest {
 
     private void assertThatEktefelleIsCorrectlyConverted(EktefelleFrontend ektefelle, JsonEktefelle jsonEktefelle) {
         assertThat("fodselsdato", ektefelle.fodselsdato, is(jsonEktefelle.getFodselsdato()));
-        assertThat("personIdentifikator", ektefelle.personnummer, is(jsonEktefelle.getPersonIdentifikator().substring(6)));
+        assertThat("personIdentifikator", ektefelle.personnummer, is(getPersonnummerFromFnr(jsonEktefelle.getPersonIdentifikator())));
         assertThat("fornavn", ektefelle.navn.fornavn, is(jsonEktefelle.getNavn().getFornavn()));
         assertThat("mellomnavn", ektefelle.navn.mellomnavn, is(jsonEktefelle.getNavn().getMellomnavn()));
         assertThat("etternavn", ektefelle.navn.etternavn, is(jsonEktefelle.getNavn().getEtternavn()));
