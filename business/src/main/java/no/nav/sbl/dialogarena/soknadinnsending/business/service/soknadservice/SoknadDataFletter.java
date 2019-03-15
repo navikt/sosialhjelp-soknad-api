@@ -478,7 +478,7 @@ public class SoknadDataFletter {
         return vedlegg;
     }
 
-    private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(WebSoknad soknad) {
+    SoknadUnderArbeid lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(WebSoknad soknad) {
         SoknadUnderArbeid soknadUnderArbeid;
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), soknad.getAktoerId());
         if (soknadUnderArbeidOptional.isPresent()) {
