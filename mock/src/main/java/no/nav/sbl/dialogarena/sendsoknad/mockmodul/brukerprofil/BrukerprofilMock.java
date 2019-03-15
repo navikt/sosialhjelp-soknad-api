@@ -115,13 +115,13 @@ public class BrukerprofilMock {
         xmlGyldighetsperiode.setTom(new DateTime(ADRESSE_GYLDIG_TIL));
         return xmlGyldighetsperiode;
     }
-    
+
     private static void settMidlertidigPostadresse(XMLBruker xmlBruker) {
         final XMLMidlertidigPostadresse midlertidigPostadresse = new XMLMidlertidigPostadresseNorge()
                 .withStrukturertAdresse(lagStrukturertPostadresse("42"));
         xmlBruker.setMidlertidigPostadresse(midlertidigPostadresse);
     }
-    
+
     public void settMatrikkeladresse(XMLBruker xmlBruker) {
         final XMLBostedsadresse adresse = new XMLBostedsadresse().withStrukturertAdresse(new XMLMatrikkeladresse()
                 .withEiendomsnavn("Eiendommens navn")
@@ -187,7 +187,7 @@ public class BrukerprofilMock {
     private static XMLStrukturertAdresse lagStrukturertPostadresse() {
         return lagStrukturertPostadresse(HUSNUMMER);
     }
-    
+
     private static XMLStrukturertAdresse lagStrukturertPostadresse(String husnummer) {
         return new XMLGateadresse()
                 .withKommunenummer(KOMMUNENUMMER)

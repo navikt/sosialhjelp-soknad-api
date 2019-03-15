@@ -32,13 +32,13 @@ public class TelefonnummerRessurs {
 
     @Inject
     private SoknadService soknadService;
-    
+
     @Inject
     private FaktaService faktaService;
-    
+
     @Inject
     private Tilgangskontroll tilgangskontroll;
-    
+
     @Inject
     private LegacyHelper legacyHelper;
 
@@ -57,16 +57,19 @@ public class TelefonnummerRessurs {
         final JsonTelefonnummer telefonnummer = soknad.getSoknad().getData().getPersonalia().getTelefonnummer();
 
         final String systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
-        
+
         return new TelefonnummerFrontend()
                 .withBrukerdefinert(telefonnummer != null ? telefonnummer.getKilde() == JsonKilde.BRUKER : true)
                 .withSystemverdi(systemverdi)
-                .withVerdi(telefonnummer != null ? telefonnummer.getVerdi() : null);
+                .withBrukerutfyltVerdi(telefonnummer != null && telefonnummer.getKilde() == JsonKilde.BRUKER ? telefonnummer.getVerdi() : null);
     }
-    
+
     @PUT
     public void updateTelefonnummer(@PathParam("behandlingsId") String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        if ("".equals(telefonnummerFrontend.brukerutfyltVerdi)) {
+            telefonnummerFrontend.brukerutfyltVerdi = null;
+        }
         update(behandlingsId, telefonnummerFrontend);
         legacyUpdate(behandlingsId, telefonnummerFrontend);
     }
@@ -75,29 +78,41 @@ public class TelefonnummerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
-                personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        final JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
+                personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
         if (telefonnummerFrontend.brukerdefinert) {
-            telefonnummer.setKilde(JsonKilde.BRUKER);
-            telefonnummer.setVerdi(telefonnummerFrontend.verdi);
-        } else if (telefonnummer.getKilde() == JsonKilde.BRUKER) {
-            telefonnummer.setKilde(JsonKilde.SYSTEM);
-            telefonnummer.setVerdi(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator));
+            if (telefonnummerFrontend.brukerutfyltVerdi == null) {
+                personalia.setTelefonnummer(null);
+            } else {
+                jsonTelefonnummer.setKilde(JsonKilde.BRUKER);
+                jsonTelefonnummer.setVerdi(telefonnummerFrontend.brukerutfyltVerdi);
+            }
+        } else {
+            String systemverdiTelefonnummer = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
+            if (systemverdiTelefonnummer == null) {
+                personalia.setTelefonnummer(null);
+            } else {
+                jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
+                jsonTelefonnummer.setVerdi(systemverdiTelefonnummer);
+            }
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
     private void legacyUpdate(String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-        
+
         final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon.brukerendrettoggle");
         brukerdefinert.setValue(Boolean.toString(telefonnummerFrontend.brukerdefinert));
+
         faktaService.lagreBrukerFaktum(brukerdefinert);
-        
-        if (telefonnummerFrontend.verdi != null){
-            final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
-            telefon.setValue(telefonnummerFrontend.verdi.substring(3));
+        final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
+        if (telefonnummerFrontend.brukerutfyltVerdi != null){
+            telefon.setValue(telefonnummerFrontend.brukerutfyltVerdi.substring(3));
+            faktaService.lagreBrukerFaktum(telefon);
+        } else {
+            telefon.setValue(null);
             faktaService.lagreBrukerFaktum(telefon);
         }
     }
@@ -107,20 +122,20 @@ public class TelefonnummerRessurs {
     public static final class TelefonnummerFrontend {
         public boolean brukerdefinert;
         public String systemverdi;
-        public String verdi;
-        
+        public String brukerutfyltVerdi;
+
         public TelefonnummerFrontend withBrukerdefinert(boolean brukerdefinert) {
             this.brukerdefinert = brukerdefinert;
             return this;
         }
-        
+
         public TelefonnummerFrontend withSystemverdi(String systemverdi) {
             this.systemverdi = systemverdi;
             return this;
         }
-        
-        public TelefonnummerFrontend withVerdi(String verdi) {
-            this.verdi = verdi;
+
+        public TelefonnummerFrontend withBrukerutfyltVerdi(String brukerutfyltVerdi) {
+            this.brukerutfyltVerdi = brukerutfyltVerdi;
             return this;
         }
     }
