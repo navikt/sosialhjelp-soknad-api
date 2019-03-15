@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser.utgifter;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
@@ -55,7 +55,7 @@ public class BoutgiftRessurs {
 
     @Inject
     private VedleggOriginalFilerService vedleggOriginalFilerService;
-    
+
     @Inject
     private TextService textService;
 
@@ -63,7 +63,7 @@ public class BoutgiftRessurs {
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
         vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = SubjectHandler.getUserIdFromToken();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
@@ -86,7 +86,7 @@ public class BoutgiftRessurs {
     }
 
     private void update(String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = SubjectHandler.getUserIdFromToken();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 

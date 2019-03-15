@@ -1,16 +1,15 @@
 package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
@@ -65,7 +64,7 @@ public class VerdiRessurs {
     public VerdierFrontend hentVerdier(@PathParam("behandlingsId") String behandlingsId){
         vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = SubjectHandler.getUserIdFromToken();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final VerdierFrontend verdierFrontend = new VerdierFrontend();
@@ -92,7 +91,7 @@ public class VerdiRessurs {
     }
 
     private void update(String behandlingsId, VerdierFrontend verdierFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = SubjectHandler.getUserIdFromToken();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 

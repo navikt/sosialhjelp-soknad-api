@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -49,7 +49,7 @@ public class ArbeidRessurs {
 
     @GET
     public ArbeidFrontend hentArbeid(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = SubjectHandler.getUserIdFromToken();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
@@ -75,7 +75,7 @@ public class ArbeidRessurs {
     }
 
     private void update(String behandlingsId, ArbeidFrontend arbeidFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = SubjectHandler.getUserIdFromToken();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = arbeid.getKommentarTilArbeidsforhold() != null ?

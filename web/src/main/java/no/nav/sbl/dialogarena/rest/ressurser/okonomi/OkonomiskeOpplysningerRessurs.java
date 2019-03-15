@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper;
 import no.nav.sbl.dialogarena.rest.mappers.SoknadTypeAndPath;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
@@ -11,6 +10,7 @@ import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
@@ -75,7 +75,7 @@ public class OkonomiskeOpplysningerRessurs {
 
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = SubjectHandler.getUserIdFromToken();
         final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
@@ -112,7 +112,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void update(String behandlingsId, VedleggFrontend vedleggFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = SubjectHandler.getUserIdFromToken();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));

@@ -1,15 +1,14 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -17,19 +16,19 @@ import java.util.Objects;
 
 @Component
 public class LegacyHelper {
-    
+
     @Inject
     private VedleggService vedleggService;
 
     @Inject
     private SoknadService soknadService;
-    
+
     @Inject
     private WebSoknadConfig webSoknadConfig;
 
     @Inject
     private WebSoknadConverter webSoknadConverter;
-    
+
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
@@ -49,7 +48,7 @@ public class LegacyHelper {
         }
 
         /* Dette burde egentlig være unødvendig, men sjekker i tilfelle lesing av WebSoknad kan ha sideeffekter: */
-        if (eier == null || !eier.equals(SubjectHandler.getSubjectHandler().getUid())) {
+        if (eier == null || !eier.equals(SubjectHandler.getUserIdFromToken())) {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
