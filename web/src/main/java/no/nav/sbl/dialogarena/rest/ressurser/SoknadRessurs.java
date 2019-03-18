@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -100,7 +99,7 @@ public class SoknadRessurs {
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
         final String eier = getSubjectHandler().getUid();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);

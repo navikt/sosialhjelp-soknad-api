@@ -71,7 +71,7 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereSystemKontonummer(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
@@ -85,7 +85,7 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereOppdatertSystemKontonummerFraTPS(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM_OPPDATERT);
 
@@ -99,7 +99,7 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereBrukerutfyltKontonummer(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
@@ -113,7 +113,7 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereKontonummerLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
 

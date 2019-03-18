@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -55,7 +54,7 @@ public class FullOppsummeringRessurs {
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
     }
 
@@ -69,7 +68,7 @@ public class FullOppsummeringRessurs {
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
         return pdfService.genererJuridiskPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
     }
