@@ -53,11 +53,10 @@ public class FullOppsummeringRessurs {
     @SjekkTilgangTilSoknad
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         sjekkOmFullOppsummeringErAktivert("hentOppsummeringNew");
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
@@ -69,11 +68,10 @@ public class FullOppsummeringRessurs {
     @SjekkTilgangTilSoknad
     public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
         sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 

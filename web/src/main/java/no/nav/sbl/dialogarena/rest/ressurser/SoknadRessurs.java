@@ -99,11 +99,10 @@ public class SoknadRessurs {
     @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
