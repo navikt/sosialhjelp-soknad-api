@@ -1,27 +1,28 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
 
@@ -30,17 +31,10 @@ public class EttersendingService {
     public static final int ETTERSENDELSE_FRIST_DAGER = 90;
 
     @Inject
-    @Named("soknadInnsendingRepository")
-    private SoknadRepository lokalDb;
-
-    @Inject
     HenvendelseService henvendelseService;
 
     @Inject
-    private VedleggRepository vedleggRepository;
-
-    @Inject
-    private FaktaService faktaService;
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
     Clock clock;
@@ -52,21 +46,36 @@ public class EttersendingService {
         String uuid = UUID.randomUUID().toString();
         String nyBehandlingsId = henvendelseService.startEttersending(originalSoknad, uuid);
 
-        Long soknadId = lagreSoknadILokalDb(originalSoknad, uuid, nyBehandlingsId);
-
         List<VedleggMetadata> manglendeVedlegg = lagListeOverVedlegg(nyesteSoknad);
-        lagreVedleggPaSoknad(soknadId, manglendeVedlegg);
-        lagreFaktaPaNySoknad(soknadId, originalSoknad);
+        List<JsonVedlegg> manglendeJsonVedlegg = convertVedleggMetadataToJsonVedlegg(manglendeVedlegg);
+
+        lagreSoknadILokalDb(originalSoknad, nyBehandlingsId, manglendeJsonVedlegg);
 
         return nyBehandlingsId;
     }
 
-    private void lagreFaktaPaNySoknad(Long soknadId, SoknadMetadata originalSoknad) {
-        faktaService.lagreSystemFaktum(soknadId, new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("ettersendelse.sendestil")
-                .medValue(originalSoknad.navEnhet)
-                .medType(SYSTEMREGISTRERT));
+    private void lagreSoknadILokalDb(SoknadMetadata originalSoknad, String nyBehandlingsId, List<JsonVedlegg> manglendeJsonVedlegg) {
+        SoknadUnderArbeid ettersendingSoknad = new SoknadUnderArbeid().withBehandlingsId(nyBehandlingsId)
+                .withVersjon(1L)
+                .withEier(originalSoknad.fnr)
+                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .withTilknyttetBehandlingsId(originalSoknad.behandlingsId)
+                .withJsonInternalSoknad(new JsonInternalSoknad()
+                        .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(manglendeJsonVedlegg))
+                        .withMottaker(new JsonSoknadsmottaker()
+                                .withOrganisasjonsnummer(originalSoknad.orgnr)
+                                .withNavEnhetsnavn(originalSoknad.navEnhet)));
+
+        soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.fnr);
+    }
+
+    private List<JsonVedlegg> convertVedleggMetadataToJsonVedlegg(List<VedleggMetadata> manglendeVedlegg) {
+        return manglendeVedlegg.stream()
+                .map(v -> new JsonVedlegg()
+                    .withType(v.skjema)
+                    .withTilleggsinfo(v.tillegg)
+                    .withStatus(Vedlegg.Status.VedleggKreves.toString()))
+                .collect(Collectors.toList());
     }
 
     protected SoknadMetadata hentOgVerifiserSoknad(String behandlingsId) {
@@ -105,27 +114,6 @@ public class EttersendingService {
         }
 
         return manglendeVedlegg;
-    }
-
-    protected Long lagreSoknadILokalDb(SoknadMetadata originalSoknad, String uuid, String nyBehandlingsId) {
-        WebSoknad ettersendingSoknad = WebSoknad.startEttersending(nyBehandlingsId)
-                .medUuid(uuid)
-                .medAktorId(originalSoknad.fnr)
-                .medskjemaNummer(originalSoknad.skjema)
-                .medBehandlingskjedeId(originalSoknad.behandlingsId);
-
-        return lokalDb.opprettSoknad(ettersendingSoknad);
-    }
-
-    protected void lagreVedleggPaSoknad(Long soknadId, List<VedleggMetadata> manglendeVedlegg) {
-        manglendeVedlegg.forEach(v -> {
-            Vedlegg nyttVedlegg = new Vedlegg()
-                    .medSoknadId(soknadId)
-                    .medSkjemaNummer(v.skjema)
-                    .medSkjemanummerTillegg(v.tillegg)
-                    .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
-            vedleggRepository.opprettEllerEndreVedlegg(nyttVedlegg, null);
-        });
     }
 
 }

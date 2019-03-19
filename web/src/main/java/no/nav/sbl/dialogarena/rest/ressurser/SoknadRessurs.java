@@ -18,6 +18,7 @@ import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -54,6 +56,9 @@ public class SoknadRessurs {
 
     @Inject
     private SoknadService soknadService;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
     private HtmlGenerator pdfTemplate;
@@ -122,8 +127,13 @@ public class SoknadRessurs {
             opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
         } else {
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
-            if (soknad == null) {
-                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+            if (soknad == null){
+                Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId);
+                if (soknadUnderArbeid.isPresent()) {
+                    opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();
+                } else {
+                    opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                }
             } else {
                 opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }
