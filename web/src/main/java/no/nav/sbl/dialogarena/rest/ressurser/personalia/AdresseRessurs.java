@@ -56,9 +56,6 @@ public class AdresseRessurs {
     private SoknadsmottakerRessurs soknadsmottakerRessurs;
 
     @Inject
-    private AdresseMapper mapper;
-
-    @Inject
     private NavEnhetRessurs navEnhetRessurs;
 
     @GET
@@ -71,26 +68,26 @@ public class AdresseRessurs {
         final JsonAdresse sysFolkeregistrertAdresse = adresseSystemdata.innhentFolkeregistrertAdresse(personIdentifikator);
         final JsonAdresse sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator);
 
-        return mapper.mapToAdresserFrontend(sysFolkeregistrertAdresse, sysMidlertidigAdresse, jsonOppholdsadresse);
+        return AdresseMapper.mapToAdresserFrontend(sysFolkeregistrertAdresse, sysMidlertidigAdresse, jsonOppholdsadresse);
     }
 
     @PUT
-    public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresseFrontend adresseFrontend) {
+    public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresserFrontend adresserFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, adresseFrontend);
-        legacyUpdate(behandlingsId, adresseFrontend);
+        update(behandlingsId, adresserFrontend);
+        legacyUpdate(behandlingsId, adresserFrontend);
 
-        /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg)); Bruk når faktum er fjernet*/
-        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresseFrontend.valg.toString())
+        /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresserFrontend.valg)); Bruk når faktum er fjernet*/
+        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresserFrontend.valg.toString())
                 .stream().map(navEnhet -> navEnhetRessurs.mapFromLegacyNavEnhetFrontend(navEnhet, null)).collect(Collectors.toList());
     }
 
-    private void update(String behandlingsId, AdresseFrontend adresseFrontend) {
+    private void update(String behandlingsId, AdresserFrontend adresserFrontend) {
         final String eier = SubjectHandler.getUserIdFromToken();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        switch (adresseFrontend.valg){
+        switch (adresserFrontend.valg){
             case FOLKEREGISTRERT:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentFolkeregistrertAdresse(eier));
                 break;
@@ -98,26 +95,26 @@ public class AdresseRessurs {
                 personalia.setOppholdsadresse(adresseSystemdata.innhentMidlertidigAdresse(eier));
                 break;
             case SOKNAD:
-                personalia.setOppholdsadresse(mapper.mapToJsonAdresse(adresseFrontend));
+                personalia.setOppholdsadresse(AdresseMapper.mapToJsonAdresse(adresserFrontend.soknad));
                 break;
         }
 
-        personalia.getOppholdsadresse().setAdresseValg(adresseFrontend.valg);
+        personalia.getOppholdsadresse().setAdresseValg(adresserFrontend.valg);
         personalia.setPostadresse(midlertidigLosningForPostadresse(personalia.getOppholdsadresse()));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    private void legacyUpdate(String behandlingsId, AdresseFrontend adresseFrontend) {
+    private void legacyUpdate(String behandlingsId, AdresserFrontend adresserFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
         final Faktum valg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.system.oppholdsadresse.valg");
-        valg.setValue(adresseFrontend.valg.toString());
+        valg.setValue(adresserFrontend.valg.toString());
         faktaService.lagreBrukerFaktum(valg);
 
         final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.brukerendrettoggle");
 
-        switch (adresseFrontend.valg){
+        switch (adresserFrontend.valg){
             case FOLKEREGISTRERT:
             case MIDLERTIDIG:
                 brukerdefinert.setValue(Boolean.toString(false));
@@ -125,7 +122,7 @@ public class AdresseRessurs {
             case SOKNAD:
                 brukerdefinert.setValue(Boolean.toString(true));
                 final Faktum brukerAdresse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.bruker");
-                populerAdresse(brukerAdresse, adresseFrontend);
+                populerAdresse(brukerAdresse, adresserFrontend.soknad);
                 faktaService.lagreBrukerFaktum(brukerAdresse);
                 break;
         }
@@ -144,9 +141,9 @@ public class AdresseRessurs {
     }
 
     private void populerAdresse(final Faktum adresseFaktum, final AdresseFrontend adresse) {
-        if (adresse.type.equals("gateadresse")) {
+        if (adresse.type.equals(JsonAdresse.Type.GATEADRESSE)) {
             populerGateadresse(adresseFaktum, adresse);
-        } else if (adresse.type.equals("matrikkelAdresse")) {
+        } else if (adresse.type.equals(JsonAdresse.Type.MATRIKKELADRESSE)) {
             populerMatrikkeladresse(adresseFaktum, adresse);
         } else {
             throw new RuntimeException("Ukjent adressetype: " + adresse.getClass().getName());
@@ -156,7 +153,7 @@ public class AdresseRessurs {
     private void populerGateadresse(final Faktum adresseFaktum, final AdresseFrontend adresse) {
         final GateadresseFrontend gateadresse = adresse.gateadresse;
         adresseFaktum
-                .medSystemProperty("type", adresse.type)
+                .medSystemProperty("type", adresse.type.toString())
                 .medSystemProperty("landkode", "NOR")
                 .medSystemProperty("kommunenummer", gateadresse.kommunenummer)
                 .medSystemProperty("bolignummer", gateadresse.bolignummer)
@@ -176,7 +173,7 @@ public class AdresseRessurs {
     private void populerMatrikkeladresse(final Faktum adresseFaktum, final AdresseFrontend adresse) {
         final MatrikkeladresseFrontend matrikkeladresse = adresse.matrikkeladresse;
         adresseFaktum
-                .medSystemProperty("type", adresse.type)
+                .medSystemProperty("type", adresse.type.toString())
                 .medSystemProperty("landkode", "NOR")
                 .medSystemProperty("kommunenummer", matrikkeladresse.kommunenummer)
                 .medSystemProperty("gaardsnummer", matrikkeladresse.gaardsnummer)
@@ -188,7 +185,6 @@ public class AdresseRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class AdresserFrontend {
-
         public JsonAdresseValg valg;
         public AdresseFrontend folkeregistrert;
         public AdresseFrontend midlertidig;
@@ -217,18 +213,13 @@ public class AdresseRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class AdresseFrontend {
-        public String type; // "gateadresse/matrikkeladresse/ustrukturert"
-        public JsonAdresseValg valg;
+        public JsonAdresse.Type type;
         public GateadresseFrontend gateadresse;
         public MatrikkeladresseFrontend matrikkeladresse;
         public UstrukturertAdresseFrontend ustrukturert;
 
-        public void setType(String type) {
+        public void setType(JsonAdresse.Type type) {
             this.type = type;
-        }
-
-        public void setValg(JsonAdresseValg valg) {
-            this.valg = valg;
         }
 
         public void setGateadresse(GateadresseFrontend gateadresse) {
@@ -246,7 +237,6 @@ public class AdresseRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class GateadresseFrontend {
-        public String type = "gateadresse";
         public String landkode;
         public String kommunenummer;
         public List<String> adresselinjer;
@@ -305,7 +295,6 @@ public class AdresseRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class MatrikkeladresseFrontend {
-        public String type = "matrikkeladresse";
         public String kommunenummer;
         public String gaardsnummer;
         public String bruksnummer;
@@ -346,7 +335,6 @@ public class AdresseRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class UstrukturertAdresseFrontend {
-        public String type = "ustrukturert";
         public List<String> adresse;
 
         public UstrukturertAdresseFrontend withAdresse(List<String> adresse) {

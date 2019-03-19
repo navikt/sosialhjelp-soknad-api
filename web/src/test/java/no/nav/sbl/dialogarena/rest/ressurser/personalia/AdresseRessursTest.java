@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.rest.mappers.AdresseMapper;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
@@ -94,16 +93,11 @@ public class AdresseRessursTest {
     private AdresseRessurs adresseRessurs;
 
     @Mock
-    private AdresseMapper adresseMapper;
-
-    @Mock
     private NavEnhetRessurs navEnhetRessurs;
 
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
-        when(adresseMapper.mapToAdresserFrontend(any(JsonAdresse.class), any(JsonAdresse.class), any(JsonAdresse.class))).thenCallRealMethod();
-        when(adresseMapper.mapToJsonAdresse(any(AdresseFrontend.class))).thenCallRealMethod();
         when(navEnhetRessurs.mapFromLegacyNavEnhetFrontend(any(SoknadsmottakerRessurs.LegacyNavEnhetFrontend.class), anyString())).thenCallRealMethod();
     }
 
@@ -163,9 +157,9 @@ public class AdresseRessursTest {
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
         ignoreTilgangskontrollAndLegacyUpdate();
 
-        AdresseFrontend adresseFrontend = new AdresseFrontend();
-        adresseFrontend.setValg(JsonAdresseValg.FOLKEREGISTRERT);
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        AdresserFrontend adresserFrontend = new AdresserFrontend();
+        adresserFrontend.withValg(JsonAdresseValg.FOLKEREGISTRERT);
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -184,9 +178,9 @@ public class AdresseRessursTest {
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
         ignoreTilgangskontrollAndLegacyUpdate();
 
-        AdresseFrontend adresseFrontend = new AdresseFrontend();
-        adresseFrontend.setValg(JsonAdresseValg.MIDLERTIDIG);
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        AdresserFrontend adresserFrontend = new AdresserFrontend();
+        adresserFrontend.withValg(JsonAdresseValg.MIDLERTIDIG);
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -204,11 +198,11 @@ public class AdresseRessursTest {
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
         ignoreTilgangskontrollAndLegacyUpdate();
 
-        AdresseFrontend adresseFrontend = new AdresseFrontend();
-        adresseFrontend.setType("gateadresse");
-        adresseFrontend.setGateadresse(new GateadresseFrontend().withGatenavn("Søknadsgata"));
-        adresseFrontend.setValg(JsonAdresseValg.SOKNAD);
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresseFrontend);
+        AdresserFrontend adresserFrontend = new AdresserFrontend().withSoknad(new AdresseFrontend());
+        adresserFrontend.withValg(JsonAdresseValg.SOKNAD);
+        adresserFrontend.soknad.setType(JsonAdresse.Type.GATEADRESSE);
+        adresserFrontend.soknad.setGateadresse(new GateadresseFrontend().withGatenavn("Søknadsgata"));
+        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -239,7 +233,7 @@ public class AdresseRessursTest {
             assertThat(jsonAdresse, nullValue());
             return;
         }
-        assertThat("Adressetype", adresseFrontend.type, is(mapTypeToString(jsonAdresse.getType())));
+        assertThat("Adressetype", adresseFrontend.type, is(jsonAdresse.getType()));
         switch (jsonAdresse.getType()){
             case GATEADRESSE:
                 assertThatGateadresseIsCorrectlyConverted(adresseFrontend.gateadresse, jsonAdresse);
@@ -284,19 +278,6 @@ public class AdresseRessursTest {
     private void assertThatUstrukturertAdresseIsCorrectlyConverted(UstrukturertAdresseFrontend ustrukturertAdresse, JsonAdresse jsonAdresse) {
         JsonUstrukturertAdresse jsonUstrukturertAdresse = (JsonUstrukturertAdresse) jsonAdresse;
         assertThat("adresse", ustrukturertAdresse.adresse, is(jsonUstrukturertAdresse.getAdresse()));
-    }
-
-    private String mapTypeToString(JsonAdresse.Type type){
-        switch (type){
-            case GATEADRESSE:
-                return "gateadresse";
-            case MATRIKKELADRESSE:
-                return "matrikkeladresse";
-            case USTRUKTURERT:
-                return "ustrukturert";
-            default:
-                return null;
-        }
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

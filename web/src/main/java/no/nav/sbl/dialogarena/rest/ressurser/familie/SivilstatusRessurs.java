@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 
 @Controller
 @Path("/soknader/{behandlingsId}/familie/sivilstatus")
@@ -139,8 +140,7 @@ public class SivilstatusRessurs {
         return new EktefelleFrontend()
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withFodselsdato(jsonEktefelle.getFodselsdato())
-                .withPersonnummer(jsonEktefelle.getPersonIdentifikator() == null ? null :
-                        jsonEktefelle.getPersonIdentifikator().substring(6));
+                .withPersonnummer(getPersonnummerFromFnr(jsonEktefelle.getPersonIdentifikator()));
     }
 
     private JsonEktefelle mapToJsonEktefelle(EktefelleFrontend ektefelle) throws ParseException {

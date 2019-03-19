@@ -73,14 +73,18 @@ public class WebSoknadConverter {
     }
 
     JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
-        List<JsonVedlegg> jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
+        List<JsonVedlegg> jsonVedlegg;
 
         final String eier = SubjectHandler.getUserIdFromToken();
         final Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(webSoknad.getBrukerBehandlingId(), eier);
         if (soknadNyModell.isPresent()){
             if (soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null){
                 jsonVedlegg = soknadNyModell.get().getJsonInternalSoknad().getVedlegg().getVedlegg();
+            } else {
+                jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
             }
+        } else {
+            jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
         }
 
         if (webSoknad.erEttersending()) {

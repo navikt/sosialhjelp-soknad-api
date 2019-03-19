@@ -3,7 +3,10 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
@@ -29,7 +32,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
@@ -71,7 +76,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+    public WebSoknad hentSoknadDataOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         response.addCookie(xsrfCookie(behandlingsId));
         return soknadService.hentSoknad(behandlingsId, true, false);
     }
@@ -88,16 +93,16 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces(MediaType.TEXT_HTML)
     @SjekkTilgangTilSoknad
-    public String hentOppsummeringMedStandardMediatype(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+    public String hentOppsummeringMedStandardMediatypeOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         LOG.warn("Bruk av deprecated metode for å hente oppsummering");
-        return hentOppsummering(behandlingsId);
+        return hentOppsummeringOgLagreSoknadMedNyModell(behandlingsId);
     }
 
     @GET
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
-    public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+    public String hentOppsummeringOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());

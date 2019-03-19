@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -223,7 +224,7 @@ public class ForsorgerpliktRessursTest {
         return new AnsvarFrontend()
                     .withBarn(new BarnFrontend()
                             .withFodselsnummer(JSON_BARN_2.getPersonIdentifikator())
-                            .withPersonnummer(JSON_BARN_2.getPersonIdentifikator().substring(6)))
+                            .withPersonnummer(getPersonnummerFromFnr(JSON_BARN_2.getPersonIdentifikator())))
                     .withSamvarsgrad(30);
     }
 
@@ -231,7 +232,7 @@ public class ForsorgerpliktRessursTest {
         return new AnsvarFrontend()
                     .withBarn(new BarnFrontend()
                             .withFodselsnummer(JSON_BARN.getPersonIdentifikator())
-                            .withPersonnummer(JSON_BARN.getPersonIdentifikator().substring(6)))
+                            .withPersonnummer(getPersonnummerFromFnr(JSON_BARN.getPersonIdentifikator())))
                     .withHarDeltBosted(true);
     }
 

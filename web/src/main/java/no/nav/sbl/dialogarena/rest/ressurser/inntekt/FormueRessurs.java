@@ -98,11 +98,8 @@ public class FormueRessurs {
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
-        boolean hasAnyFormueType = false;
-        if (formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
-                formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet){
-            hasAnyFormueType = true;
-        }
+        boolean hasAnyFormueType = formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
+                formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet;
 
         setBekreftelse(okonomi.getOpplysninger(), "sparing", hasAnyFormueType, textService.getJsonOkonomiTittel("inntekt.bankinnskudd"));
         setFormue(okonomi.getOversikt(), formueFrontend);
@@ -118,6 +115,10 @@ public class FormueRessurs {
                 formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet){
             final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd");
             bekreftelse.setValue(String.valueOf(true));
+            faktaService.lagreBrukerFaktum(bekreftelse);
+        } else {
+            final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd");
+            bekreftelse.setValue(String.valueOf(false));
             faktaService.lagreBrukerFaktum(bekreftelse);
         }
 

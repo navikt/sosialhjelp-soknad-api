@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -27,10 +28,12 @@ import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +41,9 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToBelopNavn;
 import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*;
 import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 
 @Controller
 @Path("/soknader/{behandlingsId}/okonomiskeOpplysninger")
@@ -56,13 +61,14 @@ public class OkonomiskeOpplysningerRessurs {
     private SoknadService soknadService;
 
     @Inject
+    @Named("soknadInnsendingRepository")
+    private SoknadRepository repository;
+
+    @Inject
     private FaktaService faktaService;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private OkonomiskeOpplysningerMapper mapper;
 
     @Inject
     private VedleggService vedleggService;
@@ -83,18 +89,18 @@ public class OkonomiskeOpplysningerRessurs {
                         soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
         final List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
 
-        final List<OpplastetVedlegg> opplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, soknad);
+        final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), eier);
 
         final List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
 
-        final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         utenFaktumSoknad.getJsonInternalSoknad().setVedlegg(jsonVedleggs.isEmpty() ? null : new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(utenFaktumSoknad, eier);
 
         return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
-                .map(vedlegg -> mapper.mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()))
+                .map(vedlegg -> mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()))
                 .withSlettedeVedlegg(slettedeVedlegg);
     }
 
@@ -123,19 +129,19 @@ public class OkonomiskeOpplysningerRessurs {
 
         switch (soknadTypeAndPath.getPath()){
             case "utbetaling":
-                mapper.addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
                 break;
             case "opplysningerUtgift":
-                mapper.addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
                 break;
             case "oversiktUtgift":
-                mapper.addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
                 break;
             case "formue":
-                mapper.addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
                 break;
             case "inntekt":
-                mapper.addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
                 break;
         }
 
@@ -167,7 +173,7 @@ public class OkonomiskeOpplysningerRessurs {
 
         final List<Faktum> fakta = webSoknad.getFaktaMedKey(key);
 
-        mapper.makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad.getBrukerBehandlingId());
+        makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad.getBrukerBehandlingId());
 
         for (int i = 0; i < vedleggFrontend.rader.size(); i++){
             Faktum faktum = fakta.get(i);
@@ -180,10 +186,32 @@ public class OkonomiskeOpplysningerRessurs {
                 properties.put(belopNavn, vedleggRad.belop.toString());
             }
 
-            mapper.putNettolonnOnPropertiesForJsonTypeJobb(belopNavn, vedleggRad, properties);
-            mapper.putBeskrivelseOnRelevantTypes(soknadTypeAndPath, jsonType, vedleggRad, properties);
+            putNettolonnOnPropertiesForJsonTypeJobb(belopNavn, vedleggRad, properties);
+            putBeskrivelseOnRelevantTypes(soknadTypeAndPath, jsonType, vedleggRad, properties);
 
             faktaService.lagreBrukerFaktum(faktum);
+        }
+    }
+
+    private void makeFaktumListEqualSizeToFrontendRader(VedleggFrontend vedleggFrontend, List<Faktum> fakta, String behandlingsId) {
+        final int sizeDiff = vedleggFrontend.rader.size() - fakta.size();
+        if (sizeDiff > 0){
+            Iterator<Long> faktumIder = repository.hentLedigeFaktumIder(sizeDiff).iterator();
+            for (int i = 0; i < sizeDiff; i++){
+                final Faktum faktum = new Faktum()
+                        .medFaktumId(faktumIder.next())
+                        .medParrentFaktumId(fakta.get(0).getParrentFaktum())
+                        .medKey(fakta.get(0).getKey())
+                        .medType(BRUKERREGISTRERT)
+                        .medSoknadId(fakta.get(0).getSoknadId());
+                faktaService.opprettBrukerFaktum(behandlingsId, faktum);
+                fakta.add(faktum);
+            }
+        } else if (sizeDiff < 0){
+            for (int i = 0; i < -sizeDiff; i++){
+                faktaService.slettBrukerFaktum(fakta.get(fakta.size() - 1).getFaktumId());
+                fakta.remove(fakta.size() - 1);
+            }
         }
     }
 
