@@ -43,8 +43,6 @@ public class WebSoknadConverter {
     private EkstraMetadataService ekstraMetadataService;
     @Inject
     private InnsendingService innsendingService;
-    @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
     private final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson;
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
@@ -59,10 +57,6 @@ public class WebSoknadConverter {
     public SoknadUnderArbeid mapWebSoknadTilSoknadUnderArbeid(WebSoknad webSoknad, boolean medVedlegg) {
         if (webSoknad == null) {
             return null;
-        }
-
-        if (medVedlegg){
-            vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(webSoknad.getBrukerBehandlingId());
         }
 
         return new SoknadUnderArbeid()

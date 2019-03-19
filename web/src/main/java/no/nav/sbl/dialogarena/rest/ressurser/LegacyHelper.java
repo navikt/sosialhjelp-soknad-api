@@ -38,6 +38,9 @@ public class LegacyHelper {
     
     @Inject
     private Tilgangskontroll tilgangskontroll;
+
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
     
 
     private static final boolean brukNyModell = false;
@@ -63,6 +66,10 @@ public class LegacyHelper {
         }
         webSoknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(webSoknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(webSoknad.hentPaakrevdeVedlegg());
+
+        if (medVedlegg){
+            vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(webSoknad.getBrukerBehandlingId());
+        }
 
         final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad, medVedlegg);
         if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {

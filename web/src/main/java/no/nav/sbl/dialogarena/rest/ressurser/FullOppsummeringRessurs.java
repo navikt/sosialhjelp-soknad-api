@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -42,6 +43,8 @@ public class FullOppsummeringRessurs {
     private SoknadUnderArbeidService soknadUnderArbeidService;
     @Inject
     private WebSoknadConfig webSoknadConfig;
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
     private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
 
     @GET
@@ -53,6 +56,8 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
@@ -67,6 +72,8 @@ public class FullOppsummeringRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
         final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 

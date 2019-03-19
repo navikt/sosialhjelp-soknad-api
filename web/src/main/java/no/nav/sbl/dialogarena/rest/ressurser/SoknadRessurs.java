@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
@@ -65,6 +66,9 @@ public class SoknadRessurs {
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
 
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
@@ -98,6 +102,8 @@ public class SoknadRessurs {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
