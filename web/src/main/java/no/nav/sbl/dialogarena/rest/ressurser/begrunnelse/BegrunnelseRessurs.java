@@ -47,7 +47,7 @@ public class BegrunnelseRessurs {
     @GET
     public BegrunnelseFrontend hentBegrunnelse(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
 
         return new BegrunnelseFrontend()

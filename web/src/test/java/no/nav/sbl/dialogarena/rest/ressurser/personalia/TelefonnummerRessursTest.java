@@ -71,7 +71,7 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereSystemTelefonnummer(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
 
@@ -84,7 +84,7 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereOppdatertSystemTelefonnummerFraTPS(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM_OPPDATERT);
 
@@ -97,7 +97,7 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(null, null));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
 
@@ -110,7 +110,7 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereBrukerutfyltTelefonnummer(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
 

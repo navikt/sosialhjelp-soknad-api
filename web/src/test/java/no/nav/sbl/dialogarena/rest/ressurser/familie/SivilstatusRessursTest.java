@@ -79,7 +79,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(null, null, null,
                         null, null, null));
 
@@ -90,7 +90,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereKunBrukerdefinertStatus(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, null,
                         null, null, null));
 
@@ -105,7 +105,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereBrukerdefinertEktefelleRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         null, null, true));
 
@@ -121,7 +121,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereSystemdefinertEktefelleRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         false, true, null));
 
@@ -137,7 +137,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereSystemdefinertEktefelleMedDiskresjonskode(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         true, null, null));
 
