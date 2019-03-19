@@ -7,7 +7,7 @@ Backenden kan startes ved å kjøre main-metoden i DevSoknadsosialhjelpServer. D
 Husk å kjøre mvn clean install (evt process-resources) før du kjører lokalt slik at du får med tekster. For å teste søknaden lokalt trenger du også å ha frontenden kjørende. 
 
 For å se json-representasjon av søknaden: 
-`http://localhost:8181/soknadsosialhjelp-server/representasjon/json/110000001`
+`http://localhost:8181/sosialhjelp/soknad-api/representasjon/json/110000001`
 
 ### Tekster
 

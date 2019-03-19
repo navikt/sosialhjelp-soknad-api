@@ -2,9 +2,12 @@ package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
  * Klasse som genererer og sjekker xsrf token som sendes inn
  */
 public class XsrfGenerator {
+    private static final Logger log = LoggerFactory.getLogger(InformasjonRessurs.class);
     private static final String SECRET = "9f8c0d81-d9b3-4b70-af03-b***REMOVED***6c4f";
 
     public static String generateXsrfToken(String behandlingsId) {
@@ -27,6 +31,7 @@ public class XsrfGenerator {
 
     public static String generateXsrfToken(String behandlingsId, String date, String token) {
         try {
+            log.info("OIDC  ( i generateXsrf) token: " +  token);
             String signKey = token + behandlingsId + date;
             Mac hmac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(SECRET.getBytes(), "HmacSHA256");
@@ -39,6 +44,10 @@ public class XsrfGenerator {
 
     public static void sjekkXsrfToken(String givenToken, String behandlingsId) {
         String token = generateXsrfToken(behandlingsId);
+            log.info("OIDC givenToken: " +  givenToken);
+            log.info("OIDC token som burde være lik givenToken: " +  token);
+            log.info("OIDC token som burde være lik givenToken om ikke den over er lik: " +  generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")));
+
         boolean valid = token.equals(givenToken) || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
         if (!valid) {
             throw new AuthorizationException("Feil token");
