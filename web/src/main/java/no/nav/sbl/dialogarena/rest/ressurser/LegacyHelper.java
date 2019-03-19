@@ -38,9 +38,7 @@ public class LegacyHelper {
     
     @Inject
     private Tilgangskontroll tilgangskontroll;
-
-    @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
+    
 
     private static final boolean brukNyModell = false;
 
@@ -58,10 +56,6 @@ public class LegacyHelper {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-
-        if (medVedlegg){
-            vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-        }
 
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
         if (!eier.equals(webSoknad.getAktoerId())) {

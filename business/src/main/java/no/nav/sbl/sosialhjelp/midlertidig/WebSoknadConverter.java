@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMeta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
@@ -42,6 +43,8 @@ public class WebSoknadConverter {
     private EkstraMetadataService ekstraMetadataService;
     @Inject
     private InnsendingService innsendingService;
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
     private final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson;
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
@@ -57,6 +60,11 @@ public class WebSoknadConverter {
         if (webSoknad == null) {
             return null;
         }
+
+        if (medVedlegg){
+            vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(webSoknad.getBrukerBehandlingId());
+        }
+
         return new SoknadUnderArbeid()
                 .withVersjon(1L)
                 .withBehandlingsId(webSoknad.getBrukerBehandlingId())
