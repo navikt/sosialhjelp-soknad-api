@@ -74,7 +74,7 @@ public class EttersendingService {
                 .map(v -> new JsonVedlegg()
                     .withType(v.skjema)
                     .withTilleggsinfo(v.tillegg)
-                    .withStatus(Vedlegg.Status.VedleggKreves.toString()))
+                    .withStatus("VedleggKreves"))
                 .collect(Collectors.toList());
     }
 
