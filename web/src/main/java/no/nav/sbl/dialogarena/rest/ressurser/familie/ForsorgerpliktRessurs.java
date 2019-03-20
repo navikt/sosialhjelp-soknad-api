@@ -51,7 +51,7 @@ public class ForsorgerpliktRessurs {
     @GET
     public ForsorgerpliktFrontend hentForsorgerplikt(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
 
         return mapToForsorgerpliktFrontend(jsonForsorgerplikt);

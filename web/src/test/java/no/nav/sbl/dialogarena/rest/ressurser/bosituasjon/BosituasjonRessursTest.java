@@ -65,7 +65,7 @@ public class BosituasjonRessursTest {
 
     @Test
     public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersonerLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(null, null));
 
         final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
@@ -76,7 +76,7 @@ public class BosituasjonRessursTest {
 
     @Test
     public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersoner(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.EIER, 2));
 
         final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);

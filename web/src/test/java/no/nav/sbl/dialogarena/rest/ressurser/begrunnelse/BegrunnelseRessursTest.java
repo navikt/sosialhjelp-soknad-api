@@ -62,7 +62,7 @@ public class BegrunnelseRessursTest {
 
     @Test
     public void getBegrunnelseSkalReturnereBegrunnelseMedTommeStrenger(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse("", ""));
 
         final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
@@ -73,7 +73,7 @@ public class BegrunnelseRessursTest {
 
     @Test
     public void getBegrunnelseSkalReturnereBegrunnelse(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI));
 
         final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
