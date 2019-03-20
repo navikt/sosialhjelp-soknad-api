@@ -64,7 +64,9 @@ public class EttersendingService {
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(manglendeJsonVedlegg))
                         .withMottaker(new JsonSoknadsmottaker()
                                 .withOrganisasjonsnummer(originalSoknad.orgnr)
-                                .withNavEnhetsnavn(originalSoknad.navEnhet)));
+                                .withNavEnhetsnavn(originalSoknad.navEnhet)))
+                .withOpprettetDato(LocalDateTime.now())
+                .withSistEndretDato(LocalDateTime.now());
 
         soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.fnr);
     }
