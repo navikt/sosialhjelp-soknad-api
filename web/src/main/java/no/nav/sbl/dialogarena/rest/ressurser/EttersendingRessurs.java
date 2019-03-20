@@ -64,6 +64,13 @@ public class EttersendingRessurs {
     @GET
     @Path("/vedlegg/{behandlingsId}")
     @SjekkTilgangTilSoknad
+    public List<EttersendelseVedlegg> legacyHentVedlegg(@PathParam("behandlingsId") String behandlingsId) {
+        return ettersendelseVedleggService.hentVedleggForSoknad(behandlingsId);
+    }
+
+    @GET
+    @Path("/ettersendteVedlegg/{behandlingsId}")
+    @SjekkTilgangTilSoknad
     public List<EttersendtVedlegg> hentVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = getSubjectHandler().getUid();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
