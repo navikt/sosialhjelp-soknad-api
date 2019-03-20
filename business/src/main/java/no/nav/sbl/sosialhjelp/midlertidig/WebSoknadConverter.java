@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMeta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
@@ -19,6 +18,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -30,13 +30,17 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class WebSoknadConverter {
     private static final Logger logger = getLogger(WebSoknadConverter.class);
 
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     @Inject
     private NavMessageSource messageSource;
     @Inject
@@ -58,7 +62,6 @@ public class WebSoknadConverter {
         if (webSoknad == null) {
             return null;
         }
-
         return new SoknadUnderArbeid()
                 .withVersjon(1L)
                 .withBehandlingsId(webSoknad.getBrukerBehandlingId())
@@ -75,6 +78,15 @@ public class WebSoknadConverter {
         if (medVedlegg){
             jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
         }
+
+        final String eier = getSubjectHandler().getUid();
+        final Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(webSoknad.getBrukerBehandlingId(), eier);
+        if (soknadNyModell.isPresent()){
+            if (soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null){
+                jsonVedlegg = soknadNyModell.get().getJsonInternalSoknad().getVedlegg().getVedlegg();
+            }
+        }
+
         if (webSoknad.erEttersending()) {
             return new JsonInternalSoknad()
                     .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg))

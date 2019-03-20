@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn.Kilde;
@@ -8,8 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn.Kilde;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erIkkeTom;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.faktumVerdiErTrue;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.*;
 
 public final class JsonPersonaliaConverter {
 
@@ -53,6 +53,11 @@ public final class JsonPersonaliaConverter {
         personalia.setFolkeregistrertAdresse(JsonAdresseConverter.tilFolkeregistrertAdresse(webSoknad));
         personalia.setOppholdsadresse(JsonAdresseConverter.tilOppholdsadresse(webSoknad));
         personalia.setPostadresse(JsonAdresseConverter.tilPostadresse(webSoknad));
+
+        if(erIkkeTom(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg"))){
+            personalia.getOppholdsadresse().setAdresseValg(
+                    JsonAdresseValg.fromValue(webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg")));
+        }
 
         return personalia;
     }

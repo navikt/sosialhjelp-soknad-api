@@ -1,23 +1,36 @@
 package no.nav.sbl.sosialhjelp.midlertidig;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.soknadsosialhjelp.soknad.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +68,7 @@ public class WebSoknadConverterTest {
     private NavMessageSource messageSource = mock(NavMessageSource.class);
     private EkstraMetadataService ekstraMetadataService = mock(EkstraMetadataService.class);
     private InnsendingService innsendingService = mock(InnsendingService.class);
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository = mock(SoknadUnderArbeidRepository.class);
     @InjectMocks
     private WebSoknadConverter webSoknadConverter;
 
@@ -65,10 +79,13 @@ public class WebSoknadConverterTest {
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withOrgnummer(ORGNUMMER)
                 .withNavEnhetsnavn(NAVENHET));
+        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
     }
 
     @Test
     public void mapWebSoknadTilSoknadUnderArbeidMapperFelterRiktig() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad())));
+
         SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(lagGyldigWebSoknad(), true);
 
         assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
@@ -83,6 +100,8 @@ public class WebSoknadConverterTest {
 
     @Test
     public void mapWebSoknadTilJsonSoknadInternalLagerJsonSoknadInternalMedDataFraWebSoknad() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad())));
+
         JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad(), true);
 
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi(), is(EIER));
@@ -90,7 +109,24 @@ public class WebSoknadConverterTest {
     }
 
     @Test
+    public void mapWebSoknadTilJsonSoknadInternalLagerJsonSoknadInternalMedDataFraWebSoknadOgVedleggFraNyModell() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(
+                new JsonInternalSoknad().withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(
+                        Collections.singletonList(new JsonVedlegg().withType("jobb").withTilleggsinfo("sluttoppgjor")))))));
+
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad(), true);
+
+        assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi(), is(EIER));
+        assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse().getType().value(), is("gateadresse"));
+        JsonVedlegg jsonVedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
+        assertThat(jsonVedlegg.getType(), is("jobb"));
+        assertThat(jsonVedlegg.getTilleggsinfo(), is("sluttoppgjor"));
+    }
+
+    @Test
     public void mapWebSoknadTilJsonSoknadInternalReturnererKunVedleggForEttersendelse() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad())));
+
         JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending(), true);
 
         JsonVedlegg vedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
@@ -101,6 +137,21 @@ public class WebSoknadConverterTest {
         assertThat(vedlegg.getStatus(), is(LastetOpp.name()));
         assertThat(vedlegg.getFiler().get(0).getFilnavn(), is(FILNAVN));
         assertThat(vedlegg.getFiler().get(0).getSha512(), notNullValue());
+    }
+
+    @Test
+    public void mapWebSoknadTilJsonSoknadInternalReturnererKunVedleggForEttersendelseFraNyModell() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(
+                new JsonInternalSoknad().withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(
+                        Collections.singletonList(new JsonVedlegg().withType("jobb").withTilleggsinfo("sluttoppgjor")))))));
+
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending(), true);
+
+        JsonVedlegg vedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
+        assertThat(jsonInternalSoknad.getSoknad(), nullValue());
+        assertThat(jsonInternalSoknad.getVedlegg().getVedlegg().size(), is(1));
+        assertThat(vedlegg.getType(), is("jobb"));
+        assertThat(vedlegg.getTilleggsinfo(), is("sluttoppgjor"));
     }
 
     @Test
@@ -161,6 +212,7 @@ public class WebSoknadConverterTest {
         webSoknad.medFaktum(new Faktum().medKey("kontakt.system.adresse")
                 .medSystemProperty("type", "gateadresse")
                 .medSystemProperty("gatenavn", "Adresseveien"));
+        webSoknad.medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("midlertidig"));
         return webSoknad;
     }
 

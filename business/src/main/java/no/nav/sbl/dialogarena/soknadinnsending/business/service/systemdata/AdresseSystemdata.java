@@ -72,7 +72,9 @@ public class AdresseSystemdata implements Systemdata {
             return null;
         }
 
-        if (adresse.getStrukturertAdresse() == null) {
+        final Adresse.StrukturertAdresse strukturertAdresse = adresse.getStrukturertAdresse();
+
+        if (strukturertAdresse == null) {
             // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
             return null;
         }
@@ -83,9 +85,9 @@ public class AdresseSystemdata implements Systemdata {
         }
 
         JsonAdresse jsonAdresse;
-        if (type.equals("gateadresse")) {
+        if (strukturertAdresse instanceof Adresse.Gateadresse) {
             jsonAdresse = tilGateAdresse(adresse);
-        } else if (type.equals("matrikkeladresse")) {
+        } else if (strukturertAdresse instanceof Adresse.MatrikkelAdresse) {
             jsonAdresse = tilMatrikkelAdresse(adresse);
         } else if (type.equals("ustrukturert")) {
             jsonAdresse = tilUstrukturertAdresse(adresse);
