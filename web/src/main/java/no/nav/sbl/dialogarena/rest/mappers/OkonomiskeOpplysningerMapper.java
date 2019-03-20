@@ -204,7 +204,9 @@ public class OkonomiskeOpplysningerMapper {
 
     public static VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi, List<OpplastetVedlegg> opplastedeVedlegg) {
         final List<FilFrontend> filer = vedlegg.getFiler().stream().map(fil -> {
-            final OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn())).findFirst().get();
+            final OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Vedlegget finnes ikke"));
             return new FilFrontend().withFilNavn(fil.getFilnavn()).withUuid(opplastetVedlegg.getUuid());
         }).collect(Collectors.toList());
 

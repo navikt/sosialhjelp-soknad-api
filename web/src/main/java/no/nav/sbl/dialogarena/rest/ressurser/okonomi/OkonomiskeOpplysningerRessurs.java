@@ -271,7 +271,9 @@ public class OkonomiskeOpplysningerRessurs {
                         soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
 
         jsonVedleggs.stream().filter(vedlegg -> vedlegg.getType().equals(type) && vedlegg.getTilleggsinfo().equals(tilleggsinfo))
-                .findFirst().get().setStatus(vedleggFrontend.vedleggStatus);
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Vedlegget finnes ikke"))
+                .setStatus(vedleggFrontend.vedleggStatus);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
