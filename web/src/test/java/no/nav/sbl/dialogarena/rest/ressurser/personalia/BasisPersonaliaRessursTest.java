@@ -20,6 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static no.nav.sbl.dialogarena.rest.ressurser.personalia.BasisPersonaliaRessurs.BasisPersonaliaFrontend;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -40,9 +41,9 @@ public class BasisPersonaliaRessursTest {
                     .withVerdi(EIER))
             .withNavn(new JsonSokernavn()
                     .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                    .withFornavn("Aragorn")
-                    .withMellomnavn("Elessar")
-                    .withEtternavn("Telcontar"))
+                    .withFornavn(FORNAVN)
+                    .withMellomnavn(MELLOMNAVN)
+                    .withEtternavn(ETTERNAVN))
             .withStatsborgerskap(new JsonStatsborgerskap()
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi("NOR"))
@@ -55,9 +56,9 @@ public class BasisPersonaliaRessursTest {
                     .withVerdi(EIER))
             .withNavn(new JsonSokernavn()
                     .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                    .withFornavn("Aragorn")
-                    .withMellomnavn("Elessar")
-                    .withEtternavn("Telcontar"));
+                    .withFornavn(FORNAVN)
+                    .withMellomnavn(MELLOMNAVN)
+                    .withEtternavn(ETTERNAVN));
 
     @Mock
     private LegacyHelper legacyHelper;
@@ -78,7 +79,7 @@ public class BasisPersonaliaRessursTest {
 
     @Test
     public void getBasisPersonaliaSkalReturnereSystemBasisPersonalia(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(true, true, true));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
         when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
@@ -90,7 +91,7 @@ public class BasisPersonaliaRessursTest {
 
     @Test
     public void getBasisPersonaliaSkalReturnereOppdatertSystemBasisPersonaliaFraTPS(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(false, false, false));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
         when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
@@ -102,7 +103,7 @@ public class BasisPersonaliaRessursTest {
 
     @Test
     public void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(false, false, true));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA_UTEN_STAT_OG_NORDISK);
 

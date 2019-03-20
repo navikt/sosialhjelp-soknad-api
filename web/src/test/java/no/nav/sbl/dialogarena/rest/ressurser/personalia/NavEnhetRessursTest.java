@@ -114,7 +114,7 @@ public class NavEnhetRessursTest {
 
     @Test
     public void getNavEnheterSkalReturnereEnheterRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg.FOLKEREGISTRERT, SOKNADSMOTTAKER));
         when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "folkeregistrert")).thenReturn(
                 Arrays.asList(LEGACY_SOKNADSMOTTAKER, LEGACY_SOKNADSMOTTAKER_2));
@@ -128,7 +128,7 @@ public class NavEnhetRessursTest {
 
     @Test
     public void getNavEnheterSkalReturnereTomListeNaarOppholdsadresseIkkeErValgt(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(null, null));
         when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, null)).thenReturn(Collections.emptyList());
 

@@ -33,7 +33,9 @@ public class VedleggMapper {
 
     public static List<FilFrontend> mapJsonFilerAndOpplastedeVedleggToFilerFrontend(List<JsonFiler> filer, List<OpplastetVedlegg> opplastedeVedlegg) {
         return filer.stream().map(fil -> {
-            final OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn())).findFirst().get();
+            final OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Vedlegget finnes ikke"));
             return new FilFrontend().withFilNavn(fil.getFilnavn()).withUuid(opplastetVedlegg.getUuid());
         }).collect(Collectors.toList());
     }
