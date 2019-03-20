@@ -8,10 +8,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -66,6 +66,9 @@ public class SoknadRessurs {
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
 
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
@@ -96,11 +99,12 @@ public class SoknadRessurs {
     @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
         final String eier = getSubjectHandler().getUid();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);

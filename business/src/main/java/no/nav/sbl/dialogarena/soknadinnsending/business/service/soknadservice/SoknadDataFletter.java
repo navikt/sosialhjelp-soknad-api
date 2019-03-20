@@ -472,7 +472,7 @@ public class SoknadDataFletter {
         if (soknadUnderArbeidOptional.isPresent()) {
             soknadUnderArbeid = soknadUnderArbeidOptional.get();
         } else {
-            final SoknadUnderArbeid soknadUnderArbeidFraWebSoknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+            final SoknadUnderArbeid soknadUnderArbeidFraWebSoknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
             if (soknadUnderArbeidFraWebSoknad != null) {
                 soknadUnderArbeid = soknadUnderArbeidFraWebSoknad;
                 final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeidFraWebSoknad, soknad.getAktoerId());

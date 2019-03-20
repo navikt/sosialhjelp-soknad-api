@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Component;
 
@@ -38,9 +39,13 @@ public class LegacyHelper {
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+    
+
     private static final boolean brukNyModell = false;
 
-    public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
+    public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier, boolean medVedlegg) {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
@@ -54,7 +59,7 @@ public class LegacyHelper {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-        
+
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
         if (!eier.equals(webSoknad.getAktoerId())) {
             throw new AuthorizationException("Ingen tilgang til angitt søknad for angitt bruker");
@@ -62,7 +67,11 @@ public class LegacyHelper {
         webSoknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(webSoknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(webSoknad.hentPaakrevdeVedlegg());
 
-        final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad);
+        if (medVedlegg){
+            vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(webSoknad.getBrukerBehandlingId());
+        }
+
+        final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad, medVedlegg);
         if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {
             throw new IllegalStateException("Feillagrede brukerdata for søknad: " + behandlingsId);
         }

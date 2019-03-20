@@ -46,7 +46,7 @@ public class BosituasjonRessurs {
     @GET
     public BosituasjonFrontend hentBosituasjon(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonBosituasjon bosituasjon = soknad.getSoknad().getData().getBosituasjon();
 
         return new BosituasjonFrontend()
@@ -87,6 +87,8 @@ public class BosituasjonRessurs {
                 annenBosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
                 annenBosituasjon.setValue(tilBotypeStreng(bosituasjonFrontend.botype));
             } else {
+                annenBosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
+                annenBosituasjon.setValue(null);
                 bosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
                 bosituasjon.setValue(tilBotypeStreng(bosituasjonFrontend.botype));
             }

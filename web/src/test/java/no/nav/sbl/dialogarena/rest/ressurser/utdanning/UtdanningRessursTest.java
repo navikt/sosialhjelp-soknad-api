@@ -61,7 +61,7 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningUtenErStudentOgStudentgrad(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(null, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
@@ -72,7 +72,7 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErIkkeStudent(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.FALSE, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
@@ -83,7 +83,7 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudent(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
@@ -94,7 +94,7 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradHeltid(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.HELTID));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
@@ -105,7 +105,7 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradDeltid(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.DELTID));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
