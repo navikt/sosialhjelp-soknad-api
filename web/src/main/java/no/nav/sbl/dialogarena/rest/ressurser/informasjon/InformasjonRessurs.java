@@ -312,6 +312,12 @@ public class InformasjonRessurs {
         }
     }
 
+    @GET
+    @Path("/tilgjengelige_kommuner")
+    public List<String> hentAktiviteter() {
+        return KommuneTilNavEnhetMapper.getDigisoskommuner();
+    }
+
     @XmlAccessorType(XmlAccessType.FIELD)
     @SuppressWarnings("unused")
     private static class NavEnhetFrontend {

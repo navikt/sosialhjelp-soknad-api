@@ -34,6 +34,10 @@
         <!-- Avhengigheter med scope compile -->
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>soknadsosialhjelp-filformat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-lokalt-kodeverk</artifactId>
         </dependency>
         <dependency>
@@ -354,37 +358,37 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jaas</artifactId>
             <scope>compile</scope>
-            <version>9.4.8.***REMOVED***21</version>
+            <version>9.4.14.***REMOVED***14</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-security</artifactId>
             <scope>compile</scope>
-            <version>9.4.8.***REMOVED***21</version>
+            <version>9.4.14.***REMOVED***14</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-http</artifactId>
             <scope>compile</scope>
-            <version>9.4.8.***REMOVED***21</version>
+            <version>9.4.14.***REMOVED***14</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <scope>compile</scope>
-            <version>9.4.8.***REMOVED***21</version>
+            <version>9.4.14.***REMOVED***14</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <scope>compile</scope>
-            <version>9.4.8.***REMOVED***21</version>
+            <version>9.4.14.***REMOVED***14</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <scope>compile</scope>
-            <version>9.4.8.***REMOVED***21</version>
+            <version>9.4.14.***REMOVED***14</version>
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
@@ -398,7 +402,7 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
             <scope>compile</scope>
-            <version>9.4.8.***REMOVED***21</version>
+            <version>9.4.14.***REMOVED***14</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

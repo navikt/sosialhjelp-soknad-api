@@ -23,6 +23,11 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
 
+    public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
+            .put("0519", "Nord-Fron") // Sør-Fron
+            .put("0520", "Nord-Fron") // Ringebu
+            .build();
+
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "974605171")    // Horten
             .put("1247", "974600889")    // Askøy
@@ -51,7 +56,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0334", "970145311")    // Vestre Aker, Oslo kommune
             .put("0321", "974778807")    // Østensjø, Oslo kommune
             .put("5701", "892284792")    // Falkenborg, Trondheim kommune
-            .put("5702", "992284838")    // Lerkendal, Trondheim kommune
+            .put("5702", "992284838")    // Lerkendal, Trondheim kommune & Klæbu
             .put("1161", "873864192")    // Eiganes og Tasta, Stavanger kommune
             .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
             .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
@@ -71,9 +76,23 @@ public class KommuneTilNavEnhetMapper {
             .put("0624", "994952854")    // Øvre Eiker
             .put("1134", "974616998")    // Suldal
             .put("0532", "974596016")    // Jevnaker
-
+            .put("1401", "974551918")    // Flora
+            .put("1238", "944233199")    // Kvam
+            .put("1933", "921858361")    // Balsfjord og Storfjord
+            .put("0221", "976637216")    // Aurskog-Høland
+            .put("1224", "993975192")    // Kvinnherad
+            .put("1824", "876834162")    // Vefsn
+            .put("0815", "979525095")    // Kragerø
+            .put("0516", "974543303")    // Nord-Fron
+            .put("0519", "974543303")    // Sør-Fron
+            .put("0520", "974543303")    // Ringebu
+            .put("2004", "974601753")    // Hammerfest
+            .put("1127", "988052310")    // Randaberg-Kvitsøy
+            .put("0412", "976639618")    // Ringsaker
+            .put("0426", "974550342")    // Våler (Hedemark)
+            .put("1037", "964964076")    // Kvinesdal
             .build();
-    
+
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "910940066")   // Horten
             .put("1208", "910230964")   // Årstad, Bergen kommune
@@ -86,9 +105,10 @@ public class KommuneTilNavEnhetMapper {
             .put("0328", "910229702")   // Grorud, Oslo kommune
             .put("0327", "910589792")   // Stovner, Oslo kommune
             .put("0314", "910565338")   // Sagene, Oslo kommune
+
             .put("0318", "910309935")   // Nordstrand, Oslo kommune
             .put("0319", "910723499")   // Søndre Nordstrand, Oslo kommune
-            .put("0219", "910230484")   // Bærum
+            .put("0219", "910231065")   // Bærum
             .put("1204", "910230905")   // Arna, Bergen kommune
             .put("1203", "910230530")   // Åsane, Bergen kommune
             .put("1205", "910230948")   // Fyllingsdalen, Bergen kommune
@@ -100,6 +120,9 @@ public class KommuneTilNavEnhetMapper {
             .put("1162", "910229567")   // Hundvåg og Storhaug, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
             .put("1165", "910229567")   // Madla, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0403", "910229567")   // Hamar - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0516", "910229567")   // Nord-Fron - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0519", "910229567")   // Sør-Fron - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0520", "910229567")   // Ringebu - OBS: Sendes til vårt orgnummer i FIKS!
 
             .build();
 
@@ -144,6 +167,9 @@ public class KommuneTilNavEnhetMapper {
         }
 
         final NavEnhet navEnhet = getNavEnhetFromWebSoknad(webSoknad);
+        if (navEnhet == null) {
+            return null;
+        }
         return new Soknadsmottaker(navEnhet.getOrgnummer(), "NAV " + navEnhet.getKontornavn(), navEnhet.getKommunenavn());
     }
 
@@ -249,7 +275,10 @@ public class KommuneTilNavEnhetMapper {
                     "0219",
                     "5001",
                     "1103",
-                    "0403"
+                    "0403",
+                    "0516",
+                    "0519",
+                    "0520"
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
@@ -277,7 +306,26 @@ public class KommuneTilNavEnhetMapper {
                     "1130",
                     "0624",
                     "1134",
-                    "0532"
+                    "0532",
+                    "1401",
+                    "1238",
+                    "1939",
+                    "5030",
+                    "1933",
+                    "1939",
+                    "0221",
+                    "1224",
+                    "1824",
+                    "0815",
+                    "2004",
+                    "1127",
+                    "1144",
+                    "0516",
+                    "0519",
+                    "0520",
+                    "0412",
+                    "0426",
+                    "1037"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
@@ -394,7 +442,11 @@ public class KommuneTilNavEnhetMapper {
     private static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
         String key;
         if (webSoknad.getFaktumMedKey("personalia.bydel") == null || isEmpty(webSoknad.getFaktumMedKey("personalia.bydel").getValue())) {
-            key = webSoknad.getFaktumMedKey("personalia.kommune").getValue();
+            final Faktum kommuneFaktum = webSoknad.getFaktumMedKey("personalia.kommune");
+            if (kommuneFaktum == null) {
+                return null;
+            }
+            key = kommuneFaktum.getValue();
         } else {
             key = webSoknad.getFaktumMedKey("personalia.bydel").getValue();
         }

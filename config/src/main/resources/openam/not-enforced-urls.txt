@@ -4,3 +4,4 @@ https://${DomainName}/sosialhjelp/soknad-api/css/*
 https://${DomainName}/sosialhjelp/soknad-api/img/*
 https://${DomainName}/sosialhjelp/soknad-api/js/*
 https://${DomainName}/sosialhjelp/soknad-api/font/*
+https://${DomainName}/sosialhjelp/soknad-api/informasjon/tilgjengelige_kommuner

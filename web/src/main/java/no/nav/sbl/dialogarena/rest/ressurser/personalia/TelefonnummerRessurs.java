@@ -1,0 +1,142 @@
+package no.nav.sbl.dialogarena.rest.ressurser.personalia;
+
+import no.nav.metrics.aspects.Timed;
+import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
+@Controller
+@Path("/soknader/{behandlingsId}/personalia/telefonnummer")
+@Timed
+@Produces(APPLICATION_JSON)
+public class TelefonnummerRessurs {
+
+    @Inject
+    private SoknadService soknadService;
+
+    @Inject
+    private FaktaService faktaService;
+
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
+
+    @Inject
+    private LegacyHelper legacyHelper;
+
+    @Inject
+    TelefonnummerSystemdata telefonnummerSystemdata;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+
+    @GET
+    public TelefonnummerFrontend hentTelefonnummer(@PathParam("behandlingsId") String behandlingsId) {
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
+        final JsonTelefonnummer telefonnummer = soknad.getSoknad().getData().getPersonalia().getTelefonnummer();
+
+        final String systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
+
+        return new TelefonnummerFrontend()
+                .withBrukerdefinert(telefonnummer != null ? telefonnummer.getKilde() == JsonKilde.BRUKER : true)
+                .withSystemverdi(systemverdi)
+                .withBrukerutfyltVerdi(telefonnummer != null && telefonnummer.getKilde() == JsonKilde.BRUKER ? telefonnummer.getVerdi() : null);
+    }
+
+    @PUT
+    public void updateTelefonnummer(@PathParam("behandlingsId") String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        if ("".equals(telefonnummerFrontend.brukerutfyltVerdi)) {
+            telefonnummerFrontend.brukerutfyltVerdi = null;
+        }
+        update(behandlingsId, telefonnummerFrontend);
+        legacyUpdate(behandlingsId, telefonnummerFrontend);
+    }
+
+    private void update(String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        final JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
+                personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
+        if (telefonnummerFrontend.brukerdefinert) {
+            if (telefonnummerFrontend.brukerutfyltVerdi == null) {
+                personalia.setTelefonnummer(null);
+            } else {
+                jsonTelefonnummer.setKilde(JsonKilde.BRUKER);
+                jsonTelefonnummer.setVerdi(telefonnummerFrontend.brukerutfyltVerdi);
+            }
+        } else {
+            String systemverdiTelefonnummer = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
+            if (systemverdiTelefonnummer == null) {
+                personalia.setTelefonnummer(null);
+            } else {
+                jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
+                jsonTelefonnummer.setVerdi(systemverdiTelefonnummer);
+            }
+        }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    private void legacyUpdate(String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
+        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+
+        final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon.brukerendrettoggle");
+        brukerdefinert.setValue(Boolean.toString(telefonnummerFrontend.brukerdefinert));
+
+        faktaService.lagreBrukerFaktum(brukerdefinert);
+        final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
+        if (telefonnummerFrontend.brukerutfyltVerdi != null){
+            telefon.setValue(telefonnummerFrontend.brukerutfyltVerdi.substring(3));
+            faktaService.lagreBrukerFaktum(telefon);
+        } else {
+            telefon.setValue(null);
+            faktaService.lagreBrukerFaktum(telefon);
+        }
+    }
+
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static final class TelefonnummerFrontend {
+        public boolean brukerdefinert;
+        public String systemverdi;
+        public String brukerutfyltVerdi;
+
+        public TelefonnummerFrontend withBrukerdefinert(boolean brukerdefinert) {
+            this.brukerdefinert = brukerdefinert;
+            return this;
+        }
+
+        public TelefonnummerFrontend withSystemverdi(String systemverdi) {
+            this.systemverdi = systemverdi;
+            return this;
+        }
+
+        public TelefonnummerFrontend withBrukerutfyltVerdi(String brukerutfyltVerdi) {
+            this.brukerutfyltVerdi = brukerutfyltVerdi;
+            return this;
+        }
+    }
+}

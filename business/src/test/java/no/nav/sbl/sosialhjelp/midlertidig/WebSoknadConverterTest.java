@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException;
 import no.nav.sbl.soknadsosialhjelp.soknad.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
@@ -39,7 +38,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -71,7 +69,7 @@ public class WebSoknadConverterTest {
 
     @Test
     public void mapWebSoknadTilSoknadUnderArbeidMapperFelterRiktig() {
-        SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(lagGyldigWebSoknad());
+        SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(lagGyldigWebSoknad(), true);
 
         assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getVersjon(), is(1L));
@@ -85,7 +83,7 @@ public class WebSoknadConverterTest {
 
     @Test
     public void mapWebSoknadTilJsonSoknadInternalLagerJsonSoknadInternalMedDataFraWebSoknad() {
-        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad());
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad(), true);
 
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi(), is(EIER));
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse().getType().value(), is("gateadresse"));
@@ -93,7 +91,7 @@ public class WebSoknadConverterTest {
 
     @Test
     public void mapWebSoknadTilJsonSoknadInternalReturnererKunVedleggForEttersendelse() {
-        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending());
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending(), true);
 
         JsonVedlegg vedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
         assertThat(jsonInternalSoknad.getSoknad(), nullValue());
