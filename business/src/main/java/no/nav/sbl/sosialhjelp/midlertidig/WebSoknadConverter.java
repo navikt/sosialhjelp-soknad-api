@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class WebSoknadConverter {
         writer = mapper.writerWithDefaultPrettyPrinter();
     }
 
-    public SoknadUnderArbeid mapWebSoknadTilSoknadUnderArbeid(WebSoknad webSoknad) {
+    public SoknadUnderArbeid mapWebSoknadTilSoknadUnderArbeid(WebSoknad webSoknad, boolean medVedlegg) {
         if (webSoknad == null) {
             return null;
         }
@@ -66,14 +67,17 @@ public class WebSoknadConverter {
                 .withBehandlingsId(webSoknad.getBrukerBehandlingId())
                 .withTilknyttetBehandlingsId(webSoknad.getBehandlingskjedeId())
                 .withEier(webSoknad.getAktoerId())
-                .withJsonInternalSoknad(mapWebSoknadTilJsonSoknadInternal(webSoknad))
+                .withJsonInternalSoknad(mapWebSoknadTilJsonSoknadInternal(webSoknad, medVedlegg))
                 .withInnsendingStatus(webSoknad.getStatus())
                 .withOpprettetDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getOpprettetDato()))
                 .withSistEndretDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getSistLagret()));
     }
 
-    JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad) {
-        List<JsonVedlegg> jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
+    JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad, boolean medVedlegg) {
+        List<JsonVedlegg> jsonVedlegg = new ArrayList<>();
+        if (medVedlegg){
+            jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
+        }
 
         final String eier = getSubjectHandler().getUid();
         final Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(webSoknad.getBrukerBehandlingId(), eier);
