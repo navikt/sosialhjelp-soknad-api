@@ -81,7 +81,7 @@ public class OkonomiskeOpplysningerRessurs {
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier);
+        final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
                 soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
@@ -104,7 +104,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad) {
-        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
+        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier, true);
         final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
         return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
     }
