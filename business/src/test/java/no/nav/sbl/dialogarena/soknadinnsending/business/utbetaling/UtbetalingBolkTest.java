@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.inntektsogskatteopplysninger.InntektOgskatteopplysningerConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import org.junit.Test;
@@ -27,12 +28,16 @@ public class UtbetalingBolkTest {
     @Mock
     private UtbetalingService utbetalingService;
 
+    @Mock
+    private InntektOgskatteopplysningerConsumer inntektOgskatteopplysningerConsumer;
+
     @InjectMocks
     private UtbetalingBolk utbetalingBolk;
 
     @Test
     public void genererSystemFaktaReturnererUtbetalingFeiletFaktumHvisTjenestekallFeiler() {
-        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(), any())).thenReturn(null);
+        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(), any())).thenReturn(Optional.empty());
+        when(inntektOgskatteopplysningerConsumer.sok(any())).thenReturn(Optional.empty());
 
         List<Faktum> faktumListe = utbetalingBolk.genererSystemFakta(FNR, SOKNADID);
 
@@ -43,7 +48,8 @@ public class UtbetalingBolkTest {
 
     @Test
     public void genererSystemFaktaReturnererIngenUtbetalingerFaktumForBrukerUtenUtbetalinger() {
-        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(), any())).thenReturn(new ArrayList<>());
+        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(), any())).thenReturn(Optional.of(new ArrayList<>()));
+        when(inntektOgskatteopplysningerConsumer.sok(any())).thenReturn(Optional.of(new ArrayList<>()));
 
         List<Faktum> faktumListe = utbetalingBolk.genererSystemFakta(FNR, SOKNADID);
 
@@ -54,14 +60,15 @@ public class UtbetalingBolkTest {
 
     @Test
     public void genererSystemFaktaReturnererFaktumlisteMedUtbetalingerFaktumForBrukerMedUtbetalinger() {
-        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(), any())).thenReturn(lagUtbetalingsliste());
-
+        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(), any())).thenReturn(Optional.of(lagUtbetalingslisteFraNav()));
+        when(inntektOgskatteopplysningerConsumer.sok(any())).thenReturn(Optional.of(lagUtbetalingslisteFraSkatteetaten()));
         List<Faktum> faktumListe = utbetalingBolk.genererSystemFakta(FNR, SOKNADID);
         Map<String, String> utbetalingProperties = faktumListe.get(1).getProperties();
         Map<String, String> utbetalingKomponentProperties = faktumListe.get(2).getProperties();
         Map<String, String> utbetalingKomponent2Properties = faktumListe.get(3).getProperties();
+        Map<String, String> utbetalingKomponent3Properties = faktumListe.get(4).getProperties();
 
-        assertThat(faktumListe.size(), is(4));
+        assertThat(faktumListe.size(), is(5));
         assertThat(faktumListe.get(0).getKey(), is("utbetalinger.ingen"));
         assertThat(faktumListe.get(0).getValue(), is("false"));
         assertThat(faktumListe.get(1).getKey(), is("utbetalinger.utbetaling"));
@@ -74,9 +81,11 @@ public class UtbetalingBolkTest {
         assertThat(faktumListe.get(3).getKey(), is("utbetalinger.utbetaling.komponent"));
         assertThat(utbetalingKomponent2Properties.get("satstype"), is("Uke"));
         assertThat(utbetalingKomponent2Properties.get("utbetalingsid"), is(UTBETALINGSID));
+        assertThat(faktumListe.get(4).getKey(), is("utbetalinger.utbetaling"));
+        assertThat(utbetalingKomponent3Properties.get("type"), is("Loenn"));
     }
 
-    private List<Utbetaling> lagUtbetalingsliste() {
+    private List<Utbetaling> lagUtbetalingslisteFraNav() {
         List<Utbetaling> utbetalingsliste = new ArrayList<>();
 
         Utbetaling utbetaling = new Utbetaling();
@@ -108,6 +117,17 @@ public class UtbetalingBolkTest {
         komponentliste.add(komponent2);
 
         utbetaling.komponenter = komponentliste;
+        utbetalingsliste.add(utbetaling);
+        return utbetalingsliste;
+    }
+
+    private List<Utbetaling> lagUtbetalingslisteFraSkatteetaten() {
+        List<Utbetaling> utbetalingsliste = new ArrayList<>();
+
+        Utbetaling utbetaling = new Utbetaling();
+        utbetaling.type = "Loenn";
+        utbetaling.netto = 3880.0;
+
         utbetalingsliste.add(utbetaling);
         return utbetalingsliste;
     }

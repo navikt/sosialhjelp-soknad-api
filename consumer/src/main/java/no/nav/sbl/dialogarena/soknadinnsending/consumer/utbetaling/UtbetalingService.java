@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -25,14 +26,14 @@ public class UtbetalingService {
     @Inject
     private UtbetalingV1 utbetalingV1;
 
-    public List<Utbetaling> hentUtbetalingerForBrukerIPeriode(String brukerFnr, LocalDate fom, LocalDate tom) {
+    public Optional<List<Utbetaling>> hentUtbetalingerForBrukerIPeriode(String brukerFnr, LocalDate fom, LocalDate tom) {
         logger.info("Henter utbetalinger for {} i perioden {} til {}", brukerFnr, fom, tom);
         try {
             WSHentUtbetalingsinformasjonResponse wsUtbetalinger = utbetalingV1.hentUtbetalingsinformasjon(lagHentUtbetalingRequest(brukerFnr, fom, tom));
-            return mapTilUtbetalinger(wsUtbetalinger);
+            return Optional.of(mapTilUtbetalinger(wsUtbetalinger));
         } catch (Exception e) {
             logger.error("Kunne ikke hente utbetalinger for {}", brukerFnr, e);
-            return null;
+            return Optional.empty();
         }
 
     }

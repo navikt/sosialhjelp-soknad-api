@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.inntektsogskatteopplysninger.InntektOgskatteopplysningerConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.inntektsogskatteopplysninger.InntektsOgSkatteopplysningerMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.inntektsogskatteopplysninger.InntektOgSkatteopplysningerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.inntektogskatteopplysninger.InntektOgSkatteopplysningerConsumerImpl;
 import no.nav.sbl.dialogarena.types.Pingable;
@@ -17,13 +17,13 @@ import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Configuration
-public class InnteksOgSkatteopplysningerRestConfig {
+public class InntektsOgSkatteopplysningerRestConfig {
 
 
     public static final String WITHMOCK = "start.inntektogskatteopplysninger.withmock";
 
-    @Value("${tps.adresse.url}")
-    private String endpoint;
+    @Value("${skatteetaten.inntektsmottaker}")
+    public String endpoint;
 
     private final RestCallContext context = new RestCallContext.Builder()
             .withClient(RestUtils.createClient(RestUtils.RestConfig.builder().readTimeout(30000).build()))
@@ -37,19 +37,22 @@ public class InnteksOgSkatteopplysningerRestConfig {
     @Bean
     public InntektOgskatteopplysningerConsumer inntektOgskatteopplysningerConsumer() {
         InntektOgskatteopplysningerConsumer prod = new InntektOgSkatteopplysningerConsumerImpl(restCallContextSelector, endpoint);
-        InntektOgskatteopplysningerConsumer mock = new InntektsOgSkatteopplysningerMock().inntektOgSkatteopplysningerRestService();
+        InntektOgskatteopplysningerConsumer mock = new InntektOgSkatteopplysningerMock().inntektOgSkatteopplysningerRestService();
         return createSwitcher(prod, mock, WITHMOCK, InntektOgskatteopplysningerConsumer.class);
     }
 
     @Bean
     public Pingable inntektOgskatteopplysningerPing() {
-        return () -> {
-            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "TPSWS-adressesok", false);
-            try {
-                inntektOgskatteopplysningerConsumer().ping();
-                return lyktes(metadata);
-            } catch (Exception e) {
-                return feilet(metadata, e);
+        return new Pingable() {
+            @Override
+            public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Skatteetaten-inntekt og skatteopplysninger ping", false);
+                try {
+                    InntektsOgSkatteopplysningerRestConfig.this.inntektOgskatteopplysningerConsumer().ping();
+                    return lyktes(metadata);
+                } catch (Exception e) {
+                    return feilet(metadata, e);
+                }
             }
         };
     }

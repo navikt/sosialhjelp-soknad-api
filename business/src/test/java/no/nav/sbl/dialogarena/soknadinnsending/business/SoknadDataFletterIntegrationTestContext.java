@@ -7,6 +7,7 @@ import java.time.Clock;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.InntektsOgSkatteopplysningerRestConfig;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -134,6 +135,11 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public WebSoknadConfig webSoknadConfig() {
         return new WebSoknadConfig();
+    }
+
+    @Bean
+    public InntektsOgSkatteopplysningerRestConfig inntektsOgSkatteopplysningerRestConfig() {
+        return new InntektsOgSkatteopplysningerRestConfig();
     }
 
     @Bean

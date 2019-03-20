@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.inntektsogskatteopplysninger.InntektOgskatteopplysningerConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
@@ -56,7 +57,8 @@ public class ConsumerConfig {
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
             NorgRestConfig.class,
-            UtbetalingWSConfig.class
+            UtbetalingWSConfig.class,
+            InntektsOgSkatteopplysningerRestConfig.class
     })
     public static class WsServices {
     }

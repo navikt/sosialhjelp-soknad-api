@@ -7,7 +7,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class InntektsOgSkatteopplysningerMock {
+public class InntektOgSkatteopplysningerMock {
     public InntektOgskatteopplysningerConsumer inntektOgSkatteopplysningerRestService() {
         InntektOgskatteopplysningerConsumer mock = mock(InntektOgskatteopplysningerConsumer.class);
         when(mock.sok(any(InntektOgskatteopplysningerConsumer.Sokedata.class))).thenAnswer(adressesokResponsMock());
@@ -18,10 +18,7 @@ public class InntektsOgSkatteopplysningerMock {
     private Answer<?> adressesokResponsMock() {
         return invocation -> {
             Object param = invocation.getArgumentAt(0, Object.class);
-
             InntektOgskatteopplysningerConsumer.InntektOgskatteopplysningerRespons respons = new InntektOgskatteopplysningerConsumer.InntektOgskatteopplysningerRespons();
-
-
             return respons;
         };
     }

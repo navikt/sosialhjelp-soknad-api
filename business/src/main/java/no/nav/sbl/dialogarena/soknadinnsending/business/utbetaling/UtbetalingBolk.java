@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.inntektsogskatteopplysninger.InntektOgskatteopplysningerConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
@@ -12,6 +13,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon.UTBETALING_BOLK;
@@ -24,6 +26,9 @@ public class UtbetalingBolk implements BolkService {
     @Inject
     UtbetalingService utbetalingService;
 
+    @Inject
+    InntektOgskatteopplysningerConsumer inntektOgskatteopplysningerConsumer;
+
     @Override
     public String tilbyrBolk() {
         return UTBETALING_BOLK;
@@ -31,21 +36,30 @@ public class UtbetalingBolk implements BolkService {
 
     @Override
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
-        List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(40), LocalDate.now());
-
+        Optional<List<Utbetaling>> utbetalingerFraNav = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(40), LocalDate.now());
+        Optional<List<Utbetaling>> utbetalingerRegistrertHosSkatteetaten = inntektOgskatteopplysningerConsumer
+                .sok(new InntektOgskatteopplysningerConsumer
+                        .Sokedata()
+                        .withIdentifikator(fodselsnummer)
+                        .withFom(LocalDate.now().minusDays(40)).withTom(LocalDate.now()));
         List<Faktum> fakta = new ArrayList<>();
 
-        if (utbetalinger == null) {
+        if (!utbetalingerFraNav.isPresent()) {
+            fakta.add(new Faktum()
+                    .medSoknadId(soknadId)
+                    .medType(SYSTEMREGISTRERT)
+                    .medKey("utbetalinger.feilet")
+                    .medValue("true"));
+        } else if (!utbetalingerRegistrertHosSkatteetaten.isPresent()) {
             fakta.add(new Faktum()
                     .medSoknadId(soknadId)
                     .medType(SYSTEMREGISTRERT)
                     .medKey("utbetalinger.feilet")
                     .medValue("true"));
         } else {
-            fakta.add(lagHarUtbetalingerFaktum(!utbetalinger.isEmpty()));
-            for (Utbetaling utbetaling : utbetalinger) {
-                fakta.addAll(lagFaktumForUtbetaling(soknadId, utbetaling));
-            }
+            fakta.add(lagHarUtbetalingerFaktum(!utbetalingerFraNav.get().isEmpty() && !utbetalingerRegistrertHosSkatteetaten.get().isEmpty()));
+            utbetalingerFraNav.get().stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling)).forEach(fakta::addAll);
+            utbetalingerRegistrertHosSkatteetaten.get().stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling)).forEach(fakta::addAll);
         }
 
         return fakta;

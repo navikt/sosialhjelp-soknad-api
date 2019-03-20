@@ -52,7 +52,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         ArbeidsforholdSystemdata.class,
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,
-        FamilieSystemdata.class
+        FamilieSystemdata.class,
+        InntektOgSkatteopplysningerSystemdata.class
 })
 public class BusinessConfig {
 
