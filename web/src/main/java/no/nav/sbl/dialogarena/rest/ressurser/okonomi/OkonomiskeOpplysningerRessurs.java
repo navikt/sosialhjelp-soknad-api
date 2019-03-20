@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -80,6 +81,7 @@ public class OkonomiskeOpplysningerRessurs {
 
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
@@ -95,7 +97,6 @@ public class OkonomiskeOpplysningerRessurs {
 
         final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         utenFaktumSoknad.getJsonInternalSoknad().setVedlegg(jsonVedleggs.isEmpty() ? null : new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(utenFaktumSoknad, eier);
 
         return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
@@ -215,12 +216,9 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private List<VedleggFrontend> removeIkkePaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg, List<OpplastetVedlegg> opplastedeVedlegg) {
-        final List<JsonVedlegg> ikkeLengerPaakrevdeVedlegg = jsonVedleggs.stream().filter(vedlegg -> paakrevdeVedlegg.stream().noneMatch(
-                pVedlegg -> vedlegg.getType().equals(pVedlegg.getType()) && vedlegg.getTilleggsinfo().equals(pVedlegg.getTilleggsinfo())
-        )).collect(Collectors.toList());
+        final List<JsonVedlegg> ikkeLengerPaakrevdeVedlegg = jsonVedleggs.stream().filter(isNotInList(paakrevdeVedlegg)).collect(Collectors.toList());
 
-        ikkeLengerPaakrevdeVedlegg.removeAll(ikkeLengerPaakrevdeVedlegg.stream()
-                .filter(vedlegg -> vedlegg.getType().equals("annet") && vedlegg.getTilleggsinfo().equals("annet")).collect(Collectors.toList()));
+        excludeTypeAnnetAnnetFromList(ikkeLengerPaakrevdeVedlegg);
 
         jsonVedleggs.removeAll(ikkeLengerPaakrevdeVedlegg);
 
@@ -228,8 +226,7 @@ public class OkonomiskeOpplysningerRessurs {
 
         for (JsonVedlegg ikkePaakrevdVedlegg : ikkeLengerPaakrevdeVedlegg) {
             for (OpplastetVedlegg oVedlegg : opplastedeVedlegg) {
-                if (oVedlegg.getVedleggType().getType().equals(ikkePaakrevdVedlegg.getType())
-                        && oVedlegg.getVedleggType().getTilleggsinfo().equals(ikkePaakrevdVedlegg.getTilleggsinfo())){
+                if (isSameType(ikkePaakrevdVedlegg, oVedlegg)){
                     opplastetVedleggRepository.slettVedlegg(oVedlegg.getUuid(), oVedlegg.getEier());
                 }
             }
@@ -246,10 +243,26 @@ public class OkonomiskeOpplysningerRessurs {
         return slettedeVedlegg;
     }
 
+    private void excludeTypeAnnetAnnetFromList(List<JsonVedlegg> jsonVedleggs) {
+        jsonVedleggs.removeAll(jsonVedleggs.stream()
+                .filter(vedlegg -> vedlegg.getType().equals("annet") &&
+                        vedlegg.getTilleggsinfo().equals("annet")).collect(Collectors.toList()));
+    }
+
+    private boolean isSameType(JsonVedlegg jsonVedlegg, OpplastetVedlegg opplastetVedlegg) {
+        return opplastetVedlegg.getVedleggType().getType().equals(jsonVedlegg.getType()) &&
+                opplastetVedlegg.getVedleggType().getTilleggsinfo().equals(jsonVedlegg.getTilleggsinfo());
+    }
+
     private void addPaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg) {
-        jsonVedleggs.addAll(paakrevdeVedlegg.stream().filter(pVedlegg -> jsonVedleggs.stream().noneMatch(
-                vedlegg -> vedlegg.getType().equals(pVedlegg.getType()) && vedlegg.getTilleggsinfo().equals(pVedlegg.getTilleggsinfo())
-        )).collect(Collectors.toList()));
+        jsonVedleggs.addAll(paakrevdeVedlegg.stream().filter(isNotInList(jsonVedleggs)).collect(Collectors.toList()));
+    }
+
+    private Predicate<JsonVedlegg> isNotInList(List<JsonVedlegg> jsonVedleggs) {
+        return v -> jsonVedleggs.stream().noneMatch(
+                vedlegg -> vedlegg.getType().equals(v.getType()) &&
+                        vedlegg.getTilleggsinfo().equals(v.getTilleggsinfo())
+        );
     }
 
     private void setVedleggStatus(VedleggFrontend vedleggFrontend, SoknadUnderArbeid soknad, String type, String tilleggsinfo) {
