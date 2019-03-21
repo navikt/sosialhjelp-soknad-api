@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper;
 import no.nav.sbl.dialogarena.rest.mappers.SoknadTypeAndPath;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
