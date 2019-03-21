@@ -20,6 +20,16 @@ public interface InntektOgskatteopplysningerConsumer {
 
     class OppgaveInntektsmottaker {
         public List<Inntekt> inntekt = new ArrayList<>();
+        public List<ForskuddstrekkListe> forskuddstrekkListe = new ArrayList<>();
+    }
+
+    class ForskuddstrekkListe {
+        List<Forskuddstrekk> forskuddstrekk;
+    }
+
+    class Forskuddstrekk {
+        public String beskrivelse;
+        public Integer beloep;
     }
 
     class Inntekt {
@@ -27,7 +37,7 @@ public interface InntektOgskatteopplysningerConsumer {
         public String fordel;
         public String utloeserArbeidsgiveravgift;
         public String inngaarIGrunnlagForTrekk;
-        public Long beloep;
+        public Integer beloep;
         public Loennsinntekt loennsinntekt;
         public YtelseFraOffentlige ytelseFraOffentlige;
         public PensjonEllerTrygd pensjonEllerTrygd;

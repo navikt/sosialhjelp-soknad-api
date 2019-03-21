@@ -133,11 +133,10 @@ public class InntektOgSkatteopplysningerConsumerImpl implements InntektOgskatteo
 
     private InntektOgskatteopplysningerRespons lagRespons(Sokedata sokedata, Response response) {
         InntektOgskatteopplysningerRespons result = response.readEntity(InntektOgskatteopplysningerRespons.class);
-        //   taMedDataFraRequest(sokedata, result);
         return result;
     }
 
-    List<Utbetaling> mapTilUtbetalinger(InntektOgskatteopplysningerRespons repons) {
+    private List<Utbetaling> mapTilUtbetalinger(InntektOgskatteopplysningerRespons repons) {
         return repons.oppgaveInntektsmottaker
                 .stream()
                 .flatMap(oppgaveInntektsmottaker -> oppgaveInntektsmottaker
