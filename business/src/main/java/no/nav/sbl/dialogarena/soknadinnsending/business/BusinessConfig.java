@@ -53,6 +53,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,
         FamilieSystemdata.class,
+        InntektSystemdata.class,
         InntektOgSkatteopplysningerSystemdata.class
 })
 public class BusinessConfig {

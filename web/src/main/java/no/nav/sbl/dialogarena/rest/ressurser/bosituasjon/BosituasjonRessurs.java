@@ -85,12 +85,12 @@ public class BosituasjonRessurs {
                 bosituasjon.setValue("annet");
 
                 annenBosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-                annenBosituasjon.setValue(tilBotypeStreng(bosituasjonFrontend.botype));
+                annenBosituasjon.setValue(bosituasjonFrontend.botype.toString());
             } else {
                 annenBosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
                 annenBosituasjon.setValue(null);
                 bosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-                bosituasjon.setValue(tilBotypeStreng(bosituasjonFrontend.botype));
+                bosituasjon.setValue(bosituasjonFrontend.botype.toString());
             }
 
             faktaService.lagreBrukerFaktum(bosituasjon);
@@ -115,35 +115,6 @@ public class BosituasjonRessurs {
                 return true;
             default:
                 return false;
-        }
-    }
-
-    private static String tilBotypeStreng(JsonBosituasjon.Botype botype) {
-        switch (botype) {
-            case EIER:
-                return "eier";
-            case LEIER:
-                return "leier";
-            case KOMMUNAL:
-                return "kommunal";
-            case INGEN:
-                return "ingen";
-            case ANNET:
-                return "annet";
-            case INSTITUSJON:
-                return "institusjon";
-            case KRISESENTER:
-                return "krisesenter";
-            case FENGSEL:
-                return "fengsel";
-            case VENNER:
-                return "venner";
-            case FORELDRE:
-                return "foreldre";
-            case FAMILIE:
-                return "familie";
-            default:
-                return "";
         }
     }
 

@@ -4,13 +4,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.inject.Inject;
+import static java.time.LocalDate.now;
 
 @Service
 public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
@@ -35,7 +36,7 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
         boolean skalBeOmSluttoppgjor = arbeidsforholdFakta.stream()
                 .anyMatch(arbeid -> arbeid.getProperties().get("tom") != null
                     && !arbeid.getProperties().get("tom").trim().equals("")
-                    && isBeforeOneMonthAheadInTime(arbeid.getProperties().get("tom")));
+                    && isWithinOneMonthAheadInTime(arbeid.getProperties().get("tom")));
         boolean harAvsluttetArbeidsforhold = arbeidsforholdFakta.stream()
                 .anyMatch(arbeid -> "false".equals(arbeid.getProperties().get("ansatt")));
         boolean harGjeldendeArbeidsforhold = arbeidsforholdFakta.stream()
@@ -50,9 +51,9 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
         arbeidsforholdFakta.add(dinSituasjonJobb);
     }
 
-    private static boolean isBeforeOneMonthAheadInTime(String date) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
-        DateTime dt = formatter.parseDateTime(date);
-        return dt.isBefore(new DateTime().plusMonths(1));
+    private static boolean isWithinOneMonthAheadInTime(String datoSomTekst) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(datoSomTekst, formatter);
+        return date.isBefore(now().plusMonths(1).plusDays(1));
     }
 }

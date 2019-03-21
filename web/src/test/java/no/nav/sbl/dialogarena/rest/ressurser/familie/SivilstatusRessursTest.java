@@ -31,6 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.text.ParseException;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -99,8 +100,8 @@ public class SivilstatusRessursTest {
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
         assertThat(sivilstatusFrontend.kildeErSystem, is(false));
         assertThat(sivilstatusFrontend.ektefelle, nullValue());
-        assertThat(sivilstatusFrontend.ektefelleHarDiskresjonskode, nullValue());
-        assertThat(sivilstatusFrontend.folkeregistrertMedEktefelle, nullValue());
+        assertThat(sivilstatusFrontend.harDiskresjonskode, nullValue());
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
     }
 
     @Test
@@ -114,9 +115,9 @@ public class SivilstatusRessursTest {
         assertThat(sivilstatusFrontend.kildeErSystem, is(false));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
         assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend.ektefelle, JSON_EKTEFELLE);
-        assertThat(sivilstatusFrontend.ektefelleHarDiskresjonskode, nullValue());
-        assertThat(sivilstatusFrontend.folkeregistrertMedEktefelle, nullValue());
-        assertThat(sivilstatusFrontend.ektefelle.borSammenMed, is(true));
+        assertThat(sivilstatusFrontend.harDiskresjonskode, nullValue());
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
+        assertThat(sivilstatusFrontend.borSammenMed, is(true));
     }
 
     @Test
@@ -130,9 +131,9 @@ public class SivilstatusRessursTest {
         assertThat(sivilstatusFrontend.kildeErSystem, is(true));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
         assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend.ektefelle, JSON_EKTEFELLE);
-        assertThat(sivilstatusFrontend.ektefelleHarDiskresjonskode, is(false));
-        assertThat(sivilstatusFrontend.folkeregistrertMedEktefelle, is(true));
-        assertThat(sivilstatusFrontend.ektefelle.borSammenMed, nullValue());
+        assertThat(sivilstatusFrontend.harDiskresjonskode, is(false));
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, is(true));
+        assertThat(sivilstatusFrontend.borSammenMed, nullValue());
     }
 
     @Test
@@ -145,9 +146,9 @@ public class SivilstatusRessursTest {
 
         assertThat(sivilstatusFrontend.kildeErSystem, is(true));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
-        assertThat(sivilstatusFrontend.ektefelleHarDiskresjonskode, is(true));
-        assertThat(sivilstatusFrontend.folkeregistrertMedEktefelle, nullValue());
-        assertThat(sivilstatusFrontend.ektefelle.borSammenMed, nullValue());
+        assertThat(sivilstatusFrontend.harDiskresjonskode, is(true));
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
+        assertThat(sivilstatusFrontend.borSammenMed, nullValue());
     }
 
     @Test
@@ -187,7 +188,7 @@ public class SivilstatusRessursTest {
 
     private void assertThatEktefelleIsCorrectlyConverted(EktefelleFrontend ektefelle, JsonEktefelle jsonEktefelle) {
         assertThat("fodselsdato", ektefelle.fodselsdato, is(jsonEktefelle.getFodselsdato()));
-        assertThat("personIdentifikator", ektefelle.personnummer, is(jsonEktefelle.getPersonIdentifikator().substring(6)));
+        assertThat("personIdentifikator", ektefelle.personnummer, is(getPersonnummerFromFnr(jsonEktefelle.getPersonIdentifikator())));
         assertThat("fornavn", ektefelle.navn.fornavn, is(jsonEktefelle.getNavn().getFornavn()));
         assertThat("mellomnavn", ektefelle.navn.mellomnavn, is(jsonEktefelle.getNavn().getMellomnavn()));
         assertThat("etternavn", ektefelle.navn.etternavn, is(jsonEktefelle.getNavn().getEtternavn()));

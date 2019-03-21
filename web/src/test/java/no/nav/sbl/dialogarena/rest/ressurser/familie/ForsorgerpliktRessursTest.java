@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -221,17 +222,25 @@ public class ForsorgerpliktRessursTest {
 
     private AnsvarFrontend createBarnMedSamvarsgrad() {
         return new AnsvarFrontend()
-                    .withBarnFrontend(new BarnFrontend().withPersonIdentifikator(JSON_BARN_2.getPersonIdentifikator()))
+                    .withBarn(new BarnFrontend()
+                            .withFodselsnummer(JSON_BARN_2.getPersonIdentifikator())
+                            .withPersonnummer(getPersonnummerFromFnr(JSON_BARN_2.getPersonIdentifikator())))
                     .withSamvarsgrad(30);
     }
 
     private AnsvarFrontend createBarnMedDeltBosted() {
         return new AnsvarFrontend()
-                    .withBarnFrontend(new BarnFrontend().withPersonIdentifikator(JSON_BARN.getPersonIdentifikator()))
+                    .withBarn(new BarnFrontend()
+                            .withFodselsnummer(JSON_BARN.getPersonIdentifikator())
+                            .withPersonnummer(getPersonnummerFromFnr(JSON_BARN.getPersonIdentifikator())))
                     .withHarDeltBosted(true);
     }
 
     private void assertThatAnsvarIsCorrectlyConverted(AnsvarFrontend ansvarFrontend, JsonAnsvar jsonAnsvar) {
+        final BarnFrontend barnFrontend = ansvarFrontend.barn;
+        final JsonBarn jsonBarn = jsonAnsvar.getBarn();
+
+        assertThat("harDiskresjonskode", ansvarFrontend.harDiskresjonskode, is(jsonBarn.getHarDiskresjonskode()));
         assertThat("borSammenMed", ansvarFrontend.borSammenMed, is(jsonAnsvar.getBorSammenMed()));
         assertThat("harDeltBosted", ansvarFrontend.harDeltBosted,
                 is(jsonAnsvar.getHarDeltBosted() == null ? null : jsonAnsvar.getHarDeltBosted().getVerdi()));
@@ -240,11 +249,8 @@ public class ForsorgerpliktRessursTest {
         assertThat("erFolkeregistrertSammen", ansvarFrontend.erFolkeregistrertSammen,
                 is(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi()));
 
-        final BarnFrontend barnFrontend = ansvarFrontend.barnFrontend;
-        final JsonBarn jsonBarn = jsonAnsvar.getBarn();
-        assertThat("personIdentifikator", barnFrontend.personIdentifikator, is(jsonBarn.getPersonIdentifikator()));
+        assertThat("fodselsnummer", barnFrontend.fodselsnummer, is(jsonBarn.getPersonIdentifikator()));
         assertThat("fodselsdato", barnFrontend.fodselsdato, is(jsonBarn.getFodselsdato()));
-        assertThat("harDiskresjonskode", barnFrontend.harDiskresjonskode, is(jsonBarn.getHarDiskresjonskode()));
         assertThat("fornavn", barnFrontend.navn.fornavn, is(jsonBarn.getNavn().getFornavn()));
         assertThat("mellomnavn", barnFrontend.navn.mellomnavn, is(jsonBarn.getNavn().getMellomnavn()));
         assertThat("etternavn", barnFrontend.navn.etternavn, is(jsonBarn.getNavn().getEtternavn()));
