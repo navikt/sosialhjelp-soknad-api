@@ -3,10 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.mappers.SoknadTypeAndPath;
-import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
-import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
+import no.nav.sbl.dialogarena.rest.ressurser.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -177,7 +174,7 @@ public class OkonomiskeOpplysningerRessurs {
 
         for (int i = 0; i < vedleggFrontend.rader.size(); i++){
             Faktum faktum = fakta.get(i);
-            final VedleggRadFrontend vedleggRad = vedleggFrontend.rader.get(i);
+            final RadAlleFelter vedleggRad = (RadAlleFelter) vedleggFrontend.rader.get(i);
             final Map<String, String> properties = faktum.getProperties();
             if (type.equals("nedbetalingsplan") && tilleggsinfo.equals("avdraglaan")){
                 properties.put("avdrag", vedleggRad.avdrag.toString());
