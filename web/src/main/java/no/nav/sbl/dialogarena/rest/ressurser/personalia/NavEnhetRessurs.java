@@ -114,6 +114,10 @@ public class NavEnhetRessurs {
     }
 
     public NavEnhetRessurs.NavEnhetFrontend mapFromLegacyNavEnhetFrontend(SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend, String valgtOrgnr) {
+        logger.error("NULLPOINTER ---------------------------- ");
+        logger.error("NULLPOINTER legacyNavEnhetFrontend: " + legacyNavEnhetFrontend);
+        logger.error("NULLPOINTER legacyNavEnhetFrontend.sosialOrgnr: " + legacyNavEnhetFrontend.sosialOrgnr);
+        logger.error("NULLPOINTER valgtOrgnr: " + valgtOrgnr);
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(legacyNavEnhetFrontend.enhetsnavn)
                 .withKommunenavn(legacyNavEnhetFrontend.kommunenavn)
