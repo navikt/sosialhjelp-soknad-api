@@ -130,7 +130,7 @@ public class AdresseRessurs {
         logger.error("NULLPOINTER setAdresseValg: " + personalia.getOppholdsadresse().getAdresseValg().toString());
         personalia.setPostadresse(midlertidigLosningForPostadresse(personalia.getOppholdsadresse()));
         logger.error("NULLPOINTER setPostadresse: " + personalia.getPostadresse());
-        logger.error("NULLPOINTER setPostadresse string: " + personalia.getPostadresse().toString());
+        logger.error("NULLPOINTER setPostadresse string: " + personalia.getPostadresse());
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
