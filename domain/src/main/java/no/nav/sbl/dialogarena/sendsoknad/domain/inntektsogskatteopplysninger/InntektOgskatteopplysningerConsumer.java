@@ -19,12 +19,10 @@ public interface InntektOgskatteopplysningerConsumer {
 
 
     class OppgaveInntektsmottaker {
+        public String kalendermaaned;
+        public String virksomhetsid;
         public List<Inntekt> inntekt = new ArrayList<>();
-        public List<ForskuddstrekkListe> forskuddstrekkListe = new ArrayList<>();
-    }
-
-    class ForskuddstrekkListe {
-        List<Forskuddstrekk> forskuddstrekk;
+        public List<Forskuddstrekk> forskuddstrekk = new ArrayList<>();
     }
 
     class Forskuddstrekk {

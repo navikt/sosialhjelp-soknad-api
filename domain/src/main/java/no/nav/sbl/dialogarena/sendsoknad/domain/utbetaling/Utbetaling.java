@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Utbetaling {
+    public String tittel;
     public String type;
     public double netto;
     public double brutto;

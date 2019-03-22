@@ -82,7 +82,7 @@ public class UtbetalingBolk implements BolkService {
                 .medUnikProperty("id")
                 .medSystemProperty("id", utbetalingsid)
                 .medSystemProperty("utbetalingsid", utbetalingsid)
-                .medSystemProperty("type", utbetaling.type)
+                .medSystemProperty("type", utbetaling.tittel)
                 .medSystemProperty("netto", formatTall(utbetaling.netto))
                 .medSystemProperty("brutto", formatTall(utbetaling.brutto))
                 .medSystemProperty("skattetrekk", formatTall(utbetaling.skattetrekk))
@@ -112,7 +112,7 @@ public class UtbetalingBolk implements BolkService {
     }
 
     private String lagId(Utbetaling utbetaling) {
-        String id = utbetaling.type + "|" + utbetaling.bilagsnummer;
+        String id = utbetaling.tittel + "|" + utbetaling.bilagsnummer;
 
         if (utbetaling.utbetalingsdato != null) {
             id += "|" + utbetaling.utbetalingsdato.toString();

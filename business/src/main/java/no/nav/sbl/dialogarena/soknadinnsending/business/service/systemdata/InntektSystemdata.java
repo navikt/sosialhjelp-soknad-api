@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.tilIntegerMedAvrunding;
@@ -41,19 +42,15 @@ public class InntektSystemdata implements Systemdata {
     }
 
     public List<JsonOkonomiOpplysningUtbetaling> innhentSystemregistrertInntekt(String personIdentifikator){
-        List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
-
-        if (utbetalinger == null) {
-            return null;
-        }
-        return utbetalinger.stream().map(this::mapToJsonUtbetaling).collect(Collectors.toList());
+        Optional<List<Utbetaling>> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
+        return utbetalinger.map(utbetalings -> utbetalings.stream().map(this::mapToJsonUtbetaling).collect(Collectors.toList())).orElse(null);
     }
 
     private JsonOkonomiOpplysningUtbetaling mapToJsonUtbetaling(Utbetaling utbetaling) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
-                .withType("navytelse")
-                .withTittel(utbetaling.type)
+                .withType(utbetaling.type)
+                .withTittel(utbetaling.tittel)
                 .withBelop(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto)))
                 .withNetto(utbetaling.netto)
                 .withBrutto(utbetaling.brutto)

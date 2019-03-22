@@ -89,7 +89,7 @@ public class UtbetalingBolkTest {
         List<Utbetaling> utbetalingsliste = new ArrayList<>();
 
         Utbetaling utbetaling = new Utbetaling();
-        utbetaling.type = "Barnetrygd";
+        utbetaling.tittel = "Barnetrygd";
         utbetaling.netto = 3880.0;
         utbetaling.brutto = 3880.0;
         utbetaling.skattetrekk = -0.0;
@@ -125,7 +125,7 @@ public class UtbetalingBolkTest {
         List<Utbetaling> utbetalingsliste = new ArrayList<>();
 
         Utbetaling utbetaling = new Utbetaling();
-        utbetaling.type = "Loenn";
+        utbetaling.tittel = "Loenn";
         utbetaling.netto = 3880.0;
 
         utbetalingsliste.add(utbetaling);

@@ -40,7 +40,7 @@ public class SystemregistrertInntektRessurs {
     }
 
     private SysteminntektFrontend mapToUtbetalingFrontend(JsonOkonomiOpplysningUtbetaling utbetaling) {
-        return new SysteminntektFrontend().withInntektType(utbetaling.getTittel())
+        return new SysteminntektFrontend().withTittel(utbetaling.getTittel())
                 .withBelop(utbetaling.getNetto())
                 .withUtbetalingsdato(utbetaling.getUtbetalingsdato());
     }
@@ -57,12 +57,13 @@ public class SystemregistrertInntektRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class SysteminntektFrontend {
-        public String inntektType;
+        public String tittel;
+        public String type;
         public String utbetalingsdato;
         public Double belop;
 
-        public SysteminntektFrontend withInntektType(String inntektType) {
-            this.inntektType = inntektType;
+        public SysteminntektFrontend withTittel(String tittel) {
+            this.tittel = tittel;
             return this;
         }
 
@@ -73,6 +74,11 @@ public class SystemregistrertInntektRessurs {
 
         public SysteminntektFrontend withBelop(Double belop) {
             this.belop = belop;
+            return this;
+        }
+
+        public SysteminntektFrontend withType(String type) {
+            this.type = type;
             return this;
         }
     }

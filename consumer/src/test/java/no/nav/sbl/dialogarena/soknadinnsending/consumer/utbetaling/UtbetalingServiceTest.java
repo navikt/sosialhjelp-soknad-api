@@ -82,7 +82,7 @@ public class UtbetalingServiceTest {
         Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(lagKomplettWSUtbetaling(wsPerson), lagKomplettWsYtelse(wsPerson));
         Utbetaling.Komponent komponent = utbetaling.komponenter.get(1);
 
-        assertThat(utbetaling.type, is(YTELSESTYPE));
+        assertThat(utbetaling.tittel, is(YTELSESTYPE));
         assertThat(utbetaling.netto, is(NETTO));
         assertThat(utbetaling.brutto, is(BRUTTO));
         assertThat(utbetaling.skattetrekk, is(SKATT));
@@ -106,7 +106,7 @@ public class UtbetalingServiceTest {
         Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(lagMinimalWSUtbetaling(wsPerson), lagMinimalWsYtelseMedYtelseskomponentliste(wsPerson));
         Utbetaling.Komponent komponent = utbetaling.komponenter.get(0);
 
-        assertThat(utbetaling.type, is(YTELSESTYPE));
+        assertThat(utbetaling.tittel, is(YTELSESTYPE));
         assertThat(utbetaling.netto, is(0.0));
         assertThat(utbetaling.brutto, is(0.0));
         assertThat(utbetaling.skattetrekk, is(0.0));

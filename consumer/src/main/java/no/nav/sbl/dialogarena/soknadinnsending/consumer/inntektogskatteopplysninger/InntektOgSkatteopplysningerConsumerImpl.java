@@ -11,13 +11,15 @@ import org.slf4j.Logger;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 import static java.lang.System.getenv;
-import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -126,7 +128,8 @@ public class InntektOgSkatteopplysningerConsumerImpl implements InntektOgskatteo
             }
         }
     }
-   // https://api-gw-q0.adeo.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/01234567890/oppgave/inntekt
+
+    // https://api-gw-q0.adeo.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/01234567890/oppgave/inntekt
     private static boolean isEmpty(String s) {
         return s == null || s.trim().length() == 0;
     }
@@ -136,20 +139,83 @@ public class InntektOgSkatteopplysningerConsumerImpl implements InntektOgskatteo
         return result;
     }
 
-    private List<Utbetaling> mapTilUtbetalinger(InntektOgskatteopplysningerRespons repons) {
-        return repons.oppgaveInntektsmottaker
-                .stream()
-                .flatMap(oppgaveInntektsmottaker -> oppgaveInntektsmottaker
-                        .inntekt
-                        .stream())
-                .filter(inntekt -> inntekt
-                        .loennsinntekt != null)
-                .map(inntekt -> {
+    private List<Utbetaling> mapTilUtbetalinger(InntektOgskatteopplysningerRespons respons) {
+
+        DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+
+
+        List<Utbetaling> utbetalingerLonn = new ArrayList<>();
+        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : respons.oppgaveInntektsmottaker) {
+            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
+            LocalDate fom = kalenderManed.atDay(1);
+            LocalDate tom = kalenderManed.atEndOfMonth();
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+                if (inntekt.loennsinntekt != null) {
                     Utbetaling utbetaling = new Utbetaling();
-                    utbetaling.type = "Lønn";
+                    utbetaling.tittel = "Lønn";
                     utbetaling.brutto = inntekt.beloep;
-                    return utbetaling;
-                }).collect(toList());
+                    utbetaling.periodeFom = fom;
+                    utbetaling.periodeTom = tom;
+                    utbetaling.type = "skatteopplysninger";
+                    utbetalingerLonn.add(utbetaling);
+                }
+            }
+        }
+
+        List<Utbetaling> utbetalingerPensjon = new ArrayList<>();
+        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : respons.oppgaveInntektsmottaker) {
+            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
+            LocalDate fom = kalenderManed.atDay(1);
+            LocalDate tom = kalenderManed.atEndOfMonth();
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+                if (inntekt.pensjonEllerTrygd != null) {
+                    Utbetaling utbetaling = new Utbetaling();
+                    utbetaling.tittel = "PensjonEllerTrygd";
+                    utbetaling.brutto = inntekt.beloep;
+                    utbetaling.periodeFom = fom;
+                    utbetaling.periodeTom = tom;
+                    utbetaling.type = "skatteopplysninger";
+                    utbetalingerPensjon.add(utbetaling);
+                }
+            }
+        }
+
+        List<Utbetaling> forskuddstrekk = new ArrayList<>();
+        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : respons.oppgaveInntektsmottaker) {
+            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
+            LocalDate fom = kalenderManed.atDay(1);
+            LocalDate tom = kalenderManed.atEndOfMonth();
+            for (Forskuddstrekk f : oppgaveInntektsmottaker.forskuddstrekk) {
+                Utbetaling utbetaling = new Utbetaling();
+                utbetaling.tittel = f.beskrivelse;
+                utbetaling.skattetrekk = f.beloep;
+                utbetaling.periodeFom = fom;
+                utbetaling.periodeTom = tom;
+                utbetaling.type = "skatteopplysninger";
+                forskuddstrekk.add(utbetaling);
+
+            }
+        }
+
+
+        List<Utbetaling> aggregertUtbetaling = new ArrayList<>();
+        utbetalingerLonn.stream().reduce((u1, u2) -> {
+            u1.brutto += u2.brutto;
+            return u1;
+        }).ifPresent(aggregertUtbetaling::add);
+
+        utbetalingerPensjon.stream().reduce((u1, u2) -> {
+            u1.brutto += u2.brutto;
+            return u1;
+        }).ifPresent(aggregertUtbetaling::add);
+
+        forskuddstrekk.stream().reduce((u1, u2) -> {
+            u1.skattetrekk += u2.skattetrekk;
+            return u1;
+        }).ifPresent(aggregertUtbetaling::add);
+
+
+        return aggregertUtbetaling;
     }
 
     private Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
