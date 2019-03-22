@@ -433,10 +433,6 @@ public class KommuneTilNavEnhetMapper {
         return isProduction() ? PROD_DIGISOS_KOMMUNER : TEST_DIGISOS_KOMMUNER;
     }
 
-    public static Map<String, NavEnhet> getNavEnheter() {
-        return mapper;
-    }
-
     public static Map<String, String> getKommunerMedBydeler() {
         return isProduction() ? PROD_KOMMUNER_MED_BYDELER : TEST_KOMMUNER_MED_BYDELER;
     }
