@@ -117,6 +117,10 @@ public class NavEnhetRessurs {
         logger.error("NULLPOINTER ---------------------------- ");
         logger.error("NULLPOINTER legacyNavEnhetFrontend: " + legacyNavEnhetFrontend);
         logger.error("NULLPOINTER legacyNavEnhetFrontend.sosialOrgnr: " + legacyNavEnhetFrontend.sosialOrgnr);
+        logger.error("NULLPOINTER legacyNavEnhetFrontend.kommunenavn: " + legacyNavEnhetFrontend.kommunenavn);
+        logger.error("NULLPOINTER legacyNavEnhetFrontend.kommunenummer: " + legacyNavEnhetFrontend.kommunenummer);
+        logger.error("NULLPOINTER legacyNavEnhetFrontend.enhetsId: " + legacyNavEnhetFrontend.enhetsId);
+        logger.error("NULLPOINTER legacyNavEnhetFrontend.enhetsnavn: " + legacyNavEnhetFrontend.enhetsnavn);
         logger.error("NULLPOINTER valgtOrgnr: " + valgtOrgnr);
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(legacyNavEnhetFrontend.enhetsnavn)

@@ -17,6 +17,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -33,6 +35,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Timed
 @Produces(APPLICATION_JSON)
 public class AdresseRessurs {
+    private static final Logger logger = LoggerFactory.getLogger(AdresseRessurs.class);
 
     @Inject
     private SoknadService soknadService;
@@ -73,9 +76,29 @@ public class AdresseRessurs {
 
     @PUT
     public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresserFrontend adresserFrontend) {
+        logger.error("NULLPOINTER PUT /personalia/adresser");
+        logger.error("NULLPOINTER behandlingsId: " + behandlingsId);
+        logger.error("NULLPOINTER adresserFrontend: " + adresserFrontend);
+        logger.error("NULLPOINTER adresserFrontend.folkeregistrert: " + adresserFrontend.folkeregistrert);
+        logger.error("NULLPOINTER adresserFrontend.midlertidig: " + adresserFrontend.midlertidig);
+        logger.error("NULLPOINTER adresserFrontend.soknad: " + adresserFrontend.soknad);
+        logger.error("NULLPOINTER adresserFrontend.valg id?: " + adresserFrontend.valg);
+        logger.error("NULLPOINTER adresserFrontend.valg: " + adresserFrontend.valg.toString());
+
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, adresserFrontend);
         legacyUpdate(behandlingsId, adresserFrontend);
+
+        List<SoknadsmottakerRessurs.LegacyNavEnhetFrontend> soknadsmottaker = soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresserFrontend.valg.toString());
+        logger.error("NULLPOINTER findSoknadsmottaker: " + soknadsmottaker);
+        logger.error("NULLPOINTER findSoknadsmottaker size: " + soknadsmottaker.size());
+        logger.error("NULLPOINTER findSoknadsmottaker first: " + soknadsmottaker.get(0));
+        logger.error("NULLPOINTER findSoknadsmottaker first.bydelsnummer: " + soknadsmottaker.get(0).bydelsnummer);
+        logger.error("NULLPOINTER findSoknadsmottaker first.enhetsId: " + soknadsmottaker.get(0).enhetsId);
+        logger.error("NULLPOINTER findSoknadsmottaker first.enhetsnavn: " + soknadsmottaker.get(0).enhetsnavn);
+        logger.error("NULLPOINTER findSoknadsmottaker first.kommunenavn: " + soknadsmottaker.get(0).kommunenavn);
+        logger.error("NULLPOINTER findSoknadsmottaker first.kommunenummer: " + soknadsmottaker.get(0).kommunenummer);
+        logger.error("NULLPOINTER findSoknadsmottaker first.sosialOrgnr: " + soknadsmottaker.get(0).sosialOrgnr);
 
         /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresserFrontend.valg)); Bruk når faktum er fjernet*/
         return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresserFrontend.valg.toString())
@@ -90,17 +113,24 @@ public class AdresseRessurs {
         switch (adresserFrontend.valg){
             case FOLKEREGISTRERT:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentFolkeregistrertAdresse(eier));
+                logger.error("NULLPOINTER setOppholdsadresse FOLKEREGISTRERT: " + personalia.getOppholdsadresse());
                 break;
             case MIDLERTIDIG:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentMidlertidigAdresse(eier));
+                logger.error("NULLPOINTER setOppholdsadresse MIDLERTIDIG: " + personalia.getOppholdsadresse());
                 break;
             case SOKNAD:
                 personalia.setOppholdsadresse(AdresseMapper.mapToJsonAdresse(adresserFrontend.soknad));
+                logger.error("NULLPOINTER setOppholdsadresse SOKNAD: " + personalia.getOppholdsadresse());
                 break;
         }
 
         personalia.getOppholdsadresse().setAdresseValg(adresserFrontend.valg);
+        logger.error("NULLPOINTER setAdresseValg id: " + personalia.getOppholdsadresse().getAdresseValg());
+        logger.error("NULLPOINTER setAdresseValg: " + personalia.getOppholdsadresse().getAdresseValg().toString());
         personalia.setPostadresse(midlertidigLosningForPostadresse(personalia.getOppholdsadresse()));
+        logger.error("NULLPOINTER setPostadresse: " + personalia.getPostadresse());
+        logger.error("NULLPOINTER setPostadresse string: " + personalia.getPostadresse().toString());
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
