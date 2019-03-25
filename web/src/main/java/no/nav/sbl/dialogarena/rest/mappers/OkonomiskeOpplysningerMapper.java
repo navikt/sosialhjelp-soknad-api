@@ -141,8 +141,8 @@ public class OkonomiskeOpplysningerMapper {
                 .withKilde(JsonKilde.BRUKER)
                 .withType(eksisterendeInntekt.getType())
                 .withTittel(eksisterendeInntekt.getTittel())
-                .withBrutto(rad.belop)
-                .withNetto(rad.belop);
+                .withBrutto(rad.brutto != null ? rad.brutto : rad.belop)
+                .withNetto(rad.netto != null ? rad.netto : rad.belop);
     }
 
     private static List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalingList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling) {
@@ -320,6 +320,11 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static VedleggRadFrontend getRadFromInntekt(JsonOkonomioversiktInntekt inntekt, String jsonType) {
+        if (jsonType.equals("jobb")){
+            return new RadBruttoNetto()
+                    .withBrutto(inntekt.getBrutto())
+                    .withNetto(inntekt.getNetto());
+        }
         if (inntekt.getBrutto() != null){
             return new RadBelop().withBelop(inntekt.getBrutto());
         } else if (inntekt.getNetto() != null) {

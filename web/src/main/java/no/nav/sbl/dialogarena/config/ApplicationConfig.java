@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
+import no.nav.sbl.dialogarena.rest.ressurser.CustomVedleggRadDeserializer;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
@@ -85,6 +86,11 @@ public class ApplicationConfig {
     @Bean
     public HtmlGenerator handleBarKjoerer() {
         return new HandleBarKjoerer();
+    }
+
+    @Bean
+    public CustomVedleggRadDeserializer customVedleggRadDeserializer() {
+        return new CustomVedleggRadDeserializer();
     }
 
 }

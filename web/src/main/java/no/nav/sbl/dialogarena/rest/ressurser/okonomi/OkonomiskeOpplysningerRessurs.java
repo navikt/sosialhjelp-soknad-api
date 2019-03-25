@@ -179,6 +179,9 @@ public class OkonomiskeOpplysningerRessurs {
             if (type.equals("nedbetalingsplan") && tilleggsinfo.equals("avdraglaan")){
                 properties.put("avdrag", vedleggRad.avdrag.toString());
                 properties.put("renter", vedleggRad.renter.toString());
+            } else if (type.equals("lonnslipp") && tilleggsinfo.equals("arbeid")){
+                properties.put("bruttolonn", vedleggRad.brutto.toString());
+                properties.put("nettolonn", vedleggRad.netto.toString());
             } else {
                 properties.put(belopNavn, vedleggRad.belop.toString());
             }

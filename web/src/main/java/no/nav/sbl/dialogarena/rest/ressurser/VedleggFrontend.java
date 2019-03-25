@@ -22,7 +22,7 @@ public final class VedleggFrontend {
         return this;
     }
 
-    public VedleggFrontend withRader(List<VedleggRadFrontend> rader) {
+    public VedleggFrontend withRader(List rader) {
         this.rader = rader;
         return this;
     }
