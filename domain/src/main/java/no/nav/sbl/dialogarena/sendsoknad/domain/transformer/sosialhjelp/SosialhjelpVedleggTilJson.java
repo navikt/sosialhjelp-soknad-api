@@ -149,11 +149,15 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                             LinkedHashMap::new));
 
             for (Map.Entry<String, Long> entry : sortedTidspunkter.entrySet()) {
-                jsonFilerSortert.add(jsonVedlegg.getFiler().stream().filter(jsonFiler -> jsonFiler.getSha512().equals(entry.getKey())).findFirst().get());
+                jsonFilerSortert.add(hentFilSomMatcherTidspunkt(jsonVedlegg, entry));
             }
 
             jsonVedlegg.setFiler(jsonFilerSortert);
         }
+    }
+
+    private JsonFiler hentFilSomMatcherTidspunkt(JsonVedlegg jsonVedlegg, Map.Entry<String, Long> entry) {
+        return jsonVedlegg.getFiler().stream().filter(jsonFiler -> jsonFiler.getSha512().equals(entry.getKey())).findFirst().get();
     }
 
     private void leggPaGarbageDataForAHindreValidering(JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon) {
