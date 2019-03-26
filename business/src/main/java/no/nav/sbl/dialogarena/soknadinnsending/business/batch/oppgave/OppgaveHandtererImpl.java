@@ -42,7 +42,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     private
     OppgaveRepository oppgaveRepository;
 
-    @Scheduled(fixedDelay = PROSESS_RATE)
+    //@Scheduled(fixedDelay = PROSESS_RATE)
     public void prosesserOppgaver() {
         while (true) {
             Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentNeste();
@@ -74,7 +74,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
 
     }
     
-    @Scheduled(fixedDelay = RETRY_STUCK_RATE)
+    //@Scheduled(fixedDelay = RETRY_STUCK_RATE)
     public void retryStuckUnderArbeid() {
         try {
             final int antall = oppgaveRepository.retryOppgaveStuckUnderArbeid();
@@ -87,7 +87,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
         
     }
 
-    @Scheduled(fixedRate = RAPPORTER_RATE)
+    //@Scheduled(fixedRate = RAPPORTER_RATE)
     public void rapporterFeilede() {
         Map<String, Integer> statuser = oppgaveRepository.hentStatus();
 

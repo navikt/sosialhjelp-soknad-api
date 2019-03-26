@@ -38,7 +38,7 @@ public class AvbrytAutomatiskSheduler {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
+    //@Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
     public void avbrytGamleSoknader() throws InterruptedException {
         batchStartTime = LocalDateTime.now();
         vellykket = 0;

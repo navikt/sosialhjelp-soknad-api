@@ -55,7 +55,7 @@ public class SoknadMetricsService {
         return (erEttersending ? "ettersending." : "") + type;
     }
 
-    @Scheduled(fixedRate = RAPPORTERINGS_RATE)
+    //@Scheduled(fixedRate = RAPPORTERINGS_RATE)
     public void rapporterSoknadDatabaseStatus() {
         logger.info("Henter databasestatus for å rapportere metrics");
         Map<String, Integer> statuser = lokalDb.hentDatabaseStatus();

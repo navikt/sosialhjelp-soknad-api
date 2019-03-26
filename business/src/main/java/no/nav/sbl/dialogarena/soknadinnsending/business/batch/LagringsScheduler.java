@@ -45,7 +45,7 @@ public class LagringsScheduler {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Scheduled(fixedRate = SCHEDULE_RATE_MS)
+    //@Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
         List<Optional<WebSoknad>> feilListe = new ArrayList<>();
         batchStartTime = DateTime.now();

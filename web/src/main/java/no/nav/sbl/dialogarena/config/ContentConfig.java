@@ -16,7 +16,7 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 
 
 @Configuration
-@EnableScheduling
+//@EnableScheduling
 public class ContentConfig {
 
     @Inject
@@ -47,7 +47,7 @@ public class ContentConfig {
         return messageSource;
     }
 
-    @Scheduled(fixedRate = FEM_MINUTTER)
+    //@Scheduled(fixedRate = FEM_MINUTTER)
     private void slettCache() {
         navMessageSource().clearCache();
     }

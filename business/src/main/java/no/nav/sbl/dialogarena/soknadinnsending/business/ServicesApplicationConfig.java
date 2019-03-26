@@ -19,7 +19,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Configuration
-@EnableScheduling
+//@EnableScheduling
 public class ServicesApplicationConfig {
 
     private static final Logger logger = getLogger(ServicesApplicationConfig.class);

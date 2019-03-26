@@ -130,7 +130,7 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     @Override
-    @Scheduled(cron = "0 0 0 * * *")
+    //@Scheduled(cron = "0 0 0 * * *")
     public void lastInnNyeKodeverk() {
         MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
