@@ -68,6 +68,8 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
         List<Vedlegg> alleVedlegg = webSoknad.getVedlegg();
 
         Map<String, JsonVedlegg> vedleggMap = new HashMap<>();
+        Map<String, Map<String, Long>> jsonVedleggMapMedTidspunkt = new HashMap<>();
+        //type, <sha512, Tidspunkt>
 
         for (Vedlegg vedlegg : alleVedlegg) {
             if (vedlegg.getInnsendingsvalg().erIkke(LastetOpp) && vedlegg.getInnsendingsvalg().erIkke(VedleggAlleredeSendt)
@@ -87,11 +89,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                 vedleggMap.put(sammensattNavn, jsonVedlegg);
             }
 
-            if (vedlegg.getInnsendingsvalg().er(LastetOpp)) {
-                jsonVedlegg.getFiler().add(new JsonFiler()
-                        .withFilnavn(vedlegg.getFilnavn())
-                        .withSha512(vedlegg.getSha512()));
-            }
+            leggTilFilerOgSorter(jsonVedleggMapMedTidspunkt, vedlegg, jsonVedlegg);
         }
 
         return new ArrayList<>(vedleggMap.values());
@@ -123,35 +121,39 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                 vedleggMap.put(belopFaktumId, jsonVedlegg);
             }
 
-            if (v.getInnsendingsvalg().er(LastetOpp)) {
-                Map<String, Long> tidspunkter = jsonVedleggMapMedTidspunkt.get(jsonVedlegg.getType());
-                if (tidspunkter == null){
-                    jsonVedleggMapMedTidspunkt.put(jsonVedlegg.getType(), new HashMap<>());
-                    tidspunkter = jsonVedleggMapMedTidspunkt.get(jsonVedlegg.getType());
-                }
-                tidspunkter.put(v.getSha512(), v.getOpprettetDato());
-
-                jsonVedlegg.getFiler().add(new JsonFiler()
-                        .withFilnavn(v.getFilnavn())
-                        .withSha512(v.getSha512()));
-
-                List<JsonFiler> jsonFilerSortert = new ArrayList<>(jsonVedlegg.getFiler().size());
-
-                Map<String, Long> sortedTidspunkter = tidspunkter
-                        .entrySet()
-                        .stream()
-                        .sorted(comparingByValue())
-                        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
-                                        LinkedHashMap::new));
-
-                for (Map.Entry<String, Long> entry : sortedTidspunkter.entrySet()){
-                    jsonFilerSortert.add(jsonVedlegg.getFiler().stream().filter(jsonFiler -> jsonFiler.getSha512().equals(entry.getKey())).findFirst().get());
-                }
-
-                jsonVedlegg.setFiler(jsonFilerSortert);
-            }
+            leggTilFilerOgSorter(jsonVedleggMapMedTidspunkt, v, jsonVedlegg);
         }
         return new ArrayList<>(vedleggMap.values());
+    }
+
+    private void leggTilFilerOgSorter(Map<String, Map<String, Long>> jsonVedleggMapMedTidspunkt, Vedlegg v, JsonVedlegg jsonVedlegg) {
+        if (v.getInnsendingsvalg().er(LastetOpp)) {
+            Map<String, Long> tidspunkter = jsonVedleggMapMedTidspunkt.get(jsonVedlegg.getType());
+            if (tidspunkter == null) {
+                jsonVedleggMapMedTidspunkt.put(jsonVedlegg.getType(), new HashMap<>());
+                tidspunkter = jsonVedleggMapMedTidspunkt.get(jsonVedlegg.getType());
+            }
+            tidspunkter.put(v.getSha512(), v.getOpprettetDato());
+
+            jsonVedlegg.getFiler().add(new JsonFiler()
+                    .withFilnavn(v.getFilnavn())
+                    .withSha512(v.getSha512()));
+
+            List<JsonFiler> jsonFilerSortert = new ArrayList<>(jsonVedlegg.getFiler().size());
+
+            Map<String, Long> sortedTidspunkter = tidspunkter
+                    .entrySet()
+                    .stream()
+                    .sorted(comparingByValue())
+                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                            LinkedHashMap::new));
+
+            for (Map.Entry<String, Long> entry : sortedTidspunkter.entrySet()) {
+                jsonFilerSortert.add(jsonVedlegg.getFiler().stream().filter(jsonFiler -> jsonFiler.getSha512().equals(entry.getKey())).findFirst().get());
+            }
+
+            jsonVedlegg.setFiler(jsonFilerSortert);
+        }
     }
 
     private void leggPaGarbageDataForAHindreValidering(JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon) {
