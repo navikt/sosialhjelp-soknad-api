@@ -395,8 +395,6 @@ public class SoknadDataFletter {
             soknad = populerSoknadMedData(populerSystemfakta, soknad);
         }
 
-        lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(soknad);
-
         return soknad;
     }
 
@@ -437,7 +435,7 @@ public class SoknadDataFletter {
 
         logger.info("Starter innsending av søknad med behandlingsId {}", soknad.getBrukerBehandlingId());
 
-        final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(soknad);
+        final SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
         HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(soknad);
         final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
@@ -475,40 +473,6 @@ public class SoknadDataFletter {
         }).collect(Collectors.toList());
 
         return vedlegg;
-    }
-
-    SoknadUnderArbeid lagreSoknadOgVedleggMedNyModellDersomDeIkkeAlleredeErKonvertertOgLagret(WebSoknad soknad) {
-        SoknadUnderArbeid soknadUnderArbeid;
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), soknad.getAktoerId());
-        if (soknadUnderArbeidOptional.isPresent()) {
-            soknadUnderArbeid = soknadUnderArbeidOptional.get();
-        } else {
-            final SoknadUnderArbeid soknadUnderArbeidFraWebSoknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
-            if (soknadUnderArbeidFraWebSoknad != null) {
-                soknadUnderArbeid = soknadUnderArbeidFraWebSoknad;
-                final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeidFraWebSoknad, soknad.getAktoerId());
-                soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
-            } else {
-                throw new RuntimeException("Kan ikke konvertere fra websøknad under innsending");
-            }
-        }
-
-        List<OpplastetVedlegg> opplastedeVedlegg;
-        opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier());
-
-        if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
-            final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
-
-            opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeid.getSoknadId(),
-                    soknadUnderArbeid.getEier(), vedleggListe);
-            if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
-                for (OpplastetVedlegg opplastetVedlegg : opplastedeVedlegg) {
-                    opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, soknadUnderArbeid.getEier());
-                }
-            }
-        }
-
-        return soknadUnderArbeid;
     }
 
     private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid) {

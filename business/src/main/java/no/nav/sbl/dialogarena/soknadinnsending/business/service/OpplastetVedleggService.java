@@ -16,10 +16,13 @@ import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class OpplastetVedleggService {
@@ -30,6 +33,16 @@ public class OpplastetVedleggService {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    private static Map<String, String> MIME_TIL_EXT;
+
+    @PostConstruct
+    public void setUp() {
+        MIME_TIL_EXT = new HashMap<>();
+        MIME_TIL_EXT.put("application/pdf", ".pdf");
+        MIME_TIL_EXT.put("image/png", ".png");
+        MIME_TIL_EXT.put("image/jpeg", ".jpg");
+    }
+
     public String saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final String type = vedleggstype.substring(0, vedleggstype.indexOf('|'));
@@ -37,6 +50,7 @@ public class OpplastetVedleggService {
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final Long soknadId = soknadUnderArbeid.getSoknadId();
         final String sha512 = ServiceUtils.getSha512FromByteArray(data);
+        final String contentType = Detect.CONTENT_TYPE.transform(data);
 
         validerFil(data);
 
@@ -45,8 +59,9 @@ public class OpplastetVedleggService {
                 .withVedleggType(new VedleggType(type, tilleggsinfo))
                 .withData(data)
                 .withSoknadId(soknadId)
-                .withFilnavn(filnavn)
                 .withSha512(sha512);
+
+        opplastetVedlegg.withFilnavn(lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid()));
 
         final String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
 
@@ -90,6 +105,33 @@ public class OpplastetVedleggService {
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+    }
+
+    String lagFilnavn(String opplastetNavn, String mimetype, String uuid) {
+        String filnavn = opplastetNavn;
+        int separator = opplastetNavn.lastIndexOf(".");
+        if (separator != -1) {
+            filnavn = opplastetNavn.substring(0, separator);
+        }
+
+        filnavn = filnavn
+                .replace("æ", "e")
+                .replace("ø", "o")
+                .replace("å", "a")
+                .replace("Æ", "E")
+                .replace("Ø", "O")
+                .replace("Å", "A");
+
+        filnavn = filnavn.replaceAll("[^a-zA-Z0-9_-]", "");
+
+        if (filnavn.length() > 50) {
+            filnavn = filnavn.substring(0, 50);
+        }
+
+        filnavn += "-" + uuid.split("-")[0];
+        filnavn += MIME_TIL_EXT.get(mimetype);
+
+        return filnavn;
     }
 
     private void validerFil(byte[] data) {

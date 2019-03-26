@@ -96,10 +96,6 @@ public class SoknadDataFletterTest {
     ApplicationContext applicationContex;
     @Mock
     SoknadMetricsService soknadMetricsService;
-    @Mock
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    @Mock
-    private OpplastetVedleggRepository opplastetVedleggRepository;
 
     @Mock
     private SoknadUnderArbeidService soknadUnderArbeidService;
@@ -224,8 +220,6 @@ public class SoknadDataFletterTest {
         when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaBolk, barnBolk));
         when(lokalDb.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
         when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid()));
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(Collections.singletonList(new OpplastetVedlegg()));
         soknadServiceUtil.hentSoknad("123", true, true);
         verify(personaliaBolk, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnBolk, never()).genererSystemFakta(anyString(), anyLong());
@@ -249,9 +243,6 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknad("123")).thenReturn(null, soknad, soknad);
         when(lokalDb.hentSoknadMedVedlegg("123")).thenReturn(soknad, soknad);
         when(lokalDb.hentSoknadMedData(11L)).thenReturn(soknad);
-
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid()));
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(Collections.singletonList(new OpplastetVedlegg()));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
@@ -278,8 +269,6 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
         when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaBolk, barnBolk));
         when(lokalDb.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid()));
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(Collections.singletonList(new OpplastetVedlegg()));
         soknadServiceUtil.hentSoknad("123", true, true);
         verify(personaliaBolk, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnBolk, times(1)).genererSystemFakta(anyString(), anyLong());

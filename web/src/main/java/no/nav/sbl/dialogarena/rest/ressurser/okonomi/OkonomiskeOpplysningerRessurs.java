@@ -91,17 +91,33 @@ public class OkonomiskeOpplysningerRessurs {
         final List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
 
         final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), eier);
 
-        final List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
+        legacyConvertVedleggToNewModel(behandlingsId, eier, soknad, utenFaktumSoknad);
+
+        final List<OpplastetVedlegg> newModelOpplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), utenFaktumSoknad.getEier());
+
+        final List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, newModelOpplastedeVedlegg);
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
 
         utenFaktumSoknad.getJsonInternalSoknad().setVedlegg(jsonVedleggs.isEmpty() ? null : new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(utenFaktumSoknad, eier);
 
         return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
-                .map(vedlegg -> mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()))
+                .map(vedlegg -> mapToVedleggFrontend(vedlegg, jsonOkonomi, newModelOpplastedeVedlegg)).collect(Collectors.toList()))
                 .withSlettedeVedlegg(slettedeVedlegg);
+    }
+
+    private void legacyConvertVedleggToNewModel(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad, SoknadUnderArbeid utenFaktumSoknad) {
+        final List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), utenFaktumSoknad.getEier());
+
+        if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
+            final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, soknad);
+            if (konvertertOpplastedeVedlegg != null && !konvertertOpplastedeVedlegg.isEmpty()) {
+                for (OpplastetVedlegg opplastetVedlegg : konvertertOpplastedeVedlegg) {
+                    opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, utenFaktumSoknad.getEier());
+                }
+            }
+        }
     }
 
     private List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad) {

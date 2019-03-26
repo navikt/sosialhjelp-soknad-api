@@ -77,7 +77,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public WebSoknad hentSoknadDataOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+    public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         response.addCookie(xsrfCookie(behandlingsId));
         return soknadService.hentSoknad(behandlingsId, true, false);
     }
@@ -94,16 +94,16 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces(MediaType.TEXT_HTML)
     @SjekkTilgangTilSoknad
-    public String hentOppsummeringMedStandardMediatypeOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+    public String hentOppsummeringMedStandardMediatype(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         LOG.warn("Bruk av deprecated metode for å hente oppsummering");
-        return hentOppsummeringOgLagreSoknadMedNyModell(behandlingsId);
+        return hentOppsummering(behandlingsId);
     }
 
     @GET
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
-    public String hentOppsummeringOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+    public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
