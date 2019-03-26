@@ -79,7 +79,8 @@ public class NavEnhetRessurs {
 
         /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg)); Bruk når faktum er fjernet*/
         return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresseValg)
-                .stream().map(navEnhet -> mapFromLegacyNavEnhetFrontend(navEnhet, valgtOrgnr)).collect(Collectors.toList());
+                .stream().filter(navEnhet -> navEnhet.sosialOrgnr != null)
+                .map(navEnhet -> mapFromLegacyNavEnhetFrontend(navEnhet, valgtOrgnr)).collect(Collectors.toList());
     }
 
     @PUT
