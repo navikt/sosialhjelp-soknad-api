@@ -16,7 +16,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import org.slf4j.Logger;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toMap;
@@ -89,7 +88,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                 vedleggMap.put(sammensattNavn, jsonVedlegg);
             }
 
-            leggTilFilerOgSorter(jsonVedleggMapMedTidspunkt, vedlegg, jsonVedlegg);
+            leggTilFilOgSorter(jsonVedleggMapMedTidspunkt, vedlegg, jsonVedlegg);
         }
 
         return new ArrayList<>(vedleggMap.values());
@@ -121,17 +120,18 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                 vedleggMap.put(belopFaktumId, jsonVedlegg);
             }
 
-            leggTilFilerOgSorter(jsonVedleggMapMedTidspunkt, v, jsonVedlegg);
+            leggTilFilOgSorter(jsonVedleggMapMedTidspunkt, v, jsonVedlegg);
         }
         return new ArrayList<>(vedleggMap.values());
     }
 
-    private void leggTilFilerOgSorter(Map<String, Map<String, Long>> jsonVedleggMapMedTidspunkt, Vedlegg v, JsonVedlegg jsonVedlegg) {
+    private void leggTilFilOgSorter(Map<String, Map<String, Long>> jsonVedleggMapMedTidspunkt, Vedlegg v, JsonVedlegg jsonVedlegg) {
         if (v.getInnsendingsvalg().er(LastetOpp)) {
-            Map<String, Long> tidspunkter = jsonVedleggMapMedTidspunkt.get(jsonVedlegg.getType());
+            String sammensattNavn = v.getSkjemaNummer() + "|" + v.getSkjemanummerTillegg();
+            Map<String, Long> tidspunkter = jsonVedleggMapMedTidspunkt.get(sammensattNavn);
             if (tidspunkter == null) {
-                jsonVedleggMapMedTidspunkt.put(jsonVedlegg.getType(), new HashMap<>());
-                tidspunkter = jsonVedleggMapMedTidspunkt.get(jsonVedlegg.getType());
+                jsonVedleggMapMedTidspunkt.put(sammensattNavn, new HashMap<>());
+                tidspunkter = jsonVedleggMapMedTidspunkt.get(sammensattNavn);
             }
             tidspunkter.put(v.getSha512(), v.getOpprettetDato());
 
