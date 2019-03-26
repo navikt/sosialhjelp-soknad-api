@@ -31,7 +31,6 @@ public class XsrfGenerator {
 
     public static String generateXsrfToken(String behandlingsId, String date, String token) {
         try {
-            log.info("OIDC  ( i generateXsrf) token: " +  token);
             String signKey = token + behandlingsId + date;
             Mac hmac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(SECRET.getBytes(), "HmacSHA256");
@@ -44,9 +43,6 @@ public class XsrfGenerator {
 
     public static void sjekkXsrfToken(String givenToken, String behandlingsId) {
         String token = generateXsrfToken(behandlingsId);
-            log.info("OIDC givenToken: " +  givenToken);
-            log.info("OIDC token som burde være lik givenToken: " +  token);
-            log.info("OIDC token som burde være lik givenToken om ikke den over er lik: " +  generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")));
 
         boolean valid = token.equals(givenToken) || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
         if (!valid) {
