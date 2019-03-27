@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.mappers;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadTypeAndPath;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
@@ -19,8 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToTittelDelNavn;
-import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToTittelDelNavn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
 
 public class OkonomiskeOpplysningerMapper {
 

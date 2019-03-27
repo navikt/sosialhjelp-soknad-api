@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest.mappers;
+package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 public class SoknadTypeAndPath {
     private String type;

@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest.mappers;
+package no.nav.sbl.dialogarena.soknadinnsending.business.mappers;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 
 import java.util.List;
@@ -34,6 +35,18 @@ public class OkonomiMapper {
                 .filter(formue -> formue.getType().equals(type)).findFirst();
         if (!jsonFormue.isPresent()){
             formuer.add(new JsonOkonomioversiktFormue()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withOverstyrtAvBruker(false));
+        }
+    }
+
+    public static void addInntektIfNotPresentInOversikt(List<JsonOkonomioversiktInntekt> inntekter, String type, String tittel) {
+        Optional<JsonOkonomioversiktInntekt> jsonInntekt = inntekter.stream()
+                .filter(formue -> formue.getType().equals(type)).findFirst();
+        if (!jsonInntekt.isPresent()){
+            inntekter.add(new JsonOkonomioversiktInntekt()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
                     .withTittel(tittel)
@@ -75,5 +88,25 @@ public class OkonomiMapper {
                     .withTittel(tittel)
                     .withOverstyrtAvBruker(false));
         }
+    }
+
+    public static void removeFormueIfPresentInOversikt(List<JsonOkonomioversiktFormue> formuer, String type) {
+        formuer.removeIf(formue -> formue.getType().equals(type));
+    }
+
+    public static void removeInntektIfPresentInOversikt(List<JsonOkonomioversiktInntekt> inntekter, String type) {
+        inntekter.removeIf(inntekt -> inntekt.getType().equals(type));
+    }
+
+    public static void removeUtgiftIfPresentInOversikt(List<JsonOkonomioversiktUtgift> utgifter, String type) {
+        utgifter.removeIf(utgift -> utgift.getType().equals(type));
+    }
+
+    public static void removeUtgiftIfPresentInOpplysninger(List<JsonOkonomiOpplysningUtgift> utgifter, String type) {
+        utgifter.removeIf(utgift -> utgift.getType().equals(type));
+    }
+
+    public static void removeUtbetalingIfPresentInOpplysninger(List<JsonOkonomiOpplysningUtbetaling> utbetalinger, String type) {
+        utbetalinger.removeIf(utbetaling -> utbetaling.getType().equals(type));
     }
 }

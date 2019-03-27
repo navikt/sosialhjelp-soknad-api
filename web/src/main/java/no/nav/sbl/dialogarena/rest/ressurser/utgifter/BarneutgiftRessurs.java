@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
 @Path("/soknader/{behandlingsId}/utgifter/barneutgifter")
@@ -126,30 +126,44 @@ public class BarneutgiftRessurs {
         List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = okonomi.getOpplysninger().getUtgift();
         List<JsonOkonomioversiktUtgift> oversiktBarneutgifter = okonomi.getOversikt().getUtgift();
 
+        String type = "barnehage";
         if(barneutgifterFrontend.barnehage){
-            final String type = "barnehage";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, type);
         }
+
+        type = "sfo";
         if(barneutgifterFrontend.sfo){
-            final String type = "sfo";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, type);
         }
+
+        type = "barnFritidsaktiviteter";
         if(barneutgifterFrontend.fritidsaktiviteter){
-            final String type = "barnFritidsaktiviteter";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
         }
+
+        type = "barnTannregulering";
         if(barneutgifterFrontend.tannregulering){
-            final String type = "barnTannregulering";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
         }
+
+        type = "annenBarneutgift";
         if(barneutgifterFrontend.annet){
-            final String type = "annenBarneutgift";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
         }
     }
 
