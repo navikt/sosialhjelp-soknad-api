@@ -98,7 +98,9 @@ public class OpplastetVedleggService {
                 .filter(vedlegg -> vedlegg.getType().equals(type) && vedlegg.getTilleggsinfo().equals(tilleggsinfo))
                 .findFirst().get();
 
-        jsonVedlegg.getFiler().removeIf(jsonFiler -> jsonFiler.getFilnavn().equals(opplastetVedlegg.getFilnavn()));
+        jsonVedlegg.getFiler().removeIf(jsonFiler ->
+                jsonFiler.getSha512().equals(opplastetVedlegg.getSha512()) &&
+                jsonFiler.getFilnavn().equals(opplastetVedlegg.getFilnavn()));
 
         if (jsonVedlegg.getFiler().isEmpty()){
             jsonVedlegg.setStatus("VedleggKreves");
