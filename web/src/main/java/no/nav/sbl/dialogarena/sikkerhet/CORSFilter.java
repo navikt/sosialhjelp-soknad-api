@@ -21,14 +21,14 @@ public class CORSFilter implements Filter {
             origin = httpRequest.getHeader("Origin");
         }
 
+        HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         if (!ServiceUtils.isRunningInProd()) {
-            HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
             httpResponse.setHeader("Access-Control-Allow-Origin", origin);
             httpResponse.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, X-XSRF-TOKEN");
             httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-            filterChain.doFilter(servletRequest, httpResponse);
         }
+        filterChain.doFilter(servletRequest, httpResponse);
     }
 
     @Override
