@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,6 +70,7 @@ public class SoknadsosialhjelpServer {
     }
 
     private void configure() throws IOException {
+        Locale.setDefault(Locale.forLanguageTag("nb"));
         if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
