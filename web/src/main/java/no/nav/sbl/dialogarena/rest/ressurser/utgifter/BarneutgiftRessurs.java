@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
@@ -59,8 +60,14 @@ public class BarneutgiftRessurs {
     public BarneutgifterFrontend hentBarneutgifter(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+
+        final JsonHarForsorgerplikt harForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt();
+        if (harForsorgerplikt != null && harForsorgerplikt.getVerdi() != null && harForsorgerplikt.getVerdi()){
+            return new BarneutgifterFrontend().withHarForsorgerplikt(false);
+        }
+
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
+        final BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend().withHarForsorgerplikt(true);
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return barneutgifterFrontend;
@@ -204,12 +211,18 @@ public class BarneutgiftRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BarneutgifterFrontend {
+        public boolean harForsorgerplikt;
         public Boolean bekreftelse;
         public boolean fritidsaktiviteter;
         public boolean barnehage;
         public boolean sfo;
         public boolean tannregulering;
         public boolean annet;
+
+        public BarneutgifterFrontend withHarForsorgerplikt(boolean harForsorgerplikt) {
+            this.harForsorgerplikt = harForsorgerplikt;
+            return this;
+        }
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
