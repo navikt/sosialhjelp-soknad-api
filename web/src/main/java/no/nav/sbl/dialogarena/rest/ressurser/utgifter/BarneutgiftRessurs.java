@@ -62,7 +62,7 @@ public class BarneutgiftRessurs {
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
 
         final JsonHarForsorgerplikt harForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt();
-        if (harForsorgerplikt != null && harForsorgerplikt.getVerdi() != null && harForsorgerplikt.getVerdi()){
+        if (harForsorgerplikt == null || harForsorgerplikt.getVerdi() == null || !harForsorgerplikt.getVerdi()){
             return new BarneutgifterFrontend().withHarForsorgerplikt(false);
         }
 
