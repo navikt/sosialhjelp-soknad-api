@@ -70,7 +70,7 @@ public class SoknadsosialhjelpServer {
     }
 
     private void configure() throws IOException {
-        Locale.setDefault(Locale.forLanguageTag("nb"));
+        Locale.setDefault(Locale.forLanguageTag("nb-NO"));
         if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
