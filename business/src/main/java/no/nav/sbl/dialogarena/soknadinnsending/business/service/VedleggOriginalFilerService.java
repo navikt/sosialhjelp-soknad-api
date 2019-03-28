@@ -64,7 +64,7 @@ public class VedleggOriginalFilerService {
         MIME_TIL_EXT.put("image/jpeg", ".jpg");
     }
 
-    public WebSoknad oppdaterVedleggOgBelopFaktum(String behandlingsId) {
+    public synchronized WebSoknad oppdaterVedleggOgBelopFaktum(String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
 
         List<FaktumStruktur> faktaStruktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer()).getFakta();

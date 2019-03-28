@@ -180,13 +180,13 @@ public class OkonomiskeOpplysningerRessurs {
             final VedleggRadFrontend vedleggRad = vedleggFrontend.rader.get(i);
             final Map<String, String> properties = faktum.getProperties();
             if (type.equals("nedbetalingsplan") && tilleggsinfo.equals("avdraglaan")){
-                properties.put("avdrag", vedleggRad.avdrag.toString());
-                properties.put("renter", vedleggRad.renter.toString());
+                properties.put("avdrag", vedleggRad.avdrag != null ? vedleggRad.avdrag.toString() : null);
+                properties.put("renter", vedleggRad.renter != null ? vedleggRad.renter.toString() : null);
             } else if (type.equals("lonnslipp") && tilleggsinfo.equals("arbeid")){
-                properties.put("bruttolonn", vedleggRad.brutto.toString());
-                properties.put("nettolonn", vedleggRad.netto.toString());
+                properties.put("bruttolonn", vedleggRad.brutto != null ? vedleggRad.brutto.toString() : null);
+                properties.put("nettolonn", vedleggRad.netto != null ? vedleggRad.netto.toString() : null);
             } else {
-                properties.put(belopNavn, vedleggRad.belop.toString());
+                properties.put(belopNavn, vedleggRad.belop != null ? vedleggRad.belop.toString() : null);
             }
 
             putBeskrivelseOnRelevantTypes(soknadTypeAndPath, jsonType, vedleggRad, properties);

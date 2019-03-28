@@ -142,7 +142,8 @@ public class OkonomiskeOpplysningerMapper {
                 .withType(eksisterendeInntekt.getType())
                 .withTittel(eksisterendeInntekt.getTittel())
                 .withBrutto(rad.brutto != null ? rad.brutto : rad.belop)
-                .withNetto(rad.netto != null ? rad.netto : rad.belop);
+                .withNetto(rad.netto != null ? rad.netto : rad.belop)
+                .withOverstyrtAvBruker(false);
     }
 
     private static List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalingList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling) {
@@ -156,7 +157,8 @@ public class OkonomiskeOpplysningerMapper {
                 .withTittel(eksisterendeUtbetaling.getTittel())
                 .withBelop(rad.belop)
                 .withBrutto(Double.valueOf(rad.belop))
-                .withNetto(Double.valueOf(rad.belop));
+                .withNetto(Double.valueOf(rad.belop))
+                .withOverstyrtAvBruker(false);
     }
 
     private static List<JsonOkonomioversiktFormue> mapToFormueList(List<VedleggRadFrontend> rader, JsonOkonomioversiktFormue eksisterendeFormue) {
@@ -167,7 +169,8 @@ public class OkonomiskeOpplysningerMapper {
         return new JsonOkonomioversiktFormue().withKilde(JsonKilde.BRUKER)
                 .withType(eksisterendeFormue.getType())
                 .withTittel(eksisterendeFormue.getTittel())
-                .withBelop(radFrontend.belop);
+                .withBelop(radFrontend.belop)
+                .withOverstyrtAvBruker(false);
     }
 
     private static List<JsonOkonomioversiktUtgift> mapToOversiktUtgiftList(List<VedleggRadFrontend> rader, JsonOkonomioversiktUtgift eksisterendeUtgift) {
@@ -183,7 +186,8 @@ public class OkonomiskeOpplysningerMapper {
                 .withType(type)
                 .withTittel(radFrontend.beskrivelse != null ? typetittel + radFrontend.beskrivelse : typetittel)
                 .withBelop(type.equals("boliglanAvdrag") ? radFrontend.avdrag :
-                        type.equals("boliglanRenter") ? radFrontend.renter : radFrontend.belop);
+                        type.equals("boliglanRenter") ? radFrontend.renter : radFrontend.belop)
+                .withOverstyrtAvBruker(false);
     }
 
     private static List<JsonOkonomiOpplysningUtgift> mapToOppysningUtgiftList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtgift eksisterendeUtgift) {
@@ -194,7 +198,8 @@ public class OkonomiskeOpplysningerMapper {
         return new JsonOkonomiOpplysningUtgift().withKilde(JsonKilde.BRUKER)
                 .withType(eksisterendeUtgift.getType())
                 .withTittel(eksisterendeUtgift.getTittel())
-                .withBelop(radFrontend.belop);
+                .withBelop(radFrontend.belop)
+                .withOverstyrtAvBruker(false);
     }
 
     public static VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi, List<OpplastetVedlegg> opplastedeVedlegg) {
