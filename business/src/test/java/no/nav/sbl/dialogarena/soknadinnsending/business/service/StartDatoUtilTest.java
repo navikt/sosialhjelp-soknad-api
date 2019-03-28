@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,6 +19,11 @@ public class StartDatoUtilTest {
     private static final DateTime TJUENIENDE_FEBRUAR = new DateTime(2012, 2, 29, 23, 59);
     private static final DateTime FORSTE_MARS = new DateTime(2014, 3, 1, 0, 1);
     private static final DateTime TRETTIFORSTE_DESEMBER = new DateTime(2014, 12, 31, 23, 59);
+
+    @After
+    public void tearDown() throws Exception {
+        DateTimeUtils.setCurrentMillisSystem();
+    }
 
     @Test
     public void skalReturnereTrueDersomDetErForsteJanuar() {

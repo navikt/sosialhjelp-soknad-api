@@ -67,6 +67,11 @@ public class SoknadRepositoryJdbcTest {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Hendelse");
     }
 
+    @After
+    public void tearDown() throws Exception {
+        DateTimeUtils.setCurrentMillisSystem();
+    }
+
     @Test
     public void skalKunneOppretteSoknad() {
         opprettOgPersisterSoknad();
