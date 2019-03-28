@@ -257,36 +257,6 @@ public class InformasjonRessurs {
         return norgService.hentKontaktInformasjon(enhetId);
     }
 
-    @GET
-    @Path("/kommunevalg")
-    public Collection<NavEnhetFrontend> hentKommunevalg() {
-        final Collection<NavEnhetFrontend> navEnheter = KommuneTilNavEnhetMapper.getNavEnheter().entrySet().stream().map(entry -> {
-            final KommuneTilNavEnhetMapper.NavEnhet navEnhet = entry.getValue();
-            return new NavEnhetFrontend(entry.getKey(),
-                    navEnhet.getOrgnummer(),
-                    navEnhet.getKontornavn(),
-                    navEnhet.getKommune(),
-                    navEnhet.getNavn(),
-                    (navEnhet.getKommune() == null) ? "KOMMUNE" : "BYDEL",
-                    navEnhet.getFeatures());
-        }).collect(Collectors.toList());
-        
-        final Collection<NavEnhetFrontend> kommuner = KommuneTilNavEnhetMapper.getKommunerMedBydeler().entrySet().stream().map(entry -> {
-            return new NavEnhetFrontend(entry.getKey(),
-                    null,
-                    entry.getValue(),
-                    null,
-                    null,
-                    "KOMMUNE",
-                    new HashMap<>());
-        }).collect(Collectors.toList());
-        
-        final List<NavEnhetFrontend> navEnheterMedKommuner = new ArrayList<>();
-        navEnheterMedKommuner.addAll(navEnheter);
-        navEnheterMedKommuner.addAll(kommuner);
-        return navEnheterMedKommuner;
-    }
-
     @POST
     @Path("/actions/logg")
     public void loggFraKlient(Logg logg) {
