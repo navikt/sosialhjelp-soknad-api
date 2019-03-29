@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -32,17 +33,20 @@ public class LegacyHelper {
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
-    public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
-        final WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier);
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
 
-        final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad);
+    public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier, boolean medVedlegg) {
+        final WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier, medVedlegg);
+
+        final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad, medVedlegg);
         if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {
             throw new IllegalStateException("Feillagrede brukerdata for søknad: " + behandlingsId);
         }
         return soknad;
     }
 
-    public WebSoknad hentWebSoknad(String behandlingsId, String eier) {
+    public WebSoknad hentWebSoknad(String behandlingsId, String eier, boolean medVedlegg) {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
@@ -52,6 +56,10 @@ public class LegacyHelper {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
+
+        if (medVedlegg){
+            vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
+        }
 
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
         if (!eier.equals(webSoknad.getAktoerId())) {

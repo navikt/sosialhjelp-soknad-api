@@ -8,9 +8,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
 @Path("/soknader/{behandlingsId}/utgifter/barneutgifter")
@@ -56,17 +56,18 @@ public class BarneutgiftRessurs {
     @Inject
     private FaktaService faktaService;
 
-    @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
     @GET
     public BarneutgifterFrontend hentBarneutgifter(@PathParam("behandlingsId") String behandlingsId){
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-
         final String eier = SubjectHandler.getUserIdFromToken();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+
+        final JsonHarForsorgerplikt harForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt();
+        if (harForsorgerplikt == null || harForsorgerplikt.getVerdi() == null || !harForsorgerplikt.getVerdi()){
+            return new BarneutgifterFrontend().withHarForsorgerplikt(false);
+        }
+
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
+        final BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend().withHarForsorgerplikt(true);
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return barneutgifterFrontend;
@@ -132,30 +133,44 @@ public class BarneutgiftRessurs {
         List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = okonomi.getOpplysninger().getUtgift();
         List<JsonOkonomioversiktUtgift> oversiktBarneutgifter = okonomi.getOversikt().getUtgift();
 
+        String type = "barnehage";
         if(barneutgifterFrontend.barnehage){
-            final String type = "barnehage";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, type);
         }
+
+        type = "sfo";
         if(barneutgifterFrontend.sfo){
-            final String type = "sfo";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, type);
         }
+
+        type = "barnFritidsaktiviteter";
         if(barneutgifterFrontend.fritidsaktiviteter){
-            final String type = "barnFritidsaktiviteter";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
         }
+
+        type = "barnTannregulering";
         if(barneutgifterFrontend.tannregulering){
-            final String type = "barnTannregulering";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
         }
+
+        type = "annenBarneutgift";
         if(barneutgifterFrontend.annet){
-            final String type = "annenBarneutgift";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
         }
     }
 
@@ -196,12 +211,18 @@ public class BarneutgiftRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BarneutgifterFrontend {
+        public boolean harForsorgerplikt;
         public Boolean bekreftelse;
         public boolean fritidsaktiviteter;
         public boolean barnehage;
         public boolean sfo;
         public boolean tannregulering;
         public boolean annet;
+
+        public BarneutgifterFrontend withHarForsorgerplikt(boolean harForsorgerplikt) {
+            this.harForsorgerplikt = harForsorgerplikt;
+            return this;
+        }
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;

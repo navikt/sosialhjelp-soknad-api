@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
@@ -29,8 +28,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
 @Path("/soknader/{behandlingsId}/utgifter/boutgifter")
@@ -54,17 +53,12 @@ public class BoutgiftRessurs {
     private FaktaService faktaService;
 
     @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
-    @Inject
     private TextService textService;
 
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-
         final String eier = SubjectHandler.getUserIdFromToken();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
 
@@ -136,38 +130,58 @@ public class BoutgiftRessurs {
         List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = okonomi.getOpplysninger().getUtgift();
         List<JsonOkonomioversiktUtgift> oversiktBoutgifter = okonomi.getOversikt().getUtgift();
 
+        String type = "husleie";
         if(boutgifterFrontend.husleie){
-            final String type = "husleie";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOversikt(oversiktBoutgifter, type);
         }
+
+        type = "strom";
         if(boutgifterFrontend.strom){
-            final String type = "strom";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBoutgifter, type);
         }
+
+        type = "kommunalAvgift";
         if(boutgifterFrontend.kommunalAvgift){
-            final String type = "kommunalAvgift";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBoutgifter, type);
         }
+
+        type = "oppvarming";
         if(boutgifterFrontend.oppvarming){
-            final String type = "oppvarming";
             final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBoutgifter, type);
         }
+
         if(boutgifterFrontend.boliglan){
-            String type = "boliglanAvdrag";
+            type = "boliglanAvdrag";
             String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanAvdrag");
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
             type = "boliglanRenter";
             tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanRenter");
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
+        } else {
+            type = "boliglanAvdrag";
+            removeUtgiftIfPresentInOversikt(oversiktBoutgifter, type);
+            type = "boliglanRenter";
+            removeUtgiftIfPresentInOversikt(oversiktBoutgifter, type);
         }
+
+        type = "annenBoutgift";
         if(boutgifterFrontend.annet){
-            final String type = "annenBoutgift";
             final String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(opplysningerBoutgifter, type);
         }
     }
 

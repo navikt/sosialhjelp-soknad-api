@@ -91,7 +91,7 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null));
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(createArbeidsforholdListe());
 
@@ -108,7 +108,7 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereArbeidsforholdLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(null);
 
@@ -119,7 +119,7 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereKommentarTilArbeidsforholdLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
@@ -129,7 +129,7 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereKommentarTilArbeidsforhold(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, KOMMENTAR));
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);

@@ -103,7 +103,7 @@ public class AdresseRessursTest {
 
     @Test
     public void getAdresserSkalReturnereAdresserRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD));
         when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
@@ -115,7 +115,7 @@ public class AdresseRessursTest {
 
     @Test
     public void getAdresserSkalReturnereOppholdsAdresseLikFolkeregistrertAdresse(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT));
         when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
@@ -127,7 +127,7 @@ public class AdresseRessursTest {
 
     @Test
     public void getAdresserSkalReturnereOppholdsAdresseLikMidlertidigAdresse(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.MIDLERTIDIG));
         when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
@@ -139,7 +139,7 @@ public class AdresseRessursTest {
 
     @Test
     public void getAdresserSkalReturnereAdresserLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString())).thenReturn(
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(null));
         when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(null);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(null);

@@ -29,15 +29,10 @@ public class SystemregistrertInntektRessurs {
     @Inject
     private LegacyHelper legacyHelper;
 
-    @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
     @GET
     public SysteminntekterFrontend hentSystemregistrerteInntekter(@PathParam("behandlingsId") String behandlingsId){
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-
         final String eier = SubjectHandler.getUserIdFromToken();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
         final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
 
         return new SysteminntekterFrontend().withSysteminntekter(utbetalinger.stream()

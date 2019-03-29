@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 
 @Controller
 @Path("/soknader/{behandlingsId}/inntekt/bostotte")
@@ -53,7 +53,7 @@ public class BostotteRessurs {
     @GET
     public BostotteFrontend hentBostotteBekreftelse(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getUserIdFromToken();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
         final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
         final BostotteFrontend bostotteFrontend = new BostotteFrontend();
 

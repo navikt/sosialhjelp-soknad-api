@@ -47,7 +47,7 @@ public class UtdanningRessurs {
     @GET
     public UtdanningFrontend hentUtdanning(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getUserIdFromToken();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
 
         return new UtdanningFrontend()

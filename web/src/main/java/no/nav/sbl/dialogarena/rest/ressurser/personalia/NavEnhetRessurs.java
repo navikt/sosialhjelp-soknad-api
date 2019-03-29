@@ -69,7 +69,7 @@ public class NavEnhetRessurs {
     @GET
     public List<NavEnhetFrontend> hentNavEnheter(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getUserIdFromToken();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final String valgtOrgnr = soknad.getMottaker() == null ? null : soknad.getMottaker().getOrganisasjonsnummer();
 
         final JsonAdresse oppholdsadresse = soknad.getSoknad().getData().getPersonalia().getOppholdsadresse();

@@ -87,7 +87,12 @@ public class KommuneTilNavEnhetMapper {
             .put("0519", "974543303")    // Sør-Fron
             .put("0520", "974543303")    // Ringebu
             .put("2004", "974601753")    // Hammerfest
-            .put("1127","988052310")     // Randaberg-Kvitsøy
+            .put("1127", "988052310")    // Randaberg-Kvitsøy
+            .put("0412", "976639618")    // Ringsaker
+            .put("0426", "974550342")    // Våler (Hedmark)
+            .put("1037", "964964076")    // Kvinesdal
+            .put("0106", "993393851")    // Fredrikstad
+            .put("0605", "976820835")    // Ringerike
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -319,7 +324,12 @@ public class KommuneTilNavEnhetMapper {
                     "1144",
                     "0516",
                     "0519",
-                    "0520"
+                    "0520",
+                    "0412",
+                    "0426",
+                    "1037",
+                    "0106",
+                    "0605"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
@@ -423,10 +433,6 @@ public class KommuneTilNavEnhetMapper {
      */
     public static List<String> getDigisoskommuner() {
         return isProduction() ? PROD_DIGISOS_KOMMUNER : TEST_DIGISOS_KOMMUNER;
-    }
-
-    public static Map<String, NavEnhet> getNavEnheter() {
-        return mapper;
     }
 
     public static Map<String, String> getKommunerMedBydeler() {

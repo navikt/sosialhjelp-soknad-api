@@ -57,7 +57,7 @@ public class KontonummerRessurs {
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = SubjectHandler.getUserIdFromToken();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonKontonummer kontonummer = soknad.getSoknad().getData().getPersonalia().getKontonummer();
         final String systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
 

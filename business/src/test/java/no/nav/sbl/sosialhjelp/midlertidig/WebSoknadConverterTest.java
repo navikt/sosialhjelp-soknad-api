@@ -86,7 +86,7 @@ public class WebSoknadConverterTest {
     public void mapWebSoknadTilSoknadUnderArbeidMapperFelterRiktig() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad())));
 
-        SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(lagGyldigWebSoknad());
+        SoknadUnderArbeid soknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(lagGyldigWebSoknad(), true);
 
         assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getVersjon(), is(1L));
@@ -102,7 +102,7 @@ public class WebSoknadConverterTest {
     public void mapWebSoknadTilJsonSoknadInternalLagerJsonSoknadInternalMedDataFraWebSoknad() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad())));
 
-        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad());
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad(), true);
 
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi(), is(EIER));
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse().getType().value(), is("gateadresse"));
@@ -114,7 +114,7 @@ public class WebSoknadConverterTest {
                 new JsonInternalSoknad().withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(
                         Collections.singletonList(new JsonVedlegg().withType("jobb").withTilleggsinfo("sluttoppgjor")))))));
 
-        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad());
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknad(), true);
 
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi(), is(EIER));
         assertThat(jsonInternalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse().getType().value(), is("gateadresse"));
@@ -127,7 +127,7 @@ public class WebSoknadConverterTest {
     public void mapWebSoknadTilJsonSoknadInternalReturnererKunVedleggForEttersendelse() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad())));
 
-        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending());
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending(), true);
 
         JsonVedlegg vedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
         assertThat(jsonInternalSoknad.getSoknad(), nullValue());
@@ -145,7 +145,7 @@ public class WebSoknadConverterTest {
                 new JsonInternalSoknad().withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(
                         Collections.singletonList(new JsonVedlegg().withType("jobb").withTilleggsinfo("sluttoppgjor")))))));
 
-        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending());
+        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending(), true);
 
         JsonVedlegg vedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
         assertThat(jsonInternalSoknad.getSoknad(), nullValue());

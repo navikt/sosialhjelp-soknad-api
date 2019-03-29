@@ -148,7 +148,7 @@ public class SoknadsosialhjelpServer {
         }
         return env;
     }
-    
+
     public static void setFrom(String resource) throws IOException {
         setFrom(resource, true);
     }
@@ -181,7 +181,7 @@ public class SoknadsosialhjelpServer {
             m.appendReplacement(sb, replacement);
         }
         m.appendTail(sb);
-        
+
         return sb.toString();
     }
 

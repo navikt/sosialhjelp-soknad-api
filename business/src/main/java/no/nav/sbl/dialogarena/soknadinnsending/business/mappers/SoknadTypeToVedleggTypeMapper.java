@@ -1,4 +1,6 @@
-package no.nav.sbl.dialogarena.rest.mappers;
+package no.nav.sbl.dialogarena.soknadinnsending.business.mappers;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadTypeAndPath;
 
 import java.util.*;
 

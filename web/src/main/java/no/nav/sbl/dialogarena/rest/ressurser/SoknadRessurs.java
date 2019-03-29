@@ -3,20 +3,16 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
-import no.nav.security.oidc.api.ProtectedWithClaims;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -40,7 +36,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/soknader")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -73,10 +68,13 @@ public class SoknadRessurs {
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
 
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public WebSoknad hentSoknadDataOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+    public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         response.addCookie(xsrfCookie(behandlingsId));
         return soknadService.hentSoknad(behandlingsId, true, false);
     }
@@ -93,23 +91,24 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces(MediaType.TEXT_HTML)
     @SjekkTilgangTilSoknad
-    public String hentOppsummeringMedStandardMediatypeOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+    public String hentOppsummeringMedStandardMediatype(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         LOG.warn("Bruk av deprecated metode for å hente oppsummering");
-        return hentOppsummeringOgLagreSoknadMedNyModell(behandlingsId);
+        return hentOppsummering(behandlingsId);
     }
 
     @GET
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
-    public String hentOppsummeringOgLagreSoknadMedNyModell(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+    public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad);
+        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
-        final String eier = SubjectHandler.getUserIdFromToken();
+        final String eier =SubjectHandler.getUserIdFromToken();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
