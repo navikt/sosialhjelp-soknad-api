@@ -40,9 +40,7 @@ public class OpplastetVedleggServiceTest {
     private static final String FILNAVN1 = "Bifil.jpeg";
     private static final String FILNAVN2 = "Homofil.png";
     private static final String SHA512 = "Shakk matt";
-    private static final String TYPE = "hei";
-    private static final String TILLEGGSINFO = "på deg";
-    private static final String SAMMENSATTNAVN = "hei|på deg";
+    private static final String TYPE = "hei|på deg";
 
     @Mock
     private OpplastetVedleggRepository opplastetVedleggRepository;
@@ -79,19 +77,18 @@ public class OpplastetVedleggServiceTest {
                 Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
                                 new JsonVedlegg()
-                                        .withType(TYPE)
-                                        .withTilleggsinfo(TILLEGGSINFO)
+                                        .withType(new VedleggType(TYPE).getType())
+                                        .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
                                         .withStatus("VedleggKreves")
                         ))))));
         when(opplastetVedleggRepository.opprettVedlegg(any(OpplastetVedlegg.class), anyString())).thenReturn("321");
 
         final byte[] imageFile = createByteArrayFromJpeg();
-        final String uuid = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, SAMMENSATTNAVN, imageFile, FILNAVN1);
+        final String uuid = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().get(0);
-        assertThat(jsonVedlegg.getType(), is(TYPE));
-        assertThat(jsonVedlegg.getTilleggsinfo(), is(TILLEGGSINFO));
+        assertThat(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo(), is(TYPE));
         assertThat(jsonVedlegg.getStatus(), is("LastetOpp"));
         assertThat(jsonVedlegg.getFiler().size(), is(1));
         assertThat(uuid, is("321"));
@@ -103,20 +100,19 @@ public class OpplastetVedleggServiceTest {
                 Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
                                 new JsonVedlegg()
-                                        .withType(TYPE)
-                                        .withTilleggsinfo(TILLEGGSINFO)
+                                        .withType(new VedleggType(TYPE).getType())
+                                        .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
                                         .withFiler(new ArrayList<>(Collections.singletonList(new JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512))))
                                         .withStatus("LastetOpp")
                         ))))));
         when(opplastetVedleggRepository.hentVedlegg(anyString(), anyString())).thenReturn(
-                Optional.of(new OpplastetVedlegg().withVedleggType(new VedleggType(TYPE, TILLEGGSINFO)).withFilnavn(FILNAVN2).withSha512(SHA512)));
+                Optional.of(new OpplastetVedlegg().withVedleggType(new VedleggType(TYPE)).withFilnavn(FILNAVN2).withSha512(SHA512)));
 
         opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(BEHANDLINGSID, "uuid");
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().get(0);
-        assertThat(jsonVedlegg.getType(), is(TYPE));
-        assertThat(jsonVedlegg.getTilleggsinfo(), is(TILLEGGSINFO));
+        assertThat(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo(), is(TYPE));
         assertThat(jsonVedlegg.getStatus(), is("VedleggKreves"));
         assertThat(jsonVedlegg.getFiler().size(), is(0));
     }

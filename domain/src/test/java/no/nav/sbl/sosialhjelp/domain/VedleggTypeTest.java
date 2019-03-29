@@ -2,63 +2,34 @@ package no.nav.sbl.sosialhjelp.domain;
 
 import org.junit.Test;
 
-import static no.nav.sbl.sosialhjelp.domain.VedleggType.mapSammensattVedleggTypeTilVedleggType;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
 public class VedleggTypeTest {
 
-    private static final String TYPE = "bostotte";
-    private static final String TYPE2 = "kontooversikt";
-    private static final String TILLEGGSINFO = "annetboutgift";
-    private static final String TILLEGGSINFO2 = "brukskonto";
-    private static final String GYLDIG_SAMMENSATT_VEDLEGGTYPE = "bostotte|annetboutgift";
-
-    @Test
-    public void mapSammensattVedleggTypeTilVedleggTypeLagerVedleggTypeMedRiktigInfo() {
-        VedleggType vedleggType = mapSammensattVedleggTypeTilVedleggType(GYLDIG_SAMMENSATT_VEDLEGGTYPE);
-
-        assertThat(vedleggType, notNullValue());
-        assertThat(vedleggType.getType(), is(TYPE));
-        assertThat(vedleggType.getTilleggsinfo(), is(TILLEGGSINFO));
-    }
-
-    @Test
-    public void mapSammensattVedleggTypeTilVedleggTypeReturnererNullHvisInputErNull() {
-        VedleggType vedleggType = mapSammensattVedleggTypeTilVedleggType(null);
-
-        assertThat(vedleggType, nullValue());
-    }
-
-    @Test
-    public void mapSammensattVedleggTypeTilVedleggTypeReturnererNullHvisInputHarFlerePipes() {
-        VedleggType vedleggType = mapSammensattVedleggTypeTilVedleggType("test|test2|test3");
-
-        assertThat(vedleggType, nullValue());
-    }
+    private static final String TYPE = "bostotte|kontooversikt";
+    private static final String TYPE2 = "annetboutgift|brukskonto";
 
     @Test
     public void vedleggTypeObjekterMedSammeTypeOgTilleggsinfoErLike() {
-        VedleggType vedleggType = new VedleggType(TYPE, TILLEGGSINFO);
-        VedleggType likVedleggType = new VedleggType(TYPE, TILLEGGSINFO);
+        VedleggType vedleggType = new  VedleggType(TYPE);
+        VedleggType likVedleggType = new  VedleggType(TYPE);
 
         assertThat(vedleggType.equals(likVedleggType), is(true));
     }
 
     @Test
     public void vedleggTypeObjekterMedSammeTypeOgUlikTilleggsinfoErUlike() {
-        VedleggType vedleggType = new VedleggType(TYPE, TILLEGGSINFO);
-        VedleggType likVedleggType = new VedleggType(TYPE, TILLEGGSINFO2);
+        VedleggType vedleggType = new  VedleggType(TYPE);
+        VedleggType likVedleggType = new VedleggType(TYPE2);
 
         assertThat(vedleggType.equals(likVedleggType), is(false));
     }
 
     @Test
     public void vedleggTypeObjekterMedUlikTypeOgSammeTilleggsinfoErUlike() {
-        VedleggType vedleggType = new VedleggType(TYPE, TILLEGGSINFO);
-        VedleggType likVedleggType = new VedleggType(TYPE2, TILLEGGSINFO);
+        VedleggType vedleggType = new  VedleggType(TYPE);
+        VedleggType likVedleggType = new VedleggType(TYPE2);
 
         assertThat(vedleggType.equals(likVedleggType), is(false));
     }

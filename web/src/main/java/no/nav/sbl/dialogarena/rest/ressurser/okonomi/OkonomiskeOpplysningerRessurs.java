@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.rest.mappers.SoknadTypeAndPath;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
@@ -39,10 +38,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToBelopNavn;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToBelopNavn;
+import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*;
-import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 
 @Controller
@@ -137,31 +137,29 @@ public class OkonomiskeOpplysningerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
-        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));
-        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf("|") + 1);
 
-        final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
-        final String jsonType = soknadTypeAndPath.getType();
+        final String soknadType = vedleggTypeToSoknadType.get(vedleggFrontend.type);
+        final String soknadPath = getSoknadPath(vedleggFrontend.type);
 
-        switch (soknadTypeAndPath.getPath()){
+        switch (soknadPath){
             case "utbetaling":
-                addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
                 break;
             case "opplysningerUtgift":
-                addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
                 break;
             case "oversiktUtgift":
-                addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
                 break;
             case "formue":
-                addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
                 break;
             case "inntekt":
-                addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, jsonType);
+                addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
                 break;
         }
 
-        setVedleggStatus(vedleggFrontend, soknad, type, tilleggsinfo);
+        setVedleggStatus(vedleggFrontend, soknad);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
@@ -169,19 +167,16 @@ public class OkonomiskeOpplysningerRessurs {
     private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));
-        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf("|") + 1);
-
-        final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
-        final String jsonType = soknadTypeAndPath.getType();
-        String key = jsonTypeToFaktumKey.get(jsonType);
-        String belopNavn = jsonTypeToBelopNavn.get(jsonType);
+        final String soknadType = vedleggTypeToSoknadType.get(vedleggFrontend.type);
+        final String soknadPath = getSoknadPath(vedleggFrontend.type);
+        String key = soknadTypeToFaktumKey.get(soknadType);
+        String belopNavn = soknadTypeToBelopNavn.get(soknadType);
 
         if (key == null){
-            if (soknadTypeAndPath.getType().equals("annen") && soknadTypeAndPath.getPath().equals("opplysningerUtgift")){
+            if (soknadType.equals("annen") && soknadPath.equals("opplysningerUtgift")){
                 key = "opplysninger.ekstrainfo.utgifter";
                 belopNavn = "utgift";
-            } else if (soknadTypeAndPath.getType().equals("annen") && soknadTypeAndPath.getPath().equals("utbetaling")){
+            } else if (soknadType.equals("annen") && soknadPath.equals("utbetaling")){
                 key = "opplysninger.inntekt.inntekter.annet";
                 belopNavn = "sum";
             }
@@ -195,15 +190,15 @@ public class OkonomiskeOpplysningerRessurs {
             Faktum faktum = fakta.get(i);
             final VedleggRadFrontend vedleggRad = vedleggFrontend.rader.get(i);
             final Map<String, String> properties = faktum.getProperties();
-            if (type.equals("nedbetalingsplan") && tilleggsinfo.equals("avdraglaan")){
+            if (vedleggFrontend.type.equals("nedbetalingsplan|avdraglaan")){
                 properties.put("avdrag", vedleggRad.avdrag.toString());
                 properties.put("renter", vedleggRad.renter.toString());
             } else {
                 properties.put(belopNavn, vedleggRad.belop.toString());
             }
 
-            putNettolonnOnPropertiesForJsonTypeJobb(belopNavn, vedleggRad, properties);
-            putBeskrivelseOnRelevantTypes(soknadTypeAndPath, jsonType, vedleggRad, properties);
+            putNettolonnOnPropertiesForSoknadTypeJobb(belopNavn, vedleggRad, properties);
+            putBeskrivelseOnRelevantTypes(soknadPath, soknadType, vedleggRad, properties);
 
             faktaService.lagreBrukerFaktum(faktum);
         }
@@ -266,8 +261,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private boolean isSameType(JsonVedlegg jsonVedlegg, OpplastetVedlegg opplastetVedlegg) {
-        return opplastetVedlegg.getVedleggType().getType().equals(jsonVedlegg.getType()) &&
-                opplastetVedlegg.getVedleggType().getTilleggsinfo().equals(jsonVedlegg.getTilleggsinfo());
+        return opplastetVedlegg.getVedleggType().getSammensattType().equals(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo());
     }
 
     private void addPaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg) {
@@ -281,12 +275,12 @@ public class OkonomiskeOpplysningerRessurs {
         );
     }
 
-    private void setVedleggStatus(VedleggFrontend vedleggFrontend, SoknadUnderArbeid soknad, String type, String tilleggsinfo) {
+    private void setVedleggStatus(VedleggFrontend vedleggFrontend, SoknadUnderArbeid soknad) {
         final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
                 soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
                         soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
 
-        jsonVedleggs.stream().filter(vedlegg -> vedlegg.getType().equals(type) && vedlegg.getTilleggsinfo().equals(tilleggsinfo))
+        jsonVedleggs.stream().filter(vedlegg -> vedleggFrontend.type.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Vedlegget finnes ikke"))
                 .setStatus(vedleggFrontend.vedleggStatus);

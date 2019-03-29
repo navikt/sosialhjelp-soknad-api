@@ -505,7 +505,7 @@ public class SoknadDataFletter {
 
         return jsonVedleggs.stream().filter(jsonVedlegg -> !jsonVedlegg.getStatus().equals("LastetOpp"))
                 .map(jsonVedlegg -> new Vedleggstatus()
-                        .withVedleggType(new VedleggType(jsonVedlegg.getType(), jsonVedlegg.getTilleggsinfo()))
+                        .withVedleggType(new VedleggType(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo()))
                         .withEier(soknadUnderArbeid.getEier())
                         .withStatus(Vedleggstatus.Status.valueOf(jsonVedlegg.getStatus())))
                 .collect(Collectors.toList());
