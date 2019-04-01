@@ -76,7 +76,7 @@ public class SoknadMetadataRepositoryJdbcTest {
         SoknadMetadata meta = new SoknadMetadata();
         meta.id = soknadMetadataRepository.hentNesteId();
         meta.behandlingsId = behandlingsId;
-        meta.fnr = "***REMOVED***";
+        meta.fnr = "21036612271";
         meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
         meta.skjema = "";
         meta.status = status;

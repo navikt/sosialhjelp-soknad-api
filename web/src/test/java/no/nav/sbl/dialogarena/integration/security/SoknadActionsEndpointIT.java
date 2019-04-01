@@ -16,7 +16,7 @@ import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 
 public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
-    private static final String ANNEN_BRUKER = "***REMOVED***";
+    private static final String ANNEN_BRUKER = "01010112345";
     private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @Before

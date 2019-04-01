@@ -38,20 +38,20 @@ public class ArbeidssokerInfoServiceTest {
     public void getArbeidssokerArenaStatusSkalReturnereBrukerStatus() throws Exception {
         CloseableHttpResponse response = buildResponse("{\"arenaStatusKode\": \"PARBS\"}");
         when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(response);
-        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("***REMOVED***")).isEqualTo("PARBS");
+        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("11111111111")).isEqualTo("PARBS");
     }
 
     @Test
     public void getArbeidssokerStatusSkalReturnereUkjentForTomRespons() throws Exception {
         CloseableHttpResponse response = buildResponse("{}");
         when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(response);
-        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("***REMOVED***")).isEqualTo("UKJENT");
+        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("11111111111")).isEqualTo("UKJENT");
     }
 
     @Test
     public void getArbeidssokerRegistreringStatusSkalReturnereUkjentVedFeilPaaRestKall() throws Exception {
         when(httpclient.execute(any(HttpUriRequest.class))).thenThrow(new IOException());
-        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("***REMOVED***")).isEqualTo("UKJENT");
+        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("11111111111")).isEqualTo("UKJENT");
     }
 
     public CloseableHttpResponse buildResponse(String content) throws IOException {

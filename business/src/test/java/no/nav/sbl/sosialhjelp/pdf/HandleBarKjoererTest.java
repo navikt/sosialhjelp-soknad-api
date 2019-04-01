@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HandleBarKjoererTest {
-    private static final String FNR = "***REMOVED***";
+    private static final String FNR = "15038000000";
     @InjectMocks
     private HandleBarKjoerer handleBarKjoerer;
 
