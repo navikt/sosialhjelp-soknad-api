@@ -23,7 +23,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Implementerer speccen definert i soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon
  */
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level3" })
+@ProtectedWithClaims(issuer = "selvbetjening", combineWithOr = true, claimMap = {"acr=Level3", "acr=Level4"})
 @Path("/metadata/oidc")
 @Timed
 @Produces(APPLICATION_JSON)
