@@ -28,7 +28,7 @@ public class PersonnrHelperTest {
     @Test
     public void skalHentePersonnr() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
-        ektefelle.setPersonIdentifikator("***REMOVED***");
+        ektefelle.setPersonIdentifikator("15059512345");
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
         assertThat(compiled, is("Personnr: 12345"));

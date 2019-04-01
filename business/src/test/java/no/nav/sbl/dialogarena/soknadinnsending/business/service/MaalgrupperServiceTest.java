@@ -39,7 +39,7 @@ public class MaalgrupperServiceTest {
 
     @Captor
     private ArgumentCaptor<WSFinnMaalgruppeinformasjonListeRequest> argument;
-    public static final String FODSELSNUMMER = "***REMOVED***";
+    public static final String FODSELSNUMMER = "00000000000";
 
     @Before
     public void setUp() throws Exception {
