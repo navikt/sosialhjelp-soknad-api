@@ -14,7 +14,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sosialhjel
 
 public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityIT {
 
-    private static final String ANNEN_BRUKER = "***REMOVED***";
+    private static final String ANNEN_BRUKER = "10108000398";
     private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @Before

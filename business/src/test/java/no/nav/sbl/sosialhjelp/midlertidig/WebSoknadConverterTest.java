@@ -222,7 +222,8 @@ public class WebSoknadConverterTest {
                 .medSkjemaNummer(TYPE)
                 .medSkjemanummerTillegg(TILLEGGSINFO)
                 .medFilnavn(FILNAVN)
-                .medSha512("123");
+                .medSha512("123")
+                .medOpprettetDato(123L);
         return lagGyldigWebSoknad()
                 .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
                 .medVedlegg(vedlegg);

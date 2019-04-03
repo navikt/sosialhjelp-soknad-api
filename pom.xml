@@ -54,7 +54,7 @@
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <utbetaling.tjenestespesifikasjon.version>1.0.18</utbetaling.tjenestespesifikasjon.version>
-        <ojdbc.version>11.2.0.3</ojdbc.version>
+        <ojdbc.version>12.2.0.1</ojdbc.version>
         <flying.saucer.version>9.0.4</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.9.8</jackson.version>
@@ -726,7 +726,7 @@
             </dependency>
             <dependency>
                 <groupId>com.oracle</groupId>
-                <artifactId>ojdbc6</artifactId>
+                <artifactId>ojdbc8</artifactId>
                 <version>${ojdbc.version}</version>
             </dependency>
             <dependency>
@@ -855,22 +855,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-fitnesse</artifactId>
-                <version>1.0.1</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit-dep</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
@@ -933,7 +917,7 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jaas</artifactId>
                 <scope>test</scope>
-                <version>9.4.14.***REMOVED***14</version>
+                <version>9.4.14.v20181114</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
@@ -1027,7 +1011,7 @@
                         </dependency>
                         <dependency>
                             <groupId>com.oracle</groupId>
-                            <artifactId>ojdbc6</artifactId>
+                            <artifactId>ojdbc8</artifactId>
                             <version>${ojdbc.version}</version>
                         </dependency>
                     </dependencies>
@@ -1038,6 +1022,17 @@
                     <configuration>
                         <systemPropertyVariables>
                             <java.awt.headless>true</java.awt.headless>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.9</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <user.language>nb</user.language>
+                            <user.region>NO</user.region>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>

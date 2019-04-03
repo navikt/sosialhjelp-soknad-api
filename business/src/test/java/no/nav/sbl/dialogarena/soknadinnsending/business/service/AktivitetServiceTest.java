@@ -37,7 +37,7 @@ public class AktivitetServiceTest {
 
     @Test
     public void skalKallePaWebService() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
-        String fodselnummer = "***REMOVED***";
+        String fodselnummer = "01010111111";
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(new WSFinnAktivitetsinformasjonListeResponse());
         aktivitetService.hentAktiviteter(fodselnummer);
@@ -49,7 +49,7 @@ public class AktivitetServiceTest {
 
     @Test
     public void skalReturnereFaktumVedUthenting() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
-        String fodselnummer = "***REMOVED***";
+        String fodselnummer = "01010111111";
         String aktivitetsnavn = "aktivitetsnavn";
         String id = "9999";
         String fom = "2015-02-15";
@@ -77,7 +77,7 @@ public class AktivitetServiceTest {
 
     @Test
     public void skalFiltrereBortAktiviteterSomIkkeErStonadsberettiget() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
-        String fodselnummer = "***REMOVED***";
+        String fodselnummer = "01010111111";
         String aktivitetsnavn = "aktivitetsnavn";
         String id = "9999";
         String fom = "2015-02-15";
@@ -111,7 +111,7 @@ public class AktivitetServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
-        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("01010111111");
 
         Faktum faktum = fakta.get(0);
         assertThat(faktum.getProperties()).containsEntry("fom", fom);
@@ -129,7 +129,7 @@ public class AktivitetServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
-        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("01010111111");
 
         Faktum faktum = fakta.get(0);
         assertThat(faktum.getProperties()).containsEntry("fom", "");
@@ -140,7 +140,7 @@ public class AktivitetServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(null);
 
-        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("01010111111");
         assertThat(fakta).isEmpty();
     }
 

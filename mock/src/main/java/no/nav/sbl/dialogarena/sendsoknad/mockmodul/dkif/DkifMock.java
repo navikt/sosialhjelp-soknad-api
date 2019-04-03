@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 
 public class DkifMock {
 
-    private static final String RIKTIG_IDENT = "***REMOVED***";
+    private static final String RIKTIG_IDENT = "03076321565";
     private static final String EN_EPOST = "test@epost.com";
     private static final String ET_TELEFONNUMMER = "98765432";
 

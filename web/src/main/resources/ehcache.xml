@@ -15,7 +15,7 @@
            timeToLiveSeconds="3600"
             />
 
-    <diskStore path="/auto/default/path"/>
+    <diskStore path="/tmp/default/path"/>
 
     <cache name="forhaandsvisning" maxElementsInMemory="1000" overflowToDisk="false" eternal="false"/>
     <cache name="forhaandsvisningId" maxElementsInMemory="1000" overflowToDisk="false" eternal="false"/>
