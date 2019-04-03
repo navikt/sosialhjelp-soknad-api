@@ -21,7 +21,6 @@
         <!-- Lagrer IT-info til enhetstestfil -->
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec
         </sonar.jacoco.reportPath>
-        <fitnesse.port>9977</fitnesse.port>
     </properties>
 
     <dependencies>
@@ -392,11 +391,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-fitnesse</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -426,6 +420,11 @@
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-core-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
