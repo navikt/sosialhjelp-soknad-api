@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.*;
 
 @Controller
@@ -132,30 +132,30 @@ public class BoutgiftRessurs {
 
         if(boutgifterFrontend.husleie){
             final String type = "husleie";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.strom){
             final String type = "strom";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.kommunalAvgift){
             final String type = "kommunalAvgift";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.oppvarming){
             final String type = "oppvarming";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.boliglan){
             String type = "boliglanAvdrag";
-            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanAvdrag");
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type) + ".boliglanAvdrag");
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
             type = "boliglanRenter";
-            tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanRenter");
+            tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type) + ".boliglanRenter");
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.annet){
