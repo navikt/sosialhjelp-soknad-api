@@ -22,15 +22,15 @@ import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class BarnBolkTest {
-    private static final String IDENT = "***REMOVED***";
-    private static final String BARN_IDENT = "***REMOVED***";
+    private static final String IDENT = "03076321565";
+    private static final String BARN_IDENT = "23070801336";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_MELLOMNAVN = "Navn";
     private static final String BARN_ETTERNAVN = "Barnet";
     private static final LocalDate BARN_FODSELSDATO = new LocalDate(2008, 7, 23);
     private static final String BARN_FODSELSDATO_TEKST = "2008-07-23";
 
-    private static final String BARN2_IDENT = "***REMOVED***";
+    private static final String BARN2_IDENT = "01010691736";
     private static final String BARN2_FORNAVN = "Per";
     private static final String BARN2_ETTERNAVN = "Barnet";
     private static final LocalDate BARN2_FODSELSDATO = new LocalDate(2006, 1, 1);

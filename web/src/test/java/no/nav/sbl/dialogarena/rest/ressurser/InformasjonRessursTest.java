@@ -170,7 +170,7 @@ public class InformasjonRessursTest {
 
     private Personalia personalia() {
         Personalia personalia = new Personalia();
-        personalia.setFnr("***REMOVED***");
+        personalia.setFnr("01018012345");
         Adresse adresse = new Adresse();
         personalia.setGjeldendeAdresse(adresse);
         return personalia;

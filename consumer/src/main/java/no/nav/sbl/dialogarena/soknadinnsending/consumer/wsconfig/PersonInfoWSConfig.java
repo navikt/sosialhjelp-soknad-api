@@ -73,7 +73,7 @@ public class PersonInfoWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
-                Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("***REMOVED***");
+                Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("01034128789");
                 PingMetadata metadata = new PingMetadata(endpoint,"ARENA - Personinfo (Status på personen)", false);
                 try {
                     personInfoEndpoint().hentPersonStatus(fodselsnr);

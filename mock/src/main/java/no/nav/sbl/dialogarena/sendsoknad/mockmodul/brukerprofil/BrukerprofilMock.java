@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import java.math.BigInteger;
 
 public class BrukerprofilMock {
-    private static final String FODSELSNUMMER = "***REMOVED***";
+    private static final String FODSELSNUMMER = "03076321565";
     private static final String FORNAVN = "Donald";
     private static final String MELLOMNAVN = "D.";
     private static final String ETTERNAVN = "Mockmann";

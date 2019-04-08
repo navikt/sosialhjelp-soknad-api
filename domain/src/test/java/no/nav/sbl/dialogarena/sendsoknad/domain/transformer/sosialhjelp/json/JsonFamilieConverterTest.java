@@ -25,7 +25,7 @@ public class JsonFamilieConverterTest {
     private static final String FORNAVN = "Fornavn";
     private static final String FODSELSDATO = "03071965";
     private static final String FODSELSDATO_JSON = "1965-07-03";
-    private static final String FNR = "***REMOVED***";
+    private static final String FNR = "03076512345";
     private static final String PERSONNUMMER = "12345";
     private static final int GRAD = 30;
 

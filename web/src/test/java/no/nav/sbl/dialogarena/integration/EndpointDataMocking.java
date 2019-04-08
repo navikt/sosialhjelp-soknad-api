@@ -42,7 +42,7 @@ public class EndpointDataMocking {
                                 .withBankkonto(new XMLBankkontoNorge()
                                         .withBankkonto(new XMLBankkontonummer().withBankkontonummer("65294512345"))
                                 )
-                                .withIdent(new XMLNorskIdent().withIdent("***REMOVED***"))
+                                .withIdent(new XMLNorskIdent().withIdent("12127612345"))
                 )
         );
     }
@@ -63,7 +63,7 @@ public class EndpointDataMocking {
         Person person = new Person();
         Person barn = new Person();
         NorskIdent norskIdent = new NorskIdent();
-        norskIdent.setIdent("***REMOVED***");
+        norskIdent.setIdent("04031659235");
         barn.setIdent(norskIdent);
         barn.setFoedselsdato(foedselsdato);
         familierelasjon.setTilPerson(barn);

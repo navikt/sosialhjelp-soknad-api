@@ -41,9 +41,9 @@ public class VedleggOriginalFilerServiceTest {
         String filnavn = service.lagFilnavn("minfil.jpg", "image/jpeg", "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertEquals("minfil-5c2a1cea.jpg", filnavn);
 
-        String truncate = service.lagFilnavn("etkjempelangtfilnav***REMOVED***78901234567890123456789012345678901234567890.jpg",
+        String truncate = service.lagFilnavn("etkjempelangtfilnavn12345678901234567890123456789012345678901234567890.jpg",
                 "image/jpeg", "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
-        assertEquals("etkjempelangtfilnav***REMOVED***789012345678901234567890-5c2a1cea.jpg", truncate);
+        assertEquals("etkjempelangtfilnavn123456789012345678901234567890-5c2a1cea.jpg", truncate);
 
         String medSpesialTegn = service.lagFilnavn("en.filmedææå()ogmyerartsjø.png", "image/jpeg", "abc-ef05");
         assertEquals("enfilmedeeaogmyerartsjo-abc.jpg", medSpesialTegn);

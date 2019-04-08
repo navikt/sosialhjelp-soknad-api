@@ -65,7 +65,7 @@ public final class JsonAdresseConverter {
                 }
 
                 final JsonAdresse adresse = tilSystemAdresse(faktum);
-                if (adresse.getType() == Type.POSTBOKS) {
+                if (adresse == null || adresse.getType() == Type.POSTBOKS) {
                     return null;
                 }
                 return adresse;
@@ -156,7 +156,8 @@ public final class JsonAdresseConverter {
 
         final String type = adresse.get("type");
         if (type == null) {
-            throw new IllegalStateException("Adresse mangler \"type\": " + faktum.getKey());
+            logger.info("Adresse mangler \"type\": " + faktum.getKey());
+            return null;
         }
 
         JsonAdresse jsonAdresse;

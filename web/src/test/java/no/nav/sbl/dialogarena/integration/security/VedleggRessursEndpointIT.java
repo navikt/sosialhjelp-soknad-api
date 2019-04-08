@@ -22,7 +22,7 @@ import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 @Ignore("Denne testen må skrives om slik at den virker med sosialhjelpsøknaden.")
 public class VedleggRessursEndpointIT extends AbstractSecurityIT {
 
-    private static final String ANNEN_BRUKER = "***REMOVED***";
+    private static final String ANNEN_BRUKER = "10108000398";
     private static final String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @Before

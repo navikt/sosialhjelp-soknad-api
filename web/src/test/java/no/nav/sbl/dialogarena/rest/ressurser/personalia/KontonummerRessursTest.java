@@ -39,7 +39,7 @@ public class KontonummerRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
-    private static final String KONTONUMMER_BRUKER = "***REMOVED***";
+    private static final String KONTONUMMER_BRUKER = "11122233344";
     private static final String KONTONUMMER_SYSTEM = "44333222111";
     private static final String KONTONUMMER_SYSTEM_OPPDATERT = "44333222123";
 
