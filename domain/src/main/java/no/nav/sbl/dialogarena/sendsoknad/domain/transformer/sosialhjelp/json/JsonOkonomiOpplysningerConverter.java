@@ -121,7 +121,7 @@ public class JsonOkonomiOpplysningerConverter {
                 webSoknad.getFaktaMedKey(key),
                 "netto"));
 
-        result.addAll(opplysningUtbetalingFraNav(webSoknad));
+        result.addAll(opplysningUtbetaling(webSoknad));
 
         return result.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
@@ -189,7 +189,7 @@ public class JsonOkonomiOpplysningerConverter {
                 .withTittel(getTittel(key, navMessageSource))
                 .withOverstyrtAvBruker(false));
     }
-    
+
     private static boolean harVedlegg(WebSoknad webSoknad, String skjemaNummer, String skjemanummmerTillegg) {
         return webSoknad.getVedlegg().stream().anyMatch(v ->
             skjemaNummer.equals(v.getSkjemaNummer())
@@ -223,15 +223,24 @@ public class JsonOkonomiOpplysningerConverter {
         }).collect(Collectors.toList());
     }
 
-    static List<JsonOkonomiOpplysningUtbetaling> opplysningUtbetalingFraNav(WebSoknad webSoknad) {
+    static List<JsonOkonomiOpplysningUtbetaling> opplysningUtbetaling(WebSoknad webSoknad) {
         List<Faktum> fakta = webSoknad.getFaktaMedKey("utbetalinger.utbetaling");
+        List<Faktum> faktaKomponent = webSoknad.getFaktaMedKey("utbetalinger.utbetaling.komponent");
+        return getOkonomiopplysningFraFaktum(fakta, faktaKomponent);
+    }
+
+    public static List<JsonOkonomiOpplysningUtbetaling> getOkonomiopplysningFraFaktum(List<Faktum> fakta, List<Faktum> faktaKomponent) {
         return fakta.stream()
                 .filter(Objects::nonNull)
                 .map(faktum -> {
-            final Map<String, String> properties = faktum.getProperties();
-            return new JsonOkonomiOpplysningUtbetaling()
+                    final Map<String, String> properties = faktum.getProperties();
+                    System.out.println(properties.get("brutto"));
+
+                    return new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withType("navytelse")
+                    .withType(properties.get("kildeType"))
+                    .withOrganisasjon(new JsonOrganisasjon().withNavn(properties.get("organisasjon"))
+                            .withOrganisasjonsnummer(properties.get("organisasjonsnummer")))
                     .withTittel(properties.get("type"))
                     .withBelop(tilIntegerMedAvrunding(properties.get("netto")))
                     .withNetto(tilDouble(properties.get("netto")))
@@ -241,13 +250,12 @@ public class JsonOkonomiOpplysningerConverter {
                     .withUtbetalingsdato(properties.get("utbetalingsDato"))
                     .withPeriodeFom(properties.get("periodeFom"))
                     .withPeriodeTom(properties.get("periodeTom"))
-                    .withKomponenter(tilUtbetalingskomponentListe(webSoknad, properties.get("utbetalingsid")))
+                    .withKomponenter(tilUtbetalingskomponentListe(properties.get("utbetalingsid"), faktaKomponent))
                     .withOverstyrtAvBruker(false);
         }).collect(Collectors.toList());
     }
 
-    static List<JsonOkonomiOpplysningUtbetalingKomponent> tilUtbetalingskomponentListe(WebSoknad webSoknad, String utbetalingsid) {
-        List<Faktum> fakta = webSoknad.getFaktaMedKey("utbetalinger.utbetaling.komponent");
+    static List<JsonOkonomiOpplysningUtbetalingKomponent> tilUtbetalingskomponentListe(String utbetalingsid, List<Faktum> fakta) {
         if (fakta == null || fakta.isEmpty() || isEmpty(utbetalingsid)) {
             return new ArrayList<>();
         }
@@ -272,7 +280,7 @@ public class JsonOkonomiOpplysningerConverter {
     private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn, String tittelDelNavn) {
         return opplysningUtgift(type, tittel, fakta, belopNavn, tittelDelNavn, false);
     }
-    
+
     private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn, String tittelDelNavn, boolean kunHvisVerdiSatt) {
 
         Stream<Faktum> stream = fakta.stream().filter(Objects::nonNull);

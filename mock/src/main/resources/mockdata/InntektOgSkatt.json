@@ -1,0 +1,85 @@
+{
+  "oppgaveInntektsmottaker": [
+    {
+      "opplysningspliktigId": "811223522",
+      "virksomhetId": "911033585",
+      "kalendermaaned": "2019-01",
+      "inntektsmottaker": {
+        "personidentifikator": "01029413157"
+      },
+      "inntekt": [
+        {
+          "fordel": "kontantytelse",
+          "utloeserArbeidsgiveravgift": true,
+          "inngaarIGrunnlagForTrekk": true,
+          "beloep": 31636,
+          "loennsinntekt": {
+            "beskrivelse": "fastloenn"
+          }
+        }
+      ]
+    },
+    {
+      "opplysningspliktigId": "911270374",
+      "virksomhetId": "911270404",
+      "kalendermaaned": "2019-01",
+      "inntektsmottaker": {
+        "personidentifikator": "01029413157"
+      },
+      "inntekt": [
+        {
+          "fordel": "kontantytelse",
+          "utloeserArbeidsgiveravgift": true,
+          "inngaarIGrunnlagForTrekk": true,
+          "beloep": 20000,
+          "loennsinntekt": {
+            "beskrivelse": "fastloenn"
+          }
+        },
+        {
+          "fordel": "naturalytelse",
+          "utloeserArbeidsgiveravgift": true,
+          "inngaarIGrunnlagForTrekk": true,
+          "beloep": 5000,
+          "loennsinntekt": {
+            "beskrivelse": "skattepliktigPersonalrabatt"
+          }
+        },
+        {
+          "fordel": "kontantytelse",
+          "utloeserArbeidsgiveravgift": true,
+          "inngaarIGrunnlagForTrekk": true,
+          "beloep": 15000,
+          "loennsinntekt": {
+            "beskrivelse": "honorarAkkordProsentProvisjon",
+            "tilleggsinformasjon": {
+              "inntjeningsforhold": "loennOgAnnenGodtgjoerelseSomIkkeErSkattepliktig"
+            },
+            "spesifikasjon": {
+              "skattemessigBosattILand": "DK"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "opplysningspliktigId": "811224472",
+      "virksomhetId": "811225142",
+      "kalendermaaned": "2019-02",
+      "inntektsmottaker": {
+        "personidentifikator": "01029413157"
+      },
+      "inntekt": [
+        {
+          "fordel": "kontantytelse",
+          "utloeserArbeidsgiveravgift": true,
+          "inngaarIGrunnlagForTrekk": true,
+          "beloep": 31636,
+          "loennsinntekt": {
+            "beskrivelse": "fastloenn"
+          }
+        }
+      ]
+    }
+  ]
+}

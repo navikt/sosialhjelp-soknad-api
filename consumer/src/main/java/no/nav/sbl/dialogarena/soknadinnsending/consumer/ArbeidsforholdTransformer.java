@@ -81,7 +81,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     }
 
 
-    private String hentOrgNavn(String orgnr) {
+    public String hentOrgNavn(String orgnr) {
         if (orgnr != null) {
             HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
             try {

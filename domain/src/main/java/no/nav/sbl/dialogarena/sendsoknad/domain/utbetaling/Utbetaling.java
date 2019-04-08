@@ -17,6 +17,8 @@ public class Utbetaling {
     public LocalDate periodeFom;
     public LocalDate periodeTom;
     public List<Komponent> komponenter = new ArrayList<>();
+    public String tittel;
+    public String orgnummer;
 
     public static class Komponent {
         public String type;

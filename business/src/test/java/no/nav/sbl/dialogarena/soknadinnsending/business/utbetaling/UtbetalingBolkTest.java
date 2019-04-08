@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +12,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -22,10 +26,15 @@ import static org.mockito.Mockito.when;
 public class UtbetalingBolkTest {
     private static final String FNR = "12345678910";
     private static final Long SOKNADID = 123456L;
-    private static final String UTBETALINGSID = "Barnetrygd|568269505|2018-02-22";
+    private static final String UTBETALINGSID = "Barnetrygd|568269505|889640782|2018-02-22";
 
     @Mock
     private UtbetalingService utbetalingService;
+    @Mock
+    private SkattbarInntektService skattbarInntektService;
+
+    @Mock
+    private ArbeidsforholdTransformer arbeidsforholdTransformer;
 
     @InjectMocks
     private UtbetalingBolk utbetalingBolk;
@@ -33,6 +42,7 @@ public class UtbetalingBolkTest {
     @Test
     public void genererSystemFaktaReturnererUtbetalingFeiletFaktumHvisTjenestekallFeiler() {
         when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(), any())).thenReturn(null);
+        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(null);
 
         List<Faktum> faktumListe = utbetalingBolk.genererSystemFakta(FNR, SOKNADID);
 
@@ -80,11 +90,13 @@ public class UtbetalingBolkTest {
         List<Utbetaling> utbetalingsliste = new ArrayList<>();
 
         Utbetaling utbetaling = new Utbetaling();
-        utbetaling.type = "Barnetrygd";
+        utbetaling.type = "navytelse";
+        utbetaling.tittel = "Barnetrygd";
         utbetaling.netto = 3880.0;
         utbetaling.brutto = 3880.0;
         utbetaling.skattetrekk = -0.0;
         utbetaling.andreTrekk = -0.0;
+        utbetaling.orgnummer = "889640782";
         utbetaling.bilagsnummer = "568269505";
         utbetaling.periodeFom = LocalDate.of(2018, 2, 1);
         utbetaling.periodeFom = LocalDate.of(2018, 2, 28);

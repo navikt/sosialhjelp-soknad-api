@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,16 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kra
 @Service
 public class UtbetalingBolk implements BolkService {
 
-    public static final NumberFormat UTBETALING_FORMATTER = new DecimalFormat("##,##0.00");
+    public static final NumberFormat UTBETALING_FORMATTER = new DecimalFormat("## ##0.00");
 
     @Inject
     UtbetalingService utbetalingService;
+
+    @Inject
+    ArbeidsforholdTransformer arbeidsforholdTransformer;
+
+    @Inject
+    SkattbarInntektService skattbarInntektService;
 
     @Override
     public String tilbyrBolk() {
@@ -31,21 +39,21 @@ public class UtbetalingBolk implements BolkService {
 
     @Override
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
-        List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(40), LocalDate.now());
+        List<Utbetaling> utbetalingerFraNav = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(40), LocalDate.now());
+        List<Utbetaling> utbetalingerRegistrertHosSkatteetaten = skattbarInntektService.hentSkattbarInntekt(fodselsnummer);
 
         List<Faktum> fakta = new ArrayList<>();
 
-        if (utbetalinger == null) {
+        if (utbetalingerFraNav == null || utbetalingerRegistrertHosSkatteetaten == null) {
             fakta.add(new Faktum()
                     .medSoknadId(soknadId)
                     .medType(SYSTEMREGISTRERT)
                     .medKey("utbetalinger.feilet")
                     .medValue("true"));
         } else {
-            fakta.add(lagHarUtbetalingerFaktum(!utbetalinger.isEmpty()));
-            for (Utbetaling utbetaling : utbetalinger) {
-                fakta.addAll(lagFaktumForUtbetaling(soknadId, utbetaling));
-            }
+            fakta.add(lagHarUtbetalingerFaktum(!utbetalingerFraNav.isEmpty() || !utbetalingerRegistrertHosSkatteetaten.isEmpty()));
+            utbetalingerFraNav.stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling, "nav")).forEach(fakta::addAll);
+            utbetalingerRegistrertHosSkatteetaten.stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling, "skatteetaten")).forEach(fakta::addAll);
         }
 
         return fakta;
@@ -58,7 +66,7 @@ public class UtbetalingBolk implements BolkService {
                 .medValue(!harUtbetalinger + "");
     }
 
-    private List<Faktum> lagFaktumForUtbetaling(Long soknadId, Utbetaling utbetaling) {
+    private List<Faktum> lagFaktumForUtbetaling(Long soknadId, Utbetaling utbetaling, String kildeType) {
         List<Faktum> utbetalingsfakta = new ArrayList<>();
         String utbetalingsid = lagId(utbetaling);
         utbetalingsfakta.add(new Faktum()
@@ -68,7 +76,10 @@ public class UtbetalingBolk implements BolkService {
                 .medUnikProperty("id")
                 .medSystemProperty("id", utbetalingsid)
                 .medSystemProperty("utbetalingsid", utbetalingsid)
-                .medSystemProperty("type", utbetaling.type)
+                .medSystemProperty("type", utbetaling.tittel)
+                .medSystemProperty("kildeType", kildeType)
+                .medSystemProperty("organisasjon",arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer))
+                .medSystemProperty("organisasjonsnummer",utbetaling.orgnummer)
                 .medSystemProperty("netto", formatTall(utbetaling.netto))
                 .medSystemProperty("brutto", formatTall(utbetaling.brutto))
                 .medSystemProperty("skattetrekk", formatTall(utbetaling.skattetrekk))
@@ -98,7 +109,7 @@ public class UtbetalingBolk implements BolkService {
     }
 
     private String lagId(Utbetaling utbetaling) {
-        String id = utbetaling.type + "|" + utbetaling.bilagsnummer;
+        String id = utbetaling.tittel + "|" + utbetaling.bilagsnummer + "|" + utbetaling.orgnummer;
 
         if (utbetaling.utbetalingsdato != null) {
             id += "|" + utbetaling.utbetalingsdato.toString();
