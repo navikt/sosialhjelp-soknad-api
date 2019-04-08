@@ -13,7 +13,7 @@ public class IdGeneratorTest {
     
     @Test(expected=RuntimeException.class)
     public void skalFaaFeilVedForHoyId() {
-        String behandlingsId = IdGenerator.lagBehandlingsId(1***REMOVED***00l);
+        String behandlingsId = IdGenerator.lagBehandlingsId(10000000000000l);
         Assert.assertTrue(true);
     }
 }

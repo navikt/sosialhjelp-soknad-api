@@ -31,10 +31,7 @@ import javax.inject.Named;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -173,6 +170,9 @@ public class OkonomiskeOpplysningerRessurs {
 
         final List<Faktum> fakta = webSoknad.getFaktaMedKey(key);
 
+        if (vedleggFrontend.type.equals("annet|annet") && checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)){
+            vedleggFrontend.rader = Collections.emptyList();
+        }
         makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad.getBrukerBehandlingId());
 
         for (int i = 0; i < vedleggFrontend.rader.size(); i++){
