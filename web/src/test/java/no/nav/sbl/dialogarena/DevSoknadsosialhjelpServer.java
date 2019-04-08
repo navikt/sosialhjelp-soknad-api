@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 import java.io.File;
 
 import static java.lang.System.setProperty;
-import static no.nav.modig.test.util.FilesAndDirs.TEST_RESOURCES;
+import static no.nav.modig.core.test.FilesAndDirs.TEST_RESOURCES;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 
 public class DevSoknadsosialhjelpServer {
