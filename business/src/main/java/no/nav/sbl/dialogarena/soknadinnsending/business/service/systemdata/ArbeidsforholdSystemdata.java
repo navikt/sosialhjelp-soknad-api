@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Sy
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
@@ -47,21 +46,25 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         final List<JsonOkonomioversiktInntekt> inntekter = jsonData.getOkonomi().getOversikt().getInntekt();
         List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(jsonData.getArbeid());
 
-        String type = "sluttoppgjoer";
-        if (jsonVedleggs.stream().anyMatch(jsonVedlegg -> jsonVedlegg.getTilleggsinfo().equals("sluttoppgjor"))){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
+        String soknadstype = "sluttoppgjoer";
+        if (typeIsInList(jsonVedleggs, "sluttoppgjor")){
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(soknadstype));
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, soknadstype, tittel);
         } else {
-            removeUtbetalingIfPresentInOpplysninger(utbetalinger, type);
+            removeUtbetalingIfPresentInOpplysninger(utbetalinger, soknadstype);
         }
 
-        type = "lonnslipp";
-        if (jsonVedleggs.stream().anyMatch(jsonVedlegg -> jsonVedlegg.getTilleggsinfo().equals("lonnslipp"))){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addInntektIfNotPresentInOversikt(inntekter, type, tittel);
+        soknadstype = "lonnslipp";
+        if (typeIsInList(jsonVedleggs, "lonnslipp")){
+            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(soknadstype));
+            addInntektIfNotPresentInOversikt(inntekter, soknadstype, tittel);
         } else {
-            removeInntektIfPresentInOversikt(inntekter, type);
+            removeInntektIfPresentInOversikt(inntekter, soknadstype);
         }
+    }
+
+    private boolean typeIsInList(List<JsonVedlegg> jsonVedleggs, String vedleggstype) {
+        return jsonVedleggs.stream().anyMatch(jsonVedlegg -> jsonVedlegg.getTilleggsinfo().equals(vedleggstype));
     }
 
     public List<JsonArbeidsforhold> innhentSystemArbeidsforhold(final String personIdentifikator) {

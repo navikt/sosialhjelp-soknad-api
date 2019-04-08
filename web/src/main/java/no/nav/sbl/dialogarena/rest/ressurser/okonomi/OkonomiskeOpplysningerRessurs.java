@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
@@ -76,9 +77,14 @@ public class OkonomiskeOpplysningerRessurs {
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
 
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
+
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
@@ -102,7 +108,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad) {
-        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier, true);
+        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
         final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
         return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
     }
