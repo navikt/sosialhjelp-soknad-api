@@ -131,58 +131,32 @@ public class BoutgiftRessurs {
         List<JsonOkonomioversiktUtgift> oversiktBoutgifter = okonomi.getOversikt().getUtgift();
 
         String type = "husleie";
-        if(boutgifterFrontend.husleie){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOversikt(oversiktBoutgifter, type);
-        }
+        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.husleie);
 
         type = "strom";
-        if(boutgifterFrontend.strom){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOpplysninger(opplysningerBoutgifter, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.strom);
 
         type = "kommunalAvgift";
-        if(boutgifterFrontend.kommunalAvgift){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOpplysninger(opplysningerBoutgifter, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.kommunalAvgift);
 
         type = "oppvarming";
-        if(boutgifterFrontend.oppvarming){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOpplysninger(opplysningerBoutgifter, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.oppvarming);
 
-        if(boutgifterFrontend.boliglan){
-            type = "boliglanAvdrag";
-            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanAvdrag");
-            addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
-            type = "boliglanRenter";
-            tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + ".boliglanRenter");
-            addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
-        } else {
-            type = "boliglanAvdrag";
-            removeUtgiftIfPresentInOversikt(oversiktBoutgifter, type);
-            type = "boliglanRenter";
-            removeUtgiftIfPresentInOversikt(oversiktBoutgifter, type);
-        }
+        type = "boliglanAvdrag";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + "." + type);
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
+
+        type = "boliglanRenter";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + "." + type);
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
 
         type = "annenBoutgift";
-        if(boutgifterFrontend.annet){
-            final String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
-            addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOpplysninger(opplysningerBoutgifter, type);
-        }
+        tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.annet);
     }
 
     private void setBekreftelseOnBoutgifterFrontend(JsonOkonomiopplysninger opplysninger, BoutgifterFrontend boutgifterFrontend) {

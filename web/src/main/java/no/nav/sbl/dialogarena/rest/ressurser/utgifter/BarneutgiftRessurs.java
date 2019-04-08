@@ -134,44 +134,24 @@ public class BarneutgiftRessurs {
         List<JsonOkonomioversiktUtgift> oversiktBarneutgifter = okonomi.getOversikt().getUtgift();
 
         String type = "barnehage";
-        if(barneutgifterFrontend.barnehage){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, type);
-        }
+        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBarneutgifter, type, tittel, barneutgifterFrontend.barnehage);
 
         type = "sfo";
-        if(barneutgifterFrontend.sfo){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBarneutgifter, type, tittel, barneutgifterFrontend.sfo);
 
         type = "barnFritidsaktiviteter";
-        if(barneutgifterFrontend.fritidsaktiviteter){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.fritidsaktiviteter);
 
         type = "barnTannregulering";
-        if(barneutgifterFrontend.tannregulering){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.tannregulering);
 
         type = "annenBarneutgift";
-        if(barneutgifterFrontend.annet){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
-        } else {
-            removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.annet);
     }
 
     private void setBekreftelseOnBarneutgifterFrontend(JsonOkonomiopplysninger opplysninger, BarneutgifterFrontend barneutgifterFrontend) {

@@ -137,44 +137,24 @@ public class VerdiRessurs {
         final List<JsonOkonomioversiktFormue> verdier = oversikt.getFormue();
 
         String type = "bolig";
-        if(verdierFrontend.bolig){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        } else {
-            removeFormueIfPresentInOversikt(verdier, type);
-        }
+        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.bolig);
 
         type = "campingvogn";
-        if(verdierFrontend.campingvogn){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        } else {
-            removeFormueIfPresentInOversikt(verdier, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.campingvogn);
 
         type = "kjoretoy";
-        if(verdierFrontend.kjoretoy){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        } else {
-            removeFormueIfPresentInOversikt(verdier, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.kjoretoy);
 
         type = "fritidseiendom";
-        if(verdierFrontend.fritidseiendom){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        } else {
-            removeFormueIfPresentInOversikt(verdier, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.fritidseiendom);
 
         type = "annet";
-        if(verdierFrontend.annet){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        } else {
-            removeFormueIfPresentInOversikt(verdier, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.annet);
     }
 
     private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, VerdierFrontend verdierFrontend) {

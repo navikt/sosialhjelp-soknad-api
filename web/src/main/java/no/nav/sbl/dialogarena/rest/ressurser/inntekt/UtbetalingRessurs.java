@@ -131,36 +131,20 @@ public class UtbetalingRessurs {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = opplysninger.getUtbetaling();
 
         String type = "utbytte";
-        if(utbetalingerFrontend.utbytte){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
-        } else {
-            removeUtbetalingIfPresentInOpplysninger(utbetalinger, type);
-        }
+        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.utbytte);
 
         type = "salg";
-        if(utbetalingerFrontend.salg){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
-        } else {
-            removeUtbetalingIfPresentInOpplysninger(utbetalinger, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.salg);
 
         type = "forsikring";
-        if(utbetalingerFrontend.forsikring){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
-        } else {
-            removeUtbetalingIfPresentInOpplysninger(utbetalinger, type);
-        }
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.forsikring);
 
         type = "annen";
-        if(utbetalingerFrontend.annet){
-            final String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
-        } else {
-            removeUtbetalingIfPresentInOpplysninger(utbetalinger, type);
-        }
+        tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.annet);
     }
 
     private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {

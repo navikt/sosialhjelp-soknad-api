@@ -109,4 +109,45 @@ public class OkonomiMapper {
     public static void removeUtbetalingIfPresentInOpplysninger(List<JsonOkonomiOpplysningUtbetaling> utbetalinger, String type) {
         utbetalinger.removeIf(utbetaling -> utbetaling.getType().equals(type));
     }
+
+    public static void addFormueIfCheckedElseDeleteInOversikt(List<JsonOkonomioversiktFormue> formuer, String type, String tittel, boolean isChecked) {
+        if (isChecked){
+            addFormueIfNotPresentInOversikt(formuer, type, tittel);
+        } else {
+            removeFormueIfPresentInOversikt(formuer, type);
+        }
+    }
+
+    public static void addInntektIfCheckedElseDeleteInOversikt(List<JsonOkonomioversiktInntekt> inntekter, String type, String tittel, boolean isChecked) {
+        if (isChecked){
+            addInntektIfNotPresentInOversikt(inntekter, type, tittel);
+        } else {
+            removeInntektIfPresentInOversikt(inntekter, type);
+        }
+    }
+
+    public static void addutgiftIfCheckedElseDeleteInOversikt(List<JsonOkonomioversiktUtgift> utgifter, String type, String tittel, boolean isChecked) {
+        if (isChecked){
+            addUtgiftIfNotPresentInOversikt(utgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOversikt(utgifter, type);
+        }
+    }
+
+    public static void addutgiftIfCheckedElseDeleteInOpplysninger(List<JsonOkonomiOpplysningUtgift> utgifter, String type, String tittel, boolean isChecked) {
+        if (isChecked){
+            addUtgiftIfNotPresentInOpplysninger(utgifter, type, tittel);
+        } else {
+            removeUtgiftIfPresentInOpplysninger(utgifter, type);
+        }
+    }
+
+
+    public static void addUtbetalingIfCheckedElseDeleteInOpplysninger(List<JsonOkonomiOpplysningUtbetaling> utbetalinger, String type, String tittel, boolean isChecked) {
+        if (isChecked){
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
+        } else {
+            removeUtbetalingIfPresentInOpplysninger(utbetalinger, type);
+        }
+    }
 }
