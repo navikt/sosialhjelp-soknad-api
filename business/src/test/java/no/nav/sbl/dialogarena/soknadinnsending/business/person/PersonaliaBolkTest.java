@@ -52,7 +52,7 @@ public class PersonaliaBolkTest {
 
     private static final String SIVILSTATUS_UGIFT = "ugift";
     private static final String SIVILSTATUS_GIFT = "gift";
-    private static final String PARTNER_FNR = "***REMOVED***";
+    private static final String PARTNER_FNR = "01010091740";
     private static final String PARTNER_FORNAVN = "Kristin";
     private static final String PARTNER_MELLOMNAVN = "Mellomnavn";
     private static final String PARTNER_ETTERNAVN = "Partner";

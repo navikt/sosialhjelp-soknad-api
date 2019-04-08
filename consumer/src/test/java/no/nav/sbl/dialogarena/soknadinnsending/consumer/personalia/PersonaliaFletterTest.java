@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class PersonaliaFletterTest {
 
     private static final String IDENT = "56128349974";
-    private static final String EKTEFELLE_IDENT = "***REMOVED***";
+    private static final String EKTEFELLE_IDENT = "01010091736";
 
     private static final String ET_FORNAVN = "Ola";
     private static final String ET_MELLOMNAVN = "Johan";

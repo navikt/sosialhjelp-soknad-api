@@ -55,7 +55,7 @@ public class SoknadTester extends JerseyTest {
     private SoknadTester(String skjemaNummer) {
         super();
         this.skjemaNummer = skjemaNummer;
-        this.user = "***REMOVED***";
+        this.user = "01015245464";
     }
 
     public static SoknadTester startSoknad(String skjemaNummer) throws Exception {

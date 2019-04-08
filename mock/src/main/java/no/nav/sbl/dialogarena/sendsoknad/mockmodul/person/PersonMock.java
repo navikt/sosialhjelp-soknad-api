@@ -9,10 +9,10 @@ import java.util.List;
 
 
 public class PersonMock {
-    static final String FNR_BARN = "***REMOVED***";
-    static final String FNR_BARN2 = "***REMOVED***";
-    static final String FNR_BARN3 = "***REMOVED***";
-    static final String FNR_EKTEFELLE = "***REMOVED***";
+    static final String FNR_BARN = "01010591736";
+    static final String FNR_BARN2 = "03061793877";
+    static final String FNR_BARN3 = "03061694075";
+    static final String FNR_EKTEFELLE = "07127302639";
     private static PersonMock personMock = new PersonMock();
     private PersonPortTypeMock personPortTypeMock;
 
@@ -23,7 +23,7 @@ public class PersonMock {
         personPortTypeMock = new PersonPortTypeMock();
 
         // Endre også i override-web.xml sin defaultFnr, da det er den som ligger på getSubjectHandler().getUid()
-        Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Donald", "D.", "Mockmann");
+        Person person = genererPersonMedGyldigIdentOgNavn("03076321565", "Donald", "D.", "Mockmann");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
