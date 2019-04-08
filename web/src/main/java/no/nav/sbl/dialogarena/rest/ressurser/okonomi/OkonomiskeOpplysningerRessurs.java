@@ -44,6 +44,7 @@ import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 
 @Controller
 @Path("/soknader/{behandlingsId}/okonomiskeOpplysninger")
@@ -85,14 +86,12 @@ public class OkonomiskeOpplysningerRessurs {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
-        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
-                soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
-                        soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
+        final List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknad);
         final List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
 
         final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
-        legacyConvertVedleggToNewModel(behandlingsId, eier, soknad, utenFaktumSoknad);
+        legacyConvertVedleggToOpplastetVedleggAndUploadToRepository(behandlingsId, eier, soknad, utenFaktumSoknad);
 
         final List<OpplastetVedlegg> newModelOpplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), utenFaktumSoknad.getEier());
 
@@ -107,7 +106,7 @@ public class OkonomiskeOpplysningerRessurs {
                 .withSlettedeVedlegg(slettedeVedlegg);
     }
 
-    private void legacyConvertVedleggToNewModel(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad, SoknadUnderArbeid utenFaktumSoknad) {
+    private void legacyConvertVedleggToOpplastetVedleggAndUploadToRepository(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad, SoknadUnderArbeid utenFaktumSoknad) {
         final List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), utenFaktumSoknad.getEier());
 
         if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
@@ -276,9 +275,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void setVedleggStatus(VedleggFrontend vedleggFrontend, SoknadUnderArbeid soknad) {
-        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
-                soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
-                        soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
+        final List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknad);
 
         jsonVedleggs.stream().filter(vedlegg -> vedleggFrontend.type.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
                 .findFirst()
