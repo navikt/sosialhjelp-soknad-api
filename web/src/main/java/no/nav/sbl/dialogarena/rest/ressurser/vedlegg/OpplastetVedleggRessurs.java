@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
@@ -34,11 +35,14 @@ public class OpplastetVedleggRessurs {
     @Inject
     private OpplastetVedleggService opplastetVedleggService;
 
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
+
     @GET
-    @Path("/{vedleggId}")
+    @Path("/{behandlingsId}/{vedleggId}")
     @Produces(APPLICATION_JSON)
-    @SjekkTilgangTilSoknad(type = Vedlegg)
-    public OpplastetVedlegg getVedlegg(@PathParam("vedleggId") final String vedleggId) {
+    public OpplastetVedlegg getVedlegg(@PathParam("behandlingsId") String behandlingsId, @PathParam("vedleggId") final String vedleggId) {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         return opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
     }
@@ -47,8 +51,8 @@ public class OpplastetVedleggRessurs {
     @Path("/{behandlingsId}/{type}")
     @Consumes(MULTIPART_FORM_DATA)
     @Produces(APPLICATION_JSON)
-    @SjekkTilgangTilSoknad(type = Vedlegg)
     public String saveVedlegg(@PathParam("behandlingsId") String behandlingsId, @PathParam("type") String vedleggstype, @FormDataParam("file") final FormDataBodyPart fil) {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         if (fil.getValueAs(File.class).length() > MAKS_TOTAL_FILSTORRELSE) {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null, "vedlegg.opplasting.feil.forStor");
         }
@@ -61,8 +65,8 @@ public class OpplastetVedleggRessurs {
 
     @DELETE
     @Path("/{behandlingsId}/{vedleggId}")
-    @SjekkTilgangTilSoknad(type = Vedlegg)
     public void deleteVedlegg(@PathParam("behandlingsId") String behandlingsId, @PathParam("vedleggId") final String vedleggId) {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId);
     }
 }
