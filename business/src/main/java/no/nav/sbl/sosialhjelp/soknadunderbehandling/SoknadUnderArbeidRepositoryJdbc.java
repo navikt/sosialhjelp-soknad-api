@@ -92,6 +92,12 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
+    public Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String behandlingsId) {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ? and STATUS = ?",
+                new SoknadUnderArbeidRowMapper(), behandlingsId, "UNDER_ARBEID").stream().findFirst();
+    }
+
+    @Override
     public void oppdaterSoknadsdata(SoknadUnderArbeid soknadUnderArbeid, String eier) throws SamtidigOppdateringException {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
         sjekkOmSoknadErLaast(soknadUnderArbeid);

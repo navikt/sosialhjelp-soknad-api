@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
+
+import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs.XSRF_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +34,9 @@ public class SoknadRessursTest {
 
     @Mock
     SoknadService soknadService;
+
+    @Mock
+    SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
     XsrfGenerator xsrfGenerator;
@@ -72,7 +78,7 @@ public class SoknadRessursTest {
 
     @Test
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(null);
+        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(BEHANDLINGSID)).thenReturn(Optional.empty());
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
         verify(soknadService).startEttersending(eq(BEHANDLINGSID));
     }
