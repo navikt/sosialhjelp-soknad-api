@@ -105,6 +105,7 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
+        vedleggService.hentPaakrevdeVedlegg(behandlingsId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
