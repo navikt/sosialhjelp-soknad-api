@@ -28,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.VedleggKreves;
 
@@ -83,7 +84,7 @@ public class OpplastetVedleggService {
 
         final String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
 
-        final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().stream()
+        final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
                 .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
                 .findFirst().get();
 
@@ -109,7 +110,7 @@ public class OpplastetVedleggService {
 
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
-        final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().stream()
+        final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
                 .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
                 .findFirst().get();
 

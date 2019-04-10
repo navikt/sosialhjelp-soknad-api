@@ -106,7 +106,7 @@ public class OkonomiskeOpplysningerRessurs {
 
         if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
             final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = opplastetVedleggService.legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier);
-            if (konvertertOpplastedeVedlegg != null && !konvertertOpplastedeVedlegg.isEmpty()) {
+            if (konvertertOpplastedeVedlegg != null) {
                 for (OpplastetVedlegg opplastetVedlegg : konvertertOpplastedeVedlegg) {
                     opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, utenFaktumSoknad.getEier());
                 }
