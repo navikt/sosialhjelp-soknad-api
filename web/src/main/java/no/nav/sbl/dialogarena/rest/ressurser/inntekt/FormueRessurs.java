@@ -165,7 +165,7 @@ public class FormueRessurs {
 
         type = "verdipapirer";
         tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.brukskonto);
+        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.verdipapirer);
 
         type = "belop";
         tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
