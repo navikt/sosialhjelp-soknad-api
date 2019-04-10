@@ -78,7 +78,8 @@ public class OpplastetVedleggService {
                 .withSoknadId(soknadId)
                 .withSha512(sha512);
 
-        opplastetVedlegg.withFilnavn(lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid()));
+        filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
+        opplastetVedlegg.withFilnavn(filnavn);
 
         final String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
 
