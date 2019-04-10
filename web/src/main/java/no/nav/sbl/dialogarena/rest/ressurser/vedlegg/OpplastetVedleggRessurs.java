@@ -39,10 +39,9 @@ public class OpplastetVedleggRessurs {
     private Tilgangskontroll tilgangskontroll;
 
     @GET
-    @Path("/{behandlingsId}/{vedleggId}")
+    @Path("/{vedleggId}")
     @Produces(APPLICATION_JSON)
-    public OpplastetVedlegg getVedlegg(@PathParam("behandlingsId") String behandlingsId, @PathParam("vedleggId") final String vedleggId) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+    public OpplastetVedlegg getVedlegg(@PathParam("vedleggId") final String vedleggId) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         return opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
     }
