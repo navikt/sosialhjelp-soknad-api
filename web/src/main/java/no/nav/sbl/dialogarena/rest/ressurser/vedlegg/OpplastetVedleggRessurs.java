@@ -2,10 +2,12 @@ package no.nav.sbl.dialogarena.rest.ressurser.vedlegg;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -50,7 +52,7 @@ public class OpplastetVedleggRessurs {
     @Path("/{behandlingsId}/{type}")
     @Consumes(MULTIPART_FORM_DATA)
     @Produces(APPLICATION_JSON)
-    public String saveVedlegg(@PathParam("behandlingsId") String behandlingsId, @PathParam("type") String vedleggstype, @FormDataParam("file") final FormDataBodyPart fil) {
+    public FilFrontend saveVedlegg(@PathParam("behandlingsId") String behandlingsId, @PathParam("type") String vedleggstype, @FormDataParam("file") final FormDataBodyPart fil) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         if (fil.getValueAs(File.class).length() > MAKS_TOTAL_FILSTORRELSE) {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null, "vedlegg.opplasting.feil.forStor");
@@ -59,7 +61,8 @@ public class OpplastetVedleggRessurs {
         final String filnavn = fil.getContentDisposition().getFileName();
         final byte[] data = getByteArray(fil);
 
-        return opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn);
+        final OpplastetVedlegg opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn);
+        return new FilFrontend().withFilNavn(opplastetVedlegg.getFilnavn()).withUuid(opplastetVedlegg.getUuid());
     }
 
     @DELETE

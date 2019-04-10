@@ -63,7 +63,7 @@ public class OpplastetVedleggService {
         MIME_TIL_EXT.put("image/jpeg", ".jpg");
     }
 
-    public String saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
+    public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final Long soknadId = soknadUnderArbeid.getSoknadId();
@@ -83,6 +83,7 @@ public class OpplastetVedleggService {
         opplastetVedlegg.withFilnavn(filnavn);
 
         final String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
+        opplastetVedlegg.withUuid(uuid);
 
         final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
                 .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
@@ -95,7 +96,7 @@ public class OpplastetVedleggService {
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
-        return uuid;
+        return opplastetVedlegg;
     }
 
     public void deleteVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggId) {
