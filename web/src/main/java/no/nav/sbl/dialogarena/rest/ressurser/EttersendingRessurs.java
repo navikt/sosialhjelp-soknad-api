@@ -70,7 +70,6 @@ public class EttersendingRessurs {
 
     @GET
     @Path("/ettersendteVedlegg/{behandlingsId}")
-    @SjekkTilgangTilSoknad
     public List<EttersendtVedlegg> hentVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = getSubjectHandler().getUid();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
