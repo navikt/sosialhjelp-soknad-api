@@ -17,6 +17,13 @@
             "beskrivelse": "fastloenn"
           }
         }
+      ],
+      "forskuddstrekk": [
+        {
+          "beskrivelse": "",
+          "beloep": "-200",
+          "avvik": null
+        }
       ]
     },
     {
@@ -77,6 +84,44 @@
           "beloep": 31636,
           "loennsinntekt": {
             "beskrivelse": "fastloenn"
+          }
+        }
+      ]
+    }
+  ,
+    {
+      "opplysningspliktigId": "810950692",
+      "virksomhetId": "810950692",
+      "kalendermaaned": "2019-02",
+      "inntektsmottaker": {
+        "personidentifikator": "05014300122"
+      },
+      "inntekt": [
+        {
+          "fordel": "kontantytelse",
+          "utloeserArbeidsgiveravgift": false,
+          "inngaarIGrunnlagForTrekk": false,
+          "beloep": 10000,
+          "pensjonEllerTrygd": {
+            "beskrivelse": "pensjonOgLivrenterIArbeidsforhold"
+          }
+        }
+      ]
+    }, {
+      "opplysningspliktigId": "911014033",
+      "virksomhetId": "911014033",
+      "kalendermaaned": "2019-01",
+      "inntektsmottaker": {
+        "personidentifikator": "05059000251"
+      },
+      "inntekt": [
+        {
+          "fordel": "kontantytelse",
+          "utloeserArbeidsgiveravgift": false,
+          "inngaarIGrunnlagForTrekk": false,
+          "beloep": 2558,
+          "naeringsinntekt": {
+            "beskrivelse": "annet"
           }
         }
       ]

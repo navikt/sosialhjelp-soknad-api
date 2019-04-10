@@ -21,7 +21,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kra
 @Service
 public class UtbetalingBolk implements BolkService {
 
-    public static final NumberFormat UTBETALING_FORMATTER = new DecimalFormat("## ##0.00");
+    public static final NumberFormat UTBETALING_FORMATTER = new DecimalFormat("##,##0.00");
 
     @Inject
     UtbetalingService utbetalingService;

@@ -63,7 +63,7 @@ public class SkattbarInntektService {
 
     public Invocation.Builder getRequest(Sokedata sokedata) {
         RestCallContext executionContext = restCallContextSelector.apply(sokedata);
-        return  lagRequest(executionContext, sokedata);
+        return lagRequest(executionContext, sokedata);
     }
 
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
@@ -108,6 +108,7 @@ public class SkattbarInntektService {
                     utbetaling.periodeFom = fom;
                     utbetaling.periodeTom = tom;
                     utbetaling.type = "skatteopplysninger";
+                    utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
                     utbetalingerPensjon.add(utbetaling);
                 }
             }
@@ -125,32 +126,31 @@ public class SkattbarInntektService {
                 utbetaling.periodeFom = fom;
                 utbetaling.periodeTom = tom;
                 utbetaling.type = "skatteopplysninger";
+                utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
                 forskuddstrekk.add(utbetaling);
-
             }
         }
 
 
         List<Utbetaling> aggregertUtbetaling = new ArrayList<>();
-        Map<String, List<Utbetaling>> loennPerOrganisasjon = utbetalingerLonn.stream().collect(Collectors.groupingBy(utbetaling -> utbetaling.orgnummer));
-        for (Map.Entry<String, List<Utbetaling>> entry : loennPerOrganisasjon.entrySet()) {
+        aggregertUtbetaling.addAll(trekkUtUtbetalinger(utbetalingerLonn));
+        aggregertUtbetaling.addAll(trekkUtUtbetalinger(utbetalingerPensjon));
+        aggregertUtbetaling.addAll(trekkUtUtbetalinger(forskuddstrekk));
+
+        return aggregertUtbetaling;
+    }
+
+    private List<Utbetaling> trekkUtUtbetalinger(List<Utbetaling> utbetalingerPensjon) {
+        List<Utbetaling> aggregertUtbetaling
+                = new ArrayList<>();
+        Map<String, List<Utbetaling>> utbetalingerPensjonPerOrganisasjon = utbetalingerPensjon.stream().collect(Collectors.groupingBy(utbetaling -> utbetaling.orgnummer));
+        for (Map.Entry<String, List<Utbetaling>> entry : utbetalingerPensjonPerOrganisasjon.entrySet()) {
             entry.getValue().stream().reduce((u1, u2) -> {
                 u1.brutto += u2.brutto;
+                u1.skattetrekk += u2.skattetrekk;
                 return u1;
             }).ifPresent(aggregertUtbetaling::add);
         }
-
-        utbetalingerPensjon.stream().reduce((u1, u2) -> {
-            u1.brutto += u2.brutto;
-            return u1;
-        }).ifPresent(aggregertUtbetaling::add);
-
-        forskuddstrekk.stream().reduce((u1, u2) -> {
-            u1.skattetrekk += u2.skattetrekk;
-            return u1;
-        }).ifPresent(aggregertUtbetaling::add);
-
-
         return aggregertUtbetaling;
     }
 
