@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.VedleggKreves;
+
 @Component
 public class OpplastetVedleggService {
 
@@ -45,8 +48,6 @@ public class OpplastetVedleggService {
 
     public String saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final String type = vedleggstype.substring(0, vedleggstype.indexOf('|'));
-        final String tilleggsinfo = vedleggstype.substring(vedleggstype.indexOf('|') + 1);
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final Long soknadId = soknadUnderArbeid.getSoknadId();
         final String sha512 = ServiceUtils.getSha512FromByteArray(data);
@@ -56,7 +57,7 @@ public class OpplastetVedleggService {
 
         final OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
                 .withEier(eier)
-                .withVedleggType(new VedleggType(type, tilleggsinfo))
+                .withVedleggType(new VedleggType(vedleggstype))
                 .withData(data)
                 .withSoknadId(soknadId)
                 .withSha512(sha512);
@@ -66,13 +67,13 @@ public class OpplastetVedleggService {
         final String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
 
         final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().stream()
-                .filter(vedlegg -> vedlegg.getType().equals(type) && vedlegg.getTilleggsinfo().equals(tilleggsinfo))
+                .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
                 .findFirst().get();
 
         if (jsonVedlegg.getFiler() == null){
             jsonVedlegg.setFiler(new ArrayList<>());
         }
-        jsonVedlegg.withStatus("LastetOpp").getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
+        jsonVedlegg.withStatus(LastetOpp.toString()).getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
@@ -87,24 +88,25 @@ public class OpplastetVedleggService {
             return;
         }
 
-        opplastetVedleggRepository.slettVedlegg(vedleggId, eier);
-
-        final String type = opplastetVedlegg.getVedleggType().getType();
-        final String tilleggsinfo = opplastetVedlegg.getVedleggType().getTilleggsinfo();
+        final String vedleggstype = opplastetVedlegg.getVedleggType().getSammensattType();
 
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
         final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().stream()
-                .filter(vedlegg -> vedlegg.getType().equals(type) && vedlegg.getTilleggsinfo().equals(tilleggsinfo))
+                .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
                 .findFirst().get();
 
-        jsonVedlegg.getFiler().removeIf(jsonFiler -> jsonFiler.getFilnavn().equals(opplastetVedlegg.getFilnavn()));
+        jsonVedlegg.getFiler().removeIf(jsonFiler ->
+                jsonFiler.getSha512().equals(opplastetVedlegg.getSha512()) &&
+                jsonFiler.getFilnavn().equals(opplastetVedlegg.getFilnavn()));
 
         if (jsonVedlegg.getFiler().isEmpty()){
-            jsonVedlegg.setStatus("VedleggKreves");
+            jsonVedlegg.setStatus(VedleggKreves.toString());
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+
+        opplastetVedleggRepository.slettVedlegg(vedleggId, eier);
     }
 
     String lagFilnavn(String opplastetNavn, String mimetype, String uuid) {

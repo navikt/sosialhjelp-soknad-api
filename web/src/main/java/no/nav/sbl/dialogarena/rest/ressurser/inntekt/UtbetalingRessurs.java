@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
 
@@ -133,17 +133,17 @@ public class UtbetalingRessurs {
 
         if(utbetalingerFrontend.utbytte){
             final String type = "utbytte";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.salg){
             final String type = "salg";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.forsikring){
             final String type = "forsikring";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.annet){

@@ -7,7 +7,9 @@ import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -47,7 +49,7 @@ public class VedleggConverter {
         }
         byte[] data = vedleggMedInnhold.getData();
         return new OpplastetVedlegg().withSoknadId(soknadUnderArbeidId)
-                .withVedleggType(new VedleggType(vedlegg.getSkjemaNummer(), vedlegg.getSkjemanummerTillegg()))
+                .withVedleggType(new VedleggType(vedlegg.getSkjemaNummer() + "|" + vedlegg.getSkjemanummerTillegg()))
                 .withData(data)
                 .withEier(eier)
                 .withFilnavn(vedlegg.getFilnavn())

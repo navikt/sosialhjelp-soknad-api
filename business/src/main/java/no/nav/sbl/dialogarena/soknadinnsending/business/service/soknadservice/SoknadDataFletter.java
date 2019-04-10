@@ -40,14 +40,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
-import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -70,7 +66,11 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERR
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ENHET_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ORGNR_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
@@ -114,15 +114,6 @@ public class SoknadDataFletter {
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private OpplastetVedleggRepository opplastetVedleggRepository;
-
-    @Inject
-    private VedleggConverter vedleggConverter;
 
     @Inject
     private WebSoknadConverter webSoknadConverter;
@@ -230,13 +221,13 @@ public class SoknadDataFletter {
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
-        
+
         startTimer.stop();
         startTimer.report();
-        
+
         return behandlingsId;
     }
-    
+
     private JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
         return new JsonInternalSoknad().withSoknad(new JsonSoknad()
                     .withData(new JsonData()
@@ -452,25 +443,16 @@ public class SoknadDataFletter {
 
     private Map<String, String> hentEkstraMetadata(SoknadUnderArbeid soknadUnderArbeid) {
         final Map<String, String> ekstraMetadata = new HashMap<>();
-        ekstraMetadata.put("fiksorgnr", soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getOrganisasjonsnummer());
-        ekstraMetadata.put("fiksenhet", soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getNavEnhetsnavn());
+        ekstraMetadata.put(FIKS_ORGNR_KEY, soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getOrganisasjonsnummer());
+        ekstraMetadata.put(FIKS_ENHET_KEY, soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getNavEnhetsnavn());
         return ekstraMetadata;
     }
 
     private VedleggMetadataListe convertToVedleggMetadataListe(SoknadUnderArbeid soknadUnderArbeid) {
-        final List<JsonVedlegg> jsonVedleggs = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
-                soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
-                        soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg();
+        final List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid);
         VedleggMetadataListe vedlegg = new VedleggMetadataListe();
 
-        vedlegg.vedleggListe = jsonVedleggs.stream().map(jsonVedlegg -> {
-            SoknadMetadata.VedleggMetadata m = new SoknadMetadata.VedleggMetadata();
-            m.skjema = jsonVedlegg.getType();
-            m.tillegg = jsonVedlegg.getTilleggsinfo();
-            m.filnavn = jsonVedlegg.getType();
-            m.status = Vedlegg.Status.valueOf(jsonVedlegg.getStatus());
-            return m;
-        }).collect(Collectors.toList());
+        vedlegg.vedleggListe = jsonVedleggs.stream().map(SoknadDataFletter::mapJsonVedleggToVedleggMetadata).collect(Collectors.toList());
 
         return vedlegg;
     }
@@ -496,19 +478,26 @@ public class SoknadDataFletter {
     }
 
     private List<Vedleggstatus> mapSoknadToVedleggstatusListe(SoknadUnderArbeid soknadUnderArbeid) {
-        final List<JsonVedlegg> jsonVedleggs = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
-                soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
-                        soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg();
+        final List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid);
 
         if (jsonVedleggs.isEmpty()){
             return new ArrayList<>();
         }
 
-        return jsonVedleggs.stream().filter(jsonVedlegg -> !jsonVedlegg.getStatus().equals("LastetOpp"))
+        return jsonVedleggs.stream().filter(jsonVedlegg -> !jsonVedlegg.getStatus().equals(LastetOpp.toString()))
                 .map(jsonVedlegg -> new Vedleggstatus()
-                        .withVedleggType(new VedleggType(jsonVedlegg.getType(), jsonVedlegg.getTilleggsinfo()))
+                        .withVedleggType(new VedleggType(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo()))
                         .withEier(soknadUnderArbeid.getEier())
                         .withStatus(Vedleggstatus.Status.valueOf(jsonVedlegg.getStatus())))
                 .collect(Collectors.toList());
+    }
+
+    private static SoknadMetadata.VedleggMetadata mapJsonVedleggToVedleggMetadata(JsonVedlegg jsonVedlegg) {
+        SoknadMetadata.VedleggMetadata m = new SoknadMetadata.VedleggMetadata();
+        m.skjema = jsonVedlegg.getType();
+        m.tillegg = jsonVedlegg.getTilleggsinfo();
+        m.filnavn = jsonVedlegg.getType();
+        m.status = Vedlegg.Status.valueOf(jsonVedlegg.getStatus());
+        return m;
     }
 }

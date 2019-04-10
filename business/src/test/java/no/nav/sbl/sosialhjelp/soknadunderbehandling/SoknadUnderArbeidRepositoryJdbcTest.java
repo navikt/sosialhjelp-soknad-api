@@ -169,7 +169,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
         return new OpplastetVedlegg()
                 .withEier(EIER)
-                .withVedleggType(new VedleggType("bostotte", "annetboutgift"))
+                .withVedleggType(new VedleggType("bostotte|annetboutgift"))
                 .withData(new byte[]{1, 2, 3})
                 .withSoknadId(soknadId)
                 .withFilnavn("dokumentasjon.pdf")
