@@ -77,13 +77,9 @@ public class OkonomiskeOpplysningerRessurs {
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
 
-    @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
 
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
