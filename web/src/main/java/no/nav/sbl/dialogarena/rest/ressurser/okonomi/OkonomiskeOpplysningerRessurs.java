@@ -7,12 +7,11 @@ import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
@@ -20,7 +19,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Controller;
@@ -77,13 +75,10 @@ public class OkonomiskeOpplysningerRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private VedleggService vedleggService;
-
-    @Inject
-    private VedleggConverter vedleggConverter;
-
-    @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
+
+    @Inject
+    private OpplastetVedleggService opplastetVedleggService;
 
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
@@ -96,7 +91,7 @@ public class OkonomiskeOpplysningerRessurs {
 
         final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
-        legacyConvertVedleggToOpplastetVedleggAndUploadToRepository(behandlingsId, eier, soknad, utenFaktumSoknad);
+        legacyConvertVedleggToOpplastetVedleggAndUploadToRepository(behandlingsId, eier, utenFaktumSoknad);
 
         final List<OpplastetVedlegg> newModelOpplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), utenFaktumSoknad.getEier());
 
@@ -111,23 +106,17 @@ public class OkonomiskeOpplysningerRessurs {
                 .withSlettedeVedlegg(slettedeVedlegg);
     }
 
-    private void legacyConvertVedleggToOpplastetVedleggAndUploadToRepository(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad, SoknadUnderArbeid utenFaktumSoknad) {
+    private void legacyConvertVedleggToOpplastetVedleggAndUploadToRepository(String behandlingsId, String eier, SoknadUnderArbeid utenFaktumSoknad) {
         final List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), utenFaktumSoknad.getEier());
 
         if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
-            final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, soknad);
-            if (konvertertOpplastedeVedlegg != null && !konvertertOpplastedeVedlegg.isEmpty()) {
+            final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = opplastetVedleggService.legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier);
+            if (konvertertOpplastedeVedlegg != null) {
                 for (OpplastetVedlegg opplastetVedlegg : konvertertOpplastedeVedlegg) {
                     opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, utenFaktumSoknad.getEier());
                 }
             }
         }
-    }
-
-    private List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad) {
-        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier, true);
-        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
-        return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
     }
 
     @PUT
