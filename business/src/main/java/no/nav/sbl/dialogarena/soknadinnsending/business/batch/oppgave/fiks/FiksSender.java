@@ -109,9 +109,13 @@ public class FiksSender {
         int antallFiksDokumenter = fiksDokumenter.size();
         log.info("Antall vedlegg: {}. Antall vedlegg lastet opp av bruker: {}", antallFiksDokumenter, antallVedleggForsendelse);
 
-        int antallBrukerOpplastedeVedlegg = (int) internalSoknad.getVedlegg().getVedlegg().stream().filter(jsonVedlegg -> jsonVedlegg.getStatus().equals("LastetOpp")).count();
-        if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-            log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks");
+        try {
+            int antallBrukerOpplastedeVedlegg = (int) internalSoknad.getVedlegg().getVedlegg().stream().filter(jsonVedlegg -> jsonVedlegg.getStatus().equals("LastetOpp")).count();
+            if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
+                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse);
+            }
+        } catch (RuntimeException e) {
+            log.debug("Ignored exception");
         }
 
         return fiksDokumenter;
