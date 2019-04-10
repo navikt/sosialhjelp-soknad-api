@@ -28,27 +28,29 @@ public class NorgConsumerImpl implements NorgConsumer {
 
     @Override
     public RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning) {
-        Response response = null;
-        final Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
-
-        try {
-            response = request.get();
-            if (response.getStatus() != 200) {
-                logger.warn("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
-                return null;
-            }
-            return response.readEntity(RsNorgEnhet.class);
-        } catch (NotFoundException e) {
-            logger.warn("Fant ikke norgenhet for gt {}", geografiskTilknytning);
-            return null;
-        } catch (RuntimeException e) {
-            logger.warn("Noe uventet feilet ved kall til NORG/gt", e);
-            throw new TjenesteUtilgjengeligException("NORG", e);
-        } finally {
-            if (response != null) {
-                response.close();
-            }
-        }
+        throw new TjenesteUtilgjengeligException("NORG - SKAL ALDRI SEEES I PROD", new RuntimeException("Dette er kun en midlertidig test av at NORG er nede. ") );
+//        Response response = null;
+//        final Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
+//
+//
+//        try {
+//            response = request.get();
+//            if (response.getStatus() != 200) {
+//                logger.warn("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+//                return null;
+//            }
+//            return response.readEntity(RsNorgEnhet.class);
+//        } catch (NotFoundException e) {
+//            logger.warn("Fant ikke norgenhet for gt {}", geografiskTilknytning);
+//            return null;
+//        } catch (RuntimeException e) {
+//            logger.warn("Noe uventet feilet ved kall til NORG/gt", e);
+//            throw new TjenesteUtilgjengeligException("NORG", e);
+//        } finally {
+//            if (response != null) {
+//                response.close();
+//            }
+//        }
     }
     
     @Override
