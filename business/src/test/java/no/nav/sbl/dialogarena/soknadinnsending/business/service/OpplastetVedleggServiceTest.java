@@ -84,14 +84,14 @@ public class OpplastetVedleggServiceTest {
         when(opplastetVedleggRepository.opprettVedlegg(any(OpplastetVedlegg.class), anyString())).thenReturn("321");
 
         final byte[] imageFile = createByteArrayFromJpeg();
-        final String uuid = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1);
+        final OpplastetVedlegg opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().get(0);
         assertThat(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo(), is(TYPE));
         assertThat(jsonVedlegg.getStatus(), is("LastetOpp"));
         assertThat(jsonVedlegg.getFiler().size(), is(1));
-        assertThat(uuid, is("321"));
+        assertThat(opplastetVedlegg.getUuid(), is("321"));
     }
 
     @Test
