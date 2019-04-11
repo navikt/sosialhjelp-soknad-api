@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -69,12 +70,16 @@ public class BasisPersonaliaRessursTest {
     @Mock
     private Adressekodeverk adressekodeverk;
 
+    @Mock
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
     @InjectMocks
     private BasisPersonaliaRessurs basisPersonaliaRessurs;
 
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
+        when(vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(anyString())).thenReturn(null);
     }
 
     @Test
