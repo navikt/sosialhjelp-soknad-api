@@ -97,7 +97,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1235", "973951270")    // Voss
             .put("2003", "974622238")    // Vadsø
             .put("1243", "992179457")    // Os (Hordaland)
-            .put("0229", "964949581")    // Enebakk
+            .put("0229", "974604175")    // Enebakk
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
