@@ -97,6 +97,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1235", "973951270")    // Voss
             .put("2003", "974622238")    // Vadsø
             .put("1243", "992179457")    // Os (Hordaland)
+            .put("3028", "964949581")    // Enebakk
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -337,7 +338,8 @@ public class KommuneTilNavEnhetMapper {
                     "0418",
                     "1235",
                     "1243",
-                    "2003"
+                    "2003",
+                    "3028"
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
