@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class SkattbarInntektRessursTest {
@@ -61,7 +63,9 @@ public class SkattbarInntektRessursTest {
         List<Faktum> mockUtbetalinger = utbetalingBolk.genererSystemFakta("01234567890", 1234L);
         ressurs.mockUtbetalinger =  JsonOkonomiOpplysningerConverter.getOkonomiopplysningFraFaktum(mockUtbetalinger, Collections.emptyList());
         SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = ressurs.hentSkattbareInntekter("");
-        System.out.println(skattbarInntektOgForskuddstrekk);
+        assertThat(skattbarInntektOgForskuddstrekk.samletTrekk).isNegative();
+        assertThat(skattbarInntektOgForskuddstrekk.samletInntekt).isPositive();
+        assertThat(skattbarInntektOgForskuddstrekk.organisasjoner).hasSize(5);
     }
 
 }

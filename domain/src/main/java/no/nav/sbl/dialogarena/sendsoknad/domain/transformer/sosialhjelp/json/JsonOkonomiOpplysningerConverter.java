@@ -234,8 +234,6 @@ public class JsonOkonomiOpplysningerConverter {
                 .filter(Objects::nonNull)
                 .map(faktum -> {
                     final Map<String, String> properties = faktum.getProperties();
-                    System.out.println(properties.get("brutto"));
-
                     return new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(properties.get("kildeType"))

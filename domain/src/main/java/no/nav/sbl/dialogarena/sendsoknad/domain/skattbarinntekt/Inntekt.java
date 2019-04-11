@@ -11,4 +11,5 @@ public class Inntekt {
     public LottOgPartInnenFiske lottOgPartInnenFiske;
     public DagmammaIEgenBolig dagmammaIEgenBolig;
     public Naeringsinntekt naeringsinntekt;
+    public AldersUfoereEtterlatteAvtalefestetOgKrigspensjon aldersUfoereEtterlatteAvtalefestetOgKrigspensjon;
 }
