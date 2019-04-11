@@ -28,20 +28,17 @@ import javax.inject.Named;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToBelopNavn;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToBelopNavn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 
 @Controller
@@ -78,6 +75,7 @@ public class OkonomiskeOpplysningerRessurs {
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
@@ -172,6 +170,9 @@ public class OkonomiskeOpplysningerRessurs {
 
         final List<Faktum> fakta = webSoknad.getFaktaMedKey(key);
 
+        if (vedleggFrontend.type.equals("annet|annet") && checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)){
+            vedleggFrontend.rader = Collections.emptyList();
+        }
         makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad.getBrukerBehandlingId());
 
         for (int i = 0; i < vedleggFrontend.rader.size(); i++){
@@ -179,13 +180,15 @@ public class OkonomiskeOpplysningerRessurs {
             final VedleggRadFrontend vedleggRad = vedleggFrontend.rader.get(i);
             final Map<String, String> properties = faktum.getProperties();
             if (vedleggFrontend.type.equals("nedbetalingsplan|avdraglaan")){
-                properties.put("avdrag", vedleggRad.avdrag.toString());
-                properties.put("renter", vedleggRad.renter.toString());
+                properties.put("avdrag", vedleggRad.avdrag != null ? vedleggRad.avdrag.toString() : null);
+                properties.put("renter", vedleggRad.renter != null ? vedleggRad.renter.toString() : null);
+            } else if (vedleggFrontend.type.equals("lonnslipp|arbeid")){
+                properties.put("bruttolonn", vedleggRad.brutto != null ? vedleggRad.brutto.toString() : null);
+                properties.put("nettolonn", vedleggRad.netto != null ? vedleggRad.netto.toString() : null);
             } else {
-                properties.put(belopNavn, vedleggRad.belop.toString());
+                properties.put(belopNavn, vedleggRad.belop != null ? vedleggRad.belop.toString() : null);
             }
 
-            putNettolonnOnPropertiesForSoknadTypeJobb(belopNavn, vedleggRad, properties);
             putBeskrivelseOnRelevantTypes(soknadPath, soknadType, vedleggRad, properties);
 
             faktaService.lagreBrukerFaktum(faktum);
