@@ -7,6 +7,7 @@ import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinfor
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ public class UtbetalingService {
     @Inject
     private UtbetalingV1 utbetalingV1;
 
+    @Cacheable("utbetalingCache")
     public List<Utbetaling> hentUtbetalingerForBrukerIPeriode(String brukerFnr, LocalDate fom, LocalDate tom) {
         logger.info("Henter utbetalinger for {} i perioden {} til {}", brukerFnr, fom, tom);
         try {
@@ -66,8 +68,9 @@ public class UtbetalingService {
                 .collect(toList());
     }
 
-    boolean utbetaltSisteTrettiDager(WSUtbetaling wsUtbetaling) {
-        if (tilLocalDate(wsUtbetaling.getUtbetalingsdato()).isBefore(LocalDate.now().minusDays(30))) {
+    private boolean utbetaltSisteTrettiDager(WSUtbetaling wsUtbetaling) {
+    	LocalDate utbetalingsdato = tilLocalDate(wsUtbetaling.getUtbetalingsdato());
+        if (utbetalingsdato == null || utbetalingsdato.isBefore(LocalDate.now().minusDays(30))) {
             return false;
         }
         return true;
