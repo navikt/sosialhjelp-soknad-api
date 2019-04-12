@@ -66,14 +66,9 @@ public class SkattbarInntektRessursTest {
         SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = skattbarInntektOgForskuddstrekkListe.get(0);
         assertThat(skattbarInntektOgForskuddstrekk.samletTrekk).isNegative();
         assertThat(skattbarInntektOgForskuddstrekk.samletInntekt).isPositive();
-        assertThat(skattbarInntektOgForskuddstrekk.organisasjoner).hasSize(3);
+        assertThat(skattbarInntektOgForskuddstrekk.organisasjoner).hasSize(1);
         assertThat(skattbarInntektOgForskuddstrekk.organisasjoner.get(0).tom).isNotNull();
 
-        SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk2 = skattbarInntektOgForskuddstrekkListe.get(1);
-        assertThat(skattbarInntektOgForskuddstrekk2.samletTrekk).isEqualTo(0.0);
-        assertThat(skattbarInntektOgForskuddstrekk2.samletInntekt).isPositive();
-        assertThat(skattbarInntektOgForskuddstrekk2.organisasjoner).hasSize(2);
-        assertThat(skattbarInntektOgForskuddstrekk2.organisasjoner.get(0).tom).isNotNull();
     }
 
 }
