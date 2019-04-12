@@ -173,7 +173,9 @@ public final class JsonAdresseConverter {
             throw new IllegalStateException("Ukjent adressetype: \"" + type + "\" for faktum: " + faktum.getKey());
         }
 
-        jsonAdresse.setKilde(erAlleSystemProperties(faktum) ? JsonKilde.SYSTEM : JsonKilde.BRUKER);
+        if (jsonAdresse != null) {
+            jsonAdresse.setKilde(erAlleSystemProperties(faktum) ? JsonKilde.SYSTEM : JsonKilde.BRUKER);
+        }
 
         return jsonAdresse;
     }

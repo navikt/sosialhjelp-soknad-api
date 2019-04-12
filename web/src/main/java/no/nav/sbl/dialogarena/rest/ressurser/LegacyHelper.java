@@ -33,11 +33,8 @@ public class LegacyHelper {
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
-    @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier, boolean medVedlegg) {
-        final WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier, medVedlegg);
+        final WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier);
 
         final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad, medVedlegg);
         if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {
@@ -46,7 +43,7 @@ public class LegacyHelper {
         return soknad;
     }
 
-    public WebSoknad hentWebSoknad(String behandlingsId, String eier, boolean medVedlegg) {
+    public WebSoknad hentWebSoknad(String behandlingsId, String eier) {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
@@ -56,10 +53,6 @@ public class LegacyHelper {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-
-        if (medVedlegg){
-            vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-        }
 
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
         if (!eier.equals(webSoknad.getAktoerId())) {

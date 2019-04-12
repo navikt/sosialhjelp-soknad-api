@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest.mappers;
+package no.nav.sbl.dialogarena.soknadinnsending.business.mappers;
 
 import java.util.HashMap;
 import java.util.Map;

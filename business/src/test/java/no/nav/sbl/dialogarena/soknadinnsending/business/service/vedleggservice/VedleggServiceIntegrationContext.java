@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import java.time.Clock;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,11 @@ public class VedleggServiceIntegrationContext {
     @Bean
     public VedleggService vedleggService() {
         return new VedleggService();
+    }
+
+    @Bean
+    public OpplastetVedleggService opplastetVedleggService() {
+        return new OpplastetVedleggService();
     }
 
     @Bean

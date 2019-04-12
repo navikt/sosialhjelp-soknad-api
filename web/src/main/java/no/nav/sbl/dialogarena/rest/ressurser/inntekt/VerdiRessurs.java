@@ -30,9 +30,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.addFormueIfNotPresentInOversikt;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
 @Path("/soknader/{behandlingsId}/inntekt/verdier")
@@ -61,7 +60,7 @@ public class VerdiRessurs {
     @GET
     public VerdierFrontend hentVerdier(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final VerdierFrontend verdierFrontend = new VerdierFrontend();
 
@@ -137,31 +136,25 @@ public class VerdiRessurs {
     private void setVerdier(JsonOkonomioversikt oversikt, VerdierFrontend verdierFrontend) {
         final List<JsonOkonomioversiktFormue> verdier = oversikt.getFormue();
 
-        if(verdierFrontend.bolig){
-            final String type = "bolig";
-            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        }
-        if(verdierFrontend.campingvogn){
-            final String type = "campingvogn";
-            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        }
-        if(verdierFrontend.kjoretoy){
-            final String type = "kjoretoy";
-            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        }
-        if(verdierFrontend.fritidseiendom){
-            final String type = "fritidseiendom";
-            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        }
-        if(verdierFrontend.annet){
-            final String type = "annet";
-            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(verdier, type, tittel);
-        }
+        String type = "bolig";
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.bolig);
+
+        type = "campingvogn";
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.campingvogn);
+
+        type = "kjoretoy";
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.kjoretoy);
+
+        type = "fritidseiendom";
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.fritidseiendom);
+
+        type = "annet";
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.annet);
     }
 
     private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, VerdierFrontend verdierFrontend) {
