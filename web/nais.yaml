@@ -94,6 +94,8 @@ fasitResources:
     resourceType: credential
   - alias: norg2.api.v1
     resourceType: restservice
+  - alias: skatteetaten.inntektsmottaker.api.v1
+    resourceType: restservice
   - alias: soknadsosialhjelp-server-norg2.api.v1-apiKey
     resourceType: credential
   - alias: soknadsosialhjelp-server-eksternapp.skatt.datasamarbeid.api.inntektsmottaker-apiKey
