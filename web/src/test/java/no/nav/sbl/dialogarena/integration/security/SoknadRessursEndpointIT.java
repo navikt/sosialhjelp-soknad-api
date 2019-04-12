@@ -34,7 +34,19 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
                 .buildGet()
                 .invoke();
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
 
+    @Test
+    public void nektetTilgang_opprettEttersendelse() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String url = "soknader/opprettSoknad";
+
+        Response response = soknadTester.sendsoknadResource(url, webTarget -> webTarget
+                .queryParam("fnr", ANNEN_BRUKER)
+                .queryParam("ettersendTil", soknadTester.getBrukerBehandlingId() )) //fake annen bruker, se FakeLoginFilter
+                .buildPost(null)
+                .invoke();
+        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
 

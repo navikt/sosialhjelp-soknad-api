@@ -92,9 +92,9 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String behandlingsId) {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ? and STATUS = ?",
-                new SoknadUnderArbeidRowMapper(), behandlingsId, "UNDER_ARBEID").stream().findFirst();
+    public Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String behandlingsId, String eier) {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS = ?",
+                new SoknadUnderArbeidRowMapper(), eier, behandlingsId, "UNDER_ARBEID").stream().findFirst();
     }
 
     @Override

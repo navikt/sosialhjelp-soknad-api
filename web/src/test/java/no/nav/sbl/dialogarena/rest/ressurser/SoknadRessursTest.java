@@ -31,6 +31,7 @@ import static org.mockito.Mockito.*;
 public class SoknadRessursTest {
 
     public static final String BEHANDLINGSID = "123";
+    public static final String EIER = "Hans og Grete";
 
     @Mock
     SoknadService soknadService;
@@ -78,7 +79,7 @@ public class SoknadRessursTest {
 
     @Test
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(BEHANDLINGSID)).thenReturn(Optional.empty());
+        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(BEHANDLINGSID, EIER)).thenReturn(Optional.empty());
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
         verify(soknadService).startEttersending(eq(BEHANDLINGSID));
     }
