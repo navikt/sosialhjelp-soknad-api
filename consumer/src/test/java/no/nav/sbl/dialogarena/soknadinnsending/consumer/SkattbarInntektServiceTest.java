@@ -37,7 +37,6 @@ public class SkattbarInntektServiceTest {
         List<Utbetaling> lonn = utbetalingPerTittel.get("Lønn");
 
         Utbetaling utbetaling = lonn.get(0);
-        assertThat(utbetaling.orgnummer).isEqualTo("911270404");
         assertThat(utbetaling.tittel).isEqualTo("Lønn");
         assertThat(utbetaling.brutto).isEqualTo(40000);
     }
