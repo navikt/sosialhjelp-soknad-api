@@ -62,10 +62,18 @@ public class SkattbarInntektRessursTest {
 
         List<Faktum> mockUtbetalinger = utbetalingBolk.genererSystemFakta("01234567890", 1234L);
         ressurs.mockUtbetalinger =  JsonOkonomiOpplysningerConverter.getOkonomiopplysningFraFaktum(mockUtbetalinger, Collections.emptyList());
-        SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = ressurs.hentSkattbareInntekter("");
+        List<SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe = ressurs.hentSkattbareInntekter("");
+        SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = skattbarInntektOgForskuddstrekkListe.get(0);
         assertThat(skattbarInntektOgForskuddstrekk.samletTrekk).isNegative();
         assertThat(skattbarInntektOgForskuddstrekk.samletInntekt).isPositive();
-        assertThat(skattbarInntektOgForskuddstrekk.organisasjoner).hasSize(5);
+        assertThat(skattbarInntektOgForskuddstrekk.organisasjoner).hasSize(3);
+        assertThat(skattbarInntektOgForskuddstrekk.organisasjoner.get(0).tom).isNotNull();
+
+        SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk2 = skattbarInntektOgForskuddstrekkListe.get(1);
+        assertThat(skattbarInntektOgForskuddstrekk2.samletTrekk).isEqualTo(0.0);
+        assertThat(skattbarInntektOgForskuddstrekk2.samletInntekt).isPositive();
+        assertThat(skattbarInntektOgForskuddstrekk2.organisasjoner).hasSize(2);
+        assertThat(skattbarInntektOgForskuddstrekk2.organisasjoner.get(0).tom).isNotNull();
     }
 
 }

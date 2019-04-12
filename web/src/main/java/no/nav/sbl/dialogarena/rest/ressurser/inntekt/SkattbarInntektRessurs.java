@@ -16,10 +16,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -39,7 +36,7 @@ public class SkattbarInntektRessurs {
     List<JsonOkonomiOpplysningUtbetaling> mockUtbetalinger;
 
     @GET
-    public SkattbarInntektOgForskuddstrekk hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
+    public List<SkattbarInntektOgForskuddstrekk> hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
         String eier = SubjectHandler.getSubjectHandler().getUid();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
         if (mockUtbetalinger != null) {
@@ -49,50 +46,61 @@ public class SkattbarInntektRessurs {
             utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         }
 
-        utbetalinger = utbetalinger.stream().filter(u -> u.getTittel()!=null).collect(Collectors.toList());
+        utbetalinger = utbetalinger.stream().filter(u -> u.getTittel() != null).collect(Collectors.toList());
         List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger =
                 utbetalinger.stream()
                         .filter(jsonOkonomiOpplysningUtbetaling -> jsonOkonomiOpplysningUtbetaling.getType() != null &&
                                 jsonOkonomiOpplysningUtbetaling.getType().equals("skatteetaten")).collect(Collectors.toList());
 
-        Map<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> utbetalingPerOrganisasjon = skatteopplysninger
+        List<SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe = new ArrayList<>();
+        organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger, skattbarInntektOgForskuddstrekkListe);
+
+        return skattbarInntektOgForskuddstrekkListe;
+    }
+
+    private void organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger, List<SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe) {
+        for (List<JsonOkonomiOpplysningUtbetaling> utbetalingerPerManned : new TreeMap<>(skatteopplysninger
                 .stream()
-                .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getOrganisasjon));
+                .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getPeriodeFom))).values()) {
+            Double samletSkattbarInntekt = utbetalingerPerManned.stream().map(JsonOkonomiOpplysningUtbetaling::getBrutto).reduce(Double::sum).orElse(0.0);
+            Double samletTrekk = utbetalingerPerManned.stream().map(JsonOkonomiOpplysningUtbetaling::getSkattetrekk).reduce(Double::sum).orElse(0.0);
 
-        Double samletSkattbarInntekt = skatteopplysninger.stream().map(JsonOkonomiOpplysningUtbetaling::getBrutto).reduce(Double::sum).orElse(0.0);
-        Double samletTrekk = skatteopplysninger.stream().map(JsonOkonomiOpplysningUtbetaling::getSkattetrekk).reduce(Double::sum).orElse(0.0);
+            Map<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> utbetalingPerOrganisasjon = utbetalingerPerManned
+                    .stream()
+                    .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getOrganisasjon));
+
+            List<Organisasjon> organissasjoner = new ArrayList<>();
+            for (Map.Entry<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> jsonOrganisasjonListEntry : utbetalingPerOrganisasjon.entrySet()) {
+                List<Utbetaling> utbetalingListe = new ArrayList<>();
+
+                JsonOrganisasjon jsonOrganisasjon = jsonOrganisasjonListEntry.getKey();
+                for (JsonOkonomiOpplysningUtbetaling jsonOkonomiOpplysningUtbetaling : jsonOrganisasjonListEntry.getValue()) {
+                    Utbetaling utbetaling = new Utbetaling()
+                            .withTittel(jsonOkonomiOpplysningUtbetaling.getTittel())
+                            .withBelop(jsonOkonomiOpplysningUtbetaling.getBrutto() == null
+                                    || jsonOkonomiOpplysningUtbetaling.getBrutto() == 0.0 ? jsonOkonomiOpplysningUtbetaling.getSkattetrekk() : jsonOkonomiOpplysningUtbetaling.getBrutto());
+                    utbetalingListe.add(utbetaling);
+                }
+                Optional<JsonOkonomiOpplysningUtbetaling> first = utbetalingerPerManned.stream().findFirst();
+
+                Organisasjon organisasjon = new Organisasjon().withUtbetalinger(utbetalingListe)
+                        .withOrganisasjonsnavn(jsonOrganisasjon
+                                .getNavn())
+                        .withOrgnr(jsonOrganisasjon
+                                .getOrganisasjonsnummer())
+                        .withFom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeFom).orElse(null))
+                        .withTom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeTom).orElse(null));
+
+                organissasjoner.add(organisasjon);
 
 
-        List<Organisasjon> organissasjoner = new ArrayList<>();
-        for (Map.Entry<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> jsonOrganisasjonListEntry : utbetalingPerOrganisasjon.entrySet()) {
-            List<Utbetaling> utbetalingListe = new ArrayList<>();
-            List<JsonOkonomiOpplysningUtbetaling> value = jsonOrganisasjonListEntry.getValue();
-
-            JsonOrganisasjon jsonOrganisasjon = jsonOrganisasjonListEntry.getKey();
-            for (JsonOkonomiOpplysningUtbetaling jsonOkonomiOpplysningUtbetaling : value) {
-                Utbetaling utbetaling = new Utbetaling()
-                        .withTittel(jsonOkonomiOpplysningUtbetaling.getTittel())
-                        .withBelop(jsonOkonomiOpplysningUtbetaling.getBrutto() == null
-                                || jsonOkonomiOpplysningUtbetaling.getBrutto() == 0.0 ? jsonOkonomiOpplysningUtbetaling.getSkattetrekk() : jsonOkonomiOpplysningUtbetaling.getBrutto());
-                utbetalingListe.add(utbetaling);
             }
-            Optional<JsonOkonomiOpplysningUtbetaling> first = utbetalinger.stream().findFirst();
-
-            Organisasjon organisasjon = new Organisasjon().withUtbetalinger(utbetalingListe)
-                    .withOrganisasjonsnavn(jsonOrganisasjon
-                            .getNavn())
-                    .withOrgnr(jsonOrganisasjon
-                            .getOrganisasjonsnummer())
-                    .withFom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeFom).orElse(null))
-                    .withTom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeTom).orElse(null));
-
-            organissasjoner.add(organisasjon);
+            SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = new SkattbarInntektOgForskuddstrekk()
+                    .withSamletInntekt(samletSkattbarInntekt)
+                    .withSamletTrekk(samletTrekk)
+                    .withOrganisasjoner(organissasjoner);
+            skattbarInntektOgForskuddstrekkListe.add(skattbarInntektOgForskuddstrekk);
         }
-
-        return new SkattbarInntektOgForskuddstrekk()
-                .withSamletInntekt(samletSkattbarInntekt)
-                .withSamletTrekk(samletTrekk)
-                .withOrganisasjoner(organissasjoner);
     }
 
 
