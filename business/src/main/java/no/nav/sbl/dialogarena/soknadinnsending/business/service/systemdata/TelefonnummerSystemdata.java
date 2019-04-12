@@ -23,7 +23,11 @@ public class TelefonnummerSystemdata implements Systemdata {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-        if (telefonnummer.getKilde() == JsonKilde.SYSTEM) {
+        if (telefonnummer == null){
+            personalia.setTelefonnummer(new JsonTelefonnummer()
+                    .withKilde(JsonKilde.SYSTEM)
+                    .withVerdi(innhentSystemverdiTelefonnummer(personIdentifikator)));
+        } else if (telefonnummer.getKilde() == JsonKilde.SYSTEM) {
             telefonnummer.setVerdi(innhentSystemverdiTelefonnummer(personIdentifikator));
         }
     }
