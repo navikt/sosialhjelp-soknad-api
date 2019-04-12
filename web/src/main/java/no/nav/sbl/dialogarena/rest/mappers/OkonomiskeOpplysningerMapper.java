@@ -143,9 +143,7 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     public static void putBeskrivelseOnRelevantTypes(String soknadPath, String soknadType, VedleggRadFrontend vedleggRad, Map<String, String> properties) {
-        if (soknadType.equals("annenBoutgift") || soknadType.equals("barnFritidsaktiviteter") ||
-                soknadType.equals("annenBarneutgift") ||
-                (soknadType.equals("annen") && soknadPath.equals("utbetaling")) ||
+        if (soknadType.equals("annenBoutgift") || soknadType.equals("barnFritidsaktiviteter") || soknadType.equals("annenBarneutgift") ||
                 (soknadType.equals("annen") && soknadPath.equals("opplysningerUtgift"))){
             properties.put(soknadTypeToTittelDelNavn.get(soknadType), vedleggRad.beskrivelse);
         }
