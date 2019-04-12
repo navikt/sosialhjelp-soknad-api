@@ -15,7 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToTittelDelNavn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToTittelDelNavn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOpplysninger;
 
 public class OkonomiskeOpplysningerMapper {
 
@@ -72,9 +74,20 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     public static void addAllOpplysningUtgifterToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String soknadType) {
-        final Optional<JsonOkonomiOpplysningUtgift> eksisterendeOpplysningUtgift = jsonOkonomi.getOpplysninger().getUtgift().stream()
+        Optional<JsonOkonomiOpplysningUtgift> eksisterendeOpplysningUtgift = jsonOkonomi.getOpplysninger().getUtgift().stream()
                 .filter(utgift -> utgift.getType().equals(soknadType))
                 .findFirst();
+
+        if (vedleggFrontend.type.equals("annet|annet")){
+            eksisterendeOpplysningUtgift = Optional.of(new JsonOkonomiOpplysningUtgift().withType("annen").withTittel("Annen (brukerangitt): "));
+            final List<JsonOkonomiOpplysningUtgift> utgifter = jsonOkonomi.getOpplysninger().getUtgift();
+            if (checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)){
+                removeUtgiftIfPresentInOpplysninger(utgifter, soknadType);
+                return;
+            } else {
+                addUtgiftIfNotPresentInOpplysninger(utgifter, soknadType, eksisterendeOpplysningUtgift.get().getTittel());
+            }
+        }
 
         // Dersom det ikke er en eksisterende utgift er det ikke mulig for bruker å fylle ut informasjon på vedlegget.
         if (eksisterendeOpplysningUtgift.isPresent()) {
@@ -86,6 +99,11 @@ public class OkonomiskeOpplysningerMapper {
             utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, eksisterendeOpplysningUtgift.get()));
             jsonOkonomi.getOpplysninger().setUtgift(utgifter);
         }
+    }
+
+    public static boolean checkIfTypeAnnetAnnetShouldBeRemoved(VedleggFrontend vedleggFrontend) {
+        return vedleggFrontend.rader.size() == 1 && vedleggFrontend.rader.get(0).belop == null &&
+                vedleggFrontend.rader.get(0).beskrivelse == null || "".equals(vedleggFrontend.rader.get(0).beskrivelse);
     }
 
     public static void addAllUtbetalingerToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String soknadType) {
@@ -117,16 +135,8 @@ public class OkonomiskeOpplysningerMapper {
         }
     }
 
-    public static void putNettolonnOnPropertiesForSoknadTypeJobb(String belopNavn, VedleggRadFrontend vedleggRad, Map<String, String> properties) {
-        if (belopNavn.equals("bruttolonn")){
-            properties.put("nettolonn", vedleggRad.belop.toString());
-        }
-    }
-
     public static void putBeskrivelseOnRelevantTypes(String soknadPath, String soknadType, VedleggRadFrontend vedleggRad, Map<String, String> properties) {
-        if (soknadType.equals("annenBoutgift") || soknadType.equals("barnFritidsaktiviteter") ||
-                soknadType.equals("annenBarneutgift") ||
-                (soknadType.equals("annen") && soknadPath.equals("utbetaling")) ||
+        if (soknadType.equals("annenBoutgift") || soknadType.equals("barnFritidsaktiviteter") || soknadType.equals("annenBarneutgift") ||
                 (soknadType.equals("annen") && soknadPath.equals("opplysningerUtgift"))){
             properties.put(soknadTypeToTittelDelNavn.get(soknadType), vedleggRad.beskrivelse);
         }
@@ -141,8 +151,9 @@ public class OkonomiskeOpplysningerMapper {
                 .withKilde(JsonKilde.BRUKER)
                 .withType(eksisterendeInntekt.getType())
                 .withTittel(eksisterendeInntekt.getTittel())
-                .withBrutto(rad.belop)
-                .withNetto(rad.belop);
+                .withBrutto(rad.brutto != null ? rad.brutto : rad.belop)
+                .withNetto(rad.netto != null ? rad.netto : rad.belop)
+                .withOverstyrtAvBruker(false);
     }
 
     private static List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalingList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling) {
@@ -156,7 +167,8 @@ public class OkonomiskeOpplysningerMapper {
                 .withTittel(eksisterendeUtbetaling.getTittel())
                 .withBelop(rad.belop)
                 .withBrutto(Double.valueOf(rad.belop))
-                .withNetto(Double.valueOf(rad.belop));
+                .withNetto(Double.valueOf(rad.belop))
+                .withOverstyrtAvBruker(false);
     }
 
     private static List<JsonOkonomioversiktFormue> mapToFormueList(List<VedleggRadFrontend> rader, JsonOkonomioversiktFormue eksisterendeFormue) {
@@ -167,7 +179,8 @@ public class OkonomiskeOpplysningerMapper {
         return new JsonOkonomioversiktFormue().withKilde(JsonKilde.BRUKER)
                 .withType(eksisterendeFormue.getType())
                 .withTittel(eksisterendeFormue.getTittel())
-                .withBelop(radFrontend.belop);
+                .withBelop(radFrontend.belop)
+                .withOverstyrtAvBruker(false);
     }
 
     private static List<JsonOkonomioversiktUtgift> mapToOversiktUtgiftList(List<VedleggRadFrontend> rader, JsonOkonomioversiktUtgift eksisterendeUtgift) {
@@ -176,14 +189,23 @@ public class OkonomiskeOpplysningerMapper {
 
     private static JsonOkonomioversiktUtgift mapToOversiktUtgift(VedleggRadFrontend radFrontend, JsonOkonomioversiktUtgift eksisterendeUtgift) {
         final String tittel = eksisterendeUtgift.getTittel();
-        final String typetittel = !tittel.contains(":") ? tittel : tittel.substring(0, tittel.indexOf(":") + 2);
+        final String typetittel = getTypetittel(tittel);
         final String type = eksisterendeUtgift.getType();
 
         return new JsonOkonomioversiktUtgift().withKilde(JsonKilde.BRUKER)
                 .withType(type)
-                .withTittel(radFrontend.beskrivelse != null ? typetittel + radFrontend.beskrivelse : typetittel)
+                .withTittel(getTittelWithBeskrivelse(typetittel, radFrontend.beskrivelse))
                 .withBelop(type.equals("boliglanAvdrag") ? radFrontend.avdrag :
-                        type.equals("boliglanRenter") ? radFrontend.renter : radFrontend.belop);
+                        type.equals("boliglanRenter") ? radFrontend.renter : radFrontend.belop)
+                .withOverstyrtAvBruker(false);
+    }
+
+    private static String getTittelWithBeskrivelse(String typetittel, String beskrivelse) {
+        return beskrivelse != null ? typetittel + beskrivelse : typetittel;
+    }
+
+    private static String getTypetittel(String tittel) {
+        return !tittel.contains(":") ? tittel : tittel.substring(0, tittel.indexOf(":") + 2);
     }
 
     private static List<JsonOkonomiOpplysningUtgift> mapToOppysningUtgiftList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtgift eksisterendeUtgift) {
@@ -191,9 +213,14 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static JsonOkonomiOpplysningUtgift mapToOppysningUtgift(VedleggRadFrontend radFrontend, JsonOkonomiOpplysningUtgift eksisterendeUtgift) {
+        final String tittel = eksisterendeUtgift.getTittel();
+        final String typetittel = getTypetittel(tittel);
+        final String type = eksisterendeUtgift.getType();
+
         return new JsonOkonomiOpplysningUtgift().withKilde(JsonKilde.BRUKER)
-                .withType(eksisterendeUtgift.getType())
-                .withTittel(eksisterendeUtgift.getTittel())
-                .withBelop(radFrontend.belop);
+                .withType(type)
+                .withTittel(getTittelWithBeskrivelse(typetittel, radFrontend.beskrivelse))
+                .withBelop(radFrontend.belop)
+                .withOverstyrtAvBruker(false);
     }
 }

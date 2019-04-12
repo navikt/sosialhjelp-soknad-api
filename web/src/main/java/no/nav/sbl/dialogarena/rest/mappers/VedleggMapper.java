@@ -51,7 +51,12 @@ public class VedleggMapper {
             case "utbetaling":
                 return getRadListFromUtbetaling(jsonOkonomi, soknadType);
             case "opplysningerUtgift":
-                return getRadListFromOpplysningerUtgift(jsonOkonomi, soknadType);
+                final List<VedleggRadFrontend> radList = getRadListFromOpplysningerUtgift(jsonOkonomi, soknadType);
+                if (radList.isEmpty() && soknadType.equals("annen")){
+                    return Collections.singletonList(new VedleggRadFrontend());
+                } else {
+                    return radList;
+                }
             case "oversiktUtgift":
                 return getRadListFromOversiktUtgift(jsonOkonomi, soknadType);
             case "formue":
@@ -94,7 +99,7 @@ public class VedleggMapper {
         return jsonOkonomi.getOversikt().getInntekt().isEmpty() ? Collections.singletonList(new VedleggRadFrontend()) :
                 jsonOkonomi.getOversikt().getInntekt().stream()
                         .filter(inntekt-> inntekt.getType().equals(soknadType))
-                        .map(VedleggMapper::getRadFromInntekt).collect(Collectors.toList());
+                        .map(inntekt -> getRadFromInntekt(inntekt, soknadType)).collect(Collectors.toList());
     }
 
     private static List<VedleggRadFrontend> getRadListFromOversiktUtgift(JsonOkonomi jsonOkonomi, String soknadType) {
@@ -137,7 +142,12 @@ public class VedleggMapper {
         }
     }
 
-    private static VedleggRadFrontend getRadFromInntekt(JsonOkonomioversiktInntekt inntekt) {
+    private static VedleggRadFrontend getRadFromInntekt(JsonOkonomioversiktInntekt inntekt, String soknadType) {
+        if (soknadType.equals("jobb")){
+            return new VedleggRadFrontend()
+                    .withBrutto(inntekt.getBrutto())
+                    .withNetto(inntekt.getNetto());
+        }
         if (inntekt.getBrutto() != null){
             return new VedleggRadFrontend().withBelop(inntekt.getBrutto());
         } else if (inntekt.getNetto() != null) {
