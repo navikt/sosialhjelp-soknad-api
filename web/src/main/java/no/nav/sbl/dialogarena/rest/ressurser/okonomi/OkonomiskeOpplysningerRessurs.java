@@ -34,8 +34,7 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*;
-import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
-import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToBelopNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
@@ -124,25 +123,27 @@ public class OkonomiskeOpplysningerRessurs {
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
-        final String soknadType = vedleggTypeToSoknadType.get(vedleggFrontend.type);
-        final String soknadPath = getSoknadPath(vedleggFrontend.type);
+        if (isInSoknadJson(vedleggFrontend.type)){
+            final String soknadType = vedleggTypeToSoknadType.get(vedleggFrontend.type);
+            final String soknadPath = getSoknadPath(vedleggFrontend.type);
 
-        switch (soknadPath){
-            case "utbetaling":
-                addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
-                break;
-            case "opplysningerUtgift":
-                addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
-                break;
-            case "oversiktUtgift":
-                addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
-                break;
-            case "formue":
-                addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
-                break;
-            case "inntekt":
-                addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
-                break;
+            switch (soknadPath) {
+                case "utbetaling":
+                    addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    break;
+                case "opplysningerUtgift":
+                    addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    break;
+                case "oversiktUtgift":
+                    addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    break;
+                case "formue":
+                    addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    break;
+                case "inntekt":
+                    addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    break;
+            }
         }
 
         setVedleggStatus(vedleggFrontend, soknad);
@@ -151,6 +152,9 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) {
+        if (!isInSoknadJson(vedleggFrontend.type)){
+            return;
+        }
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
         final String soknadType = vedleggTypeToSoknadType.get(vedleggFrontend.type);
@@ -165,6 +169,12 @@ public class OkonomiskeOpplysningerRessurs {
             } else if (soknadType.equals("annen") && soknadPath.equals("utbetaling")){
                 key = "opplysninger.inntekt.inntekter.annet";
                 belopNavn = "sum";
+            } else if (soknadType.equals("barnebidrag") && soknadPath.equals("inntekt")){
+                key = "opplysninger.familiesituasjon.barnebidrag.mottar";
+                belopNavn = "mottar";
+            } else if (soknadType.equals("barnebidrag") && soknadPath.equals("oversiktUtgift")){
+                key = "opplysninger.familiesituasjon.barnebidrag.betaler";
+                belopNavn = "betaler";
             }
         }
 

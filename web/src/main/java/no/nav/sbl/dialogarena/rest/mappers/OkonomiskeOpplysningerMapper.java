@@ -20,8 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskGruppeMapper.getGruppe;
-import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
-import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToTittelDelNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOpplysninger;
@@ -251,7 +250,7 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static List<VedleggRadFrontend> getRader(JsonOkonomi jsonOkonomi, String vedleggType) {
-        if (isTypeWithoutRader(vedleggType)) return Collections.emptyList();
+        if (!isInSoknadJson(vedleggType)) return Collections.emptyList();
 
         final String soknadType = vedleggTypeToSoknadType.get(vedleggType);
         final String soknadPath = getSoknadPath(vedleggType);
@@ -377,12 +376,5 @@ public class OkonomiskeOpplysningerMapper {
             return new VedleggRadFrontend().withRenter(utgift.getBelop());
         }
         return new VedleggRadFrontend().withBelop(utgift.getBelop());
-    }
-
-    private static boolean isTypeWithoutRader(String vedleggType) {
-        return vedleggType.equals("samvarsavtale|barn") ||
-                vedleggType.equals("husleiekontrakt|husleiekontrakt") ||
-                vedleggType.equals("husleiekontrakt|kommunal") ||
-                vedleggType.equals("skattemelding|skattemelding");
     }
 }

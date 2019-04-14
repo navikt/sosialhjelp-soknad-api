@@ -19,6 +19,8 @@ public class OkonomiskGruppeMapper {
                 return "andre utgifter";
             case "skattemelding|skattemelding":
                 return "generelle vedlegg";
+            case "oppholdstillatel|oppholdstillatel":
+                return "statsborgerskap";
             default:
                 final String soknadPath = getSoknadPath(vedleggType);
 
