@@ -110,7 +110,7 @@ public class PersonMapper {
     private static Barn mapFamilierelasjonTilBarn(Familierelasjon familierelasjon) {
         Person xmlBarn = familierelasjon.getTilPerson();
         if (xmlPersonHarDiskresjonskode(xmlBarn)) {
-            return null;//new Barn().withIkkeTilgang(true);
+            return null;
         }
 
         if (!erMyndig(finnFodselsdatoFraFnr(xmlBarn)) && !erDoed(xmlBarn)) {
