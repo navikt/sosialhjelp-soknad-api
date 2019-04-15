@@ -81,7 +81,9 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
+                    .collect(Collectors.toList())) {
                 if (inntekt.loennsinntekt != null) {
                     Utbetaling utbetaling = new Utbetaling();
                     utbetaling.tittel = "Lønn";
@@ -100,7 +102,9 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
+                    .collect(Collectors.toList())) {
                 if (inntekt.pensjonEllerTrygd != null) {
                     Utbetaling utbetaling = new Utbetaling();
                     utbetaling.tittel = "PensjonEllerTrygd";
@@ -118,7 +122,9 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
+                    .collect(Collectors.toList())) {
                 if (inntekt.aldersUfoereEtterlatteAvtalefestetOgKrigspensjon != null) {
                     Utbetaling utbetaling = new Utbetaling();
                     utbetaling.tittel = "AldersUfoereEtterlatteAvtalefestetOgKrigspensjon";
@@ -137,7 +143,9 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
+                    .collect(Collectors.toList())) {
                 if (inntekt.dagmammaIEgenBolig != null) {
                     Utbetaling utbetaling = new Utbetaling();
                     utbetaling.tittel = "DagmammaIEgenBolig";
@@ -156,7 +164,9 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
+                    .collect(Collectors.toList())) {
                 if (inntekt.lottOgPartInnenFiske != null) {
                     Utbetaling utbetaling = new Utbetaling();
                     utbetaling.tittel = "LottOgPartInnenFiske";
@@ -175,7 +185,9 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
+                    .collect(Collectors.toList())) {
                 if (inntekt.naeringsinntekt != null) {
                     Utbetaling utbetaling = new Utbetaling();
                     utbetaling.tittel = "Naeringsinntekt";
@@ -194,7 +206,9 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt) {
+             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
+                    .collect(Collectors.toList())) {
                 if (inntekt.ytelseFraOffentlige != null) {
                     Utbetaling utbetaling = new Utbetaling();
                     utbetaling.tittel = "YtelseFraOffentlige";
@@ -239,11 +253,11 @@ public class SkattbarInntektService {
         return aggregertUtbetaling;
     }
 
-    private List<Utbetaling> trekkUtUtbetalinger(List<Utbetaling> utbetalingerPensjon) {
+    private List<Utbetaling> trekkUtUtbetalinger(List<Utbetaling> utbetalinger) {
         List<Utbetaling> aggregertUtbetaling
                 = new ArrayList<>();
-        Map<String, List<Utbetaling>> utbetalingerPensjonPerOrganisasjon = utbetalingerPensjon.stream().collect(Collectors.groupingBy(utbetaling -> utbetaling.orgnummer));
-        for (Map.Entry<String, List<Utbetaling>> entry : utbetalingerPensjonPerOrganisasjon.entrySet()) {
+        Map<String, List<Utbetaling>> utbetalingerPerOrganisasjon = utbetalinger.stream().collect(Collectors.groupingBy(utbetaling -> utbetaling.orgnummer));
+        for (Map.Entry<String, List<Utbetaling>> entry : utbetalingerPerOrganisasjon.entrySet()) {
             entry.getValue().stream().reduce((u1, u2) -> {
                 u1.brutto += u2.brutto;
                 u1.skattetrekk += u2.skattetrekk;
