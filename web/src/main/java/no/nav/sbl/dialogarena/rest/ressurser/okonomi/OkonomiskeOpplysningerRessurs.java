@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskGruppeMapper.getGruppe;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
@@ -244,8 +245,10 @@ public class OkonomiskeOpplysningerRessurs {
             }
 
             if (ikkePaakrevdVedlegg.getFiler() != null && !ikkePaakrevdVedlegg.getFiler().isEmpty()){
+                final String vedleggstype = ikkePaakrevdVedlegg.getType() + "|" + ikkePaakrevdVedlegg.getTilleggsinfo();
                 slettedeVedlegg.add(new VedleggFrontend()
-                        .withType(ikkePaakrevdVedlegg.getType() + "|" + ikkePaakrevdVedlegg.getTilleggsinfo())
+                        .withType(vedleggstype)
+                        .withGruppe(getGruppe(vedleggstype))
                         .withFiler(ikkePaakrevdVedlegg.getFiler().stream()
                                 .map(fil -> new FilFrontend().withFilNavn(fil.getFilnavn()))
                                 .collect(Collectors.toList())));
