@@ -42,7 +42,7 @@ public class PersonaliaFletter {
             logger.warn("Kunne ikke hente bruker fra TPS.", e);
             throw new ApplicationException("TPS:Sikkerhetsbegrensing", e);
         } catch (TjenesteUtilgjengeligException e) {
-            logger.error("Ingen kontakt med TPS.", e);
+            logger.warn("Ingen kontakt med TPS.", e);
             throw new ApplicationException("TPS:webserviceException", e);
         }
         if (adresserOgKontonummer == null) {

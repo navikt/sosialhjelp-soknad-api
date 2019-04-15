@@ -50,7 +50,7 @@ public class PersonService {
             logger.warn("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
             throw new SikkerhetsBegrensningException("Kunne ikke hente bruker på grunn av manglende tilgang", e);
         } catch (WebServiceException e) {
-            logger.error("Ingen kontakt med TPS (Person-servicen).", e);
+            logger.warn("Ingen kontakt med TPS (Person-servicen).", e);
             throw new TjenesteUtilgjengeligException("Person", e);
         }
     }
@@ -64,7 +64,7 @@ public class PersonService {
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
         } catch (WebServiceException e) {
-            logger.error("Ingen kontakt med TPS.", e);
+            logger.warn("Ingen kontakt med TPS.", e);
         }
         return new ArrayList<>();
     }
