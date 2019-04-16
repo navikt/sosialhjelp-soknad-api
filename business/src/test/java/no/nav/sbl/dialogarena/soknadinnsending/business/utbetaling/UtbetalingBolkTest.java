@@ -46,8 +46,8 @@ public class UtbetalingBolkTest {
 
         List<Faktum> faktumListe = utbetalingBolk.genererSystemFakta(FNR, SOKNADID);
 
-        assertThat(faktumListe.size(), is(1));
-        assertThat(faktumListe.get(0).getKey(), is("utbetalinger.feilet"));
+        assertThat(faktumListe.size(), is(3));
+        assertThat(faktumListe.get(0).getKey(), is("utbetalinger.ingen"));
         assertThat(faktumListe.get(0).getValue(), is("true"));
     }
 

@@ -9,7 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.*;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -235,10 +234,11 @@ public class JsonOkonomiOpplysningerConverter {
                 .filter(Objects::nonNull)
                 .map(faktum -> {
                     final Map<String, String> properties = faktum.getProperties();
+                    String organisasjonsnavn = isEmpty(properties.get("organisasjon")) ? "Ukjent(Klarer ikke hente)" : properties.get("organisasjon");
                     return new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(properties.get("kildeType"))
-                    .withOrganisasjon(new JsonOrganisasjon().withNavn(StringUtils.isEmpty(properties.get("organisasjon"))?"Ukjent(Klarer ikke hente)":properties.get("organisasjon"))
+                    .withOrganisasjon(new JsonOrganisasjon().withNavn(organisasjonsnavn)
                             .withOrganisasjonsnummer(properties.get("organisasjonsnummer")))
                     .withTittel(properties.get("type"))
                     .withBelop(tilIntegerMedAvrunding(properties.get("netto")))
