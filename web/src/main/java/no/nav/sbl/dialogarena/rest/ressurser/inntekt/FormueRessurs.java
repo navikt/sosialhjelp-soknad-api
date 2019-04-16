@@ -28,9 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.addFormueIfNotPresentInOversikt;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
 @Path("/soknader/{behandlingsId}/inntekt/formue")
@@ -59,7 +58,7 @@ public class FormueRessurs {
     @GET
     public FormueFrontend hentFormue(@PathParam("behandlingsId") String behandlingsId){
         final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final FormueFrontend formueFrontend = new FormueFrontend();
 
@@ -146,38 +145,31 @@ public class FormueRessurs {
     }
 
     private void setFormue(JsonOkonomioversikt oversikt, FormueFrontend formueFrontend) {
-        List<JsonOkonomioversiktFormue> formue = oversikt.getFormue();
+        final List<JsonOkonomioversiktFormue> formue = oversikt.getFormue();
 
-        if(formueFrontend.brukskonto){
-            final String type = "brukskonto";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(formue, type, tittel);
-        }
-        if(formueFrontend.bsu){
-            final String type = "bsu";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(formue, type, tittel);
-        }
-        if(formueFrontend.livsforsikring){
-            final String type = "livsforsikringssparedel";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(formue, type, tittel);
-        }
-        if(formueFrontend.sparekonto){
-            final String type = "sparekonto";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(formue, type, tittel);
-        }
-        if(formueFrontend.verdipapirer){
-            final String type = "verdipapirer";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(formue, type, tittel);
-        }
-        if(formueFrontend.annet){
-            final String type = "belop";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addFormueIfNotPresentInOversikt(formue, type, tittel);
-        }
+        String type = "brukskonto";
+        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.brukskonto);
+
+        type = "bsu";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.bsu);
+
+        type = "livsforsikringssparedel";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.livsforsikring);
+
+        type = "sparekonto";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.sparekonto);
+
+        type = "verdipapirer";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.verdipapirer);
+
+        type = "belop";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.annet);
     }
 
     private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, FormueFrontend formueFrontend) {

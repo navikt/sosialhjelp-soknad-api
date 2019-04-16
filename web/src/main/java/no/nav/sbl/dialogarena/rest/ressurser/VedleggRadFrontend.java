@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public final class VedleggRadFrontend {
     public String beskrivelse;
     public Integer belop;
+    public Integer brutto;
+    public Integer netto;
     public Integer avdrag;
     public Integer renter;
 
@@ -17,6 +19,16 @@ public final class VedleggRadFrontend {
 
     public VedleggRadFrontend withBelop(Integer belop) {
         this.belop = belop;
+        return this;
+    }
+
+    public VedleggRadFrontend withBrutto(Integer brutto) {
+        this.brutto = brutto;
+        return this;
+    }
+
+    public VedleggRadFrontend withNetto(Integer netto) {
+        this.netto = netto;
         return this;
     }
 
