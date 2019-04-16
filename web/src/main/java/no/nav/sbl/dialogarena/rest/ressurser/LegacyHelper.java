@@ -52,7 +52,7 @@ public class LegacyHelper {
         }
 
         /* Dette burde egentlig være unødvendig, men sjekker i tilfelle lesing av WebSoknad kan ha sideeffekter: */
-        if (eier == null || !eier.equals(SubjectHandler.getSubjectHandler().getUid())) {
+        if (!eier.equals(SubjectHandler.getSubjectHandler().getUid())) {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
