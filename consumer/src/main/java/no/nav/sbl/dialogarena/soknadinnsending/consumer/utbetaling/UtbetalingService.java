@@ -76,7 +76,10 @@ public class UtbetalingService {
     Utbetaling ytelseTilUtbetaling(WSUtbetaling wsUtbetaling, WSYtelse ytelse) {
         Utbetaling utbetaling = new Utbetaling();
 
-        utbetaling.type = ytelse.getYtelsestype() != null ? ytelse.getYtelsestype().getValue() : "";
+        utbetaling.type = "navytelse";
+        utbetaling.tittel = ytelse.getYtelsestype() != null ? ytelse.getYtelsestype().getValue() : "";
+        utbetaling.orgnummer = "889640782";
+
         utbetaling.netto = ytelse.getYtelseNettobeloep();
         utbetaling.brutto = ytelse.getYtelseskomponentersum();
         utbetaling.skattetrekk = ytelse.getSkattsum();
