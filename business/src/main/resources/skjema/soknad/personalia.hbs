@@ -28,18 +28,16 @@
 	                </ul>
 	            </li>
             {{/if}}
-            {{#if statsborgerskap.verdi}}
-                <li>
-                    <h3>{{ hentTekst "kontakt.system.personalia.statsborgerskap" }}</h3>
-                    <ul class="svar-liste">
-                        <li>
-                            <span class="verdi verdi--tekst">
-                                {{landMedFulltNavn statsborgerskap.verdi}}
-                            </span>
-                        </li>
-                    </ul>
-                </li>
-            {{/if}}
+            <li>
+                <h3>{{ hentTekst "kontakt.system.personalia.statsborgerskap" }}</h3>
+                <ul class="svar-liste">
+                    <li>
+                        <span class="verdi verdi--tekst">
+                            {{landMedFulltNavn statsborgerskap.verdi}}
+                        </span>
+                    </li>
+                </ul>
+            </li>
             {{#if @root.utvidetSoknad}}
                 <h3>{{ hentTekst "soknadsmottaker.sporsmal" }}</h3>
                 {{{settInnHjelpetekst "soknadsmottaker.hjelpetekst.tekst"}}}
