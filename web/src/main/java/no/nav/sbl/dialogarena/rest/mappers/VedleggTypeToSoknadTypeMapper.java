@@ -88,4 +88,17 @@ public class VedleggTypeToSoknadTypeMapper {
                 throw new IllegalStateException("Vedleggstypen eksisterer ikke eller mangler mapping");
         }
     }
+
+    public static boolean isInSoknadJson(String vedleggType) {
+        switch (vedleggType){
+            case "oppholdstillatel|oppholdstillatel":
+            case "samvarsavtale|barn":
+            case "husleiekontrakt|husleiekontrakt":
+            case "husleiekontrakt|kommunal":
+            case "skattemelding|skattemelding":
+                return false;
+            default:
+                return true;
+        }
+    }
 }

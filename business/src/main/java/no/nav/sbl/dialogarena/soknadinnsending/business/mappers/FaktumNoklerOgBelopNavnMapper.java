@@ -14,7 +14,6 @@ public class FaktumNoklerOgBelopNavnMapper {
         soknadTypeToFaktumKey.put("boliglanRenter", "opplysninger.utgifter.boutgift.avdraglaan");
         soknadTypeToFaktumKey.put("barnehage", "opplysninger.utgifter.barn.barnehage");
         soknadTypeToFaktumKey.put("sfo", "opplysninger.utgifter.barn.sfo");
-        soknadTypeToFaktumKey.put("barnebidrag", "opplysninger.familiesituasjon.barnebidrag.betaler");
         soknadTypeToFaktumKey.put("brukskonto", "opplysninger.inntekt.bankinnskudd.brukskonto");
         soknadTypeToFaktumKey.put("bsu", "opplysninger.inntekt.bankinnskudd.bsu");
         soknadTypeToFaktumKey.put("sparekonto", "opplysninger.inntekt.bankinnskudd.sparekonto");
@@ -46,7 +45,6 @@ public class FaktumNoklerOgBelopNavnMapper {
         soknadTypeToBelopNavn.put("boliglanRenter", "renter");
         soknadTypeToBelopNavn.put("barnehage", "sistemnd");
         soknadTypeToBelopNavn.put("sfo", "sistemnd");
-        soknadTypeToBelopNavn.put("barnebidrag", "betaler");
         soknadTypeToBelopNavn.put("brukskonto", "saldo");
         soknadTypeToBelopNavn.put("bsu", "saldo");
         soknadTypeToBelopNavn.put("sparekonto", "saldo");

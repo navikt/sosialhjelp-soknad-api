@@ -92,6 +92,7 @@ public class OpplastetVedleggServiceTest {
         assertThat(jsonVedlegg.getStatus(), is("LastetOpp"));
         assertThat(jsonVedlegg.getFiler().size(), is(1));
         assertThat(opplastetVedlegg.getUuid(), is("321"));
+        assertThat(opplastetVedlegg.getFilnavn().substring(0, 5), is(FILNAVN1.substring(0, 5)));
     }
 
     @Test
