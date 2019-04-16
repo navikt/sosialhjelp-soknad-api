@@ -27,7 +27,6 @@ public class BasisPersonaliaSystemdata implements Systemdata {
             return;
         }
 
-        personalia.setPersonIdentifikator(systemPersonalia.getPersonIdentifikator());
         personalia.setNavn(systemPersonalia.getNavn());
         personalia.setStatsborgerskap(systemPersonalia.getStatsborgerskap());
         personalia.setNordiskBorger(systemPersonalia.getNordiskBorger());

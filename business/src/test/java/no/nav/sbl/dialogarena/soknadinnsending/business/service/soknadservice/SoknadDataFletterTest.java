@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.xml.bind.JAXB;
 
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.Before;
@@ -108,6 +109,8 @@ public class SoknadDataFletterTest {
     private BarnBolk barnBolk;
     @Mock
     private ArbeidsforholdBolk arbeidsforholdBolk;
+    @Mock
+    private SystemdataUpdater systemdataUpdater;
     @Mock
     ApplicationContext applicationContex;
     @Mock
