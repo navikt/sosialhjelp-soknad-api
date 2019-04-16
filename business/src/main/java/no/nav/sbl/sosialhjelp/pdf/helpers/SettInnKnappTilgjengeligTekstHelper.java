@@ -14,7 +14,7 @@ import java.io.IOException;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
-public class SettInnKnappTilgjengeligTekstHelper extends RegistryAwareHelper<String> {
+public class SettInnKnappTilgjengeligTekstHelper extends RegistryAwareHelper<String> implements TextWithTitle {
 
     @Inject
     private CmsTekst cmsTekst;
@@ -37,7 +37,7 @@ public class SettInnKnappTilgjengeligTekstHelper extends RegistryAwareHelper<Str
         final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         final String bundleName = konfigurasjon.getBundleName();
 
-        String knapptekst = getKnapptekst(key, options, konfigurasjon, bundleName);
+        String knapptekst = TextWithTitle.getText(key, options, konfigurasjon, bundleName, cmsTekst);
 
         if (knapptekst == null) {
             return "";
@@ -45,29 +45,6 @@ public class SettInnKnappTilgjengeligTekstHelper extends RegistryAwareHelper<Str
 
         final String knapptekstTittel = "Knapp tilgjengelig:";
 
-        return createHtmlLayout(knapptekst, knapptekstTittel);
-    }
-
-    private String getKnapptekst(String key, Options options, final KravdialogInformasjon konfigurasjon,
-                                final String bundleName) {
-        String knapptekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
-
-        String nyKnapptekst = UrlUtils.endreHyperLenkerTilTekst(knapptekst);
-
-        if (knapptekst != null && !knapptekst.equals(nyKnapptekst)) {
-            knapptekst = nyKnapptekst;
-        }
-        return knapptekst;
-    }
-
-    private String createHtmlLayout(String knapptekst, final String knapptekstTittel) {
-        return "<ul class=\"svar-liste\">\r\n" +
-                "    <li>\r\n" +
-                "        <h4>" + knapptekstTittel + "</h4>\r\n" +
-                "    </li>\r\n" +
-                "    <li>\r\n" +
-                "        <span>" + knapptekst + "</span>\r\n" +
-                "    </li>\r\n" +
-                "</ul>";
+        return TextWithTitle.createHtmlLayout(knapptekst, knapptekstTittel);
     }
 }
