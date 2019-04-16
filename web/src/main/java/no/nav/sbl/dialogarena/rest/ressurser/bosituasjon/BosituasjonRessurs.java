@@ -45,9 +45,9 @@ public class BosituasjonRessurs {
 
     @GET
     public BosituasjonFrontend hentBosituasjon(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonBosituasjon bosituasjon = soknad.getSoknad().getData().getBosituasjon();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        JsonBosituasjon bosituasjon = soknad.getSoknad().getData().getBosituasjon();
 
         return new BosituasjonFrontend()
                 .withBotype(bosituasjon.getBotype())
@@ -62,9 +62,9 @@ public class BosituasjonRessurs {
     }
 
     private void update(String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonBosituasjon bosituasjon = soknad.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonBosituasjon bosituasjon = soknad.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
         bosituasjon.setKilde(JsonKildeBruker.BRUKER);
         if (bosituasjonFrontend.botype != null) {
             bosituasjon.setBotype(bosituasjonFrontend.botype);
@@ -74,11 +74,11 @@ public class BosituasjonRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
         if (bosituasjonFrontend.botype != null) {
-            final Faktum bosituasjon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon");
-            final Faktum annenBosituasjon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon.annet.botype");
+            Faktum bosituasjon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon");
+            Faktum annenBosituasjon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon.annet.botype");
 
             if (isAnnenBotype(bosituasjonFrontend.botype)) {
                 bosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
@@ -97,7 +97,7 @@ public class BosituasjonRessurs {
             faktaService.lagreBrukerFaktum(annenBosituasjon);
         }
 
-        final Faktum antallPersoner = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon.antallpersoner");
+        Faktum antallPersoner = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon.antallpersoner");
         antallPersoner.setType(Faktum.FaktumType.BRUKERREGISTRERT);
         antallPersoner.setValue(bosituasjonFrontend.antallPersoner == null ? null : bosituasjonFrontend.antallPersoner.toString());
 

@@ -1,26 +1,5 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getFeaturesForEnhet;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
@@ -30,6 +9,21 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getFeaturesForEnhet;
 
 @Controller
 @Path("/soknadsmottaker")
@@ -53,9 +47,9 @@ public class SoknadsmottakerRessurs {
     }
 
     public List<LegacyNavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg){
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad, valg);
+        List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad, valg);
 
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
@@ -63,7 +57,7 @@ public class SoknadsmottakerRessurs {
          * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
          */
         return adresseForslagene.stream().map((adresseForslag) -> {
-            final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+            NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
@@ -78,7 +72,7 @@ public class SoknadsmottakerRessurs {
             return null;
         }
         
-        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
+        boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         return new LegacyNavEnhetFrontend()
                 .withEnhetsId(navEnhet.enhetNr)
                 .withEnhetsnavn(navEnhet.navn)
@@ -139,7 +133,7 @@ public class SoknadsmottakerRessurs {
 
         @Override
         public int hashCode() {
-            final int prime = 31;
+            int prime = 31;
             int result = 1;
             result = prime * result + ((enhetsId == null) ? 0 : enhetsId.hashCode());
             return result;

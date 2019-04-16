@@ -26,12 +26,12 @@ public class InntektSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
-        final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
-        final List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalings = jsonData.getOkonomi().getOpplysninger()
+        JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
+        String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
+        List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalings = jsonData.getOkonomi().getOpplysninger()
                 .getUtbetaling().stream().filter(utbetaling -> !utbetaling.getType().equals("navytelse"))
                 .collect(Collectors.toList());
-        final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = innhentSystemregistrertInntekt(personIdentifikator);
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = innhentSystemregistrertInntekt(personIdentifikator);
         if (utbetalinger == null){
             soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente utbetalinger fra NAV");
         } else {

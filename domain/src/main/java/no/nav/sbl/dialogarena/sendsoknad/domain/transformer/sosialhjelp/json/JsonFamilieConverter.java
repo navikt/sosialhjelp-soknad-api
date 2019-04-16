@@ -2,12 +2,12 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.valueOf;
@@ -27,7 +27,7 @@ public final class JsonFamilieConverter {
     }
 
     public static JsonFamilie tilFamilie(WebSoknad webSoknad) {
-        final JsonFamilie jsonFamilie = new JsonFamilie();
+        JsonFamilie jsonFamilie = new JsonFamilie();
         jsonFamilie.setSivilstatus(tilJsonSivilstatus(webSoknad));
         jsonFamilie.setForsorgerplikt(tilJsonForsorgerPlikt(webSoknad));
 
@@ -35,8 +35,8 @@ public final class JsonFamilieConverter {
     }
 
     static JsonSivilstatus tilJsonSivilstatus(WebSoknad webSoknad) {
-        final String brukerregistrertSivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
-        final String systemregistrertSivilstatus = webSoknad.getValueForFaktum("system.familie.sivilstatus");
+        String brukerregistrertSivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
+        String systemregistrertSivilstatus = webSoknad.getValueForFaktum("system.familie.sivilstatus");
         if (erTom(systemregistrertSivilstatus) & erTom(brukerregistrertSivilstatus)) {
             return null;
         } else if (!erTom(systemregistrertSivilstatus) & erTom(brukerregistrertSivilstatus)) {
@@ -48,14 +48,14 @@ public final class JsonFamilieConverter {
 
     private static JsonSivilstatus tilJsonSystemregistrertSivilstatus(WebSoknad webSoknad) {
         String sivilstatus = webSoknad.getValueForFaktum("system.familie.sivilstatus");
-        final JsonSivilstatus jsonSivilstatus = new JsonSivilstatus();
+        JsonSivilstatus jsonSivilstatus = new JsonSivilstatus();
         jsonSivilstatus.setKilde(SYSTEM);
 
-        final Status status = tilStatus(sivilstatus);
+        Status status = tilStatus(sivilstatus);
         jsonSivilstatus.setStatus(status);
 
         if (status == GIFT) {
-            final Map<String, String> ektefelle = getEktefelleproperties(webSoknad, "system.familie.sivilstatus.gift.ektefelle");
+            Map<String, String> ektefelle = getEktefelleproperties(webSoknad, "system.familie.sivilstatus.gift.ektefelle");
             jsonSivilstatus.setEktefelle(tilSystemregistrertJsonEktefelle(ektefelle));
             jsonSivilstatus.setFolkeregistrertMedEktefelle(valueOf(ektefelle.get("folkeregistrertsammen")));
             jsonSivilstatus.setEktefelleHarDiskresjonskode(valueOf(ektefelle.get("ikketilgangtilektefelle")));
@@ -65,24 +65,24 @@ public final class JsonFamilieConverter {
     }
 
     private static JsonSivilstatus tilJsonBrukerregistrertSivilstatus(WebSoknad webSoknad) {
-        final String sivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
+        String sivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
 
-        final JsonSivilstatus jsonSivilstatus = new JsonSivilstatus();
+        JsonSivilstatus jsonSivilstatus = new JsonSivilstatus();
         jsonSivilstatus.setKilde(BRUKER);
 
-        final Status status = tilStatus(sivilstatus);
+        Status status = tilStatus(sivilstatus);
         jsonSivilstatus.setStatus(status);
 
         if (status == GIFT) {
-            final Map<String, String> ektefelle = getEktefelleproperties(webSoknad, "familie.sivilstatus.gift.ektefelle");
+            Map<String, String> ektefelle = getEktefelleproperties(webSoknad, "familie.sivilstatus.gift.ektefelle");
             jsonSivilstatus.setEktefelle(tilBrukerregistrertJsonEktefelle(ektefelle));
 
-            final String borSammenMed = ektefelle.get("borsammen");
+            String borSammenMed = ektefelle.get("borsammen");
             if (JsonUtils.erIkkeTom(borSammenMed)) {
                 jsonSivilstatus.setBorSammenMed(valueOf(borSammenMed));
             }
 
-            final String borIkkeSammenMedBegrunnelse = ektefelle.get("ikkesammenbeskrivelse");
+            String borIkkeSammenMedBegrunnelse = ektefelle.get("ikkesammenbeskrivelse");
             if (JsonUtils.erIkkeTom(borIkkeSammenMedBegrunnelse)) {
                 jsonSivilstatus.setBorIkkeSammenMedBegrunnelse(borIkkeSammenMedBegrunnelse);
             }
@@ -92,7 +92,7 @@ public final class JsonFamilieConverter {
     }
 
     private static Map<String, String> getEktefelleproperties(WebSoknad webSoknad, String faktumKey) {
-        final Faktum faktum = webSoknad.getFaktumMedKey(faktumKey);
+        Faktum faktum = webSoknad.getFaktumMedKey(faktumKey);
         if (faktum == null) {
             return new HashMap<>();
         }
@@ -100,14 +100,14 @@ public final class JsonFamilieConverter {
     }
 
     private static JsonEktefelle tilSystemregistrertJsonEktefelle(Map<String, String> ektefelle) {
-        final String ikketilgangtilektefelle = ektefelle.get("ikketilgangtilektefelle");
+        String ikketilgangtilektefelle = ektefelle.get("ikketilgangtilektefelle");
         if (erIkkeTom(ikketilgangtilektefelle) && valueOf(ikketilgangtilektefelle)) {
             return new JsonEktefelle().withNavn(new JsonNavn()
                     .withFornavn("")
                     .withMellomnavn("")
                     .withEtternavn(""));
         }
-        final JsonEktefelle jsonEktefelle = new JsonEktefelle();
+        JsonEktefelle jsonEktefelle = new JsonEktefelle();
         jsonEktefelle.setNavn(mapNavnFraFaktumTilJsonNavn(ektefelle));
         jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fodselsdato")));
         jsonEktefelle.setPersonIdentifikator(ektefelle.get("fnr"));
@@ -116,7 +116,7 @@ public final class JsonFamilieConverter {
     }
 
     private static JsonEktefelle tilBrukerregistrertJsonEktefelle(Map<String, String> ektefelle) {
-        final JsonEktefelle jsonEktefelle = new JsonEktefelle();
+        JsonEktefelle jsonEktefelle = new JsonEktefelle();
         if (isEmpty(ektefelle.get("navn"))) {
             jsonEktefelle.setNavn(mapNavnFraFaktumTilJsonNavn(ektefelle));
         } else {
@@ -141,7 +141,7 @@ public final class JsonFamilieConverter {
 
 
     private static Status tilStatus(String sivilstatus) {
-        final Status status = Status.fromValue(sivilstatus);
+        Status status = Status.fromValue(sivilstatus);
         if (status == null) {
             logger.warn("Ukjent sivilstatus: {}", sivilstatus);
         }
@@ -204,8 +204,8 @@ public final class JsonFamilieConverter {
     static JsonAnsvar faktumTilAnsvar(Faktum faktum) {
         Map<String, String> barn = faktum.getProperties();
         JsonBarn jsonBarn = new JsonBarn();
-        final String ikketilgangtilbarn = barn.get("ikketilgangtilbarn");
-        final boolean barnHarDiskresjonskode = erIkkeTom(ikketilgangtilbarn) && valueOf(ikketilgangtilbarn);
+        String ikketilgangtilbarn = barn.get("ikketilgangtilbarn");
+        boolean barnHarDiskresjonskode = erIkkeTom(ikketilgangtilbarn) && valueOf(ikketilgangtilbarn);
         if (barnHarDiskresjonskode) {
             jsonBarn.withKilde(SYSTEM)
                     .withNavn(new JsonNavn()
@@ -283,7 +283,7 @@ public final class JsonFamilieConverter {
             return "";
         }
 
-        final String trimmedNavn = navn.trim();
+        String trimmedNavn = navn.trim();
         if (!trimmedNavn.contains(" ")) {
             return navn;
         }
@@ -296,7 +296,7 @@ public final class JsonFamilieConverter {
             return "";
         }
 
-        final String trimmedNavn = navn.trim();
+        String trimmedNavn = navn.trim();
         return trimmedNavn.substring(trimmedNavn.lastIndexOf(' ') + 1);
     }
 }

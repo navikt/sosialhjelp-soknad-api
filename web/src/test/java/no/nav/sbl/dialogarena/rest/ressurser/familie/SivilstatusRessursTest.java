@@ -84,7 +84,7 @@ public class SivilstatusRessursTest {
                 createJsonInternalSoknadWithSivilstatus(null, null, null,
                         null, null, null));
 
-        final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
+        SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
         assertThat(sivilstatusFrontend, nullValue());
     }
@@ -95,7 +95,7 @@ public class SivilstatusRessursTest {
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, null,
                         null, null, null));
 
-        final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
+        SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
         assertThat(sivilstatusFrontend.kildeErSystem, is(false));
@@ -110,7 +110,7 @@ public class SivilstatusRessursTest {
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         null, null, true));
 
-        final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
+        SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
         assertThat(sivilstatusFrontend.kildeErSystem, is(false));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
@@ -126,7 +126,7 @@ public class SivilstatusRessursTest {
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         false, true, null));
 
-        final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
+        SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
         assertThat(sivilstatusFrontend.kildeErSystem, is(true));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
@@ -142,7 +142,7 @@ public class SivilstatusRessursTest {
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         true, null, null));
 
-        final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
+        SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
         assertThat(sivilstatusFrontend.kildeErSystem, is(true));
         assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
@@ -173,14 +173,14 @@ public class SivilstatusRessursTest {
                 Optional.of(createJsonInternalSoknadWithSivilstatus(null, null, null,
                         null, null, null)));
 
-        final SivilstatusFrontend sivilstatusFrontend = new SivilstatusFrontend()
+        SivilstatusFrontend sivilstatusFrontend = new SivilstatusFrontend()
                 .withKildeErSystem(false).withSivilstatus(JsonSivilstatus.Status.GIFT)
                 .withEktefelle(EKTEFELLE_FRONTEND);
 
         sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
         assertThat(sivilstatus.getKilde(), is(JsonKilde.BRUKER));
         assertThat(sivilstatus.getStatus(), is(JsonSivilstatus.Status.GIFT));
         assertThatEktefelleIsCorrectlyConverted(EKTEFELLE_FRONTEND, sivilstatus.getEktefelle());
@@ -195,13 +195,13 @@ public class SivilstatusRessursTest {
     }
 
     private void assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status status) throws ParseException {
-        final SivilstatusFrontend sivilstatusFrontend = new SivilstatusFrontend()
+        SivilstatusFrontend sivilstatusFrontend = new SivilstatusFrontend()
                 .withKildeErSystem(false).withSivilstatus(status);
 
         sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
         assertThat("kilde", sivilstatus.getKilde(), is(JsonKilde.BRUKER));
         assertThat("status", sivilstatus.getStatus(), is(status));
     }

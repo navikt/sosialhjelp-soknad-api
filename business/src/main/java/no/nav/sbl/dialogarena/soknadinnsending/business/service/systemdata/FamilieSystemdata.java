@@ -10,7 +10,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
@@ -31,19 +30,19 @@ public class FamilieSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
-        final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
-        final JsonFamilie familie = jsonData.getFamilie();
+        JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
+        String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
+        JsonFamilie familie = jsonData.getFamilie();
         if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM){
-            final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
+            JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
             if (systemverdiSivilstatus != null){
                 familie.setSivilstatus(systemverdiSivilstatus);
             }
         }
-        final JsonHarForsorgerplikt harForsorgerplikt = familie.getForsorgerplikt().getHarForsorgerplikt();
+        JsonHarForsorgerplikt harForsorgerplikt = familie.getForsorgerplikt().getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getKilde() == null ||
                 harForsorgerplikt.getKilde() == JsonKilde.SYSTEM){
-            final JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
+            JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
             if(systemverdiForsorgerplikt != null){
                 familie.setForsorgerplikt(systemverdiForsorgerplikt);
             }
@@ -51,7 +50,7 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
         if (!isNotEmpty(personalia.getSivilstatus())) {
             return null;
         }

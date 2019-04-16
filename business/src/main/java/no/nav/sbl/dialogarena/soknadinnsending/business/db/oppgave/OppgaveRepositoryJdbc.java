@@ -98,8 +98,8 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     
     @Override
     public int retryOppgaveStuckUnderArbeid() {
-        final String updateSql = "UPDATE oppgave SET status = ? WHERE status = ? AND sistkjort < ?";
-        final int rowsAffected = getJdbcTemplate().update(updateSql, KLAR.name(), UNDER_ARBEID.name(), tidTilTimestamp(LocalDateTime.now().minusHours(1)));
+        String updateSql = "UPDATE oppgave SET status = ? WHERE status = ? AND sistkjort < ?";
+        int rowsAffected = getJdbcTemplate().update(updateSql, KLAR.name(), UNDER_ARBEID.name(), tidTilTimestamp(LocalDateTime.now().minusHours(1)));
         return rowsAffected;
     }
 

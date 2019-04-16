@@ -1,11 +1,5 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import no.nav.sbl.sosialhjelp.pdf.context.InntektEllerUtgiftType;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
@@ -14,6 +8,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.pdf.context.InntektEllerUtgiftType;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public final class HandlebarContext {
     
@@ -60,7 +60,7 @@ public final class HandlebarContext {
     public String getEier() { return eier; }
 
     public Collection<InntektEllerUtgiftType> getFormuetyper() {
-        final List<JsonOkonomioversiktFormue> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getFormue();
+        List<JsonOkonomioversiktFormue> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getFormue();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
             .distinct()
@@ -68,7 +68,7 @@ public final class HandlebarContext {
     }
     
     public Collection<InntektEllerUtgiftType> getUtbetalingstyper() {
-        final List<JsonOkonomiOpplysningUtbetaling> formue = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
+        List<JsonOkonomiOpplysningUtbetaling> formue = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
             .distinct()
@@ -76,7 +76,7 @@ public final class HandlebarContext {
     }
     
     public Collection<InntektEllerUtgiftType> getOpplysningUtgiftstyper() {
-        final List<JsonOkonomiOpplysningUtgift> formue = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtgift();
+        List<JsonOkonomiOpplysningUtgift> formue = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtgift();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
             .distinct()
@@ -84,7 +84,7 @@ public final class HandlebarContext {
     }
     
     public Collection<InntektEllerUtgiftType> getOversiktUtgiftstyper() {
-        final List<JsonOkonomioversiktUtgift> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getUtgift();
+        List<JsonOkonomioversiktUtgift> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getUtgift();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
             .distinct()

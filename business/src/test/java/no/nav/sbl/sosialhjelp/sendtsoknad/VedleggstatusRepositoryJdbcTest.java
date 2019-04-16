@@ -2,8 +2,11 @@ package no.nav.sbl.sosialhjelp.sendtsoknad;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
-import no.nav.sbl.sosialhjelp.domain.*;
-import org.junit.*;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import org.junit.After;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -53,7 +56,7 @@ public class VedleggstatusRepositoryJdbcTest {
 
     @Test
     public void opprettVedleggstatusOppretterVedleggstatusIDatabasen() {
-        final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
 
         Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
 
@@ -62,8 +65,8 @@ public class VedleggstatusRepositoryJdbcTest {
 
     @Test
     public void hentVedleggHenterVedleggstatusSomFinnesForGittIdOgEier() {
-        final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
-        final Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
+        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
 
         Vedleggstatus vedleggstatus = vedleggstatusRepository.hentVedlegg(vedleggstatusId, EIER).get();
 
@@ -76,9 +79,9 @@ public class VedleggstatusRepositoryJdbcTest {
 
     @Test
     public void hentVedleggforSendtSoknadHenterKunVedleggstatusForAngittSoknad() {
-        final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
-        final Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
-        final Long sendtSoknadId2 = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID2, FIKSFORSENDELSEID2), EIER);
+        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
+        Long sendtSoknadId2 = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID2, FIKSFORSENDELSEID2), EIER);
         vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId2), EIER);
 
         List<Vedleggstatus> vedleggstatuser = vedleggstatusRepository.hentVedleggForSendtSoknad(sendtSoknadId, EIER);
@@ -89,8 +92,8 @@ public class VedleggstatusRepositoryJdbcTest {
 
     @Test
     public void hentVedleggForSendtSoknadMedStatusHenterKunVedleggstatusForAngittStatus() {
-        final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
-        final Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(
+        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(
                 lagVedleggstatus(EIER, sendtSoknadId, Vedleggstatus.Status.VedleggAlleredeSendt, TYPE2, TILLEGGSINFO2), EIER);
         vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
 
@@ -103,8 +106,8 @@ public class VedleggstatusRepositoryJdbcTest {
 
     @Test
     public void endreStatusForVedleggOppdatererStatusForVedleggstatus() {
-        final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
-        final Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
+        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
 
         vedleggstatusRepository.endreStatusForVedlegg(vedleggstatusId, Vedleggstatus.Status.LastetOpp.toString(), EIER);
 
@@ -114,8 +117,8 @@ public class VedleggstatusRepositoryJdbcTest {
 
     @Test
     public void slettVedleggSletterVedleggstatusFraDatabase() {
-        final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
-        final Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
+        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
 
         vedleggstatusRepository.slettVedlegg(vedleggstatusId, EIER);
 
@@ -124,10 +127,10 @@ public class VedleggstatusRepositoryJdbcTest {
 
     @Test
     public void slettAlleVedleggForSendtSoknadSletterAlleVedleggForGittSoknad() {
-        final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
-        final Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(
+        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
+        Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(
                 lagVedleggstatus(EIER, sendtSoknadId, Vedleggstatus.Status.VedleggAlleredeSendt, TYPE2, TILLEGGSINFO2), EIER);
-        final Long vedleggstatusId2 = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
+        Long vedleggstatusId2 = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
 
         vedleggstatusRepository.slettAlleVedleggForSendtSoknad(sendtSoknadId, EIER);
 

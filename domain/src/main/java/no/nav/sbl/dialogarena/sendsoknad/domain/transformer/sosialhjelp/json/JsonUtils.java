@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -17,7 +16,7 @@ public final class JsonUtils {
     }
 
     public static String finnPropertyEllerNullOmTom(Map<String, String> properties, String propertyName) {
-        final String property = properties.get(propertyName);
+        String property = properties.get(propertyName);
         if (erTom(property)) {
             return null;
         } else {
@@ -26,7 +25,7 @@ public final class JsonUtils {
     }
     
     public static String finnPropertyEllerTom(Map<String, String> properties, String propertyName) {
-        final String s = finnPropertyEllerNullOmTom(properties, propertyName);
+        String s = finnPropertyEllerNullOmTom(properties, propertyName);
         return s != null ? s : "";
     }
 
@@ -35,7 +34,7 @@ public final class JsonUtils {
     }
 
     public static boolean faktumVerdiErTrue(WebSoknad webSoknad, String key) {
-        final String verdi = webSoknad.getValueForFaktum(key);
+        String verdi = webSoknad.getValueForFaktum(key);
         return verdi != null && Boolean.parseBoolean(verdi);
     }
 

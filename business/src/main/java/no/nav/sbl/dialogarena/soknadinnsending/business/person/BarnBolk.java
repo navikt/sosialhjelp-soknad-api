@@ -7,8 +7,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,7 @@ public class BarnBolk implements BolkService {
     }
 
     @Override
-    public List<Faktum> genererSystemFakta(String fodselsnummer, final Long soknadId) {
+    public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
         List<Faktum> fakta = new ArrayList<>();
         List<Barn> barn = personService.hentBarn(fodselsnummer);
 
@@ -47,7 +49,7 @@ public class BarnBolk implements BolkService {
         return fakta;
     }
 
-    List<Faktum> genererSystemFaktaForBarn(List<Barn> barnListe, final Long soknadId) {
+    List<Faktum> genererSystemFaktaForBarn(List<Barn> barnListe, Long soknadId) {
         AtomicLong lopenummer = new AtomicLong(1);
         return barnListe.stream()
                 .filter(Objects::nonNull)

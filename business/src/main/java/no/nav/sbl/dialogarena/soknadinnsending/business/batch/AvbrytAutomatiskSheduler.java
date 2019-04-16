@@ -73,8 +73,8 @@ public class AvbrytAutomatiskSheduler {
             soknadMetadata.sistEndretDato = LocalDateTime.now();
             soknadMetadataRepository.oppdater(soknadMetadata);
 
-            final String behandlingsId = soknadMetadata.behandlingsId;
-            final String eier = soknadMetadata.fnr;
+            String behandlingsId = soknadMetadata.behandlingsId;
+            String eier = soknadMetadata.fnr;
 
             fillagerService.slettAlle(behandlingsId);
 

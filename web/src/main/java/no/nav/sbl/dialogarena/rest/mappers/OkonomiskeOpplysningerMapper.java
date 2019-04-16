@@ -25,12 +25,12 @@ import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.
 public class OkonomiskeOpplysningerMapper {
 
     public static void addAllInntekterToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String jsonType) {
-        final Optional<JsonOkonomioversiktInntekt> eksisterendeInntekt = jsonOkonomi.getOversikt().getInntekt().stream()
+        Optional<JsonOkonomioversiktInntekt> eksisterendeInntekt = jsonOkonomi.getOversikt().getInntekt().stream()
                 .filter(inntekt -> inntekt.getType().equals(jsonType))
                 .findFirst();
 
         if (eksisterendeInntekt.isPresent()) {
-            final List<JsonOkonomioversiktInntekt> inntekter = jsonOkonomi.getOversikt().getInntekt().stream()
+            List<JsonOkonomioversiktInntekt> inntekter = jsonOkonomi.getOversikt().getInntekt().stream()
                     .filter(inntekt -> !inntekt.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -40,12 +40,12 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     public static void addAllFormuerToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String jsonType) {
-        final Optional<JsonOkonomioversiktFormue> eksisterendeFormue = jsonOkonomi.getOversikt().getFormue().stream()
+        Optional<JsonOkonomioversiktFormue> eksisterendeFormue = jsonOkonomi.getOversikt().getFormue().stream()
                 .filter(formue -> formue.getType().equals(jsonType))
                 .findFirst();
 
         if (eksisterendeFormue.isPresent()) {
-            final List<JsonOkonomioversiktFormue> formuer = jsonOkonomi.getOversikt().getFormue().stream()
+            List<JsonOkonomioversiktFormue> formuer = jsonOkonomi.getOversikt().getFormue().stream()
                     .filter(formue -> !formue.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -55,12 +55,12 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     public static void addAllOversiktUtgifterToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String jsonType) {
-        final Optional<JsonOkonomioversiktUtgift> eksisterendeOversiktUtgift = jsonOkonomi.getOversikt().getUtgift().stream()
+        Optional<JsonOkonomioversiktUtgift> eksisterendeOversiktUtgift = jsonOkonomi.getOversikt().getUtgift().stream()
                 .filter(utgift -> utgift.getType().equals(jsonType))
                 .findFirst();
 
         if (eksisterendeOversiktUtgift.isPresent()) {
-            final List<JsonOkonomioversiktUtgift> utgifter = jsonOkonomi.getOversikt().getUtgift().stream()
+            List<JsonOkonomioversiktUtgift> utgifter = jsonOkonomi.getOversikt().getUtgift().stream()
                     .filter(utgift -> !utgift.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -77,13 +77,13 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     public static void addAllOpplysningUtgifterToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String jsonType) {
-        final Optional<JsonOkonomiOpplysningUtgift> eksisterendeOpplysningUtgift = jsonOkonomi.getOpplysninger().getUtgift().stream()
+        Optional<JsonOkonomiOpplysningUtgift> eksisterendeOpplysningUtgift = jsonOkonomi.getOpplysninger().getUtgift().stream()
                 .filter(utgift -> utgift.getType().equals(jsonType))
                 .findFirst();
 
         // Dersom det ikke er en eksisterende utgift er det ikke mulig for bruker å fylle ut informasjon på vedlegget.
         if (eksisterendeOpplysningUtgift.isPresent()) {
-            final List<JsonOkonomiOpplysningUtgift> utgifter = jsonOkonomi.getOpplysninger().getUtgift().stream()
+            List<JsonOkonomiOpplysningUtgift> utgifter = jsonOkonomi.getOpplysninger().getUtgift().stream()
                     .filter(utgift -> !utgift.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -94,12 +94,12 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     public static void addAllUtbetalingerToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String jsonType) {
-        final Optional<JsonOkonomiOpplysningUtbetaling> eksisterendeUtbetaling = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
+        Optional<JsonOkonomiOpplysningUtbetaling> eksisterendeUtbetaling = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
                 .filter(utbetaling -> utbetaling.getType().equals(jsonType))
                 .findFirst();
 
         if (eksisterendeUtbetaling.isPresent()) {
-            final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
+            List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
                     .filter(utbetaling -> !utbetaling.getType().equals(jsonType))
                     .collect(Collectors.toList());
 
@@ -109,7 +109,7 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static void addBoliglanRenterToUtgifter(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, List<JsonOkonomioversiktUtgift> utgifter) {
-        final Optional<JsonOkonomioversiktUtgift> eksisterendeRenter = jsonOkonomi.getOversikt().getUtgift().stream()
+        Optional<JsonOkonomioversiktUtgift> eksisterendeRenter = jsonOkonomi.getOversikt().getUtgift().stream()
                 .filter(utgift -> utgift.getType().equals("boliglanRenter"))
                 .findFirst();
 
@@ -180,9 +180,9 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static JsonOkonomioversiktUtgift mapToOversiktUtgift(VedleggRadFrontend radFrontend, JsonOkonomioversiktUtgift eksisterendeUtgift) {
-        final String tittel = eksisterendeUtgift.getTittel();
-        final String typetittel = !tittel.contains(":") ? tittel : tittel.substring(0, tittel.indexOf(":") + 2);
-        final String type = eksisterendeUtgift.getType();
+        String tittel = eksisterendeUtgift.getTittel();
+        String typetittel = !tittel.contains(":") ? tittel : tittel.substring(0, tittel.indexOf(":") + 2);
+        String type = eksisterendeUtgift.getType();
 
         return new JsonOkonomioversiktUtgift().withKilde(JsonKilde.BRUKER)
                 .withType(type)
@@ -203,14 +203,14 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     public static VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi, List<OpplastetVedlegg> opplastedeVedlegg) {
-        final List<FilFrontend> filer = vedlegg.getFiler().stream().map(fil -> {
-            final OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn()))
+        List<FilFrontend> filer = vedlegg.getFiler().stream().map(fil -> {
+            OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Vedlegget finnes ikke"));
             return new FilFrontend().withFilNavn(fil.getFilnavn()).withUuid(opplastetVedlegg.getUuid());
         }).collect(Collectors.toList());
 
-        final List<VedleggRadFrontend> rader = getRader(jsonOkonomi, vedlegg.getType(), vedlegg.getTilleggsinfo());
+        List<VedleggRadFrontend> rader = getRader(jsonOkonomi, vedlegg.getType(), vedlegg.getTilleggsinfo());
 
         return new VedleggFrontend().withType(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo())
                 .withGruppe(getGruppe(vedlegg.getType(), vedlegg.getTilleggsinfo()))
@@ -222,7 +222,7 @@ public class OkonomiskeOpplysningerMapper {
     private static List<VedleggRadFrontend> getRader(JsonOkonomi jsonOkonomi, String type, String tilleggsinfo) {
         if (isTypeWithoutRader(type, tilleggsinfo)) return Collections.emptyList();
 
-        final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
+        SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
 
         // Spesialtilfelle for avdrag og renter
         if (soknadTypeAndPath.getType().equals("boliglanAvdrag")){
@@ -246,8 +246,8 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static List<VedleggRadFrontend> getRadListWithAvdragAndRenter(JsonOkonomi jsonOkonomi) {
-        final List<VedleggRadFrontend> avdragRad = getRadListFromOversiktUtgift(jsonOkonomi, "boliglanAvdrag");
-        final List<VedleggRadFrontend> renterRad = getRadListFromOversiktUtgift(jsonOkonomi, "boliglanRenter");
+        List<VedleggRadFrontend> avdragRad = getRadListFromOversiktUtgift(jsonOkonomi, "boliglanAvdrag");
+        List<VedleggRadFrontend> renterRad = getRadListFromOversiktUtgift(jsonOkonomi, "boliglanRenter");
 
         if (avdragRad != null){
             for (int i = 0; i < avdragRad.size(); i++){
@@ -338,11 +338,11 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static String getGruppe(String type, String tilleggsinfo) {
-        final String gruppe = getGruppeFromTypesWithoutRader(type, tilleggsinfo);
+        String gruppe = getGruppeFromTypesWithoutRader(type, tilleggsinfo);
         if (gruppe != null) return gruppe;
 
-        final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
-        final String path = soknadTypeAndPath.getPath();
+        SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
+        String path = soknadTypeAndPath.getPath();
 
         if (tilleggsinfo.equals("mottar") || tilleggsinfo.equals("betaler") || tilleggsinfo.equals("barn")){
             return "familie";

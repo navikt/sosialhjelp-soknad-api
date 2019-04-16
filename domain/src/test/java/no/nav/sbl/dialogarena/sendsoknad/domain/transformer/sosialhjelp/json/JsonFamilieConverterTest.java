@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import org.junit.Test;
 
 import static java.lang.String.valueOf;
@@ -31,7 +30,7 @@ public class JsonFamilieConverterTest {
 
     @Test
     public void tilJsonSivilstatusReturnererNullHvisBrukerregistrertOgSystemregistrertSivilstatusMangler() {
-        final WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("ikke.sivilstatus").medValue("Noe annet"));
+        WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("ikke.sivilstatus").medValue("Noe annet"));
 
         JsonSivilstatus jsonSivilstatus = JsonFamilieConverter.tilJsonSivilstatus(webSoknad);
 
@@ -40,7 +39,7 @@ public class JsonFamilieConverterTest {
 
     @Test
     public void tilJsonSivilstatusBrukerSystemregistrertSivilstatusHvisBrukerregistrertMangler() {
-        final WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("system.familie.sivilstatus").medValue("gift"));
+        WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("system.familie.sivilstatus").medValue("gift"));
 
         JsonSivilstatus jsonSivilstatus = JsonFamilieConverter.tilJsonSivilstatus(webSoknad);
 
@@ -49,7 +48,7 @@ public class JsonFamilieConverterTest {
 
     @Test
     public void tilJsonSivilstatusBrukerBrukerregistrertSivilstatusHvisSystemregistrertManglerOgBrukerregistrertFinnes() {
-        final WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("familie.sivilstatus").medValue("gift"));
+        WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("familie.sivilstatus").medValue("gift"));
 
         JsonSivilstatus jsonSivilstatus = JsonFamilieConverter.tilJsonSivilstatus(webSoknad);
 
@@ -58,7 +57,7 @@ public class JsonFamilieConverterTest {
 
     @Test
     public void tilJsonSivilstatusBrukerBrukerregistrertSivilstatusHvisBrukeregistrertOgSystemregistrertSivilstatusFinnes() {
-        final WebSoknad webSoknad = new WebSoknad()
+        WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("familie.sivilstatus").medValue("gift"))
                 .medFaktum(new Faktum().medKey("system.familie.sivilstatus").medValue("ugift"));
 
@@ -69,7 +68,7 @@ public class JsonFamilieConverterTest {
 
     @Test
     public void tilJsonSivilstatusSetterRiktigInformasjonForSystemregistrertEktefelle() {
-        final WebSoknad webSoknad = new WebSoknad()
+        WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("system.familie.sivilstatus").medValue("gift"))
                 .medFaktum(lagEktefelleFaktum());
 
@@ -89,7 +88,7 @@ public class JsonFamilieConverterTest {
 
     @Test
     public void tilJsonSivilstatusSetterRiktigInformasjonForBrukerregistrertEktefelleMedGammelModell() {
-        final WebSoknad webSoknad = new WebSoknad()
+        WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("familie.sivilstatus").medValue("gift"))
                 .medFaktum(lagBrukerregistrertEktefelleFaktumMedGammelModell());
 
@@ -109,7 +108,7 @@ public class JsonFamilieConverterTest {
 
     @Test
     public void tilJsonSivilstatusFlaggerAtEktefelleHarDiskesjonskodeOgSenderIkkePersoninfo() {
-        final WebSoknad webSoknad = new WebSoknad()
+        WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("system.familie.sivilstatus").medValue("gift"))
                 .medFaktum(lagEktefelleMedDiskresjonskodeFaktum());
 

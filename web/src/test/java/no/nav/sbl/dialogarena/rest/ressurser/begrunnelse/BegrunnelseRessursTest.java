@@ -65,7 +65,7 @@ public class BegrunnelseRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse("", ""));
 
-        final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
+        BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
 
         assertThat(begrunnelseFrontend.hvaSokesOm, is(""));
         assertThat(begrunnelseFrontend.hvorforSoke, is(""));
@@ -76,7 +76,7 @@ public class BegrunnelseRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI));
 
-        final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
+        BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
 
         assertThat(begrunnelseFrontend.hvaSokesOm, is(SOKER_OM));
         assertThat(begrunnelseFrontend.hvorforSoke, is(SOKER_FORDI));
@@ -88,13 +88,13 @@ public class BegrunnelseRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithBegrunnelse("", "")));
 
-        final BegrunnelseFrontend begrunnelseFrontend = new BegrunnelseFrontend()
+        BegrunnelseFrontend begrunnelseFrontend = new BegrunnelseFrontend()
                 .withHvaSokesOm(SOKER_OM)
                 .withHvorforSoke(SOKER_FORDI);
         begrunnelseRessurs.updateBegrunnelse(BEHANDLINGSID, begrunnelseFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonBegrunnelse begrunnelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonBegrunnelse begrunnelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
         assertThat(begrunnelse.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(begrunnelse.getHvaSokesOm(), is(SOKER_OM));
         assertThat(begrunnelse.getHvorforSoke(), is(SOKER_FORDI));

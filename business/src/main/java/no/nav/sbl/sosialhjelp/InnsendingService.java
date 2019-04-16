@@ -51,9 +51,9 @@ public class InnsendingService {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-                final List<Vedleggstatus> alleVedlegg = finnAlleVedlegg(soknadUnderArbeid, ikkeOpplastedePaakrevdeVedlegg);
+                List<Vedleggstatus> alleVedlegg = finnAlleVedlegg(soknadUnderArbeid, ikkeOpplastedePaakrevdeVedlegg);
                 SendtSoknad sendtSoknad = mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid);
-                final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, sendtSoknad.getEier());
+                Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, sendtSoknad.getEier());
                 sendtSoknad.setSendtSoknadId(sendtSoknadId);
 
                 for (Vedleggstatus vedleggstatus : alleVedlegg) {
@@ -99,13 +99,13 @@ public class InnsendingService {
     }
 
     public SendtSoknad finnSendtSoknadForEttersendelse(SoknadUnderArbeid soknadUnderArbeid) {
-        final String tilknyttetBehandlingsId = soknadUnderArbeid.getTilknyttetBehandlingsId();
+        String tilknyttetBehandlingsId = soknadUnderArbeid.getTilknyttetBehandlingsId();
         Optional<SendtSoknad> sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId,
                 soknadUnderArbeid.getEier());
         if (sendtSoknad.isPresent()) {
             return sendtSoknad.get();
         } else {
-            final SendtSoknad konvertertGammelSoknad = finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId);
+            SendtSoknad konvertertGammelSoknad = finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId);
             if (konvertertGammelSoknad == null) {
                 throw new IllegalStateException("Finner ikke søknaden det skal ettersendes på");
             }

@@ -131,7 +131,7 @@ public class SikkerhetsAspectTest {
 
     }
 
-    private static SjekkTilgangTilSoknad getSjekkTilgangTilSoknad(final SjekkTilgangTilSoknad.Type type) {
+    private static SjekkTilgangTilSoknad getSjekkTilgangTilSoknad(SjekkTilgangTilSoknad.Type type) {
         return new SjekkTilgangTilSoknad() {
             @Override
             public boolean sjekkXsrf() {

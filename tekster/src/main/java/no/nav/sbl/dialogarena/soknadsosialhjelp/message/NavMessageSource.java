@@ -1,17 +1,11 @@
 package no.nav.sbl.dialogarena.soknadsosialhjelp.message;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+
+import java.util.*;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     private Map<String, String> basenames = new HashMap<>();
@@ -43,14 +37,14 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     }
     
     private Properties hentProperties(String propertiesFile, Locale locale) {
-        final String localFile = calculateFilenameForLocale(propertiesFile, locale);
-        final Properties properties = getProperties(localFile).getProperties();
+        String localFile = calculateFilenameForLocale(propertiesFile, locale);
+        Properties properties = getProperties(localFile).getProperties();
 
         if (properties != null) {
             return properties;
         } else {
             log.warn("Finner ikke tekster for {} for språkbundle {}.", propertiesFile, locale.getLanguage());
-            final Locale noLocale = new Locale("nb", "NO");
+            Locale noLocale = new Locale("nb", "NO");
             if (locale.equals(noLocale)) {
                 throw new IllegalStateException("Kunne ikke laste tekster. Avbryter.");
             } else {

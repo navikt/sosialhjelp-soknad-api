@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Soketype;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
@@ -14,12 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Soketype;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class SoknadsmottakerService {
@@ -28,22 +26,22 @@ public class SoknadsmottakerService {
     @Inject
     private AdresseSokService adresseSokService;
 
-    public List<AdresseForslag> legacyFinnAdresseFraSoknad(final WebSoknad webSoknad) {
+    public List<AdresseForslag> legacyFinnAdresseFraSoknad(WebSoknad webSoknad) {
         return legacyFinnAdresseFraSoknad(webSoknad, null);
     }
 
-    public List<AdresseForslag> legacyFinnAdresseFraSoknad(final WebSoknad webSoknad, String valg) {
-        final Faktum adresseFaktum = hentAdresseFaktum(webSoknad, valg);
+    public List<AdresseForslag> legacyFinnAdresseFraSoknad(WebSoknad webSoknad, String valg) {
+        Faktum adresseFaktum = hentAdresseFaktum(webSoknad, valg);
         if (adresseFaktum == null) {
             return Collections.emptyList();
         }
         
-        final Map<String, String> adresse = adresseFaktum.getProperties();
+        Map<String, String> adresse = adresseFaktum.getProperties();
         return legacySoknadsmottakerGitt(adresse);
     }
 
-    public List<AdresseForslag> finnAdresseFraSoknad(final JsonPersonalia personalia, String valg) {
-        final JsonAdresse adresse = hentValgtAdresse(personalia, valg);
+    public List<AdresseForslag> finnAdresseFraSoknad(JsonPersonalia personalia, String valg) {
+        JsonAdresse adresse = hentValgtAdresse(personalia, valg);
 
         return soknadsmottakerGitt(adresse);
     }
@@ -60,22 +58,22 @@ public class SoknadsmottakerService {
         }
     }
 
-    private List<AdresseForslag> soknadsmottakerGitt(final JsonAdresse adresse) {
+    private List<AdresseForslag> soknadsmottakerGitt(JsonAdresse adresse) {
         if (adresse == null) {
             return Collections.emptyList();
         }
 
         if (adresse.getType().equals(JsonAdresse.Type.MATRIKKELADRESSE)) {
-            final JsonMatrikkelAdresse matrikkelAdresse = (JsonMatrikkelAdresse) adresse;
-            final String kommunenummer = matrikkelAdresse.getKommunenummer();
+            JsonMatrikkelAdresse matrikkelAdresse = (JsonMatrikkelAdresse) adresse;
+            String kommunenummer = matrikkelAdresse.getKommunenummer();
             if (kommunenummer == null || kommunenummer.trim().equals("")) {
                 return Collections.emptyList();
             }
 
             return adresseSokService.sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenummer));
         } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
-            final JsonGateAdresse gateAdresse = (JsonGateAdresse) adresse;
-            final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
+            JsonGateAdresse gateAdresse = (JsonGateAdresse) adresse;
+            List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
                     .withSoketype(Soketype.EKSAKT)
                     .withAdresse(gateAdresse.getGatenavn())
                     .withHusnummer(gateAdresse.getHusnummer())
@@ -99,25 +97,25 @@ public class SoknadsmottakerService {
     }
 
 
-    private List<AdresseForslag> legacySoknadsmottakerGitt(final Map<String, String> adresse) {
+    private List<AdresseForslag> legacySoknadsmottakerGitt(Map<String, String> adresse) {
         if (adresse == null || adresse.isEmpty()) {
             return Collections.emptyList();
         }
         
-        final String type = adresse.get("type");
+        String type = adresse.get("type");
         if (type == null || type.trim().equals("")) {
             return Collections.emptyList();
         }
         
         if ("matrikkeladresse".equals(type)) {
-            final String kommunenummer = adresse.get("kommunenummer");
+            String kommunenummer = adresse.get("kommunenummer");
             if (kommunenummer == null || kommunenummer.trim().equals("")) {
                 return Collections.emptyList();
             }
             
             return adresseSokService.sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenummer));
         } else {
-            final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
+            List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
                         .withSoketype(Soketype.EKSAKT)
                         .withAdresse(nullIfEmpty(adresse.get("gatenavn")))
                         .withHusnummer(nullIfEmpty(adresse.get("husnummer")))
@@ -139,7 +137,7 @@ public class SoknadsmottakerService {
     }
     
     private boolean hasIkkeUnikGate(List<AdresseForslag> adresser) {
-        final AdresseForslag forste = adresser.get(0);
+        AdresseForslag forste = adresser.get(0);
         if (forste.adresse == null || forste.postnummer == null || forste.poststed == null) {
             return true;
         }
@@ -157,16 +155,16 @@ public class SoknadsmottakerService {
         return s;
     }
 
-    Faktum hentAdresseFaktum(final WebSoknad webSoknad) {
+    Faktum hentAdresseFaktum(WebSoknad webSoknad) {
         return hentAdresseFaktum(webSoknad, null);
     }
 
-    Faktum hentAdresseFaktum(final WebSoknad webSoknad, final String valg) {
+    Faktum hentAdresseFaktum(WebSoknad webSoknad, String valg) {
         if (webSoknad == null) {
             logger.warn("Søknaden er null");
             return null;
         }
-        final String adressevalg;
+        String adressevalg;
         if (valg != null && !"".equals(valg.trim())) {
             adressevalg = valg;
         } else {

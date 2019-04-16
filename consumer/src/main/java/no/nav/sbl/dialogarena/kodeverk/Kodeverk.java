@@ -14,7 +14,7 @@ public interface Kodeverk extends Adressekodeverk {
 
         private final String value;
 
-        private EksponertKodeverk(final String value) {
+        private EksponertKodeverk(String value) {
             this.value = value;
         }
 

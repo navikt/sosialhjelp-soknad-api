@@ -9,8 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -106,7 +104,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public Faktum hentFaktumMedKey(Long soknadId, String faktumKey) {
-        final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ?";
+        String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ?";
         Faktum faktum = hentEtObjectAv(sql, FAKTUM_ROW_MAPPER, soknadId, faktumKey);
         if (faktum == null) {
             return null;
@@ -176,7 +174,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         if (faktumId == null) {
             return null;
         }
-        final String sql = "select * from SOKNADBRUKERDATA where soknadbrukerdata_id = ?";
+        String sql = "select * from SOKNADBRUKERDATA where soknadbrukerdata_id = ?";
         Faktum faktum = getJdbcTemplate().queryForObject(sql, FAKTUM_ROW_MAPPER, faktumId);
         populerMedProperties(faktum);
         return faktum;
@@ -193,7 +191,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public String hentBehandlingsIdTilFaktum(Long faktumId) {
-        final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from soknadbrukerdata where soknadbrukerdata_id = ?)";
+        String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from soknadbrukerdata where soknadbrukerdata_id = ?)";
         List<String> strings = getJdbcTemplate().queryForList(sql, String.class, faktumId);
         if (!strings.isEmpty()) {
             return strings.get(0);

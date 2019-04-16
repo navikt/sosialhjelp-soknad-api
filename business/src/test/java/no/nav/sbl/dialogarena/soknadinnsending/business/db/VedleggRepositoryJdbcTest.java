@@ -64,7 +64,7 @@ public class VedleggRepositoryJdbcTest {
 
     @Test
     public void skalKunneSletteVedlegg() {
-        final Vedlegg v = getVedlegg();
+        Vedlegg v = getVedlegg();
         Long id = vedleggRepository.opprettEllerEndreVedlegg(v, new byte[0]);
         List<Vedlegg> hentet = vedleggRepository.hentVedleggUnderBehandling(BEHANDLINGS_ID, v.getFillagerReferanse());
         assertThat(hentet, is(notNullValue()));
@@ -78,7 +78,7 @@ public class VedleggRepositoryJdbcTest {
     @Test
     public void skalHenteInnhold() throws IOException {
         byte[] lagret = new byte[]{1, 2, 3};
-        final Vedlegg v = getVedlegg(lagret);
+        Vedlegg v = getVedlegg(lagret);
         Long id = vedleggRepository.opprettEllerEndreVedlegg(v, lagret);
         byte[] hentet = vedleggRepository.hentVedleggData(id);
         assertThat(hentet, is(equalTo(lagret)));

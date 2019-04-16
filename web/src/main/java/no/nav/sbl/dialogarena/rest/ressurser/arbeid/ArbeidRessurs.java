@@ -49,12 +49,12 @@ public class ArbeidRessurs {
 
     @GET
     public ArbeidFrontend hentArbeid(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
-        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
+        JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
 
-        final List<ArbeidsforholdFrontend> forhold;
+        List<ArbeidsforholdFrontend> forhold;
         if (arbeid.getForhold() != null){
             forhold = arbeid.getForhold().stream()
                     .map(this::mapToArbeidsforholdFrontend)
@@ -75,10 +75,10 @@ public class ArbeidRessurs {
     }
 
     private void update(String behandlingsId, ArbeidFrontend arbeidFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
-        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = arbeid.getKommentarTilArbeidsforhold() != null ?
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
+        JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = arbeid.getKommentarTilArbeidsforhold() != null ?
                 arbeid.getKommentarTilArbeidsforhold() :
                 arbeid.withKommentarTilArbeidsforhold(new JsonKommentarTilArbeidsforhold()).getKommentarTilArbeidsforhold();
         kommentarTilArbeidsforhold.setKilde(JsonKildeBruker.BRUKER);
@@ -87,9 +87,9 @@ public class ArbeidRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, ArbeidFrontend arbeidFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum kommentarTilArbeidsforhold = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "opplysninger.arbeidsituasjon.kommentarer");
+        Faktum kommentarTilArbeidsforhold = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "opplysninger.arbeidsituasjon.kommentarer");
         kommentarTilArbeidsforhold.setValue(arbeidFrontend.kommentarTilArbeidsforhold);
         faktaService.lagreBrukerFaktum(kommentarTilArbeidsforhold);
     }

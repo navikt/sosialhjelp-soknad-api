@@ -32,7 +32,7 @@ public class HvisOkonomiskVerdiHelperTest {
 
     @Before
     public void setup() {
-        final Set<String> okonomiskVerdiTyper = new HashSet<>();
+        Set<String> okonomiskVerdiTyper = new HashSet<>();
         okonomiskVerdiTyper.add("campingvogn");
         okonomiskVerdiTyper.add("kjoretoy");
         okonomiskVerdiTyper.add("bolig");

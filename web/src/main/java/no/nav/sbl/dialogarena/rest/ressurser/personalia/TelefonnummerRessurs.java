@@ -51,12 +51,12 @@ public class TelefonnummerRessurs {
 
     @GET
     public TelefonnummerFrontend hentTelefonnummer(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
-        final JsonTelefonnummer telefonnummer = soknad.getSoknad().getData().getPersonalia().getTelefonnummer();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
+        JsonTelefonnummer telefonnummer = soknad.getSoknad().getData().getPersonalia().getTelefonnummer();
 
-        final String systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
+        String systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
 
         return new TelefonnummerFrontend()
                 .withBrukerdefinert(telefonnummer != null ? telefonnummer.getKilde() == JsonKilde.BRUKER : true)
@@ -75,11 +75,11 @@ public class TelefonnummerRessurs {
     }
 
     private void update(String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-        final JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
                 personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
         if (telefonnummerFrontend.brukerdefinert) {
             if (telefonnummerFrontend.brukerutfyltVerdi == null) {
@@ -101,13 +101,13 @@ public class TelefonnummerRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon.brukerendrettoggle");
+        Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon.brukerendrettoggle");
         brukerdefinert.setValue(Boolean.toString(telefonnummerFrontend.brukerdefinert));
 
         faktaService.lagreBrukerFaktum(brukerdefinert);
-        final Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
+        Faktum telefon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.telefon");
         if (telefonnummerFrontend.brukerutfyltVerdi != null){
             telefon.setValue(telefonnummerFrontend.brukerutfyltVerdi.substring(3));
             faktaService.lagreBrukerFaktum(telefon);

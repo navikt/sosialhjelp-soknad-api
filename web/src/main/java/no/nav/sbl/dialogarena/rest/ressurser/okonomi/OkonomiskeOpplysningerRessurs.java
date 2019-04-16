@@ -82,20 +82,20 @@ public class OkonomiskeOpplysningerRessurs {
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
-        final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
-        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
+        JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
                 soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
                         soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
-        final List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
+        List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
 
-        final List<OpplastetVedlegg> opplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, soknad);
+        List<OpplastetVedlegg> opplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, soknad);
 
-        final List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
+        List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
 
-        final SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        SoknadUnderArbeid utenFaktumSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         utenFaktumSoknad.getJsonInternalSoknad().setVedlegg(jsonVedleggs.isEmpty() ? null : new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(utenFaktumSoknad, eier);
 
@@ -105,8 +105,8 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad) {
-        final WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier, true);
-        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
+        WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier, true);
+        List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
         return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
     }
 
@@ -118,14 +118,14 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void update(String behandlingsId, VedleggFrontend vedleggFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
-        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));
-        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf("|") + 1);
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));
+        String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf("|") + 1);
 
-        final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
-        final String jsonType = soknadTypeAndPath.getType();
+        SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
+        String jsonType = soknadTypeAndPath.getType();
 
         switch (soknadTypeAndPath.getPath()){
             case "utbetaling":
@@ -151,13 +151,13 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));
-        final String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf("|") + 1);
+        String type = vedleggFrontend.type.substring(0, vedleggFrontend.type.indexOf("|"));
+        String tilleggsinfo = vedleggFrontend.type.substring(vedleggFrontend.type.indexOf("|") + 1);
 
-        final SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
-        final String jsonType = soknadTypeAndPath.getType();
+        SoknadTypeAndPath soknadTypeAndPath = mapVedleggTypeToSoknadTypeAndPath(type, tilleggsinfo);
+        String jsonType = soknadTypeAndPath.getType();
         String key = jsonTypeToFaktumKey.get(jsonType);
         String belopNavn = jsonTypeToBelopNavn.get(jsonType);
 
@@ -171,14 +171,14 @@ public class OkonomiskeOpplysningerRessurs {
             }
         }
 
-        final List<Faktum> fakta = webSoknad.getFaktaMedKey(key);
+        List<Faktum> fakta = webSoknad.getFaktaMedKey(key);
 
         makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad.getBrukerBehandlingId());
 
         for (int i = 0; i < vedleggFrontend.rader.size(); i++){
             Faktum faktum = fakta.get(i);
-            final VedleggRadFrontend vedleggRad = vedleggFrontend.rader.get(i);
-            final Map<String, String> properties = faktum.getProperties();
+            VedleggRadFrontend vedleggRad = vedleggFrontend.rader.get(i);
+            Map<String, String> properties = faktum.getProperties();
             if (type.equals("nedbetalingsplan") && tilleggsinfo.equals("avdraglaan")){
                 properties.put("avdrag", vedleggRad.avdrag.toString());
                 properties.put("renter", vedleggRad.renter.toString());
@@ -194,11 +194,11 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void makeFaktumListEqualSizeToFrontendRader(VedleggFrontend vedleggFrontend, List<Faktum> fakta, String behandlingsId) {
-        final int sizeDiff = vedleggFrontend.rader.size() - fakta.size();
+        int sizeDiff = vedleggFrontend.rader.size() - fakta.size();
         if (sizeDiff > 0){
             Iterator<Long> faktumIder = repository.hentLedigeFaktumIder(sizeDiff).iterator();
             for (int i = 0; i < sizeDiff; i++){
-                final Faktum faktum = new Faktum()
+                Faktum faktum = new Faktum()
                         .medFaktumId(faktumIder.next())
                         .medParrentFaktumId(fakta.get(0).getParrentFaktum())
                         .medKey(fakta.get(0).getKey())
@@ -216,13 +216,13 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private List<VedleggFrontend> removeIkkePaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg, List<OpplastetVedlegg> opplastedeVedlegg) {
-        final List<JsonVedlegg> ikkeLengerPaakrevdeVedlegg = jsonVedleggs.stream().filter(isNotInList(paakrevdeVedlegg)).collect(Collectors.toList());
+        List<JsonVedlegg> ikkeLengerPaakrevdeVedlegg = jsonVedleggs.stream().filter(isNotInList(paakrevdeVedlegg)).collect(Collectors.toList());
 
         excludeTypeAnnetAnnetFromList(ikkeLengerPaakrevdeVedlegg);
 
         jsonVedleggs.removeAll(ikkeLengerPaakrevdeVedlegg);
 
-        final List<VedleggFrontend> slettedeVedlegg = new ArrayList<>();
+        List<VedleggFrontend> slettedeVedlegg = new ArrayList<>();
 
         for (JsonVedlegg ikkePaakrevdVedlegg : ikkeLengerPaakrevdeVedlegg) {
             for (OpplastetVedlegg oVedlegg : opplastedeVedlegg) {
@@ -266,7 +266,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void setVedleggStatus(VedleggFrontend vedleggFrontend, SoknadUnderArbeid soknad, String type, String tilleggsinfo) {
-        final List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
+        List<JsonVedlegg> jsonVedleggs = soknad.getJsonInternalSoknad().getVedlegg() == null ? new ArrayList<>() :
                 soknad.getJsonInternalSoknad().getVedlegg().getVedlegg() == null ? new ArrayList<>() :
                         soknad.getJsonInternalSoknad().getVedlegg().getVedlegg();
 

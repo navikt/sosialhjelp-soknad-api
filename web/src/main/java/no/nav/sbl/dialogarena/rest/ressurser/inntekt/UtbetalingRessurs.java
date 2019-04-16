@@ -58,10 +58,10 @@ public class UtbetalingRessurs {
 
     @GET
     public UtbetalingerFrontend hentUtbetalinger(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
-        final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
-        final UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+        JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
+        UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
 
         if (opplysninger.getBekreftelse() == null){
             return utbetalingerFrontend;
@@ -85,9 +85,9 @@ public class UtbetalingRessurs {
     }
 
     private void update(String behandlingsId, UtbetalingerFrontend utbetalingerFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 
         if (opplysninger.getBekreftelse() == null){
             opplysninger.setBekreftelse(new ArrayList<>());
@@ -101,29 +101,29 @@ public class UtbetalingRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, UtbetalingerFrontend utbetalingerFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter");
+        Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter");
         bekreftelse.setValue(utbetalingerFrontend.bekreftelse.toString());
         faktaService.lagreBrukerFaktum(bekreftelse);
 
-        final Faktum utbytte = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.utbytte");
+        Faktum utbytte = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.utbytte");
         utbytte.setValue(String.valueOf(utbetalingerFrontend.utbytte));
         faktaService.lagreBrukerFaktum(utbytte);
 
-        final Faktum salg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.salg");
+        Faktum salg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.salg");
         salg.setValue(String.valueOf(utbetalingerFrontend.salg));
         faktaService.lagreBrukerFaktum(salg);
 
-        final Faktum forsikringsutbetalinger = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.forsikringsutbetalinger");
+        Faktum forsikringsutbetalinger = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.forsikringsutbetalinger");
         forsikringsutbetalinger.setValue(String.valueOf(utbetalingerFrontend.forsikring));
         faktaService.lagreBrukerFaktum(forsikringsutbetalinger);
 
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet");
+        Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet");
         annet.setValue(String.valueOf(utbetalingerFrontend.annet));
         faktaService.lagreBrukerFaktum(annet);
 
-        final Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet.true.beskrivelse");
+        Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet.true.beskrivelse");
         beskrivelse.setValue(utbetalingerFrontend.beskrivelseAvAnnet != null ? utbetalingerFrontend.beskrivelseAvAnnet : "");
         faktaService.lagreBrukerFaktum(beskrivelse);
     }
@@ -132,23 +132,23 @@ public class UtbetalingRessurs {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = opplysninger.getUtbetaling();
 
         if(utbetalingerFrontend.utbytte){
-            final String type = "utbytte";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "utbytte";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.salg){
-            final String type = "salg";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "salg";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.forsikring){
-            final String type = "forsikring";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "forsikring";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
         if(utbetalingerFrontend.annet){
-            final String type = "annen";
-            final String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+            String type = "annen";
+            String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
         }
     }
@@ -167,7 +167,7 @@ public class UtbetalingRessurs {
     }
 
     private void setBekreftelseOnUtbetalingerFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
-        final Optional<JsonOkonomibekreftelse> utbetalingBekreftelse = opplysninger.getBekreftelse().stream()
+        Optional<JsonOkonomibekreftelse> utbetalingBekreftelse = opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals("utbetaling")).findFirst();
         if (utbetalingBekreftelse.isPresent()){
             utbetalingerFrontend.setBekreftelse(utbetalingBekreftelse.get().getVerdi());

@@ -31,12 +31,12 @@ public class EmailService {
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
     private static final String FRA_ADRESSE = "ikke-svar@nav.no";
 
-    public void sendEpost(final String ePost, final String subject, final String innhold, String behandlingId) {
-        final String htmlInnhold = "<p>" + innhold + "</p>";
+    public void sendEpost(String ePost, String subject, String innhold, String behandlingId) {
+        String htmlInnhold = "<p>" + innhold + "</p>";
         addTask(getMimePreperator(ePost, subject, htmlInnhold), behandlingId, 0);
     }
 
-    private MimeMessagePreparator getMimePreperator(final String epost, final String subject, final String innhold) {
+    private MimeMessagePreparator getMimePreperator(String epost, String subject, String innhold) {
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) {
                 try {
@@ -52,7 +52,7 @@ public class EmailService {
         return preparator;
     }
 
-    private void addTask(final MimeMessagePreparator preparator, final String behandlingId, final int loopCheck) {
+    private void addTask(MimeMessagePreparator preparator, String behandlingId, int loopCheck) {
         executor.execute(new Runnable() {
             @Override
             public void run() {

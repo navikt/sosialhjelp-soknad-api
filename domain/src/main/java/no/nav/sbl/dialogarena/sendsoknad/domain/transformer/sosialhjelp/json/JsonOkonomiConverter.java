@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 public class JsonOkonomiConverter {
     public static JsonOkonomi tilOkonomi(InputSource inputSource) {
 
-        final JsonOkonomi okonomi = new JsonOkonomi();
+        JsonOkonomi okonomi = new JsonOkonomi();
 
         okonomi.setOpplysninger(JsonOkonomiOpplysningerConverter.tilJsonOpplysninger(inputSource));
         okonomi.setOversikt(JsonOkonomiOversiktConverter.tilJsonOversikt(inputSource));

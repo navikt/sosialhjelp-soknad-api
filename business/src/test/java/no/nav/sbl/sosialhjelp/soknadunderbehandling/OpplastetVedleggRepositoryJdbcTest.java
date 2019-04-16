@@ -57,7 +57,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
     @Test
     public void hentVedleggHenterOpplastetVedleggSomFinnesForGittUuidOgEier() {
-        final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
+        String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
 
         OpplastetVedlegg opplastetVedleggFraDb = opplastetVedleggRepository.hentVedlegg(uuid, EIER).get();
 
@@ -73,8 +73,8 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
     @Test
     public void hentVedleggForSoknadHenterAlleVedleggForGittSoknadUnderArbeidId() {
-        final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
-        final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, TILLEGGSINFO2, SOKNADID), EIER);
+        String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
+        String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, TILLEGGSINFO2, SOKNADID), EIER);
         opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER2, TYPE2, TILLEGGSINFO2, SOKNADID2), EIER2);
         opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, TILLEGGSINFO2, SOKNADID3), EIER);
 
@@ -87,7 +87,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
     @Test
     public void slettVedleggSletterOpplastetVedleggMedGittUuidOgEier() {
-        final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
+        String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
 
         opplastetVedleggRepository.slettVedlegg(uuid, EIER);
 
@@ -96,9 +96,9 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
     @Test
     public void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadIdOgEier() {
-        final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
-        final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, TILLEGGSINFO2, SOKNADID), EIER);
-        final String uuidSammeEierOgAnnenSoknad = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, TILLEGGSINFO2, SOKNADID3), EIER);
+        String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
+        String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, TILLEGGSINFO2, SOKNADID), EIER);
+        String uuidSammeEierOgAnnenSoknad = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, TILLEGGSINFO2, SOKNADID3), EIER);
 
         opplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID, EIER);
 

@@ -43,8 +43,8 @@ public class SosialhjelpVedleggTilJsonTest {
                                 .medFaktumId(7L).medFilnavn("fil4.png").medInnsendingsvalg(Vedlegg.Status.SendesSenere).medOpprettetDato(1234L)
                 );
 
-        final String pathToDir = "src/test/java/no/nav/sbl/dialogarena/sendsoknad/domain";
-        final Path dokument = Paths.get(pathToDir + "/soknad.pdf");
+        String pathToDir = "src/test/java/no/nav/sbl/dialogarena/sendsoknad/domain";
+        Path dokument = Paths.get(pathToDir + "/soknad.pdf");
         try {
             data = Files.readAllBytes(dokument);
         } catch (IOException e) {

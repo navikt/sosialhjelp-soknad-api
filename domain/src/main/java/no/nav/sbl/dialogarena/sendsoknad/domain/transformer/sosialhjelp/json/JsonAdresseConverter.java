@@ -29,7 +29,7 @@ public final class JsonAdresseConverter {
 
     public static JsonAdresse tilFolkeregistrertAdresse(WebSoknad webSoknad) {
         try {
-            final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.folkeregistrert.adresse");
+            Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.folkeregistrert.adresse");
             return tilSystemAdresse(faktum);
         } catch (RuntimeException e) {
             logger.info("Kan ikke legge med folkeregistrert adresse", e);
@@ -39,10 +39,10 @@ public final class JsonAdresseConverter {
 
     public static JsonAdresse tilOppholdsadresse(WebSoknad webSoknad) {
         try {
-            final String oppholdsadressevalg = webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg");
+            String oppholdsadressevalg = webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg");
             if (faktumVerdiErTrue(webSoknad, "kontakt.adresse.brukerendrettoggle")
                     || "soknad".equals(oppholdsadressevalg)) {
-                final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.adresse.bruker");
+                Faktum faktum = webSoknad.getFaktumMedKey("kontakt.adresse.bruker");
                 if (faktum == null) {
                     return null;
                 }
@@ -59,12 +59,12 @@ public final class JsonAdresseConverter {
                 
                 // "midlertidig" eller gammel løsning (null):
                 
-                final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.adresse");
+                Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.adresse");
                 if (faktum == null) {
                     return null;
                 }
 
-                final JsonAdresse adresse = tilSystemAdresse(faktum);
+                JsonAdresse adresse = tilSystemAdresse(faktum);
                 if (adresse == null || adresse.getType() == Type.POSTBOKS) {
                     return null;
                 }
@@ -79,7 +79,7 @@ public final class JsonAdresseConverter {
     public static JsonAdresse tilPostadresse(WebSoknad webSoknad) {
         /* TODO: Implementer støtte for postadresse. */
 
-        final JsonAdresse jsonAdresse = tilOppholdsadresse(webSoknad);
+        JsonAdresse jsonAdresse = tilOppholdsadresse(webSoknad);
         if (jsonAdresse == null) {
             return null;
         }
@@ -89,22 +89,22 @@ public final class JsonAdresseConverter {
         return jsonAdresse;
     }
 
-    private static JsonAdresse tilBrukersUstrukturertAdresse(final Faktum faktum) {
+    private static JsonAdresse tilBrukersUstrukturertAdresse(Faktum faktum) {
         /*
          * TODO: Fjerne denne metoden når grensesnittet er endret til at brukeradresse er strukturert.
          */
-        final Map<String, String> adresse = faktum.getProperties();
-        final JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
+        Map<String, String> adresse = faktum.getProperties();
+        JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
         ustrukturertAdresse.setType(Type.USTRUKTURERT);
         ustrukturertAdresse.setKilde(JsonKilde.BRUKER);
 
-        final List<String> adresselinjer = new ArrayList<>();
-        final String gateadresse = adresse.get("gateadresse");
+        List<String> adresselinjer = new ArrayList<>();
+        String gateadresse = adresse.get("gateadresse");
         if (erIkkeTom(gateadresse)) {
             adresselinjer.add(gateadresse);
         }
-        final String postnummer = adresse.get("postnummer");
-        final String poststed = adresse.get("poststed");
+        String postnummer = adresse.get("postnummer");
+        String poststed = adresse.get("poststed");
         String postnummerlinje = "";
         if (erIkkeTom(postnummer)) {
             postnummerlinje += postnummer;
@@ -126,7 +126,7 @@ public final class JsonAdresseConverter {
         }
 
         try {
-            final JsonAdresse adresse = tilJsonAdresse(faktum);
+            JsonAdresse adresse = tilJsonAdresse(faktum);
             return adresse;
         } catch (RuntimeException e) {
             logger.error("Uventet feil: Kan ikke sende med brukerspesifisert adresse", e);
@@ -140,7 +140,7 @@ public final class JsonAdresseConverter {
         }
 
         try {
-            final JsonAdresse adresse = tilJsonAdresse(faktum);
+            JsonAdresse adresse = tilJsonAdresse(faktum);
             if (adresse != null && adresse.getKilde() != JsonKilde.SYSTEM) {
                 throw new IllegalStateException("Systemadresse skal kun innehold systemdata. Har bruker forsøkt å endre adresse med direkte POST-kall? Faktumkey: " + faktum.getKey());
             }
@@ -152,9 +152,9 @@ public final class JsonAdresseConverter {
     }
 
     private static JsonAdresse tilJsonAdresse(Faktum faktum) {
-        final Map<String, String> adresse = faktum.getProperties();
+        Map<String, String> adresse = faktum.getProperties();
 
-        final String type = adresse.get("type");
+        String type = adresse.get("type");
         if (type == null) {
             logger.info("Adresse mangler \"type\": " + faktum.getKey());
             return null;
@@ -179,12 +179,12 @@ public final class JsonAdresseConverter {
     }
 
     private static JsonAdresse tilUstrukturertAdresse(Map<String, String> adresse) {
-        final String adresseStreng = finnPropertyEllerNullOmTom(adresse, "adresse");
+        String adresseStreng = finnPropertyEllerNullOmTom(adresse, "adresse");
         if (adresseStreng == null) {
             return null;
         }
 
-        final JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
+        JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
         ustrukturertAdresse.setType(Type.USTRUKTURERT);
         // TODO: Bruk linjeskift som hentes fra PersonV1/PersonV3 direkte fremfor å kombinere med komma og deretter splitte: 
         ustrukturertAdresse.setAdresse(Arrays.asList(adresseStreng.split(",")).stream().map(s -> s.trim()).collect(Collectors.toList()));
@@ -192,8 +192,8 @@ public final class JsonAdresseConverter {
         return ustrukturertAdresse;
     }
 
-    private static JsonAdresse tilGateAdresse(final Map<String, String> adresse) {
-        final JsonGateAdresse gateAdresse = new JsonGateAdresse();
+    private static JsonAdresse tilGateAdresse(Map<String, String> adresse) {
+        JsonGateAdresse gateAdresse = new JsonGateAdresse();
         gateAdresse.setType(Type.GATEADRESSE);
         gateAdresse.setLandkode(finnPropertyEllerNullOmTom(adresse, "landkode"));
         gateAdresse.setKommunenummer(finnPropertyEllerNullOmTom(adresse, "kommunenummer"));
@@ -206,8 +206,8 @@ public final class JsonAdresseConverter {
         return gateAdresse;
     }
 
-    private static JsonAdresse tilMatrikkelAdresse(final Map<String, String> adresse) {
-        final JsonMatrikkelAdresse matrikkelAdresse = new JsonMatrikkelAdresse();
+    private static JsonAdresse tilMatrikkelAdresse(Map<String, String> adresse) {
+        JsonMatrikkelAdresse matrikkelAdresse = new JsonMatrikkelAdresse();
         matrikkelAdresse.setType(Type.MATRIKKELADRESSE);
         matrikkelAdresse.setKommunenummer(finnPropertyEllerNullOmTom(adresse, "kommunenummer"));
         matrikkelAdresse.setGaardsnummer(finnPropertyEllerNullOmTom(adresse, "gaardsnummer"));

@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.server;
 
-import javax.security.auth.Subject;
-
+import no.nav.modig.core.context.SubjectHandler;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.server.Request;
 import org.slf4j.Logger;
@@ -9,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import no.nav.modig.core.context.SubjectHandler;
+import javax.security.auth.Subject;
 
 public class ThreadLocalSubjectHandler extends SubjectHandler {
     
@@ -17,12 +16,12 @@ public class ThreadLocalSubjectHandler extends SubjectHandler {
 
     @Override
     public Subject getSubject() {
-        final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
             return null;
         }
-        final Request request = (Request) servletRequestAttributes.getRequest();
-        final Authentication authentication = request.getAuthentication();
+        Request request = (Request) servletRequestAttributes.getRequest();
+        Authentication authentication = request.getAuthentication();
 
         if (authentication instanceof Authentication.User) {
             return ((Authentication.User) authentication).getUserIdentity().getSubject();

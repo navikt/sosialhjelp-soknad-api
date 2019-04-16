@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.Soknadsmottaker;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FiksMetadataTransformer implements EkstraMetadataTransformer {
 
@@ -15,8 +15,8 @@ public class FiksMetadataTransformer implements EkstraMetadataTransformer {
 
     @Override
     public Map<String, String> apply(WebSoknad webSoknad) {
-        final HashMap<String, String> map = new HashMap<>();
-        final Soknadsmottaker soknadsmottaker = KommuneTilNavEnhetMapper.getSoknadsmottaker(webSoknad);
+        HashMap<String, String> map = new HashMap<>();
+        Soknadsmottaker soknadsmottaker = KommuneTilNavEnhetMapper.getSoknadsmottaker(webSoknad);
 
         if (soknadsmottaker == null) {
             return map;

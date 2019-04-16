@@ -156,7 +156,7 @@ public class WebSoknadConverterTest {
 
     @Test
     public void fraJodaDateTimeTilLocalDateTimeKonvertererDatoRiktig() {
-        final DateTime dateTime = new DateTime(2017, 8, 22, 11, 43, 0);
+        DateTime dateTime = new DateTime(2017, 8, 22, 11, 43, 0);
 
         LocalDateTime localDateTime = webSoknadConverter.fraJodaDateTimeTilLocalDateTime(dateTime);
 

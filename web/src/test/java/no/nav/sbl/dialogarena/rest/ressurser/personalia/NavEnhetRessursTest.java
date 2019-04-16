@@ -119,7 +119,7 @@ public class NavEnhetRessursTest {
         when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "folkeregistrert")).thenReturn(
                 Arrays.asList(LEGACY_SOKNADSMOTTAKER, LEGACY_SOKNADSMOTTAKER_2));
 
-        final List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+        List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
         assertThatEnheterAreCorrectlyConverted(navEnhetFrontends, Arrays.asList(SOKNADSMOTTAKER, SOKNADSMOTTAKER_2));
         assertThat(navEnhetFrontends.get(0).valgt, is(true));
@@ -132,7 +132,7 @@ public class NavEnhetRessursTest {
                 createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(null, null));
         when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, null)).thenReturn(Collections.emptyList());
 
-        final List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+        List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
         assertTrue(navEnhetFrontends.isEmpty());
     }
@@ -143,14 +143,14 @@ public class NavEnhetRessursTest {
                 Optional.of(createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg.FOLKEREGISTRERT, SOKNADSMOTTAKER)));
 
         ignoreTilgangskontrollAndLegacyUpdate();
-        final NavEnhetFrontend navEnhetFrontend = new NavEnhetFrontend()
+        NavEnhetFrontend navEnhetFrontend = new NavEnhetFrontend()
                 .withEnhetsnavn(ENHETSNAVN_2)
                 .withKommunenavn(KOMMUNENAVN_2)
                 .withOrgnr(ORGNR_2);
         navEnhetRessurs.updateNavEnhet(BEHANDLINGSID, navEnhetFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonSoknadsmottaker jsonSoknadsmottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonSoknadsmottaker jsonSoknadsmottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
         assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, jsonSoknadsmottaker);
     }
 
@@ -166,9 +166,9 @@ public class NavEnhetRessursTest {
             return;
         }
 
-        final String kombinertnavn = soknadsmottaker.getNavEnhetsnavn();
-        final String enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','));
-        final String kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2);
+        String kombinertnavn = soknadsmottaker.getNavEnhetsnavn();
+        String enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','));
+        String kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2);
 
         assertThat("Enhetsnavn", navEnhetFrontend.enhetsnavn, is(enhetsnavn));
         assertThat("kommunenavn", navEnhetFrontend.kommunenavn, is(kommunenavn));

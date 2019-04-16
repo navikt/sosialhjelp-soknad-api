@@ -21,8 +21,8 @@ public class FiksWSConfig {
     private String fiksEndpoint;
 
     private ServiceBuilder<ForsendelsesServiceV9>.PortTypeBuilder<ForsendelsesServiceV9> factory() {
-        final int receiveTimeout = 10 * 60_000;
-        final int connectionTimeout = 10_000;
+        int receiveTimeout = 10 * 60_000;
+        int connectionTimeout = 10_000;
         
         return new ServiceBuilder<>(ForsendelsesServiceV9.class)
                 .asStandardService()

@@ -32,7 +32,7 @@ public class HvisBoutgiftHelperTest {
 
     @Before
     public void setup() {
-        final Set<String> boutgiftTyper = new HashSet<>();
+        Set<String> boutgiftTyper = new HashSet<>();
         boutgiftTyper.add("husleie");
         boutgiftTyper.add("strom");
         boutgiftTyper.add("annenBoutgift");

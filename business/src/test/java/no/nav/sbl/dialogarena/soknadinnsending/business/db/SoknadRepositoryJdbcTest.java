@@ -29,7 +29,7 @@ import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AV_BRUKER;
 import static org.hamcrest.Matchers.*;
 import static org.joda.time.DateTime.now;
 import static org.junit.Assert.*;
@@ -391,7 +391,7 @@ public class SoknadRepositoryJdbcTest {
         List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 3);
         lagreXSoknader(5, 0); // legger til søknader som ikke skal taes med
 
-        final List<Long> soknaderSomBleMellomlagret = Collections.synchronizedList(new ArrayList<Long>());
+        List<Long> soknaderSomBleMellomlagret = Collections.synchronizedList(new ArrayList<Long>());
         int numberOfThreads = 10;
         ExecutorService threadpool = Executors.newFixedThreadPool(numberOfThreads);
         for (int i = 0; i < numberOfThreads; i++) {

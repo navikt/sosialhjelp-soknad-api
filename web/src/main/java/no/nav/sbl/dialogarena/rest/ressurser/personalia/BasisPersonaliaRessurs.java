@@ -33,14 +33,14 @@ public class BasisPersonaliaRessurs {
 
     @GET
     public BasisPersonaliaFrontend hentBasisPersonalia(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
         JsonPersonalia jsonPersonalia = basisPersonaliaSystemdata.innhentSystemBasisPersonalia(eier);
 
         return mapToBasisPersonaliaFrontend(jsonPersonalia);
     }
 
     private BasisPersonaliaFrontend mapToBasisPersonaliaFrontend(JsonPersonalia jsonPersonalia) {
-        final JsonNavn navn = jsonPersonalia.getNavn();
+        JsonNavn navn = jsonPersonalia.getNavn();
         return new BasisPersonaliaFrontend()
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withFodselsnummer(jsonPersonalia.getPersonIdentifikator().getVerdi())

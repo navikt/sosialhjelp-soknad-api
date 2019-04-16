@@ -1,14 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.BOSTEDSADRESSE;
-
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Service;
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse.Gateadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse.MatrikkelAdresse;
@@ -17,6 +8,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.BOSTEDSADRESSE;
 
 @Service
 public class SosialhjelpKontaktBolk implements BolkService {
@@ -72,14 +70,14 @@ public class SosialhjelpKontaktBolk implements BolkService {
     }
 
     private Faktum genererFolkeregistrertAdresseFaktum(Long soknadId, Personalia personalia) {
-        final Faktum adresseFaktum = new Faktum().medSoknadId(soknadId).medKey("kontakt.system.folkeregistrert.adresse");
-        final Adresse folkeregistrertAdresse = personalia.getFolkeregistrertAdresse();
+        Faktum adresseFaktum = new Faktum().medSoknadId(soknadId).medKey("kontakt.system.folkeregistrert.adresse");
+        Adresse folkeregistrertAdresse = personalia.getFolkeregistrertAdresse();
         
         if (folkeregistrertAdresse == null || isUtenlandskAdresse(folkeregistrertAdresse)) {
             return adresseFaktum;
         }
         
-        final StrukturertAdresse strukturertAdresse = folkeregistrertAdresse.getStrukturertAdresse();
+        StrukturertAdresse strukturertAdresse = folkeregistrertAdresse.getStrukturertAdresse();
         
         if (strukturertAdresse == null) {
             // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
@@ -93,8 +91,8 @@ public class SosialhjelpKontaktBolk implements BolkService {
     }
     
     private Faktum genererAdresseFaktum(Long soknadId, Personalia personalia) {
-        final Faktum adresseFaktum = new Faktum().medSoknadId(soknadId).medKey("kontakt.system.adresse");
-        final Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
+        Faktum adresseFaktum = new Faktum().medSoknadId(soknadId).medKey("kontakt.system.adresse");
+        Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
         
         if (gjeldendeAdresse == null || isUtenlandskAdresse(gjeldendeAdresse)) {
             /*
@@ -104,7 +102,7 @@ public class SosialhjelpKontaktBolk implements BolkService {
             return adresseFaktum;
         }
         
-        final StrukturertAdresse strukturertAdresse = gjeldendeAdresse.getStrukturertAdresse();
+        StrukturertAdresse strukturertAdresse = gjeldendeAdresse.getStrukturertAdresse();
         
         if (strukturertAdresse == null) {
             populerUstrukturertAdresse(adresseFaktum, gjeldendeAdresse);
@@ -118,7 +116,7 @@ public class SosialhjelpKontaktBolk implements BolkService {
         
     }
 
-    private boolean isUtenlandskAdresse(final Adresse gjeldendeAdresse) {
+    private boolean isUtenlandskAdresse(Adresse gjeldendeAdresse) {
         return gjeldendeAdresse.getLandkode() != null && !gjeldendeAdresse.getLandkode().equals("NOR");
     }
 
@@ -129,7 +127,7 @@ public class SosialhjelpKontaktBolk implements BolkService {
                 .medSystemProperty("landkode", "NOR");
     }
 
-    private void populerStrukturertAdresse(final Faktum adresseFaktum, final StrukturertAdresse adresse) {
+    private void populerStrukturertAdresse(Faktum adresseFaktum, StrukturertAdresse adresse) {
         adresseFaktum
                 .medSystemProperty("type", adresse.type)
                 .medSystemProperty("landkode", "NOR")
@@ -148,8 +146,8 @@ public class SosialhjelpKontaktBolk implements BolkService {
         }
     }
 
-    private void populerGateadresse(final Faktum adresseFaktum, final StrukturertAdresse adresse) {
-        final Gateadresse gateadresse = (Gateadresse) adresse;
+    private void populerGateadresse(Faktum adresseFaktum, StrukturertAdresse adresse) {
+        Gateadresse gateadresse = (Gateadresse) adresse;
         adresseFaktum.medSystemProperty("gatenavn", gateadresse.gatenavn);
         adresseFaktum.medSystemProperty("husnummer", gateadresse.husnummer);
         adresseFaktum.medSystemProperty("husbokstav", gateadresse.husbokstav);
@@ -161,8 +159,8 @@ public class SosialhjelpKontaktBolk implements BolkService {
         adresseFaktum.medSystemProperty("adresse", (gateadresse.gatenavn + " " + gateadresse.husnummer + gateadresse.husbokstav).trim()); 
     }
     
-    private void populerMatrikkeladresse(final Faktum adresseFaktum, final StrukturertAdresse adresse) {
-        final MatrikkelAdresse matrikkeladresse = (MatrikkelAdresse) adresse;
+    private void populerMatrikkeladresse(Faktum adresseFaktum, StrukturertAdresse adresse) {
+        MatrikkelAdresse matrikkeladresse = (MatrikkelAdresse) adresse;
         adresseFaktum
                 .medSystemProperty("eiendomsnavn", matrikkeladresse.eiendomsnavn)
                 .medSystemProperty("gaardsnummer", matrikkeladresse.gaardsnummer)

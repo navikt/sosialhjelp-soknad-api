@@ -1,23 +1,21 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.jknack.handlebars.Handlebars;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.github.jknack.handlebars.Handlebars;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HvisUtbetalingFinnesHelperTest {
@@ -34,7 +32,7 @@ public class HvisUtbetalingFinnesHelperTest {
     
     @Test
     public void skalFinneUtbetalingIOpplysninger() throws IOException{
-        final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedEnNavytelseOgEnAnnenUtbetaling();
+        JsonOkonomiopplysninger opplysninger = lagOpplysningerMedEnNavytelseOgEnAnnenUtbetaling();
 
         String compiled = handlebars.compileInline("{{#hvisUtbetalingFinnes \"navytelse\" }}Utbetalingstypen finnes"
                 + "{{else}} Utbetalingstypen finnes ikke{{/hvisUtbetalingFinnes}}").apply(opplysninger);
@@ -44,7 +42,7 @@ public class HvisUtbetalingFinnesHelperTest {
     
     @Test
     public void skalIkkeFinneUtbetalingIOpplysninger() throws IOException{
-        final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedEnNavytelseOgEnAnnenUtbetaling();
+        JsonOkonomiopplysninger opplysninger = lagOpplysningerMedEnNavytelseOgEnAnnenUtbetaling();
 
         String compiled = handlebars.compileInline("{{#hvisUtbetalingFinnes \"tullepenger\" }}Utbetalingstypen finnes"
                 + "{{else}}Utbetalingstypen finnes ikke{{/hvisUtbetalingFinnes}}").apply(opplysninger);
@@ -54,21 +52,21 @@ public class HvisUtbetalingFinnesHelperTest {
 
 
     private JsonOkonomiopplysninger lagOpplysningerMedEnNavytelseOgEnAnnenUtbetaling() {
-        final JsonOkonomiOpplysningUtbetaling navUtbetaling = new JsonOkonomiOpplysningUtbetaling()
+        JsonOkonomiOpplysningUtbetaling navUtbetaling = new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
                 .withTittel("Dagpenger")
                 .withType("navytelse");
         
-        final JsonOkonomiOpplysningUtbetaling annenUtbetaling = new JsonOkonomiOpplysningUtbetaling()
+        JsonOkonomiOpplysningUtbetaling annenUtbetaling = new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.BRUKER)
                 .withTittel("Bitcoin gevinst")
                 .withType("crypto");
         
-        final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = new ArrayList<JsonOkonomiOpplysningUtbetaling>();
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = new ArrayList<JsonOkonomiOpplysningUtbetaling>();
         utbetalinger.add(navUtbetaling);
         utbetalinger.add(annenUtbetaling);
         
-        final JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger()
+        JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger()
                 .withUtbetaling(utbetalinger);
         return opplysninger;
     }

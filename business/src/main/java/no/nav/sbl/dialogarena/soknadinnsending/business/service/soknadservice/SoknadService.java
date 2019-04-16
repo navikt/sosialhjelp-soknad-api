@@ -88,7 +88,7 @@ public class SoknadService {
         henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId(), false);
         lokalDb.slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
 
-        final String eier = soknad.getAktoerId();
+        String eier = soknad.getAktoerId();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
 

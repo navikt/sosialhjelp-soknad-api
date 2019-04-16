@@ -3,7 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
@@ -77,7 +78,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     @Scheduled(fixedDelay = RETRY_STUCK_RATE)
     public void retryStuckUnderArbeid() {
         try {
-            final int antall = oppgaveRepository.retryOppgaveStuckUnderArbeid();
+            int antall = oppgaveRepository.retryOppgaveStuckUnderArbeid();
             if (antall > 0) {
                 logger.info("Har satt " + antall + " oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.");
             }

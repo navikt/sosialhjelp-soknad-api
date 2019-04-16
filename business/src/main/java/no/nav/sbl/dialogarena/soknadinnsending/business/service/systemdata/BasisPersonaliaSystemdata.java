@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +18,9 @@ public class BasisPersonaliaSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-        final JsonPersonalia systemPersonalia = innhentSystemBasisPersonalia(personIdentifikator);
+        JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        JsonPersonalia systemPersonalia = innhentSystemBasisPersonalia(personIdentifikator);
 
         if (systemPersonalia == null){
             return;
@@ -33,8 +32,8 @@ public class BasisPersonaliaSystemdata implements Systemdata {
         personalia.setNordiskBorger(systemPersonalia.getNordiskBorger());
     }
 
-    public JsonPersonalia innhentSystemBasisPersonalia(final String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
+    public JsonPersonalia innhentSystemBasisPersonalia(String personIdentifikator) {
+        Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
         if (personalia == null){
             return null;
         }

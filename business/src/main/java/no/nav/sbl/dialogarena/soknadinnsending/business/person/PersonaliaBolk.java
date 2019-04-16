@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
@@ -8,7 +10,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFle
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
@@ -107,7 +110,7 @@ public class PersonaliaBolk implements BolkService {
     }
 
     private String folkeregistrertAdresseString(Personalia personalia) {
-        final Adresse folkeregistrertAdresse = personalia.getFolkeregistrertAdresse();
+        Adresse folkeregistrertAdresse = personalia.getFolkeregistrertAdresse();
         if (folkeregistrertAdresse == null) {
             return null;
         }

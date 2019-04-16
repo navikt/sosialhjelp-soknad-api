@@ -30,10 +30,10 @@ public class JsonOkonomiOversiktConverter {
 
     private static List<JsonOkonomioversiktUtgift> tilJsonOkonomioversiktUtgift(InputSource inputSource) {
 
-        final WebSoknad webSoknad = inputSource.getWebSoknad();
-        final NavMessageSource navMessageSource = inputSource.getMessageSource();
+        WebSoknad webSoknad = inputSource.getWebSoknad();
+        NavMessageSource navMessageSource = inputSource.getMessageSource();
 
-        final List<JsonOkonomioversiktUtgift> result = new ArrayList<>();
+        List<JsonOkonomioversiktUtgift> result = new ArrayList<>();
 
         String key = "opplysninger.utgifter.boutgift.husleie";
         result.addAll(oversiktUtgift("husleie",
@@ -79,9 +79,9 @@ public class JsonOkonomiOversiktConverter {
 
     private static List<JsonOkonomioversiktFormue> tilJsonOkonomioversiktFormue(InputSource inputSource) {
 
-        final List<JsonOkonomioversiktFormue> result = new ArrayList<>();
-        final WebSoknad webSoknad = inputSource.getWebSoknad();
-        final NavMessageSource navMessageSource = inputSource.getMessageSource();
+        List<JsonOkonomioversiktFormue> result = new ArrayList<>();
+        WebSoknad webSoknad = inputSource.getWebSoknad();
+        NavMessageSource navMessageSource = inputSource.getMessageSource();
 
 
         String key = "opplysninger.inntekt.bankinnskudd.brukskonto";
@@ -140,9 +140,9 @@ public class JsonOkonomiOversiktConverter {
     }
 
     private static List<JsonOkonomioversiktInntekt> tilJsonOkonomioversiktInntekt(InputSource inputSource) {
-        final List<JsonOkonomioversiktInntekt> result = new ArrayList<>();
-        final WebSoknad webSoknad = inputSource.getWebSoknad();
-        final NavMessageSource navMessageSource = inputSource.getMessageSource();
+        List<JsonOkonomioversiktInntekt> result = new ArrayList<>();
+        WebSoknad webSoknad = inputSource.getWebSoknad();
+        NavMessageSource navMessageSource = inputSource.getMessageSource();
 
         String key = "opplysninger.inntekt.bostotte";
         result.addAll(oversiktInntekt("bostotte",
@@ -178,7 +178,7 @@ public class JsonOkonomiOversiktConverter {
 
     private static Collection<? extends JsonOkonomioversiktUtgift> oversiktUtgift(String type, String tittel, List<Faktum> fakta, String belopnavn) {
         return fakta.stream().filter(f -> f != null).map(faktum -> {
-            final Map<String, String> properties = faktum.getProperties();
+            Map<String, String> properties = faktum.getProperties();
             return new JsonOkonomioversiktUtgift()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
@@ -191,7 +191,7 @@ public class JsonOkonomiOversiktConverter {
 
     private static List<JsonOkonomioversiktFormue> oversiktFormue(String type, String tittel, List<Faktum> fakta, String belopNavn) {
         return fakta.stream().filter(f -> f != null).map(faktum -> {
-            final Map<String, String> properties = faktum.getProperties();
+            Map<String, String> properties = faktum.getProperties();
             return new JsonOkonomioversiktFormue()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
@@ -208,7 +208,7 @@ public class JsonOkonomiOversiktConverter {
 
     private static List<JsonOkonomioversiktInntekt> oversiktInntekt(String type, String tittel, List<Faktum> fakta, String bruttoNavn, String nettoNavn) {
         return fakta.stream().filter(f -> f != null).map(faktum -> {
-            final Map<String, String> properties = faktum.getProperties();
+            Map<String, String> properties = faktum.getProperties();
             return new JsonOkonomioversiktInntekt()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)

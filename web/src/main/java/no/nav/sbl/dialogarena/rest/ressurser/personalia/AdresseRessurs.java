@@ -60,13 +60,13 @@ public class AdresseRessurs {
 
     @GET
     public AdresserFrontend hentAdresser(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
-        final JsonAdresse jsonOppholdsadresse = soknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
+        JsonAdresse jsonOppholdsadresse = soknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
 
-        final JsonAdresse sysFolkeregistrertAdresse = adresseSystemdata.innhentFolkeregistrertAdresse(personIdentifikator);
-        final JsonAdresse sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator);
+        JsonAdresse sysFolkeregistrertAdresse = adresseSystemdata.innhentFolkeregistrertAdresse(personIdentifikator);
+        JsonAdresse sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator);
 
         return AdresseMapper.mapToAdresserFrontend(sysFolkeregistrertAdresse, sysMidlertidigAdresse, jsonOppholdsadresse);
     }
@@ -83,9 +83,9 @@ public class AdresseRessurs {
     }
 
     private void update(String behandlingsId, AdresserFrontend adresserFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         switch (adresserFrontend.valg){
             case FOLKEREGISTRERT:
@@ -106,13 +106,13 @@ public class AdresseRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, AdresserFrontend adresserFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum valg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.system.oppholdsadresse.valg");
+        Faktum valg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.system.oppholdsadresse.valg");
         valg.setValue(adresserFrontend.valg.toString());
         faktaService.lagreBrukerFaktum(valg);
 
-        final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.brukerendrettoggle");
+        Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.brukerendrettoggle");
 
         switch (adresserFrontend.valg){
             case FOLKEREGISTRERT:
@@ -121,7 +121,7 @@ public class AdresseRessurs {
                 break;
             case SOKNAD:
                 brukerdefinert.setValue(Boolean.toString(true));
-                final Faktum brukerAdresse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.bruker");
+                Faktum brukerAdresse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.adresse.bruker");
                 populerAdresse(brukerAdresse, adresserFrontend.soknad);
                 faktaService.lagreBrukerFaktum(brukerAdresse);
                 break;
@@ -140,7 +140,7 @@ public class AdresseRessurs {
         return oppholdsadresse;
     }
 
-    private void populerAdresse(final Faktum adresseFaktum, final AdresseFrontend adresse) {
+    private void populerAdresse(Faktum adresseFaktum, AdresseFrontend adresse) {
         if (adresse.type.equals(JsonAdresse.Type.GATEADRESSE)) {
             populerGateadresse(adresseFaktum, adresse);
         } else if (adresse.type.equals(JsonAdresse.Type.MATRIKKELADRESSE)) {
@@ -150,8 +150,8 @@ public class AdresseRessurs {
         }
     }
 
-    private void populerGateadresse(final Faktum adresseFaktum, final AdresseFrontend adresse) {
-        final GateadresseFrontend gateadresse = adresse.gateadresse;
+    private void populerGateadresse(Faktum adresseFaktum, AdresseFrontend adresse) {
+        GateadresseFrontend gateadresse = adresse.gateadresse;
         adresseFaktum
                 .medSystemProperty("type", adresse.type.toString())
                 .medSystemProperty("landkode", "NOR")
@@ -170,8 +170,8 @@ public class AdresseRessurs {
         adresseFaktum.medSystemProperty("adresse", (gateadresse.gatenavn + " " + gateadresse.husnummer + gateadresse.husbokstav).trim());
     }
 
-    private void populerMatrikkeladresse(final Faktum adresseFaktum, final AdresseFrontend adresse) {
-        final MatrikkeladresseFrontend matrikkeladresse = adresse.matrikkeladresse;
+    private void populerMatrikkeladresse(Faktum adresseFaktum, AdresseFrontend adresse) {
+        MatrikkeladresseFrontend matrikkeladresse = adresse.matrikkeladresse;
         adresseFaktum
                 .medSystemProperty("type", adresse.type.toString())
                 .medSystemProperty("landkode", "NOR")

@@ -1,9 +1,19 @@
 package no.nav.sbl.dialogarena;
 
-import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
-import static org.slf4j.LoggerFactory.getLogger;
+import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.config.SoknadinnsendingConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
+import org.apache.log4j.MDC;
+import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -17,22 +27,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import org.apache.log4j.MDC;
-import org.slf4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-
-import no.nav.modig.common.MDCOperations;
-import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.config.SoknadinnsendingConfig;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
+import static java.lang.System.setProperty;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 /**
@@ -69,10 +66,10 @@ public class KallMotAdressesok {
     }
     
     private void testAdressekall(String adresse) {
-        final long begin = System.currentTimeMillis();
+        long begin = System.currentTimeMillis();
         try {
-            final List<AdresseData> adresser = finnAdresse(adresse);
-            final long timeSpent = System.currentTimeMillis() - begin;
+            List<AdresseData> adresser = finnAdresse(adresse);
+            long timeSpent = System.currentTimeMillis() - begin;
             writeReport(timeSpent + " " + adresser.size() + " " + adresse);
         } catch (RuntimeException e) {
             logger.warn("Feil ved adressekall", e);
@@ -83,17 +80,17 @@ public class KallMotAdressesok {
     private static ApplicationContext initializeContext() throws IOException, NamingException {
         SoknadsosialhjelpServer.setFrom("environment-test.properties");
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        final DataSource dataSource = buildDataSource("hsqldb.properties");
+        DataSource dataSource = buildDataSource("hsqldb.properties");
 
-        final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
+        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
         builder.bind("jdbc/SoknadInnsendingDS", dataSource);
         builder.activate();
         
-        final ApplicationContext context = new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
         return context;
     }
 
-    private static void setupCloseShutdownHook(final PrintWriter report) {
+    private static void setupCloseShutdownHook(PrintWriter report) {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -104,41 +101,41 @@ public class KallMotAdressesok {
         });
     }
 
-    private static String lagRapportfilnavn(final int NUMBER_PARALLELL_REQUESTS) {
+    private static String lagRapportfilnavn(int NUMBER_PARALLELL_REQUESTS) {
         return "testrun-parallell-" + NUMBER_PARALLELL_REQUESTS + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")) + ".txt";
     }
 
 
-    private static int tallMellom(final Random r, final int min, final int max) {
+    private static int tallMellom(Random r, int min, int max) {
         return min + r.nextInt(max - min);
     }
     
     public static void main(String[] args) throws Exception {
-        final int NUMBER_PARALLELL_REQUESTS = 2;
-        final int PAUSE_BETWEEN_CALLS = 0;
-        final int MINIMUM_FRAGMENT_LENGDE = 4;
+        int NUMBER_PARALLELL_REQUESTS = 2;
+        int PAUSE_BETWEEN_CALLS = 0;
+        int MINIMUM_FRAGMENT_LENGDE = 4;
         
-        final ApplicationContext context = initializeContext();
-        final AdresseSokConsumer adresseSokConsumer = context.getBean(AdresseSokConsumer.class);
+        ApplicationContext context = initializeContext();
+        AdresseSokConsumer adresseSokConsumer = context.getBean(AdresseSokConsumer.class);
         
-        final PrintWriter report = new PrintWriter(lagRapportfilnavn(NUMBER_PARALLELL_REQUESTS));
-        final KallMotAdressesok app = new KallMotAdressesok(report, adresseSokConsumer);
+        PrintWriter report = new PrintWriter(lagRapportfilnavn(NUMBER_PARALLELL_REQUESTS));
+        KallMotAdressesok app = new KallMotAdressesok(report, adresseSokConsumer);
         
-        final List<String> gater = Collections.unmodifiableList(Files.readAllLines(Paths.get("src/test/resources/gatenavn.txt")));
-        final ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_PARALLELL_REQUESTS);
+        List<String> gater = Collections.unmodifiableList(Files.readAllLines(Paths.get("src/test/resources/gatenavn.txt")));
+        ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_PARALLELL_REQUESTS);
         
         setupCloseShutdownHook(report);
         
         for (int j=0; j<NUMBER_PARALLELL_REQUESTS; j++) {
-            final int threadNum = j;
+            int threadNum = j;
             executorService.submit(() -> {
                 try {
-                    final Random r = new Random();
+                    Random r = new Random();
                     for (int i=0; i<100; i++) {
-                        final String CALL_ID = "callId";
+                        String CALL_ID = "callId";
                         MDC.put(CALL_ID, "test" + threadNum + "," + i);
-                        final String tilfeldigGatenavn = gater.get(r.nextInt(gater.size()));
-                        final String tilfeldigGatenavnFragment = tilfeldigGatenavn.substring(0, tallMellom(r, MINIMUM_FRAGMENT_LENGDE, tilfeldigGatenavn.length()));
+                        String tilfeldigGatenavn = gater.get(r.nextInt(gater.size()));
+                        String tilfeldigGatenavnFragment = tilfeldigGatenavn.substring(0, tallMellom(r, MINIMUM_FRAGMENT_LENGDE, tilfeldigGatenavn.length()));
                         app.testAdressekall(tilfeldigGatenavnFragment);
                         MDC.remove(CALL_ID);
                         Thread.sleep(PAUSE_BETWEEN_CALLS);

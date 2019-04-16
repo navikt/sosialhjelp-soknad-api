@@ -1,20 +1,19 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.Arrays;
-
-import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+
+import java.util.Arrays;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseSokConsumerMock {
     private static final Logger logger = getLogger(AdresseSokConsumerMock.class);
@@ -35,7 +34,7 @@ public class AdresseSokConsumerMock {
             logger.info("Mocker respons til adressesok for søk: {}", param);
 
             AdressesokRespons respons = new AdressesokRespons();
-            final AdresseData a1 = new AdresseData();
+            AdresseData a1 = new AdresseData();
             a1.kommunenummer = "1201";
             a1.kommunenavn = "Bergen";
             a1.adressenavn = "SANNERGATA";
@@ -47,7 +46,7 @@ public class AdresseSokConsumerMock {
             a1.gatekode = "02081";
             a1.bydel = "120102";
             
-            final AdresseData a2 = new AdresseData();
+            AdresseData a2 = new AdresseData();
             a2.kommunenummer = "1201";
             a2.kommunenavn = "Bergen";
             a2.adressenavn = "SANNERGATA";

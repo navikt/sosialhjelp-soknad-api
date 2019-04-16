@@ -26,7 +26,7 @@ public final class JsonArbeidConverter {
     }
 
     public static JsonArbeid tilArbeid(WebSoknad webSoknad) {
-        final JsonArbeid jsonArbeid = new JsonArbeid();
+        JsonArbeid jsonArbeid = new JsonArbeid();
 
         // TODO: Støtte "situasjon" når AA-registeret er nede.
 
@@ -37,12 +37,12 @@ public final class JsonArbeidConverter {
     }
 
     private static List<JsonArbeidsforhold> tilJsonArbeidsforhold(WebSoknad webSoknad) {
-        final List<Faktum> fakta = webSoknad.getFaktaMedKey("arbeidsforhold");
+        List<Faktum> fakta = webSoknad.getFaktaMedKey("arbeidsforhold");
 
         return fakta.stream().map(faktum -> {
-            final Map<String, String> forhold = faktum.getProperties();
+            Map<String, String> forhold = faktum.getProperties();
             
-            final String fom = forhold.get("fom");
+            String fom = forhold.get("fom");
             if (erTom(fom)) {
                 throw new IllegalStateException("fom er mangler og er et påkrevet felt.");
             }
@@ -83,7 +83,7 @@ public final class JsonArbeidConverter {
 
 
     private static JsonKommentarTilArbeidsforhold tilJsonKommentarTilArbeidsforhold(WebSoknad webSoknad) {
-        final String kommentar = webSoknad.getValueForFaktum("opplysninger.arbeidsituasjon.kommentarer");
+        String kommentar = webSoknad.getValueForFaktum("opplysninger.arbeidsituasjon.kommentarer");
         if (erTom(kommentar)) {
             return null;
         }

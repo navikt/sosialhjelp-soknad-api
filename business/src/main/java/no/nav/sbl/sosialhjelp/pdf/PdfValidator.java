@@ -1,7 +1,5 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import java.io.ByteArrayInputStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.verapdf.core.EncryptedPdfException;
@@ -14,6 +12,8 @@ import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.TestAssertion;
 import org.verapdf.pdfa.results.ValidationResult;
+
+import java.io.ByteArrayInputStream;
 
 public final class PdfValidator {
     private static final Logger logger = LoggerFactory.getLogger(PdfValidator.class);
@@ -38,32 +38,32 @@ public final class PdfValidator {
     }
     
     public static void assertValidPdfA(byte[] pdf) {
-        final ValidationResult result = validatePdfA1b(pdf);
+        ValidationResult result = validatePdfA1b(pdf);
         if (result.isCompliant()) {
             return;
         }
         
-        final String failedAssertions = toFailAssertionsString(result);
+        String failedAssertions = toFailAssertionsString(result);
         throw new IllegalStateException("Ugyldig PDF/A-1b. Det er trolig brukt innhold som ikke er tillatt i PDF/A-1b som eksterne hyperlenker. Se valideringsfeil:\n" + failedAssertions);
     }
 
     
-    private static String toFailAssertionsString(final ValidationResult result) {
-        final StringBuilder sb = new StringBuilder();
+    private static String toFailAssertionsString(ValidationResult result) {
+        StringBuilder sb = new StringBuilder();
         for (TestAssertion testAssertion : result.getTestAssertions()) {
             if (testAssertion.getStatus() == TestAssertion.Status.FAILED) {
                 sb.append(testAssertion.toString() + "\n\n");
             }
         }
-        final String failedAssertions = sb.toString();
+        String failedAssertions = sb.toString();
         return failedAssertions;
     }
 
     private static ValidationResult validatePdfA1b(byte[] pdf) {
         try {
-            final PDFAFlavour flavour = PDFAFlavour.fromString("1b");
-            final PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, false);
-            final PDFAParser parser = Foundries.defaultInstance().createParser(new ByteArrayInputStream(pdf), flavour);
+            PDFAFlavour flavour = PDFAFlavour.fromString("1b");
+            PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, false);
+            PDFAParser parser = Foundries.defaultInstance().createParser(new ByteArrayInputStream(pdf), flavour);
             return validator.validate(parser);
         } catch (ModelParsingException e) {
             throw new IllegalStateException("Klarer ikke å parse PDF ved validering. Dette skal ikke kunne skje -- det er trolig en feil med PDF-generering.", e);

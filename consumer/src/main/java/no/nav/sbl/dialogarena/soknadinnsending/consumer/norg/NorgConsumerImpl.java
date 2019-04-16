@@ -6,7 +6,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilg
 import org.slf4j.Logger;
 
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.client.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import static java.lang.System.getenv;
@@ -29,7 +31,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     @Override
     public RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning) {
         Response response = null;
-        final Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
+        Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
 
         try {
             response = request.get();
@@ -58,11 +60,11 @@ public class NorgConsumerImpl implements NorgConsumer {
          * urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
          * at vi når tjenesten).
          */
-        final String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
-        final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
+        String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+        String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
 
-        final Invocation.Builder request = client.target(endpoint + "kodeverk/EnhetstyperNorg").request()
+        Invocation.Builder request = client.target(endpoint + "kodeverk/EnhetstyperNorg").request()
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .header("x-nav-apiKey", apiKey);
@@ -83,7 +85,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     @Override
     public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {
         Response response = null;
-        final Invocation.Builder request = lagRequest(endpoint + "enhet/" + enhetNr + "/kontaktinformasjon");
+        Invocation.Builder request = lagRequest(endpoint + "enhet/" + enhetNr + "/kontaktinformasjon");
 
         try {
             response = request.get();
@@ -101,7 +103,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     private Invocation.Builder lagRequest(String endpoint) {
         String consumerId = getSubjectHandler().getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
+        String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
 
         WebTarget b = client.target(endpoint);
 

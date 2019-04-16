@@ -10,7 +10,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.soknadsosialhjelp.json.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import org.slf4j.Logger;
@@ -47,10 +46,10 @@ public class SosialhjelpTilJson implements AlternativRepresentasjonTransformer {
         String json;
 
         try {
-            final JsonSoknad jsonSoknad = JsonSoknadConverter.tilJsonSoknad(inputSource);
-            final ObjectMapper mapper = new ObjectMapper();
+            JsonSoknad jsonSoknad = JsonSoknadConverter.tilJsonSoknad(inputSource);
+            ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
-            final ObjectWriter o = mapper.writerWithDefaultPrettyPrinter();
+            ObjectWriter o = mapper.writerWithDefaultPrettyPrinter();
             json = o.writeValueAsString(jsonSoknad);
             JsonSosialhjelpValidator.ensureValidSoknad(json);
         } catch (JsonSosialhjelpValidationException | JsonProcessingException e) {

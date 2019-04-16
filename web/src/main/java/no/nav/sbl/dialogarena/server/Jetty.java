@@ -1,12 +1,18 @@
 package no.nav.sbl.dialogarena.server;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.option.Optional.none;
-import static no.nav.modig.lang.option.Optional.optional;
-import static org.apache.commons.io.FilenameUtils.getBaseName;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import no.nav.modig.lang.option.Optional;
+import org.eclipse.jetty.jaas.JAASLoginService;
+import org.eclipse.jetty.plus.webapp.EnvConfiguration;
+import org.eclipse.jetty.plus.webapp.PlusConfiguration;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.webapp.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -14,29 +20,12 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import org.eclipse.jetty.jaas.JAASLoginService;
-import org.eclipse.jetty.plus.webapp.EnvConfiguration;
-import org.eclipse.jetty.plus.webapp.PlusConfiguration;
-import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.webapp.FragmentConfiguration;
-import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
-import org.eclipse.jetty.webapp.MetaInfConfiguration;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.webapp.WebInfConfiguration;
-import org.eclipse.jetty.webapp.WebXmlConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import no.nav.modig.lang.option.Optional;
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.option.Optional.none;
+import static no.nav.modig.lang.option.Optional.optional;
+import static org.apache.commons.io.FilenameUtils.getBaseName;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 /**
@@ -196,7 +185,7 @@ public final class Jetty {
         this.server = setupJetty(new Server());
     }
 
-    private WebAppContext setupWebapp(final WebAppContext webAppContext) {
+    private WebAppContext setupWebapp(WebAppContext webAppContext) {
         if (isNotBlank(contextPath)) {
             webAppContext.setContextPath(contextPath);
         }
@@ -236,7 +225,7 @@ public final class Jetty {
     }
 
 
-    private Server setupJetty(final Server jetty) {
+    private Server setupJetty(Server jetty) {
 
         Resource.setDefaultUseCaches(false);
 
@@ -275,7 +264,7 @@ public final class Jetty {
     }
 
     private String getStatusString() {
-        final StringBuilder statusBuilder = new StringBuilder(
+        StringBuilder statusBuilder = new StringBuilder(
                     "STARTED JETTY"
                     + "\n * WAR: " + warPath
                     + "\n * Context path: " + contextPath

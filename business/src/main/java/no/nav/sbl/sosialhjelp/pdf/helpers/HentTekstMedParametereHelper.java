@@ -1,25 +1,23 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.github.jknack.handlebars.Options;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
@@ -45,8 +43,8 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
-        final String bundleName = konfigurasjon.getBundleName();
+        KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
+        String bundleName = konfigurasjon.getBundleName();
 
         String tekst = this.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK, options);
         
@@ -81,7 +79,7 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
         }
     }
     
-    protected String erstattTekst(final String regex, final String input, final String replacement) {
+    protected String erstattTekst(String regex, String input, String replacement) {
         String[] lines = input.split("\n");
         for (int i = 0; i < lines.length; i++) {
             lines[i] = lines[i].replace(regex, replacement);

@@ -20,17 +20,17 @@ public class TelefonnummerSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer();
-        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        JsonTelefonnummer telefonnummer = personalia.getTelefonnummer();
+        String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (telefonnummer.getKilde() == JsonKilde.SYSTEM) {
             telefonnummer.setVerdi(innhentSystemverdiTelefonnummer(personIdentifikator));
         }
     }
 
-    public String innhentSystemverdiTelefonnummer(final String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        final String systemVerdi = norskTelefonnummer(personalia.getMobiltelefonnummer());
+    public String innhentSystemverdiTelefonnummer(String personIdentifikator) {
+        Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
+        String systemVerdi = norskTelefonnummer(personalia.getMobiltelefonnummer());
         return systemVerdi;
     }
 

@@ -220,7 +220,7 @@ public class SoknadDataFletter {
 
         soknadMetricsService.startetSoknad(skjemanummer, false);
 
-        final SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withVersjon(1L)
                 .withEier(aktorId)
                 .withBehandlingsId(behandlingsId)
@@ -435,11 +435,11 @@ public class SoknadDataFletter {
         logger.info("Starter innsending av søknad med behandlingsId {}", soknad.getBrukerBehandlingId());
 
         HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(soknad);
-        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
+        List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
         VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggListe);
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
-        final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
+        SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         oppgaveHandterer.leggTilOppgave(behandlingsId, soknad.getAktoerId());
@@ -456,17 +456,17 @@ public class SoknadDataFletter {
         if (soknadUnderArbeidOptional.isPresent()) {
             soknadUnderArbeid = soknadUnderArbeidOptional.get();
         } else {
-            final SoknadUnderArbeid soknadUnderArbeidFraWebSoknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
+            SoknadUnderArbeid soknadUnderArbeidFraWebSoknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
             if (soknadUnderArbeidFraWebSoknad != null) {
                 soknadUnderArbeid = soknadUnderArbeidFraWebSoknad;
-                final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeidFraWebSoknad, soknad.getAktoerId());
+                Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeidFraWebSoknad, soknad.getAktoerId());
                 soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
             } else {
                 throw new RuntimeException("Kan ikke konvertere fra websøknad under innsending");
             }
         }
 
-        final List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeid.getSoknadId(),
+        List<OpplastetVedlegg> opplastedeVedlegg = vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadUnderArbeid.getSoknadId(),
                 soknadUnderArbeid.getEier(), vedleggListe);
         if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
             for (OpplastetVedlegg opplastetVedlegg : opplastedeVedlegg) {

@@ -1,25 +1,10 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_ANNET_VEDLEGG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_LASTET_OPP;
-
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -27,12 +12,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.xml.bind.annotation.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.function.Predicate;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_ANNET_VEDLEGG;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_LASTET_OPP;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -303,11 +291,11 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
-    public List<Faktum> getFaktaMedKey(final String key) {
+    public List<Faktum> getFaktaMedKey(String key) {
         return getFakta().stream().filter(faktum -> faktum.getKey().equals(key)).collect(toList());
     }
 
-    public Faktum getFaktumMedKey(final String key) {
+    public Faktum getFaktumMedKey(String key) {
         for (Faktum faktum : fakta) {
             if (faktum.getKey().equals(key)) {
                 return faktum;
@@ -316,7 +304,7 @@ public class WebSoknad implements Serializable {
         return null;
     }
 
-    public Faktum getFaktumMedId(final String id) {
+    public Faktum getFaktumMedId(String id) {
         for (Faktum faktum : fakta) {
             if (faktum.getFaktumId().toString().equals(id)) {
                 return faktum;
@@ -325,7 +313,7 @@ public class WebSoknad implements Serializable {
         return null;
     }
 
-    public String getValueForFaktum(final String key) {
+    public String getValueForFaktum(String key) {
         return Optional.ofNullable(getFaktumMedKey(key))
                 .map(Faktum::getValue)
                 .orElse("");
@@ -354,7 +342,7 @@ public class WebSoknad implements Serializable {
                 .collect(toList());
     }
 
-    public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
+    public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(String key, String propertyKey) {
         return getFakta().stream()
                 .filter(faktum -> faktum.getKey().equals(key)
                         && faktum.getProperties().get(propertyKey) != null
@@ -362,25 +350,25 @@ public class WebSoknad implements Serializable {
                 .collect(toList());
     }
 
-    public List<Faktum> getFaktaSomStarterMed(final String key) {
+    public List<Faktum> getFaktaSomStarterMed(String key) {
         return getFakta().stream()
                 .filter(faktum -> faktum.getKey().startsWith(key))
                 .collect(toList());
     }
 
-    public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
+    public List<Faktum> getFaktaMedKeyOgParentFaktum(String key, Long parentFaktumId) {
         return getFakta().stream()
                 .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
                 .collect(toList());
     }
 
-    public Faktum getFaktumMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
+    public Faktum getFaktumMedKeyOgParentFaktum(String key, Long parentFaktumId) {
         return getFakta().stream()
                 .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
                 .findFirst().orElse(null);
     }
 
-    public Faktum getFaktaMedKeyOgProperty(final String key, final String property, final String value) {
+    public Faktum getFaktaMedKeyOgProperty(String key, String property, String value) {
         return getFakta().stream()
                 .filter(faktum -> faktum.getKey().equals(key) && faktum.matcherUnikProperty(property, value))
                 .findFirst()
@@ -504,7 +492,7 @@ public class WebSoknad implements Serializable {
         }
     }
 
-    public Faktum finnFaktum(final Long faktumId) {
+    public Faktum finnFaktum(Long faktumId) {
         return getFakta().stream()
                 .filter(faktum -> faktum.getFaktumId() != null
                         && faktum.getFaktumId().equals(faktumId))
@@ -550,7 +538,7 @@ public class WebSoknad implements Serializable {
         }
     }
 
-    public Vedlegg finnVedleggSomMatcherForventning(final VedleggForFaktumStruktur vedleggForFaktumStruktur, final Long faktumId) {
+    public Vedlegg finnVedleggSomMatcherForventning(VedleggForFaktumStruktur vedleggForFaktumStruktur, Long faktumId) {
         return getVedlegg().stream().filter(new VedleggSomMatcherForventningPredicate(vedleggForFaktumStruktur, faktumId)).findFirst().orElse(null);
     }
 

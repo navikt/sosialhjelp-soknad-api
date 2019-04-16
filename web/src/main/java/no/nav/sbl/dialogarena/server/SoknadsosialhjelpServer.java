@@ -32,15 +32,15 @@ public class SoknadsosialhjelpServer {
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
         configure();
 
-        final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
+        DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
         
         if (isRunningOnNais()) {
             databaseSchemaMigration(ds);
         }
 
-        final String loginConfFile = SoknadsosialhjelpServer.class.getClassLoader().getResource("login.conf").getFile();
+        String loginConfFile = SoknadsosialhjelpServer.class.getClassLoader().getResource("login.conf").getFile();
         setProperty("java.security.auth.login.config", loginConfFile);
-        final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
+        JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
         jetty = new Jetty.JettyBuilder()
                 .at(contextPath)
@@ -56,11 +56,11 @@ public class SoknadsosialhjelpServer {
         }
     }
 
-    private void databaseSchemaMigration(final DataSource ds) {
+    private void databaseSchemaMigration(DataSource ds) {
         log.debug("Running Flyway migration.");
-        final Flyway flyway = new Flyway();
+        Flyway flyway = new Flyway();
         flyway.setDataSource(ds);
-        final int migrations = flyway.migrate();
+        int migrations = flyway.migrate();
         log.info("Flyway migration successfully executed. Number of new applied migrations: " + migrations);
     }
 
@@ -82,11 +82,11 @@ public class SoknadsosialhjelpServer {
     }
 
     private void mapNaisProperties() throws IOException {
-        final Properties props = readProperties("naisPropertyMapping.properties", true);
+        Properties props = readProperties("naisPropertyMapping.properties", true);
 
         for (String env : props.stringPropertyNames()) {
-            final String interntNavn = props.getProperty(env);
-            final String value = findVariableValue(env);
+            String interntNavn = props.getProperty(env);
+            String value = findVariableValue(env);
             if (value != null) {
                 System.setProperty(interntNavn, value);
             }
@@ -102,7 +102,7 @@ public class SoknadsosialhjelpServer {
     }
 
     private static String determineEnvironment() {
-        final String env = System.getenv("FASIT_ENVIRONMENT_NAME");
+        String env = System.getenv("FASIT_ENVIRONMENT_NAME");
         if (env == null || env.trim().equals("")) {
             return null;
         }
@@ -114,14 +114,14 @@ public class SoknadsosialhjelpServer {
     }
 
     public static void setFrom(String resource, boolean required) throws IOException {
-        final Properties props = readProperties(resource, required);
+        Properties props = readProperties(resource, required);
 
         updateJavaProperties(props);
     }
 
-    private static void updateJavaProperties(final Properties props) {
+    private static void updateJavaProperties(Properties props) {
         for (String entry : props.stringPropertyNames()) {
-            final String value = withEnvironmentVariableExpansion(props.getProperty(entry));
+            String value = withEnvironmentVariableExpansion(props.getProperty(entry));
             System.setProperty(entry, value);
         }
     }
@@ -131,12 +131,12 @@ public class SoknadsosialhjelpServer {
             return null;
         }
 
-        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}");
-        final Matcher m = p.matcher(value);
-        final StringBuffer sb = new StringBuffer();
+        Pattern p = Pattern.compile("\\$\\{([^}]*)\\}");
+        Matcher m = p.matcher(value);
+        StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            final String variableName = m.group(1);
-            final String replacement = Matcher.quoteReplacement(findVariableValue(variableName));
+            String variableName = m.group(1);
+            String replacement = Matcher.quoteReplacement(findVariableValue(variableName));
             m.appendReplacement(sb, replacement);
         }
         m.appendTail(sb);
@@ -144,12 +144,12 @@ public class SoknadsosialhjelpServer {
         return sb.toString();
     }
 
-    private static String findVariableValue(final String variableName) {
-        final String envValue = System.getenv(variableName);
+    private static String findVariableValue(String variableName) {
+        String envValue = System.getenv(variableName);
         if (envValue != null) {
             return envValue;
         }
-        final String propValue = System.getProperty(variableName);
+        String propValue = System.getProperty(variableName);
         if (propValue != null) {
             return propValue;
         }
@@ -178,7 +178,7 @@ public class SoknadsosialhjelpServer {
 
     private static DataSource buildDataSource() throws IOException {
 
-        final HikariConfig config = new HikariConfig();
+        HikariConfig config = new HikariConfig();
 
         config.setJdbcUrl(System.getProperty("db.url"));
         config.setUsername(System.getProperty("db.username"));
@@ -193,7 +193,7 @@ public class SoknadsosialhjelpServer {
 
     public static void main(String[] args) {
         try {
-            final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer();
+            SoknadsosialhjelpServer server = new SoknadsosialhjelpServer();
             server.start();
         } catch (Exception e) {
             log.error("Kunne ikke starte opp soknadsosialhjelp-server", e);

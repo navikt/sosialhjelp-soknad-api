@@ -80,7 +80,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public Long opprettEllerEndreVedlegg(final Vedlegg vedlegg, final byte[] content) {
+    public Long opprettEllerEndreVedlegg(Vedlegg vedlegg, byte[] content) {
         if (vedlegg.getVedleggId() == null) {
             vedlegg.setVedleggId(getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class));
         }
@@ -119,7 +119,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public void lagreVedleggMedData(final Long soknadId, final Long vedleggId, final Vedlegg vedlegg) {
+    public void lagreVedleggMedData(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
 
         try {
             getJdbcTemplate().update("update vedlegg set innsendingsvalg = ?, storrelse = ?, antallsider = ?, aarsak = ?, data = ?, filnavn = ?, mimetype = ?, sha512 = ? " +
@@ -178,7 +178,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public String hentBehandlingsIdTilVedlegg(Long vedleggId) {
-        final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from vedlegg where vedlegg_id = ?)";
+        String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from vedlegg where vedlegg_id = ?)";
         List<String> strings = getJdbcTemplate().queryForList(sql, String.class, vedleggId);
         if (!strings.isEmpty()) {
             return strings.get(0);

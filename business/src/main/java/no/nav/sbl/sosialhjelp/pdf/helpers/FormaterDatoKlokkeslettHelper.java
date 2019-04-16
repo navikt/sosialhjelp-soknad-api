@@ -1,13 +1,12 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
+import com.github.jknack.handlebars.Options;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
-import org.springframework.stereotype.Component;
-
-import com.github.jknack.handlebars.Options;
 
 @Component
 public class FormaterDatoKlokkeslettHelper extends RegistryAwareHelper<String>{
@@ -28,21 +27,21 @@ public class FormaterDatoKlokkeslettHelper extends RegistryAwareHelper<String>{
             return "";
         }
 
-        final ZonedDateTime zonedDate = ZonedDateTime.parse(datoStreng);
-        final ZonedDateTime osloZonedDateTime = toOsloZonedDateTime(zonedDate);
+        ZonedDateTime zonedDate = ZonedDateTime.parse(datoStreng);
+        ZonedDateTime osloZonedDateTime = toOsloZonedDateTime(zonedDate);
 
-        final String format = options.param(0);
+        String format = options.param(0);
         return formatDateTime(osloZonedDateTime, format);
     }
 
-    private String formatDateTime(ZonedDateTime osloZonedDateTime, final String format) {
-        final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(format);
+    private String formatDateTime(ZonedDateTime osloZonedDateTime, String format) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(format);
         return osloZonedDateTime.format(dateFormatter);
     }
 
-    private ZonedDateTime toOsloZonedDateTime(final ZonedDateTime zonedDate) {
-        final ZoneId osloZone = ZoneId.of("Europe/Oslo");
-        final ZonedDateTime osloZonedDate = zonedDate.withZoneSameInstant(osloZone);
+    private ZonedDateTime toOsloZonedDateTime(ZonedDateTime zonedDate) {
+        ZoneId osloZone = ZoneId.of("Europe/Oslo");
+        ZonedDateTime osloZonedDate = zonedDate.withZoneSameInstant(osloZone);
         return osloZonedDate;
     }
 }

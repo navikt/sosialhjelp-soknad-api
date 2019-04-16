@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -67,7 +66,7 @@ public class SoknadStruktur implements Serializable {
                 .toString();
     }
 
-    public List<VedleggForFaktumStruktur> vedleggFor(final Faktum faktum) {
+    public List<VedleggForFaktumStruktur> vedleggFor(Faktum faktum) {
 
         return vedlegg.stream()
                 .filter(v -> v.getFaktum().getId().equals(faktum.getKey()))
@@ -75,7 +74,7 @@ public class SoknadStruktur implements Serializable {
                 .collect(toList());
     }
 
-    public List<VedleggForFaktumStruktur> vedleggForSkjemanrMedTillegg(final String skjemaNr, final String tillegg) {
+    public List<VedleggForFaktumStruktur> vedleggForSkjemanrMedTillegg(String skjemaNr, String tillegg) {
 
         return vedlegg.stream()
                 .filter(v -> v != null)
@@ -128,7 +127,7 @@ public class SoknadStruktur implements Serializable {
         return vedleggStruktur.getSkjemaNummer() + vedleggStruktur.getSkjemanummerTillegg() + faktum.getFaktumId();
     }
 
-    public FaktumStruktur finnStrukturForKey(final String key) {
+    public FaktumStruktur finnStrukturForKey(String key) {
 
         List<FaktumStruktur> strukturListe = fakta.stream()
                 .filter(f -> f.getId().equals(key))
@@ -137,7 +136,7 @@ public class SoknadStruktur implements Serializable {
         return strukturListe.isEmpty()? null: strukturListe.get(0);
     }
 
-    public List<FaktumStruktur> finnBarneStrukturer(final String parent) {
+    public List<FaktumStruktur> finnBarneStrukturer(String parent) {
         return fakta.stream()
                 .filter(f -> f.getDependOn() != null && f.getDependOn().getId().equals(parent))
                 .collect(toList());

@@ -44,12 +44,12 @@ public class FiksSender {
                 .withPostnr("0000")
                 .withPoststed("Ikke send");
 
-        final Forsendelse forsendelse = opprettForsendelse(sendtSoknad, fakeAdresse);
+        Forsendelse forsendelse = opprettForsendelse(sendtSoknad, fakeAdresse);
         return forsendelsesService.sendForsendelse(forsendelse);
     }
 
     Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
-        final SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
+        SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
         return new Forsendelse()
                 .withMottaker(new Adresse()
                         .withDigitalAdresse(
@@ -73,7 +73,7 @@ public class FiksSender {
     }
 
     List<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid) {
-        final JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
+        JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         if (internalSoknad == null) {
             throw new RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler");
         } else if (!soknadUnderArbeid.erEttersendelse() && internalSoknad.getSoknad() == null) {
@@ -101,7 +101,7 @@ public class FiksSender {
     }
 
     private String environmentNameIfTest() {
-        final String environment = System.getProperty("environment.name");
+        String environment = System.getProperty("environment.name");
         if (environment == null || "p".equals(environment)) {
             return "";
         }

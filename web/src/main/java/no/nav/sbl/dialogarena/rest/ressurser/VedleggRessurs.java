@@ -43,26 +43,26 @@ public class VedleggRessurs {
 
     @GET
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public Vedlegg hentVedlegg(@PathParam("vedleggId") final Long vedleggId) {
+    public Vedlegg hentVedlegg(@PathParam("vedleggId") Long vedleggId) {
         return vedleggService.hentVedlegg(vedleggId, false);
     }
 
     @PUT
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public void lagreVedlegg(@PathParam("vedleggId") final Long vedleggId, Vedlegg vedlegg) {
+    public void lagreVedlegg(@PathParam("vedleggId") Long vedleggId, Vedlegg vedlegg) {
         vedleggService.lagreVedlegg(vedleggId, vedlegg);
     }
 
     @DELETE
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public void slettVedlegg(@PathParam("vedleggId") final Long vedleggId) {
+    public void slettVedlegg(@PathParam("vedleggId") Long vedleggId) {
         vedleggService.slettVedlegg(vedleggId);
     }
 
     @GET
     @Path("/fil")
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public List<Vedlegg> hentVedleggUnderBehandling(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") final String behandlingsId) {
+    public List<Vedlegg> hentVedleggUnderBehandling(@PathParam("vedleggId") Long vedleggId, @QueryParam("behandlingsId") String behandlingsId) {
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
         return vedleggService.hentVedleggUnderBehandling(behandlingsId, forventning.getFillagerReferanse());
     }
@@ -71,7 +71,7 @@ public class VedleggRessurs {
     @Path("/fil.png")
     @Produces("image/png")
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public byte[] lagForhandsvisningForVedlegg(@PathParam("vedleggId") final Long vedleggId, @QueryParam("side") final int side) {
+    public byte[] lagForhandsvisningForVedlegg(@PathParam("vedleggId") Long vedleggId, @QueryParam("side") int side) {
         return vedleggService.lagForhandsvisning(vedleggId, side);
     }
 
@@ -79,7 +79,7 @@ public class VedleggRessurs {
     @Path("/fil")
     @Consumes(MULTIPART_FORM_DATA)
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
+    public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") Long vedleggId, @QueryParam("behandlingsId") String behandlingsId, @FormDataParam("files[]") List<FormDataBodyPart> files) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
 

@@ -68,12 +68,12 @@ public class NavEnhetRessurs {
 
     @GET
     public List<NavEnhetFrontend> hentNavEnheter(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final String valgtOrgnr = soknad.getMottaker() == null ? null : soknad.getMottaker().getOrganisasjonsnummer();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        String valgtOrgnr = soknad.getMottaker() == null ? null : soknad.getMottaker().getOrganisasjonsnummer();
 
-        final JsonAdresse oppholdsadresse = soknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
-        final String adresseValg = oppholdsadresse == null ? null :
+        JsonAdresse oppholdsadresse = soknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
+        String adresseValg = oppholdsadresse == null ? null :
                 oppholdsadresse.getAdresseValg() == null ? null :
                         oppholdsadresse.getAdresseValg().toString();
 
@@ -90,9 +90,9 @@ public class NavEnhetRessurs {
     }
 
     private void update(String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonInternalSoknad jsonInternalSoknad = soknad.getJsonInternalSoknad();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonInternalSoknad jsonInternalSoknad = soknad.getJsonInternalSoknad();
 
         jsonInternalSoknad.setMottaker(new JsonSoknadsmottaker()
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
@@ -101,11 +101,11 @@ public class NavEnhetRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum soknadsmottaker = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "soknadsmottaker");
+        Faktum soknadsmottaker = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "soknadsmottaker");
 
-        final Map<String, String> properties = soknadsmottaker.getProperties();
+        Map<String, String> properties = soknadsmottaker.getProperties();
         properties.put("sosialOrgnr", navEnhetFrontend.orgnr);
         properties.put("enhetsnavn", navEnhetFrontend.enhetsnavn);
         properties.put("kommunenavn", navEnhetFrontend.kommunenavn);
@@ -122,18 +122,18 @@ public class NavEnhetRessurs {
     }
 
     private List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
+        List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
          * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
          */
         return adresseForslagene.stream().map((adresseForslag) -> {
-            final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+            NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
@@ -148,7 +148,7 @@ public class NavEnhetRessurs {
             return null;
         }
 
-        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
+        boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
                 .withKommunenavn(adresseForslag.kommunenavn)

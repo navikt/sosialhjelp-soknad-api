@@ -30,11 +30,11 @@ public class FiksHandterer {
     private InnsendingService innsendingService;
 
     public void eksekver(Oppgave oppgaveKjede) {
-        final String behandlingsId = oppgaveKjede.behandlingsId;
+        String behandlingsId = oppgaveKjede.behandlingsId;
         logger.info("Kjører fikskjede for behandlingsid {}, steg {}", behandlingsId, oppgaveKjede.steg);
 
         FiksResultat resultat = oppgaveKjede.oppgaveResultat;
-        final String eier = oppgaveKjede.oppgaveData.avsenderFodselsnummer;
+        String eier = oppgaveKjede.oppgaveData.avsenderFodselsnummer;
         if (isEmpty(eier)) {
             throw new IllegalStateException("Søknad med behandlingsid " + behandlingsId + " mangler eier");
         }
@@ -51,7 +51,7 @@ public class FiksHandterer {
     }
 
     private void sendTilFiks(String behandlingsId, FiksResultat resultat, String eier) {
-        final SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
+        SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
         Event event = lagForsoktSendtTilFiksEvent(sendtSoknad);
         try {
             resultat.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad);

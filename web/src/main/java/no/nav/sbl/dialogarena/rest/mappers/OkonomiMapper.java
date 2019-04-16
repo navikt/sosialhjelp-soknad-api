@@ -14,7 +14,7 @@ import java.util.Optional;
 public class OkonomiMapper {
 
     public static void setBekreftelse(JsonOkonomiopplysninger opplysninger, String type, Boolean verdi, String tittel) {
-        final Optional<JsonOkonomibekreftelse> utbetaltBekreftelse = opplysninger.getBekreftelse().stream()
+        Optional<JsonOkonomibekreftelse> utbetaltBekreftelse = opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals(type)).findFirst();
 
         if (utbetaltBekreftelse.isPresent()){

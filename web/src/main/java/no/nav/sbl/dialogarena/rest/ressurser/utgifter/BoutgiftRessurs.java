@@ -57,10 +57,10 @@ public class BoutgiftRessurs {
 
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
-        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+        JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
+        BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return boutgifterFrontend;
@@ -80,9 +80,9 @@ public class BoutgiftRessurs {
     }
 
     private void update(String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
@@ -95,33 +95,33 @@ public class BoutgiftRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift");
+        Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift");
         bekreftelse.setValue(boutgifterFrontend.bekreftelse.toString());
         faktaService.lagreBrukerFaktum(bekreftelse);
 
-        final Faktum husleie = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.husleie");
+        Faktum husleie = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.husleie");
         husleie.setValue(String.valueOf(boutgifterFrontend.husleie));
         faktaService.lagreBrukerFaktum(husleie);
 
-        final Faktum strom = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.strom");
+        Faktum strom = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.strom");
         strom.setValue(String.valueOf(boutgifterFrontend.strom));
         faktaService.lagreBrukerFaktum(strom);
 
-        final Faktum kommunaleavgifter = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.kommunaleavgifter");
+        Faktum kommunaleavgifter = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.kommunaleavgifter");
         kommunaleavgifter.setValue(String.valueOf(boutgifterFrontend.kommunalAvgift));
         faktaService.lagreBrukerFaktum(kommunaleavgifter);
 
-        final Faktum oppvarming = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.oppvarming");
+        Faktum oppvarming = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.oppvarming");
         oppvarming.setValue(String.valueOf(boutgifterFrontend.oppvarming));
         faktaService.lagreBrukerFaktum(oppvarming);
 
-        final Faktum avdraglaan = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.avdraglaan");
+        Faktum avdraglaan = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.avdraglaan");
         avdraglaan.setValue(String.valueOf(boutgifterFrontend.boliglan));
         faktaService.lagreBrukerFaktum(avdraglaan);
 
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.andreutgifter");
+        Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.andreutgifter");
         annet.setValue(String.valueOf(boutgifterFrontend.annet));
         faktaService.lagreBrukerFaktum(annet);
     }
@@ -131,23 +131,23 @@ public class BoutgiftRessurs {
         List<JsonOkonomioversiktUtgift> oversiktBoutgifter = okonomi.getOversikt().getUtgift();
 
         if(boutgifterFrontend.husleie){
-            final String type = "husleie";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "husleie";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.strom){
-            final String type = "strom";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "strom";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.kommunalAvgift){
-            final String type = "kommunalAvgift";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "kommunalAvgift";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.oppvarming){
-            final String type = "oppvarming";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "oppvarming";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.boliglan){
@@ -159,14 +159,14 @@ public class BoutgiftRessurs {
             addUtgiftIfNotPresentInOversikt(oversiktBoutgifter, type, tittel);
         }
         if(boutgifterFrontend.annet){
-            final String type = "annenBoutgift";
-            final String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+            String type = "annenBoutgift";
+            String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
             addUtgiftIfNotPresentInOpplysninger(opplysningerBoutgifter, type, tittel);
         }
     }
 
     private void setBekreftelseOnBoutgifterFrontend(JsonOkonomiopplysninger opplysninger, BoutgifterFrontend boutgifterFrontend) {
-        final Optional<JsonOkonomibekreftelse> boutgiftBekreftelse = opplysninger.getBekreftelse().stream()
+        Optional<JsonOkonomibekreftelse> boutgiftBekreftelse = opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals("boutgifter")).findFirst();
         if (boutgiftBekreftelse.isPresent()){
             boutgifterFrontend.setBekreftelse(boutgiftBekreftelse.get().getVerdi());

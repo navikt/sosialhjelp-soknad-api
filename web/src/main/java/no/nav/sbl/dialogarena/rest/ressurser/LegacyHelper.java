@@ -37,9 +37,9 @@ public class LegacyHelper {
     private VedleggOriginalFilerService vedleggOriginalFilerService;
 
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier, boolean medVedlegg) {
-        final WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier, medVedlegg);
+        WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier, medVedlegg);
 
-        final SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad, medVedlegg);
+        SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad, medVedlegg);
         if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {
             throw new IllegalStateException("Feillagrede brukerdata for søknad: " + behandlingsId);
         }
@@ -61,7 +61,7 @@ public class LegacyHelper {
             vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
         }
 
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
         if (!eier.equals(webSoknad.getAktoerId())) {
             throw new AuthorizationException("Ingen tilgang til angitt søknad for angitt bruker");
         }

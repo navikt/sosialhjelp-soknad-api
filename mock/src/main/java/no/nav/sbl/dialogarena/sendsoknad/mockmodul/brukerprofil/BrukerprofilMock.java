@@ -82,13 +82,13 @@ public class BrukerprofilMock {
     }
     
     public void settMidlertidigPostadresse(XMLBruker xmlBruker) {
-        final XMLMidlertidigPostadresse midlertidigPostadresse = new XMLMidlertidigPostadresseNorge()
+        XMLMidlertidigPostadresse midlertidigPostadresse = new XMLMidlertidigPostadresseNorge()
                 .withStrukturertAdresse(lagStrukturertPostadresse("42"));
         xmlBruker.setMidlertidigPostadresse(midlertidigPostadresse);
     }
     
     public void settMatrikkeladresse(XMLBruker xmlBruker) {
-        final XMLBostedsadresse adresse = new XMLBostedsadresse().withStrukturertAdresse(new XMLMatrikkeladresse()
+        XMLBostedsadresse adresse = new XMLBostedsadresse().withStrukturertAdresse(new XMLMatrikkeladresse()
                 .withEiendomsnavn("Eiendommens navn")
                 .withKommunenummer("0301")
                 .withLandkode(lagLandkode(LANDKODE))

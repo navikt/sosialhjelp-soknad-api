@@ -1,11 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency;
 
+import javax.ws.rs.client.Client;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import javax.ws.rs.client.Client;
 
 
 public final class RestCallContext {
@@ -68,7 +67,7 @@ public final class RestCallContext {
             if (client == null) {
                 throw new IllegalArgumentException("client == null");
             }
-            final ThreadPoolExecutor executorService = new ThreadPoolExecutor(
+            ThreadPoolExecutor executorService = new ThreadPoolExecutor(
                     concurrentRequests,
                     concurrentRequests,
                     0L, TimeUnit.MILLISECONDS,

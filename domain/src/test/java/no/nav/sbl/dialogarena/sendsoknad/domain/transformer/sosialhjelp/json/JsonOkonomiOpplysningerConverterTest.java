@@ -15,7 +15,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.j
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class JsonOkonomiOpplysningerConverterTest {
     private static final Long SOKNADID = 1L;
@@ -31,7 +31,7 @@ public class JsonOkonomiOpplysningerConverterTest {
 
     @Test
     public void opplysningUtbetalingFraNavReturnererTomListeForSoknadUtenUtbetalinger() {
-        final WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("utbetalinger.ingen").medValue("true"));
+        WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("utbetalinger.ingen").medValue("true"));
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalingerFraNav = opplysningUtbetalingFraNav(webSoknad);
 
@@ -40,7 +40,7 @@ public class JsonOkonomiOpplysningerConverterTest {
 
     @Test
     public void opplysningUtbetalingFraNavLagerRiktigJsonObjektForUtbetalingUtenKomponentliste() {
-        final WebSoknad webSoknad = new WebSoknad().medFaktum(lagFaktumForUtbetaling(UTBETALINGSID, TYPE));
+        WebSoknad webSoknad = new WebSoknad().medFaktum(lagFaktumForUtbetaling(UTBETALINGSID, TYPE));
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalingerFraNav = opplysningUtbetalingFraNav(webSoknad);
         JsonOkonomiOpplysningUtbetaling utbetaling = utbetalingerFraNav.get(0);
@@ -63,7 +63,7 @@ public class JsonOkonomiOpplysningerConverterTest {
 
     @Test
     public void opplysningUtbetalingFraNavLagerRiktigJsonObjektForToUtbetalingerMedKomponentliste() {
-        final WebSoknad webSoknad = new WebSoknad()
+        WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(lagFaktumForUtbetaling(UTBETALINGSID, TYPE))
                 .medFaktum(lagFaktumForUtbetaling(UTBETALINGSID2, TYPE2))
                 .medFaktum(lagFaktumForUtbetalingskomponent("0", UTBETALINGSID, SATSTYPE, "23 620,00"));
@@ -81,7 +81,7 @@ public class JsonOkonomiOpplysningerConverterTest {
 
     @Test
     public void tilUtbetalingskomponentListeLagerRiktigJsonObjektForKomponentlisteMedToKomponenter() {
-        final WebSoknad webSoknad = new WebSoknad()
+        WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(lagFaktumForUtbetalingskomponent("0", UTBETALINGSID, SATSTYPE, "23 620,00"))
                 .medFaktum(lagFaktumForUtbetalingskomponent("1", UTBETALINGSID, SATSTYPE2, "10 652,50"));
 
@@ -104,7 +104,7 @@ public class JsonOkonomiOpplysningerConverterTest {
 
     @Test
     public void tilUtbetalingskomponentListeSerBortFraKomponenterMedAnnenUtbetalingsid() {
-        final WebSoknad webSoknad = new WebSoknad()
+        WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(lagFaktumForUtbetalingskomponent("0", UTBETALINGSID, SATSTYPE, "23 620,00"))
                 .medFaktum(lagFaktumForUtbetalingskomponent("1", UTBETALINGSID2, SATSTYPE2, "10 652,50"));
 

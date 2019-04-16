@@ -15,7 +15,7 @@ public final class JsonSoknadConverter {
     }
 
     public static JsonSoknad tilJsonSoknad(InputSource inputSource) {
-        final JsonSoknad jsonSoknad = new JsonSoknad();
+        JsonSoknad jsonSoknad = new JsonSoknad();
         jsonSoknad.setData(tilData(inputSource));
         jsonSoknad.setKompatibilitet(Collections.emptyList());
 
@@ -39,7 +39,7 @@ public final class JsonSoknadConverter {
     }
 
     private static String settDriftsinformasjonForUtbetalingSystemfeil(WebSoknad webSoknad) {
-        final Faktum faktumMedKey = webSoknad.getFaktumMedKey("utbetalinger.feilet");
+        Faktum faktumMedKey = webSoknad.getFaktumMedKey("utbetalinger.feilet");
         if (faktumMedKey != null && "true".equalsIgnoreCase(faktumMedKey.getValue())) {
             return "Kunne ikke hente utbetalinger fra NAV";
         }

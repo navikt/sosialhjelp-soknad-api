@@ -19,7 +19,7 @@ public class HvisOkonomiskVerdiHelper extends RegistryAwareHelper<Object>{
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
-        final Set<String> okonomiskVerdiTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.eierandeler.true.type", SPRAK);
+        Set<String> okonomiskVerdiTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.eierandeler.true.type", SPRAK);
 
         if (key != null && okonomiskVerdiTyper.contains(key.toString())){
             return options.fn(this);

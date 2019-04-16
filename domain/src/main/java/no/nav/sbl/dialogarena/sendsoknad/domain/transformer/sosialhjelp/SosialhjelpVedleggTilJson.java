@@ -19,9 +19,7 @@ import java.util.*;
 
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toMap;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggAlleredeSendt;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransformer {
@@ -29,7 +27,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
     private static final Logger logger = getLogger(SosialhjelpVedleggTilJson.class);
 
     public JsonVedleggSpesifikasjon toJsonVedleggSpesifikasjon(WebSoknad webSoknad) {
-        final List<JsonVedlegg> vedlegg = opprettJsonVedleggFraWebSoknad(webSoknad);
+        List<JsonVedlegg> vedlegg = opprettJsonVedleggFraWebSoknad(webSoknad);
         return new JsonVedleggSpesifikasjon().withVedlegg(vedlegg);
     }
     

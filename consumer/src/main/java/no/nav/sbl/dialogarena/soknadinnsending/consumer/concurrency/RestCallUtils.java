@@ -1,13 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency;
 
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.slf4j.MDC;
+
+import java.util.Map;
+import java.util.concurrent.*;
 
 
 public final class RestCallUtils {
@@ -18,8 +14,8 @@ public final class RestCallUtils {
 
         
     public static <T> T performRequestUsingContext(RestCallContext executionContext, Callable<T> callable) {
-        final Map<String, String> mdcContextMap = MDC.getCopyOfContextMap();
-        final Future<T> future = executionContext.getExecutorService().submit(() -> {
+        Map<String, String> mdcContextMap = MDC.getCopyOfContextMap();
+        Future<T> future = executionContext.getExecutorService().submit(() -> {
             try {
                 if (mdcContextMap != null) {
                     MDC.setContextMap(mdcContextMap);

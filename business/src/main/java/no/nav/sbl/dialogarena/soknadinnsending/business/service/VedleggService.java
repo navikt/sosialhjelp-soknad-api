@@ -20,7 +20,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
@@ -30,6 +29,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -46,8 +46,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
@@ -262,7 +262,7 @@ public class VedleggService {
         return vedleggId;
     }
 
-    public List<Vedlegg> hentPaakrevdeVedlegg(final Long faktumId) {
+    public List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId) {
         List<Vedlegg> paakrevdeVedlegg = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
         leggTilKodeverkFelter(paakrevdeVedlegg);
         return paakrevdeVedlegg.stream()
@@ -298,7 +298,7 @@ public class VedleggService {
         }
     }
 
-    private List<VedleggsGrunnlag> hentForventingerForEkstraVedlegg(final WebSoknad soknad) {
+    private List<VedleggsGrunnlag> hentForventingerForEkstraVedlegg(WebSoknad soknad) {
         return soknad.getFaktaMedKey("ekstraVedlegg").stream()
                 .map(faktum -> {
                         Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(N6_FORVENTNING, faktum.getFaktumId());
@@ -344,7 +344,7 @@ public class VedleggService {
         }
     }
 
-    private Faktum getFaktumBasertPaProperties(List<Faktum> fakta, final VedleggForFaktumStruktur vedleggFaktumStruktur) {
+    private Faktum getFaktumBasertPaProperties(List<Faktum> fakta, VedleggForFaktumStruktur vedleggFaktumStruktur) {
         return fakta.stream().filter(faktum ->
                 vedleggFaktumStruktur.getOnProperty()
                         .equals(faktum.getProperties().get(vedleggFaktumStruktur.getProperty())))

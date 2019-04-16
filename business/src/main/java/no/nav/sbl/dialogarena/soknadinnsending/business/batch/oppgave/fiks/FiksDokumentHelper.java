@@ -13,7 +13,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import org.apache.cxf.attachment.ByteDataSource;
@@ -50,8 +49,8 @@ public class FiksDokumentHelper {
     }
 
     Dokument lagDokumentForSoknadJson(JsonInternalSoknad internalSoknad) {
-        final String filnavn = "soknad.json";
-        final String mimetype = "application/json";
+        String filnavn = "soknad.json";
+        String mimetype = "application/json";
         byte[] soknadJson = mapJsonSoknadTilFil(internalSoknad.getSoknad());
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadJson);
@@ -63,8 +62,8 @@ public class FiksDokumentHelper {
     }
 
     Dokument lagDokumentForVedleggJson(JsonInternalSoknad internalSoknad) {
-        final String filnavn = "vedlegg.json";
-        final String mimetype = "application/json";
+        String filnavn = "vedlegg.json";
+        String mimetype = "application/json";
         byte[] vedleggJson = mapJsonVedleggTilFil(internalSoknad.getVedlegg());
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, vedleggJson);
@@ -76,8 +75,8 @@ public class FiksDokumentHelper {
     }
 
     Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
-        final String filnavn = "Soknad.pdf";
-        final String mimetype = "application/pdf";
+        String filnavn = "Soknad.pdf";
+        String mimetype = "application/pdf";
         byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(internalSoknad, "/");
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadPdf);
@@ -89,8 +88,8 @@ public class FiksDokumentHelper {
     }
 
     Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
-        final String filnavn = "Soknad-juridisk.pdf";
-        final String mimetype = "application/pdf";
+        String filnavn = "Soknad-juridisk.pdf";
+        String mimetype = "application/pdf";
         byte[] juridiskPdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
@@ -102,8 +101,8 @@ public class FiksDokumentHelper {
     }
 
     Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
-        final String filnavn = "Brukerkvittering.pdf";
-        final String mimetype = "application/pdf";
+        String filnavn = "Brukerkvittering.pdf";
+        String mimetype = "application/pdf";
         byte[] juridiskPdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
@@ -115,8 +114,8 @@ public class FiksDokumentHelper {
     }
 
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
-        final String filnavn = "ettersendelse.pdf";
-        final String mimetype = "application/pdf";
+        String filnavn = "ettersendelse.pdf";
+        String mimetype = "application/pdf";
         byte[] ettersendelsePdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, ettersendelsePdf);
@@ -128,14 +127,14 @@ public class FiksDokumentHelper {
     }
 
     List<Dokument> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
-        final List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
+        List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
         return opplastedeVedlegg.stream()
                 .map(this::opprettDokumentForVedlegg)
                 .collect(Collectors.toList());
     }
 
     Dokument opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
-        final String filnavn = opplastetVedlegg.getFilnavn();
+        String filnavn = opplastetVedlegg.getFilnavn();
         return new Dokument()
                 .withFilnavn(filnavn)
                 .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
@@ -156,7 +155,7 @@ public class FiksDokumentHelper {
 
     private byte[] mapJsonSoknadTilFil(JsonSoknad jsonSoknad) {
         try {
-            final String soknad = writer.writeValueAsString(jsonSoknad);
+            String soknad = writer.writeValueAsString(jsonSoknad);
             ensureValidSoknad(soknad);
             return soknad.getBytes(StandardCharsets.UTF_8);
         } catch (JsonProcessingException e) {
@@ -167,7 +166,7 @@ public class FiksDokumentHelper {
 
     private byte[] mapJsonVedleggTilFil(JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon) {
         try {
-            final String jsonVedlegg = writer.writeValueAsString(jsonVedleggSpesifikasjon);
+            String jsonVedlegg = writer.writeValueAsString(jsonVedleggSpesifikasjon);
             ensureValidVedlegg(jsonVedlegg);
             return jsonVedlegg.getBytes(StandardCharsets.UTF_8);
         } catch (JsonProcessingException e) {

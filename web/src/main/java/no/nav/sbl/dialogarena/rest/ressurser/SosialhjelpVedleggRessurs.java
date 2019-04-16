@@ -51,7 +51,7 @@ public class SosialhjelpVedleggRessurs {
     @Consumes(MULTIPART_FORM_DATA)
     @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad(type = Type.Faktum)
-    public Forventning lastOppOriginalfil(@PathParam("faktumId") final Long faktumId, @FormDataParam("file") final FormDataBodyPart fil) {
+    public Forventning lastOppOriginalfil(@PathParam("faktumId") Long faktumId, @FormDataParam("file") FormDataBodyPart fil) {
         if (fil.getValueAs(File.class).length() > MAKS_TOTAL_FILSTORRELSE) {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null, "vedlegg.opplasting.feil.forStor");
         }
@@ -71,14 +71,14 @@ public class SosialhjelpVedleggRessurs {
     @Path("/{vedleggId}")
     @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public Vedlegg slettOriginalFil(@PathParam("vedleggId") final Long vedleggId) {
+    public Vedlegg slettOriginalFil(@PathParam("vedleggId") Long vedleggId) {
         return vedleggOriginalFilerService.slettOriginalVedlegg(vedleggId);
     }
 
     @GET
     @Path("/{vedleggId}/fil")
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public Response hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
+    public Response hentVedleggData(@PathParam("vedleggId") Long vedleggId, @Context HttpServletResponse response) {
         Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
         response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.lagFilNavn() + "\"");
         return Response.ok(vedlegg.getData()).type(vedlegg.getMimetype()).build();

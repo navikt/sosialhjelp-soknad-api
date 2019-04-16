@@ -64,7 +64,7 @@ public class UtdanningRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(null, null));
 
-        final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
+        UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
         assertThat(utdanningFrontend.erStudent, nullValue());
         assertThat(utdanningFrontend.studengradErHeltid, nullValue());
@@ -75,7 +75,7 @@ public class UtdanningRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.FALSE, null));
 
-        final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
+        UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
         assertThat(utdanningFrontend.erStudent, is(Boolean.FALSE));
         assertThat(utdanningFrontend.studengradErHeltid, nullValue());
@@ -86,7 +86,7 @@ public class UtdanningRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, null));
 
-        final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
+        UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
         assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
         assertThat(utdanningFrontend.studengradErHeltid, nullValue());
@@ -97,7 +97,7 @@ public class UtdanningRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.HELTID));
 
-        final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
+        UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
         assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
         assertThat(utdanningFrontend.studengradErHeltid, is(Boolean.TRUE));
@@ -108,7 +108,7 @@ public class UtdanningRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.DELTID));
 
-        final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
+        UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
         assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
         assertThat(utdanningFrontend.studengradErHeltid, is(Boolean.FALSE));
@@ -120,12 +120,12 @@ public class UtdanningRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
 
-        final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
+        UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
                 .withErStudent(Boolean.TRUE);
         utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonUtdanning utdanning = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonUtdanning utdanning = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
         assertThat(utdanning.getKilde(), is(JsonKilde.BRUKER));
         assertThat(utdanning.getErStudent(), is(Boolean.TRUE));
         assertThat(utdanning.getStudentgrad(), nullValue());
@@ -137,13 +137,13 @@ public class UtdanningRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
 
-        final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
+        UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
                 .withErStudent(Boolean.TRUE)
                 .withStudengradErHeltid(Boolean.TRUE);
         utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonUtdanning utdanning = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonUtdanning utdanning = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
         assertThat(utdanning.getKilde(), is(JsonKilde.BRUKER));
         assertThat(utdanning.getErStudent(), is(Boolean.TRUE));
         assertThat(utdanning.getStudentgrad(), is(JsonUtdanning.Studentgrad.HELTID));

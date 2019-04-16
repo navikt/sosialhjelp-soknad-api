@@ -28,12 +28,8 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BosituasjonRessursTest {
@@ -68,7 +64,7 @@ public class BosituasjonRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(null, null));
 
-        final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
+        BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
 
         assertThat(bosituasjonFrontend.botype, nullValue());
         assertThat(bosituasjonFrontend.antallPersoner, nullValue());
@@ -79,7 +75,7 @@ public class BosituasjonRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.EIER, 2));
 
-        final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
+        BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
 
         assertThat(bosituasjonFrontend.botype, is(JsonBosituasjon.Botype.EIER));
         assertThat(bosituasjonFrontend.antallPersoner, is(2));
@@ -91,13 +87,13 @@ public class BosituasjonRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.LEIER, 2)));
 
-        final BosituasjonFrontend bosituasjonFrontend = new BosituasjonFrontend()
+        BosituasjonFrontend bosituasjonFrontend = new BosituasjonFrontend()
                 .withBotype(JsonBosituasjon.Botype.ANNET)
                 .withAntallPersoner(3);
         bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonBosituasjon bosituasjon = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonBosituasjon bosituasjon = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
         assertThat(bosituasjon.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(bosituasjon.getBotype(), is(JsonBosituasjon.Botype.ANNET));
         assertThat(bosituasjon.getAntallPersoner(), is(3));
@@ -109,11 +105,11 @@ public class BosituasjonRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithBosituasjon(null, 2)));
 
-        final BosituasjonFrontend bosituasjonFrontend = new BosituasjonFrontend();
+        BosituasjonFrontend bosituasjonFrontend = new BosituasjonFrontend();
         bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonBosituasjon bosituasjon = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonBosituasjon bosituasjon = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
         assertThat(bosituasjon.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(bosituasjon.getBotype(), nullValue());
         assertThat(bosituasjon.getAntallPersoner(), nullValue());

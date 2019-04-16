@@ -50,8 +50,8 @@ public class HentTekstMedParametereHelperTest {
 
     @Test
     public void hentTekstMedEnParameter() throws IOException {
-        final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
-        final String key = "test";
+        String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
+        String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
 
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\" \"parameter\" \"verdi\"}}}").apply(new Object());
@@ -61,8 +61,8 @@ public class HentTekstMedParametereHelperTest {
 
     @Test
     public void hentTekstMedFlereParametere() throws IOException {
-        final String testStreng = "<div>Parametere er satt til: {parameter1}, {parameter2}, {parameter3}.</div>";
-        final String key = "test";
+        String testStreng = "<div>Parametere er satt til: {parameter1}, {parameter2}, {parameter3}.</div>";
+        String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
         
         String compiled = handlebars.compileInline(
@@ -74,8 +74,8 @@ public class HentTekstMedParametereHelperTest {
     
     @Test
     public void hentTekstMedUfullstendigParameter() throws IOException {
-        final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
-        final String key = "test";
+        String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
+        String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
         
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\" \"parameter\"}}}").apply(new Object());
@@ -85,8 +85,8 @@ public class HentTekstMedParametereHelperTest {
     
     @Test
     public void hentTekstUtenParametere() throws IOException {
-        final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
-        final String key = "test";
+        String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
+        String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
         
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\"}}}").apply(new Object());
@@ -95,7 +95,7 @@ public class HentTekstMedParametereHelperTest {
     }
 
     private void lagPropertiesMedTekstOgFilnavnNokkel(String testStreng, String key) {
-        final Properties properties = new Properties();
+        Properties properties = new Properties();
         properties.setProperty(mittprefix + "." + key, testStreng);
         when(navMessageSource.getBundleFor(bundlename, SPRAK)).thenReturn(properties);
     }

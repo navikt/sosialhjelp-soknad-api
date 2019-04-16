@@ -1,23 +1,5 @@
 package no.nav.sbl.dialogarena;
 
-import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadinnsendingConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
@@ -25,6 +7,18 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Adres
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static java.lang.System.setProperty;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 
 
 /**
@@ -47,12 +41,12 @@ public class FinnGyldigeAdresser {
     
     
     private Map<String, List<AdresseData>> finnAdresser(List<String> gts, int adresserPerGt) {
-        final Map<String, List<AdresseData>> adresser = new LinkedHashMap<>();
+        Map<String, List<AdresseData>> adresser = new LinkedHashMap<>();
         
         for (String gt : gts) {
-            final boolean harBydel = gt.length() > 4;
-            final String kommunenummer = gt.substring(0, 4);
-            final AdressesokRespons svar = sokKommunenummer(kommunenummer);
+            boolean harBydel = gt.length() > 4;
+            String kommunenummer = gt.substring(0, 4);
+            AdressesokRespons svar = sokKommunenummer(kommunenummer);
             
             for (AdresseData ad : svar.adresseDataList) {
                 if (skalIgnoreres(ad)) {
@@ -60,7 +54,7 @@ public class FinnGyldigeAdresser {
                 }
 
                 if (!harBydel || gt.equals(ad.bydel)) {
-                    final List<AdresseData> liste = getOrCreate(adresser, gt);
+                    List<AdresseData> liste = getOrCreate(adresser, gt);
                     liste.add(ad);
                     if (liste.size() >= adresserPerGt) {
                         break;
@@ -72,7 +66,7 @@ public class FinnGyldigeAdresser {
         return adresser;
     }
 
-    private List<AdresseData> getOrCreate(final Map<String, List<AdresseData>> adresser, String gt) {
+    private List<AdresseData> getOrCreate(Map<String, List<AdresseData>> adresser, String gt) {
         List<AdresseData> liste = adresser.get(gt);
         if (liste == null) {
             liste = new ArrayList<AdresseData>();
@@ -105,13 +99,13 @@ public class FinnGyldigeAdresser {
     private static ApplicationContext initializeContext() throws IOException, NamingException {
         SoknadsosialhjelpServer.setFrom("environment-test.properties");
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        final DataSource dataSource = buildDataSource("hsqldb.properties");
+        DataSource dataSource = buildDataSource("hsqldb.properties");
 
-        final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
+        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
         builder.bind("jdbc/SoknadInnsendingDS", dataSource);
         builder.activate();
         
-        final ApplicationContext context = new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
         return context;
     }
     
@@ -126,13 +120,13 @@ public class FinnGyldigeAdresser {
     
     
     public static void main(String[] args) throws Exception {
-        final ApplicationContext context = initializeContext();
-        final AdresseSokConsumer adresseSokConsumer = context.getBean(AdresseSokConsumer.class);
+        ApplicationContext context = initializeContext();
+        AdresseSokConsumer adresseSokConsumer = context.getBean(AdresseSokConsumer.class);
         
-        final FinnGyldigeAdresser app = new FinnGyldigeAdresser(adresseSokConsumer);
+        FinnGyldigeAdresser app = new FinnGyldigeAdresser(adresseSokConsumer);
         
-        final int adresserPerGt = 3;
-        final List<String> gts = Arrays.asList(
+        int adresserPerGt = 3;
+        List<String> gts = Arrays.asList(
                 "0219",
                 "0701",
                 "120101",
@@ -152,7 +146,7 @@ public class FinnGyldigeAdresser {
                 "030114",
                 "030115"
         );
-        final Map<String, List<AdresseData>> adresser = app.finnAdresser(gts, adresserPerGt);
+        Map<String, List<AdresseData>> adresser = app.finnAdresser(gts, adresserPerGt);
         skrivUt(adresser);
     }
 }

@@ -79,7 +79,7 @@ public class AdresseTransform {
         if (harHemmeligAdresse(soapPerson)) {
             return new Adresse();
         } else {
-            final XMLBostedsadresse bostedsadresse = soapPerson.getBostedsadresse();
+            XMLBostedsadresse bostedsadresse = soapPerson.getBostedsadresse();
             return hentBostedsAdresse(bostedsadresse);
         }
     }
@@ -88,7 +88,7 @@ public class AdresseTransform {
         if (bostedsadresse == null) {
             return null;
         }
-        final XMLStrukturertAdresse strukturertAdresse = bostedsadresse.getStrukturertAdresse();
+        XMLStrukturertAdresse strukturertAdresse = bostedsadresse.getStrukturertAdresse();
         if (strukturertAdresse == null) {
             return null;
         }
@@ -415,8 +415,8 @@ public class AdresseTransform {
         adresse.setAdressetype(BOSTEDSADRESSE.name());
         adresse.setStrukturertAdresse(tilMatrikkeladresse(xmlMatrikkeladresse));
 
-        final XMLMatrikkelnummer matrikkelnummer = xmlMatrikkeladresse.getMatrikkelnummer();
-        final StringBuilder stringBuilder = new StringBuilder();
+        XMLMatrikkelnummer matrikkelnummer = xmlMatrikkeladresse.getMatrikkelnummer();
+        StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(xmlMatrikkeladresse.getKommunenummer());
         stringBuilder.append('-');
         stringBuilder.append(matrikkelnummer.getGaardsnummer());

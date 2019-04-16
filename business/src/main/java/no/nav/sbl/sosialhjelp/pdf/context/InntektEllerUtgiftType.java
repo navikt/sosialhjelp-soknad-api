@@ -21,7 +21,7 @@ public final class InntektEllerUtgiftType {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
         result = prime * result + ((tittel == null) ? 0 : tittel.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());

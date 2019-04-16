@@ -31,7 +31,7 @@ public class EmailServiceTest {
     public void sendEpost() {
         emailService.sendEpost("til", "subject", "innhold", "123");
 
-        final String htmlInnhold = "<p>" + "innhold" + "</p>";
+        String htmlInnhold = "<p>" + "innhold" + "</p>";
 
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {

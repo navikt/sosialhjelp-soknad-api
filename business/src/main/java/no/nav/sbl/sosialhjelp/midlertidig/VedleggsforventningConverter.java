@@ -1,9 +1,12 @@
 package no.nav.sbl.sosialhjelp.midlertidig;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -14,7 +17,7 @@ public class VedleggsforventningConverter {
         if (isEmpty(eier) || vedleggsforventninger == null) {
             return null;
         }
-        final List<Vedlegg> ikkeInnsendtePaakrevdeVedlegg = vedleggsforventninger.stream()
+        List<Vedlegg> ikkeInnsendtePaakrevdeVedlegg = vedleggsforventninger.stream()
                 .filter(Objects::nonNull)
                 .filter(vedlegg -> vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp))
                 .filter(vedlegg -> vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.IkkeVedlegg))

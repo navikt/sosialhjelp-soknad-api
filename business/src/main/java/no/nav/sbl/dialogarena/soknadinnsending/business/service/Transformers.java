@@ -57,7 +57,7 @@ public class Transformers {
 
     public static final Transformer<Faktum, String> TYPE = faktum -> faktum.getProperties().get("type");
 
-    public static String parentFaktumType(final WebSoknad soknad, final Faktum faktum) {
+    public static String parentFaktumType(WebSoknad soknad, Faktum faktum) {
         if(faktum.getParrentFaktum() == null) {
             return null;
         }

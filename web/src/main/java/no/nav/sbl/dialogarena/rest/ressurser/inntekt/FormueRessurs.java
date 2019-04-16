@@ -58,10 +58,10 @@ public class FormueRessurs {
 
     @GET
     public FormueFrontend hentFormue(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
-        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final FormueFrontend formueFrontend = new FormueFrontend();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+        JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
+        FormueFrontend formueFrontend = new FormueFrontend();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return formueFrontend;
@@ -84,9 +84,9 @@ public class FormueRessurs {
     }
 
     private void update(String behandlingsId, FormueFrontend formueFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
@@ -103,44 +103,44 @@ public class FormueRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, FormueFrontend formueFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
         if (formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
                 formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet){
-            final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd");
+            Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd");
             bekreftelse.setValue(String.valueOf(true));
             faktaService.lagreBrukerFaktum(bekreftelse);
         } else {
-            final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd");
+            Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd");
             bekreftelse.setValue(String.valueOf(false));
             faktaService.lagreBrukerFaktum(bekreftelse);
         }
 
-        final Faktum brukskonto = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.brukskonto");
+        Faktum brukskonto = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.brukskonto");
         brukskonto.setValue(String.valueOf(formueFrontend.brukskonto));
         faktaService.lagreBrukerFaktum(brukskonto);
 
-        final Faktum bsu = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.bsu");
+        Faktum bsu = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.bsu");
         bsu.setValue(String.valueOf(formueFrontend.bsu));
         faktaService.lagreBrukerFaktum(bsu);
 
-        final Faktum sparekonto = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.sparekonto");
+        Faktum sparekonto = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.sparekonto");
         sparekonto.setValue(String.valueOf(formueFrontend.sparekonto));
         faktaService.lagreBrukerFaktum(sparekonto);
 
-        final Faktum livsforsikring = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.livsforsikring");
+        Faktum livsforsikring = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.livsforsikring");
         livsforsikring.setValue(String.valueOf(formueFrontend.livsforsikring));
         faktaService.lagreBrukerFaktum(livsforsikring);
 
-        final Faktum aksjer = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.aksjer");
+        Faktum aksjer = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.aksjer");
         aksjer.setValue(String.valueOf(formueFrontend.verdipapirer));
         faktaService.lagreBrukerFaktum(aksjer);
 
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.annet");
+        Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.annet");
         annet.setValue(String.valueOf(formueFrontend.annet));
         faktaService.lagreBrukerFaktum(annet);
 
-        final Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.annet.true.beskrivelse");
+        Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.bankinnskudd.true.type.annet.true.beskrivelse");
         beskrivelse.setValue(formueFrontend.beskrivelseAvAnnet != null ? formueFrontend.beskrivelseAvAnnet : "");
         faktaService.lagreBrukerFaktum(beskrivelse);
     }
@@ -149,33 +149,33 @@ public class FormueRessurs {
         List<JsonOkonomioversiktFormue> formue = oversikt.getFormue();
 
         if(formueFrontend.brukskonto){
-            final String type = "brukskonto";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "brukskonto";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(formue, type, tittel);
         }
         if(formueFrontend.bsu){
-            final String type = "bsu";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "bsu";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(formue, type, tittel);
         }
         if(formueFrontend.livsforsikring){
-            final String type = "livsforsikringssparedel";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "livsforsikringssparedel";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(formue, type, tittel);
         }
         if(formueFrontend.sparekonto){
-            final String type = "sparekonto";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "sparekonto";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(formue, type, tittel);
         }
         if(formueFrontend.verdipapirer){
-            final String type = "verdipapirer";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "verdipapirer";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(formue, type, tittel);
         }
         if(formueFrontend.annet){
-            final String type = "belop";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "belop";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addFormueIfNotPresentInOversikt(formue, type, tittel);
         }
     }

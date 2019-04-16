@@ -57,7 +57,7 @@ public class EttersendingRessurs {
     @Path("/vedlegg/{faktumId}")
     @Consumes(MULTIPART_FORM_DATA)
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public List<EttersendelseVedlegg> lastOppVedlegg(@PathParam("faktumId") final Long faktumId, @FormDataParam("file") final FormDataBodyPart fil) {
+    public List<EttersendelseVedlegg> lastOppVedlegg(@PathParam("faktumId") Long faktumId, @FormDataParam("file") FormDataBodyPart fil) {
         if (fil.getValueAs(File.class).length() > MAKS_TOTAL_FILSTORRELSE) {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null, "vedlegg.opplasting.feil.forStor");
         }
@@ -71,7 +71,7 @@ public class EttersendingRessurs {
     @DELETE
     @Path("/vedlegg/{vedleggId}")
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public List<EttersendelseVedlegg> slettVedlegg(@QueryParam("filId") Long filId, @PathParam("vedleggId") final Long vedleggId) {
+    public List<EttersendelseVedlegg> slettVedlegg(@QueryParam("filId") Long filId, @PathParam("vedleggId") Long vedleggId) {
         return ettersendelseVedleggService.slettVedlegg(filId);
     }
 

@@ -33,7 +33,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        final Set<String> svarAlternativer = findChildPropertyValues(key, SPRAK);
+        Set<String> svarAlternativer = findChildPropertyValues(key, SPRAK);
         
         StringBuilder stringBuilder = new StringBuilder();
         createHtmlLayout(svarAlternativer, stringBuilder);
@@ -41,10 +41,10 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
         return stringBuilder.toString();
     }
 
-    private Set<String> findChildPropertyValues(final String parentKey, final Locale locale) {
-        final Set<String> result = new HashSet<>();
+    private Set<String> findChildPropertyValues(String parentKey, Locale locale) {
+        Set<String> result = new HashSet<>();
 
-        final Pattern tekstfilNavnStruktur = directChildPattern(parentKey);
+        Pattern tekstfilNavnStruktur = directChildPattern(parentKey);
         for (Entry<String, String> tekstfil : allProperties(locale)) {
             findValueForMatchingSubKey(tekstfilNavnStruktur, tekstfil, HentSvaralternativerHelper::shouldIncludeSubKey)
                 .ifPresent((v) -> result.add(v));
@@ -53,10 +53,10 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
         return result;
     }
 
-    public Set<String> findChildPropertySubkeys(final String parentKey, final Locale locale) {
-        final Set<String> result = new HashSet<>();
+    public Set<String> findChildPropertySubkeys(String parentKey, Locale locale) {
+        Set<String> result = new HashSet<>();
 
-        final Pattern tekstfilNavnStruktur = directChildPattern(parentKey);
+        Pattern tekstfilNavnStruktur = directChildPattern(parentKey);
         for (Entry<String, String> tekstfil : allProperties(locale)) {
             findMatchingSubKey(tekstfilNavnStruktur, tekstfil, HentSvaralternativerHelper::shouldIncludeSubKey)
                     .ifPresent((v) -> result.add(v));
@@ -65,10 +65,10 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
         return result;
     }
     
-    private Optional<String> findValueForMatchingSubKey(final Pattern tekstfilNavnStruktur, final Entry<String, String> tekstfil, final Predicate<String> shouldInclude) {
-        final Matcher matcher = tekstfilNavnStruktur.matcher(tekstfil.getKey());
+    private Optional<String> findValueForMatchingSubKey(Pattern tekstfilNavnStruktur, Entry<String, String> tekstfil, Predicate<String> shouldInclude) {
+        Matcher matcher = tekstfilNavnStruktur.matcher(tekstfil.getKey());
         if (matcher.matches()) {
-            final String subKey = matcher.group(1);
+            String subKey = matcher.group(1);
             if (shouldInclude.test(subKey)) {
                 return Optional.of(tekstfil.getValue());
             }
@@ -76,10 +76,10 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
         return Optional.empty();
     }
 
-    private Optional<String> findMatchingSubKey(final Pattern tekstfilNavnStruktur, final Entry<String, String> tekstfil, final Predicate<String> shouldInclude) {
-        final Matcher matcher = tekstfilNavnStruktur.matcher(tekstfil.getKey());
+    private Optional<String> findMatchingSubKey(Pattern tekstfilNavnStruktur, Entry<String, String> tekstfil, Predicate<String> shouldInclude) {
+        Matcher matcher = tekstfilNavnStruktur.matcher(tekstfil.getKey());
         if (matcher.matches()) {
-            final String subKey = matcher.group(1);
+            String subKey = matcher.group(1);
             if (shouldInclude.test(subKey)) {
                 return Optional.of(subKey);
             }
@@ -88,8 +88,8 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Set<Entry<String, String>> allProperties(final Locale locale) {
-        final Properties bundle = navMessageSource.getBundleFor("soknadsosialhjelp", locale);
+    private Set<Entry<String, String>> allProperties(Locale locale) {
+        Properties bundle = navMessageSource.getBundleFor("soknadsosialhjelp", locale);
         return (Set) bundle.entrySet();
     }
 
@@ -105,7 +105,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
                 !subKey.equals("feilmelding");
     }
     
-    private void createHtmlLayout(final Set<String> svarAlternativer, StringBuilder stringBuilder) {
+    private void createHtmlLayout(Set<String> svarAlternativer, StringBuilder stringBuilder) {
         stringBuilder.append("<h4>Svaralternativer:</h4>" +
                 "<li>\n" + 
                 "    <ul class=\"svar-liste\">\n" + 

@@ -79,8 +79,8 @@ public class WebSoknadConverter {
             jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
         }
 
-        final String eier = getSubjectHandler().getUid();
-        final Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(webSoknad.getBrukerBehandlingId(), eier);
+        String eier = getSubjectHandler().getUid();
+        Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(webSoknad.getBrukerBehandlingId(), eier);
         if (soknadNyModell.isPresent()){
             if (soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null){
                 jsonVedlegg = soknadNyModell.get().getJsonInternalSoknad().getVedlegg().getVedlegg();
@@ -99,7 +99,7 @@ public class WebSoknadConverter {
     }
 
     JsonSoknadsmottaker settRiktigSoknadsmottaker(WebSoknad soknad) {
-        final Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
+        Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
         String orgnummer;
         String navEnhetsnavn;
         if (soknad.erEttersending()) {

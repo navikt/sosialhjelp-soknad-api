@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface VedleggRepository {
 
-    Long opprettEllerEndreVedlegg(final Vedlegg vedlegg, byte[] content);
+    Long opprettEllerEndreVedlegg(Vedlegg vedlegg, byte[] content);
 
     void slettVedlegg(Long soknadId, Long vedleggId);
 

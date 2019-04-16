@@ -16,7 +16,7 @@ public class HTMLLenkeParser {
             "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 
 
-    public static ArrayList<HTMLLenke> hentLenker(final String html) {
+    public static ArrayList<HTMLLenke> hentLenker(String html) {
 
         patternTag = Pattern.compile(HTML_A_TAG_PATTERN);
         patternLenke = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
@@ -29,7 +29,7 @@ public class HTMLLenkeParser {
         return (antallTegn < 1 || linje == null) ? null : linje.split("(?<=\\G.{" + antallTegn + "})");
     }
 
-    private static ArrayList<HTMLLenke> ekstraherHTMLLenker(final String html) {
+    private static ArrayList<HTMLLenke> ekstraherHTMLLenker(String html) {
 
         ArrayList<HTMLLenke> resultat = new ArrayList<>();
 

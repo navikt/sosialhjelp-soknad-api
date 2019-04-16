@@ -95,12 +95,12 @@ public class ArbeidRessursTest {
                 createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null));
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(createArbeidsforholdListe());
 
-        final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
-        final List<ArbeidsforholdFrontend> arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold;
+        ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
+        List<ArbeidsforholdFrontend> arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold;
 
         assertThat(arbeidsforholdFrontends.size(), is(2));
-        final ArbeidsforholdFrontend arbeidsforhold_1 = arbeidsforholdFrontends.get(0);
-        final ArbeidsforholdFrontend arbeidsforhold_2 = arbeidsforholdFrontends.get(1);
+        ArbeidsforholdFrontend arbeidsforhold_1 = arbeidsforholdFrontends.get(0);
+        ArbeidsforholdFrontend arbeidsforhold_2 = arbeidsforholdFrontends.get(1);
 
         assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold_1, ARBEIDSFORHOLD_1);
         assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold_2, ARBEIDSFORHOLD_2);
@@ -112,7 +112,7 @@ public class ArbeidRessursTest {
                 createJsonInternalSoknadWithArbeid(null, null));
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(null);
 
-        final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
+        ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
         assertThat(arbeidFrontend.arbeidsforhold, nullValue());
     }
@@ -122,7 +122,7 @@ public class ArbeidRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
 
-        final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
+        ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
         assertThat(arbeidFrontend.kommentarTilArbeidsforhold, nullValue());
     }
@@ -132,7 +132,7 @@ public class ArbeidRessursTest {
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, KOMMENTAR));
 
-        final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
+        ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
         assertThat(arbeidFrontend.kommentarTilArbeidsforhold, is(KOMMENTAR));
     }
@@ -143,11 +143,11 @@ public class ArbeidRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithArbeid(null, null)));
 
-        final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold(KOMMENTAR);
+        ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold(KOMMENTAR);
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
         assertThat(kommentarTilArbeidsforhold.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(kommentarTilArbeidsforhold.getVerdi(), is(KOMMENTAR));
     }
@@ -158,11 +158,11 @@ public class ArbeidRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithArbeid(null, "")));
 
-        final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold(KOMMENTAR);
+        ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold(KOMMENTAR);
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
         assertThat(kommentarTilArbeidsforhold.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(kommentarTilArbeidsforhold.getVerdi(), is(KOMMENTAR));
     }

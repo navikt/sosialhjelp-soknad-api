@@ -1,24 +1,22 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import static java.lang.System.getenv;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.function.Function;
-
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-
 import no.nav.modig.common.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import org.slf4j.Logger;
+
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import java.util.function.Function;
+
+import static java.lang.System.getenv;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
@@ -40,14 +38,14 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public AdressesokRespons sokAdresse(String adresse) {
-        final Sokedata sokedata = AdresseStringSplitter.toSokedata(adresse);
+        Sokedata sokedata = AdresseStringSplitter.toSokedata(adresse);
         return sokAdresse(sokedata);
     }
     
     @Override
     public AdressesokRespons sokAdresse(Sokedata sokedata) {
-        final RestCallContext executionContext = restCallContextSelector.apply(sokedata);
-        final Invocation.Builder request = lagRequest(executionContext, sokedata, sokedata.soketype.toTpsKode());
+        RestCallContext executionContext = restCallContextSelector.apply(sokedata);
+        Invocation.Builder request = lagRequest(executionContext, sokedata, sokedata.soketype.toTpsKode());
 
         return RestCallUtils.performRequestUsingContext(executionContext, () -> {
             return sokAdresseMotTjeneste(sokedata, request);
@@ -56,16 +54,16 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public void ping() {
-        final String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
-        final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
+        String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+        String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
-        final RestCallContext restCallContext = restCallContextSelector.apply(null);
+        RestCallContext restCallContext = restCallContextSelector.apply(null);
         
         /*
          * Ping-kallet går raskt og utføres derfor direkte mot tjenesten uten begrensninger:
          */
-        final Builder request = restCallContext.getClient().target(endpoint + "adressesoek")
+        Builder request = restCallContext.getClient().target(endpoint + "adressesoek")
                 .queryParam("maxretur", "PING") 
                 .request()
                 .header("Nav-Call-Id", callId)
@@ -75,8 +73,8 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         Response response = null;
         try {
             response = request.get();
-            final String melding = response.readEntity(String.class);
-            final int status = response.getStatus();
+            String melding = response.readEntity(String.class);
+            int status = response.getStatus();
             
             if (status == 400) {
                 /*
@@ -97,7 +95,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         }
     }
 
-    private AdressesokRespons sokAdresseMotTjeneste(Sokedata sokedata, final Invocation.Builder request) {
+    private AdressesokRespons sokAdresseMotTjeneste(Sokedata sokedata, Invocation.Builder request) {
         Response response = null;
         try {
             response = request.get();
@@ -127,7 +125,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     }
 
     private AdressesokRespons createAdressesokRespons(Sokedata sokedata, Response response) {
-        final AdressesokRespons result = response.readEntity(AdressesokRespons.class);
+        AdressesokRespons result = response.readEntity(AdressesokRespons.class);
         taMedDataFraRequest(sokedata, result);
         return result;
     }
@@ -154,9 +152,9 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata, String soketype) {
         String consumerId = getSubjectHandler().getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
+        String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
-        final String maxretur = (sokedata.postnummer != null) ? "100" : "10";
+        String maxretur = (sokedata.postnummer != null) ? "100" : "10";
         WebTarget b = executionContext.getClient().target(endpoint + "adressesoek")
                 .queryParam("soketype", soketype)
                 .queryParam("alltidRetur", "true")

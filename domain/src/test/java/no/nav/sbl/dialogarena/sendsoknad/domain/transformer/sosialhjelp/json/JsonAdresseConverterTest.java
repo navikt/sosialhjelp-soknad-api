@@ -11,7 +11,7 @@ public class JsonAdresseConverterTest {
 
     @Test
     public void tilOppholdsadresseUtenNoenFaktum() {
-        final WebSoknad webSoknad = new WebSoknad();
+        WebSoknad webSoknad = new WebSoknad();
 
         JsonAdresse jsonAdresse = JsonAdresseConverter.tilOppholdsadresse(webSoknad);
         assertNull(jsonAdresse);
@@ -19,7 +19,7 @@ public class JsonAdresseConverterTest {
 
     @Test
     public void tilOppholdsadresseUtenValgOgUtenFolkeregistrertAdresse() {
-        final WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("kontakt.system.adresse"));
+        WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("kontakt.system.adresse"));
 
         JsonAdresse jsonAdresse = JsonAdresseConverter.tilOppholdsadresse(webSoknad);
         assertNull(jsonAdresse);

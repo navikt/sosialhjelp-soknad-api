@@ -25,12 +25,12 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        final String eier = soknadUnderArbeid.getEier();
-        final JsonArbeid arbeid = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid();
+        String eier = soknadUnderArbeid.getEier();
+        JsonArbeid arbeid = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid();
         arbeid.setForhold(innhentSystemArbeidsforhold(eier));
     }
 
-    public List<JsonArbeidsforhold> innhentSystemArbeidsforhold(final String personIdentifikator) {
+    public List<JsonArbeidsforhold> innhentSystemArbeidsforhold(String personIdentifikator) {
         Sokeperiode sokeperiode = getSoekeperiode();
         List<Arbeidsforhold> arbeidsforholds = arbeidsforholdService.hentArbeidsforhold(personIdentifikator, sokeperiode);
 

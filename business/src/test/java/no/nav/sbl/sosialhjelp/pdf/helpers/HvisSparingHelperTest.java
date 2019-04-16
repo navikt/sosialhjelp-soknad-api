@@ -32,7 +32,7 @@ public class HvisSparingHelperTest {
 
     @Before
     public void setup() {
-        final Set<String> sparingTyper = new HashSet<>();
+        Set<String> sparingTyper = new HashSet<>();
         sparingTyper.add("brukskonto");
         sparingTyper.add("bsu");
         sparingTyper.add("sparekonto");

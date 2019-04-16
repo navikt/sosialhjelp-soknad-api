@@ -1,27 +1,26 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadsmottakerServiceTest {
@@ -101,10 +100,10 @@ public class SoknadsmottakerServiceTest {
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("midlertidig"))
                 .medFaktum(lagFaktumForMidlertidigGateadresse());
 
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad);
+        List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad);
         assertThat(adresseForslagene.size(), is(1));
 
-        final AdresseForslag adresseForslag = adresseForslagene.get(0);
+        AdresseForslag adresseForslag = adresseForslagene.get(0);
         assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
         assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
         assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
@@ -119,10 +118,10 @@ public class SoknadsmottakerServiceTest {
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("folkeregistrert"))
                 .medFaktum(lagFaktumForFolkeregistrertMatrikkeladresse());
 
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad);
+        List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad);
         assertThat(adresseForslagene.size(), is(1));
 
-        final AdresseForslag adresseForslag = adresseForslagene.get(0);
+        AdresseForslag adresseForslag = adresseForslagene.get(0);
 
         assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
         assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
@@ -140,7 +139,7 @@ public class SoknadsmottakerServiceTest {
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("soknad"))
                 .medFaktum(lagFaktumForSoknadGateadresse());
 
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad);
+        List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad);
 
         assertThat(adresseForslagene, is(empty()));
     }
@@ -156,7 +155,7 @@ public class SoknadsmottakerServiceTest {
                 .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("soknad"))
                 .medFaktum(lagFaktumForSoknadGateadresse());
 
-        final List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad);
+        List<AdresseForslag> adresseForslagene = soknadsmottakerService.legacyFinnAdresseFraSoknad(webSoknad);
 
         assertThat(adresseForslagene.size(), is(2));
     }

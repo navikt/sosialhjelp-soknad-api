@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import org.apache.commons.collections15.Closure;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
@@ -73,7 +72,7 @@ public class FaktaService {
     }
 
     @Transactional
-    public void lagreSystemFakta(final WebSoknad soknad, List<Faktum> fakta) {
+    public void lagreSystemFakta(WebSoknad soknad, List<Faktum> fakta) {
         fakta.forEach(faktum->{
                 Faktum existing;
 
@@ -125,7 +124,7 @@ public class FaktaService {
 
     @Transactional()
     public void slettBrukerFaktum(Long faktumId) {
-        final Faktum faktum;
+        Faktum faktum;
         try {
             faktum = repository.hentFaktum(faktumId);
         } catch (IncorrectResultSizeDataAccessException e) {

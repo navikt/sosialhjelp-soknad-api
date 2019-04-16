@@ -17,7 +17,7 @@ public class PDFService {
 
     public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending, String eier) {
         try {
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/kvittering/kvittering", erEttersending, eier);
+            String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/kvittering/kvittering", erEttersending, eier);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke generere brukerkvittering (Brukerkvittering.pdf).", e);
@@ -26,7 +26,7 @@ public class PDFService {
     
     public byte[] genererEttersendelsePdf(JsonInternalSoknad internalSoknad, String servletPath, String eier) {
         try {
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "skjema/ettersending/kvitteringUnderEttersendelse", true, eier);
+            String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "skjema/ettersending/kvitteringUnderEttersendelse", true, eier);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage hoveddokument for ettersendelse (ettersendelse.pdf).", e);
@@ -43,7 +43,7 @@ public class PDFService {
     
     private byte[] genererOppsummeringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean fullSoknad) {
         try {
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, fullSoknad);
+            String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, fullSoknad);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage PDF for saksbehandler/juridisk. Fullsoknad: " + fullSoknad, e);
@@ -51,7 +51,7 @@ public class PDFService {
     }
 
     private byte[] lagPdfFraMarkup(String pdfMarkup, String servletPath) {
-        final byte[] pdf = lagPdfFil(pdfMarkup, servletPath);
+        byte[] pdf = lagPdfFil(pdfMarkup, servletPath);
         PdfValidator.softAssertValidPdfA(pdf);
         return pdf;
     }

@@ -1,22 +1,20 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import com.google.common.collect.ImmutableMap;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableMap;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 
 public class KommuneTilNavEnhetMapper {
@@ -139,8 +137,8 @@ public class KommuneTilNavEnhetMapper {
     }
 
     public static Map<String, Boolean> getFeaturesForEnhet(String enhetNr) {
-        final Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
-        final Map<String, Boolean> featuresForEnhet = FEATURES_FOR_ENHET.get(enhetNr);
+        Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
+        Map<String, Boolean> featuresForEnhet = FEATURES_FOR_ENHET.get(enhetNr);
         if (!isEmpty(featuresForEnhet)) {
             featuresAndDefaults.putAll(FEATURES_FOR_ENHET.get(enhetNr));
         }
@@ -148,19 +146,19 @@ public class KommuneTilNavEnhetMapper {
     }
 
     private static Map<String, Boolean> defaultFeatures() {
-        final Map<String, Boolean> features = new HashMap<>();
+        Map<String, Boolean> features = new HashMap<>();
         features.put("ettersendelse", true);
         return features;
     }
 
     public static Soknadsmottaker getSoknadsmottaker(WebSoknad webSoknad) {
-        final Faktum nyttFaktum = webSoknad.getFaktumMedKey("soknadsmottaker");
+        Faktum nyttFaktum = webSoknad.getFaktumMedKey("soknadsmottaker");
         if (nyttFaktum != null) {
-            final Map<String, String> properties = nyttFaktum.getProperties();
+            Map<String, String> properties = nyttFaktum.getProperties();
             if (!StringUtils.isEmpty(properties.get("sosialOrgnr"))) {
-                final String sosialOrgnr = properties.get("sosialOrgnr");
-                final String enhetsnavn = properties.get("enhetsnavn");
-                final String kommunenavn = properties.get("kommunenavn");
+                String sosialOrgnr = properties.get("sosialOrgnr");
+                String enhetsnavn = properties.get("enhetsnavn");
+                String kommunenavn = properties.get("kommunenavn");
                 if (StringUtils.isEmpty(enhetsnavn)) {
                     throw new IllegalStateException("Mangler enhetsnavn.");
                 }
@@ -172,7 +170,7 @@ public class KommuneTilNavEnhetMapper {
             }
         }
 
-        final NavEnhet navEnhet = getNavEnhetFromWebSoknad(webSoknad);
+        NavEnhet navEnhet = getNavEnhetFromWebSoknad(webSoknad);
         if (navEnhet == null) {
             return null;
         }
@@ -231,7 +229,7 @@ public class KommuneTilNavEnhetMapper {
             this.kommune = kommune;
             this.orgnummer = orgnummer;
 
-            final Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
+            Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
             featuresAndDefaults.putAll(features);
             this.features = featuresAndDefaults;
         }
@@ -241,7 +239,7 @@ public class KommuneTilNavEnhetMapper {
         }
 
         public String getNavn() {
-            final String kommunenavntillegg = (kommune == null) ? "" : ", " + getKommunenavn() + " kommune";
+            String kommunenavntillegg = (kommune == null) ? "" : ", " + getKommunenavn() + " kommune";
             return "NAV " + kontornavn + kommunenavntillegg;
         }
 
@@ -257,7 +255,7 @@ public class KommuneTilNavEnhetMapper {
             if (kommune == null) {
                 return null;
             }
-            final String kommunenavn = getKommunerMedBydeler().get(kommune);
+            String kommunenavn = getKommunerMedBydeler().get(kommune);
             if (kommunenavn == null) {
                 log.error("Mangler navn på kommune: " + kommune);
                 return kommune;
@@ -450,7 +448,7 @@ public class KommuneTilNavEnhetMapper {
     private static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
         String key;
         if (webSoknad.getFaktumMedKey("personalia.bydel") == null || isEmpty(webSoknad.getFaktumMedKey("personalia.bydel").getValue())) {
-            final Faktum kommuneFaktum = webSoknad.getFaktumMedKey("personalia.kommune");
+            Faktum kommuneFaktum = webSoknad.getFaktumMedKey("personalia.kommune");
             if (kommuneFaktum == null) {
                 return null;
             }

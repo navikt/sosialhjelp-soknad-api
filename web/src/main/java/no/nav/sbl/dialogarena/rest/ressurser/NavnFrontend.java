@@ -24,9 +24,9 @@ public final class NavnFrontend {
     }
 
     private void updateFulltNavn(){
-        final String f = !StringUtils.isEmpty(this.fornavn) ? this.fornavn : "";
-        final String m = !StringUtils.isEmpty(this.mellomnavn) ? " " + this.mellomnavn : "";
-        final String e = !StringUtils.isEmpty(this.etternavn) ? " " + this.etternavn : "";
+        String f = !StringUtils.isEmpty(this.fornavn) ? this.fornavn : "";
+        String m = !StringUtils.isEmpty(this.mellomnavn) ? " " + this.mellomnavn : "";
+        String e = !StringUtils.isEmpty(this.etternavn) ? " " + this.etternavn : "";
         this.fulltNavn = (f + m + e).trim();
     }
 

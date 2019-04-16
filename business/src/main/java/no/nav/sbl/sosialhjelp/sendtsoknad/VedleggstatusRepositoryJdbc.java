@@ -91,7 +91,7 @@ public class VedleggstatusRepositoryJdbc extends NamedParameterJdbcDaoSupport im
         public Vedleggstatus mapRow(ResultSet rs, int rowNum) throws SQLException {
             Vedleggstatus.Status status = null;
             try {
-                final String statusFraDb = rs.getString("status");
+                String statusFraDb = rs.getString("status");
                 if (isNotEmpty(statusFraDb)) {
                     status = Vedleggstatus.Status.valueOf(statusFraDb);
                 }

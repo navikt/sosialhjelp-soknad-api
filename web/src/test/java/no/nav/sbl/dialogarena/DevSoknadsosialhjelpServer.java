@@ -23,7 +23,7 @@ public class DevSoknadsosialhjelpServer {
             dataSource = buildDataSource("hsqldb.properties");
         }
 
-        final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/soknadsosialhjelp-server", dataSource);
+        SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/soknadsosialhjelp-server", dataSource);
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         TestCertificates.setupKeyAndTrustStore();
         server.start();

@@ -22,7 +22,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Objects;
 
 import static java.util.Arrays.asList;
@@ -55,7 +54,7 @@ public class Tilgangskontroll {
     }
     
     public void verifiserAtBrukerKanEndreSoknad(String behandlingsId) {
-        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
         verifiserBrukerHarTilgangTilSoknad(behandlingsId);
     }

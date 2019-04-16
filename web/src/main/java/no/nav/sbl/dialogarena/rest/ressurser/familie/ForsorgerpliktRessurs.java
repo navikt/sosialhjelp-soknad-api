@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Controller;
@@ -50,9 +49,9 @@ public class ForsorgerpliktRessurs {
 
     @GET
     public ForsorgerpliktFrontend hentForsorgerplikt(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
 
         return mapToForsorgerpliktFrontend(jsonForsorgerplikt);
     }
@@ -65,9 +64,9 @@ public class ForsorgerpliktRessurs {
     }
 
     private void update(String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonForsorgerplikt forsorgerplikt = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonForsorgerplikt forsorgerplikt = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
 
         if(forsorgerpliktFrontend.barnebidrag != null) {
             if (forsorgerplikt.getBarnebidrag() == null) {
@@ -93,10 +92,10 @@ public class ForsorgerpliktRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
         if(forsorgerpliktFrontend.barnebidrag != null) {
-            final Faktum barnebidrag = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.barn.true.barnebidrag");
+            Faktum barnebidrag = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.barn.true.barnebidrag");
             barnebidrag.setType(Faktum.FaktumType.BRUKERREGISTRERT);
             barnebidrag.setValue(forsorgerpliktFrontend.barnebidrag.toString());
             faktaService.lagreBrukerFaktum(barnebidrag);
@@ -118,7 +117,7 @@ public class ForsorgerpliktRessurs {
     }
 
     private ForsorgerpliktFrontend mapToForsorgerpliktFrontend(JsonForsorgerplikt jsonForsorgerplikt) {
-        final List<AnsvarFrontend> ansvar = jsonForsorgerplikt.getAnsvar() == null ? null :
+        List<AnsvarFrontend> ansvar = jsonForsorgerplikt.getAnsvar() == null ? null :
                 jsonForsorgerplikt.getAnsvar().stream().map(this::mapToAnsvarFrontend)
                         .collect(Collectors.toList());
         return new ForsorgerpliktFrontend()

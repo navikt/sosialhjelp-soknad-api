@@ -46,9 +46,9 @@ public class BegrunnelseRessurs {
 
     @GET
     public BegrunnelseFrontend hentBegrunnelse(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
 
         return new BegrunnelseFrontend()
                 .withHvaSokesOm(begrunnelse.getHvaSokesOm())
@@ -63,9 +63,9 @@ public class BegrunnelseRessurs {
     }
 
     private void update(String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
         begrunnelse.setKilde(JsonKildeBruker.BRUKER);
         begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvaSokesOm);
         begrunnelse.setHvorforSoke(begrunnelseFrontend.hvorforSoke);
@@ -73,13 +73,13 @@ public class BegrunnelseRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum hva = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "begrunnelse.hva");
+        Faktum hva = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "begrunnelse.hva");
         hva.setValue(begrunnelseFrontend.hvaSokesOm);
         faktaService.lagreBrukerFaktum(hva);
 
-        final Faktum hvorfor = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "begrunnelse.hvorfor");
+        Faktum hvorfor = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "begrunnelse.hvorfor");
         hvorfor.setValue(begrunnelseFrontend.hvorforSoke);
         faktaService.lagreBrukerFaktum(hvorfor);
     }

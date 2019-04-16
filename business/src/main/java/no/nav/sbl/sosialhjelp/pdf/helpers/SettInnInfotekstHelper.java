@@ -1,19 +1,17 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 
-import java.io.IOException;
-
-import javax.inject.Inject;
-
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
 import org.springframework.stereotype.Component;
 
-import com.github.jknack.handlebars.Options;
+import javax.inject.Inject;
+import java.io.IOException;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
@@ -37,8 +35,8 @@ public class SettInnInfotekstHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
-        final String bundleName = konfigurasjon.getBundleName();
+        KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
+        String bundleName = konfigurasjon.getBundleName();
 
         String infotekst = getInfotekst(key, options, konfigurasjon, bundleName);
         
@@ -46,13 +44,13 @@ public class SettInnInfotekstHelper extends RegistryAwareHelper<String> {
             return "";
         }
         
-        final String infotekstTittel = this.cmsTekst.getCmsTekst("infotekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
+        String infotekstTittel = this.cmsTekst.getCmsTekst("infotekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
         
         return createHtmlLayout(infotekst, infotekstTittel);
     }
 
-    private String getInfotekst(String key, Options options, final KravdialogInformasjon konfigurasjon,
-            final String bundleName) {
+    private String getInfotekst(String key, Options options, KravdialogInformasjon konfigurasjon,
+            String bundleName) {
         String infotekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
 
         String nyInfotekst = UrlUtils.endreHyperLenkerTilTekst(infotekst);
@@ -63,7 +61,7 @@ public class SettInnInfotekstHelper extends RegistryAwareHelper<String> {
         return infotekst;
     }
     
-    private String createHtmlLayout(String infotekst, final String infoTekstTittel) {
+    private String createHtmlLayout(String infotekst, String infoTekstTittel) {
         return "<ul class=\"svar-liste\">\r\n" + 
                 "    <li>\r\n" + 
                 "        <h4>" + infoTekstTittel + "</h4>\r\n" + 

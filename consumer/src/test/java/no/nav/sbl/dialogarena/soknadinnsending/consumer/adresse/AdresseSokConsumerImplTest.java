@@ -1,32 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.security.auth.Subject;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-
-import org.junit.*;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.slf4j.MDC;
-import org.slf4j.MDC.MDCCloseable;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -36,6 +9,31 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Adres
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LoggingTestUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.slf4j.MDC;
+import org.slf4j.MDC.MDCCloseable;
+
+import javax.security.auth.Subject;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AdresseSokConsumerImplTest {
     
@@ -59,11 +57,11 @@ public class AdresseSokConsumerImplTest {
     
     @Test
     public void simpleRestCallWith404() {
-        final ClientMock mock = mockClient();
+        ClientMock mock = mockClient();
         when(mock.response.getStatus()).thenReturn(404);
 
-        final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
-        final AdressesokRespons adressesokRespons = adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
+        AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
+        AdressesokRespons adressesokRespons = adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
         
         assertTrue(adressesokRespons.adresseDataList.isEmpty());
         assertEquals(false, adressesokRespons.flereTreff);
@@ -71,10 +69,10 @@ public class AdresseSokConsumerImplTest {
     
     @Test
     public void skalGiExceptionVed500() {
-        final ClientMock mock = mockClient();
+        ClientMock mock = mockClient();
         when(mock.response.getStatus()).thenReturn(500);
 
-        final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
+        AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
         
         try  {
             adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
@@ -87,12 +85,12 @@ public class AdresseSokConsumerImplTest {
     @Ignore//Feiler sporadisk pga flere logback som starter opp, Stian jobber med en fiks.
     @Test
     public void mdcParametersAreAccessible() {
-        final ListAppender<ILoggingEvent> listAppender = LoggingTestUtils.createTestLogAppender(Level.INFO);
+        ListAppender<ILoggingEvent> listAppender = LoggingTestUtils.createTestLogAppender(Level.INFO);
         
-        final ClientMock mock = mockClient();
+        ClientMock mock = mockClient();
         when(mock.response.getStatus()).thenReturn(500);
 
-        final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
+        AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
         
         try (MDCCloseable c = MDC.putCloseable("lala", "testverdi")) {
             adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
@@ -103,7 +101,7 @@ public class AdresseSokConsumerImplTest {
         
         System.out.println("Følgende meldinger har blitt logget: " + Arrays.toString(listAppender.list.toArray()));
 
-        final ILoggingEvent logEvent = listAppender.list.stream()
+        ILoggingEvent logEvent = listAppender.list.stream()
                 .filter(e -> e.getLevel() == Level.INFO)
                 .findFirst()
                 .get();
@@ -115,18 +113,18 @@ public class AdresseSokConsumerImplTest {
     
     @Test
     public void skalKunneBrukeForskjelligeRestCallContext() {
-        final ClientMock mock1 = mockClient();
+        ClientMock mock1 = mockClient();
         when(mock1.response.getStatus()).thenReturn(404);
-        final RestCallContext restCallContext1 = simpleRestCallContext(mock1);
+        RestCallContext restCallContext1 = simpleRestCallContext(mock1);
         
-        final ClientMock mock2 = mockClient();
+        ClientMock mock2 = mockClient();
         when(mock2.response.getStatus()).thenReturn(500);
-        final RestCallContext restCallContext2 = simpleRestCallContext(mock2);
+        RestCallContext restCallContext2 = simpleRestCallContext(mock2);
         
-        final Function<Sokedata, RestCallContext> restCallContextSelector = (sokedata) -> 
+        Function<Sokedata, RestCallContext> restCallContextSelector = (sokedata) ->
                 sokedata.adresse.equals("restCallContext1") ? restCallContext1 : restCallContext2;
 
-        final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContextSelector, "foobar");
+        AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContextSelector, "foobar");
         
         adresseSok.sokAdresse(new Sokedata().withAdresse("restCallContext1"));
         
@@ -140,15 +138,15 @@ public class AdresseSokConsumerImplTest {
     
     @Test(timeout=30000)
     public void girTimeout() {
-        final CountDownLatch done = new CountDownLatch(1);
+        CountDownLatch done = new CountDownLatch(1);
         try {
-            final ClientMock mock = mockClientWithWait(done);
+            ClientMock mock = mockClientWithWait(done);
             
-            final RestCallContext restCallContext = new RestCallContext.Builder()
+            RestCallContext restCallContext = new RestCallContext.Builder()
                     .withClient(mock.client)
                     .withExecutorTimeoutInMilliseconds(1)
                     .build();
-            final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
+            AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
             
             try {
                 adresseSok.sokAdresse(new Sokedata().withAdresse("Testsveien"));
@@ -172,21 +170,21 @@ public class AdresseSokConsumerImplTest {
     }
     
     private void skalAvviseSokNarKoenErFullMed(int numberOfConcurrentCalls, int queueSize) throws Exception {
-        final CountDownLatch requiredNumberOfConcurrentCalls = new CountDownLatch(numberOfConcurrentCalls);
-        final CountDownLatch done = new CountDownLatch(1);
+        CountDownLatch requiredNumberOfConcurrentCalls = new CountDownLatch(numberOfConcurrentCalls);
+        CountDownLatch done = new CountDownLatch(1);
         
         try {
-            final ClientMock mock = mockClientWithWait(requiredNumberOfConcurrentCalls, done);
+            ClientMock mock = mockClientWithWait(requiredNumberOfConcurrentCalls, done);
             when(mock.response.getStatus()).thenReturn(404);
             
-            final RestCallContext restCallContext = new RestCallContext.Builder()
+            RestCallContext restCallContext = new RestCallContext.Builder()
                     .withClient(mock.client)
                     .withConcurrentRequests(numberOfConcurrentCalls)
                     .withMaximumQueueSize(queueSize)
                     .withExecutorTimeoutInMilliseconds(60000)
                     .build();
-            final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
-            final Runnable adressesokCall = () -> {
+            AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(restCallContext, "foobar");
+            Runnable adressesokCall = () -> {
                 adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien 1"));
             };
             
@@ -206,7 +204,7 @@ public class AdresseSokConsumerImplTest {
         }
     }
 
-    private void awaitQueueFilled(int queueSize, final RestCallContext restCallContext) throws InterruptedException {
+    private void awaitQueueFilled(int queueSize, RestCallContext restCallContext) throws InterruptedException {
         /*
          * Størrelse på kø kan først sjekkes når antallet samtidige kall
          * man ønsker har blitt oppnådd (ref. requiredNumberOfConcurrentCalls).
@@ -233,7 +231,7 @@ public class AdresseSokConsumerImplTest {
         }
     }
     
-    private static RestCallContext simpleRestCallContext(final ClientMock mock) {
+    private static RestCallContext simpleRestCallContext(ClientMock mock) {
         return new RestCallContext.Builder()
                 .withClient(mock.client)
                 .build();
@@ -244,7 +242,7 @@ public class AdresseSokConsumerImplTest {
     }
     
     private static ClientMock mockClientWithWait(CountDownLatch requiredNumberOfConcurrentCalls, CountDownLatch done) {
-        final ClientMock mock = mockClient();
+        ClientMock mock = mockClient();
         when(mock.builder.get()).thenAnswer(new Answer<Response>() {
             public Response answer(InvocationOnMock invocation) throws Throwable {
                 requiredNumberOfConcurrentCalls.countDown();
@@ -260,16 +258,16 @@ public class AdresseSokConsumerImplTest {
          * Denne metoden skal kun returnere mock-instanser. Faktiske returverdier skal defineres av testene.
          * 
          */
-        final Client client = mock(Client.class);
-        final WebTarget webTarget = mock(WebTarget.class);
+        Client client = mock(Client.class);
+        WebTarget webTarget = mock(WebTarget.class);
         when(client.target(anyString())).thenReturn(webTarget);
         when(webTarget.queryParam(anyString(), any())).thenReturn(webTarget);
         
-        final Builder builder = mock(Builder.class);
+        Builder builder = mock(Builder.class);
         when(webTarget.request()).thenReturn(builder);
         when(builder.header(anyString(), any())).thenReturn(builder);
         
-        final Response response = mock(Response.class);
+        Response response = mock(Response.class);
         when(builder.get()).thenReturn(response);
 
         return new ClientMock(client, webTarget, builder, response);

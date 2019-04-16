@@ -22,7 +22,7 @@ public class SoknadObjectMapperProvider implements ContextResolver<ObjectMapper>
     }
 
     private static ObjectMapper createObjectMapper() {
-        final ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return mapper;

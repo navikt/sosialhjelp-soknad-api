@@ -75,7 +75,7 @@ public class TelefonnummerRessursTest {
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
 
-        final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
+        TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
         assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM));
@@ -88,7 +88,7 @@ public class TelefonnummerRessursTest {
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM_OPPDATERT);
 
-        final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
+        TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
         assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM_OPPDATERT));
@@ -101,7 +101,7 @@ public class TelefonnummerRessursTest {
                 createJsonInternalSoknadWithTelefonnummer(null, null));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
 
-        final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
+        TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
         assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(telefonnummerFrontend.systemverdi, nullValue());
@@ -114,7 +114,7 @@ public class TelefonnummerRessursTest {
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
 
-        final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
+        TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
         assertThat(telefonnummerFrontend.brukerutfyltVerdi, is(TELEFONNUMMER_BRUKER));
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM));
@@ -126,7 +126,7 @@ public class TelefonnummerRessursTest {
         startWithoutTelefonnummerAndNoSystemTelefonnummer();
         ignoreTilgangskontrollAndLegacyUpdate();
 
-        final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
+        TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
                 .withBrukerdefinert(true)
                 .withBrukerutfyltVerdi(TELEFONNUMMER_BRUKER);
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend);
@@ -142,13 +142,13 @@ public class TelefonnummerRessursTest {
         startWithoutTelefonnummerAndNoSystemTelefonnummer();
         ignoreTilgangskontrollAndLegacyUpdate();
 
-        final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
+        TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
                 .withBrukerdefinert(true)
                 .withBrukerutfyltVerdi(TELEFONNUMMER_BRUKER);
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
         assertThat(telefonnummer.getKilde(), is(JsonKilde.BRUKER));
         assertThat(telefonnummer.getVerdi(), is(TELEFONNUMMER_BRUKER));
     }
@@ -158,12 +158,12 @@ public class TelefonnummerRessursTest {
         startWithBrukerTelefonnummerAndSystemTelefonnummerInTPS();
         ignoreTilgangskontrollAndLegacyUpdate();
 
-        final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
+        TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
                 .withBrukerdefinert(false);
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
         assertThat(telefonnummer.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(telefonnummer.getVerdi(), is(TELEFONNUMMER_SYSTEM));
     }

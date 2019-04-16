@@ -1,15 +1,13 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.stereotype.Component;
-
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Options;
-
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 
 @Component
 public class HentOkonomiBekreftelseHelper extends RegistryAwareHelper<String> {
@@ -17,13 +15,12 @@ public class HentOkonomiBekreftelseHelper extends RegistryAwareHelper<String> {
     public static final String NAVN = "hentOkonomiBekreftelse";
 
     @Override
-    public CharSequence apply(final String type, final Options options) throws IOException {
+    public CharSequence apply(String type, Options options) throws IOException {
         if (options.context.get("bekreftelse") == null) {
             return options.inverse(this);
         }
-        @SuppressWarnings("unchecked")
-        final List<JsonOkonomibekreftelse> bekreftelser = (List<JsonOkonomibekreftelse>) options.context.get("bekreftelse");
-        final Optional<JsonOkonomibekreftelse> bekreftelse = bekreftelser.stream()
+        @SuppressWarnings("unchecked") List<JsonOkonomibekreftelse> bekreftelser = (List<JsonOkonomibekreftelse>) options.context.get("bekreftelse");
+        Optional<JsonOkonomibekreftelse> bekreftelse = bekreftelser.stream()
                 .filter(b -> b.getType().equals(type))
                 .findFirst();
         

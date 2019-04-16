@@ -139,9 +139,9 @@ public class UtbetalingServiceTest {
 
     private WSHentUtbetalingsinformasjonResponse lagWSHentUtbetalingsinformasjonResponseMedEnUtbetalingUtenforPeriode(WSPerson wsPerson) {
         List<WSUtbetaling> wsUtbetalinger = new ArrayList<>();
-        final LocalDateTime posteringsdato = LocalDateTime.now().minusDays(40);
-        final LocalDateTime utbetalingsDatoUtenforPeriode = LocalDateTime.now().minusDays(35);
-        final LocalDateTime utbetalingsDatoInnenforPeriode = LocalDateTime.now().minusDays(30);
+        LocalDateTime posteringsdato = LocalDateTime.now().minusDays(40);
+        LocalDateTime utbetalingsDatoUtenforPeriode = LocalDateTime.now().minusDays(35);
+        LocalDateTime utbetalingsDatoInnenforPeriode = LocalDateTime.now().minusDays(30);
         wsUtbetalinger.add(lagWSUtbetaling(wsPerson, posteringsdato, utbetalingsDatoUtenforPeriode));
         wsUtbetalinger.add(lagWSUtbetaling(wsPerson, posteringsdato, utbetalingsDatoInnenforPeriode));
         return new WSHentUtbetalingsinformasjonResponse().withUtbetalingListe(wsUtbetalinger);

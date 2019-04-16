@@ -35,14 +35,14 @@ public class FaktaRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
-    public Faktum opprettFaktum(@QueryParam("behandlingsId") final String behandlingsId, Faktum faktum) {
+    public Faktum opprettFaktum(@QueryParam("behandlingsId") String behandlingsId, Faktum faktum) {
         return faktaService.opprettBrukerFaktum(behandlingsId, faktum);
     }
 
     @GET
     @Path("/{faktumId}")
     @SjekkTilgangTilSoknad(type = Faktum)
-    public Faktum hentFaktum(@PathParam("faktumId") final Long faktumId) {
+    public Faktum hentFaktum(@PathParam("faktumId") Long faktumId) {
         return faktaService.hentFaktum(faktumId);
     }
 
@@ -50,7 +50,7 @@ public class FaktaRessurs {
     @Path("/{faktumId}")
     @Consumes(APPLICATION_JSON)
     @SjekkTilgangTilSoknad(type = Faktum)
-    public Faktum lagreFaktum(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
+    public Faktum lagreFaktum(@PathParam("faktumId") Long faktumId, Faktum faktum) {
         if (faktumId.equals(faktum.getFaktumId())) {
             return faktaService.lagreBrukerFaktum(faktum);
         } else {
@@ -63,7 +63,7 @@ public class FaktaRessurs {
     @Path("/{faktumId}")
     @Consumes(APPLICATION_JSON)
     @SjekkTilgangTilSoknad(type = Faktum)
-    public Faktum lagreFaktumMedPost(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
+    public Faktum lagreFaktumMedPost(@PathParam("faktumId") Long faktumId, Faktum faktum) {
         return lagreFaktum(faktumId, faktum);
     }
 
@@ -71,14 +71,14 @@ public class FaktaRessurs {
     @DELETE
     @Path("/{faktumId}")
     @SjekkTilgangTilSoknad(type = Faktum)
-    public void slettFaktum(@PathParam("faktumId") final Long faktumId) {
+    public void slettFaktum(@PathParam("faktumId") Long faktumId) {
         faktaService.slettBrukerFaktum(faktumId);
     }
 
     @GET
     @Path("/{faktumId}/vedlegg")
     @SjekkTilgangTilSoknad(type = Faktum)
-    public List<Vedlegg> hentVedlegg(@PathParam("faktumId") final Long faktumId) {
+    public List<Vedlegg> hentVedlegg(@PathParam("faktumId") Long faktumId) {
         return vedleggService.hentPaakrevdeVedlegg(faktumId);
     }
 }

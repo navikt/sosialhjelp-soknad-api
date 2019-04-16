@@ -57,10 +57,10 @@ public class BarneutgiftRessurs {
 
     @GET
     public BarneutgifterFrontend hentBarneutgifter(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
-        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+        JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
+        BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return barneutgifterFrontend;
@@ -80,9 +80,9 @@ public class BarneutgiftRessurs {
     }
 
     private void update(String behandlingsId, BarneutgifterFrontend barneutgifterFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
@@ -95,29 +95,29 @@ public class BarneutgiftRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, BarneutgifterFrontend barneutgifterFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn");
+        Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn");
         bekreftelse.setValue(barneutgifterFrontend.bekreftelse.toString());
         faktaService.lagreBrukerFaktum(bekreftelse);
 
-        final Faktum fritidsaktivitet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.fritidsaktivitet");
+        Faktum fritidsaktivitet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.fritidsaktivitet");
         fritidsaktivitet.setValue(String.valueOf(barneutgifterFrontend.fritidsaktiviteter));
         faktaService.lagreBrukerFaktum(fritidsaktivitet);
 
-        final Faktum barnehage = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.barnehage");
+        Faktum barnehage = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.barnehage");
         barnehage.setValue(String.valueOf(barneutgifterFrontend.barnehage));
         faktaService.lagreBrukerFaktum(barnehage);
 
-        final Faktum sfo = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.sfo");
+        Faktum sfo = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.sfo");
         sfo.setValue(String.valueOf(barneutgifterFrontend.sfo));
         faktaService.lagreBrukerFaktum(sfo);
 
-        final Faktum tannbehandling = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.tannbehandling");
+        Faktum tannbehandling = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.tannbehandling");
         tannbehandling.setValue(String.valueOf(barneutgifterFrontend.tannregulering));
         faktaService.lagreBrukerFaktum(tannbehandling);
 
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.annet");
+        Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.annet");
         annet.setValue(String.valueOf(barneutgifterFrontend.annet));
         faktaService.lagreBrukerFaktum(annet);
     }
@@ -127,34 +127,34 @@ public class BarneutgiftRessurs {
         List<JsonOkonomioversiktUtgift> oversiktBarneutgifter = okonomi.getOversikt().getUtgift();
 
         if(barneutgifterFrontend.barnehage){
-            final String type = "barnehage";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "barnehage";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
         }
         if(barneutgifterFrontend.sfo){
-            final String type = "sfo";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "sfo";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOversikt(oversiktBarneutgifter, type, tittel);
         }
         if(barneutgifterFrontend.fritidsaktiviteter){
-            final String type = "barnFritidsaktiviteter";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "barnFritidsaktiviteter";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
         }
         if(barneutgifterFrontend.tannregulering){
-            final String type = "barnTannregulering";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "barnTannregulering";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
         }
         if(barneutgifterFrontend.annet){
-            final String type = "annenBarneutgift";
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+            String type = "annenBarneutgift";
+            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
             addUtgiftIfNotPresentInOpplysninger(opplysningerBarneutgifter, type, tittel);
         }
     }
 
     private void setBekreftelseOnBarneutgifterFrontend(JsonOkonomiopplysninger opplysninger, BarneutgifterFrontend barneutgifterFrontend) {
-        final Optional<JsonOkonomibekreftelse> barneutgiftBekreftelse = opplysninger.getBekreftelse().stream()
+        Optional<JsonOkonomibekreftelse> barneutgiftBekreftelse = opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals("barneutgifter")).findFirst();
         if (barneutgiftBekreftelse.isPresent()){
             barneutgifterFrontend.setBekreftelse(barneutgiftBekreftelse.get().getVerdi());

@@ -17,13 +17,13 @@ public class SoknadsosialhjelpServerTest {
     public void withEnvironmentVariableExpansionHandlesProperty() {
         System.setProperty("SoknadsosialhjelpServerTest.property", "foobar");
         
-        final String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.property} med to ${SoknadsosialhjelpServerTest.property}");
+        String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.property} med to ${SoknadsosialhjelpServerTest.property}");
         Assert.assertEquals("Test foobar med to foobar", value);
     }
     
     
     private void assertUnchanged(String input) {
-        final String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion(input);
+        String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion(input);
         Assert.assertEquals(input, value);
     }
 }

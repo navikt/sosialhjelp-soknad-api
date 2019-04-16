@@ -18,15 +18,15 @@ public final class JsonUtdanningConverter {
     }
 
     public static JsonUtdanning tilUtdanning(WebSoknad webSoknad) {
-        final JsonUtdanning jsonUtdanning = new JsonUtdanning();
+        JsonUtdanning jsonUtdanning = new JsonUtdanning();
         jsonUtdanning.setKilde(JsonKilde.BRUKER);
 
-        final String studerer = webSoknad.getValueForFaktum("dinsituasjon.studerer");
+        String studerer = webSoknad.getValueForFaktum("dinsituasjon.studerer");
         if (JsonUtils.erIkkeTom(studerer)) {
             jsonUtdanning.setErStudent(Boolean.parseBoolean(studerer));
         }
 
-        final String studentgrad = webSoknad.getValueForFaktum("dinsituasjon.studerer.true.grad");
+        String studentgrad = webSoknad.getValueForFaktum("dinsituasjon.studerer.true.grad");
         jsonUtdanning.setStudentgrad(tilStudentgrad(studentgrad));
 
         return jsonUtdanning;

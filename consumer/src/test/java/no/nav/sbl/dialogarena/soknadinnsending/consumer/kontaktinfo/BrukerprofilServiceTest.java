@@ -1,10 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
@@ -86,9 +90,9 @@ public class BrukerprofilServiceTest {
 
     @Test
     public void mapResponsTilAdresserOgKontonummerMapperRiktigForNorskBankkonto() {
-        final String forventetGjeldendeAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
-        final String forventetFolkeregistrertAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
-        final String forventetSekundarAdresse = "C/O " + EN_POSTBOKS_ADRESSEEIER + ", " + EN_ANNEN_ADRESSE_GATE + " " + EN_ANNEN_ADRESSE_HUSNUMMER + EN_ANNEN_ADRESSE_HUSBOKSTAV + ", "
+        String forventetGjeldendeAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
+        String forventetFolkeregistrertAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
+        String forventetSekundarAdresse = "C/O " + EN_POSTBOKS_ADRESSEEIER + ", " + EN_ANNEN_ADRESSE_GATE + " " + EN_ANNEN_ADRESSE_HUSNUMMER + EN_ANNEN_ADRESSE_HUSBOKSTAV + ", "
                 + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
 
         AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.mapResponsTilAdresserOgKontonummer(lagXMLHentKontaktinformasjonOgPreferanserResponse(false));
@@ -126,7 +130,7 @@ public class BrukerprofilServiceTest {
 
     @Test
     public void finnGjeldendeAdresseSkalStotteMidlertidigOmrodeAdresseNorge() {
-        final String forventetGjeldendeAdresse = ET_EIENDOMSNAVN + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
+        String forventetGjeldendeAdresse = ET_EIENDOMSNAVN + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
 
         Adresse gjeldendeAdresse = brukerprofilService.finnGjeldendeAdresse(mockBrukerMedMidlertidigOmrodeAdresseSomGjeldendeAdresse());
 
@@ -138,7 +142,7 @@ public class BrukerprofilServiceTest {
 
     @Test
     public void finnGjeldendeAdresseSkalStotteMidlertidigPostboksAdresseNorge() {
-        final String forventetGjeldendeAdresse = "C/O " + EN_POSTBOKS_ADRESSEEIER + ", Postboks "
+        String forventetGjeldendeAdresse = "C/O " + EN_POSTBOKS_ADRESSEEIER + ", Postboks "
                 + EN_POSTBOKS_NUMMER + " " + ET_POSTBOKS_NAVN + ", " + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
 
         Adresse gjeldendeAdresse = brukerprofilService.finnGjeldendeAdresse(mockBrukerMedMidlertidigPostboksAdresseSomGjeldendeAdresse());
@@ -148,7 +152,7 @@ public class BrukerprofilServiceTest {
 
     @Test
     public void finnGjeldendeAdresseSkalStotteFolkeregistretUtenlandskAdresse() {
-        final String forventetGjeldendeAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE + ", "
+        String forventetGjeldendeAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE + ", "
                 + EN_FJERDE_ADRESSELINJE + ", " + ET_LAND;
 
         Adresse gjeldendeAdresse = brukerprofilService.finnGjeldendeAdresse(mockBrukerMedUtenlandskFolkeregistrertAdresseSomGjeldendeAdresse());
@@ -158,7 +162,7 @@ public class BrukerprofilServiceTest {
 
     @Test
     public void finnGjeldendeAdresseSkalStotteMidlertidigUtenlandskMidlertidigAdresseMed1Linjer() {
-        final String forventetGjeldendeAdresse = EN_ADRESSELINJE + ", " + ET_LAND;
+        String forventetGjeldendeAdresse = EN_ADRESSELINJE + ", " + ET_LAND;
 
         Adresse gjeldendeAdresse = brukerprofilService.finnGjeldendeAdresse(mockBrukerMedMidlertidigUtenlandskAdresse(1));
 
@@ -167,7 +171,7 @@ public class BrukerprofilServiceTest {
 
     @Test
     public void finnGjeldendeAdresseSkalStotteMidlertidigUtenlandskMidlertidigAdresseMed2Linjer() {
-        final String forventetGjeldendeAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + ET_LAND;
+        String forventetGjeldendeAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + ET_LAND;
 
         Adresse gjeldendeAdresse = brukerprofilService.finnGjeldendeAdresse(mockBrukerMedMidlertidigUtenlandskAdresse(2));
 
@@ -176,7 +180,7 @@ public class BrukerprofilServiceTest {
 
     @Test
     public void finnGjeldendeAdresseSkalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() {
-        final String forventetGjeldendeAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE + ", " + ET_LAND;
+        String forventetGjeldendeAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE + ", " + ET_LAND;
 
         Adresse gjeldendeAdresse = brukerprofilService.finnGjeldendeAdresse(mockBrukerMedMidlertidigUtenlandskAdresse(3));
 

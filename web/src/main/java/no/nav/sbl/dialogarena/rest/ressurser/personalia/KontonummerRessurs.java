@@ -1,18 +1,5 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-
-import org.springframework.stereotype.Controller;
-
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
@@ -28,6 +15,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
 @Path("/soknader/{behandlingsId}/personalia/kontonummer")
@@ -56,10 +51,10 @@ public class KontonummerRessurs {
 
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonKontonummer kontonummer = soknad.getSoknad().getData().getPersonalia().getKontonummer();
-        final String systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        JsonKontonummer kontonummer = soknad.getSoknad().getData().getPersonalia().getKontonummer();
+        String systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
 
         return new KontonummerFrontend()
                 .withBrukerdefinert(kontonummer.getKilde() == JsonKilde.BRUKER)
@@ -77,11 +72,11 @@ public class KontonummerRessurs {
 
 
     private void update(String behandlingsId, KontonummerFrontend kontonummerFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final JsonKontonummer kontonummer = personalia.getKontonummer();
-        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        JsonKontonummer kontonummer = personalia.getKontonummer();
+        String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.setKilde(JsonKilde.BRUKER);
             if ("".equals(kontonummerFrontend.brukerutfyltVerdi)) {
@@ -100,17 +95,17 @@ public class KontonummerRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, KontonummerFrontend kontonummerFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.kontonummer.brukerendrettoggle");
+        Faktum brukerdefinert = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.kontonummer.brukerendrettoggle");
         brukerdefinert.setValue(Boolean.toString(kontonummerFrontend.brukerdefinert));
         faktaService.lagreBrukerFaktum(brukerdefinert);
 
-        final Faktum kontonummer = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.kontonummer");
+        Faktum kontonummer = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.kontonummer");
         kontonummer.setValue(kontonummerFrontend.brukerutfyltVerdi);
         faktaService.lagreBrukerFaktum(kontonummer);
 
-        final Faktum harIkke = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.kontonummer.harikke");
+        Faktum harIkke = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.kontonummer.harikke");
         harIkke.setValue(booleanToString(kontonummerFrontend.harIkkeKonto));
         faktaService.lagreBrukerFaktum(harIkke);
     }

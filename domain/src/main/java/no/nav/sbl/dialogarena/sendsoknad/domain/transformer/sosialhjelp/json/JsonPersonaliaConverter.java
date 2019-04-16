@@ -3,13 +3,13 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn.Kilde;
 
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erIkkeTom;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.faktumVerdiErTrue;
 
 public final class JsonPersonaliaConverter {
 
@@ -18,9 +18,9 @@ public final class JsonPersonaliaConverter {
     }
 
     public static JsonPersonalia tilPersonalia(WebSoknad webSoknad) {
-        final JsonPersonalia personalia = new JsonPersonalia();
+        JsonPersonalia personalia = new JsonPersonalia();
 
-        final Map<String, String> personaliaProperties = webSoknad.getFaktumMedKey("personalia").getProperties();
+        Map<String, String> personaliaProperties = webSoknad.getFaktumMedKey("personalia").getProperties();
 
         personalia.setPersonIdentifikator(new JsonPersonIdentifikator().withVerdi(webSoknad.getAktoerId()));
         personalia.setNavn(new JsonSokernavn()
@@ -30,7 +30,7 @@ public final class JsonPersonaliaConverter {
                 .withEtternavn(JsonUtils.finnPropertyEllerTom(personaliaProperties, ETTERNAVN_KEY))
         );
 
-        final String statsborgerskap = personaliaProperties.get(STATSBORGERSKAP_KEY);
+        String statsborgerskap = personaliaProperties.get(STATSBORGERSKAP_KEY);
         if (erIkkeTom(statsborgerskap) && !statsborgerskap.equals("???")) {
             personalia.setStatsborgerskap(new JsonStatsborgerskap()
                     .withKilde(JsonKilde.SYSTEM)
@@ -39,7 +39,7 @@ public final class JsonPersonaliaConverter {
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi(erNordiskBorger(statsborgerskap)));
         } else {
-            final String nordiskBorger = webSoknad.getValueForFaktum("kontakt.statsborger");
+            String nordiskBorger = webSoknad.getValueForFaktum("kontakt.statsborger");
             if (erIkkeTom(nordiskBorger)) {
                 personalia.setNordiskBorger(new JsonNordiskBorger()
                         .withKilde(JsonKilde.BRUKER)
@@ -87,10 +87,10 @@ public final class JsonPersonaliaConverter {
     }
 
     private static JsonTelefonnummer tilBrukerJsonTelefonnummer(WebSoknad webSoknad) {
-        final String landkode = "+47";
-        final String telefonnummer = webSoknad.getValueForFaktum("kontakt.telefon");
+        String landkode = "+47";
+        String telefonnummer = webSoknad.getValueForFaktum("kontakt.telefon");
         if (erIkkeTom(telefonnummer)) {
-            final JsonTelefonnummer jsonTelefonnummer = new JsonTelefonnummer();
+            JsonTelefonnummer jsonTelefonnummer = new JsonTelefonnummer();
             jsonTelefonnummer.setVerdi(landkode + telefonnummer);
             jsonTelefonnummer.setKilde(JsonKilde.BRUKER);
             return jsonTelefonnummer;
@@ -100,9 +100,9 @@ public final class JsonPersonaliaConverter {
     }
 
     private static JsonTelefonnummer tilSystemJsonTelefonnummer(WebSoknad webSoknad) {
-        final String telefonnummer = webSoknad.getValueForFaktum("kontakt.system.telefon");
+        String telefonnummer = webSoknad.getValueForFaktum("kontakt.system.telefon");
         if (erIkkeTom(telefonnummer)) {
-            final JsonTelefonnummer jsonTelefonnummer = new JsonTelefonnummer();
+            JsonTelefonnummer jsonTelefonnummer = new JsonTelefonnummer();
             jsonTelefonnummer.setVerdi(telefonnummer);
             jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
             return jsonTelefonnummer;
@@ -112,7 +112,7 @@ public final class JsonPersonaliaConverter {
     }
 
     private static JsonKontonummer tilJsonKontonummer(WebSoknad webSoknad) {
-        final JsonKontonummer jsonKontonummer = new JsonKontonummer();
+        JsonKontonummer jsonKontonummer = new JsonKontonummer();
         if (faktumVerdiErTrue(webSoknad, "kontakt.kontonummer.brukerendrettoggle")) {
             tilBrukerJsonKontonummer(webSoknad, jsonKontonummer);
         } else {
@@ -122,25 +122,25 @@ public final class JsonPersonaliaConverter {
         return jsonKontonummer;
     }
 
-    private static void tilBrukerJsonKontonummer(WebSoknad webSoknad, final JsonKontonummer jsonKontonummer) {
+    private static void tilBrukerJsonKontonummer(WebSoknad webSoknad, JsonKontonummer jsonKontonummer) {
         jsonKontonummer.setKilde(JsonKilde.BRUKER);
 
-        final String harIkkeKontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer.harikke");
+        String harIkkeKontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer.harikke");
         if (erIkkeTom(harIkkeKontonummer)) {
             jsonKontonummer.setHarIkkeKonto(Boolean.valueOf(harIkkeKontonummer));
         }
 
-        final String kontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer");
+        String kontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer");
         if (erIkkeTom(kontonummer)) {
             String kontonummerKunTall = kontonummer.replace(".", "").replace(" ", "");
             jsonKontonummer.setVerdi(kontonummerKunTall);
         }
     }
 
-    private static void tilSystemJsonKontonummer(WebSoknad webSoknad, final JsonKontonummer jsonKontonummer) {
+    private static void tilSystemJsonKontonummer(WebSoknad webSoknad, JsonKontonummer jsonKontonummer) {
         jsonKontonummer.setKilde(JsonKilde.SYSTEM);
 
-        final String kontonummer = webSoknad.getValueForFaktum("kontakt.system.kontonummer");
+        String kontonummer = webSoknad.getValueForFaktum("kontakt.system.kontonummer");
         if (erIkkeTom(kontonummer)) {
             jsonKontonummer.setVerdi(kontonummer);
         }

@@ -75,7 +75,7 @@ public class KontonummerRessursTest {
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
-        final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+        KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
         assertThat(kontonummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM));
@@ -89,7 +89,7 @@ public class KontonummerRessursTest {
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM_OPPDATERT);
 
-        final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+        KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
         assertThat(kontonummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM_OPPDATERT));
@@ -103,7 +103,7 @@ public class KontonummerRessursTest {
                 createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
-        final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+        KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
         assertThat(kontonummerFrontend.brukerutfyltVerdi, is(KONTONUMMER_BRUKER));
         assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM));
@@ -117,7 +117,7 @@ public class KontonummerRessursTest {
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
 
-        final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+        KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
         assertThat(kontonummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(kontonummerFrontend.systemverdi, nullValue());
@@ -130,13 +130,13 @@ public class KontonummerRessursTest {
         startWithEmptyKontonummerAndNoSystemKontonummer();
         ignoreTilgangskontrollAndLegacyUpdate();
 
-        final KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
+        KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
                 .withBrukerdefinert(true)
                 .withBrukerutfyltVerdi(KONTONUMMER_BRUKER);
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
         assertThat(kontonummer.getKilde(), is(JsonKilde.BRUKER));
         assertThat(kontonummer.getHarIkkeKonto(), nullValue());
         assertThat(kontonummer.getVerdi(), is(KONTONUMMER_BRUKER));
@@ -147,12 +147,12 @@ public class KontonummerRessursTest {
         startWithBrukerKontonummerAndSystemKontonummerInTPS();
         ignoreTilgangskontrollAndLegacyUpdate();
 
-        final KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
+        KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
                 .withBrukerdefinert(false);
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
         assertThat(kontonummer.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(kontonummer.getHarIkkeKonto(), nullValue());
         assertThat(kontonummer.getVerdi(), is(KONTONUMMER_SYSTEM));

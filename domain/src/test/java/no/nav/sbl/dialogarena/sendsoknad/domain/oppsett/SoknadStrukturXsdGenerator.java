@@ -45,7 +45,7 @@ public class SoknadStrukturXsdGenerator {
 
     private String lagSkjemaString() throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(SoknadStruktur.class);
-        final StringWriter writer = new StringWriter();
+        StringWriter writer = new StringWriter();
 
         jaxbContext.generateSchema(new SchemaOutputResolver() {
             @Override

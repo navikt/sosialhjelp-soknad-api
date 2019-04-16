@@ -39,7 +39,7 @@ public class ArbeidsforholdBolk implements BolkService {
     }
 
 
-    protected void afterGenererArbeidsforhold(List<Faktum> arbeidsforholdFakta, final Long soknadId) {
+    protected void afterGenererArbeidsforhold(List<Faktum> arbeidsforholdFakta, Long soknadId) {
         if (!arbeidsforholdFakta.isEmpty()) {
             Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
 
@@ -53,7 +53,7 @@ public class ArbeidsforholdBolk implements BolkService {
         }
     }
 
-    public List<Faktum> genererArbeidsforhold(String fodselsnummer, final Long soknadId) {
+    public List<Faktum> genererArbeidsforhold(String fodselsnummer, Long soknadId) {
         List<Faktum> arbeidsforholdFakta = new ArrayList<>();
 
         ArbeidsforholdService.Sokeperiode sokeperiode = getSoekeperiode();
@@ -78,7 +78,7 @@ public class ArbeidsforholdBolk implements BolkService {
         return yrkesaktiv.getValue() == null || "true".equals(yrkesaktiv.getValue());
     }
 
-    private Faktum transformerTilFaktum(final Arbeidsforhold arbeidsforhold, final Long soknadId) {
+    private Faktum transformerTilFaktum(Arbeidsforhold arbeidsforhold, Long soknadId) {
         return new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("arbeidsforhold")

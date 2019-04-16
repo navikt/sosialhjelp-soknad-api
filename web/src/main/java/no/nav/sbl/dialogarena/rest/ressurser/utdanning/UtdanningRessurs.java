@@ -46,9 +46,9 @@ public class UtdanningRessurs {
 
     @GET
     public UtdanningFrontend hentUtdanning(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
 
         return new UtdanningFrontend()
                 .withErStudent(utdanning.getErStudent())
@@ -63,9 +63,9 @@ public class UtdanningRessurs {
     }
 
     private void update(String behandlingsId, UtdanningFrontend utdanningFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final JsonUtdanning utdanning = soknad.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
+        String eier = SubjectHandler.getSubjectHandler().getUid();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonUtdanning utdanning = soknad.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
         utdanning.setKilde(JsonKilde.BRUKER);
         utdanning.setErStudent(utdanningFrontend.erStudent);
         utdanning.setStudentgrad(toStudentgrad(utdanningFrontend.studengradErHeltid));
@@ -74,13 +74,13 @@ public class UtdanningRessurs {
     }
 
     private void legacyUpdate(String behandlingsId, UtdanningFrontend utdanningFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+        WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
 
-        final Faktum studerer = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "dinsituasjon.studerer");
+        Faktum studerer = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "dinsituasjon.studerer");
         studerer.setValue(Boolean.toString(utdanningFrontend.erStudent));
         faktaService.lagreBrukerFaktum(studerer);
 
-        final Faktum studentgrad = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "dinsituasjon.studerer.true.grad");
+        Faktum studentgrad = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "dinsituasjon.studerer.true.grad");
         studentgrad.setValue(tilFaktumStudentgrad(utdanningFrontend.studengradErHeltid));
         faktaService.lagreBrukerFaktum(studentgrad);
     }

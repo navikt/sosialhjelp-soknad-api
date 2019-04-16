@@ -287,7 +287,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
                 .collect(toList());
     }
 
-    private Predicate<TekstStruktur> tekstStrukturOppfyllerConstraints(final WebSoknad soknad, final Faktum faktum){
+    private Predicate<TekstStruktur> tekstStrukturOppfyllerConstraints(WebSoknad soknad, Faktum faktum){
         return tekstStruktur -> {
             List<Constraint> constraints = tekstStruktur.getConstraints();
             return constraints == null || constraints.stream().allMatch(constraint -> ForventningsSjekker.sjekkForventning(constraint.getExpression(), getConstraintFaktum(constraint, soknad, faktum)));
@@ -295,7 +295,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     }
 
-    private Predicate<TekstStruktur> tekstOppfyllerDependOn(final Faktum faktum){
+    private Predicate<TekstStruktur> tekstOppfyllerDependOn(Faktum faktum){
         return tekstStruktur ->
         {List<String> tekstDependOnValues = tekstStruktur.getDependOnValues();
             if(tekstDependOnValues == null || tekstDependOnValues.isEmpty()) {
@@ -305,7 +305,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         };
     }
 
-    private Predicate<TekstStruktur> tekstErType(final String type) {
+    private Predicate<TekstStruktur> tekstErType(String type) {
         return tekstStruktur -> tekstStruktur.getType().equals(type);
     }
 

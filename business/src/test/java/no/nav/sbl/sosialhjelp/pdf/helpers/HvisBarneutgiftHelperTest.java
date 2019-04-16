@@ -32,7 +32,7 @@ public class HvisBarneutgiftHelperTest {
 
     @Before
     public void setup() {
-        final Set<String> barneutgiftTyper = new HashSet<>();
+        Set<String> barneutgiftTyper = new HashSet<>();
         barneutgiftTyper.add("barnehage");
         barneutgiftTyper.add("sfo");
         barneutgiftTyper.add("annenBarneutgift");

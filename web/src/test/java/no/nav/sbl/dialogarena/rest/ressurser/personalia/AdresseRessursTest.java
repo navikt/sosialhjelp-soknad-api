@@ -13,7 +13,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.Adres
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -108,7 +107,7 @@ public class AdresseRessursTest {
         when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
-        final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
+        AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
 
         assertThatAdresserAreCorrectlyConverted(adresserFrontend, JSON_SYS_MATRIKKELADRESSE, JSON_SYS_USTRUKTURERT_ADRESSE, JSON_BRUKER_GATE_ADRESSE);
     }
@@ -120,7 +119,7 @@ public class AdresseRessursTest {
         when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
-        final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
+        AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
 
         assertThatAdresserAreCorrectlyConverted(adresserFrontend, JSON_SYS_MATRIKKELADRESSE, JSON_SYS_USTRUKTURERT_ADRESSE, JSON_SYS_MATRIKKELADRESSE);
     }
@@ -132,7 +131,7 @@ public class AdresseRessursTest {
         when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
-        final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
+        AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
 
         assertThatAdresserAreCorrectlyConverted(adresserFrontend, JSON_SYS_MATRIKKELADRESSE, JSON_SYS_USTRUKTURERT_ADRESSE, JSON_SYS_USTRUKTURERT_ADRESSE);
     }
@@ -144,7 +143,7 @@ public class AdresseRessursTest {
         when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(null);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(null);
 
-        final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
+        AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
 
         assertThatAdresserAreCorrectlyConverted(adresserFrontend, null, null, null);
     }
@@ -159,10 +158,10 @@ public class AdresseRessursTest {
 
         AdresserFrontend adresserFrontend = new AdresserFrontend();
         adresserFrontend.withValg(JsonAdresseValg.FOLKEREGISTRERT);
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
+        List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(oppholdsadresse, is(JSON_SYS_MATRIKKELADRESSE));
         assertThat(oppholdsadresse.getAdresseValg(), is(JsonAdresseValg.FOLKEREGISTRERT));
@@ -180,10 +179,10 @@ public class AdresseRessursTest {
 
         AdresserFrontend adresserFrontend = new AdresserFrontend();
         adresserFrontend.withValg(JsonAdresseValg.MIDLERTIDIG);
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
+        List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(oppholdsadresse, is(JSON_SYS_USTRUKTURERT_ADRESSE));
         assertThat(oppholdsadresse.getAdresseValg(), is(JsonAdresseValg.MIDLERTIDIG));
@@ -202,10 +201,10 @@ public class AdresseRessursTest {
         adresserFrontend.withValg(JsonAdresseValg.SOKNAD);
         adresserFrontend.soknad.setType(JsonAdresse.Type.GATEADRESSE);
         adresserFrontend.soknad.setGateadresse(new GateadresseFrontend().withGatenavn("Søknadsgata"));
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
+        List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         assertThat(oppholdsadresse.getKilde(), is(JsonKilde.BRUKER));
         assertThat(((JsonGateAdresse) oppholdsadresse).getGatenavn(), is("Søknadsgata"));
         assertThat(oppholdsadresse.getAdresseValg(), is(JsonAdresseValg.SOKNAD));
@@ -293,7 +292,7 @@ public class AdresseRessursTest {
         when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
     }
 
-    private SoknadUnderArbeid createJsonInternalSoknadWithOppholdsadresse(final JsonAdresseValg valg) {
+    private SoknadUnderArbeid createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg valg) {
         return new SoknadUnderArbeid()
                 .withJsonInternalSoknad(new JsonInternalSoknad()
                         .withSoknad(new JsonSoknad()
