@@ -8,7 +8,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 @Component
 public class HentTidspunktNaaHelper extends RegistryAwareHelper<Object> {
@@ -30,8 +31,8 @@ public class HentTidspunktNaaHelper extends RegistryAwareHelper<Object> {
         
         DateTime now = DateTime.now();
 
-        DateTimeFormatter datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(SPRAK);
-        DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH:mm").withLocale(SPRAK);
+        DateTimeFormatter datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(NORSK_BOKMAAL);
+        DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH:mm").withLocale(NORSK_BOKMAAL);
 
         return datoFormatter.print(now) + " " + klokkeslettFormatter.print(now);
     }

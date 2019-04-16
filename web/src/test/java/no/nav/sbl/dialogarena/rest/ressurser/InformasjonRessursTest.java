@@ -5,7 +5,6 @@ import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
@@ -16,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,10 +24,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -63,7 +63,6 @@ public class InformasjonRessursTest {
     @InjectMocks
     InformasjonRessurs ressurs;
 
-    Locale norskBokmaal = new Locale("nb", "NO");
     SoknadStruktur struktur;
 
     @Before
@@ -128,25 +127,25 @@ public class InformasjonRessursTest {
     public void spraakDefaulterTilNorskBokmaalHvisIkkeSatt() {
         ressurs.hentTekster(SOKNADSTYPE, null);
         ressurs.hentTekster(SOKNADSTYPE, " ");
-        verify(messageSource, times(2)).getBundleFor(SOKNADSTYPE, norskBokmaal);
+        verify(messageSource, times(2)).getBundleFor(SOKNADSTYPE, NORSK_BOKMAAL);
     }
 
     @Test
     public void skalHenteTeksterForSoknadsosialhjelpViaBundle() {
         ressurs.hentTekster("soknadsosialhjelp", null);
-        verify(messageSource).getBundleFor("soknadsosialhjelp", norskBokmaal);
+        verify(messageSource).getBundleFor("soknadsosialhjelp", NORSK_BOKMAAL);
     }
 
     @Test
     public void skalHenteTeksterForForeldrepengerViaBundleForeldrepenger() {
         ressurs.hentTekster("foreldrepenger", null);
-        verify(messageSource).getBundleFor("foreldrepenger", norskBokmaal);
+        verify(messageSource).getBundleFor("foreldrepenger", NORSK_BOKMAAL);
     }
 
     @Test
     public void skalHenteTeksterForAlleBundlesUtenType() {
         ressurs.hentTekster("", null);
-        verify(messageSource).getBundleFor("", norskBokmaal);
+        verify(messageSource).getBundleFor("", NORSK_BOKMAAL);
     }
 
     @Test(expected = IllegalArgumentException.class)

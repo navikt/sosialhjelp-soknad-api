@@ -14,7 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.Properties;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
@@ -51,7 +51,7 @@ public class HentSvaralternativerHelperTest {
     public void skalHenteAlleValg() throws IOException {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
-        when(navMessageSource.getBundleFor("soknadsosialhjelp", SPRAK)).thenReturn(tekstFiler);
+        when(navMessageSource.getBundleFor("soknadsosialhjelp", NORSK_BOKMAAL)).thenReturn(tekstFiler);
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
 
@@ -65,7 +65,7 @@ public class HentSvaralternativerHelperTest {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
         leggTilTeksterSomIkkeErValgbare(tekstFiler);
-        when(navMessageSource.getBundleFor("soknadsosialhjelp", SPRAK)).thenReturn(tekstFiler);
+        when(navMessageSource.getBundleFor("soknadsosialhjelp", NORSK_BOKMAAL)).thenReturn(tekstFiler);
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
 
@@ -85,7 +85,7 @@ public class HentSvaralternativerHelperTest {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
         leggTilUndervalgtekster(tekstFiler);
-        when(navMessageSource.getBundleFor("soknadsosialhjelp", SPRAK)).thenReturn(tekstFiler);
+        when(navMessageSource.getBundleFor("soknadsosialhjelp", NORSK_BOKMAAL)).thenReturn(tekstFiler);
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
 

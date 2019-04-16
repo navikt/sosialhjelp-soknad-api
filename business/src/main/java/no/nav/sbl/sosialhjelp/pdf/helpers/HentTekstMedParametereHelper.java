@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 @Component
 public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
@@ -46,7 +46,7 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
         KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         String bundleName = konfigurasjon.getBundleName();
 
-        String tekst = this.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK, options);
+        String tekst = this.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, NORSK_BOKMAAL, options);
         
         String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
 

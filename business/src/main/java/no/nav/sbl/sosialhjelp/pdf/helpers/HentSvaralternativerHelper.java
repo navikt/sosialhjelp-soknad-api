@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 @Component
 public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
@@ -33,7 +33,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        Set<String> svarAlternativer = findChildPropertyValues(key, SPRAK);
+        Set<String> svarAlternativer = findChildPropertyValues(key, NORSK_BOKMAAL);
         
         StringBuilder stringBuilder = new StringBuilder();
         createHtmlLayout(svarAlternativer, stringBuilder);

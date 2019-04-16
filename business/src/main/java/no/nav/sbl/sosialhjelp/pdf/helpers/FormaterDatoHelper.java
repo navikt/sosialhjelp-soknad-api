@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 @Component
 public class FormaterDatoHelper extends RegistryAwareHelper<String>{
@@ -30,6 +30,6 @@ public class FormaterDatoHelper extends RegistryAwareHelper<String>{
         String format = options.param(0);
         LocalDate date = new LocalDate(datoStreng);
         
-        return date.toString(format, SPRAK);            
+        return date.toString(format, NORSK_BOKMAAL);
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 @Component
 public class HentTekstHelper extends RegistryAwareHelper<String> {
@@ -37,7 +37,7 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
         KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         String bundleName = konfigurasjon.getBundleName();
 
-        String tekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
+        String tekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, NORSK_BOKMAAL);
 
         String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
 

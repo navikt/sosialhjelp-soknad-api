@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Set;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 @Component
 public class HvisSparingHelper extends RegistryAwareHelper<Object>{
@@ -19,7 +19,7 @@ public class HvisSparingHelper extends RegistryAwareHelper<Object>{
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
-        Set<String> sparingTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.bankinnskudd.true.type", SPRAK);
+        Set<String> sparingTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.bankinnskudd.true.type", NORSK_BOKMAAL);
         sparingTyper.remove("annet");
 
         if (key != null && sparingTyper.contains(key.toString())){

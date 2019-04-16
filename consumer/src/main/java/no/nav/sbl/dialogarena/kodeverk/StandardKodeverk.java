@@ -24,7 +24,6 @@ import java.io.Writer;
 import java.text.Collator;
 import java.util.*;
 
-import static java.util.Collections.sort;
 import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
@@ -222,7 +221,7 @@ public class StandardKodeverk implements Kodeverk {
             dumpIfPossible(navn, kodeverket);
         }
         if (!POSTNUMMER.toString().equals(navn)) {
-            sort(kodeverket.getKode(), comparing(o -> o.getTerm().get(0).getNavn(), Collator.getInstance(Locale.forLanguageTag("NO"))));
+            kodeverket.getKode().sort(comparing(o -> o.getTerm().get(0).getNavn(), Collator.getInstance(Locale.forLanguageTag("NO"))));
         }
         return kodeverket;
     }

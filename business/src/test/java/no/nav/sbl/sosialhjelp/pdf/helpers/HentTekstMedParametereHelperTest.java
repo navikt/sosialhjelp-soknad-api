@@ -14,7 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.Properties;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -97,7 +97,7 @@ public class HentTekstMedParametereHelperTest {
     private void lagPropertiesMedTekstOgFilnavnNokkel(String testStreng, String key) {
         Properties properties = new Properties();
         properties.setProperty(mittprefix + "." + key, testStreng);
-        when(navMessageSource.getBundleFor(bundlename, SPRAK)).thenReturn(properties);
+        when(navMessageSource.getBundleFor(bundlename, NORSK_BOKMAAL)).thenReturn(properties);
     }
     
 }

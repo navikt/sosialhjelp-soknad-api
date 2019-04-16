@@ -29,7 +29,6 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     private OrganisasjonV4 organisasjonWebService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
-    public static final String KODEVERK_AVLONNING_FAST = "fast";
 
 
     @Override

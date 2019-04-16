@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Set;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 @Component
 public class HvisOkonomiskVerdiHelper extends RegistryAwareHelper<Object>{
@@ -19,7 +19,7 @@ public class HvisOkonomiskVerdiHelper extends RegistryAwareHelper<Object>{
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
-        Set<String> okonomiskVerdiTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.eierandeler.true.type", SPRAK);
+        Set<String> okonomiskVerdiTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.eierandeler.true.type", NORSK_BOKMAAL);
 
         if (key != null && okonomiskVerdiTyper.contains(key.toString())){
             return options.fn(this);

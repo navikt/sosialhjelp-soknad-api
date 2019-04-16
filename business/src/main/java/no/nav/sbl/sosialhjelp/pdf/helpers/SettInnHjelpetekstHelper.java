@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 @Component
 public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> {
@@ -44,13 +44,13 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> {
             return "";
         }
         
-        String hjelpetekstTittel = this.cmsTekst.getCmsTekst("hjelpetekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
+        String hjelpetekstTittel = this.cmsTekst.getCmsTekst("hjelpetekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, NORSK_BOKMAAL);
         
         return createHtmlLayout(hjelpetekst, hjelpetekstTittel);
     }
 
     private String getHjelpetekst(String key, Options options, KravdialogInformasjon konfigurasjon, String bundleName) {
-        String hjelpeTekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
+        String hjelpeTekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, NORSK_BOKMAAL);
 
         String nyHjelpeTekst = UrlUtils.endreHyperLenkerTilTekst(hjelpeTekst);
 

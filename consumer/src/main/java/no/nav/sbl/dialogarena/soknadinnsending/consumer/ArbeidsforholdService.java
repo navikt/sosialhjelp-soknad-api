@@ -76,7 +76,6 @@ public class ArbeidsforholdService {
 
         private final DateTime fom;
 
-
         private final DateTime tom;
 
         public Sokeperiode(DateTime fom, DateTime tom) {
@@ -88,11 +87,8 @@ public class ArbeidsforholdService {
             return fom;
         }
 
-
         public DateTime getTom() {
             return tom;
         }
-
-
     }
 }

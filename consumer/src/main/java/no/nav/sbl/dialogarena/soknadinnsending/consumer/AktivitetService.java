@@ -8,7 +8,6 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgV
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
-
 import org.joda.time.LocalDate;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Collections;
 import java.util.List;
-
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -35,10 +33,6 @@ public class AktivitetService {
     @Inject
     @Named("sakOgAktivitetEndpoint")
     private SakOgAktivitetV1 aktivitetWebService;
-
-
-
-
 
     public List<Faktum> hentAktiviteter(String fodselnummer) {
         try {
