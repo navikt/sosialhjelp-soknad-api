@@ -134,16 +134,16 @@
                             {{/if}}
                         {{/if}}
                     </li>
-                    {{#if @root.utvidetSoknad}}
-                        {{#hvisLik kontonummer.kilde "system"}}
-                            {{{settInnKnappTilgjengeligTekst "kontakt.system.kontonummer.endreknapp.label"}}}
-                        {{else}}
-                            {{{hentSvaralternativer "kontakt.kontonummer"}}}
-                            {{{settInnKnappTilgjengeligTekst "systeminfo.avbrytendringknapp.label"}}}
-                        {{/hvisLik}}
-                    {{/if}}
                 </ul>
             </li>
+            {{#if @root.utvidetSoknad}}
+                {{#hvisLik kontonummer.kilde "system"}}
+                    {{{settInnKnappTilgjengeligTekst "kontakt.system.kontonummer.endreknapp.label"}}}
+                {{else}}
+                    {{{hentSvaralternativer "kontakt.kontonummer"}}}
+                    {{{settInnKnappTilgjengeligTekst "systeminfo.avbrytendringknapp.label"}}}
+                {{/hvisLik}}
+            {{/if}}
         </ul>
     </div>
 {{/with}}
