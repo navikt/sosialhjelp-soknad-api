@@ -22,6 +22,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kra
 public class UtbetalingBolk implements BolkService {
 
     public static final NumberFormat UTBETALING_FORMATTER = new DecimalFormat("##,##0.00");
+    public static final int NAVUTBETALINGER_DAGER = 40;
 
     @Inject
     UtbetalingService utbetalingService;
@@ -39,20 +40,36 @@ public class UtbetalingBolk implements BolkService {
 
     @Override
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
-        List<Utbetaling> utbetalingerFraNav = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(40), LocalDate.now());
+        List<Utbetaling> utbetalingerFraNav = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(NAVUTBETALINGER_DAGER), LocalDate.now());
         List<Utbetaling> utbetalingerRegistrertHosSkatteetaten = skattbarInntektService.hentSkattbarInntekt(fodselsnummer);
 
         List<Faktum> fakta = new ArrayList<>();
 
-        if (utbetalingerFraNav == null || utbetalingerRegistrertHosSkatteetaten == null) {
+        if (utbetalingerFraNav != null && !utbetalingerFraNav.isEmpty()) {
+            fakta.add(lagHarUtbetalingerFaktum(true));
+        } else if (utbetalingerRegistrertHosSkatteetaten != null && !utbetalingerRegistrertHosSkatteetaten.isEmpty()) {
+            fakta.add(lagHarUtbetalingerFaktum(true));
+        } else {
+            fakta.add(lagHarUtbetalingerFaktum(false));
+        }
+
+        if (utbetalingerFraNav == null) {
             fakta.add(new Faktum()
                     .medSoknadId(soknadId)
                     .medType(SYSTEMREGISTRERT)
-                    .medKey("utbetalinger.feilet")
+                    .medKey("utbetalinger.fra.nav.feilet")
                     .medValue("true"));
         } else {
-            fakta.add(lagHarUtbetalingerFaktum(!utbetalingerFraNav.isEmpty() || !utbetalingerRegistrertHosSkatteetaten.isEmpty()));
             utbetalingerFraNav.stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling, "nav")).forEach(fakta::addAll);
+        }
+
+        if (utbetalingerRegistrertHosSkatteetaten == null) {
+            fakta.add(new Faktum()
+                    .medSoknadId(soknadId)
+                    .medType(SYSTEMREGISTRERT)
+                    .medKey("utbetalinger.fra.skatteetaten.feilet")
+                    .medValue("true"));
+        } else {
             utbetalingerRegistrertHosSkatteetaten.stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling, "skatteetaten")).forEach(fakta::addAll);
         }
 
@@ -78,8 +95,8 @@ public class UtbetalingBolk implements BolkService {
                 .medSystemProperty("utbetalingsid", utbetalingsid)
                 .medSystemProperty("type", utbetaling.tittel)
                 .medSystemProperty("kildeType", kildeType)
-                .medSystemProperty("organisasjon",arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer))
-                .medSystemProperty("organisasjonsnummer",utbetaling.orgnummer)
+                .medSystemProperty("organisasjon", arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer))
+                .medSystemProperty("organisasjonsnummer", utbetaling.orgnummer)
                 .medSystemProperty("netto", formatTall(utbetaling.netto))
                 .medSystemProperty("brutto", formatTall(utbetaling.brutto))
                 .medSystemProperty("skattetrekk", formatTall(utbetaling.skattetrekk))

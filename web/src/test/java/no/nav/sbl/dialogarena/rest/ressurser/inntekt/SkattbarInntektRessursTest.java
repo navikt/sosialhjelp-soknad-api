@@ -55,7 +55,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void faktumSkalLagresHvisInnsendtFaktumMatcherOppgittFaktumId() {
+    public void hentMockOgProduserObjektmodellTilGui() {
 
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
@@ -68,7 +68,6 @@ public class SkattbarInntektRessursTest {
         assertThat(skattbarInntektOgForskuddstrekk.samletInntekt).isPositive();
         assertThat(skattbarInntektOgForskuddstrekk.organisasjoner).hasSize(1);
         assertThat(skattbarInntektOgForskuddstrekk.organisasjoner.get(0).tom).isNotNull();
-
     }
 
 }

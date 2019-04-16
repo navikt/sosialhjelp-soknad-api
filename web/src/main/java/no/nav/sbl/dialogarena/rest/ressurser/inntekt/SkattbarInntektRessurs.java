@@ -59,13 +59,13 @@ public class SkattbarInntektRessurs {
     }
 
     private void organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger, List<SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe) {
-        for (List<JsonOkonomiOpplysningUtbetaling> utbetalingerPerManned : new TreeMap<>(skatteopplysninger
+        for (List<JsonOkonomiOpplysningUtbetaling> utbetalingerPerManed : new TreeMap<>(skatteopplysninger
                 .stream()
                 .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getPeriodeFom))).values()) {
-            Double samletSkattbarInntekt = utbetalingerPerManned.stream().map(JsonOkonomiOpplysningUtbetaling::getBrutto).reduce(Double::sum).orElse(0.0);
-            Double samletTrekk = utbetalingerPerManned.stream().map(JsonOkonomiOpplysningUtbetaling::getSkattetrekk).reduce(Double::sum).orElse(0.0);
+            Double samletSkattbarInntekt = utbetalingerPerManed.stream().map(JsonOkonomiOpplysningUtbetaling::getBrutto).reduce(Double::sum).orElse(0.0);
+            Double samletTrekk = utbetalingerPerManed.stream().map(JsonOkonomiOpplysningUtbetaling::getSkattetrekk).reduce(Double::sum).orElse(0.0);
 
-            Map<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> utbetalingPerOrganisasjon = utbetalingerPerManned
+            Map<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> utbetalingPerOrganisasjon = utbetalingerPerManed
                     .stream()
                     .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getOrganisasjon));
 
@@ -81,7 +81,7 @@ public class SkattbarInntektRessurs {
                                     || jsonOkonomiOpplysningUtbetaling.getBrutto() == 0.0 ? jsonOkonomiOpplysningUtbetaling.getSkattetrekk() : jsonOkonomiOpplysningUtbetaling.getBrutto());
                     utbetalingListe.add(utbetaling);
                 }
-                Optional<JsonOkonomiOpplysningUtbetaling> first = utbetalingerPerManned.stream().findFirst();
+                Optional<JsonOkonomiOpplysningUtbetaling> first = utbetalingerPerManed.stream().findFirst();
 
                 Organisasjon organisasjon = new Organisasjon().withUtbetalinger(utbetalingListe)
                         .withOrganisasjonsnavn(jsonOrganisasjon
