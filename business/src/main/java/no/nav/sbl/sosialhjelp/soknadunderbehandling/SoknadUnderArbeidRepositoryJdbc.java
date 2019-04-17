@@ -30,6 +30,7 @@ import java.time.ZoneId;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -94,7 +95,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     @Override
     public Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String behandlingsId, String eier) {
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS = ?",
-                new SoknadUnderArbeidRowMapper(), eier, behandlingsId, "UNDER_ARBEID").stream().findFirst();
+                new SoknadUnderArbeidRowMapper(), eier, behandlingsId, UNDER_ARBEID.toString()).stream().findFirst();
     }
 
     @Override
@@ -112,7 +113,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         soknadUnderArbeid.getSoknadId(),
                         eier,
                         opprinneligVersjon,
-                        SoknadInnsendingStatus.UNDER_ARBEID.toString());
+                        UNDER_ARBEID.toString());
         if (antallOppdaterteRader == 0) {
             throw new SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid " +
                     "med behandlingsId " + soknadUnderArbeid.getBehandlingsId() + " fra versjon " + opprinneligVersjon +
