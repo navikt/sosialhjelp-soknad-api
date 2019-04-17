@@ -4,6 +4,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -42,6 +43,9 @@ public class SoknadRessursTest {
     @Mock
     XsrfGenerator xsrfGenerator;
 
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
+
     @InjectMocks
     SoknadRessurs ressurs;
 
@@ -79,13 +83,15 @@ public class SoknadRessursTest {
 
     @Test
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(BEHANDLINGSID, EIER)).thenReturn(Optional.empty());
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(anyString(), anyString())).thenReturn(Optional.empty());
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
         verify(soknadService).startEttersending(eq(BEHANDLINGSID));
     }
 
     @Test
     public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(new WebSoknad());
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
         verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID));
