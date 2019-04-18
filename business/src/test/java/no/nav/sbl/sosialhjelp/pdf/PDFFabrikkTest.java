@@ -50,6 +50,8 @@ public class PDFFabrikkTest {
     @InjectMocks
     private SettInnHjelpetekstHelper settInnHjelpetekstHelper;
     @InjectMocks
+    private SettInnKnappTilgjengeligTekstHelper settInnKnappTilgjengeligTekstHelper;
+    @InjectMocks
     private HentSvaralternativerHelper hentSvaralternativerHelper;
 
     @Mock
@@ -68,6 +70,7 @@ public class PDFFabrikkTest {
         handleBarKjoerer.registrerHelper("hentTekstMedParametere", hentTekstMedParametereHelper);
         handleBarKjoerer.registrerHelper("settInnInfotekst", settInnInfotekstHelper);
         handleBarKjoerer.registrerHelper("settInnHjelpetekst", settInnHjelpetekstHelper);
+        handleBarKjoerer.registrerHelper("settInnKnappTilgjengeligTekst", settInnKnappTilgjengeligTekstHelper);
         handleBarKjoerer.registrerHelper("hvisLik", new HvisLikHelper());
         handleBarKjoerer.registrerHelper("hentSvaralternativer", hentSvaralternativerHelper);
         handleBarKjoerer.registrerHelper("hvisIkkeTom", new HvisIkkeTomHelper());
