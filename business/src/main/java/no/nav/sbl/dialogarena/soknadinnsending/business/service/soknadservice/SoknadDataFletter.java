@@ -228,6 +228,9 @@ public class SoknadDataFletter {
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
+
+        systemdata.update(soknadUnderArbeid);
+
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
         
         startTimer.stop();
