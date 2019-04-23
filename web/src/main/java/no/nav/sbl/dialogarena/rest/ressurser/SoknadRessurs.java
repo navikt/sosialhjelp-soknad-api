@@ -105,16 +105,14 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
+        vedleggService.hentPaakrevdeVedlegg(behandlingsId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
-        final String eier = getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
-
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
+        return pdfTemplate.fyllHtmlMalMedInnhold(konvertertSoknadUnderArbeid.getJsonInternalSoknad());
     }
 
     @POST
