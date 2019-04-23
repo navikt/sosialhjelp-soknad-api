@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +51,9 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                         sendtSoknad.getFiksforsendelseId(),
                         sendtSoknad.getOrgnummer(),
                         sendtSoknad.getNavEnhetsnavn(),
-                        Date.from(sendtSoknad.getBrukerOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        Date.from(sendtSoknad.getBrukerFerdigDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        sendtSoknad.getSendtDato() != null ? Date.from(sendtSoknad.getSendtDato().atZone(ZoneId.systemDefault()).toInstant())
+                        Date.from(sendtSoknad.getBrukerOpprettetDato().toInstant()),
+                        Date.from(sendtSoknad.getBrukerFerdigDato().toInstant()),
+                        sendtSoknad.getSendtDato() != null ? Date.from(sendtSoknad.getSendtDato().toInstant())
                          : null);
         return sendtSoknadId;
     }
@@ -113,11 +114,11 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                     .withOrgnummer(rs.getString("orgnr"))
                     .withNavEnhetsnavn(rs.getString("navenhetsnavn"))
                     .withBrukerOpprettetDato(rs.getTimestamp("brukeropprettetdato") != null ?
-                            rs.getTimestamp("brukeropprettetdato").toLocalDateTime() : null)
+                            OffsetDateTime.of(rs.getTimestamp("brukeropprettetdato").toLocalDateTime(),OffsetDateTime.now().getOffset()) : null)
                     .withBrukerFerdigDato(rs.getTimestamp("brukerferdigdato") != null ?
-                            rs.getTimestamp("brukerferdigdato").toLocalDateTime() : null)
+                            OffsetDateTime.of(rs.getTimestamp("brukerferdigdato").toLocalDateTime(), OffsetDateTime.now().getOffset()) : null)
                     .withSendtDato(rs.getTimestamp("sendtdato") != null ?
-                            rs.getTimestamp("sendtdato").toLocalDateTime() : null);
+                            OffsetDateTime.of(rs.getTimestamp("sendtdato").toLocalDateTime(), OffsetDateTime.now().getOffset()) : null);
         }
     }
 }

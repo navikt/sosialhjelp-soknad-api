@@ -1,30 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.joda.time.DateTime.now;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.naming.NamingException;
-
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
@@ -39,6 +14,29 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.inject.Inject;
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SoknadDataFletterIntegrationTestContext.class)
@@ -151,7 +149,7 @@ public class SoknadServiceIntegrasjonsTest {
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
                 .medDelstegStatus(DelstegStatus.OPPRETTET)
-                .medskjemaNummer(skjemaNummer).medOppretteDato(now());
+                .medskjemaNummer(skjemaNummer).medOppretteDato(OffsetDateTime.now());
         soknadId = lokalDb.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
         return soknadId;
@@ -164,7 +162,7 @@ public class SoknadServiceIntegrasjonsTest {
                 .medBehandlingId(behId)
                 .medVersjon(0)
                 .medDelstegStatus(DelstegStatus.OPPRETTET)
-                .medskjemaNummer(skjemaNummer).medOppretteDato(now());
+                .medskjemaNummer(skjemaNummer).medOppretteDato(OffsetDateTime.now());
 
         soknadId = lokalDb.opprettSoknad(soknad);
         faktaService.opprettBrukerFaktum(behId, new Faktum()

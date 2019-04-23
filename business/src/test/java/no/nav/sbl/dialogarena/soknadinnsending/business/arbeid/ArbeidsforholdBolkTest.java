@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,15 +15,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.joda.time.Months.monthsBetween;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,8 +45,8 @@ public class ArbeidsforholdBolkTest {
     @InjectMocks
     private ArbeidsforholdBolk arbeidsforholdBolk;
 
-    private String tom = new DateTime().toString("yyyy-MM-dd");
-    private String fom = new DateTime().minusYears(1).toString("yyyy-MM-dd");
+    private String tom = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    private String fom = OffsetDateTime.now().minusYears(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
     private long yrkesAktivFaktumId = 1L;
 
@@ -61,16 +60,14 @@ public class ArbeidsforholdBolkTest {
 
     @Test
     public void testGetSoekeperiode() {
-
         ArbeidsforholdService.Sokeperiode sokeperiode;
 
         sokeperiode = arbeidsforholdBolk.getSoekeperiode();
 
-        DateTime fom = sokeperiode.getFom();
-        DateTime tom = sokeperiode.getTom();
+        OffsetDateTime fom = sokeperiode.getFom();
+        OffsetDateTime tom = sokeperiode.getTom();
 
-        Assert.assertEquals(-10, monthsBetween(tom, fom).getMonths());
-
+        Assert.assertEquals(-10, ChronoUnit.MONTHS.between(tom, fom));
     }
 
     @Test

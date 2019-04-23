@@ -23,10 +23,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.Ve
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -49,7 +46,6 @@ import java.util.Map;
 import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.*;
@@ -84,8 +80,6 @@ public class SoknadDataFletterTest {
     private WebSoknadConfig config;
     @Mock
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-    @Mock
-    private StartDatoUtil startDatoUtil;
     @Mock
     private VedleggRepository vedleggRepository;
     @Mock
@@ -134,7 +128,6 @@ public class SoknadDataFletterTest {
     @Test
     public void skalStarteSoknad() {
         long soknadId = 69L;
-        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString(), Matchers.any(SoknadType.class))).thenReturn("123");
         when(lokalDb.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         when(lokalDb.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
@@ -145,18 +138,8 @@ public class SoknadDataFletterTest {
         ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
         String bruker = StaticSubjectHandler.getSubjectHandler().getUid();
         verify(henvendelsesConnector).startSoknad(eq(bruker), eq(SosialhjelpInformasjon.SKJEMANUMMER), uid.capture(), Matchers.any(SoknadType.class));
-        WebSoknad soknad = new WebSoknad()
-                .medId(soknadId)
-                .medBehandlingId("123")
-                .medUuid(uid.getValue())
-                .medskjemaNummer(SosialhjelpInformasjon.SKJEMANUMMER)
-                .medAktorId(bruker)
-                .medOppretteDato(new DateTime())
-                .medStatus(UNDER_ARBEID)
-                .medDelstegStatus(OPPRETTET);
-        verify(lokalDb).opprettSoknad(soknad);
+        verify(lokalDb).opprettSoknad(any(WebSoknad.class));
         verify(faktaService, atLeastOnce()).lagreFaktum(anyLong(), any(Faktum.class));
-        DateTimeUtils.setCurrentMillisSystem();
     }
 
     @Test

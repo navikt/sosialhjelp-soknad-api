@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.domain;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -12,9 +12,9 @@ public class SendtSoknad {
     private String fiksforsendelseId;
     private String orgnummer;
     private String navEnhetsnavn;
-    private LocalDateTime brukerOpprettetDato;
-    private LocalDateTime brukerFerdigDato;
-    private LocalDateTime sendtDato;
+    private OffsetDateTime brukerOpprettetDato;
+    private OffsetDateTime brukerFerdigDato;
+    private OffsetDateTime sendtDato;
 
     public boolean erEttersendelse() {
         return !isEmpty(tilknyttetBehandlingsId);
@@ -48,15 +48,15 @@ public class SendtSoknad {
         return navEnhetsnavn;
     }
 
-    public LocalDateTime getBrukerOpprettetDato() {
+    public OffsetDateTime getBrukerOpprettetDato() {
         return brukerOpprettetDato;
     }
 
-    public LocalDateTime getBrukerFerdigDato() {
+    public OffsetDateTime getBrukerFerdigDato() {
         return brukerFerdigDato;
     }
 
-    public LocalDateTime getSendtDato() {
+    public OffsetDateTime getSendtDato() {
         return sendtDato;
     }
 
@@ -99,17 +99,17 @@ public class SendtSoknad {
         return this;
     }
 
-    public SendtSoknad withBrukerOpprettetDato(LocalDateTime brukerOpprettetDato) {
+    public SendtSoknad withBrukerOpprettetDato(OffsetDateTime brukerOpprettetDato) {
         this.brukerOpprettetDato = brukerOpprettetDato;
         return this;
     }
 
-    public SendtSoknad withBrukerFerdigDato(LocalDateTime brukerFerdigDato) {
+    public SendtSoknad withBrukerFerdigDato(OffsetDateTime brukerFerdigDato) {
         this.brukerFerdigDato = brukerFerdigDato;
         return this;
     }
 
-    public SendtSoknad withSendtDato(LocalDateTime sendtDato) {
+    public SendtSoknad withSendtDato(OffsetDateTime sendtDato) {
         this.sendtDato = sendtDato;
         return this;
     }

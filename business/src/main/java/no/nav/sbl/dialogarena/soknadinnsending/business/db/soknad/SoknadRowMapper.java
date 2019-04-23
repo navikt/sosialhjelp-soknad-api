@@ -3,11 +3,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.joda.time.DateTime;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad.startSoknad;
 
@@ -24,7 +25,7 @@ public class SoknadRowMapper implements RowMapper<WebSoknad> {
                 .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
                 .medBehandlingskjedeId(rs.getString("behandlingskjedeid"))
                 .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))
-                .medOppretteDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
+                .medOppretteDato(OffsetDateTime.ofInstant(rs.getTimestamp("opprettetdato").toInstant(), ZoneId.systemDefault()))
                 .medJournalforendeEnhet(rs.getString("journalforendeenhet"))
                 .sistLagret(rs.getTimestamp("sistlagret"));
     }

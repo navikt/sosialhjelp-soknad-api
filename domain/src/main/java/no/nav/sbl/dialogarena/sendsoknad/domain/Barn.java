@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 public class Barn {
     private String fnr;

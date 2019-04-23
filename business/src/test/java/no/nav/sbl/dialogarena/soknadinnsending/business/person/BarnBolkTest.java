@@ -3,17 +3,18 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -27,13 +28,13 @@ public class BarnBolkTest {
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_MELLOMNAVN = "Navn";
     private static final String BARN_ETTERNAVN = "Barnet";
-    private static final LocalDate BARN_FODSELSDATO = new LocalDate(2008, 7, 23);
+    private static final java.time.LocalDate BARN_FODSELSDATO = java.time.LocalDate.of(2008, 7, 23);
     private static final String BARN_FODSELSDATO_TEKST = "2008-07-23";
 
     private static final String BARN2_IDENT = "01010691736";
     private static final String BARN2_FORNAVN = "Per";
     private static final String BARN2_ETTERNAVN = "Barnet";
-    private static final LocalDate BARN2_FODSELSDATO = new LocalDate(2006, 1, 1);
+    private static final LocalDate BARN2_FODSELSDATO = LocalDate.of(2006, 1, 1);
     private static final String BARN2_FODSELSDATO_TEKST = "2006-01-01";
     private static final Long SOKNAD_ID = 21L;
 

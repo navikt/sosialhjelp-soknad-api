@@ -1,14 +1,9 @@
 package no.nav.sbl.sosialhjelp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
@@ -31,13 +26,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
-import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.*;
@@ -48,12 +40,12 @@ public class SoknadUnderArbeidServiceTest {
     private static final String ORGNR = "012345678";
     private static final String NAVENHETSNAVN = "NAV Enhet";
     private static final String EIER = "12345678910";
-    private static final LocalDateTime SIST_ENDRET = now().minusMinutes(5L);
+    private static final OffsetDateTime SIST_ENDRET = OffsetDateTime.now().minusMinutes(5L);
     private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;
     private static final String BEHANDLINGSID = "1100001L";
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
-    private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
-    private static final LocalDateTime SIST_ENDRET_DATO = now();
+    private static final OffsetDateTime OPPRETTET_DATO = OffsetDateTime.now().minusSeconds(50);
+    private static final OffsetDateTime SIST_ENDRET_DATO = OffsetDateTime.now();
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;

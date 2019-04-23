@@ -1,10 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.PersonaliaBuilder;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public class PersonaliaBolkTest {
     private static final Long SOKNADID = 12345L;
 
     private static final String FNR = "56128349974";
-    private static final LocalDate FODSELSDATO = new LocalDate(1988, 5, 23);
+    private static final LocalDate FODSELSDATO = LocalDate.of(1988, 5, 23);
     private static final String ALDER = "28";
     private static final String NAVN = "Ola Johan Normann";
     private static final String FORNAVN = "Ola";
@@ -56,7 +58,7 @@ public class PersonaliaBolkTest {
     private static final String PARTNER_FORNAVN = "Kristin";
     private static final String PARTNER_MELLOMNAVN = "Mellomnavn";
     private static final String PARTNER_ETTERNAVN = "Partner";
-    private static final LocalDate PARTNER_FODSELSDATO = new LocalDate(1987, 6, 23);
+    private static final LocalDate PARTNER_FODSELSDATO = LocalDate.of(1987, 6, 23);
     private static final String PARTNER_FODSELSDATO_TEKST = "1987-06-23";
 
     private Adresse gjeldendeAdresse;

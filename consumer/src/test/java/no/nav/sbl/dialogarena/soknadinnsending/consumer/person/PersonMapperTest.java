@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
-import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import java.util.List;
@@ -56,7 +55,7 @@ public class PersonMapperTest {
         assertThat(person.getSammensattNavn(), is(SAMMENSATT_NAVN));
         assertThat(person.getFnr(), is(FNR));
         assertThat(person.getFodselsdato().getYear(), is(FODSELSAR));
-        assertThat(person.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
+        assertThat(person.getFodselsdato().getMonthValue(), is(FODSELSMANED));
         assertThat(person.getFodselsdato().getDayOfMonth(), is(FODSELSDAG));
         assertThat(person.getAlder(), notNullValue());
         assertThat(person.getKjonn(), is("k"));
@@ -82,7 +81,7 @@ public class PersonMapperTest {
         assertThat(registrertPartner.getMellomnavn(), is(MELLOMNAVN));
         assertThat(registrertPartner.getEtternavn(), is(ETTERNAVN));
         assertThat(registrertPartner.getFodselsdato().getYear(), is(FODSELSAR));
-        assertThat(registrertPartner.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
+        assertThat(registrertPartner.getFodselsdato().getMonthValue(), is(FODSELSMANED));
         assertThat(registrertPartner.getFodselsdato().getDayOfMonth(), is(FODSELSDAG));
         assertThat(registrertPartner.erFolkeregistrertsammen(), is(true));
         assertThat(registrertPartner.harIkketilgangtilektefelle(), is(false));
@@ -98,7 +97,7 @@ public class PersonMapperTest {
         assertThat(ektefelle.getMellomnavn(), is(MELLOMNAVN));
         assertThat(ektefelle.getEtternavn(), is(ETTERNAVN));
         assertThat(ektefelle.getFodselsdato().getYear(), is(FODSELSAR));
-        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
+        assertThat(ektefelle.getFodselsdato().getMonthValue(), is(FODSELSMANED));
         assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(FODSELSDAG));
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
@@ -146,7 +145,7 @@ public class PersonMapperTest {
         assertThat(ektefelle.getMellomnavn(), is(MELLOMNAVN));
         assertThat(ektefelle.getEtternavn(), is(ETTERNAVN));
         assertThat(ektefelle.getFodselsdato().getYear(), is(FODSELSAR));
-        assertThat(ektefelle.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
+        assertThat(ektefelle.getFodselsdato().getMonthValue(), is(FODSELSMANED));
         assertThat(ektefelle.getFodselsdato().getDayOfMonth(), is(FODSELSDAG));
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
@@ -166,7 +165,7 @@ public class PersonMapperTest {
         assertThat(barn.getMellomnavn(), is(MELLOMNAVN_BARN));
         assertThat(barn.getEtternavn(), is(ETTERNAVN_BARN));
         assertThat(barn.getFodselsdato().getYear(), is(FODSELSAR_BARN));
-        assertThat(barn.getFodselsdato().getMonthOfYear(), is(FODSELSMANED_BARN));
+        assertThat(barn.getFodselsdato().getMonthValue(), is(FODSELSMANED_BARN));
         assertThat(barn.getFodselsdato().getDayOfMonth(), is(FODSELSDAG_BARN));
         assertThat(barn.erFolkeregistrertsammen(), is(true));
         assertThat(barn.harIkkeTilgang(), is(false));
@@ -176,7 +175,7 @@ public class PersonMapperTest {
         assertThat(barn2.getMellomnavn(), is(MELLOMNAVN_BARN2));
         assertThat(barn2.getEtternavn(), is(ETTERNAVN_BARN2));
         assertThat(barn2.getFodselsdato().getYear(), is(FODSELSAR_BARN2));
-        assertThat(barn2.getFodselsdato().getMonthOfYear(), is(FODSELSMANED_BARN2));
+        assertThat(barn2.getFodselsdato().getMonthValue(), is(FODSELSMANED_BARN2));
         assertThat(barn2.getFodselsdato().getDayOfMonth(), is(FODSELSDAG_BARN2));
         assertThat(barn2.erFolkeregistrertsammen(), is(false));
         assertThat(barn2.harIkkeTilgang(), is(false));
@@ -291,14 +290,14 @@ public class PersonMapperTest {
 
     @Test
     public void erMyndigReturnererFalseForDatoMindreEnnAttenAarSiden() {
-        boolean erMyndig = erMyndig(new LocalDate(2017, 1, 1));
+        boolean erMyndig = erMyndig(java.time.LocalDate.of(2017, 1, 1));
 
         assertThat(erMyndig, is(false));
     }
 
     @Test
     public void erMyndigReturnererTrueForDatoMerEnnAttenAarSiden() {
-        boolean erMyndig = erMyndig(new LocalDate(1984, 1, 1));
+        boolean erMyndig = erMyndig(java.time.LocalDate.of(1984, 1, 1));
 
         assertThat(erMyndig, is(true));
     }

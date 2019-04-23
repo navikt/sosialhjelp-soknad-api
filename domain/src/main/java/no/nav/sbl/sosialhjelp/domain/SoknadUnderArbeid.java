@@ -3,7 +3,7 @@ package no.nav.sbl.sosialhjelp.domain;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -15,8 +15,8 @@ public class SoknadUnderArbeid {
     private String eier;
     private JsonInternalSoknad jsonInternalSoknad;
     private SoknadInnsendingStatus innsendingStatus;
-    private LocalDateTime opprettetDato;
-    private LocalDateTime sistEndretDato;
+    private OffsetDateTime opprettetDato;
+    private OffsetDateTime sistEndretDato;
 
     public boolean erEttersendelse() {
         return !isEmpty(tilknyttetBehandlingsId);
@@ -88,25 +88,25 @@ public class SoknadUnderArbeid {
         this.innsendingStatus = innsendingStatus;
     }
 
-    public LocalDateTime getOpprettetDato() {
+    public OffsetDateTime getOpprettetDato() {
         return opprettetDato;
     }
 
-    public SoknadUnderArbeid withOpprettetDato(LocalDateTime opprettetDato) {
+    public SoknadUnderArbeid withOpprettetDato(OffsetDateTime opprettetDato) {
         this.opprettetDato = opprettetDato;
         return this;
     }
 
-    public LocalDateTime getSistEndretDato() {
+    public OffsetDateTime getSistEndretDato() {
         return sistEndretDato;
     }
 
-    public SoknadUnderArbeid withSistEndretDato(LocalDateTime sistEndretDato) {
+    public SoknadUnderArbeid withSistEndretDato(OffsetDateTime sistEndretDato) {
         this.sistEndretDato = sistEndretDato;
         return this;
     }
 
-    public void setSistEndretDato(LocalDateTime sistEndretDato) {
+    public void setSistEndretDato(OffsetDateTime sistEndretDato) {
         this.sistEndretDato = sistEndretDato;
     }
 

@@ -2,11 +2,10 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.personalia;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import org.joda.time.LocalDate;
 
 public class PersonaliaBuilder {
     private String fnr;
-    private LocalDate fodselsdato;
+    private java.time.LocalDate fodselsdato;
     private String alder;
     private String navn;
     private String fornavn;
@@ -37,7 +36,7 @@ public class PersonaliaBuilder {
         return this;
     }
 
-    public PersonaliaBuilder fodselsdato(LocalDate fodselsdato) {
+    public PersonaliaBuilder fodselsdato(java.time.LocalDate fodselsdato) {
         this.fodselsdato = fodselsdato;
         return this;
     }

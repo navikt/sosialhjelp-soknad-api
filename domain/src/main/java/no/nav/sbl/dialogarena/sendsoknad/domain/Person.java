@@ -1,13 +1,13 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 public class Person {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
     private String sammensattNavn;
-    private LocalDate fodselsdato;
+    private java.time.LocalDate fodselsdato;
     private String fnr;
     private String alder;
     private String kjonn;
@@ -84,7 +84,7 @@ public class Person {
         return this;
     }
 
-    public Person withFodselsdato(LocalDate fodselsdato) {
+    public Person withFodselsdato(java.time.LocalDate fodselsdato) {
         this.fodselsdato = fodselsdato;
         return this;
     }

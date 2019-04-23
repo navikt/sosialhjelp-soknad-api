@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -169,7 +170,7 @@ public class VedleggRepositoryJdbcTest {
                 .medBehandlingId(BEHANDLINGS_ID)
                 .medskjemaNummer("NAV007")
                 .medAktorId("DEF")
-                .medOppretteDato(DateTime.now())
+                .medOppretteDato(OffsetDateTime.now())
                 .medStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .medDelstegStatus(DelstegStatus.UTFYLLING)
                 .medUuid("C4F3B4B3");

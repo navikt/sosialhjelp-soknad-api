@@ -7,10 +7,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +54,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     }
 
     private ArbeidsforholdService.Sokeperiode getSoekeperiode() {
-        return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(10), new DateTime());
+        return new ArbeidsforholdService.Sokeperiode(OffsetDateTime.now().minusMonths(10), OffsetDateTime.now());
     }
 
     private static JsonArbeidsforhold.Stillingstype tilJsonStillingstype(boolean harFastStilling) {

@@ -3,11 +3,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,7 +123,7 @@ public class PersonaliaFletterTest {
                 .withMellomnavn(ET_MELLOMNAVN)
                 .withEtternavn(ET_ETTERNAVN)
                 .withSammensattNavn(ET_SAMMENSATT_NAVN)
-                .withFodselsdato(new LocalDate())
+                .withFodselsdato(java.time.LocalDate.now())
                 .withFnr(IDENT)
                 .withAlder(ALDER)
                 .withStatsborgerskap(STATSBORGERSKAP)

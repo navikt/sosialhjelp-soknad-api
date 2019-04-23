@@ -5,15 +5,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -54,15 +53,11 @@ public class ArbeidsforholdBolk implements BolkService {
     }
 
     public List<Faktum> genererArbeidsforhold(String fodselsnummer, Long soknadId) {
-        List<Faktum> arbeidsforholdFakta = new ArrayList<>();
 
         ArbeidsforholdService.Sokeperiode sokeperiode = getSoekeperiode();
 
-        arbeidsforholdFakta.addAll(
-                arbeidsforholdService.hentArbeidsforhold(fodselsnummer, sokeperiode).stream()
-                        .map(arbeidsforhold -> transformerTilFaktum(arbeidsforhold, soknadId))
-                        .collect(Collectors.toList())
-        );
+        List<Faktum> arbeidsforholdFakta = arbeidsforholdService.hentArbeidsforhold(fodselsnummer, sokeperiode).stream()
+                .map(arbeidsforhold -> transformerTilFaktum(arbeidsforhold, soknadId)).collect(Collectors.toList());
 
         afterGenererArbeidsforhold(arbeidsforholdFakta, soknadId);
 
@@ -70,7 +65,7 @@ public class ArbeidsforholdBolk implements BolkService {
     }
 
     ArbeidsforholdService.Sokeperiode getSoekeperiode() {
-        return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(10), new DateTime());
+        return new ArbeidsforholdService.Sokeperiode( OffsetDateTime.now().minusMonths(10), OffsetDateTime.now());
     }
 
 
@@ -122,7 +117,7 @@ public class ArbeidsforholdBolk implements BolkService {
             return genererArbeidsforhold(fodselsnummer, soknadId);
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente arbeidsforhold: " + e, e);
-            return Arrays.asList();
+            return Collections.emptyList();
         }
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.sql.Types;
 import java.util.*;
 
@@ -74,7 +75,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getBrukerBehandlingId(),
                         soknad.getskjemaNummer(),
                         soknad.getAktoerId(),
-                        soknad.getOpprettetDato().toDate(),
+                        Date.from(soknad.getOpprettetDato().toInstant()),
                         soknad.getStatus().name(),
                         soknad.getDelstegStatus().name(),
                         soknad.getBehandlingskjedeId(),

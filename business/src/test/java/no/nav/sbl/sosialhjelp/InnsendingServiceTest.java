@@ -15,19 +15,19 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.transaction.support.*;
+import org.springframework.transaction.support.SimpleTransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import static java.time.LocalDateTime.now;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,8 +47,8 @@ public class InnsendingServiceTest {
     private static final String ORGNR_METADATA = "8888";
     private static final String NAVENHETSNAVN = "NAV Enhet";
     private static final String NAVENHETSNAVN_METADATA = "NAV Enhet2";
-    private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
-    private static final LocalDateTime SIST_ENDRET_DATO = now();
+    private static final OffsetDateTime OPPRETTET_DATO = OffsetDateTime.now().minusSeconds(50);
+    private static final OffsetDateTime SIST_ENDRET_DATO = OffsetDateTime.now();
     @Mock
     private TransactionTemplate transactionTemplate;
     @Mock
@@ -266,7 +266,7 @@ public class InnsendingServiceTest {
                 .withNavEnhetsnavn(NAVENHETSNAVN)
                 .withBrukerOpprettetDato(OPPRETTET_DATO)
                 .withBrukerFerdigDato(SIST_ENDRET_DATO)
-                .withSendtDato(now()));
+                .withSendtDato(OffsetDateTime.now()));
     }
 
     private SoknadMetadata createSoknadMetadata() {

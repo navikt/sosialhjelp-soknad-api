@@ -3,11 +3,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.arbeid;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
     }
 
     ArbeidsforholdService.Sokeperiode getSoekeperiode() {
-        return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(3), new DateTime());
+        return new ArbeidsforholdService.Sokeperiode(OffsetDateTime.now().minusMonths(3), OffsetDateTime.now());
     }
 
     @Override

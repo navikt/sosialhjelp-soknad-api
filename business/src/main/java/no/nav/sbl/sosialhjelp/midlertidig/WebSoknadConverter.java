@@ -19,14 +19,10 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,8 +65,8 @@ public class WebSoknadConverter {
                 .withEier(webSoknad.getAktoerId())
                 .withJsonInternalSoknad(mapWebSoknadTilJsonSoknadInternal(webSoknad, medVedlegg))
                 .withInnsendingStatus(webSoknad.getStatus())
-                .withOpprettetDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getOpprettetDato()))
-                .withSistEndretDato(fraJodaDateTimeTilLocalDateTime(webSoknad.getSistLagret()));
+                .withOpprettetDato(webSoknad.getOpprettetDato())
+                .withSistEndretDato(webSoknad.getSistLagret());
     }
 
     JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad, boolean medVedlegg) {
@@ -117,10 +113,4 @@ public class WebSoknadConverter {
                 .withNavEnhetsnavn(navEnhetsnavn);
     }
 
-    LocalDateTime fraJodaDateTimeTilLocalDateTime(DateTime jodaDateTime) {
-        if (jodaDateTime == null) {
-            return null;
-        }
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(jodaDateTime.toInstant().getMillis()), ZoneId.systemDefault());
-    }
 }

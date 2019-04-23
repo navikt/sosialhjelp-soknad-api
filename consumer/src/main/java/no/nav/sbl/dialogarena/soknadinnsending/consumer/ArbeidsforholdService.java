@@ -9,12 +9,13 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.N
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Periode;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Regelverker;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.DatatypeFactory;
+import java.time.OffsetDateTime;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
@@ -65,29 +66,29 @@ public class ArbeidsforholdService {
     }
 
 
-    private Periode lagPeriode(DateTime fom, DateTime tom) {
+    private Periode lagPeriode(OffsetDateTime fom, OffsetDateTime tom) {
         Periode periode = new Periode();
-        periode.setFom(datatypeFactory.newXMLGregorianCalendar(fom.toGregorianCalendar()));
-        periode.setTom(datatypeFactory.newXMLGregorianCalendar(tom.toGregorianCalendar()));
+        periode.setFom(datatypeFactory.newXMLGregorianCalendar(GregorianCalendar.from(fom.toZonedDateTime())));
+        periode.setTom(datatypeFactory.newXMLGregorianCalendar(GregorianCalendar.from(tom.toZonedDateTime())));
         return periode;
     }
 
     public static final class Sokeperiode {
 
-        private final DateTime fom;
+        private final OffsetDateTime fom;
 
-        private final DateTime tom;
+        private final OffsetDateTime tom;
 
-        public Sokeperiode(DateTime fom, DateTime tom) {
+        public Sokeperiode(OffsetDateTime fom, OffsetDateTime tom) {
             this.fom = fom;
             this.tom = tom;
         }
 
-        public DateTime getFom() {
+        public OffsetDateTime getFom() {
             return fom;
         }
 
-        public DateTime getTom() {
+        public OffsetDateTime getTom() {
             return tom;
         }
     }

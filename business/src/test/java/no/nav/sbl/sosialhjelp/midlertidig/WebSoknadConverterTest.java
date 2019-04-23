@@ -38,7 +38,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static java.time.Month.AUGUST;
@@ -158,7 +161,7 @@ public class WebSoknadConverterTest {
     public void fraJodaDateTimeTilLocalDateTimeKonvertererDatoRiktig() {
         DateTime dateTime = new DateTime(2017, 8, 22, 11, 43, 0);
 
-        LocalDateTime localDateTime = webSoknadConverter.fraJodaDateTimeTilLocalDateTime(dateTime);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(dateTime.toInstant().getMillis()), ZoneId.systemDefault());
 
         assertThat(localDateTime.getYear(), is(2017));
         assertThat(localDateTime.getMonth(), is(AUGUST));
@@ -206,8 +209,8 @@ public class WebSoknadConverterTest {
                 .medBehandlingskjedeId(TILKNYTTET_BEHANDLINGSID)
                 .medAktorId(EIER)
                 .medStatus(UNDER_ARBEID)
-                .medOppretteDato(new DateTime());
-        webSoknad.setSistLagret(new DateTime());
+                .medOppretteDato(OffsetDateTime.now());
+        webSoknad.setSistLagret(OffsetDateTime.now());
         webSoknad.medFaktum(new Faktum().medKey("personalia").medSystemProperty(FNR_KEY, EIER));
         webSoknad.medFaktum(new Faktum().medKey("kontakt.system.adresse")
                 .medSystemProperty("type", "gateadresse")

@@ -10,7 +10,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,8 @@ import javax.inject.Inject;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class LagringsScheduler {
     private static final Logger logger = getLogger(LagringsScheduler.class);
     private static final int SCHEDULE_RATE_MS = 1000 * 60 * 60; // 1 time
     private static final int SCHEDULE_INTERRUPT_MS = 1000 * 60 * 10; // 10 min
-    private DateTime batchStartTime;
+    private OffsetDateTime batchStartTime;
     private int vellykket;
     private int feilet;
 
@@ -48,7 +49,7 @@ public class LagringsScheduler {
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
         List<Optional<WebSoknad>> feilListe = new ArrayList<>();
-        batchStartTime = DateTime.now();
+        batchStartTime = OffsetDateTime.now();
         vellykket = 0;
         feilet = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
@@ -161,7 +162,7 @@ public class LagringsScheduler {
     }
 
     private boolean harGaattForLangTid() {
-        return DateTime.now().isAfter(batchStartTime.plusMillis(SCHEDULE_INTERRUPT_MS));
+        return OffsetDateTime.now().isAfter(batchStartTime.plus(Duration.ofMillis(SCHEDULE_INTERRUPT_MS)));
     }
 }
 

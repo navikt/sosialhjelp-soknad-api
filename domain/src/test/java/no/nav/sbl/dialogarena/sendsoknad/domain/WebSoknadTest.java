@@ -110,6 +110,7 @@ public class WebSoknadTest {
     @Test
     public void skalMarshalleSoknaderTilFaktaElementer() {
         InputStream gammelStruktur = WebSoknad.class.getResourceAsStream("/soknader/soknad-struktur-faktaListe.xml");
+
         WebSoknad soknad = JAXB.unmarshal(gammelStruktur, WebSoknad.class);
 
         OutputStream output = new ByteArrayOutputStream();

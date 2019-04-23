@@ -68,7 +68,7 @@ public class FiksSender {
                 .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid))
                 .withMetadataFraAvleverendeSystem(
                         new NoarkMetadataFraAvleverendeSakssystem()
-                                .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
+                                .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato().toLocalDateTime())
                 );
     }
 

@@ -5,16 +5,18 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringE
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.LocalDateTimeAdapter;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.joda.time.DateTime;
 
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -42,8 +44,10 @@ public class WebSoknad implements Serializable {
     private List<Faktum> fakta;
     private SoknadInnsendingStatus status;
     private String aktoerId;
-    private DateTime opprettetDato;
-    private DateTime sistLagret;
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private OffsetDateTime opprettetDato;
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private OffsetDateTime sistLagret;
     private DelstegStatus delstegStatus;
     private List<Vedlegg> vedlegg;
     private String journalforendeEnhet;
@@ -67,10 +71,10 @@ public class WebSoknad implements Serializable {
                 .medStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
                 .medBehandlingId(behandlingsId)
-                .medOppretteDato(DateTime.now());
+                .medOppretteDato(OffsetDateTime.now());
     }
 
-    public DateTime getSistLagret() {
+    public OffsetDateTime getSistLagret() {
         return sistLagret;
     }
 
@@ -90,7 +94,7 @@ public class WebSoknad implements Serializable {
         this.behandlingskjedeId = behandlingskjedeId;
     }
 
-    public void setSistLagret(DateTime sistLagret) {
+    public void setSistLagret(OffsetDateTime sistLagret) {
         this.sistLagret = sistLagret;
     }
 
@@ -213,7 +217,7 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
-    public WebSoknad medOppretteDato(DateTime opprettetDato) {
+    public WebSoknad medOppretteDato(OffsetDateTime opprettetDato) {
         this.opprettetDato = opprettetDato;
         return this;
     }
@@ -245,14 +249,14 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad sistLagret(Timestamp sistLagret) {
         if (sistLagret != null) {
-            setSistLagret(new DateTime(sistLagret.getTime()));
+            setSistLagret(OffsetDateTime.of(sistLagret.toLocalDateTime(), OffsetDateTime.now().getOffset()));
         } else {
             this.sistLagret = null;
         }
         return this;
     }
 
-    public DateTime getOpprettetDato() {
+    public OffsetDateTime getOpprettetDato() {
         return opprettetDato;
     }
 

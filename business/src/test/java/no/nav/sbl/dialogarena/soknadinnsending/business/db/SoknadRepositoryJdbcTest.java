@@ -6,9 +6,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import org.joda.time.DateTime;
+import org.assertj.core.api.Assertions;
 import org.joda.time.DateTimeUtils;
-import org.joda.time.Interval;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,20 +18,26 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static java.time.OffsetDateTime.now;
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AV_BRUKER;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.joda.time.DateTime.now;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -79,15 +84,11 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void skalSetteSistLagret() {
-        DateTimeUtils.setCurrentMillisFixed(new Date().getTime());
 
         opprettOgPersisterSoknad();
         soknadRepository.settSistLagretTidspunkt(soknadId);
         WebSoknad endret = soknadRepository.hentSoknad(soknadId);
-        System.out.println(new DateTime());
-        System.out.println(new DateTime(endret.getSistLagret()));
-        Interval endretIntervall = new Interval(new DateTime().minusMillis(1000), new DateTime().plusMillis(1000));
-        assertThat(endretIntervall.contains(endret.getSistLagret()), is(true));
+        assertThat(ChronoUnit.SECONDS.between(now(), endret.getSistLagret())).isBetween(-1L, 1L);
     }
 
     @Test(expected = DataIntegrityViolationException.class)
@@ -197,7 +198,7 @@ public class SoknadRepositoryJdbcTest {
         assertThat(faktum, is(notNullValue()));
         soknadRepository.slettBrukerFaktum(soknadId, id);
         soknadRepository.hentFaktum(id);
-        fail("ikke slettet");
+        Assertions.fail("ikke slettet");
     }
 
     @Test

@@ -26,11 +26,9 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -43,7 +41,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     private static final Logger logger = getLogger(SoknadUnderArbeidRepository.class);
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
-    
+
     {
         mapper = new ObjectMapper();
         mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
@@ -75,8 +73,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         soknadUnderArbeid.getEier(),
                         mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
                         soknadUnderArbeid.getInnsendingStatus().toString(),
-                        Date.from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
+                        Date.from(soknadUnderArbeid.getOpprettetDato().toInstant()),
+                        Date.from(soknadUnderArbeid.getSistEndretDato().toInstant()));
         return soknadUnderArbeidId;
     }
 
@@ -98,12 +96,12 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         sjekkOmSoknadErLaast(soknadUnderArbeid);
         Long opprinneligVersjon = soknadUnderArbeid.getVersjon();
         Long oppdatertVersjon = opprinneligVersjon + 1;
-        LocalDateTime sistEndretDato = now();
+        OffsetDateTime sistEndretDato = OffsetDateTime.now();
         int antallOppdaterteRader = getJdbcTemplate()
                 .update("update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
                         oppdatertVersjon,
                         mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
-                        Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
+                        Date.from(sistEndretDato.toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier,
                         opprinneligVersjon,
@@ -120,11 +118,11 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     @Override
     public void oppdaterInnsendingStatus(SoknadUnderArbeid soknadUnderArbeid, String eier) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
-        LocalDateTime sistEndretDato = now();
+        OffsetDateTime sistEndretDato = OffsetDateTime.now();
         int antallOppdaterteRader = getJdbcTemplate()
                 .update("update SOKNAD_UNDER_ARBEID set STATUS = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ?",
                         soknadUnderArbeid.getInnsendingStatus().toString(),
-                        Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
+                        Date.from(sistEndretDato.toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier);
         if (antallOppdaterteRader != 0) {
@@ -182,14 +180,14 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withJsonInternalSoknad(mapDataToJsonInternalSoknad(rs.getBytes("data")))
                     .withInnsendingStatus(status)
                     .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
-                            rs.getTimestamp("opprettetdato").toLocalDateTime() : null)
+                            OffsetDateTime.of(rs.getTimestamp("opprettetdato").toLocalDateTime(), OffsetDateTime.now().getOffset()) : null)
                     .withSistEndretDato(rs.getTimestamp("sistendretdato") != null ?
-                            rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
+                            OffsetDateTime.of(rs.getTimestamp("sistendretdato").toLocalDateTime(), OffsetDateTime.now().getOffset()) : null);
         }
     }
-    
-    private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
-        if (data == null){
+
+    private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data) {
+        if (data == null) {
             return null;
         }
         try {
@@ -199,7 +197,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
             throw new RuntimeException(e);
         }
     }
-    
+
     private byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
         try {
             String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);

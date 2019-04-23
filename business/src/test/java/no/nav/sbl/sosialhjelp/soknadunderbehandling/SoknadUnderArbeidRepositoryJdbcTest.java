@@ -15,10 +15,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -32,8 +31,8 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     private static final String EIER2 = "10987654321";
     private static final String BEHANDLINGSID = "1100020";
     private static final String TILKNYTTET_BEHANDLINGSID = "4567";
-    private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
-    private static final LocalDateTime SIST_ENDRET_DATO = now();
+    private static final OffsetDateTime OPPRETTET_DATO = OffsetDateTime.now().minusSeconds(50);
+    private static final OffsetDateTime SIST_ENDRET_DATO = OffsetDateTime.now();
     private static final JsonInternalSoknad JSON_INTERNAL_SOKNAD = new JsonInternalSoknad();
 
     @Inject

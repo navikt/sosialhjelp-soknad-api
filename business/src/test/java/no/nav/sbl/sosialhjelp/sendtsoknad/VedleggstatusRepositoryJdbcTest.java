@@ -12,10 +12,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
-import static java.time.LocalDateTime.now;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -31,9 +30,9 @@ public class VedleggstatusRepositoryJdbcTest {
     private static final String FIKSFORSENDELSEID2 = "12789";
     private static final String ORGNUMMER = "987654";
     private static final String NAVENHETSNAVN = "NAV Enhet";
-    private static final LocalDateTime BRUKER_OPPRETTET_DATO = now().minusDays(2);
-    private static final LocalDateTime BRUKER_FERDIG_DATO = now().minusSeconds(50);
-    private static final LocalDateTime SENDT_DATO = now();
+    private static final OffsetDateTime BRUKER_OPPRETTET_DATO = OffsetDateTime.now().minusDays(2);
+    private static final OffsetDateTime BRUKER_FERDIG_DATO = OffsetDateTime.now().minusSeconds(50);
+    private static final OffsetDateTime SENDT_DATO = OffsetDateTime.now();
     private static final String TYPE = "bostotte";
     private static final String TILLEGGSINFO = "annetboutgift";
     private static final String TYPE2 = "dokumentasjon";

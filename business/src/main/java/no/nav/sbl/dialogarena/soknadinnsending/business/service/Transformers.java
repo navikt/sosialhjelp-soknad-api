@@ -6,8 +6,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import org.apache.commons.collections15.Transformer;
-import org.joda.time.LocalDate;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -25,29 +25,22 @@ public class Transformers {
     public static final String SAGTOPP_AV_ARBEIDSGIVER = "sagtoppavarbeidsgiver";
     public static final String SAGTOPP_SELV = "sagtoppselv";
 
+    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public static final Function<Faktum, LocalDate> DATO_TIL_PERMITTERING = faktum -> {
-        Map<String, String> properties = faktum.getProperties();
-        return new LocalDate(properties.get("permiteringsperiodedatofra"));
-    };
-
-    public static final Function<Faktum, LocalDate> DATO_TIL = new Function<Faktum, LocalDate>() {
+    public static final Function<Faktum, java.time.LocalDate> DATO_TIL = new Function<Faktum, java.time.LocalDate>() {
         @Override
-        public LocalDate apply(Faktum faktum) {
+        public java.time.LocalDate apply(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
             switch (TYPE.transform(faktum)) {
                 case KONTRAKT_UTGAATT:
-                    return new LocalDate(properties.get("datotil"));
                 case AVSKJEDIGET:
-                    return new LocalDate(properties.get("datotil"));
-                case REDUSERT_ARBEIDSTID:
-                    return new LocalDate(properties.get("redusertfra"));
-                case ARBEIDSGIVER_ERKONKURS:
-                    return new LocalDate(properties.get("konkursdato"));
                 case SAGTOPP_AV_ARBEIDSGIVER:
-                    return new LocalDate(properties.get("datotil"));
                 case SAGTOPP_SELV:
-                    return new LocalDate(properties.get("datotil"));
+                    return java.time.LocalDate.parse( properties.get("datotil"), formatter);
+                case REDUSERT_ARBEIDSTID:
+                    return java.time.LocalDate.parse( properties.get("redusertfra"), formatter);
+                case ARBEIDSGIVER_ERKONKURS:
+                    return java.time.LocalDate.parse( properties.get("konkursdato"), formatter);
                 default:
                     return null;
             }

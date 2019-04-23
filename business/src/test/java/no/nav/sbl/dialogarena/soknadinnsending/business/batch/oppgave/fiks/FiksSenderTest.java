@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -266,6 +266,6 @@ public class FiksSenderTest {
                 .withBehandlingsId(BEHANDLINGSID)
                 .withOrgnummer(ORGNUMMER)
                 .withNavEnhetsnavn(NAVENHETSNAVN)
-                .withBrukerFerdigDato(LocalDateTime.now());
+                .withBrukerFerdigDato(OffsetDateTime.now());
     }
 }

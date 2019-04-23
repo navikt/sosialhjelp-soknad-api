@@ -46,7 +46,6 @@ import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -56,7 +55,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 import static java.util.Collections.sort;
@@ -226,8 +225,8 @@ public class SoknadDataFletter {
                 .withBehandlingsId(behandlingsId)
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
-                .withOpprettetDato(LocalDateTime.now())
-                .withSistEndretDato(LocalDateTime.now());
+                .withOpprettetDato(OffsetDateTime.now())
+                .withSistEndretDato(OffsetDateTime.now());
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
         
         startTimer.stop();
@@ -341,7 +340,7 @@ public class SoknadDataFletter {
                 .medskjemaNummer(skjemanummer)
                 .medUuid(uuid)
                 .medAktorId(aktorId)
-                .medOppretteDato(DateTime.now())
+                .medOppretteDato(OffsetDateTime.now())
                 .medVersjon(versjon);
 
         Long soknadId = lokalDb.opprettSoknad(nySoknad);

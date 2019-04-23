@@ -5,15 +5,15 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
-import org.joda.time.LocalDate;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.joda.time.Years.yearsBetween;
 
 public class PersonMapper {
 
@@ -161,25 +161,27 @@ public class PersonMapper {
         return "";
     }
 
-    static boolean erMyndig(LocalDate fodselsdato) {
+    static boolean erMyndig(java.time.LocalDate fodselsdato) {
         return finnAlder(fodselsdato) >= 18;
     }
 
-    private static int finnAlder(LocalDate fodselsdato) {
+    private static int finnAlder(java.time.LocalDate fodselsdato) {
         if (fodselsdato != null) {
-            return yearsBetween(fodselsdato, new LocalDate()).getYears();
+            return Period.between(fodselsdato, java.time.LocalDate.now()).getYears();
         }
         return 0;
     }
 
-    private static LocalDate finnFodselsdato(Person xmlPerson) {
-        if (xmlPerson.getFoedselsdato() == null || xmlPerson.getFoedselsdato().getFoedselsdato() == null) {
+    private static java.time.LocalDate finnFodselsdato(Person xmlPerson) {
+        if (xmlPerson.getFoedselsdato() == null || xmlPerson.getFoedselsdato().getFoedselsdato() == null||xmlPerson.getFoedselsdato().getFoedselsdato().getYear()<0) {
             return null;
         }
-        return new LocalDate(xmlPerson.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
+        XMLGregorianCalendar foedselsdato = xmlPerson.getFoedselsdato().getFoedselsdato();
+
+        return java.time.LocalDate.of(foedselsdato.getYear(), foedselsdato.getMonth(), foedselsdato.getDay());
     }
 
-    private static LocalDate finnFodselsdatoFraFnr(Person xmlPerson) {
+    private static java.time.LocalDate finnFodselsdatoFraFnr(Person xmlPerson) {
         if (xmlPerson.getIdent() == null || xmlPerson.getIdent().getType() == null) {
             return null;
         }
@@ -187,7 +189,7 @@ public class PersonMapper {
         String ident = xmlPerson.getIdent().getIdent();
         if ("FNR".equalsIgnoreCase(identtype) && isNotEmpty(ident)) {
             NavFodselsnummer fnr = new NavFodselsnummer(xmlPerson.getIdent().getIdent());
-            return new LocalDate(fnr.getBirthYear() + "-" + fnr.getMonth() + "-" + fnr.getDayInMonth());
+            return java.time.LocalDate.of(Integer.valueOf(fnr.getBirthYear()), Integer.valueOf(fnr.getMonth()), Integer.valueOf(fnr.getDayInMonth()));
         }
         return null;
     }

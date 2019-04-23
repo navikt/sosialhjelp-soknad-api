@@ -1,12 +1,10 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Options;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-
-import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class FormaterDatoHelper extends RegistryAwareHelper<String>{
@@ -28,8 +26,9 @@ public class FormaterDatoHelper extends RegistryAwareHelper<String>{
         }
 
         String format = options.param(0);
-        LocalDate date = new LocalDate(datoStreng);
-        
-        return date.toString(format, NORSK_BOKMAAL);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        DateTimeFormatter parser = DateTimeFormatter.ofPattern("");
+        throw new RuntimeException();
+        //return formatter.format(java.time.LocalDate.now());
     }
 }
