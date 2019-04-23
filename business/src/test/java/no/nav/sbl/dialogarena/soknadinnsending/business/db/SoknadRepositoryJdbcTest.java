@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import org.assertj.core.api.Assertions;
-import org.joda.time.DateTimeUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -74,7 +73,6 @@ public class SoknadRepositoryJdbcTest {
 
     @After
     public void tearDown() throws Exception {
-        DateTimeUtils.setCurrentMillisSystem();
     }
 
     @Test

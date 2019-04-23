@@ -31,20 +31,15 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
-import static java.time.Month.AUGUST;
 import static java.util.Collections.emptyList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
@@ -155,20 +150,6 @@ public class WebSoknadConverterTest {
         assertThat(jsonInternalSoknad.getVedlegg().getVedlegg().size(), is(1));
         assertThat(vedlegg.getType(), is("jobb"));
         assertThat(vedlegg.getTilleggsinfo(), is("sluttoppgjor"));
-    }
-
-    @Test
-    public void fraJodaDateTimeTilLocalDateTimeKonvertererDatoRiktig() {
-        DateTime dateTime = new DateTime(2017, 8, 22, 11, 43, 0);
-
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(dateTime.toInstant().getMillis()), ZoneId.systemDefault());
-
-        assertThat(localDateTime.getYear(), is(2017));
-        assertThat(localDateTime.getMonth(), is(AUGUST));
-        assertThat(localDateTime.getDayOfMonth(), is(22));
-        assertThat(localDateTime.getHour(), is(11));
-        assertThat(localDateTime.getMinute(), is(43));
-        assertThat(localDateTime.getSecond(), is(0));
     }
 
     private JsonInternalSoknad lagGyldigJsonInternalSoknad() {

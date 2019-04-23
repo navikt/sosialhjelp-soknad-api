@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -160,7 +159,7 @@ public class VedleggRepositoryJdbcTest {
                 .medAntallSider(1)
                 .medFillagerReferanse("1234")
                 .medData(null)
-                .medOpprettetDato(DateTime.now().getMillis())
+                .medOpprettetDato(System.currentTimeMillis())
                 .medAarsak("")
                 .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
     }
