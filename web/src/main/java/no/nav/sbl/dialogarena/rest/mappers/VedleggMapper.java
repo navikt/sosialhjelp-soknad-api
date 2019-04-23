@@ -50,12 +50,7 @@ public class VedleggMapper {
             case "utbetaling":
                 return getRadListFromUtbetaling(jsonOkonomi, soknadType);
             case "opplysningerUtgift":
-                final List<VedleggRadFrontend> radList = getRadListFromOpplysningerUtgift(jsonOkonomi, soknadType);
-                if (radList.isEmpty() && soknadType.equals("annen")){
-                    return Collections.singletonList(new VedleggRadFrontend());
-                } else {
-                    return radList;
-                }
+                return getRadListFromOpplysningerUtgift(jsonOkonomi, soknadType);
             case "oversiktUtgift":
                 return getRadListFromOversiktUtgift(jsonOkonomi, soknadType);
             case "formue":
@@ -88,10 +83,15 @@ public class VedleggMapper {
     }
 
     private static List<VedleggRadFrontend> getRadListFromOpplysningerUtgift(JsonOkonomi jsonOkonomi, String soknadType) {
-        return jsonOkonomi.getOpplysninger().getUtgift().isEmpty() ? Collections.singletonList(new VedleggRadFrontend()) :
+        List<VedleggRadFrontend> radList = jsonOkonomi.getOpplysninger().getUtgift().isEmpty() ? Collections.singletonList(new VedleggRadFrontend()) :
                 jsonOkonomi.getOpplysninger().getUtgift().stream()
                         .filter(utgift -> utgift.getType().equals(soknadType))
                         .map(utgift -> getRadFromOpplysningerUtgift(utgift, soknadType)).collect(Collectors.toList());
+        if (radList.isEmpty() && soknadType.equals("annen")){
+            return Collections.singletonList(new VedleggRadFrontend());
+        } else {
+            return radList;
+        }
     }
 
     private static List<VedleggRadFrontend> getRadListFromInntekt(JsonOkonomi jsonOkonomi, String soknadType) {
