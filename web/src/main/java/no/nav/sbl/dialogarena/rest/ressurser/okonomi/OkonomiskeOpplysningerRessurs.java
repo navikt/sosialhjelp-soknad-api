@@ -40,6 +40,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERR
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToBelopNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.VedleggKreves;
 
 @Controller
 @Path("/soknader/{behandlingsId}/okonomiskeOpplysninger")
@@ -103,7 +104,7 @@ public class OkonomiskeOpplysningerRessurs {
         final List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(utenFaktumSoknad.getSoknadId(), utenFaktumSoknad.getEier());
 
         if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
-            final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = opplastetVedleggService.legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier);
+            final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = opplastetVedleggService.legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, utenFaktumSoknad.getSoknadId());
             if (konvertertOpplastedeVedlegg != null) {
                 for (OpplastetVedlegg opplastetVedlegg : konvertertOpplastedeVedlegg) {
                     opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, utenFaktumSoknad.getEier());
@@ -269,7 +270,9 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private void addPaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg) {
-        jsonVedleggs.addAll(paakrevdeVedlegg.stream().filter(isNotInList(jsonVedleggs)).collect(Collectors.toList()));
+        jsonVedleggs.addAll(paakrevdeVedlegg.stream().filter(isNotInList(jsonVedleggs))
+                .map(jsonVedlegg -> jsonVedlegg.withStatus(VedleggKreves.toString()))
+                .collect(Collectors.toList()));
     }
 
     private Predicate<JsonVedlegg> isNotInList(List<JsonVedlegg> jsonVedleggs) {
