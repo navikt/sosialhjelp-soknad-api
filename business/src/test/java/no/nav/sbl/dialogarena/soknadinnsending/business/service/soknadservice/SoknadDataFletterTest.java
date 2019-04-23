@@ -89,6 +89,8 @@ public class SoknadDataFletterTest {
     @Mock
     private ArbeidsforholdBolk arbeidsforholdBolk;
     @Mock
+    private SystemdataUpdater systemdataUpdater;
+    @Mock
     ApplicationContext applicationContex;
     @Mock
     SoknadMetricsService soknadMetricsService;
@@ -128,7 +130,7 @@ public class SoknadDataFletterTest {
     @Test
     public void skalStarteSoknad() {
         long soknadId = 69L;
-        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString(), Matchers.any(SoknadType.class))).thenReturn("123");
+         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString(), Matchers.any(SoknadType.class))).thenReturn("123");
         when(lokalDb.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         when(lokalDb.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(lokalDb.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);

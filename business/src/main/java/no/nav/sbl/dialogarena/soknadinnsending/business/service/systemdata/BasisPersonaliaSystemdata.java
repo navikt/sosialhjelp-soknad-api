@@ -27,7 +27,6 @@ public class BasisPersonaliaSystemdata implements Systemdata {
             return;
         }
 
-        personalia.setPersonIdentifikator(systemPersonalia.getPersonIdentifikator());
         personalia.setNavn(systemPersonalia.getNavn());
         personalia.setStatsborgerskap(systemPersonalia.getStatsborgerskap());
         personalia.setNordiskBorger(systemPersonalia.getNordiskBorger());
@@ -76,16 +75,21 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     private void setStatsborgerskapPaaJsonPersonalia(JsonPersonalia jsonPersonalia, Personalia personalia) {
-        if (personalia.getStatsborgerskap() == null){
+        String statsborgerskap = personalia.getStatsborgerskap();
+        if (statsborgerskap == null){
+            return;
+        } else if (statsborgerskap.equals("???")){
+            jsonPersonalia.setStatsborgerskap(null);
             return;
         }
+
         if (jsonPersonalia.getStatsborgerskap() == null){
             jsonPersonalia.setStatsborgerskap(new JsonStatsborgerskap()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(personalia.getStatsborgerskap()));
+                    .withVerdi(statsborgerskap));
         } else {
             jsonPersonalia.getStatsborgerskap().setKilde(JsonKilde.SYSTEM);
-            jsonPersonalia.getStatsborgerskap().setVerdi(personalia.getStatsborgerskap());
+            jsonPersonalia.getStatsborgerskap().setVerdi(statsborgerskap);
         }
     }
 

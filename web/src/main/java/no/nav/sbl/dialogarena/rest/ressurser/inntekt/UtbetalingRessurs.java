@@ -28,9 +28,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
 @Path("/soknader/{behandlingsId}/inntekt/utbetalinger")
@@ -59,7 +58,7 @@ public class UtbetalingRessurs {
     @GET
     public UtbetalingerFrontend hentUtbetalinger(@PathParam("behandlingsId") String behandlingsId){
         String eier = SubjectHandler.getSubjectHandler().getUid();
-        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
         UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
 
@@ -131,26 +130,21 @@ public class UtbetalingRessurs {
     private void setUtbetalinger(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = opplysninger.getUtbetaling();
 
-        if(utbetalingerFrontend.utbytte){
-            String type = "utbytte";
-            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
-        }
-        if(utbetalingerFrontend.salg){
-            String type = "salg";
-            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
-        }
-        if(utbetalingerFrontend.forsikring){
-            String type = "forsikring";
-            String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
-        }
-        if(utbetalingerFrontend.annet){
-            String type = "annen";
-            String tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel);
-        }
+        String type = "utbytte";
+        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.utbytte);
+
+        type = "salg";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.salg);
+
+        type = "forsikring";
+        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.forsikring);
+
+        type = "annen";
+        tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.annet);
     }
 
     private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {

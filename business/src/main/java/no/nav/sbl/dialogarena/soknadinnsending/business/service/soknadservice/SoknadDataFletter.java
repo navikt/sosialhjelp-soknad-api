@@ -227,6 +227,9 @@ public class SoknadDataFletter {
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .withOpprettetDato(OffsetDateTime.now())
                 .withSistEndretDato(OffsetDateTime.now());
+
+        systemdata.update(soknadUnderArbeid);
+
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
         
         startTimer.stop();
@@ -437,6 +440,11 @@ public class SoknadDataFletter {
         List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
         VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggListe);
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
+
+        SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
+
+        String eier = getSubjectHandler().getUid();
+        soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
 
         SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
 

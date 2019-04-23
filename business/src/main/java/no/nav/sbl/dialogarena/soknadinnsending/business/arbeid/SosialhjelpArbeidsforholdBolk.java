@@ -41,11 +41,16 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
                 .anyMatch(arbeid -> "false".equals(arbeid.getProperties().get("ansatt")));
         boolean harGjeldendeArbeidsforhold = arbeidsforholdFakta.stream()
                 .anyMatch(arbeid -> "true".equals(arbeid.getProperties().get("ansatt")));
+        boolean skalBeOmLonnslipp = harGjeldendeArbeidsforhold || arbeidsforholdFakta.stream()
+                .anyMatch(arbeid -> arbeid.getProperties().get("tom") != null
+                        && !arbeid.getProperties().get("tom").trim().equals("")
+                        && !isWithinOneMonthAheadInTime(arbeid.getProperties().get("tom")));;
 
         Faktum dinSituasjonJobb = new Faktum().medSoknadId(soknadId).medKey("dinsituasjon.registrertjobb")
                 .medSystemProperty("harhentetfraaareg", "true")
                 .medSystemProperty("hararbeidsforhold", Boolean.toString(harArbeid))
                 .medSystemProperty("skalbeomsluttoppgjor", Boolean.toString(skalBeOmSluttoppgjor))
+                .medSystemProperty("skalbeomlonnslipp", Boolean.toString(skalBeOmLonnslipp))
                 .medSystemProperty("hargjeldendearbeidsforhold", Boolean.toString(harGjeldendeArbeidsforhold))
                 .medSystemProperty("haravsluttetarbeidsforhold", Boolean.toString(harAvsluttetArbeidsforhold));
         arbeidsforholdFakta.add(dinSituasjonJobb);

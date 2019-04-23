@@ -12,10 +12,12 @@ import no.nav.sbl.sosialhjelp.pdf.context.InntektEllerUtgiftType;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public final class HandlebarContext {
 
+    public static final Locale SPRAK = new Locale("nb", "NO");
     private final JsonInternalSoknad internalSoknad;
     private final boolean utvidetSoknad;
     private final boolean erEttersending;

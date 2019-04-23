@@ -15,10 +15,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalF
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -74,6 +77,12 @@ public class SoknadRessurs {
     @Inject
     private VedleggOriginalFilerService vedleggOriginalFilerService;
 
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Inject
+    private SystemdataUpdater systemdata;
+
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
@@ -105,16 +114,32 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
+        vedleggService.hentPaakrevdeVedlegg(behandlingsId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
-        String eier = getSubjectHandler().getUid();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
+        return pdfTemplate.fyllHtmlMalMedInnhold(konvertertSoknadUnderArbeid.getJsonInternalSoknad());
+    }
 
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
+    @GET
+    @Path("/{behandlingsId}/erSystemdataEndret")
+    public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId) {
+        String eier = getSubjectHandler().getUid();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        systemdata.update(soknadUnderArbeid);
+
+        JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
+        JsonInternalSoknad notUpdatedJsonInternalSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
+
+        if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
+            return false;
+        } else {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+            return true;
+        }
     }
 
     @POST

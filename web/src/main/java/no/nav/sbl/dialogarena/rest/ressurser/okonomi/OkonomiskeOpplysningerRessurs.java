@@ -2,17 +2,18 @@ package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.rest.mappers.SoknadTypeAndPath;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggRadFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadTypeAndPath;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
@@ -31,19 +32,16 @@ import javax.inject.Named;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToBelopNavn;
-import static no.nav.sbl.dialogarena.rest.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*;
-import static no.nav.sbl.dialogarena.rest.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToBelopNavn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.SoknadTypeToVedleggTypeMapper.mapVedleggTypeToSoknadTypeAndPath;
 
 @Controller
 @Path("/soknader/{behandlingsId}/okonomiskeOpplysninger")
@@ -82,6 +80,7 @@ public class OkonomiskeOpplysningerRessurs {
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+
         String eier = SubjectHandler.getSubjectHandler().getUid();
         SoknadUnderArbeid soknad = legacyHelper.hentSoknad(behandlingsId, eier, true);
         JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
@@ -105,7 +104,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     private List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(@PathParam("behandlingsId") String behandlingsId, String eier, SoknadUnderArbeid soknad) {
-        WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier, true);
+        WebSoknad webSoknad = legacyHelper.hentWebSoknad(behandlingsId, eier);
         List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
         return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), soknad.getEier(), vedleggListe);
     }
@@ -173,6 +172,9 @@ public class OkonomiskeOpplysningerRessurs {
 
         List<Faktum> fakta = webSoknad.getFaktaMedKey(key);
 
+        if (vedleggFrontend.type.equals("annet|annet") && checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)){
+            vedleggFrontend.rader = Collections.emptyList();
+        }
         makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad.getBrukerBehandlingId());
 
         for (int i = 0; i < vedleggFrontend.rader.size(); i++){
@@ -180,13 +182,15 @@ public class OkonomiskeOpplysningerRessurs {
             VedleggRadFrontend vedleggRad = vedleggFrontend.rader.get(i);
             Map<String, String> properties = faktum.getProperties();
             if (type.equals("nedbetalingsplan") && tilleggsinfo.equals("avdraglaan")){
-                properties.put("avdrag", vedleggRad.avdrag.toString());
-                properties.put("renter", vedleggRad.renter.toString());
+                properties.put("avdrag", vedleggRad.avdrag != null ? vedleggRad.avdrag.toString() : null);
+                properties.put("renter", vedleggRad.renter != null ? vedleggRad.renter.toString() : null);
+            } else if (type.equals("lonnslipp") && tilleggsinfo.equals("arbeid")){
+                properties.put("bruttolonn", vedleggRad.brutto != null ? vedleggRad.brutto.toString() : null);
+                properties.put("nettolonn", vedleggRad.netto != null ? vedleggRad.netto.toString() : null);
             } else {
-                properties.put(belopNavn, vedleggRad.belop.toString());
+                properties.put(belopNavn, vedleggRad.belop != null ? vedleggRad.belop.toString() : null);
             }
 
-            putNettolonnOnPropertiesForJsonTypeJobb(belopNavn, vedleggRad, properties);
             putBeskrivelseOnRelevantTypes(soknadTypeAndPath, jsonType, vedleggRad, properties);
 
             faktaService.lagreBrukerFaktum(faktum);

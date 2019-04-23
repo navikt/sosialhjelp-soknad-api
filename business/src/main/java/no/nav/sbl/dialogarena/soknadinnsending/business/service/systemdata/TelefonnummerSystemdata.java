@@ -22,9 +22,16 @@ public class TelefonnummerSystemdata implements Systemdata {
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         JsonTelefonnummer telefonnummer = personalia.getTelefonnummer();
-        String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-        if (telefonnummer.getKilde() == JsonKilde.SYSTEM) {
-            telefonnummer.setVerdi(innhentSystemverdiTelefonnummer(personIdentifikator));
+
+        if (telefonnummer == null || telefonnummer.getKilde() == JsonKilde.SYSTEM){
+            String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+            String systemverdi = innhentSystemverdiTelefonnummer(personIdentifikator);
+
+            personalia.setTelefonnummer(systemverdi == null ? null :
+                    telefonnummer != null ? telefonnummer.withVerdi(systemverdi) :
+                    new JsonTelefonnummer()
+                            .withKilde(JsonKilde.SYSTEM)
+                            .withVerdi(systemverdi));
         }
     }
 

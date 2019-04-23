@@ -33,11 +33,8 @@ public class LegacyHelper {
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
-    @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier, boolean medVedlegg) {
-        WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier, medVedlegg);
+        WebSoknad webSoknad = hentWebSoknad(behandlingsId, eier);
 
         SoknadUnderArbeid soknad = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(webSoknad, medVedlegg);
         if (!eier.equals(soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi())) {
@@ -46,20 +43,16 @@ public class LegacyHelper {
         return soknad;
     }
 
-    public WebSoknad hentWebSoknad(String behandlingsId, String eier, boolean medVedlegg) {
+    public WebSoknad hentWebSoknad(String behandlingsId, String eier) {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
 
         /* Dette burde egentlig være unødvendig, men sjekker i tilfelle lesing av WebSoknad kan ha sideeffekter: */
-        if (!eier.equals(SubjectHandler.getSubjectHandler().getUid())) {
+        if (eier == null || !eier.equals(SubjectHandler.getSubjectHandler().getUid())) {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-
-        if (medVedlegg){
-            vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-        }
 
         WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
         if (!eier.equals(webSoknad.getAktoerId())) {

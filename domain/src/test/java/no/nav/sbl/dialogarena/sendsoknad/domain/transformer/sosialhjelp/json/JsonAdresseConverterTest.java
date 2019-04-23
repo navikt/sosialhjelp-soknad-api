@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 public class JsonAdresseConverterTest {
@@ -23,5 +24,25 @@ public class JsonAdresseConverterTest {
 
         JsonAdresse jsonAdresse = JsonAdresseConverter.tilOppholdsadresse(webSoknad);
         assertNull(jsonAdresse);
+    }
+
+    @Test
+    public void skalReturnereNullHvisAdresseTypeErUstrukturertOgSystemAdresseIkkeErSatt() {
+        WebSoknad webSoknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("value"))
+                .medFaktum(new Faktum().medKey("kontakt.system.adresse").medValue("value").medSystemProperty("type", "ustrukturert"));
+
+        JsonAdresse jsonAdresse = JsonAdresseConverter.tilOppholdsadresse(webSoknad);
+        assertNull(jsonAdresse);
+    }
+
+    @Test
+    public void skalReturnereJsonAdresseHvisAdresseTypeErUstrukturertOgSystemAdresseErSatt() {
+        WebSoknad webSoknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("kontakt.system.oppholdsadresse.valg").medValue("value"))
+                .medFaktum(new Faktum().medKey("kontakt.system.adresse").medValue("value").medSystemProperty("type", "ustrukturert").medSystemProperty("adresse", "gate,vei"));
+
+        JsonAdresse jsonAdresse = JsonAdresseConverter.tilOppholdsadresse(webSoknad);
+        assertNotNull(jsonAdresse);
     }
 }

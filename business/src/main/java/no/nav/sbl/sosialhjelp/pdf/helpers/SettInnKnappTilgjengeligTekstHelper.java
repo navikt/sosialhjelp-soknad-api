@@ -1,24 +1,20 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-
-import java.io.IOException;
-
-import javax.inject.Inject;
-
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
 import org.springframework.stereotype.Component;
 
-import com.github.jknack.handlebars.Options;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import javax.inject.Inject;
+import java.io.IOException;
 
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
-public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> implements TextWithTitle {
+public class SettInnKnappTilgjengeligTekstHelper extends RegistryAwareHelper<String> implements TextWithTitle {
 
     @Inject
     private CmsTekst cmsTekst;
@@ -28,12 +24,12 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> implem
 
     @Override
     public String getNavn() {
-        return "settInnHjelpetekst";
+        return "settInnKnappTilgjengeligTekst";
     }
 
     @Override
     public String getBeskrivelse() {
-        return "Returner html kode for å vise hjelpetekst";
+        return "Returner html kode for å vise knapp tilgjengelig";
     }
 
     @Override
@@ -41,14 +37,14 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> implem
         KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         String bundleName = konfigurasjon.getBundleName();
 
-        String hjelpetekst = TextWithTitle.getText(key, options, konfigurasjon, bundleName, cmsTekst);
-        
-        if (hjelpetekst == null) {
+        String knapptekst = TextWithTitle.getText(key, options, konfigurasjon, bundleName, cmsTekst);
+
+        if (knapptekst == null) {
             return "";
         }
-        
-        String hjelpetekstTittel = this.cmsTekst.getCmsTekst("hjelpetekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
-        
-        return TextWithTitle.createHtmlLayout(hjelpetekst, hjelpetekstTittel);
+
+        String knapptekstTittel = "Knapp tilgjengelig:";
+
+        return TextWithTitle.createHtmlLayout(knapptekst, knapptekstTittel);
     }
 }

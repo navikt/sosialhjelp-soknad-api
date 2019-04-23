@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -31,9 +32,14 @@ public class BasisPersonaliaRessurs {
     @Inject
     private Adressekodeverk adressekodeverk;
 
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
     @GET
     public BasisPersonaliaFrontend hentBasisPersonalia(@PathParam("behandlingsId") String behandlingsId) {
         String eier = SubjectHandler.getSubjectHandler().getUid();
+
+        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
         JsonPersonalia jsonPersonalia = basisPersonaliaSystemdata.innhentSystemBasisPersonalia(eier);
 
         return mapToBasisPersonaliaFrontend(jsonPersonalia);
