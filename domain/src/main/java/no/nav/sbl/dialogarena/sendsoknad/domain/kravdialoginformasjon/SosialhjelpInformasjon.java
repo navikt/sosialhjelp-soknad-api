@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMeta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-
 import org.springframework.context.MessageSource;
 
 import java.util.List;

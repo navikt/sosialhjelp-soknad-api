@@ -1,18 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetstyper;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSBetalingsplan;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSakstyper;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.*;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;

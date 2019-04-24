@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
@@ -290,14 +291,14 @@ public class PersonMapperTest {
 
     @Test
     public void erMyndigReturnererFalseForDatoMindreEnnAttenAarSiden() {
-        boolean erMyndig = erMyndig(java.time.LocalDate.of(2017, 1, 1));
+        boolean erMyndig = erMyndig(LocalDate.of(2017, 1, 1));
 
         assertThat(erMyndig, is(false));
     }
 
     @Test
     public void erMyndigReturnererTrueForDatoMerEnnAttenAarSiden() {
-        boolean erMyndig = erMyndig(java.time.LocalDate.of(1984, 1, 1));
+        boolean erMyndig = erMyndig(LocalDate.of(1984, 1, 1));
 
         assertThat(erMyndig, is(true));
     }

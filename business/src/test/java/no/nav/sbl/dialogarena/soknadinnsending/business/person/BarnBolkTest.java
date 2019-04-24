@@ -28,7 +28,7 @@ public class BarnBolkTest {
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_MELLOMNAVN = "Navn";
     private static final String BARN_ETTERNAVN = "Barnet";
-    private static final java.time.LocalDate BARN_FODSELSDATO = java.time.LocalDate.of(2008, 7, 23);
+    private static final LocalDate BARN_FODSELSDATO = LocalDate.of(2008, 7, 23);
     private static final String BARN_FODSELSDATO_TEKST = "2008-07-23";
 
     private static final String BARN2_IDENT = "01010691736";

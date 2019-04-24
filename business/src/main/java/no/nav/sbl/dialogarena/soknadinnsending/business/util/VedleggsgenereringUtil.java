@@ -6,12 +6,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesIkke;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesSenere;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggAlleredeSendt;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggSendesAvAndre;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
 
 
 public class VedleggsgenereringUtil {

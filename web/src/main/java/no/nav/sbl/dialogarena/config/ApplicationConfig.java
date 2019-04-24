@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.service.EmailService;
+import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
-import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

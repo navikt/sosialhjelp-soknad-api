@@ -1,19 +1,16 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 
-import java.io.IOException;
-
-import javax.inject.Inject;
-
-import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
-import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
-import org.springframework.stereotype.Component;
-
 import com.github.jknack.handlebars.Options;
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.io.IOException;
+
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component

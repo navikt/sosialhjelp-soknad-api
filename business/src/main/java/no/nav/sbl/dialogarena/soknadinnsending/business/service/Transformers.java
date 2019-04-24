@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.Ve
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import org.apache.commons.collections15.Transformer;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -27,20 +28,20 @@ public class Transformers {
 
     static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public static final Function<Faktum, java.time.LocalDate> DATO_TIL = new Function<Faktum, java.time.LocalDate>() {
+    public static final Function<Faktum, LocalDate> DATO_TIL = new Function<Faktum, LocalDate>() {
         @Override
-        public java.time.LocalDate apply(Faktum faktum) {
+        public LocalDate apply(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
             switch (TYPE.transform(faktum)) {
                 case KONTRAKT_UTGAATT:
                 case AVSKJEDIGET:
                 case SAGTOPP_AV_ARBEIDSGIVER:
                 case SAGTOPP_SELV:
-                    return java.time.LocalDate.parse( properties.get("datotil"), formatter);
+                    return LocalDate.parse( properties.get("datotil"), formatter);
                 case REDUSERT_ARBEIDSTID:
-                    return java.time.LocalDate.parse( properties.get("redusertfra"), formatter);
+                    return LocalDate.parse( properties.get("redusertfra"), formatter);
                 case ARBEIDSGIVER_ERKONKURS:
-                    return java.time.LocalDate.parse( properties.get("konkursdato"), formatter);
+                    return LocalDate.parse( properties.get("konkursdato"), formatter);
                 default:
                     return null;
             }

@@ -1,17 +1,16 @@
 package no.nav.sbl.dialogarena.integration;
 
-import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
-import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
-
-import java.io.File;
-
+import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
+import java.io.File;
+
+import static java.lang.System.setProperty;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
+import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 
 public abstract class AbstractIT {
     private static final int PORT = 10001;

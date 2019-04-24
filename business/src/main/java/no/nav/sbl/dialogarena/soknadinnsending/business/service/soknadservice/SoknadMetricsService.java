@@ -1,20 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import org.slf4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Map;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class SoknadMetricsService {

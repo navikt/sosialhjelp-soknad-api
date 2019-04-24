@@ -72,7 +72,7 @@ public class ArbeidsforholdBolkTest {
 
     @Test
     public void skalLagreSystemfakta() throws Exception {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
+        Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
         when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
 
         List<Faktum> arbeidsforholdFakta = arbeidsforholdBolk.genererArbeidsforhold("123", 11L);
@@ -81,7 +81,7 @@ public class ArbeidsforholdBolkTest {
 
     @Test
     public void skalSetteAlleFaktumFelter() throws Exception {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
+        Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
         when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
         List<Faktum> faktums = arbeidsforholdBolk.genererArbeidsforhold("123", 11L);
         Faktum faktum = faktums.get(0);
@@ -100,7 +100,7 @@ public class ArbeidsforholdBolkTest {
 
     @Test
     public void arbeidsforholdSkalHaRiktigParrentFaktum() {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
+        Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
         when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
         when(faktaService.hentFaktumMedKey(anyLong(), eq("arbeidsforhold.yrkesaktiv"))).thenReturn(new Faktum().medKey("arbeidsforhold.yrkesaktiv").medValue("false").medFaktumId(yrkesAktivFaktumId));
 
@@ -126,7 +126,7 @@ public class ArbeidsforholdBolkTest {
 
     @Test
     public void skalSetteMixed() throws Exception {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
+        Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
         when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
 
         arbeidsforhold.variabelStillingsprosent = true;
@@ -139,7 +139,7 @@ public class ArbeidsforholdBolkTest {
 
     @Test
     public void skalSettePagaende() throws Exception {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
+        Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
         when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
 
         arbeidsforhold.tom = null;
@@ -149,8 +149,8 @@ public class ArbeidsforholdBolkTest {
         assertThat(faktum.finnEgenskap("ansatt").getValue(), equalTo("true"));
     }
 
-    private no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold lagArbeidsforhold() {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
+    private Arbeidsforhold lagArbeidsforhold() {
+        Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
         arbeidsforhold.orgnr = "12345";
         arbeidsforhold.arbeidsgivernavn = "test";
         arbeidsforhold.harFastStilling = true;

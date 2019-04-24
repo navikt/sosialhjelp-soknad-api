@@ -1,18 +1,17 @@
 package no.nav.sbl.dialogarena.integration.security;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Response;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 

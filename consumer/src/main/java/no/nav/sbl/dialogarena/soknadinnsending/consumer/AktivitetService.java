@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgV
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class AktivitetService {
 
     private static final Predicate<Faktum> BARE_AKTIVITETER_SOM_KAN_HA_STONADER = faktum ->
             faktum.harPropertySomMatcher("erStoenadsberettiget", "true");
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AktivitetService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AktivitetService.class);
 
     @Inject
     @Named("sakOgAktivitetEndpoint")

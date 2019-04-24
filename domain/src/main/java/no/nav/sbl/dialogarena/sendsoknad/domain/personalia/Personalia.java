@@ -4,6 +4,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 
+import java.time.LocalDate;
+
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.LandListe.EOS;
 
@@ -38,7 +40,7 @@ public class Personalia {
     public static final String SEKUNDARADRESSE_LANDKODE = "sekundarAdresseLandkode";
 
     private String fnr;
-    private java.time.LocalDate fodselsdato;
+    private LocalDate fodselsdato;
     private String alder;
     private String navn;
     private String fornavn;
@@ -70,11 +72,11 @@ public class Personalia {
         this.fnr = fnr;
     }
 
-    public java.time.LocalDate getFodselsdato() {
+    public LocalDate getFodselsdato() {
         return fodselsdato;
     }
 
-    public void setFodselsdato(java.time.LocalDate fodselsdato) {
+    public void setFodselsdato(LocalDate fodselsdato) {
         this.fodselsdato = fodselsdato;
     }
 

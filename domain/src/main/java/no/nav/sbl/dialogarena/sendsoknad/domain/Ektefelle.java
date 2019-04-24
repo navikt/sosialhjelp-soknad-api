@@ -6,7 +6,7 @@ public class Ektefelle {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
-    private java.time.LocalDate fodselsdato;
+    private LocalDate fodselsdato;
     private String fnr;
     private boolean folkeregistrertsammen;
     private boolean ikketilgangtilektefelle;
@@ -54,7 +54,7 @@ public class Ektefelle {
         return this;
     }
 
-    public Ektefelle withFodselsdato(java.time.LocalDate fodselsdato) {
+    public Ektefelle withFodselsdato(LocalDate fodselsdato) {
         this.fodselsdato = fodselsdato;
         return this;
     }

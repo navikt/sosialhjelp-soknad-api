@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.fiks;
 
-import no.ks.svarut.servicesv9.*;
+import no.ks.svarut.servicesv9.Dokument;
+import no.ks.svarut.servicesv9.Forsendelse;
+import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
+import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 

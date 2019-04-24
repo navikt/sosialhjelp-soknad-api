@@ -1,19 +1,16 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import org.apache.commons.io.IOUtils;
-import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-
-import org.apache.pdfbox.PDFBox;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
-
 import no.nav.modig.core.exception.ApplicationException;
+import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.PDFBox;
+import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 
 public class PDFFabrikk {

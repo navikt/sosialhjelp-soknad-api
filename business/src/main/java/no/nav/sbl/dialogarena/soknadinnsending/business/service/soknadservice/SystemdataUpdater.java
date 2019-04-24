@@ -1,12 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import javax.inject.Inject;
+import java.util.List;
 
 @Component
 public class SystemdataUpdater {

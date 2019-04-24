@@ -1,12 +1,8 @@
 package no.nav.sbl.dialogarena.integration.security;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
-
+import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -14,8 +10,11 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
-import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SjekkTilgangTilSoknadScanner {
 

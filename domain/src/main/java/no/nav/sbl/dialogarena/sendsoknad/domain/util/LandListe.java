@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
 
-import java.util.*;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 

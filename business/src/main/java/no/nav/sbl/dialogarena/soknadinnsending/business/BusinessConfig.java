@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.*;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.SosialhjelpArbeidsforholdBolk;
@@ -16,13 +12,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp.SosialhjelpKontaktBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({

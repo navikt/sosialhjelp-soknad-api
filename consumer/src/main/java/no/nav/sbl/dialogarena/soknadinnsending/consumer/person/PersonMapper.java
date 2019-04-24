@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -161,27 +162,27 @@ public class PersonMapper {
         return "";
     }
 
-    static boolean erMyndig(java.time.LocalDate fodselsdato) {
+    static boolean erMyndig(LocalDate fodselsdato) {
         return finnAlder(fodselsdato) >= 18;
     }
 
-    private static int finnAlder(java.time.LocalDate fodselsdato) {
+    private static int finnAlder(LocalDate fodselsdato) {
         if (fodselsdato != null) {
-            return Period.between(fodselsdato, java.time.LocalDate.now()).getYears();
+            return Period.between(fodselsdato, LocalDate.now()).getYears();
         }
         return 0;
     }
 
-    private static java.time.LocalDate finnFodselsdato(Person xmlPerson) {
+    private static LocalDate finnFodselsdato(Person xmlPerson) {
         if (xmlPerson.getFoedselsdato() == null || xmlPerson.getFoedselsdato().getFoedselsdato() == null||xmlPerson.getFoedselsdato().getFoedselsdato().getYear()<0) {
             return null;
         }
         XMLGregorianCalendar foedselsdato = xmlPerson.getFoedselsdato().getFoedselsdato();
 
-        return java.time.LocalDate.of(foedselsdato.getYear(), foedselsdato.getMonth(), foedselsdato.getDay());
+        return LocalDate.of(foedselsdato.getYear(), foedselsdato.getMonth(), foedselsdato.getDay());
     }
 
-    private static java.time.LocalDate finnFodselsdatoFraFnr(Person xmlPerson) {
+    private static LocalDate finnFodselsdatoFraFnr(Person xmlPerson) {
         if (xmlPerson.getIdent() == null || xmlPerson.getIdent().getType() == null) {
             return null;
         }
@@ -189,7 +190,7 @@ public class PersonMapper {
         String ident = xmlPerson.getIdent().getIdent();
         if ("FNR".equalsIgnoreCase(identtype) && isNotEmpty(ident)) {
             NavFodselsnummer fnr = new NavFodselsnummer(xmlPerson.getIdent().getIdent());
-            return java.time.LocalDate.of(Integer.valueOf(fnr.getBirthYear()), Integer.valueOf(fnr.getMonth()), Integer.valueOf(fnr.getDayInMonth()));
+            return LocalDate.of(Integer.valueOf(fnr.getBirthYear()), Integer.valueOf(fnr.getMonth()), Integer.valueOf(fnr.getDayInMonth()));
         }
         return null;
     }

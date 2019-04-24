@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.arbeid;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
@@ -37,7 +38,7 @@ public class SosialhjelpArbeidsforholdBolkTest {
 
     @Test
     public void skalBeOmSluttOppgjorHvisSluttdatoInnenforEnManedFremITid() {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
+        Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
         arbeidsforhold.tom = OffsetDateTime.now().plusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         ArbeidsforholdService arbeidsforholdService = mock(ArbeidsforholdService.class);
@@ -55,7 +56,7 @@ public class SosialhjelpArbeidsforholdBolkTest {
 
     @Test
     public void skalIkkeBeOmSluttOppgjorHvisSluttdatoEtterEnManedFremITid() {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
+        Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
         arbeidsforhold.tom = OffsetDateTime.now().plusMonths(1).plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         ArbeidsforholdService arbeidsforholdService = mock(ArbeidsforholdService.class);

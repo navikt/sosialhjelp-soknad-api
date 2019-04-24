@@ -7,7 +7,7 @@ public class Person {
     private String mellomnavn;
     private String etternavn;
     private String sammensattNavn;
-    private java.time.LocalDate fodselsdato;
+    private LocalDate fodselsdato;
     private String fnr;
     private String alder;
     private String kjonn;
@@ -84,7 +84,7 @@ public class Person {
         return this;
     }
 
-    public Person withFodselsdato(java.time.LocalDate fodselsdato) {
+    public Person withFodselsdato(LocalDate fodselsdato) {
         this.fodselsdato = fodselsdato;
         return this;
     }

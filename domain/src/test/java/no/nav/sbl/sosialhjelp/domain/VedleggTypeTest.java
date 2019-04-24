@@ -3,10 +3,8 @@ package no.nav.sbl.sosialhjelp.domain;
 import org.junit.Test;
 
 import static no.nav.sbl.sosialhjelp.domain.VedleggType.mapSammensattVedleggTypeTilVedleggType;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 public class VedleggTypeTest {
 

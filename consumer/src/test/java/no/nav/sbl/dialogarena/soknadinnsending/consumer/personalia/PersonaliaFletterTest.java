@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.time.LocalDate;
+
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -123,7 +125,7 @@ public class PersonaliaFletterTest {
                 .withMellomnavn(ET_MELLOMNAVN)
                 .withEtternavn(ET_ETTERNAVN)
                 .withSammensattNavn(ET_SAMMENSATT_NAVN)
-                .withFodselsdato(java.time.LocalDate.now())
+                .withFodselsdato(LocalDate.now())
                 .withFnr(IDENT)
                 .withAlder(ALDER)
                 .withStatsborgerskap(STATSBORGERSKAP)
