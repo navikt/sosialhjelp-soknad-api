@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +34,6 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
         } else if (e instanceof SamtidigOppdateringException){
             logger.warn(e.getMessage(), e);
             return status(Response.Status.CONFLICT).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Samtidig oppdatering av søknad")).build();
-        } else if (e instanceof TjenesteUtilgjengeligException) {
-            logger.warn(e.getMessage(), e);
-            return serverError().header(NO_BIGIP_5XX_REDIRECT, true).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "AdresseSøk feilet")).build();
         } else {
             logger.error("Noe uventet feilet", e);
             return serverError().header(NO_BIGIP_5XX_REDIRECT, true).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "Noe uventet feilet")).build();

@@ -4,6 +4,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -78,7 +79,7 @@ public class EttersendingService {
         if (soknad.status != FERDIG) {
             throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er innsendt");
         } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER))) {
-            throw new ApplicationException("Kan ikke starte ettersendelse så sent på en søknad");
+            throw new EttersendelseSendtForSentException("Kan ikke starte ettersendelse så sent på en søknad");
         }
         return soknad;
     }

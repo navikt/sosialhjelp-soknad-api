@@ -102,15 +102,15 @@ public class PersonaliaFletterTest {
         personaliaFletter.mapTilPersonalia(IDENT);
     }
 
-    @Test(expected = ApplicationException.class)
-    public void mapTilPersonaliaKasterApplicationExceptionHvisBrukerHarDiskresjonskode() {
+    @Test(expected = SikkerhetsBegrensningException.class)
+    public void mapTilPersonaliaKasterSikkerhetsBegrensningExceptionHvisBrukerHarDiskresjonskode() {
         when(personServiceMock.hentPerson(any(String.class))).thenThrow(new SikkerhetsBegrensningException("", new Exception()));
 
         personaliaFletter.mapTilPersonalia(IDENT);
     }
 
-    @Test(expected = ApplicationException.class)
-    public void mapTilPersonaliaKasterExceptionVedWebserviceFeilIPersonTjeneste() {
+    @Test(expected = TjenesteUtilgjengeligException.class)
+    public void mapTilPersonaliaKasterTjenesteUtilgjengeligExceptionVedWebserviceFeilIPersonTjeneste() {
         when(personServiceMock.hentPerson(any(String.class))).thenThrow(new TjenesteUtilgjengeligException("", new Exception()));
 
         personaliaFletter.mapTilPersonalia(IDENT);
