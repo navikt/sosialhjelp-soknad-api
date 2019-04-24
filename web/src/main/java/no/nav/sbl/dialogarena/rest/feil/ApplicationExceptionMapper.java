@@ -46,7 +46,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
         } else if (e instanceof AlleredeHandtertException) {
 			response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
 		} else if (e instanceof EttersendelseSendtForSentException) {
-            response = status(CONFLICT);
+            response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.warn("REST-kall feilet: Kan ikke starte ettersendelse så sent på en søknad", e);
         } else if (e instanceof TjenesteUtilgjengeligException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
