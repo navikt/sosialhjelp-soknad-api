@@ -118,7 +118,7 @@ public class NavEnhetRessurs {
                 .withEnhetsnavn(legacyNavEnhetFrontend.enhetsnavn)
                 .withKommunenavn(legacyNavEnhetFrontend.kommunenavn)
                 .withOrgnr(legacyNavEnhetFrontend.sosialOrgnr)
-                .withValgt(legacyNavEnhetFrontend.sosialOrgnr.equals(valgtOrgnr));
+                .withValgt(legacyNavEnhetFrontend.sosialOrgnr != null && legacyNavEnhetFrontend.sosialOrgnr.equals(valgtOrgnr));
     }
 
     private List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg) {
