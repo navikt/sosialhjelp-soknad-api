@@ -17,6 +17,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalF
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -61,9 +63,6 @@ public class SoknadRessurs {
     private SoknadService soknadService;
 
     @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
     private HtmlGenerator pdfTemplate;
 
     @Inject
@@ -83,6 +82,12 @@ public class SoknadRessurs {
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Inject
+    private SystemdataUpdater systemdata;
 
     @GET
     @Path("/{behandlingsId}")
@@ -122,10 +127,25 @@ public class SoknadRessurs {
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
-        final String eier = getSubjectHandler().getUid();
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
+        return pdfTemplate.fyllHtmlMalMedInnhold(konvertertSoknadUnderArbeid.getJsonInternalSoknad());
+    }
 
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
+    @GET
+    @Path("/{behandlingsId}/erSystemdataEndret")
+    public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId) {
+        final String eier = getSubjectHandler().getUid();
+        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        systemdata.update(soknadUnderArbeid);
+
+        final JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
+        final JsonInternalSoknad notUpdatedJsonInternalSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
+
+        if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
+            return false;
+        } else {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+            return true;
+        }
     }
 
     @POST

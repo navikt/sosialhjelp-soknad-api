@@ -92,6 +92,8 @@ public class SoknadDataFletterTest {
     @Mock
     private ArbeidsforholdBolk arbeidsforholdBolk;
     @Mock
+    private SystemdataUpdater systemdataUpdater;
+    @Mock
     ApplicationContext applicationContex;
     @Mock
     SoknadMetricsService soknadMetricsService;

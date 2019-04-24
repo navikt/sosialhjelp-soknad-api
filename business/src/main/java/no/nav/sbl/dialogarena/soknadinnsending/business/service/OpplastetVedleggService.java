@@ -132,7 +132,7 @@ public class OpplastetVedleggService {
         final List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadId, eier);
 
         if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
-            final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier);
+            final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, soknadId);
             if (konvertertOpplastedeVedlegg != null && !konvertertOpplastedeVedlegg.isEmpty()) {
                 for (OpplastetVedlegg opplastetVedlegg : konvertertOpplastedeVedlegg) {
                     saveVedleggAndUpdateVedleggstatus(behandlingsId, opplastetVedlegg.getVedleggType().getSammensattType(),
@@ -142,10 +142,10 @@ public class OpplastetVedleggService {
         }
     }
 
-    public List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(String behandlingsId, String eier) {
+    public List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(String behandlingsId, String eier, Long soknadId) {
         final WebSoknad webSoknad = legacyHentWebSoknad(behandlingsId, eier);
         final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
-        return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(webSoknad.getSoknadId(), eier, vedleggListe);
+        return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadId, eier, vedleggListe);
     }
 
     public WebSoknad legacyHentWebSoknad(String behandlingsId, String eier) {
