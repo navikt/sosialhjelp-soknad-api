@@ -54,9 +54,10 @@ public class ApplicationExceptionMapperTest {
     }
 
     @Test
-    public void skalGi409VedEttersendelseSendtForSentException() {
+    public void skalGi500VedEttersendelseSendtForSentException() {
         Response response = mapper.toResponse(new EttersendelseSendtForSentException("feil"));
-        assertThat(response.getStatus()).isEqualTo(409);
+        assertThat(response.getStatus()).isEqualTo(500);
+        assertThat(response.getHeaderString(NO_BIGIP_5XX_REDIRECT)).isEqualTo("true");
     }
 
     @Test
