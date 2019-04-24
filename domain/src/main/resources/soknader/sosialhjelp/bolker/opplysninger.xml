@@ -50,7 +50,7 @@
             </constraint>
             <constraint>
                 <faktum>dinsituasjon.registrertjobb</faktum>
-                <expression>properties['hargjeldendearbeidsforhold'] == 'true'</expression>
+                <expression>properties['skalbeomlonnslipp'] == 'true'</expression>
             </constraint>
         </constraints>
         <properties>
