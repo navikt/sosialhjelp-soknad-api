@@ -398,7 +398,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         try {
             return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
         } catch (EmptyResultDataAccessException e) {
-            logger.warn("Fant ingen soknad med soknad_id={}", soknadId);
+            logger.error("Fant ingen soknad med soknad_id={}", soknadId, e);
             return null;
         }
     }
