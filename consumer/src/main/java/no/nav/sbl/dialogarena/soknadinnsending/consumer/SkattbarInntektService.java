@@ -56,20 +56,21 @@ public class SkattbarInntektService {
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
-            //return mapTilUtbetalinger(mockRespons());
-            List<String> fnummerTestPerson = new ArrayList<>();
-            fnummerTestPerson.add("01029413157");
-            fnummerTestPerson.add("04057849687");
-            fnummerTestPerson.add("18017749532");
-            fnummerTestPerson.add("18018200283");
-            fnummerTestPerson.add("07078600378");
-            fnummerTestPerson.add("02099900434");
-            fnummerTestPerson.add("02116049964");
-
-            sokedata = new Sokedata()
-                    .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
-                    .withTom(LocalDate.now()).withIdentifikator(fnummerTestPerson.get(new Random().nextInt(fnummerTestPerson.size())));
+            return mapTilUtbetalinger(mockRespons());
         }
+// Skal bort før prodsetting
+        List<String> fnummerTestPerson = new ArrayList<>();
+        fnummerTestPerson.add("01029413157");
+        fnummerTestPerson.add("04057849687");
+        fnummerTestPerson.add("18017749532");
+        fnummerTestPerson.add("18018200283");
+        fnummerTestPerson.add("07078600378");
+        fnummerTestPerson.add("02099900434");
+        fnummerTestPerson.add("02116049964");
+
+        sokedata = new Sokedata()
+                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
+                .withTom(LocalDate.now()).withIdentifikator(fnummerTestPerson.get(new Random().nextInt(fnummerTestPerson.size())));
 
         return mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata)));
     }
@@ -301,7 +302,7 @@ public class SkattbarInntektService {
                 throw new RuntimeException(melding);
             }
         } catch (RuntimeException e) {
-            log.info("Noe uventet gikk galt ved oppslag av adresse", e);
+            log.info("Noe uventet gikk galt ved oppslag av skattbar inntekt", e);
             throw new TjenesteUtilgjengeligException("Inntekts- og skatteopplysninger", e);
         } finally {
             if (response != null) {
