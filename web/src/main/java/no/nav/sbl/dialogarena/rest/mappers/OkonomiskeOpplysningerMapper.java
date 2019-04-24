@@ -12,6 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -109,7 +110,7 @@ public class OkonomiskeOpplysningerMapper {
 
     public static boolean checkIfTypeAnnetAnnetShouldBeRemoved(VedleggFrontend vedleggFrontend) {
         return vedleggFrontend.rader.size() == 1 && vedleggFrontend.rader.get(0).belop == null &&
-                vedleggFrontend.rader.get(0).beskrivelse == null || "".equals(vedleggFrontend.rader.get(0).beskrivelse);
+                StringUtils.isEmpty(vedleggFrontend.rader.get(0).beskrivelse);
     }
 
     public static void addAllUtbetalingerToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String soknadType) {
