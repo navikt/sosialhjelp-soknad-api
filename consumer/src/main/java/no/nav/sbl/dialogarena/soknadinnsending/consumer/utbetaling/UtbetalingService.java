@@ -52,7 +52,8 @@ public class UtbetalingService {
     }
 
     List<Utbetaling> mapTilUtbetalinger(WSHentUtbetalingsinformasjonResponse wsUtbetalinger) {
-        if (wsUtbetalinger == null ||wsUtbetalinger.getUtbetalingListe() == null) {
+
+        if (wsUtbetalinger == null || wsUtbetalinger.getUtbetalingListe() == null) {
             return new ArrayList<>();
         }
 
