@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,19 @@ public class SkattbarInntektService {
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
-            return mapTilUtbetalinger(mockRespons());
+            //return mapTilUtbetalinger(mockRespons());
+            List<String> fnummerTestPerson = new ArrayList<>();
+            fnummerTestPerson.add("01029413157");
+            fnummerTestPerson.add("04057849687");
+            fnummerTestPerson.add("18017749532");
+            fnummerTestPerson.add("18018200283");
+            fnummerTestPerson.add("07078600378");
+            fnummerTestPerson.add("02099900434");
+            fnummerTestPerson.add("02116049964");
+
+            sokedata = new Sokedata()
+                    .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
+                    .withTom(LocalDate.now()).withIdentifikator(fnummerTestPerson.get(new Random().nextInt(fnummerTestPerson.size())));
         }
 
         return mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata)));
@@ -102,7 +115,7 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
                     .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
                     .collect(Collectors.toList())) {
                 if (inntekt.pensjonEllerTrygd != null) {
@@ -122,7 +135,7 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
                     .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
                     .collect(Collectors.toList())) {
                 if (inntekt.aldersUfoereEtterlatteAvtalefestetOgKrigspensjon != null) {
@@ -143,7 +156,7 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
                     .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
                     .collect(Collectors.toList())) {
                 if (inntekt.dagmammaIEgenBolig != null) {
@@ -164,7 +177,7 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
                     .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
                     .collect(Collectors.toList())) {
                 if (inntekt.lottOgPartInnenFiske != null) {
@@ -185,7 +198,7 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
                     .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
                     .collect(Collectors.toList())) {
                 if (inntekt.naeringsinntekt != null) {
@@ -206,7 +219,7 @@ public class SkattbarInntektService {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-             for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
                     .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
                     .collect(Collectors.toList())) {
                 if (inntekt.ytelseFraOffentlige != null) {
