@@ -46,7 +46,6 @@ public class Transformers {
                     return null;
             }
         }
-
     };
 
     public static final Transformer<Faktum, String> TYPE = faktum -> faktum.getProperties().get("type");

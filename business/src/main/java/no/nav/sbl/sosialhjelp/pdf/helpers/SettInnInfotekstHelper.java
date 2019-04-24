@@ -2,6 +2,7 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 
 import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.common.Spraak;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
-
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
 public class SettInnInfotekstHelper extends RegistryAwareHelper<String> implements TextWithTitle {
@@ -43,7 +42,7 @@ public class SettInnInfotekstHelper extends RegistryAwareHelper<String> implemen
             return "";
         }
         
-        String infotekstTittel = this.cmsTekst.getCmsTekst("infotekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
+        String infotekstTittel = this.cmsTekst.getCmsTekst("infotekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, Spraak.NORSK_BOKMAAL);
         
         return TextWithTitle.createHtmlLayout(infotekst, infotekstTittel);
     }

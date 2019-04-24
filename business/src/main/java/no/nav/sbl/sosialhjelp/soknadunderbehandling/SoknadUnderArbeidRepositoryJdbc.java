@@ -180,9 +180,9 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withJsonInternalSoknad(mapDataToJsonInternalSoknad(rs.getBytes("data")))
                     .withInnsendingStatus(status)
                     .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
-                            OffsetDateTime.of(rs.getTimestamp("opprettetdato").toLocalDateTime(), OffsetDateTime.now().getOffset()) : null)
+                            OffsetDateTime.of(rs.getTimestamp("opprettetdato").toLocalDateTime(), ZoneId.systemDefault()) : null)
                     .withSistEndretDato(rs.getTimestamp("sistendretdato") != null ?
-                            OffsetDateTime.of(rs.getTimestamp("sistendretdato").toLocalDateTime(), OffsetDateTime.now().getOffset()) : null);
+                            OffsetDateTime.of(rs.getTimestamp("sistendretdato").toLocalDateTime(), ZoneId.systemDefault()) : null);
         }
     }
 

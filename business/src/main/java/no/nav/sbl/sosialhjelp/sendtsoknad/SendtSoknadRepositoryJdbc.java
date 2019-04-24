@@ -114,11 +114,11 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                     .withOrgnummer(rs.getString("orgnr"))
                     .withNavEnhetsnavn(rs.getString("navenhetsnavn"))
                     .withBrukerOpprettetDato(rs.getTimestamp("brukeropprettetdato") != null ?
-                            OffsetDateTime.of(rs.getTimestamp("brukeropprettetdato").toLocalDateTime(),OffsetDateTime.now().getOffset()) : null)
+                            OffsetDateTime.of(rs.getTimestamp("brukeropprettetdato").toLocalDateTime(),ZoneId.systemDefault()) : null)
                     .withBrukerFerdigDato(rs.getTimestamp("brukerferdigdato") != null ?
-                            OffsetDateTime.of(rs.getTimestamp("brukerferdigdato").toLocalDateTime(), OffsetDateTime.now().getOffset()) : null)
+                            OffsetDateTime.of(rs.getTimestamp("brukerferdigdato").toLocalDateTime(), ZoneId.systemDefault()) : null)
                     .withSendtDato(rs.getTimestamp("sendtdato") != null ?
-                            OffsetDateTime.of(rs.getTimestamp("sendtdato").toLocalDateTime(), OffsetDateTime.now().getOffset()) : null);
+                            OffsetDateTime.of(rs.getTimestamp("sendtdato").toLocalDateTime(), ZoneId.systemDefault()) : null);
         }
     }
 }

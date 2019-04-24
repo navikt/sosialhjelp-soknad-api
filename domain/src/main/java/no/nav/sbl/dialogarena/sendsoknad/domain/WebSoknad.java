@@ -249,7 +249,7 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad sistLagret(Timestamp sistLagret) {
         if (sistLagret != null) {
-            setSistLagret(OffsetDateTime.of(sistLagret.toLocalDateTime(), OffsetDateTime.now().getOffset()));
+            setSistLagret(OffsetDateTime.of(sistLagret.toLocalDateTime(), ZoneId.systemDefault()));
         } else {
             this.sistLagret = null;
         }
