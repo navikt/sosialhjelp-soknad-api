@@ -34,12 +34,12 @@ public class FamilieSystemdata implements Systemdata {
         final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         final JsonFamilie familie = jsonData.getFamilie();
-        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM){
-            final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
-            if (systemverdiSivilstatus != null){
-                familie.setSivilstatus(systemverdiSivilstatus);
-            }
-        }
+//        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM){
+//            final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
+//            if (systemverdiSivilstatus != null){
+//                familie.setSivilstatus(systemverdiSivilstatus);
+//            }
+//        }
         final JsonHarForsorgerplikt harForsorgerplikt = familie.getForsorgerplikt().getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getKilde() == null ||
                 harForsorgerplikt.getKilde() == JsonKilde.SYSTEM){
