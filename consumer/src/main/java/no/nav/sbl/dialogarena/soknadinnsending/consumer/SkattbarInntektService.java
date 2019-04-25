@@ -300,7 +300,9 @@ public class SkattbarInntektService {
                 return new SkattbarInntekt();
             } else {
                 String melding = response.readEntity(String.class);
-                throw new RuntimeException(melding);
+                log.warn(String.format("Klarer ikke hente skatteopplysninger %s status %s ", melding, response.getStatus()));
+
+                return new SkattbarInntekt();
             }
         } catch (RuntimeException e) {
             throw new TjenesteUtilgjengeligException("Inntekts- og skatteopplysninger ", e);
