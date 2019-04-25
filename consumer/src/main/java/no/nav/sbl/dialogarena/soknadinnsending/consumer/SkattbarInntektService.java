@@ -83,8 +83,8 @@ public class SkattbarInntektService {
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
         String apiKey = getenv("soknadsosialhjelp-server-eksternapp.skatt.datasamarbeid.api.inntektsmottaker-apiKey"); //https://fasit.adeo.no/resources/7504820????
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-        log.info("Henter opplysninger fra", endpoint);
-        WebTarget b = executionContext.getClient().target(String.format("%s/%s/oppgave/inntekt", endpoint, sokedata.identifikator))
+        log.info("Henter opplysninger fra " +  endpoint);
+        WebTarget b = executionContext.getClient().target(String.format("%s%s/oppgave/inntekt", endpoint, sokedata.identifikator))
                 .queryParam("fraOgMed", sokedata.fom.format(formatter))
                 .queryParam("tilOgMed", sokedata.tom.format(formatter));
         return b.request().header("x-nav-apiKey", apiKey);
