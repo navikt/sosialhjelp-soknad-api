@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn.Kilde;
 
 import java.util.Map;

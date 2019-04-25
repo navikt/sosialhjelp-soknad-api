@@ -4,7 +4,7 @@ import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Component
@@ -27,7 +27,7 @@ public class FormaterDatoHelper extends RegistryAwareHelper<String>{
         }
 
         String format = options.param(0);
-        OffsetDateTime date = OffsetDateTime.parse(datoStreng);
+        LocalDate date = LocalDate.parse(datoStreng);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         return formatter.format(date);
     }
