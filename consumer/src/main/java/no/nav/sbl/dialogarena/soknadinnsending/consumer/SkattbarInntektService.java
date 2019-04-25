@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.OppgaveInntektsm
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.rest.RestUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.slf4j.Logger;
@@ -83,7 +82,7 @@ public class SkattbarInntektService {
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
         String apiKey = getenv("SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD"); //https://fasit.adeo.no/resources/7504820????
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-        log.info("Henter opplysninger fra " +  endpoint + " " +apiKey);
+        log.info("Henter opplysninger fra " + endpoint + " " + apiKey);
         WebTarget b = executionContext.getClient().target(String.format("%s%s/oppgave/inntekt", endpoint, sokedata.identifikator))
                 .queryParam("fraOgMed", sokedata.fom.format(formatter))
                 .queryParam("tilOgMed", sokedata.tom.format(formatter));
@@ -305,7 +304,8 @@ public class SkattbarInntektService {
                 return new SkattbarInntekt();
             }
         } catch (RuntimeException e) {
-            throw new TjenesteUtilgjengeligException("Inntekts- og skatteopplysninger ", e);
+            log.warn("Klarer ikke hente skatteopplysninger", e);
+            return new SkattbarInntekt();
         } finally {
             if (response != null) {
                 response.close();
