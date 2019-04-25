@@ -18,7 +18,8 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
 public class FamilieSystemdata implements Systemdata {
@@ -34,12 +35,12 @@ public class FamilieSystemdata implements Systemdata {
         final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         final JsonFamilie familie = jsonData.getFamilie();
-//        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM){
-//            final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
-//            if (systemverdiSivilstatus != null){
-//                familie.setSivilstatus(systemverdiSivilstatus);
-//            }
-//        }
+        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM){
+            final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
+            if (systemverdiSivilstatus != null){
+                familie.setSivilstatus(systemverdiSivilstatus);
+            }
+        }
         final JsonHarForsorgerplikt harForsorgerplikt = familie.getForsorgerplikt().getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getKilde() == null ||
                 harForsorgerplikt.getKilde() == JsonKilde.SYSTEM){
@@ -52,7 +53,7 @@ public class FamilieSystemdata implements Systemdata {
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
         final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        if (!isNotEmpty(personalia.getSivilstatus())) {
+        if (personalia == null || isEmpty(personalia.getSivilstatus())) {
             return null;
         }
         JsonSivilstatus jsonSivilstatus = new JsonSivilstatus()
@@ -60,30 +61,37 @@ public class FamilieSystemdata implements Systemdata {
                 .withStatus(JsonSivilstatus.Status.fromValue(personalia.getSivilstatus()));
 
         Ektefelle ektefelle = personalia.getEktefelle();
-        if (ektefelle != null) {
-            if (jsonSivilstatus.getEktefelle() == null){
-                jsonSivilstatus.setEktefelle(new JsonEktefelle()
-                        .withNavn(new JsonNavn()));
-            }
-            jsonSivilstatus.getEktefelle().getNavn()
-                    .withFornavn(ektefelle.getFornavn())
-                    .withMellomnavn(ektefelle.getMellomnavn())
-                    .withEtternavn(ektefelle.getEtternavn());
-            jsonSivilstatus.getEktefelle()
-                    .withFodselsdato(ektefelle.getFodselsdato() != null ? ektefelle.getFodselsdato().toString() : null)
-                    .withPersonIdentifikator(ektefelle.getFnr());
+        if (jsonSivilstatus.getStatus().equals(GIFT)) {
             jsonSivilstatus
-                    .withEktefelleHarDiskresjonskode(ektefelle.harIkketilgangtilektefelle())
-                    .withFolkeregistrertMedEktefelle(ektefelle.erFolkeregistrertsammen());
+                    .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
+                    .withEktefelleHarDiskresjonskode(ektefelle == null ? null : ektefelle.harIkketilgangtilektefelle())
+                    .withFolkeregistrertMedEktefelle(ektefelle == null ? null : ektefelle.erFolkeregistrertsammen());
         }
         return jsonSivilstatus;
     }
 
-    private JsonForsorgerplikt innhentSystemverdiForsorgerplikt(String personIdentifikator) {
-        JsonForsorgerplikt jsonForsorgerplikt = new JsonForsorgerplikt();
-        if (jsonForsorgerplikt.getHarForsorgerplikt() == null){
-            jsonForsorgerplikt.setHarForsorgerplikt(new JsonHarForsorgerplikt());
+    private static JsonEktefelle tilSystemregistrertJsonEktefelle(Ektefelle ektefelle) {
+        if (ektefelle == null || ektefelle.harIkketilgangtilektefelle()) {
+            return new JsonEktefelle().withNavn(new JsonNavn()
+                    .withFornavn("")
+                    .withMellomnavn("")
+                    .withEtternavn(""));
         }
+        return new JsonEktefelle()
+                .withNavn(mapToJsonNavn(ektefelle))
+                .withFodselsdato(ektefelle.getFodselsdato() != null ? ektefelle.getFodselsdato().toString() : null)
+                .withPersonIdentifikator(ektefelle.getFnr());
+    }
+
+    private static JsonNavn mapToJsonNavn(Ektefelle ektefelle) {
+        return new JsonNavn()
+                .withFornavn(ektefelle.getFornavn() != null ? ektefelle.getFornavn() : "")
+                .withMellomnavn(ektefelle.getMellomnavn() != null ? ektefelle.getMellomnavn() : "")
+                .withEtternavn(ektefelle.getEtternavn() != null ? ektefelle.getEtternavn() : "");
+    }
+
+    private JsonForsorgerplikt innhentSystemverdiForsorgerplikt(String personIdentifikator) {
+        JsonForsorgerplikt jsonForsorgerplikt = new JsonForsorgerplikt().withHarForsorgerplikt(new JsonHarForsorgerplikt());
 
         List<Barn> barn = personService.hentBarn(personIdentifikator);
         if (barn == null || barn.isEmpty()) {
