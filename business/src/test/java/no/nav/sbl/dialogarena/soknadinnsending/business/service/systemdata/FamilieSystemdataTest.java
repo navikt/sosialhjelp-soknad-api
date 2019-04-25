@@ -102,7 +102,7 @@ public class FamilieSystemdataTest {
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
-        final String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
@@ -124,7 +124,7 @@ public class FamilieSystemdataTest {
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
-        final String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
@@ -147,7 +147,7 @@ public class FamilieSystemdataTest {
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
-        final String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
@@ -185,7 +185,7 @@ public class FamilieSystemdataTest {
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
-        final String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
 
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
@@ -207,7 +207,7 @@ public class FamilieSystemdataTest {
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
-        final String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
 
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
@@ -224,7 +224,7 @@ public class FamilieSystemdataTest {
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
-        final String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
 
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
@@ -237,7 +237,7 @@ public class FamilieSystemdataTest {
     }
 
     private void assertThatAnsvarIsCorrectlyConverted(Barn barn, JsonAnsvar jsonAnsvar) {
-        final JsonBarn jsonBarn = jsonAnsvar.getBarn();
+        JsonBarn jsonBarn = jsonAnsvar.getBarn();
 
         assertThat("harDiskresjonskode", barn.harIkkeTilgang(), is(jsonBarn.getHarDiskresjonskode()));
         assertThat("erFolkeregistrertSammen", barn.erFolkeregistrertsammen(),
@@ -263,7 +263,7 @@ public class FamilieSystemdataTest {
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
-        final String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
