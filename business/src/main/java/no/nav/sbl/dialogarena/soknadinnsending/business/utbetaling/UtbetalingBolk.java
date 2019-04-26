@@ -23,6 +23,7 @@ public class UtbetalingBolk implements BolkService {
 
     public static final NumberFormat UTBETALING_FORMATTER = new DecimalFormat("##,##0.00");
     public static final int NAVUTBETALINGER_DAGER = 40;
+    public static final String SKATTEETATEN = "skatteetaten";
 
     @Inject
     UtbetalingService utbetalingService;
@@ -70,7 +71,7 @@ public class UtbetalingBolk implements BolkService {
                     .medKey("utbetalinger.fra.skatteetaten.feilet")
                     .medValue("true"));
         } else {
-            utbetalingerRegistrertHosSkatteetaten.stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling, "skatteetaten")).forEach(fakta::addAll);
+            utbetalingerRegistrertHosSkatteetaten.stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling, SKATTEETATEN)).forEach(fakta::addAll);
         }
 
         return fakta;

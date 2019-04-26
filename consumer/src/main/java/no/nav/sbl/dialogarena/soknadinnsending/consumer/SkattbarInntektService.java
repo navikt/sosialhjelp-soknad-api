@@ -86,150 +86,43 @@ public class SkattbarInntektService {
 
     private List<Utbetaling> mapTilUtbetalinger(SkattbarInntekt skattbarInntekt) {
         List<Utbetaling> utbetalingerLonn = new ArrayList<>();
-        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
-            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
-            LocalDate fom = kalenderManed.atDay(1);
-            LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
-                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
-                    .collect(Collectors.toList())) {
-                if (inntekt.loennsinntekt != null) {
-                    Utbetaling utbetaling = new Utbetaling();
-                    utbetaling.tittel = "Lønn";
-                    utbetaling.brutto = inntekt.beloep;
-                    utbetaling.periodeFom = fom;
-                    utbetaling.periodeTom = tom;
-                    utbetaling.type = "skatteopplysninger";
-                    utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
-                    utbetalingerLonn.add(utbetaling);
-                }
-            }
-        }
-
         List<Utbetaling> utbetalingerPensjon = new ArrayList<>();
-        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
-            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
-            LocalDate fom = kalenderManed.atDay(1);
-            LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
-                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
-                    .collect(Collectors.toList())) {
-                if (inntekt.pensjonEllerTrygd != null) {
-                    Utbetaling utbetaling = new Utbetaling();
-                    utbetaling.tittel = "PensjonEllerTrygd";
-                    utbetaling.brutto = inntekt.beloep;
-                    utbetaling.periodeFom = fom;
-                    utbetaling.periodeTom = tom;
-                    utbetaling.type = "skatteopplysninger";
-                    utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
-                    utbetalingerPensjon.add(utbetaling);
-                }
-            }
-        }
         List<Utbetaling> aldersUfoereEtterlatteAvtalefestetOgKrigspensjon = new ArrayList<>();
-        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
-            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
-            LocalDate fom = kalenderManed.atDay(1);
-            LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
-                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
-                    .collect(Collectors.toList())) {
-                if (inntekt.aldersUfoereEtterlatteAvtalefestetOgKrigspensjon != null) {
-                    Utbetaling utbetaling = new Utbetaling();
-                    utbetaling.tittel = "AldersUfoereEtterlatteAvtalefestetOgKrigspensjon";
-                    utbetaling.brutto = inntekt.beloep;
-                    utbetaling.periodeFom = fom;
-                    utbetaling.periodeTom = tom;
-                    utbetaling.type = "skatteopplysninger";
-                    utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
-                    utbetalingerPensjon.add(utbetaling);
-                }
-            }
-        }
-
         List<Utbetaling> dagmammaIEgenBolig = new ArrayList<>();
-        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
-            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
-            LocalDate fom = kalenderManed.atDay(1);
-            LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
-                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
-                    .collect(Collectors.toList())) {
-                if (inntekt.dagmammaIEgenBolig != null) {
-                    Utbetaling utbetaling = new Utbetaling();
-                    utbetaling.tittel = "DagmammaIEgenBolig";
-                    utbetaling.brutto = inntekt.beloep;
-                    utbetaling.periodeFom = fom;
-                    utbetaling.periodeTom = tom;
-                    utbetaling.type = "skatteopplysninger";
-                    utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
-                    utbetalingerPensjon.add(utbetaling);
-                }
-            }
-        }
-
         List<Utbetaling> lottOgPartInnenFiske = new ArrayList<>();
-        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
-            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
-            LocalDate fom = kalenderManed.atDay(1);
-            LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
-                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
-                    .collect(Collectors.toList())) {
-                if (inntekt.lottOgPartInnenFiske != null) {
-                    Utbetaling utbetaling = new Utbetaling();
-                    utbetaling.tittel = "LottOgPartInnenFiske";
-                    utbetaling.brutto = inntekt.beloep;
-                    utbetaling.periodeFom = fom;
-                    utbetaling.periodeTom = tom;
-                    utbetaling.type = "skatteopplysninger";
-                    utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
-                    utbetalingerPensjon.add(utbetaling);
-                }
-            }
-        }
-
         List<Utbetaling> naringsinntekt = new ArrayList<>();
-        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
-            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
-            LocalDate fom = kalenderManed.atDay(1);
-            LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
-                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
-                    .collect(Collectors.toList())) {
-                if (inntekt.naeringsinntekt != null) {
-                    Utbetaling utbetaling = new Utbetaling();
-                    utbetaling.tittel = "Naeringsinntekt";
-                    utbetaling.brutto = inntekt.beloep;
-                    utbetaling.periodeFom = fom;
-                    utbetaling.periodeTom = tom;
-                    utbetaling.type = "skatteopplysninger";
-                    utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
-                    utbetalingerPensjon.add(utbetaling);
-                }
-            }
-        }
-
         List<Utbetaling> ytelseFraOffentlige = new ArrayList<>();
-        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
+
+        skattbarInntekt.oppgaveInntektsmottaker.forEach(oppgaveInntektsmottaker -> {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Inntekt inntekt : oppgaveInntektsmottaker.inntekt.stream()
+            oppgaveInntektsmottaker.inntekt.stream()
                     .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
-                    .collect(Collectors.toList())) {
-                if (inntekt.ytelseFraOffentlige != null) {
-                    Utbetaling utbetaling = new Utbetaling();
-                    utbetaling.tittel = "YtelseFraOffentlige";
-                    utbetaling.brutto = inntekt.beloep;
-                    utbetaling.periodeFom = fom;
-                    utbetaling.periodeTom = tom;
-                    utbetaling.type = "skatteopplysninger";
-                    utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
-                    utbetalingerPensjon.add(utbetaling);
+                    .collect(Collectors.toList()).forEach(inntekt -> {
+                if (inntekt.loennsinntekt != null) {
+                    utbetalingerLonn.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lønn"));
                 }
-            }
-        }
+                if (inntekt.pensjonEllerTrygd != null) {
+                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "PensjonEllerTrygd"));
+                }
+                if (inntekt.aldersUfoereEtterlatteAvtalefestetOgKrigspensjon != null) {
+                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "AldersUfoereEtterlatteAvtalefestetOgKrigspensjon"));
+                }
+                if (inntekt.dagmammaIEgenBolig != null) {
+                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "DagmammaIEgenBolig"));
+                }
+                if (inntekt.lottOgPartInnenFiske != null) {
+                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "LottOgPartInnenFiske"));
+                }
+                if (inntekt.naeringsinntekt != null) {
+                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Naeringsinntekt"));
+                }
+                if (inntekt.ytelseFraOffentlige != null) {
+                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "YtelseFraOffentlige"));
+                }
+            });
+        });
 
         List<Utbetaling> forskuddstrekk = new ArrayList<>();
         for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
@@ -260,6 +153,17 @@ public class SkattbarInntektService {
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(forskuddstrekk));
 
         return aggregertUtbetaling;
+    }
+
+    private Utbetaling getUtbetaling(OppgaveInntektsmottaker oppgaveInntektsmottaker, LocalDate fom, LocalDate tom, Inntekt inntekt, String lønn) {
+        Utbetaling utbetaling = new Utbetaling();
+        utbetaling.tittel = lønn;
+        utbetaling.brutto = inntekt.beloep;
+        utbetaling.periodeFom = fom;
+        utbetaling.periodeTom = tom;
+        utbetaling.type = "skatteopplysninger";
+        utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
+        return utbetaling;
     }
 
     private List<Utbetaling> trekkUtUtbetalinger(List<Utbetaling> utbetalinger) {

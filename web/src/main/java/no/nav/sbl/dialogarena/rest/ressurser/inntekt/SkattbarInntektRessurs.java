@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
+import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
@@ -39,7 +40,7 @@ public class SkattbarInntektRessurs {
     public List<SkattbarInntektOgForskuddstrekk> hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
         String eier = SubjectHandler.getSubjectHandler().getUid();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
-        if (mockUtbetalinger != null) {
+        if (mockUtbetalinger != null && Boolean.valueOf(System.getProperty("tillatmock"))) {
             utbetalinger = mockUtbetalinger;
         } else {
             JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
@@ -50,7 +51,7 @@ public class SkattbarInntektRessurs {
         List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger =
                 utbetalinger.stream()
                         .filter(jsonOkonomiOpplysningUtbetaling -> jsonOkonomiOpplysningUtbetaling.getType() != null &&
-                                jsonOkonomiOpplysningUtbetaling.getType().equals("skatteetaten")).collect(Collectors.toList());
+                                jsonOkonomiOpplysningUtbetaling.getType().equals(UtbetalingBolk.SKATTEETATEN)).collect(Collectors.toList());
 
         return organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger);
     }
@@ -68,7 +69,7 @@ public class SkattbarInntektRessurs {
                     .stream()
                     .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getOrganisasjon));
 
-            List<Organisasjon> organissasjoner = new ArrayList<>();
+            List<Organisasjon> organisasjoner = new ArrayList<>();
             for (Map.Entry<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> jsonOrganisasjonListEntry : utbetalingPerOrganisasjon.entrySet()) {
                 List<Utbetaling> utbetalingListe = new ArrayList<>();
 
@@ -90,14 +91,14 @@ public class SkattbarInntektRessurs {
                         .withFom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeFom).orElse(null))
                         .withTom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeTom).orElse(null));
 
-                organissasjoner.add(organisasjon);
+                organisasjoner.add(organisasjon);
 
 
             }
             SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = new SkattbarInntektOgForskuddstrekk()
                     .withSamletInntekt(samletSkattbarInntekt)
                     .withSamletTrekk(samletTrekk)
-                    .withOrganisasjoner(organissasjoner);
+                    .withOrganisasjoner(organisasjoner);
             skattbarInntektOgForskuddstrekkListe.add(skattbarInntektOgForskuddstrekk);
         }
         Collections.reverse(skattbarInntektOgForskuddstrekkListe);

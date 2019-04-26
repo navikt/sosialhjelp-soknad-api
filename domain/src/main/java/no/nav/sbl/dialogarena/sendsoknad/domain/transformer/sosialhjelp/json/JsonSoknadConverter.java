@@ -39,10 +39,16 @@ public final class JsonSoknadConverter {
     }
 
     private static String settDriftsinformasjonForUtbetalingSystemfeil(WebSoknad webSoknad) {
-        final Faktum faktumMedKey = webSoknad.getFaktumMedKey("utbetalinger.feilet");
-        if (faktumMedKey != null && "true".equalsIgnoreCase(faktumMedKey.getValue())) {
+        final Faktum faktumMedKeyNav = webSoknad.getFaktumMedKey("utbetalinger.fra.nav.feilet");
+        if (faktumMedKeyNav != null && "true".equalsIgnoreCase(faktumMedKeyNav.getValue())) {
             return "Kunne ikke hente utbetalinger fra NAV";
         }
+
+        final Faktum faktumMedKeySkatt = webSoknad.getFaktumMedKey("utbetalinger.fra.skatteetaten.feilet");
+        if (faktumMedKeySkatt != null && "true".equalsIgnoreCase(faktumMedKeySkatt.getValue())) {
+            return "Kunne ikke hente utbetalinger fra Skatteetaten";
+        }
+
         return "";
     }
 }
