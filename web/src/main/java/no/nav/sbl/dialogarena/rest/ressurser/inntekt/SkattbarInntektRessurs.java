@@ -52,7 +52,7 @@ public class SkattbarInntektRessurs {
                         .filter(jsonOkonomiOpplysningUtbetaling -> jsonOkonomiOpplysningUtbetaling.getType() != null &&
                                 jsonOkonomiOpplysningUtbetaling.getType().equals("skatteetaten")).collect(Collectors.toList());
 
-        return  organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger, skattbarInntektOgForskuddstrekkListe);;
+        return organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger);
     }
 
     private List<SkattbarInntektOgForskuddstrekk> organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger) {
