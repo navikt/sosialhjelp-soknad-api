@@ -52,13 +52,12 @@ public class SkattbarInntektRessurs {
                         .filter(jsonOkonomiOpplysningUtbetaling -> jsonOkonomiOpplysningUtbetaling.getType() != null &&
                                 jsonOkonomiOpplysningUtbetaling.getType().equals("skatteetaten")).collect(Collectors.toList());
 
-        List<SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe = new ArrayList<>();
-        organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger, skattbarInntektOgForskuddstrekkListe);
-
-        return skattbarInntektOgForskuddstrekkListe;
+        return  organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger, skattbarInntektOgForskuddstrekkListe);;
     }
 
-    private void organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger, List<SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe) {
+    private List<SkattbarInntektOgForskuddstrekk> organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger) {
+
+        List<SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe = new ArrayList<>();
         for (List<JsonOkonomiOpplysningUtbetaling> utbetalingerPerManed : new TreeMap<>(skatteopplysninger
                 .stream()
                 .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getPeriodeFom))).values()) {
@@ -101,6 +100,8 @@ public class SkattbarInntektRessurs {
                     .withOrganisasjoner(organissasjoner);
             skattbarInntektOgForskuddstrekkListe.add(skattbarInntektOgForskuddstrekk);
         }
+        Collections.reverse(skattbarInntektOgForskuddstrekkListe);
+        return skattbarInntektOgForskuddstrekkListe;
     }
 
 
