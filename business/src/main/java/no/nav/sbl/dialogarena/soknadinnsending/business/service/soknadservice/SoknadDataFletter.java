@@ -443,7 +443,8 @@ public class SoknadDataFletter {
 
         logger.info("Starter innsending av søknad med behandlingsId {}", soknad.getBrukerBehandlingId());
 
-        opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, soknad.getAktoerId(), soknad.getSoknadId());
+        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.hentSoknad(behandlingsId, soknad.getAktoerId()).get().getSoknadId();
+        opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, soknad.getAktoerId(), soknadUnderArbeidId);
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
