@@ -60,7 +60,7 @@ public class UtbetalingBolk implements BolkService {
                     .medKey("utbetalinger.fra.nav.feilet")
                     .medValue("true"));
         } else {
-            utbetalingerFraNav.stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling, "nav")).forEach(fakta::addAll);
+            utbetalingerFraNav.stream().map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling, "navytelse")).forEach(fakta::addAll);
         }
 
         if (utbetalingerRegistrertHosSkatteetaten == null) {
