@@ -445,20 +445,12 @@ public class SoknadDataFletter {
 
         opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, soknad.getAktoerId(), soknad.getSoknadId());
 
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, soknad.getAktoerId()).get();
+        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
-        List<JsonVedlegg> jsonVedlegg;
         final String eier = getSubjectHandler().getUid();
-        final Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), eier);
-        if (soknadNyModell.isPresent() && soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null) {
-            jsonVedlegg = soknadNyModell.get().getJsonInternalSoknad().getVedlegg().getVedlegg();
-        } else {
-            jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(soknad);
-        }
+        soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
 
-        soknadUnderArbeid.getJsonInternalSoknad()
-                .withMottaker(webSoknadConverter.settRiktigSoknadsmottaker(soknad))
-                .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg));
+        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, soknad.getAktoerId()).get();
 
         HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(soknad);
         final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
