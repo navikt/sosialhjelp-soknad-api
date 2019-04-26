@@ -68,7 +68,7 @@ public class SkattbarInntektService {
         fnummerTestPerson.add("02116049964");
 
         sokedata = new Sokedata()
-                .withFom(LocalDate.now().minusMonths(LocalDate.now().minusMonths(4).getDayOfMonth() > 10 ? 1 : 2))
+                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1+5 : 2+5))
                 .withTom(LocalDate.now()).withIdentifikator(fnummerTestPerson.get(new Random().nextInt(fnummerTestPerson.size())));
 
         return mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata)));
