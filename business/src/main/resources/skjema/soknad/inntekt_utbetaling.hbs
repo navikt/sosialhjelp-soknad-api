@@ -16,13 +16,19 @@
                     {{#each @root.utbetalingstyper}}
                         {{#hvisLik type "navytelse"}}
                         {{else}}
-                            {{>skjema/soknad/inntekt_utbetaling_hovedtyper}}
+                            {{#hvisLik type "skatteetaten"}}
+                            {{else}}
+                                {{>skjema/soknad/inntekt_utbetaling_hovedtyper}}
+                            {{/hvisLik}}
                         {{/hvisLik}}
                     {{/each}}
                     {{#each @root.utbetalingstyper}}
                         {{#hvisLik type "navytelse"}}
                         {{else}}
-                            {{>skjema/soknad/inntekt_utbetaling_annet}}
+                            {{#hvisLik type "skatteetaten"}}
+                            {{else}}
+                                {{>skjema/soknad/inntekt_utbetaling_annet}}
+                            {{/hvisLik}}
                         {{/hvisLik}}
                     {{/each}}
                 </ul>
