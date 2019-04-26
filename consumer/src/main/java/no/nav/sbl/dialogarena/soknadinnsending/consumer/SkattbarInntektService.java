@@ -60,15 +60,11 @@ public class SkattbarInntektService {
 // Skal bort før prodsetting
         List<String> fnummerTestPerson = new ArrayList<>();
         fnummerTestPerson.add("01029413157");
-        fnummerTestPerson.add("04057849687");
         fnummerTestPerson.add("18017749532");
         fnummerTestPerson.add("18018200283");
-        fnummerTestPerson.add("07078600378");
-        fnummerTestPerson.add("02099900434");
-        fnummerTestPerson.add("02116049964");
 
         sokedata = new Sokedata()
-                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1+5 : 2+5))
+                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 + 3 : 2 + 3))
                 .withTom(LocalDate.now()).withIdentifikator(fnummerTestPerson.get(new Random().nextInt(fnummerTestPerson.size())));
 
         return mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata)));
