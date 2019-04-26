@@ -91,7 +91,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
                 return Joiner.on(", ").join(orgNavn);
             } catch (Exception ex) {
                 LOGGER.warn("Kunne ikke hente orgnr: " + orgnr, ex);
-                return "";
+                return orgnr;
             }
         } else {
             return "";
