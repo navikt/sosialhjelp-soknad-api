@@ -63,7 +63,7 @@ public class SkattbarInntektRessursTest {
         List<Faktum> mockUtbetalinger = utbetalingBolk.genererSystemFakta("01234567890", 1234L);
         ressurs.mockUtbetalinger =  JsonOkonomiOpplysningerConverter.getOkonomiopplysningFraFaktum(mockUtbetalinger, Collections.emptyList());
         List<SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe = ressurs.hentSkattbareInntekter("");
-        SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = skattbarInntektOgForskuddstrekkListe.get(0);
+        SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = skattbarInntektOgForskuddstrekkListe.get(1);
         assertThat(skattbarInntektOgForskuddstrekk.samletTrekk).isNegative();
         assertThat(skattbarInntektOgForskuddstrekk.samletInntekt).isPositive();
         assertThat(skattbarInntektOgForskuddstrekk.organisasjoner).hasSize(1);
