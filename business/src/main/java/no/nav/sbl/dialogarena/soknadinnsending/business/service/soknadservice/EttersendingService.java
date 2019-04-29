@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
@@ -79,7 +80,8 @@ public class EttersendingService {
         if (soknad.status != FERDIG) {
             throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er innsendt");
         } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER))) {
-            throw new EttersendelseSendtForSentException("Kan ikke starte ettersendelse så sent på en søknad");
+            long dagerEtterFrist = DAYS.between(soknad.innsendtDato, LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER));
+            throw new EttersendelseSendtForSentException(String.format("Kan ikke starte ettersendelse %d dager etter frist", dagerEtterFrist));
         }
         return soknad;
     }
