@@ -239,7 +239,7 @@ public class SoknadDataFletter {
         return behandlingsId;
     }
     
-    private JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
+    public static JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
         return new JsonInternalSoknad().withSoknad(new JsonSoknad()
                     .withData(new JsonData()
                         .withPersonalia(new JsonPersonalia()
