@@ -64,7 +64,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     }
 
     private boolean typeIsInList(List<JsonVedlegg> jsonVedleggs, String vedleggstype) {
-        return jsonVedleggs.stream().anyMatch(jsonVedlegg -> jsonVedlegg.getTilleggsinfo().equals(vedleggstype));
+        return jsonVedleggs.stream().anyMatch(jsonVedlegg -> jsonVedlegg.getType().equals(vedleggstype));
     }
 
     public List<JsonArbeidsforhold> innhentSystemArbeidsforhold(final String personIdentifikator) {
@@ -75,7 +75,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
             return null;
         }
         return arbeidsforholds.stream()
-                .map(arbeidsforhold -> mapToJsonArbeidsforhold(arbeidsforhold))
+                .map(this::mapToJsonArbeidsforhold)
                 .collect(Collectors.toList());
     }
 
