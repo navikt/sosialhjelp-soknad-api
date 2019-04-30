@@ -95,7 +95,7 @@ public class WebSoknadConverter {
                 .withMottaker(settRiktigSoknadsmottaker(webSoknad));
     }
 
-    JsonSoknadsmottaker settRiktigSoknadsmottaker(WebSoknad soknad) {
+    public JsonSoknadsmottaker settRiktigSoknadsmottaker(WebSoknad soknad) {
         final Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
         String orgnummer;
         String navEnhetsnavn;

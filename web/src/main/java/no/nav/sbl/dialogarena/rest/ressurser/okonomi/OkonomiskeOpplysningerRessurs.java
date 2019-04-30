@@ -186,7 +186,7 @@ public class OkonomiskeOpplysningerRessurs {
         if (vedleggFrontend.type.equals("annet|annet") && checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)){
             vedleggFrontend.rader = Collections.emptyList();
         }
-        makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad.getBrukerBehandlingId());
+        makeFaktumListEqualSizeToFrontendRader(vedleggFrontend, fakta, webSoknad);
 
         for (int i = 0; i < vedleggFrontend.rader.size(); i++){
             Faktum faktum = fakta.get(i);
@@ -208,7 +208,7 @@ public class OkonomiskeOpplysningerRessurs {
         }
     }
 
-    private void makeFaktumListEqualSizeToFrontendRader(VedleggFrontend vedleggFrontend, List<Faktum> fakta, String behandlingsId) {
+    private void makeFaktumListEqualSizeToFrontendRader(VedleggFrontend vedleggFrontend, List<Faktum> fakta, WebSoknad webSoknad) {
         final int sizeDiff = vedleggFrontend.rader.size() - fakta.size();
         if (sizeDiff > 0){
             Iterator<Long> faktumIder = repository.hentLedigeFaktumIder(sizeDiff).iterator();
@@ -219,7 +219,7 @@ public class OkonomiskeOpplysningerRessurs {
                         .medKey(fakta.get(0).getKey())
                         .medType(BRUKERREGISTRERT)
                         .medSoknadId(fakta.get(0).getSoknadId());
-                faktaService.opprettBrukerFaktum(behandlingsId, faktum);
+                faktaService.opprettBrukerFaktum(webSoknad.getBrukerBehandlingId(), faktum);
                 fakta.add(faktum);
             }
         } else if (sizeDiff < 0){
@@ -227,6 +227,18 @@ public class OkonomiskeOpplysningerRessurs {
                 faktaService.slettBrukerFaktum(fakta.get(fakta.size() - 1).getFaktumId());
                 fakta.remove(fakta.size() - 1);
             }
+        }
+        if (vedleggFrontend.type.equals("annet|annet") && vedleggFrontend.rader.size() == 0){
+            final Faktum annetParrentFaktum = webSoknad.getFaktumMedKey("opplysninger.ekstrainfo");
+            Iterator<Long> faktumIder = repository.hentLedigeFaktumIder(sizeDiff).iterator();
+            Faktum faktum = new Faktum()
+                    .medFaktumId(faktumIder.next())
+                    .medParrentFaktumId(annetParrentFaktum.getFaktumId())
+                    .medKey("opplysninger.ekstrainfo.utgifter")
+                    .medType(BRUKERREGISTRERT)
+                    .medSoknadId(annetParrentFaktum.getSoknadId());
+            faktaService.opprettBrukerFaktum(webSoknad.getBrukerBehandlingId(), faktum);
+            fakta.add(faktum);
         }
     }
 

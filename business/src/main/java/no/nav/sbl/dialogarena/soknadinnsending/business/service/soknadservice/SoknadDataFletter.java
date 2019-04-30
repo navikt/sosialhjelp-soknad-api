@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
@@ -38,6 +39,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -135,6 +137,11 @@ public class SoknadDataFletter {
     private SystemdataUpdater systemdata;
 
     private Map<String, BolkService> bolker;
+    private final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson;
+
+    {
+        sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
+    }
 
     @PostConstruct
     public void initBolker() {
@@ -231,14 +238,14 @@ public class SoknadDataFletter {
         systemdata.update(soknadUnderArbeid);
 
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
-
+        
         startTimer.stop();
         startTimer.report();
-
+        
         return behandlingsId;
     }
 
-    private JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
+    public static JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
         return new JsonInternalSoknad().withSoknad(new JsonSoknad()
                     .withData(new JsonData()
                         .withPersonalia(new JsonPersonalia()
@@ -273,18 +280,18 @@ public class SoknadDataFletter {
                         )
                         .withOkonomi(new JsonOkonomi()
                             .withOpplysninger(new JsonOkonomiopplysninger()
-                                .withUtbetaling(Collections.emptyList())
-                                .withUtgift(Collections.emptyList())
+                                .withUtbetaling(new ArrayList<>())
+                                .withUtgift(new ArrayList<>())
                             )
                             .withOversikt(new JsonOkonomioversikt()
-                                .withInntekt(Collections.emptyList())
-                                .withUtgift(Collections.emptyList())
-                                .withFormue(Collections.emptyList())
+                                .withInntekt(new ArrayList<>())
+                                .withUtgift(new ArrayList<>())
+                                .withFormue(new ArrayList<>())
                             )
                         )
                     )
                     .withDriftsinformasjon("")
-                    .withKompatibilitet(Collections.emptyList())
+                    .withKompatibilitet(new ArrayList<>())
                 );
     }
 
@@ -436,7 +443,8 @@ public class SoknadDataFletter {
 
         logger.info("Starter innsending av søknad med behandlingsId {}", soknad.getBrukerBehandlingId());
 
-        opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, soknad.getAktoerId(), soknad.getSoknadId());
+        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.hentSoknad(behandlingsId, soknad.getAktoerId()).get().getSoknadId();
+        opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, soknad.getAktoerId(), soknadUnderArbeidId);
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 

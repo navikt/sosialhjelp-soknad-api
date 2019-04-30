@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FiksSender {
@@ -110,7 +112,12 @@ public class FiksSender {
         log.info("Antall vedlegg: {}. Antall vedlegg lastet opp av bruker: {}", antallFiksDokumenter, antallVedleggForsendelse);
 
         try {
-            int antallBrukerOpplastedeVedlegg = (int) internalSoknad.getVedlegg().getVedlegg().stream().filter(jsonVedlegg -> jsonVedlegg.getStatus().equals("LastetOpp")).count();
+            List<JsonVedlegg> opplastedeVedleggstyper = internalSoknad.getVedlegg().getVedlegg().stream().filter(jsonVedlegg -> jsonVedlegg.getStatus().equals("LastetOpp"))
+                    .collect(Collectors.toList());
+            int antallBrukerOpplastedeVedlegg = 0;
+            for (JsonVedlegg vedlegg : opplastedeVedleggstyper){
+                antallBrukerOpplastedeVedlegg += vedlegg.getFiler().size();
+            }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
                 log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse);
             }

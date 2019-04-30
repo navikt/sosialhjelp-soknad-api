@@ -52,6 +52,16 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+
+    <filter>
+        <filter-name>CORSFilter</filter-name>
+        <filter-class>no.nav.sbl.dialogarena.sikkerhet.CORSFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CORSFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!--HttpSessionSecurityIntegrationFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
     <filter>
         <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
