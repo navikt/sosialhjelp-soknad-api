@@ -99,9 +99,9 @@ public class KommuneTilNavEnhetMapper {
             .put("1243", "992179457")    // Os (Hordaland)
             .put("0229", "974604175")    // Enebakk
             .put("1002", "964968519")    // Mandal
-            .put("0514", "959377677")    // Lom
+            .put("0514", "974592274")    // Lom
             .put("0517", "974562294")    // Sel
-            .put("0513", "961381096")    // Skjåk
+            .put("0513", "976641175")    // Skjåk
             .put("1219", "834210622")    // Bømlo
             .put("0515", "976641310")    // Vågå
             .build();

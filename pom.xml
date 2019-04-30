@@ -26,6 +26,39 @@
     <packaging>pom</packaging>
 
 
+    <repositories>
+        <repository>
+            <id>maven-releases</id>
+            <name>NAV Internal Repository</name>
+            <url>https://repo.adeo.no/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>maven-snapshots</id>
+            <name>NAV Snapshot Repository</name>
+            <url>https://repo.adeo.no/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
+
+
+    <distributionManagement>
+        <repository>
+            <id>maven-releases</id>
+            <name>NAV Internal Repository</name>
+            <url>https://repo.adeo.no/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven-snapshots</id>
+            <name>NAV Snapshot Repository</name>
+            <url>https://repo.adeo.no/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <sonar.exclusions>
             **/mockmodul/**,
