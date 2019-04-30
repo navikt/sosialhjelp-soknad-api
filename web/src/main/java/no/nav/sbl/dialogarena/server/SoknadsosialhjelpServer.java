@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.server;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 public class SoknadsosialhjelpServer {
 
     private static final Logger log = LoggerFactory.getLogger(SoknadsosialhjelpServer.class);
-    public static final int PORT = 8080;
+    public static final int PORT = isRunningOnHeroku() ? Integer.parseInt(System.getenv("PORT")) : 8080;
     public final Jetty jetty;
 
 
@@ -33,9 +34,13 @@ public class SoknadsosialhjelpServer {
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
         configure();
 
+        if (isRunningAsTestAppWithMockingActivated()) {
+            dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
+        }
+
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
-        
-        if (isRunningOnNais()) {
+
+        if (isRunningOnNais() && !isRunningAsTestAppWithMockingActivated()) {
             databaseSchemaMigration(ds);
         }
 
@@ -72,7 +77,11 @@ public class SoknadsosialhjelpServer {
 
     private void configure() throws IOException {
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
-        if (isRunningOnNais()) {
+        if (isRunningAsTestAppWithMockingActivated()){
+            log.info("Running with mocking activated. Totally isolated.");
+            setFrom("environment/mock-test.properties");
+            System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        } else if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
             System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName());
@@ -80,6 +89,10 @@ public class SoknadsosialhjelpServer {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalEnvironment();
         }
+    }
+
+    public static boolean isRunningOnHeroku(){
+        return System.getenv("HEROKU") != null && Boolean.parseBoolean(System.getenv("HEROKU"));
     }
 
     private void mapNaisProperties() throws IOException {
@@ -96,6 +109,10 @@ public class SoknadsosialhjelpServer {
 
     private void disableBatch() {
         setProperty("sendsoknad.batch.enabled", "false");
+    }
+
+    private boolean isRunningAsTestAppWithMockingActivated() {
+        return System.getenv("dockerWithDefaultMockActivated") != null && Boolean.parseBoolean(System.getenv("dockerWithDefaultMockActivated"));
     }
 
     private static boolean isRunningOnNais() {
