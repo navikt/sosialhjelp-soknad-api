@@ -228,6 +228,9 @@ public class SoknadDataFletter {
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
+
+        systemdata.update(soknadUnderArbeid);
+
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
         
         startTimer.stop();
@@ -236,7 +239,7 @@ public class SoknadDataFletter {
         return behandlingsId;
     }
     
-    private JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
+    public static JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
         return new JsonInternalSoknad().withSoknad(new JsonSoknad()
                     .withData(new JsonData()
                         .withPersonalia(new JsonPersonalia()
@@ -271,18 +274,18 @@ public class SoknadDataFletter {
                         )
                         .withOkonomi(new JsonOkonomi()
                             .withOpplysninger(new JsonOkonomiopplysninger()
-                                .withUtbetaling(Collections.emptyList())
-                                .withUtgift(Collections.emptyList())
+                                .withUtbetaling(new ArrayList<>())
+                                .withUtgift(new ArrayList<>())
                             )
                             .withOversikt(new JsonOkonomioversikt()
-                                .withInntekt(Collections.emptyList())
-                                .withUtgift(Collections.emptyList())
-                                .withFormue(Collections.emptyList())
+                                .withInntekt(new ArrayList<>())
+                                .withUtgift(new ArrayList<>())
+                                .withFormue(new ArrayList<>())
                             )
                         )
                     )
                     .withDriftsinformasjon("")
-                    .withKompatibilitet(Collections.emptyList())
+                    .withKompatibilitet(new ArrayList<>())
                 );
     }
 
@@ -438,6 +441,11 @@ public class SoknadDataFletter {
         final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(soknad);
         VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggListe);
         Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
+
+        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
+
+        final String eier = getSubjectHandler().getUid();
+        soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
 
         final SoknadUnderArbeid soknadUnderArbeid = lagreSoknadOgVedleggMedNyModell(soknad, vedleggListe);
 
