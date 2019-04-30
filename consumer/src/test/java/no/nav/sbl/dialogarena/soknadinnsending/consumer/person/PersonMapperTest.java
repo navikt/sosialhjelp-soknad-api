@@ -186,16 +186,8 @@ public class PersonMapperTest {
     public void finnBarnForPersonViserIngenInfoForBarnMedDiskresjonskode() {
         List<Barn> barnliste = finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_UGIF, RELASJON_BARN, true,
                 KODE_6_TALLFORM, true, null));
-        Barn barn = barnliste.get(0);
 
-        assertThat(barnliste.size(), is(1));
-        assertThat(barn.getFnr(), nullValue());
-        assertThat(barn.getFornavn(), nullValue());
-        assertThat(barn.getMellomnavn(), nullValue());
-        assertThat(barn.getEtternavn(), nullValue());
-        assertThat(barn.getFodselsdato(), nullValue());
-        assertThat(barn.erFolkeregistrertsammen(), nullValue());
-        assertThat(barn.harIkkeTilgang(), is(true));
+        assertThat(barnliste.isEmpty(), is(true));
     }
 
     @Test
