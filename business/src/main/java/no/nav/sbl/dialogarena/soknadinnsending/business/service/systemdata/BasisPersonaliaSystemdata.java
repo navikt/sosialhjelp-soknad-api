@@ -80,7 +80,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
                     .withVerdi(nordiskBorger);
     }
 
-    public static Boolean erNordiskBorger(String statsborgerskap) {
+    static Boolean erNordiskBorger(String statsborgerskap) {
         if (statsborgerskap == null || statsborgerskap.equals("???")){
             return null;
         }
