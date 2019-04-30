@@ -200,6 +200,26 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
+    public void putForsorgerpliktSkalKunneSetteBarnebidragForBarnMedDiskresjonskode(){
+        ignoreTilgangskontrollAndLegacyUpdate();
+        JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN_MED_DISKRESJONSKODE);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithForsorgerplikt(true, null, Collections.singletonList(jsonAnsvar))));
+
+        ForsorgerpliktFrontend forsorgerpliktFrontend = new ForsorgerpliktFrontend()
+                .withBarnebidrag(JsonBarnebidrag.Verdi.BETALER)
+                .withAnsvar(Collections.singletonList(createBarnMedDiskresjonskode()));
+
+        forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend);
+
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
+        assertThat(forsorgerplikt.getBarnebidrag().getVerdi(), is(JsonBarnebidrag.Verdi.BETALER));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        assertThat(forsorgerplikt.getAnsvar().size(), is(1));
+    }
+
+    @Test
     public void putForsorgerpliktSkalSetteHarDeltBostedOgSamvarsgradPaaToBarn(){
         ignoreTilgangskontrollAndLegacyUpdate();
         final JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN);
@@ -234,6 +254,12 @@ public class ForsorgerpliktRessursTest {
                             .withFodselsnummer(JSON_BARN.getPersonIdentifikator())
                             .withPersonnummer(getPersonnummerFromFnr(JSON_BARN.getPersonIdentifikator())))
                     .withHarDeltBosted(true);
+    }
+
+    private AnsvarFrontend createBarnMedDiskresjonskode() {
+        return new AnsvarFrontend()
+                .withBarn(new BarnFrontend())
+                .withHarDiskresjonskode(true);
     }
 
     private void assertThatAnsvarIsCorrectlyConverted(AnsvarFrontend ansvarFrontend, JsonAnsvar jsonAnsvar) {

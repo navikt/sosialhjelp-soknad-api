@@ -238,14 +238,14 @@ public class SoknadDataFletter {
         systemdata.update(soknadUnderArbeid);
 
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
-
+        
         startTimer.stop();
         startTimer.report();
-
+        
         return behandlingsId;
     }
 
-    private JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
+    public static JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
         return new JsonInternalSoknad().withSoknad(new JsonSoknad()
                     .withData(new JsonData()
                         .withPersonalia(new JsonPersonalia()
@@ -280,18 +280,18 @@ public class SoknadDataFletter {
                         )
                         .withOkonomi(new JsonOkonomi()
                             .withOpplysninger(new JsonOkonomiopplysninger()
-                                .withUtbetaling(Collections.emptyList())
-                                .withUtgift(Collections.emptyList())
+                                .withUtbetaling(new ArrayList<>())
+                                .withUtgift(new ArrayList<>())
                             )
                             .withOversikt(new JsonOkonomioversikt()
-                                .withInntekt(Collections.emptyList())
-                                .withUtgift(Collections.emptyList())
-                                .withFormue(Collections.emptyList())
+                                .withInntekt(new ArrayList<>())
+                                .withUtgift(new ArrayList<>())
+                                .withFormue(new ArrayList<>())
                             )
                         )
                     )
                     .withDriftsinformasjon("")
-                    .withKompatibilitet(Collections.emptyList())
+                    .withKompatibilitet(new ArrayList<>())
                 );
     }
 
