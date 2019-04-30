@@ -79,7 +79,13 @@ public class ForsorgerpliktRessurs {
 
         if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
             for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar){
+                if (ansvarFrontend.harDiskresjonskode != null && ansvarFrontend.harDiskresjonskode){
+                    continue;
+                }
                 for (JsonAnsvar ansvar : forsorgerplikt.getAnsvar()){
+                    if (ansvar.getBarn().getHarDiskresjonskode() != null && ansvar.getBarn().getHarDiskresjonskode()){
+                        continue;
+                    }
                     if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barn.fodselsnummer)){
                         ansvar.setBorSammenMed(ansvarFrontend.borSammenMed == null ? null :
                                 new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
