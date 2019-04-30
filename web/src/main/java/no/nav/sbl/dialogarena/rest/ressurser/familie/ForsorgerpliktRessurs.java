@@ -24,8 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.valueOf;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erIkkeTom;
 
 @Controller
 @Path("/soknader/{behandlingsId}/familie/forsorgerplikt")
@@ -114,8 +116,16 @@ public class ForsorgerpliktRessurs {
         if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
             List<Faktum> barnefakta = webSoknad.getFaktaMedKey("system.familie.barn.true.barn");
             for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar) {
+                if (ansvarFrontend.harDiskresjonskode != null && ansvarFrontend.harDiskresjonskode){
+                    continue;
+                }
                 for (Faktum faktum : barnefakta) {
                     Map<String, String> barn = faktum.getProperties();
+                    final String ikketilgangtilbarn = barn.get("ikketilgangtilbarn");
+                    final boolean barnHarDiskresjonskode = erIkkeTom(ikketilgangtilbarn) && valueOf(ikketilgangtilbarn);
+                    if (barnHarDiskresjonskode) {
+                        continue;
+                    }
                     if (barn.get("fnr").equals(ansvarFrontend.barn.fodselsnummer)) {
                         barn.put("grad", ansvarFrontend.samvarsgrad != null ? ansvarFrontend.samvarsgrad.toString() : null);
                         barn.put("deltbosted", ansvarFrontend.harDeltBosted != null ? ansvarFrontend.harDeltBosted.toString() : null);
