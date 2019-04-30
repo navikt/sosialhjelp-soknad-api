@@ -25,7 +25,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,15 +56,15 @@ public class SkattbarInntektService {
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
             return mapTilUtbetalinger(mockRespons());
         }
-// Skal bort før prodsetting
-        List<String> fnummerTestPerson = new ArrayList<>();
-        fnummerTestPerson.add("01029413157");
-        fnummerTestPerson.add("18017749532");
-        fnummerTestPerson.add("18018200283");
-
-        sokedata = new Sokedata()
-                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 + 3 : 2 + 3))
-                .withTom(LocalDate.now()).withIdentifikator(fnummerTestPerson.get(new Random().nextInt(fnummerTestPerson.size())));
+//// Skal bort før prodsetting
+//        List<String> fnummerTestPerson = new ArrayList<>();
+//        fnummerTestPerson.add("01029413157");
+//        fnummerTestPerson.add("18017749532");
+//        fnummerTestPerson.add("18018200283");
+//
+//        sokedata = new Sokedata()
+//                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 + 3 : 2 + 3))
+//                .withTom(LocalDate.now()).withIdentifikator(fnummerTestPerson.get(new Random().nextInt(fnummerTestPerson.size())));
 
         return mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata)));
     }
