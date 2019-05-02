@@ -56,16 +56,6 @@ public class SkattbarInntektService {
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
             return mapTilUtbetalinger(mockRespons());
         }
-//// Skal bort før prodsetting
-//        List<String> fnummerTestPerson = new ArrayList<>();
-//        fnummerTestPerson.add("01029413157");
-//        fnummerTestPerson.add("18017749532");
-//        fnummerTestPerson.add("18018200283");
-//
-//        sokedata = new Sokedata()
-//                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 + 3 : 2 + 3))
-//                .withTom(LocalDate.now()).withIdentifikator(fnummerTestPerson.get(new Random().nextInt(fnummerTestPerson.size())));
-
         return mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata)));
     }
 
@@ -154,9 +144,9 @@ public class SkattbarInntektService {
         return aggregertUtbetaling;
     }
 
-    private Utbetaling getUtbetaling(OppgaveInntektsmottaker oppgaveInntektsmottaker, LocalDate fom, LocalDate tom, Inntekt inntekt, String lønn) {
+    private Utbetaling getUtbetaling(OppgaveInntektsmottaker oppgaveInntektsmottaker, LocalDate fom, LocalDate tom, Inntekt inntekt, String tittel) {
         Utbetaling utbetaling = new Utbetaling();
-        utbetaling.tittel = lønn;
+        utbetaling.tittel = tittel;
         utbetaling.brutto = inntekt.beloep;
         utbetaling.periodeFom = fom;
         utbetaling.periodeTom = tom;
