@@ -39,7 +39,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -58,7 +57,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
@@ -71,7 +73,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UN
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ENHET_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ORGNR_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -105,6 +106,8 @@ public class SoknadDataFletter {
     private WebSoknadConfig config;
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
 
     @Inject
     private NavMessageSource messageSource;
@@ -436,29 +439,33 @@ public class SoknadDataFletter {
 
     public void sendSoknad(String behandlingsId) {
         WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
-            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
+            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
 
-        logger.info("Starter innsending av søknad med behandlingsId {}", soknad.getBrukerBehandlingId());
+        logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
 
-        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.hentSoknad(behandlingsId, soknad.getAktoerId()).get().getSoknadId();
-        opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, soknad.getAktoerId(), soknadUnderArbeidId);
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
         final String eier = getSubjectHandler().getUid();
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
+        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getSoknadId();
+        opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, eier, soknadUnderArbeidId);
 
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, soknad.getAktoerId()).get();
+        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
-        HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(soknad);
+        HovedskjemaMetadata hovedskjema = lagHovedskjema(soknad.getUuid());
         final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
         final Map<String, String> ekstraMetadata = hentEkstraMetadata(soknadUnderArbeid);
 
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
-        oppgaveHandterer.leggTilOppgave(behandlingsId, soknad.getAktoerId());
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, hovedskjema, vedlegg, ekstraMetadata);
+        oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
         forberedInnsendingMedNyModell(soknadUnderArbeid);
@@ -490,14 +497,10 @@ public class SoknadDataFletter {
         }
     }
 
-    private HovedskjemaMetadata lagHovedskjemaMedAlternativRepresentasjon(WebSoknad soknad) {
+    private HovedskjemaMetadata lagHovedskjema(String uuid) {
         HovedskjemaMetadata hovedskjema = new HovedskjemaMetadata();
-        hovedskjema.filnavn = skjemanummer(soknad);
-        hovedskjema.filUuid = soknad.getUuid();
-
-        List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
-        alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getAktoerId(), alternativeRepresentasjoner);
-        hovedskjema.alternativRepresentasjon.addAll(alternativRepresentasjonService.lagXmlFormat(alternativeRepresentasjoner));
+        hovedskjema.filnavn = "NAV 35-18.01";
+        hovedskjema.filUuid = uuid;
 
         return hovedskjema;
     }
