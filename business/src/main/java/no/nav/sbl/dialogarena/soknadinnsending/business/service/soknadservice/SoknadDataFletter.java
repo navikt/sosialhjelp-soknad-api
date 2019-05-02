@@ -438,7 +438,9 @@ public class SoknadDataFletter {
     }
 
     public void sendSoknad(String behandlingsId) {
-        WebSoknad soknad = hentSoknad(behandlingsId, true, true, false);
+        WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
