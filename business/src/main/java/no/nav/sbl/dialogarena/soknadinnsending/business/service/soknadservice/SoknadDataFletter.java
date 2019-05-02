@@ -106,6 +106,8 @@ public class SoknadDataFletter {
     private WebSoknadConfig config;
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
 
     @Inject
     private NavMessageSource messageSource;
@@ -436,7 +438,9 @@ public class SoknadDataFletter {
     }
 
     public void sendSoknad(String behandlingsId) {
-        WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+        WebSoknad soknad = hentSoknad(behandlingsId, true, true, false);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
