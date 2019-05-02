@@ -1,12 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
 import com.google.common.collect.ImmutableMap;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.joda.time.LocalDate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.joda.time.Years.yearsBetween;
@@ -106,7 +110,7 @@ public class PersonMapper {
     private static Barn mapFamilierelasjonTilBarn(Familierelasjon familierelasjon) {
         Person xmlBarn = familierelasjon.getTilPerson();
         if (xmlPersonHarDiskresjonskode(xmlBarn)) {
-            return new Barn().withIkkeTilgang(true);
+            return null;
         }
 
         if (!erMyndig(finnFodselsdatoFraFnr(xmlBarn)) && !erDoed(xmlBarn)) {
