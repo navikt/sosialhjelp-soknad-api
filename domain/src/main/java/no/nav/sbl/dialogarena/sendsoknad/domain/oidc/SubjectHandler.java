@@ -1,0 +1,41 @@
+package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class SubjectHandler {
+    private static final Logger logger = LoggerFactory.getLogger(SubjectHandler.class);
+
+    private static SubjectHandlerService subjectHandlerService = new OidcSubjectHandlerService();
+
+
+    public static String getUserIdFromToken() {
+        return subjectHandlerService.getUserIdFromToken();
+    }
+
+    public static String getToken() {
+        return subjectHandlerService.getToken();
+    }
+
+    public static String getConsumerId() {
+        return subjectHandlerService.getConsumerId();
+    }
+
+    public static SubjectHandlerService getSubjectHandlerService() {
+        return subjectHandlerService;
+    }
+
+    public static void setSubjectHandlerService(SubjectHandlerService subjectHandlerServiceImpl) {
+        if (ServiceUtils.isRunningInProd()) {
+            logger.error("Forsøker å sette en annen SubjectHandlerService i prod!");
+            throw new RuntimeException("Forsøker å sette en annen SubjectHandlerService i prod!");
+        } else {
+            subjectHandlerService = subjectHandlerServiceImpl;
+        }
+    }
+
+    public static void resetOidcSubjectHandlerService() {
+        subjectHandlerService = new OidcSubjectHandlerService();
+    }
+}
