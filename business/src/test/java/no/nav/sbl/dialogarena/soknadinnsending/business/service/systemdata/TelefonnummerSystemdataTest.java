@@ -4,8 +4,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,102 +21,100 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class KontonummerSystemdataTest {
+public class TelefonnummerSystemdataTest {
 
     private static final String EIER = "12345678901";
-    private static final String KONTONUMMER_SYSTEM = "12345678903";
-    private static final String KONTONUMMER_BRUKER = "11223344556";
+    private static final String TELEFONNUMMER_SYSTEM = "98765432";
+    private static final String TELEFONNUMMER_BRUKER = "+4723456789";
 
     @Mock
     private PersonaliaFletter personaliaFletter;
 
     @InjectMocks
-    private KontonummerSystemdata kontonummerSystemdata;
+    private TelefonnummerSystemdata telefonnummerSystemdata;
 
     @Test
-    public void skalOppdatereKontonummer() {
+    public void skalOppdatereTelefonnummerUtenLandkode() {
         Personalia personalia = new Personalia();
-        personalia.setKontonummer(KONTONUMMER_SYSTEM);
+        personalia.setMobiltelefonnummer(TELEFONNUMMER_SYSTEM);
         personalia.setErUtenlandskBankkonto(false);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
 
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_SYSTEM));
+        assertThat(jsonPersonalia.getTelefonnummer().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getTelefonnummer().getVerdi(), is("+47" + TELEFONNUMMER_SYSTEM));
     }
 
     @Test
-    public void skalIkkeOppdatereKontonummerDersomKildeErBruker() {
+    public void skalOppdatereTelefonnummerMedLandkode() {
         Personalia personalia = new Personalia();
-        personalia.setKontonummer(KONTONUMMER_SYSTEM);
-        personalia.setErUtenlandskBankkonto(false);
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedKontonummer());
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
-
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
-
-        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_BRUKER));
-    }
-
-    @Test
-    public void skalSetteNullDersomUtenlandskKontonummer() {
-        Personalia personalia = new Personalia();
-        personalia.setKontonummer(KONTONUMMER_SYSTEM);
-        personalia.setErUtenlandskBankkonto(true);
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
-
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
-
-        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
-    }
-
-    @Test
-    public void skalSetteNullDersomKontonummerErTomStreng() {
-        Personalia personalia = new Personalia();
-        personalia.setKontonummer("");
+        personalia.setMobiltelefonnummer("+47" + TELEFONNUMMER_SYSTEM);
         personalia.setErUtenlandskBankkonto(false);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
 
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
+        assertThat(jsonPersonalia.getTelefonnummer().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getTelefonnummer().getVerdi(), is("+47" + TELEFONNUMMER_SYSTEM));
     }
 
     @Test
-    public void skalSetteNullDersomKontonummerErNull() {
+    public void skalIkkeOppdatereTelefonnummerDersomKildeErBruker() {
         Personalia personalia = new Personalia();
-        personalia.setKontonummer(null);
+        personalia.setMobiltelefonnummer(TELEFONNUMMER_SYSTEM);
+        personalia.setErUtenlandskBankkonto(false);
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedTelefonnummer());
+        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+
+        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+
+        assertThat(jsonPersonalia.getTelefonnummer().getKilde(), is(JsonKilde.BRUKER));
+        assertThat(jsonPersonalia.getTelefonnummer().getVerdi(), is(TELEFONNUMMER_BRUKER));
+    }
+
+    @Test
+    public void skalSetteNullDersomTelefonnummerErTomStreng() {
+        Personalia personalia = new Personalia();
+        personalia.setMobiltelefonnummer("");
         personalia.setErUtenlandskBankkonto(false);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
 
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
+        assertThat(jsonPersonalia.getTelefonnummer(), nullValue());
     }
 
-    private JsonInternalSoknad createJsonInternalSoknadWithUserDefinedKontonummer() {
+    @Test
+    public void skalSetteNullDersomTelefonnummerErNull() {
+        Personalia personalia = new Personalia();
+        personalia.setMobiltelefonnummer(null);
+        personalia.setErUtenlandskBankkonto(false);
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+
+        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+
+        assertThat(jsonPersonalia.getTelefonnummer(), nullValue());
+    }
+
+    private JsonInternalSoknad createJsonInternalSoknadWithUserDefinedTelefonnummer() {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getPersonalia()
-                .setKontonummer(new JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(KONTONUMMER_BRUKER));
+                .setTelefonnummer(new JsonTelefonnummer().withKilde(JsonKilde.BRUKER).withVerdi(TELEFONNUMMER_BRUKER));
         return jsonInternalSoknad;
     }
 }

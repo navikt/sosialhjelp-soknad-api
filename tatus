@@ -1,0 +1,90 @@
+[1mdiff --git a/business/src/main/java/no/nav/sbl/dialogarena/soknadinnsending/business/service/systemdata/TelefonnummerSystemdata.java b/business/src/main/java/no/nav/sbl/dialogarena/soknadinnsending/business/service/systemdata/TelefonnummerSystemdata.java[m
+[1mindex aa88ac00fc..7e52d2cf57 100644[m
+[1m--- a/business/src/main/java/no/nav/sbl/dialogarena/soknadinnsending/business/service/systemdata/TelefonnummerSystemdata.java[m
+[1m+++ b/business/src/main/java/no/nav/sbl/dialogarena/soknadinnsending/business/service/systemdata/TelefonnummerSystemdata.java[m
+[36m@@ -41,7 +41,7 @@[m [mpublic class TelefonnummerSystemdata implements Systemdata {[m
+         return systemVerdi;[m
+     }[m
+ [m
+[31m-    static String norskTelefonnummer(String mobiltelefonnummer) {[m
+[32m+[m[32m    private static String norskTelefonnummer(String mobiltelefonnummer) {[m
+         if (mobiltelefonnummer == null) {[m
+             return null;[m
+         }[m
+[1mdiff --git a/business/src/test/java/no/nav/sbl/dialogarena/soknadinnsending/business/service/systemdata/KontonummerSystemdataTest.java b/business/src/test/java/no/nav/sbl/dialogarena/soknadinnsending/business/service/systemdata/KontonummerSystemdataTest.java[m
+[1mindex 532137ce4e..03e0c9a0f4 100644[m
+[1m--- a/business/src/test/java/no/nav/sbl/dialogarena/soknadinnsending/business/service/systemdata/KontonummerSystemdataTest.java[m
+[1m+++ b/business/src/test/java/no/nav/sbl/dialogarena/soknadinnsending/business/service/systemdata/KontonummerSystemdataTest.java[m
+[36m@@ -2,7 +2,9 @@[m [mpackage no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;[m
+ [m
+ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;[m
+ import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;[m
+[32m+[m[32mimport no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;[m
+ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;[m
+[32m+[m[32mimport no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;[m
+ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;[m
+ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;[m
+ import org.junit.Test;[m
+[36m@@ -22,7 +24,8 @@[m [mimport static org.mockito.Mockito.when;[m
+ public class KontonummerSystemdataTest {[m
+ [m
+     private static final String EIER = "12345678901";[m
+[31m-    private static final String KONTONUMMER = "12345678903";[m
+[32m+[m[32m    private static final String KONTONUMMER_SYSTEM = "12345678903";[m
+[32m+[m[32m    private static final String KONTONUMMER_BRUKER = "11223344556";[m
+ [m
+     @Mock[m
+     private PersonaliaFletter personaliaFletter;[m
+[36m@@ -33,7 +36,7 @@[m [mpublic class KontonummerSystemdataTest {[m
+     @Test[m
+     public void skalOppdatereKontonummer() {[m
+         Personalia personalia = new Personalia();[m
+[31m-        personalia.setKontonummer(KONTONUMMER);[m
+[32m+[m[32m        personalia.setKontonummer(KONTONUMMER_SYSTEM);[m
+         personalia.setErUtenlandskBankkonto(false);[m
+         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));[m
+         when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);[m
+[36m@@ -43,13 +46,29 @@[m [mpublic class KontonummerSystemdataTest {[m
+         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();[m
+ [m
+         assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));[m
+[31m-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER));[m
+[32m+[m[32m        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_SYSTEM));[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Test[m
+[32m+[m[32m    public void skalIkkeOppdatereKontonummerDersomKildeErBruker() {[m
+[32m+[m[32m        Personalia personalia = new Personalia();[m
+[32m+[m[32m        personalia.setKontonummer(KONTONUMMER_SYSTEM);[m
+[32m+[m[32m        personalia.setErUtenlandskBankkonto(false);[m
+[32m+[m[32m        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedKontonummer());[m
+[32m+[m[32m        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);[m
+[32m+[m
+[32m+[m[32m        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);[m
+[32m+[m
+[32m+[m[32m        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();[m
+[32m+[m
+[32m+[m[32m        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));[m
+[32m+[m[32m        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_BRUKER));[m
+     }[m
+ [m
+     @Test[m
+     public void skalSetteNullDersomUtenlandskKontonummer() {[m
+         Personalia personalia = new Personalia();[m
+[31m-        personalia.setKontonummer(KONTONUMMER);[m
+[32m+[m[32m        personalia.setKontonummer(KONTONUMMER_SYSTEM);[m
+         personalia.setErUtenlandskBankkonto(true);[m
+         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));[m
+         when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);[m
+[36m@@ -93,4 +112,11 @@[m [mpublic class KontonummerSystemdataTest {[m
+         assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));[m
+         assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());[m
+     }[m
+[32m+[m
+[32m+[m[32m    private JsonInternalSoknad createJsonInternalSoknadWithUserDefinedKontonummer() {[m
+[32m+[m[32m        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);[m
+[32m+[m[32m        jsonInternalSoknad.getSoknad().getData().getPersonalia()[m
+[32m+[m[32m                .setKontonummer(new JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(KONTONUMMER_BRUKER));[m
+[32m+[m[32m        return jsonInternalSoknad;[m
+[32m+[m[32m    }[m
+ }[m
