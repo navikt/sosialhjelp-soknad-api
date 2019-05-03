@@ -19,6 +19,7 @@ public class DevSoknadsosialhjelpServer {
         SoknadsosialhjelpServer.setFrom("environment-test.properties");
         DataSource dataSource = null;
 
+
         if (System.getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb").equals("true")) {
             dataSource = buildDataSource("hsqldb.properties");
         }
@@ -26,6 +27,9 @@ public class DevSoknadsosialhjelpServer {
         final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/soknadsosialhjelp-server", dataSource);
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         TestCertificates.setupKeyAndTrustStore();
+        if ("Mac OS X".equals(System.getProperty("os.name")) || "Linux".equals(System.getProperty("os.name"))) {
+            System.setProperty("sendsoknad.datadir", System.getProperty("user.home")+"/kodeverk/sendsoknad");
+        }
         server.start();
     }
 
