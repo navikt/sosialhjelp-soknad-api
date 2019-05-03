@@ -1,19 +1,22 @@
-Vi har registrert at du {antall, plural,
-    =0 {ikke}
-    other {}
-} har hatt {antall, plural,
-    =0 {skattbare inntekter}
-    =1 {en skattbar inntekt}
-    =2 {to skattbare inntekter}
-    =3 {tre skattbare inntekter}
-    =4 {fire skattbare inntekter}
-    =5 {fem skattbare inntekter}
-    =6 {seks skattbare inntekter}
-    =7 {sju skattbare inntekter}
-    =8 {åtte skattbare inntekter}
-    =9 {ni skattbare inntekter}
-    =10 {ti skattbare inntekter}
-    =11 {elleve skattbare inntekter}
-    =12 {tolv skattbare inntekter}
-    other {# skattbare inntekter}
-} siste måned
+{antall, plural,
+    =0 {
+        Ingen skattbare inntekter hentet inn fra Skatteetaten
+    }
+    other {
+        Vi har hentet inn {antall, plural,
+            =1 {en}
+            =2 {to}
+            =3 {tre}
+            =4 {fire}
+            =5 {fem}
+            =6 {seks}
+            =7 {sju}
+            =8 {åtte}
+            =9 {ni}
+            =10 {ti}
+            =11 {elleve}
+            =12 {tolv}
+            other {#}
+        } skattbare inntekter fra Skatteetaten
+    }
+}
