@@ -78,7 +78,6 @@ public class SkattbarInntektService {
         List<Utbetaling> utbetalingerPensjon = new ArrayList<>();
         List<Utbetaling> dagmammaIEgenBolig = new ArrayList<>();
         List<Utbetaling> lottOgPartInnenFiske = new ArrayList<>();
-        List<Utbetaling> naringsinntekt = new ArrayList<>();
 
         skattbarInntekt.oppgaveInntektsmottaker.forEach(oppgaveInntektsmottaker -> {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
@@ -98,9 +97,6 @@ public class SkattbarInntektService {
                 }
                 if (inntekt.lottOgPartInnenFiske != null) {
                     lottOgPartInnenFiske.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lott og part innen fiske"));
-                }
-                if (inntekt.naeringsinntekt != null) {
-                    naringsinntekt.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Næringsinntekt"));
                 }
             });
         });
@@ -128,7 +124,6 @@ public class SkattbarInntektService {
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(utbetalingerPensjon));
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(dagmammaIEgenBolig));
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(lottOgPartInnenFiske));
-        aggregertUtbetaling.addAll(trekkUtUtbetalinger(naringsinntekt));
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(forskuddstrekk));
 
         return aggregertUtbetaling;
