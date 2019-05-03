@@ -76,11 +76,9 @@ public class SkattbarInntektService {
     private List<Utbetaling> mapTilUtbetalinger(SkattbarInntekt skattbarInntekt) {
         List<Utbetaling> utbetalingerLonn = new ArrayList<>();
         List<Utbetaling> utbetalingerPensjon = new ArrayList<>();
-        List<Utbetaling> aldersUfoereEtterlatteAvtalefestetOgKrigspensjon = new ArrayList<>();
         List<Utbetaling> dagmammaIEgenBolig = new ArrayList<>();
         List<Utbetaling> lottOgPartInnenFiske = new ArrayList<>();
         List<Utbetaling> naringsinntekt = new ArrayList<>();
-        List<Utbetaling> ytelseFraOffentlige = new ArrayList<>();
 
         skattbarInntekt.oppgaveInntektsmottaker.forEach(oppgaveInntektsmottaker -> {
             YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
@@ -93,22 +91,16 @@ public class SkattbarInntektService {
                     utbetalingerLonn.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lønn"));
                 }
                 if (inntekt.pensjonEllerTrygd != null) {
-                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "PensjonEllerTrygd"));
-                }
-                if (inntekt.aldersUfoereEtterlatteAvtalefestetOgKrigspensjon != null) {
-                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "AldersUfoereEtterlatteAvtalefestetOgKrigspensjon"));
+                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Pensjon"));
                 }
                 if (inntekt.dagmammaIEgenBolig != null) {
-                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "DagmammaIEgenBolig"));
+                    dagmammaIEgenBolig.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Dagmamma i egen bolig"));
                 }
                 if (inntekt.lottOgPartInnenFiske != null) {
-                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "LottOgPartInnenFiske"));
+                    lottOgPartInnenFiske.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lott og part innen fiske"));
                 }
                 if (inntekt.naeringsinntekt != null) {
-                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Naeringsinntekt"));
-                }
-                if (inntekt.ytelseFraOffentlige != null) {
-                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "YtelseFraOffentlige"));
+                    naringsinntekt.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Næringsinntekt"));
                 }
             });
         });
@@ -134,11 +126,9 @@ public class SkattbarInntektService {
         List<Utbetaling> aggregertUtbetaling = new ArrayList<>();
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(utbetalingerLonn));
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(utbetalingerPensjon));
-        aggregertUtbetaling.addAll(trekkUtUtbetalinger(aldersUfoereEtterlatteAvtalefestetOgKrigspensjon));
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(dagmammaIEgenBolig));
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(lottOgPartInnenFiske));
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(naringsinntekt));
-        aggregertUtbetaling.addAll(trekkUtUtbetalinger(ytelseFraOffentlige));
         aggregertUtbetaling.addAll(trekkUtUtbetalinger(forskuddstrekk));
 
         return aggregertUtbetaling;

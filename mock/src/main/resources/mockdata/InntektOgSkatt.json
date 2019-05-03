@@ -71,7 +71,7 @@
     },
     {
       "opplysningspliktigId": "811224472",
-      "virksomhetId": "910229567",
+      "virksomhetId": "910229563",
       "kalendermaaned": "2019-04",
       "inntektsmottaker": {
         "personidentifikator": "01029413157"
@@ -90,8 +90,8 @@
     }
   ,
     {
-      "opplysningspliktigId": "810950692",
-      "virksomhetId": "910229567",
+      "opplysningspliktigId": "810950695",
+      "virksomhetId": "910229569",
       "kalendermaaned": "2019-04",
       "inntektsmottaker": {
         "personidentifikator": "05014300122"
