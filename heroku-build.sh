@@ -24,6 +24,7 @@ case $arg in
     -h|--help)
     echo "$usage" >&2
     exit 1
+    ;;
     -n|--namespace)
     echo "set namespace"
     ;;
@@ -56,15 +57,7 @@ function install_filformat_version() {
     git checkout tags/$filformat_version
     mvn clean install
     mvn install:install-file -Dfile=target/soknadsosialhjelp-filformat-1.0-SNAPSHOT.jar \
-    -DgroupId=no.nav.sbl.dialogarena -Dartifaeivind@eivind-linux:~/Projects/sosialhjelp-soknad-api ((c27df1ee6d...)|BISECTING)$ git bisect good
-8cbc62d70eaf31f5d17e8de6d79505ab1ae26df7 is the first bad commit
-commit 8cbc62d70eaf31f5d17e8de6d79505ab1ae26df7
-Author: Oskar Asplin <oskarasplin@gmail.com>
-Date:   Tue Apr 9 13:11:29 2019 +0200
-
-    DIGISOS-1049 Endret til filromat-versjon som funker utenfor image
-
-:100644 100644 bee9f2a47e15d1ebe39bcd8ca4c22de34f38323d 029ec51e090e0f6a79eec0fe6376d142f5698405 M	pom.xmlctId=soknadsosialhjelp-filformat -Dversion=$filformat_version
+    -DgroupId=no.nav.sbl.dialogarena -DartifactId=soknadsosialhjelp-filformat -Dversion=$filformat_version
     go_to_project_root
     rm -rf $filformat_version
 }
@@ -77,8 +70,15 @@ function start_docker_image() {
     # FIXME: Deploy fat jar to Heroku, but useful for testing mocked environment locally
     image_name=backend-test
     docker build -t $image_name -f DockerfileHeroku .
-    docker rm $(docker stop $(docker ps -a -q --filter ancestor=$image_name --format="{{.ID}}"))
-    docker run -p 8080:8080 -t image_name
+    docker run -p 8080:8080 -t $image_name
+}
+
+function stop_docker_images() {
+    for container_id in $(docker ps --filter name=$image_name --format="{{.ID}}")
+    do
+        echo "Stopper container $container_id"
+        docker rm -f $container_id
+    done
 }
 
 #find_filformat_version
@@ -88,7 +88,7 @@ function start_docker_image() {
 # TODO: Check if version is already available or use CLI options to toggle
 #install_filformat_version
 
-#build_project
-
-mvn clean package -DskipTests
+build_project
+#mvn clean package -DskipTests
+stop_docker_images
 start_docker_image
