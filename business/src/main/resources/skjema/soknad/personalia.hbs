@@ -104,8 +104,6 @@
             {{#if @root.utvidetSoknad}}
                 {{#hvisLik kontonummer.kilde "system"}}
                     {{{settInnInfotekst "kontakt.system.personalia.infotekst.tekst"}}}
-                {{else}}
-                    {{{settInnInfotekst "kontakt.kontonummer.infotekst.tekst"}}}
                 {{/hvisLik}}
             {{/if}}
             <li>
@@ -140,6 +138,7 @@
                 {{else}}
                     {{{hentSvaralternativer "kontakt.kontonummer"}}}
                     {{{settInnKnappTilgjengeligTekst "systeminfo.avbrytendringknapp.label"}}}
+                    {{{settInnInfotekst "kontakt.kontonummer.infotekst.tekst"}}}
                 {{/hvisLik}}
             {{/if}}
         </ul>
