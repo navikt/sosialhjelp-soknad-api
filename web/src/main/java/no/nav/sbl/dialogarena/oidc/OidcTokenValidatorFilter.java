@@ -26,8 +26,6 @@ public class OidcTokenValidatorFilter implements Filter {
         } else {
             jaxrsOIDCTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain);
         }
-
-        jaxrsOIDCTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain);
     }
 
     @Override
