@@ -67,7 +67,7 @@ public class NorgServiceTest {
         setProperty("environment.name", "p");
 
         String gt = "0514";
-        String sosialOrgNummer = "959377677";
+        String sosialOrgNummer = "974592274";
         NorgConsumer.RsNorgEnhet norgEnhet = lagRsNorgEnhet();
         norgEnhet.enhetNr = "0513";
         when(norgConsumer.finnEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
@@ -81,7 +81,7 @@ public class NorgServiceTest {
         setProperty("environment.name", "p");
 
         String gt = "0513";
-        String sosialOrgNummer = "961381096";
+        String sosialOrgNummer = "976641175";
         NorgConsumer.RsNorgEnhet norgEnhet = lagRsNorgEnhet();
         norgEnhet.enhetNr = "0513";
         when(norgConsumer.finnEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);

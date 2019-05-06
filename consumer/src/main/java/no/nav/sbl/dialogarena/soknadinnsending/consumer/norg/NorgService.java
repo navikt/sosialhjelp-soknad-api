@@ -49,7 +49,7 @@ public class NorgService {
             Lom og Skjåk har samme enhetsnummer. Derfor vil alle søknader bli sendt til Skjåk når vi henter organisajonsnummer basert på enhetNr.
             Dette er en midlertidig fix for å få denne casen til å fungere.
             */
-            enhet.sosialOrgnr = "959377677";
+            enhet.sosialOrgnr = "974592274";
         } else {
             enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
         }
