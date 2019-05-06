@@ -81,14 +81,47 @@ function stop_docker_images() {
     done
 }
 
+function heroku_login {
+    heroku auth:login
+    heroku container:login
+}
+
+function create_app {
+    app_name=$1
+    # Name must
+    # - not be taken
+    # - not be over 30 characters
+    # - start with a letter, end with a letter or digit and can only contain lowercase letters, digits, and dashes
+    heroku create $app_name
+}
+
+# FIXME: App name (-a/--app) must be provided to all Heroku commands if app was not created with Heroku CLI
+function deploy_app {
+    heroku container:push --recursive
+    heroku container:release web
+}
+
+function restart_app {
+    heroku ps:restart
+}
+
+function shell_to_app {
+    heroku run bash
+}
+
+# TODO: Check if version is already available or use CLI options to toggle installation
 #find_filformat_version
-
 #echo "Using filformat.version $filformat_version"
-
-# TODO: Check if version is already available or use CLI options to toggle
 #install_filformat_version
 
 build_project
-#mvn clean package -DskipTests
-stop_docker_images
-start_docker_image
+
+# TODO: Add "dry-run" flag to run as container on localhost
+#stop_docker_images
+#start_docker_image
+
+#heroku_login
+#App can be created manually
+#create_app test-asdf-server
+
+deploy_app
