@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -68,7 +69,7 @@ public class InformasjonRessursTest {
 
     @Before
     public void setUp() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
+        System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
         when(personaliaBolk.hentPersonalia(anyString())).thenReturn(personalia());
 

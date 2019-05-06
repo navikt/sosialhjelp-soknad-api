@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.DEFAULT_MOCK_TILLATT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMOCK_PROPERTY;
 
@@ -34,7 +35,7 @@ public class ApplicationContextTest {
         System.setProperty("no.nav.modig.security.sts.url", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.password", "");
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName());
         getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 
         SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();

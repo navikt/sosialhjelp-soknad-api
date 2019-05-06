@@ -1,9 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -18,13 +17,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Collections;
 
 import static java.util.Collections.singletonList;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.rest.ressurser.VedleggRessurs.MAKS_TOTAL_FILSTORRELSE;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class VedleggRessursTest {
+public class VedleggRessursUtenOidcTest {
 
     public static final long VEDLEGGSID = 1;
     public static final String BEHANDLINGSID = "123";
@@ -38,8 +38,8 @@ public class VedleggRessursTest {
 
     @Before
     public void setUp() {
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty("authentication.isRunningWithOidc", "true");
+        System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        System.setProperty("authentication.isRunningWithOidc", "false");
 
         Vedlegg vedlegg = new Vedlegg();
         vedlegg.setStorrelse(MAKS_TOTAL_FILSTORRELSE + 1L);
@@ -50,8 +50,7 @@ public class VedleggRessursTest {
 
     @After
     public void tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.clearProperty(SUBJECTHANDLER_KEY);
     }
 
     @Test(expected = OpplastingException.class)

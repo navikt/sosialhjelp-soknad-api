@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.sosialhjelp.pdf.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
+import no.nav.security.oidc.api.Unprotected;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import java.net.URI;
 import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 
 @Controller
+@Unprotected
 @Path("/internal")
 public class InternalRessurs {
     @Inject
