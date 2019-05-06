@@ -34,7 +34,6 @@ public class NorgService {
         }
 
         RsNorgEnhet rsNorgEnhet = norgConsumer.finnEnhetForGeografiskTilknytning(gt);
-        logger.info("LOOOM: " + rsNorgEnhet.toString());
         if (rsNorgEnhet == null) {
             logger.warn("Kunne ikke finne NorgEnhet for gt: " + gt);
             return null;
