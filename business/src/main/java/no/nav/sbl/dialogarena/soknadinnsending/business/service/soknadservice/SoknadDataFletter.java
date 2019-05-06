@@ -57,10 +57,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
@@ -438,39 +435,67 @@ public class SoknadDataFletter {
     }
 
     public void sendSoknad(String behandlingsId) {
-        WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
-            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
-            throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+        final String eier = getSubjectHandler().getUid();
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        if (soknadUnderArbeidOptional.isPresent() && soknadUnderArbeidOptional.get().getTilknyttetBehandlingsId() != null){
+            SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidOptional.get();
+            if (getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()){
+                logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
+                throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+            }
+            logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
+
+            VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
+            Map<String, String> ekstraMetadata = hentEkstraMetadata(soknadUnderArbeid);
+
+            HovedskjemaMetadata hovedskjema = lagHovedskjema("");
+            henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, hovedskjema, vedlegg, ekstraMetadata);
+            oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
+
+            try {
+                WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+                lokalDb.slettSoknad(soknad, HendelseType.INNSENDT);
+            } catch (Exception ignored) { }
+
+            forberedInnsendingMedNyModell(soknadUnderArbeid);
+
+            soknadMetricsService.sendtSoknad("NAV 35-18.01", true);
+        } else {
+            WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+            if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
+                logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
+                throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+            }
+
+            logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
+
+            legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(behandlingsId, eier, soknad);
+
+            final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+
+            HovedskjemaMetadata hovedskjema = lagHovedskjema(soknad.getUuid());
+            final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
+            final Map<String, String> ekstraMetadata = hentEkstraMetadata(soknadUnderArbeid);
+
+            henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, hovedskjema, vedlegg, ekstraMetadata);
+            oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
+            lokalDb.slettSoknad(soknad, HendelseType.INNSENDT);
+
+            forberedInnsendingMedNyModell(soknadUnderArbeid);
+
+            soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
         }
+    }
 
-        logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
-
+    private void legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(String behandlingsId, String eier, WebSoknad soknad) {
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
-        final String eier = getSubjectHandler().getUid();
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getSoknadId();
         opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, eier, soknadUnderArbeidId);
-
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-
-        HovedskjemaMetadata hovedskjema = lagHovedskjema(soknad.getUuid());
-        final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
-        final Map<String, String> ekstraMetadata = hentEkstraMetadata(soknadUnderArbeid);
-
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, hovedskjema, vedlegg, ekstraMetadata);
-        oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
-        lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
-
-        forberedInnsendingMedNyModell(soknadUnderArbeid);
-
-        soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
 
     private Map<String, String> hentEkstraMetadata(SoknadUnderArbeid soknadUnderArbeid) {
