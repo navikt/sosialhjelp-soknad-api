@@ -26,7 +26,9 @@ import java.util.Map;
 
 import javax.xml.bind.JAXB;
 
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.Before;
@@ -115,7 +117,7 @@ public class SoknadDataFletterTest {
     ApplicationContext applicationContex;
     @Mock
     SoknadMetricsService soknadMetricsService;
-    
+
     @Mock
     private SoknadUnderArbeidService soknadUnderArbeidService;
 
@@ -141,6 +143,8 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.alternativRepresentasjonService = alternativRepresentasjonService;
         soknadServiceUtil.ekstraMetadataService = ekstraMetadataService;
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        System.setProperty("authentication.isRunningWithOidc", "false");
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(Collections.emptyList());
         when(config.hentStruktur(any(String.class))).thenReturn(new SoknadStruktur());
@@ -160,7 +164,7 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.startSoknad(SosialhjelpInformasjon.SKJEMANUMMER);
 
         ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
-        String bruker = StaticSubjectHandler.getSubjectHandler().getUid();
+        String bruker = OidcFeatureToggleUtils.getUserId();
         verify(henvendelsesConnector).startSoknad(eq(bruker), eq(SosialhjelpInformasjon.SKJEMANUMMER), uid.capture(), Matchers.any(SoknadType.class));
         WebSoknad soknad = new WebSoknad()
                 .medId(soknadId)

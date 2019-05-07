@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;

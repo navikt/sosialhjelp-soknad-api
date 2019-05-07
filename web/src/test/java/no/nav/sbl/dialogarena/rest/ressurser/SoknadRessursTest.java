@@ -1,11 +1,13 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +20,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
 
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs.XSRF_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -39,12 +40,19 @@ public class SoknadRessursTest {
     @InjectMocks
     SoknadRessurs ressurs;
 
-    private StartSoknad type;
+    StartSoknad type;
 
     @Before
     public void setUp() {
-        System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        System.setProperty("authentication.isRunningWithOidc", "true");
         type = new StartSoknad();
+    }
+
+    @After
+    public void tearDown() {
+        SubjectHandler.resetOidcSubjectHandlerService();
+        System.setProperty("authentication.isRunningWithOidc", "false");
     }
 
     @Test

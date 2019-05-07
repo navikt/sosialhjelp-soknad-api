@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.joda.time.DateTime.now;
@@ -26,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -72,7 +70,6 @@ public class SoknadServiceIntegrasjonsTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, NamingException {
-        System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName());
         System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
     }
 

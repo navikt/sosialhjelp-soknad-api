@@ -13,7 +13,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.security.auth.Subject;
 import javax.ws.rs.client.Client;
@@ -44,9 +43,10 @@ public class AdresseSokConsumerImplTest {
     
     @BeforeClass
     public static void oppsettForInnloggetBruker() {
+        System.setProperty("authentication.isRunningWithOidc", "false");
         oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
     }
-    
+
     @AfterClass
     public static void fjernOppsettForInnloggetBruker() {
         if (oldSubjectHandlerImplementationClass == null) {

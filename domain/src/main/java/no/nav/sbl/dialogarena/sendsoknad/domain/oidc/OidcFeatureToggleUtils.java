@@ -1,8 +1,4 @@
-package no.nav.sbl.dialogarena.oidc;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
 public class OidcFeatureToggleUtils {
 
@@ -14,13 +10,20 @@ public class OidcFeatureToggleUtils {
         if (isRunningWithOidc()) {
             return SubjectHandler.getUserIdFromToken();
         }
-        return getSubjectHandler().getUid();
+        return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getUid();
     }
 
     public static String getToken() {
         if (isRunningWithOidc()) {
             return SubjectHandler.getToken();
         }
-        return getSubjectHandler().getEksternSsoToken();
+        return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getEksternSsoToken();
+    }
+
+    public static String getConsumerId() {
+        if (isRunningWithOidc()) {
+            return SubjectHandler.getConsumerId();
+        }
+        return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getConsumerId();
     }
 }

@@ -5,6 +5,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
@@ -81,6 +83,8 @@ public class WebSoknadConverterTest {
                 .withOrgnummer(ORGNUMMER)
                 .withNavEnhetsnavn(NAVENHET));
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        System.setProperty("authentication.isRunningWithOidc", "false");
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
     @Test

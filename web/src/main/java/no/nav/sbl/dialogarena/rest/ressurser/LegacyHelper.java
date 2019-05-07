@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;

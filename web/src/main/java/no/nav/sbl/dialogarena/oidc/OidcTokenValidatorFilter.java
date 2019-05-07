@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import javax.servlet.*;
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.oidc.OidcFeatureToggleUtils.isRunningWithOidc;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.isRunningWithOidc;
 
 public class OidcTokenValidatorFilter implements Filter {
 

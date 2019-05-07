@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import no.nav.sbl.dialogarena.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
