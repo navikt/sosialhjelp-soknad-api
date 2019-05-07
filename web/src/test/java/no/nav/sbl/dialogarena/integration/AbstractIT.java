@@ -19,6 +19,10 @@ public abstract class AbstractIT {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        beforeClass(false);
+    }
+
+    public static void beforeClass(boolean isRunningWithOidc) throws Exception {
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
@@ -26,7 +30,9 @@ public abstract class AbstractIT {
         System.setProperty("jersey.test.host", "localhost");
         jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web-integration.xml"), "/sendsoknad", buildDataSource("hsqldb.properties"));
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
-        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // pga saksoversikt uten oidc.
+        setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
+        setProperty("authentication.isRunningWithOidc", isRunningWithOidc ? "true" : "false");
         jetty.start();
     }
 

@@ -16,4 +16,11 @@ public class OidcFeatureToggleUtils {
         }
         return getSubjectHandler().getUid();
     }
+
+    public static String getToken() {
+        if (isRunningWithOidc()) {
+            return SubjectHandler.getToken();
+        }
+        return getSubjectHandler().getEksternSsoToken();
+    }
 }
