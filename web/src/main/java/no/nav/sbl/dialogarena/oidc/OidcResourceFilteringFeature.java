@@ -15,12 +15,9 @@ public class OidcResourceFilteringFeature implements DynamicFeature {
     private static final List<Class> WHITELISTED_CLASSES = Arrays.asList(WadlModelProcessor.OptionsHandler.class); // Add Resource-classes from external libraries we need to use but can't annotate with @unprotected.
     private static final List<Class> WHITELISTED_PARENT_CLASSES = Arrays.asList(OptionsMethodProcessor.class);
 
-    private static final List<Class> WHITELISTED_CLASSES_TEST = Arrays.asList(); // Added for CORS-support
-    private static final List<Class> WHITELISTED_PARENT_CLASSES_TEST = Arrays.asList();
-
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-        if( isWhitelistedInProd(resourceInfo) || isWhitelistedWhenNotRunningInProd(resourceInfo)) {
+        if( !OidcFeatureToggleUtils.isRunningWithOidc() || isWhitelistedInProd(resourceInfo) || isWhitelistedWhenNotRunningInProd()) {
             return;
         }
         context.register(OidcContainerRequestFilter.class);
@@ -31,12 +28,8 @@ public class OidcResourceFilteringFeature implements DynamicFeature {
                 || WHITELISTED_PARENT_CLASSES.contains(resourceInfo.getResourceClass().getEnclosingClass());
     }
 
-    private boolean isWhitelistedWhenNotRunningInProd(ResourceInfo resourceInfo) {
-        return !ServiceUtils.isRunningInProd() &&
-                (isOidcMock()
-                        || WHITELISTED_CLASSES_TEST.contains(resourceInfo.getResourceClass())
-                        || WHITELISTED_PARENT_CLASSES_TEST.contains(resourceInfo.getResourceClass().getEnclosingClass())
-                );
+    private boolean isWhitelistedWhenNotRunningInProd() {
+        return !ServiceUtils.isRunningInProd() && isOidcMock();
     }
 
     private boolean isOidcMock() {
