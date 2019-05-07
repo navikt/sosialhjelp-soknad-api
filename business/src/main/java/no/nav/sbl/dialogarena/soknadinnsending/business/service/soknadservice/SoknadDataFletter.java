@@ -463,8 +463,7 @@ public class SoknadDataFletter {
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
         logAlderTilKibana(eier);
     }
-
-
+    
     private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe) {
         SoknadUnderArbeid soknadUnderArbeid;
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), soknad.getAktoerId());
