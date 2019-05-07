@@ -63,7 +63,7 @@ public class OpplastetVedleggService {
         MIME_TIL_EXT.put("image/jpeg", ".jpg");
     }
 
-    public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
+    public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn, boolean convertedFromFaktum) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final Long soknadId = soknadUnderArbeid.getSoknadId();
@@ -79,22 +79,26 @@ public class OpplastetVedleggService {
                 .withSoknadId(soknadId)
                 .withSha512(sha512);
 
-        filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
+        if (!convertedFromFaktum){
+            filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
+        }
         opplastetVedlegg.withFilnavn(filnavn);
 
         final String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
         opplastetVedlegg.withUuid(uuid);
 
-        final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
-                .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
-                .findFirst().get();
+        if (!convertedFromFaktum){
+            final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
+                    .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
+                    .findFirst().get();
 
-        if (jsonVedlegg.getFiler() == null){
-            jsonVedlegg.setFiler(new ArrayList<>());
+            if (jsonVedlegg.getFiler() == null){
+                jsonVedlegg.setFiler(new ArrayList<>());
+            }
+            jsonVedlegg.withStatus(LastetOpp.toString()).getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
+
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
         }
-        jsonVedlegg.withStatus(LastetOpp.toString()).getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
-
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
         return opplastetVedlegg;
     }
@@ -136,7 +140,7 @@ public class OpplastetVedleggService {
             if (konvertertOpplastedeVedlegg != null && !konvertertOpplastedeVedlegg.isEmpty()) {
                 for (OpplastetVedlegg opplastetVedlegg : konvertertOpplastedeVedlegg) {
                     saveVedleggAndUpdateVedleggstatus(behandlingsId, opplastetVedlegg.getVedleggType().getSammensattType(),
-                            opplastetVedlegg.getData(), opplastetVedlegg.getFilnavn());
+                            opplastetVedlegg.getData(), opplastetVedlegg.getFilnavn(), true);
                 }
             }
         }

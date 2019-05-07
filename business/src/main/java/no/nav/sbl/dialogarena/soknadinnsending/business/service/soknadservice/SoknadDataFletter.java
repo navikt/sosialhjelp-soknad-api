@@ -487,7 +487,7 @@ public class SoknadDataFletter {
         }
     }
 
-    private void legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(String behandlingsId, String eier, WebSoknad soknad) {
+    public void legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(String behandlingsId, String eier, WebSoknad soknad) {
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
