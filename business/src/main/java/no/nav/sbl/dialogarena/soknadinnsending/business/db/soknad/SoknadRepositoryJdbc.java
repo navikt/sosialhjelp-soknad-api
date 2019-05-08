@@ -321,9 +321,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         if (faktum.getValue() != null && faktum.getValue().getBytes(StandardCharsets.UTF_8).length > 699) {
             logger.error("Prøver å opppdatere faktum med en value som overstiger 699 byte. (Faktumkey: {}, Faktumtype: {}) ",
                     faktum.getKey(), faktum.getTypeString());
-            while (faktum.getValue().getBytes(StandardCharsets.UTF_8).length > 699){
-                faktum.setValue(faktum.getValue().substring(0, faktum.getValue().length()-1));
-            }
+
+            faktum.setValue(begrensTilNBytes(faktum.getValue(), 699));
         }
         if (lagretFaktum.er(Faktum.FaktumType.BRUKERREGISTRERT) || systemLagring) {
             getJdbcTemplate()
@@ -331,6 +330,13 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                             faktum.getValue(), faktum.getFaktumId());
         }
         lagreAlleEgenskaper(faktum, systemLagring);
+    }
+
+    static String begrensTilNBytes(String verdi, int n) {
+        while (verdi.getBytes(StandardCharsets.UTF_8).length > n){
+            verdi = verdi.substring(0, verdi.length()-1);
+        }
+        return verdi;
     }
 
     private void lagreAlleEgenskaper(Faktum faktum, Boolean systemLagring) {
