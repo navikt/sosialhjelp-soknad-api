@@ -142,11 +142,6 @@ public class SoknadDataFletter {
     private SystemdataUpdater systemdata;
 
     private Map<String, BolkService> bolker;
-    private final SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson;
-
-    {
-        sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
-    }
 
     @PostConstruct
     public void initBolker() {
