@@ -9,8 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -319,10 +317,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         Faktum lagretFaktum = hentFaktum(faktum.getFaktumId());
         // Siden faktum-value er endret fra CLOB til Varchar må vi få med oss om det skulle oppstå tilfeller
         // hvor dette lager problemer. Logges som kritisk
-        if (faktum.getValue() != null && faktum.getValue().length() > 500) {
-            logger.error("Prøver å opppdatere faktum med en value som overstiger 500 tegn. (Faktumkey: {}, Faktumtype: {}) ",
+        if (faktum.getValue() != null && faktum.getValue().length() > 699) {
+            logger.error("Prøver å opppdatere faktum med en value som overstiger 699 tegn. (Faktumkey: {}, Faktumtype: {}) ",
                     faktum.getKey(), faktum.getTypeString());
-            faktum.setValue(faktum.getValue().substring(0, 500));
+            faktum.setValue(faktum.getValue().substring(0, 699));
         }
         if (lagretFaktum.er(Faktum.FaktumType.BRUKERREGISTRERT) || systemLagring) {
             getJdbcTemplate()

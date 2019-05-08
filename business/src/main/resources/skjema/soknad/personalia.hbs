@@ -77,9 +77,6 @@
                 {{/if}}
             {{else}}
                 <h3>{{ hentTekst "kontakt.telefon.sporsmal" }}</h3>
-                {{#if @root.utvidetSoknad}}
-                    {{{settInnInfotekst "kontakt.telefon.infotekst.tekst"}}}
-                {{/if}}
                 <li>
                     <span class="label">{{ hentTekst "kontakt.telefon.label" }}</span>
                     <ul class="svar-liste">
@@ -98,14 +95,13 @@
                 </li>
                 {{#if @root.utvidetSoknad}}
                     {{{settInnKnappTilgjengeligTekst "systeminfo.avbrytendringknapp.label"}}}
+                    {{{settInnInfotekst "kontakt.telefon.infotekst.tekst"}}}
                 {{/if}}
             {{/hvisLik}}
             <h3>{{ hentTekst "kontakt.kontonummer.sporsmal" }}</h3>
             {{#if @root.utvidetSoknad}}
                 {{#hvisLik kontonummer.kilde "system"}}
                     {{{settInnInfotekst "kontakt.system.personalia.infotekst.tekst"}}}
-                {{else}}
-                    {{{settInnInfotekst "kontakt.kontonummer.infotekst.tekst"}}}
                 {{/hvisLik}}
             {{/if}}
             <li>
@@ -140,6 +136,7 @@
                 {{else}}
                     {{{hentSvaralternativer "kontakt.kontonummer"}}}
                     {{{settInnKnappTilgjengeligTekst "systeminfo.avbrytendringknapp.label"}}}
+                    {{{settInnInfotekst "kontakt.kontonummer.infotekst.tekst"}}}
                 {{/hvisLik}}
             {{/if}}
         </ul>
