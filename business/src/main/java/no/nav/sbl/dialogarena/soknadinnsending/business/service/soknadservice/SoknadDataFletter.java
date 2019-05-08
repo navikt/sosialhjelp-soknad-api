@@ -135,10 +135,10 @@ public class SoknadDataFletter {
 
     @Inject
     private InnsendingService innsendingService;
-    
+
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
-    
+
     @Inject
     private SystemdataUpdater systemdata;
 
@@ -239,13 +239,13 @@ public class SoknadDataFletter {
         systemdata.update(soknadUnderArbeid);
 
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
-        
+
         startTimer.stop();
         startTimer.report();
-        
+
         return behandlingsId;
     }
-    
+
     public static JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
         return new JsonInternalSoknad().withSoknad(new JsonSoknad()
                     .withData(new JsonData()
@@ -465,9 +465,11 @@ public class SoknadDataFletter {
         forberedInnsendingMedNyModell(soknadUnderArbeid, vedleggListe);
 
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
-        logAlderTilKibana(eier);
+        if(!soknadUnderArbeid.erEttersendelse()){
+            logAlderTilKibana(eier);
+        }
     }
-    
+
     private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe) {
         SoknadUnderArbeid soknadUnderArbeid;
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), soknad.getAktoerId());
