@@ -23,4 +23,9 @@ public class VedleggType {
     public boolean equals(Object obj) {
         return this.sammensattType.equals(((VedleggType) obj).getSammensattType());
     }
+
+    @Override
+    public int hashCode() {
+        return sammensattType != null ? 31 * sammensattType.hashCode() : 0;
+    }
 }
