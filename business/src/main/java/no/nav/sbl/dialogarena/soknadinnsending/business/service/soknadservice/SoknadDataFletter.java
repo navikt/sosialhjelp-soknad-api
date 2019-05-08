@@ -56,7 +56,12 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -485,6 +490,7 @@ public class SoknadDataFletter {
 
             soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
         }
+        logAlderTilKibana(eier);
     }
 
     public void legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(String behandlingsId, String eier, WebSoknad soknad) {
@@ -552,5 +558,30 @@ public class SoknadDataFletter {
         m.filnavn = jsonVedlegg.getType();
         m.status = Vedlegg.Status.valueOf(jsonVedlegg.getStatus());
         return m;
+    }
+
+    private static void logAlderTilKibana(String eier) {
+        if (eier != null && Integer.parseInt(eier.substring(0, 1)) < 4){
+            String fodselsdato = eier.substring(0, 6);
+            DateTimeFormatter fmt = new DateTimeFormatterBuilder()
+                    .appendPattern("ddMM")
+                    .appendValueReduced(ChronoField.YEAR_OF_ERA, 2, 2, LocalDate.now().minusYears(100))
+                    .toFormatter();
+            LocalDate birthDate = LocalDate.parse(fodselsdato, fmt);
+            int age = calculateAge(birthDate);
+            if ( age > 0 && age < 30 ) {
+                logger.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: " + age);
+            } else {
+                logger.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder:" + age);
+            }
+        }
+    }
+
+    static int calculateAge(LocalDate birthDate) {
+        if (birthDate != null) {
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        } else {
+            return 0;
+        }
     }
 }

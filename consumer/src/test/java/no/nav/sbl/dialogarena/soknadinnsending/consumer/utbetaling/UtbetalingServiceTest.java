@@ -71,13 +71,6 @@ public class UtbetalingServiceTest {
     }
 
     @Test
-    public void mapTilUtbetalingerIgnorererUtbetalingerSomIkkeErUtbetaltSisteTrettiDager() {
-        List<Utbetaling> utbetalinger = utbetalingService.mapTilUtbetalinger(lagWSHentUtbetalingsinformasjonResponseMedEnUtbetalingUtenforPeriode(wsPerson));
-
-        assertThat(utbetalinger.size(), is(1));
-    }
-
-    @Test
     public void ytelseTilUtbetalingMapperMaksimalWSUtbetalingerRiktig() {
         Utbetaling utbetaling = utbetalingService.ytelseTilUtbetaling(lagKomplettWSUtbetaling(wsPerson), lagKomplettWsYtelse(wsPerson));
         Utbetaling.Komponent komponent = utbetaling.komponenter.get(1);
