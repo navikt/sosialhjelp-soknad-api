@@ -127,7 +127,7 @@ public class SoknadDataFletter {
 
     @Inject
     private InnsendingService innsendingService;
-    
+
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
 
@@ -237,10 +237,10 @@ public class SoknadDataFletter {
         systemdata.update(soknadUnderArbeid);
 
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
-        
+
         startTimer.stop();
         startTimer.report();
-        
+
         return behandlingsId;
     }
 
@@ -436,8 +436,9 @@ public class SoknadDataFletter {
     public void sendSoknad(String behandlingsId) {
         final String eier = getSubjectHandler().getUid();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        SoknadUnderArbeid soknadUnderArbeid;
         if (soknadUnderArbeidOptional.isPresent() && soknadUnderArbeidOptional.get().getTilknyttetBehandlingsId() != null){
-            SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidOptional.get();
+            soknadUnderArbeid = soknadUnderArbeidOptional.get();
             if (getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()){
                 logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
                 throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
@@ -470,7 +471,7 @@ public class SoknadDataFletter {
 
             legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(behandlingsId, eier, soknad);
 
-            final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+            soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
             HovedskjemaMetadata hovedskjema = lagHovedskjema(soknad.getUuid());
             final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
@@ -484,7 +485,9 @@ public class SoknadDataFletter {
 
             soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
         }
-        logAlderTilKibana(eier);
+        if(!soknadUnderArbeid.erEttersendelse()){
+            logAlderTilKibana(eier);
+        }
     }
 
     public void legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(String behandlingsId, String eier, WebSoknad soknad) {

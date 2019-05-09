@@ -105,6 +105,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1219", "834210622")    // Bømlo
             .put("0515", "976641310")    // Vågå
             .put("0502", "974567776")    // Gjøvik
+            .put("0906", "940493021")    // Arendal
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -353,7 +354,8 @@ public class KommuneTilNavEnhetMapper {
                     "0513",
                     "0515",
                     "1219",
-                    "0502"
+                    "0502",
+                    "0906"
                 
                 
             ));
