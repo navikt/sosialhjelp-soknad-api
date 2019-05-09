@@ -58,6 +58,10 @@ public class SoknadService {
         lokalDb.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
     }
 
+    public void logForskjeller(SoknadUnderArbeid soknadUnderArbeid1, SoknadUnderArbeid soknadUnderArbeid2, String melding){
+        soknadDataFletter.logDersomForskjellMellomFaktumOgNyModell(soknadUnderArbeid1, soknadUnderArbeid2, melding);
+    }
+
     public WebSoknad hentSoknadFraLokalDb(long soknadId) {
         return lokalDb.hentSoknad(soknadId);
     }

@@ -132,11 +132,13 @@ public class SoknadRessurs {
         systemdata.update(soknadUnderArbeid);
 
         final JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
-        final JsonInternalSoknad notUpdatedJsonInternalSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
+        SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final JsonInternalSoknad notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.getJsonInternalSoknad();
 
         if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
             return false;
         } else {
+            soknadService.logForskjeller(notUpdatedSoknadUnderArbeid, soknadUnderArbeid, "Forskjell på systemdata i json: ");
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
             return true;
         }

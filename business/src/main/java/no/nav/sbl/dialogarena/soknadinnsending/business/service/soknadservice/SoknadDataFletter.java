@@ -1,5 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.flipkart.zjsonpatch.DiffFlags;
+import com.flipkart.zjsonpatch.JsonDiff;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
@@ -19,9 +25,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.Ve
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
@@ -32,6 +40,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -55,18 +69,18 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.flipkart.zjsonpatch.DiffFlags.*;
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
@@ -78,6 +92,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sa
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ENHET_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ORGNR_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -471,10 +486,55 @@ public class SoknadDataFletter {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+
+        logDersomForskjellMellomFaktumOgNyModell(konvertertSoknadUnderArbeid, soknadUnderArbeid, "DIGISOS-1212 Forskjell i json: ");
 
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getSoknadId();
         opplastetVedleggService.legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(behandlingsId, eier, soknadUnderArbeidId);
+    }
+
+    public void logDersomForskjellMellomFaktumOgNyModell(SoknadUnderArbeid konvertertSoknadUnderArbeid, SoknadUnderArbeid soknadUnderArbeid, String melding) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
+        ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+        JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
+        JsonSoknad soknadKonvertert = konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad();
+        sortOkonomi(soknad.getData().getOkonomi());
+        sortOkonomi(soknadKonvertert.getData().getOkonomi());
+        if (!soknad.equals(soknadKonvertert)){
+            try {
+                byte[] jsonSoknad = mapJsonSoknadTilFil(soknad, writer);
+                byte[] jsonSoknadKonvertert = mapJsonSoknadTilFil(soknadKonvertert, writer);
+                JsonNode beforeNode = mapper.readTree(jsonSoknadKonvertert);
+                JsonNode afterNode = mapper.readTree(jsonSoknad);
+                EnumSet<DiffFlags> flags = EnumSet.of(OMIT_MOVE_OPERATION, OMIT_COPY_OPERATION, ADD_ORIGINAL_VALUE_ON_REPLACE);
+                JsonNode patch = JsonDiff.asJson(beforeNode, afterNode, flags);
+                String diffs = patch.toString();
+                logger.info(melding + diffs);
+            } catch (IOException ignored) { }
+        }
+    }
+
+    private void sortOkonomi(JsonOkonomi okonomi) {
+        okonomi.getOpplysninger().getBekreftelse().sort(Comparator.comparing(JsonOkonomibekreftelse::getType));
+        okonomi.getOpplysninger().getUtbetaling().sort(Comparator.comparing(JsonOkonomiOpplysningUtbetaling::getType));
+        okonomi.getOpplysninger().getUtgift().sort(Comparator.comparing(JsonOkonomiOpplysningUtgift::getType));
+        okonomi.getOversikt().getInntekt().sort(Comparator.comparing(JsonOkonomioversiktInntekt::getType));
+        okonomi.getOversikt().getUtgift().sort(Comparator.comparing(JsonOkonomioversiktUtgift::getType));
+        okonomi.getOversikt().getFormue().sort(Comparator.comparing(JsonOkonomioversiktFormue::getType));
+    }
+
+    private byte[] mapJsonSoknadTilFil(JsonSoknad jsonSoknad, ObjectWriter writer) {
+        try {
+            final String soknad = writer.writeValueAsString(jsonSoknad);
+            ensureValidSoknad(soknad);
+            return soknad.getBytes(StandardCharsets.UTF_8);
+        } catch (JsonProcessingException e) {
+            logger.error("Kunne ikke konvertere soknad.json til tekststreng", e);
+            throw new RuntimeException(e);
+        }
     }
 
     private Map<String, String> hentEkstraMetadata(SoknadUnderArbeid soknadUnderArbeid) {
