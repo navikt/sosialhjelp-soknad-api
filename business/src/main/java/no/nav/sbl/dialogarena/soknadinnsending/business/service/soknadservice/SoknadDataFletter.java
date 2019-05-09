@@ -437,7 +437,7 @@ public class SoknadDataFletter {
         final String eier = getSubjectHandler().getUid();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         SoknadUnderArbeid soknadUnderArbeid;
-        if (soknadUnderArbeidOptional.isPresent() && soknadUnderArbeidOptional.get().getTilknyttetBehandlingsId() != null){
+        if (soknadUnderArbeidOptional.isPresent() && soknadUnderArbeidOptional.get().erEttersendelse()){
             soknadUnderArbeid = soknadUnderArbeidOptional.get();
             if (getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()){
                 logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
