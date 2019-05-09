@@ -35,11 +35,10 @@ public class InnsendingServiceTest {
     private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;
     private static final Long SENDT_SOKNAD_ID = 2L;
     private static final String EIER = "12345678910";
-    private static final String TYPE = "bostotte";
-    private static final String TILLEGGSINFO = "annetboutgift";
-    private static final VedleggType VEDLEGGTYPE = new VedleggType(TYPE, TILLEGGSINFO);
-    private static final VedleggType VEDLEGGTYPE2 = new VedleggType("type2", "tilleggsinfo2");
-    private static final VedleggType VEDLEGGTYPE3 = new VedleggType(TYPE, "tilleggsinfo2");
+    private static final String TYPE = "bostotte|annetboutgift";
+    private static final VedleggType VEDLEGGTYPE = new VedleggType("bostotte|annetboutgift");
+    private static final VedleggType VEDLEGGTYPE2 = new VedleggType("type2|tilleggsinfo2");
+    private static final VedleggType VEDLEGGTYPE3 = new VedleggType("bostotte|tilleggsinfo2");
     private static final String BEHANDLINGSID = "1100001L";
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
     private static final String FIKSFORSENDELSEID = "12345";
@@ -168,8 +167,7 @@ public class InnsendingServiceTest {
         assertThat(vedleggstatuser.size(), is(1));
         assertThat(vedleggstatus.getStatus(), is(Vedleggstatus.Status.LastetOpp));
         assertThat(vedleggstatus.getEier(), is(EIER));
-        assertThat(vedleggstatus.getVedleggType().getType(), is(TYPE));
-        assertThat(vedleggstatus.getVedleggType().getTilleggsinfo(), is(TILLEGGSINFO));
+        assertThat(vedleggstatus.getVedleggType().getSammensattType(), is(TYPE));
     }
 
     @Test

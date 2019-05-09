@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService.Sokeperiode;
 
@@ -48,7 +48,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
         String soknadstype = "sluttoppgjoer";
         if (typeIsInList(jsonVedleggs, "sluttoppgjor")){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(soknadstype));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, soknadstype, tittel);
         } else {
             removeUtbetalingIfPresentInOpplysninger(utbetalinger, soknadstype);
@@ -56,7 +56,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
         soknadstype = "lonnslipp";
         if (typeIsInList(jsonVedleggs, "lonnslipp")){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(soknadstype));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
             addInntektIfNotPresentInOversikt(inntekter, soknadstype, tittel);
         } else {
             removeInntektIfPresentInOversikt(inntekter, soknadstype);
