@@ -59,7 +59,7 @@ public class UtbetalingService {
 
         return wsUtbetalinger.getUtbetalingListe().stream()
                 .filter(wsUtbetaling -> wsUtbetaling.getUtbetalingsdato() != null)
-                .filter(this::utbetaltSisteTrettiDager)
+                .filter(this::utbetaltSisteFortiDager)
                 .flatMap(wsUtbetaling ->
                         wsUtbetaling.getYtelseListe()
                                 .stream()
@@ -67,8 +67,8 @@ public class UtbetalingService {
                 .collect(toList());
     }
 
-    boolean utbetaltSisteTrettiDager(WSUtbetaling wsUtbetaling) {
-        if (tilLocalDate(wsUtbetaling.getUtbetalingsdato()).isBefore(LocalDate.now().minusDays(30))) {
+    boolean utbetaltSisteFortiDager(WSUtbetaling wsUtbetaling) {
+        if (tilLocalDate(wsUtbetaling.getUtbetalingsdato()).isBefore(LocalDate.now().minusDays(40))) {
             return false;
         }
         return true;

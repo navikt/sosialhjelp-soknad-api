@@ -56,7 +56,12 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 import static java.util.Collections.sort;
@@ -101,6 +106,8 @@ public class SoknadDataFletter {
     private WebSoknadConfig config;
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
 
     @Inject
     private NavMessageSource messageSource;
@@ -128,10 +135,10 @@ public class SoknadDataFletter {
 
     @Inject
     private InnsendingService innsendingService;
-    
+
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
-    
+
     @Inject
     private SystemdataUpdater systemdata;
 
@@ -232,13 +239,13 @@ public class SoknadDataFletter {
         systemdata.update(soknadUnderArbeid);
 
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
-        
+
         startTimer.stop();
         startTimer.report();
-        
+
         return behandlingsId;
     }
-    
+
     public static JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
         return new JsonInternalSoknad().withSoknad(new JsonSoknad()
                     .withData(new JsonData()
@@ -430,6 +437,8 @@ public class SoknadDataFletter {
 
     public void sendSoknad(String behandlingsId) {
         WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
@@ -456,6 +465,9 @@ public class SoknadDataFletter {
         forberedInnsendingMedNyModell(soknadUnderArbeid, vedleggListe);
 
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
+        if(!soknadUnderArbeid.erEttersendelse()){
+            logAlderTilKibana(eier);
+        }
     }
 
     private SoknadUnderArbeid lagreSoknadOgVedleggMedNyModell(WebSoknad soknad, List<Vedlegg> vedleggListe) {
@@ -496,10 +508,35 @@ public class SoknadDataFletter {
         hovedskjema.filnavn = skjemanummer(soknad);
         hovedskjema.filUuid = soknad.getUuid();
 
-        List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
+        List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.legacyHentAlternativeRepresentasjoner(soknad, messageSource);
         alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getAktoerId(), alternativeRepresentasjoner);
         hovedskjema.alternativRepresentasjon.addAll(alternativRepresentasjonService.lagXmlFormat(alternativeRepresentasjoner));
 
         return hovedskjema;
+    }
+
+    private static void logAlderTilKibana(String eier) {
+        if (eier != null && Integer.parseInt(eier.substring(0, 1)) < 4){
+            String fodselsdato = eier.substring(0, 6);
+            DateTimeFormatter fmt = new DateTimeFormatterBuilder()
+                    .appendPattern("ddMM")
+                    .appendValueReduced(ChronoField.YEAR_OF_ERA, 2, 2, LocalDate.now().minusYears(100))
+                    .toFormatter();
+            LocalDate birthDate = LocalDate.parse(fodselsdato, fmt);
+            int age = calculateAge(birthDate);
+            if ( age > 0 && age < 30 ) {
+                logger.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: " + age);
+            } else {
+                logger.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder:" + age);
+            }
+        }
+    }
+
+    static int calculateAge(LocalDate birthDate) {
+        if (birthDate != null) {
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        } else {
+            return 0;
+        }
     }
 }

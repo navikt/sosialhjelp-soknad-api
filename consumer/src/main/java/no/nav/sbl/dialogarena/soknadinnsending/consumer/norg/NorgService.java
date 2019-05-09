@@ -42,7 +42,18 @@ public class NorgService {
         NavEnhet enhet = new NavEnhet();
         enhet.enhetNr = rsNorgEnhet.enhetNr;
         enhet.navn = rsNorgEnhet.navn;
-        enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
+        if (rsNorgEnhet.enhetNr.equals("0513")  && gt.equals("0514")){
+            /*
+            Jira sak 1200
+
+            Lom og Skjåk har samme enhetsnummer. Derfor vil alle søknader bli sendt til Skjåk når vi henter organisajonsnummer basert på enhetNr.
+            Dette er en midlertidig fix for å få denne casen til å fungere.
+            */
+            enhet.sosialOrgnr = "974592274";
+        } else {
+            enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
+        }
+
 
         return enhet;
     }
