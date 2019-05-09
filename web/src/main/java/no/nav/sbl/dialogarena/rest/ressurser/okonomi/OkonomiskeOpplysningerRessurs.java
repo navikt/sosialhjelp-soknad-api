@@ -114,7 +114,7 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     @PUT
-    public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend){
+    public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend) throws Exception {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, vedleggFrontend);
         legacyUpdate(behandlingsId, vedleggFrontend);
@@ -153,7 +153,7 @@ public class OkonomiskeOpplysningerRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) {
+    private void legacyUpdate(String behandlingsId, VedleggFrontend vedleggFrontend) throws Exception {
         if (!isInSoknadJson(vedleggFrontend.type)){
             return;
         }
@@ -207,19 +207,23 @@ public class OkonomiskeOpplysningerRessurs {
         }
     }
 
-    private void makeFaktumListEqualSizeToFrontendRader(VedleggFrontend vedleggFrontend, List<Faktum> fakta, WebSoknad webSoknad) {
+    private void makeFaktumListEqualSizeToFrontendRader(VedleggFrontend vedleggFrontend, List<Faktum> fakta, WebSoknad webSoknad) throws Exception {
         final int sizeDiff = vedleggFrontend.rader.size() - fakta.size();
         if (sizeDiff > 0){
             Iterator<Long> faktumIder = repository.hentLedigeFaktumIder(sizeDiff).iterator();
-            for (int i = 0; i < sizeDiff; i++){
-                final Faktum faktum = new Faktum()
-                        .medFaktumId(faktumIder.next())
-                        .medParrentFaktumId(fakta.get(0).getParrentFaktum())
-                        .medKey(fakta.get(0).getKey())
-                        .medType(BRUKERREGISTRERT)
-                        .medSoknadId(fakta.get(0).getSoknadId());
-                faktaService.opprettBrukerFaktum(webSoknad.getBrukerBehandlingId(), faktum);
-                fakta.add(faktum);
+            try{
+                for (int i = 0; i < sizeDiff; i++){
+                    final Faktum faktum = new Faktum()
+                            .medFaktumId(faktumIder.next())
+                            .medParrentFaktumId(fakta.get(0).getParrentFaktum())
+                            .medKey(fakta.get(0).getKey())
+                            .medType(BRUKERREGISTRERT)
+                            .medSoknadId(fakta.get(0).getSoknadId());
+                    faktaService.opprettBrukerFaktum(webSoknad.getBrukerBehandlingId(), faktum);
+                    fakta.add(faktum);
+                }
+            } catch (Exception e){
+                throw new Exception("makeEqualSize feilet ved type: " + vedleggFrontend.type, e);
             }
         } else if (sizeDiff < 0){
             for (int i = 0; i < -sizeDiff; i++){
