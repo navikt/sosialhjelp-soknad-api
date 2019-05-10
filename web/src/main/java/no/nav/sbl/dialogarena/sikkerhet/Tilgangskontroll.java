@@ -15,6 +15,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -47,6 +49,8 @@ public class Tilgangskontroll {
     private SoknadService soknadService;
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     public Tilgangskontroll() {
         DecisionPoint pdp = new PicketLinkDecisionPoint(SikkerhetsConfig.class.getResource("/security/policyConfig.xml"));
@@ -67,6 +71,10 @@ public class Tilgangskontroll {
             aktoerId = soknad.getAktoerId();
         } catch (Exception e) {
             logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
+        }
+        if (Objects.isNull(aktoerId)){
+            SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, getSubjectHandler().getUid()).get();
+            aktoerId = soknadUnderArbeid.getEier();
         }
         verifiserTilgangMotPep(aktoerId, behandlingsId);
     }

@@ -180,6 +180,7 @@ public class SoknadRessurs {
             opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
         } else {
             final String eier = SubjectHandler.getSubjectHandler().getUid();
+            tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
             if (soknad == null){
                 Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
