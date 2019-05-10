@@ -38,7 +38,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         jsonData.getArbeid().setForhold(innhentSystemArbeidsforhold(eier));
 
-        updateVedleggForventninger(jsonData);
+//        updateVedleggForventninger(jsonData);
     }
 
     private void updateVedleggForventninger(JsonData jsonData) {
