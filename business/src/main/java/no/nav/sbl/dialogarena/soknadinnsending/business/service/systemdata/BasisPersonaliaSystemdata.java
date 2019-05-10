@@ -4,7 +4,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonNordiskBorger;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
@@ -42,65 +45,43 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     private JsonPersonalia mapToJsonPersonalia(Personalia personalia){
-        JsonPersonalia jsonPersonalia = new JsonPersonalia()
-                .withPersonIdentifikator(new JsonPersonIdentifikator()
-                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                        .withVerdi(personalia.getFnr()))
-                .withNavn(new JsonSokernavn()
-                        .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                        .withFornavn(personalia.getFornavn())
-                        .withMellomnavn(personalia.getMellomnavn())
-                        .withEtternavn(personalia.getEtternavn()));
-
-        setNavnPaaJsonPersonalia(jsonPersonalia, personalia);
-        setStatsborgerskapPaaJsonPersonalia(jsonPersonalia, personalia);
-        setNordiskBorgerPaaPersonalia(jsonPersonalia, personalia);
-
-        return jsonPersonalia;
+        return new JsonPersonalia()
+                .withNavn(mapToJsonSokernavn(personalia))
+                .withStatsborgerskap(mapToJsonStatsborgerskap(personalia))
+                .withNordiskBorger(mapToJsonNordiskBorger(personalia));
     }
 
-    private void setNordiskBorgerPaaPersonalia(JsonPersonalia jsonPersonalia, Personalia personalia) {
+    private JsonSokernavn mapToJsonSokernavn(Personalia personalia) {
+        return new JsonSokernavn()
+                .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                .withFornavn(personalia.getFornavn() != null ? personalia.getFornavn() : "")
+                .withMellomnavn(personalia.getMellomnavn() != null ? personalia.getMellomnavn() : "")
+                .withEtternavn(personalia.getEtternavn() != null ? personalia.getEtternavn() : "");
+    }
+
+    private JsonStatsborgerskap mapToJsonStatsborgerskap(Personalia personalia) {
+        String statsborgerskap = personalia.getStatsborgerskap();
+        if (statsborgerskap == null || statsborgerskap.equals("???")){
+            return null;
+        }
+
+        return new JsonStatsborgerskap()
+                .withKilde(JsonKilde.SYSTEM)
+                .withVerdi(statsborgerskap);
+    }
+
+    private JsonNordiskBorger mapToJsonNordiskBorger(Personalia personalia) {
         Boolean nordiskBorger = erNordiskBorger(personalia.getStatsborgerskap());
         if (nordiskBorger == null){
-            return;
+            return null;
         }
-        if (jsonPersonalia.getNordiskBorger() == null){
-            jsonPersonalia.setNordiskBorger(new JsonNordiskBorger()
+        return new JsonNordiskBorger()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(nordiskBorger));
-        } else {
-            jsonPersonalia.getNordiskBorger().setKilde(JsonKilde.SYSTEM);
-            jsonPersonalia.getNordiskBorger().setVerdi(nordiskBorger);
-        }
+                    .withVerdi(nordiskBorger);
     }
 
-    private void setStatsborgerskapPaaJsonPersonalia(JsonPersonalia jsonPersonalia, Personalia personalia) {
-        String statsborgerskap = personalia.getStatsborgerskap();
-        if (statsborgerskap == null){
-            return;
-        } else if (statsborgerskap.equals("???")){
-            jsonPersonalia.setStatsborgerskap(null);
-            return;
-        }
-
-        if (jsonPersonalia.getStatsborgerskap() == null){
-            jsonPersonalia.setStatsborgerskap(new JsonStatsborgerskap()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(statsborgerskap));
-        } else {
-            jsonPersonalia.getStatsborgerskap().setKilde(JsonKilde.SYSTEM);
-            jsonPersonalia.getStatsborgerskap().setVerdi(statsborgerskap);
-        }
-    }
-
-    private void setNavnPaaJsonPersonalia(JsonPersonalia jsonPersonalia, Personalia personalia) {
-        jsonPersonalia.getNavn().setFornavn(personalia.getFornavn() != null ? personalia.getFornavn() : "");
-        jsonPersonalia.getNavn().setMellomnavn(personalia.getMellomnavn() != null ? personalia.getMellomnavn() : "");
-        jsonPersonalia.getNavn().setEtternavn(personalia.getEtternavn() != null ? personalia.getEtternavn() : "");
-    }
-
-    private static Boolean erNordiskBorger(String statsborgerskap) {
-        if (statsborgerskap == null){
+    static Boolean erNordiskBorger(String statsborgerskap) {
+        if (statsborgerskap == null || statsborgerskap.equals("???")){
             return null;
         }
         switch (statsborgerskap) {
