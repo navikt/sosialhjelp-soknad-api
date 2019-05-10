@@ -26,6 +26,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -66,16 +67,19 @@ public class Tilgangskontroll {
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
         String aktoerId = "undefined";
-        try {
-            WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
-            aktoerId = soknad.getAktoerId();
-        } catch (Exception e) {
-            logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
+
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, getSubjectHandler().getUid());
+        if (soknadUnderArbeid.isPresent()){
+            aktoerId = soknadUnderArbeid.get().getEier();
+        } else {
+            try {
+                WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
+                aktoerId = soknad.getAktoerId();
+            } catch (Exception e) {
+                logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
+            }
         }
-        if (Objects.isNull(aktoerId)){
-            SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, getSubjectHandler().getUid()).get();
-            aktoerId = soknadUnderArbeid.getEier();
-        }
+
         verifiserTilgangMotPep(aktoerId, behandlingsId);
     }
 
