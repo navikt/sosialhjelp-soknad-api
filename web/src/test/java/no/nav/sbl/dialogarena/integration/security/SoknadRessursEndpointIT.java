@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
@@ -36,6 +37,7 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
+    @Ignore
     @Test
     public void nektetTilgang_opprettEttersendelse() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
