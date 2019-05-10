@@ -173,8 +173,6 @@ public class OkonomiskeOpplysningerMapper {
                 .withType(eksisterendeUtbetaling.getType())
                 .withTittel(eksisterendeUtbetaling.getTittel())
                 .withBelop(rad.belop)
-                .withBrutto(rad.belop != null ? Double.valueOf(rad.belop) : null)
-                .withNetto(rad.belop != null ? Double.valueOf(rad.belop) : null)
                 .withOverstyrtAvBruker(false);
     }
 
