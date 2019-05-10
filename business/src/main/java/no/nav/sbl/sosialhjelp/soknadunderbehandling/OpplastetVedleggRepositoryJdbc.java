@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
-import static no.nav.sbl.sosialhjelp.domain.VedleggType.mapSammensattVedleggTypeTilVedleggType;
 
 @Named("OpplastetVedleggRepository")
 @Component
@@ -46,7 +45,7 @@ public class OpplastetVedleggRepositoryJdbc extends NamedParameterJdbcDaoSupport
                                 " values (?,?,?,?,?,?,?)",
                         opplastetVedlegg.getUuid(),
                         opplastetVedlegg.getEier(),
-                        opplastetVedlegg.getVedleggType().getSammensattVedleggType(),
+                        opplastetVedlegg.getVedleggType().getSammensattType(),
                         opplastetVedlegg.getData(),
                         opplastetVedlegg.getSoknadId(),
                         opplastetVedlegg.getFilnavn(),
@@ -76,7 +75,7 @@ public class OpplastetVedleggRepositoryJdbc extends NamedParameterJdbcDaoSupport
             return new OpplastetVedlegg()
                     .withUuid(rs.getString("uuid"))
                     .withEier(rs.getString("eier"))
-                    .withVedleggType(mapSammensattVedleggTypeTilVedleggType(rs.getString("type")))
+                    .withVedleggType(new VedleggType(rs.getString("type")))
                     .withData(rs.getBytes("data"))
                     .withSoknadId(rs.getLong("soknad_under_arbeid_id"))
                     .withFilnavn(rs.getString("filnavn"))
