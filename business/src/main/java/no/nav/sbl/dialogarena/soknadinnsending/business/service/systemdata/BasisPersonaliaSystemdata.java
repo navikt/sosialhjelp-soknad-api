@@ -4,10 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonNordiskBorger;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
@@ -46,9 +43,16 @@ public class BasisPersonaliaSystemdata implements Systemdata {
 
     private JsonPersonalia mapToJsonPersonalia(Personalia personalia){
         return new JsonPersonalia()
+                .withPersonIdentifikator(mapToJsonPersonIdentifikator(personalia))
                 .withNavn(mapToJsonSokernavn(personalia))
                 .withStatsborgerskap(mapToJsonStatsborgerskap(personalia))
                 .withNordiskBorger(mapToJsonNordiskBorger(personalia));
+    }
+
+    private JsonPersonIdentifikator mapToJsonPersonIdentifikator(Personalia personalia) {
+        return new JsonPersonIdentifikator()
+                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                .withVerdi(personalia.getFnr());
     }
 
     private JsonSokernavn mapToJsonSokernavn(Personalia personalia) {
