@@ -15,7 +15,9 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
@@ -41,14 +43,69 @@ public class FamilieSystemdata implements Systemdata {
                 familie.setSivilstatus(systemverdiSivilstatus);
             }
         }
-        final JsonHarForsorgerplikt harForsorgerplikt = familie.getForsorgerplikt().getHarForsorgerplikt();
+
+        JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
+        JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getKilde() == null ||
                 harForsorgerplikt.getKilde() == JsonKilde.SYSTEM){
-            final JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
-            if(systemverdiForsorgerplikt != null){
-                familie.setForsorgerplikt(systemverdiForsorgerplikt);
+            JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
+
+            if (systemverdiForsorgerplikt.getHarForsorgerplikt().getVerdi()){
+                forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
+
+                List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
+                if (ansvarList != null && !ansvarList.isEmpty()){
+
+                    Set<JsonAnsvar> diskresjonskodeSet = createSetOfDiskresjonskodeBarn(ansvarList);
+                    ansvarList.removeIf(diskresjonskodeSet::contains);
+
+                    Set<JsonAnsvar> systemDiskresjonskodeSet = createSetOfDiskresjonskodeBarn(systemverdiForsorgerplikt.getAnsvar());
+                    systemverdiForsorgerplikt.getAnsvar().removeIf(systemDiskresjonskodeSet::contains);
+
+                    ansvarList.removeIf(jsonAnsvar -> isNotInList(jsonAnsvar, systemverdiForsorgerplikt.getAnsvar()));
+                    ansvarList.addAll(systemverdiForsorgerplikt.getAnsvar().stream()
+                            .filter(sysAnsvar -> isNotInList(sysAnsvar, forsorgerplikt.getAnsvar()))
+                            .collect(Collectors.toList()));
+
+                    if (diskresjonskodeSet.size() == systemDiskresjonskodeSet.size()){
+                        ansvarList.addAll(diskresjonskodeSet);
+                    } else {
+                        ansvarList.addAll(systemDiskresjonskodeSet);
+                    }
+                } else {
+                    forsorgerplikt.setAnsvar(systemverdiForsorgerplikt.getAnsvar());
+                }
+
+            } else {
+                forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
+                forsorgerplikt.setBarnebidrag(null);
+                forsorgerplikt.setAnsvar(new ArrayList<>());
             }
         }
+    }
+
+    private Set<JsonAnsvar> createSetOfDiskresjonskodeBarn(List<JsonAnsvar> ansvarList) {
+        return ansvarList.stream().filter(ansvar -> {
+            if (ansvar.getBarn() == null || ansvar.getBarn().getHarDiskresjonskode() == null) {
+                return false;
+            }
+            return ansvar.getBarn().getHarDiskresjonskode();
+        }).collect(Collectors.toSet());
+    }
+
+    private boolean isNotInList(JsonAnsvar jsonAnsvar, List<JsonAnsvar> jsonAnsvarList) {
+        return jsonAnsvarList.stream().noneMatch(
+                ansvar -> {
+                    if (ansvar.getBarn() == null){
+                        throw new IllegalStateException("JsonAnsvar mangler barn. Ikke mulig å skille fra andre barn");
+                    }
+                    if (ansvar.getBarn().getPersonIdentifikator() != null){
+                        return ansvar.getBarn().getPersonIdentifikator().equals(jsonAnsvar.getBarn().getPersonIdentifikator());
+                    } else {
+                        return ansvar.getBarn().getPersonIdentifikator().equals(jsonAnsvar.getBarn().getPersonIdentifikator());
+                    }
+                }
+        );
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
