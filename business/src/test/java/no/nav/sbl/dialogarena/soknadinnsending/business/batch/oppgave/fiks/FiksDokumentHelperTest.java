@@ -171,17 +171,17 @@ public class FiksDokumentHelperTest {
                 .withFilnavn(FILNAVN)
                 .withSha512(SHA512)
                 .withData(DATA)
-                .withVedleggType(new VedleggType(TYPE, TILLEGGSINFO)));
+                .withVedleggType(new VedleggType(TYPE + "|" + TILLEGGSINFO)));
         opplastedeVedlegg.add(new OpplastetVedlegg()
                 .withFilnavn(ANNET_FILNAVN)
                 .withSha512(ANNEN_SHA512)
                 .withData(DATA)
-                .withVedleggType(new VedleggType(TYPE2, TILLEGGSINFO2)));
+                .withVedleggType(new VedleggType(TYPE2 + "|" + TILLEGGSINFO2)));
         opplastedeVedlegg.add(new OpplastetVedlegg()
                 .withFilnavn(TREDJE_FILNAVN)
                 .withSha512(TREDJE_SHA512)
                 .withData(DATA)
-                .withVedleggType(new VedleggType(TYPE2, TILLEGGSINFO2)));
+                .withVedleggType(new VedleggType(TYPE2 + "|" + TILLEGGSINFO2)));
         return opplastedeVedlegg;
     }
 

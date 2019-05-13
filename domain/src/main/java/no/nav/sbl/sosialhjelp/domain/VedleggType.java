@@ -1,56 +1,31 @@
 package no.nav.sbl.sosialhjelp.domain;
 
-import java.util.regex.Pattern;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
 public class VedleggType {
-    private String type;
-    private String tilleggsinfo;
+    private String sammensattType;
 
-    public VedleggType(String type, String tilleggsinfo) {
-        this.type = type;
-        this.tilleggsinfo = tilleggsinfo;
+    public VedleggType(String sammensattType) {
+        this.sammensattType = sammensattType;
     }
 
     public String getType() {
-        return type;
+        return sammensattType.substring(0, sammensattType.indexOf('|'));
     }
 
     public String getTilleggsinfo() {
-        return tilleggsinfo;
+        return sammensattType.substring(sammensattType.indexOf('|') + 1);
     }
 
-    public String getSammensattVedleggType() {
-        return type + "|" + tilleggsinfo;
-    }
-
-    public static VedleggType mapSammensattVedleggTypeTilVedleggType(String sammensattVedleggType) {
-        if (isEmpty(sammensattVedleggType) || !sammensattVedleggType.contains("|")) {
-            return null;
-        }
-        String[] sammensattVedleggTypeSplittet = sammensattVedleggType.split(Pattern.quote("|"));
-        if (sammensattVedleggTypeSplittet.length == 2) {
-            return new VedleggType(sammensattVedleggTypeSplittet[0], sammensattVedleggTypeSplittet[1]);
-        }
-        return null;
+    public String getSammensattType() {
+        return sammensattType;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        VedleggType that = (VedleggType) o;
-
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
-        return tilleggsinfo != null ? tilleggsinfo.equals(that.tilleggsinfo) : that.tilleggsinfo == null;
+    public boolean equals(Object obj) {
+        return this.sammensattType.equals(((VedleggType) obj).getSammensattType());
     }
 
     @Override
     public int hashCode() {
-        int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + (tilleggsinfo != null ? tilleggsinfo.hashCode() : 0);
-        return result;
+        return sammensattType != null ? 31 * sammensattType.hashCode() : 0;
     }
 }

@@ -41,7 +41,7 @@ public class TelefonnummerSystemdata implements Systemdata {
         return systemVerdi;
     }
 
-    static String norskTelefonnummer(String mobiltelefonnummer) {
+    private static String norskTelefonnummer(String mobiltelefonnummer) {
         if (mobiltelefonnummer == null) {
             return null;
         }

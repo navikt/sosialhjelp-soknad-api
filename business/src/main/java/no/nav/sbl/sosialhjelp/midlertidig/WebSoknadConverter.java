@@ -75,16 +75,13 @@ public class WebSoknadConverter {
 
     JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad, boolean medVedlegg) {
         List<JsonVedlegg> jsonVedlegg = new ArrayList<>();
-        if (medVedlegg){
-            jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
-        }
 
         final String eier = OidcFeatureToggleUtils.getUserId();
         final Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(webSoknad.getBrukerBehandlingId(), eier);
-        if (soknadNyModell.isPresent()){
-            if (soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null){
-                jsonVedlegg = soknadNyModell.get().getJsonInternalSoknad().getVedlegg().getVedlegg();
-            }
+        if (soknadNyModell.isPresent() && soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null) {
+            jsonVedlegg = soknadNyModell.get().getJsonInternalSoknad().getVedlegg().getVedlegg();
+        } else if (medVedlegg) {
+            jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
         }
 
         if (webSoknad.erEttersending()) {
@@ -98,7 +95,7 @@ public class WebSoknadConverter {
                 .withMottaker(settRiktigSoknadsmottaker(webSoknad));
     }
 
-    JsonSoknadsmottaker settRiktigSoknadsmottaker(WebSoknad soknad) {
+    public JsonSoknadsmottaker settRiktigSoknadsmottaker(WebSoknad soknad) {
         final Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
         String orgnummer;
         String navEnhetsnavn;
