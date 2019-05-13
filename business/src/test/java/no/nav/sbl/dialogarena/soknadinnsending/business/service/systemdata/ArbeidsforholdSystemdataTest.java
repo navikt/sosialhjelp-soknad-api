@@ -82,7 +82,6 @@ public class ArbeidsforholdSystemdataTest {
         assertThatArbeidsforholdIsCorrectlyConverted(ARBEIDSFORHOLD_SLUTTOPPGJOR, jsonArbeidsforhold_2);
     }
 
-    @Ignore
     @Test
     public void skalLeggeTilInntektForLonnslipp() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -101,7 +100,6 @@ public class ArbeidsforholdSystemdataTest {
         assertThat(inntekt.getOverstyrtAvBruker(), is(false));
     }
 
-    @Ignore
     @Test
     public void skalLeggeTilUtbetalingForSluttoppgjor() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
