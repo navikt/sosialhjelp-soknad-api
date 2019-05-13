@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -101,14 +102,14 @@ public class AdresseRessursTest {
     @Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty("authentication.isRunningWithOidc", "true");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
         when(navEnhetRessurs.mapFromLegacyNavEnhetFrontend(any(SoknadsmottakerRessurs.LegacyNavEnhetFrontend.class), anyString())).thenCallRealMethod();
     }
 
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test

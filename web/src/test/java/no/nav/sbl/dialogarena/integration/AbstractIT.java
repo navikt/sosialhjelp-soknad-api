@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.integration;
 
 import static java.lang.System.setProperty;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 
@@ -32,7 +33,7 @@ public abstract class AbstractIT {
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // pga saksoversikt uten oidc.
         setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
-        setProperty("authentication.isRunningWithOidc", isRunningWithOidc ? "true" : "false");
+        setProperty(IS_RUNNING_WITH_OIDC, isRunningWithOidc ? "true" : "false");
         jetty.start();
     }
 

@@ -5,6 +5,7 @@ import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
@@ -144,7 +145,7 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.ekstraMetadataService = ekstraMetadataService;
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(Collections.emptyList());
         when(config.hentStruktur(any(String.class))).thenReturn(new SoknadStruktur());

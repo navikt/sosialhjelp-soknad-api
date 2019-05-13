@@ -2,8 +2,10 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
 public class OidcFeatureToggleUtils {
 
+    public final static String IS_RUNNING_WITH_OIDC = "authentication.isRunningWithOidc";
+
     public static boolean isRunningWithOidc(){
-        return "true".equals(System.getProperty("authentication.isRunningWithOidc","false").toLowerCase());
+        return "true".equals(System.getProperty(IS_RUNNING_WITH_OIDC,"false").toLowerCase());
     }
 
     public static String getUserId() {

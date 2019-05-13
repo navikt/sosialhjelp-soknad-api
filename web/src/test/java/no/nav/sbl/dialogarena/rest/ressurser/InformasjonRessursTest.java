@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -71,7 +72,7 @@ public class InformasjonRessursTest {
     @Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty("authentication.isRunningWithOidc", "true");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
 
         when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
         when(personaliaBolk.hentPersonalia(anyString())).thenReturn(personalia());
@@ -88,7 +89,7 @@ public class InformasjonRessursTest {
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test
