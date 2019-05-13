@@ -79,11 +79,20 @@ public class ForsorgerpliktRessurs {
 
         if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
             for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar){
+                if (ansvarFrontend.harDiskresjonskode != null && ansvarFrontend.harDiskresjonskode){
+                    continue;
+                }
                 for (JsonAnsvar ansvar : forsorgerplikt.getAnsvar()){
+                    if (ansvar.getBarn().getHarDiskresjonskode() != null && ansvar.getBarn().getHarDiskresjonskode()){
+                        continue;
+                    }
                     if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barn.fodselsnummer)){
-                        ansvar.setBorSammenMed(new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
-                        ansvar.setHarDeltBosted(new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.harDeltBosted));
-                        ansvar.setSamvarsgrad(new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad));
+                        ansvar.setBorSammenMed(ansvarFrontend.borSammenMed == null ? null :
+                                new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
+                        ansvar.setHarDeltBosted(ansvarFrontend.harDeltBosted == null ? null :
+                                new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.harDeltBosted));
+                        ansvar.setSamvarsgrad(ansvarFrontend.samvarsgrad == null ? null :
+                                new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad));
                     }
                 }
             }

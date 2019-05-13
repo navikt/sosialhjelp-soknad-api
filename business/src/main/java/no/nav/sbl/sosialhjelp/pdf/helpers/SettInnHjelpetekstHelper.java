@@ -18,7 +18,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sosialhjel
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
-public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> {
+public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> implements TextWithTitle {
 
     @Inject
     private CmsTekst cmsTekst;
@@ -41,7 +41,7 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> {
         final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
         final String bundleName = konfigurasjon.getBundleName();
 
-        String hjelpetekst = getHjelpetekst(key, options, konfigurasjon, bundleName);
+        String hjelpetekst = TextWithTitle.getText(key, options, konfigurasjon, bundleName, cmsTekst);
         
         if (hjelpetekst == null) {
             return "";
@@ -49,28 +49,6 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> {
         
         final String hjelpetekstTittel = this.cmsTekst.getCmsTekst("hjelpetekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
         
-        return createHtmlLayout(hjelpetekst, hjelpetekstTittel);
-    }
-
-    private String getHjelpetekst(String key, Options options, final KravdialogInformasjon konfigurasjon, final String bundleName) {
-        String hjelpeTekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
-
-        String nyHjelpeTekst = UrlUtils.endreHyperLenkerTilTekst(hjelpeTekst);
-
-        if (hjelpeTekst != null && !hjelpeTekst.equals(nyHjelpeTekst)) {
-            hjelpeTekst = nyHjelpeTekst;
-        }
-        return hjelpeTekst;
-    }
-    
-    private String createHtmlLayout(String hjelpetekst, final String hjelpetekstTittel) {
-        return "<ul class=\"svar-liste\">\r\n" + 
-                "    <li>\r\n" + 
-                "        <h4>" + hjelpetekstTittel + "</h4>\r\n" + 
-                "    </li>\r\n" + 
-                "    <li>\r\n" + 
-                "        <span>" + hjelpetekst + "</span>\r\n" + 
-                "    </li>\r\n" + 
-                "</ul>";
+        return TextWithTitle.createHtmlLayout(hjelpetekst, hjelpetekstTittel);
     }
 }

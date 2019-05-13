@@ -98,6 +98,15 @@ public class KommuneTilNavEnhetMapper {
             .put("2003", "974622238")    // Vadsø
             .put("1243", "992179457")    // Os (Hordaland)
             .put("0229", "974604175")    // Enebakk
+            .put("1002", "964968519")    // Mandal
+            .put("0514", "974592274")    // Lom
+            .put("0517", "974562294")    // Sel
+            .put("0513", "976641175")    // Skjåk
+            .put("1219", "834210622")    // Bømlo
+            .put("0515", "976641310")    // Vågå
+            .put("0502", "974567776")    // Gjøvik
+            .put("0906", "976825950")    // Arendal
+            .put("1903", "978608418")    // Harstad
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -339,7 +348,18 @@ public class KommuneTilNavEnhetMapper {
                     "1235",
                     "1243",
                     "2003",
-                    "0229"
+                    "0229",
+                    "1002",
+                    "0514",
+                    "0517",
+                    "0513",
+                    "0515",
+                    "1219",
+                    "0502",
+                    "0906",
+                    "1903"
+                
+                
             ));
 
     private static final Map<String, String> TEST_KOMMUNER_MED_BYDELER = new ImmutableMap.Builder<String, String>()
