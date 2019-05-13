@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskGruppeMapper.getGruppe;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggMapper.mapToVedleggFrontend;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToBelopNavn;
