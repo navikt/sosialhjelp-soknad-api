@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
@@ -9,6 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
@@ -36,6 +38,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -76,6 +79,9 @@ public class SoknadRessurs {
 
     @Inject
     private VedleggOriginalFilerService vedleggOriginalFilerService;
+
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -144,7 +150,7 @@ public class SoknadRessurs {
 
     @POST
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+    public Map<String, String> legacyOpprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
@@ -153,7 +159,35 @@ public class SoknadRessurs {
         } else {
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
             if (soknad == null) {
-                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                opprettetBehandlingsId = soknadService.legacyStartEttersending(behandlingsId);
+            } else {
+                opprettetBehandlingsId = soknad.getBrukerBehandlingId();
+            }
+        }
+        result.put("brukerBehandlingId", opprettetBehandlingsId);
+        response.addCookie(xsrfCookie(opprettetBehandlingsId));
+        return result;
+    }
+
+    @POST
+    @Path("/opprettSoknad")
+    @Consumes(APPLICATION_JSON)
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+        Map<String, String> result = new HashMap<>();
+
+        String opprettetBehandlingsId;
+        if (behandlingsId == null) {
+            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
+        } else {
+            final String eier = SubjectHandler.getSubjectHandler().getUid();
+            WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
+            if (soknad == null){
+                Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
+                if (soknadUnderArbeid.isPresent()) {
+                    opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();
+                } else {
+                    opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                }
             } else {
                 opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }

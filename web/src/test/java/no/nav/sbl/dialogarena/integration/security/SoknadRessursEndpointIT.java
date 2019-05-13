@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
@@ -34,7 +35,20 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
                 .buildGet()
                 .invoke();
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+    }
 
+    @Ignore
+    @Test
+    public void nektetTilgang_opprettEttersendelse() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String url = "soknader/opprettSoknad";
+
+        Response response = soknadTester.sendsoknadResource(url, webTarget -> webTarget
+                .queryParam("fnr", ANNEN_BRUKER)
+                .queryParam("ettersendTil", soknadTester.getBrukerBehandlingId() )) //fake annen bruker, se FakeLoginFilter
+                .buildPost(null)
+                .invoke();
+        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
 
