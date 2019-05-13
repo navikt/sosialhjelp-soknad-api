@@ -5,7 +5,7 @@ public class OidcFeatureToggleUtils {
     public final static String IS_RUNNING_WITH_OIDC = "authentication.isRunningWithOidc";
 
     public static boolean isRunningWithOidc(){
-        return "true".equals(System.getProperty(IS_RUNNING_WITH_OIDC,"false").toLowerCase());
+        return Boolean.valueOf(System.getProperty(IS_RUNNING_WITH_OIDC,"false"));
     }
 
     public static String getUserId() {
