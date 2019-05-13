@@ -3,15 +3,19 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FiksSender {
@@ -20,6 +24,8 @@ public class FiksSender {
     static final String ETTERSENDELSE_TIL_NAV = "Ettersendelse til NAV";
     public static String KRYPTERING_DISABLED = "feature.fiks.kryptering.disabled";
     private boolean SKAL_KRYPTERE = !Boolean.valueOf(System.getProperty(KRYPTERING_DISABLED, "false"));
+
+    private static final Logger log = LoggerFactory.getLogger(FiksSender.class);
 
     private ForsendelsesServiceV9 forsendelsesService;
     private InnsendingService innsendingService;
@@ -83,18 +89,40 @@ public class FiksSender {
         }
 
         List<Dokument> fiksDokumenter = new ArrayList<>();
+        int antallVedleggForsendelse;
         if (soknadUnderArbeid.erEttersendelse()) {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, true, soknadUnderArbeid.getEier()));
-            fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
+            List<Dokument> dokumenterForVedlegg = fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid);
+            antallVedleggForsendelse = dokumenterForVedlegg.size();
+            fiksDokumenter.addAll(dokumenterForVedlegg);
         } else {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
-            fiksDokumenter.addAll(fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid));
+            List<Dokument> dokumenterForVedlegg = fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid);
+            antallVedleggForsendelse = dokumenterForVedlegg.size();
+            fiksDokumenter.addAll(dokumenterForVedlegg);
+        }
+
+        int antallFiksDokumenter = fiksDokumenter.size();
+        log.info("Antall vedlegg: {}. Antall vedlegg lastet opp av bruker: {}", antallFiksDokumenter, antallVedleggForsendelse);
+
+        try {
+            List<JsonVedlegg> opplastedeVedleggstyper = internalSoknad.getVedlegg().getVedlegg().stream().filter(jsonVedlegg -> jsonVedlegg.getStatus().equals("LastetOpp"))
+                    .collect(Collectors.toList());
+            int antallBrukerOpplastedeVedlegg = 0;
+            for (JsonVedlegg vedlegg : opplastedeVedleggstyper){
+                antallBrukerOpplastedeVedlegg += vedlegg.getFiler().size();
+            }
+            if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
+                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse);
+            }
+        } catch (RuntimeException e) {
+            log.debug("Ignored exception");
         }
 
         return fiksDokumenter;

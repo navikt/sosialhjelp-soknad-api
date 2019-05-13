@@ -54,13 +54,13 @@ public class UtbetalingService {
     }
 
     List<Utbetaling> mapTilUtbetalinger(WSHentUtbetalingsinformasjonResponse wsUtbetalinger) {
-        if (wsUtbetalinger.getUtbetalingListe() == null) {
+        if (wsUtbetalinger == null || wsUtbetalinger.getUtbetalingListe() == null) {
             return new ArrayList<>();
         }
 
         return wsUtbetalinger.getUtbetalingListe().stream()
                 .filter(wsUtbetaling -> wsUtbetaling.getUtbetalingsdato() != null)
-                .filter(this::utbetaltSisteTrettiDager)
+                .filter(this::utbetaltSisteFortiDager)
                 .flatMap(wsUtbetaling ->
                         wsUtbetaling.getYtelseListe()
                                 .stream()
@@ -68,9 +68,8 @@ public class UtbetalingService {
                 .collect(toList());
     }
 
-    private boolean utbetaltSisteTrettiDager(WSUtbetaling wsUtbetaling) {
-    	LocalDate utbetalingsdato = tilLocalDate(wsUtbetaling.getUtbetalingsdato());
-        if (utbetalingsdato == null || utbetalingsdato.isBefore(LocalDate.now().minusDays(30))) {
+    boolean utbetaltSisteFortiDager(WSUtbetaling wsUtbetaling) {
+        if (tilLocalDate(wsUtbetaling.getUtbetalingsdato()).isBefore(LocalDate.now().minusDays(40))) {
             return false;
         }
         return true;

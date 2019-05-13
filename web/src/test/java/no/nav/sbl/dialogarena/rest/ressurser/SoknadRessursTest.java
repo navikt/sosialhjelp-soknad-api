@@ -4,8 +4,10 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
 
+import java.util.Optional;
+
 import static no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs.XSRF_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -28,12 +32,19 @@ import static org.mockito.Mockito.*;
 public class SoknadRessursTest {
 
     public static final String BEHANDLINGSID = "123";
+    public static final String EIER = "Hans og Grete";
 
     @Mock
     SoknadService soknadService;
 
     @Mock
+    SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Mock
     XsrfGenerator xsrfGenerator;
+
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
 
     @InjectMocks
     SoknadRessurs ressurs;
@@ -72,13 +83,15 @@ public class SoknadRessursTest {
 
     @Test
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(null);
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(anyString(), anyString())).thenReturn(Optional.empty());
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
         verify(soknadService).startEttersending(eq(BEHANDLINGSID));
     }
 
     @Test
     public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(new WebSoknad());
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
         verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID));

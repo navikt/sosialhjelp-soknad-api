@@ -1,5 +1,6 @@
 package no.nav.sbl.sosialhjelp.sendtsoknad;
 
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
-import static no.nav.sbl.sosialhjelp.domain.VedleggType.mapSammensattVedleggTypeTilVedleggType;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Named("VedleggstatusRepository")
@@ -56,7 +56,7 @@ public class VedleggstatusRepositoryJdbc extends NamedParameterJdbcDaoSupport im
                         vedleggstatusId,
                         vedleggstatus.getEier(),
                         vedleggstatus.getStatus().toString(),
-                        vedleggstatus.getVedleggType().getSammensattVedleggType(),
+                        vedleggstatus.getVedleggType().getSammensattType(),
                         vedleggstatus.getSendtSoknadId());
         return vedleggstatusId;
     }
@@ -102,7 +102,7 @@ public class VedleggstatusRepositoryJdbc extends NamedParameterJdbcDaoSupport im
                     .withVedleggstatusId(rs.getLong("vedleggstatus_id"))
                     .withEier(rs.getString("eier"))
                     .withStatus(status)
-                    .withVedleggType(mapSammensattVedleggTypeTilVedleggType(rs.getString("type")))
+                    .withVedleggType(new VedleggType(rs.getString("type")))
                     .withSendtSoknadId(rs.getLong("sendt_soknad_id"));
         }
     }
