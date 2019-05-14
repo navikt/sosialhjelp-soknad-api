@@ -2,8 +2,10 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +30,12 @@ public class SoknadRessursUtenOidcTest {
 
     @Mock
     XsrfGenerator xsrfGenerator;
+
+    @Mock
+    SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
 
     @InjectMocks
     SoknadRessurs ressurs = spy(new SoknadRessurs());

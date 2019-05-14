@@ -67,7 +67,7 @@ public class Tilgangskontroll {
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
         String aktoerId = "undefined";
 
-        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, getSubjectHandler().getUid());
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId());
         if (soknadUnderArbeid.isPresent()){
             aktoerId = soknadUnderArbeid.get().getEier();
         } else {

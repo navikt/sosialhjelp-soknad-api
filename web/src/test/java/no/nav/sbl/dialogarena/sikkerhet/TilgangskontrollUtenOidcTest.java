@@ -4,6 +4,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,9 +24,12 @@ public class TilgangskontrollUtenOidcTest {
     private SoknadService soknadService;
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
+    @Mock
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @InjectMocks
     private Tilgangskontroll tilgangskontroll = spy(new Tilgangskontroll());
+
     @InjectMocks
     private TilgangskontrollTest tilgangskontrollTest;
 
