@@ -141,6 +141,8 @@ public class SoknadRessurs {
         SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonInternalSoknad notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.getJsonInternalSoknad();
 
+        soknadService.sortOkonomi(soknadUnderArbeid, notUpdatedSoknadUnderArbeid);
+
         if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
             return false;
         } else {

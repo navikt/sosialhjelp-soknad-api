@@ -544,7 +544,7 @@ public class SoknadDataFletter {
         }
     }
 
-    private void sortOkonomi(JsonOkonomi okonomi) {
+    public void sortOkonomi(JsonOkonomi okonomi) {
         okonomi.getOpplysninger().getBekreftelse().sort(Comparator.comparing(JsonOkonomibekreftelse::getType));
         okonomi.getOpplysninger().getUtbetaling().sort(Comparator.comparing(JsonOkonomiOpplysningUtbetaling::getType));
         okonomi.getOpplysninger().getUtgift().sort(Comparator.comparing(JsonOkonomiOpplysningUtgift::getType));
