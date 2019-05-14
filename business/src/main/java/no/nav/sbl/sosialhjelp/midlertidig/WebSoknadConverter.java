@@ -3,6 +3,7 @@ package no.nav.sbl.sosialhjelp.midlertidig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -76,7 +76,7 @@ public class WebSoknadConverter {
     JsonInternalSoknad mapWebSoknadTilJsonSoknadInternal(WebSoknad webSoknad, boolean medVedlegg) {
         List<JsonVedlegg> jsonVedlegg = new ArrayList<>();
 
-        final String eier = getSubjectHandler().getUid();
+        final String eier = OidcFeatureToggleUtils.getUserId();
         final Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(webSoknad.getBrukerBehandlingId(), eier);
         if (soknadNyModell.isPresent() && soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null) {
             jsonVedlegg = soknadNyModell.get().getJsonInternalSoknad().getVedlegg().getVedlegg();

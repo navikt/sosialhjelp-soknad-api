@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -9,6 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
@@ -22,6 +24,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -36,12 +39,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/soknader")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -76,6 +80,9 @@ public class SoknadRessurs {
 
     @Inject
     private VedleggOriginalFilerService vedleggOriginalFilerService;
+
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -127,7 +134,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}/erSystemdataEndret")
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = getSubjectHandler().getUid();
+        final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         systemdata.update(soknadUnderArbeid);
 
@@ -144,7 +151,7 @@ public class SoknadRessurs {
 
     @POST
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+    public Map<String, String> legacyOpprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
@@ -153,7 +160,35 @@ public class SoknadRessurs {
         } else {
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
             if (soknad == null) {
-                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                opprettetBehandlingsId = soknadService.legacyStartEttersending(behandlingsId);
+            } else {
+                opprettetBehandlingsId = soknad.getBrukerBehandlingId();
+            }
+        }
+        result.put("brukerBehandlingId", opprettetBehandlingsId);
+        response.addCookie(xsrfCookie(opprettetBehandlingsId));
+        return result;
+    }
+
+    @POST
+    @Path("/opprettSoknad")
+    @Consumes(APPLICATION_JSON)
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+        Map<String, String> result = new HashMap<>();
+
+        String opprettetBehandlingsId;
+        if (behandlingsId == null) {
+            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
+        } else {
+            final String eier = OidcFeatureToggleUtils.getUserId();
+            WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
+            if (soknad == null){
+                Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
+                if (soknadUnderArbeid.isPresent()) {
+                    opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();
+                } else {
+                    opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                }
             } else {
                 opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }

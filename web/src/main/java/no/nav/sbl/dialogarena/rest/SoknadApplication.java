@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import no.nav.sbl.dialogarena.oidc.OidcResourceFilteringFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ public class SoknadApplication extends ResourceConfig {
         packages("no.nav.sbl.dialogarena.rest");
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
+        register(OidcResourceFilteringFeature.class);
 
         logger.info("Starter Jersey");
     }

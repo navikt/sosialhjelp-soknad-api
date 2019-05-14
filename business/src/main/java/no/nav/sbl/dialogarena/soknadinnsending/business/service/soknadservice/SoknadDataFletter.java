@@ -8,6 +8,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
@@ -61,16 +63,12 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
@@ -184,7 +182,7 @@ public class SoknadDataFletter {
 
         Timer startTimer = createDebugTimer("startTimer", soknadnavn, mainUid);
 
-        String aktorId = getSubjectHandler().getUid();
+        String aktorId = OidcFeatureToggleUtils.getUserId();
         Timer henvendelseTimer = createDebugTimer("startHenvendelse", soknadnavn, mainUid);
         String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid, soknadType);
         henvendelseTimer.stop();
@@ -418,11 +416,11 @@ public class SoknadDataFletter {
 
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
-                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(OidcFeatureToggleUtils.getUserId(), soknad.getSoknadId()));
             } else {
                 List<Faktum> systemfaktum = new ArrayList<>();
                 for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
-                    systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+                    systemfaktum.addAll(bolk.genererSystemFakta(OidcFeatureToggleUtils.getUserId(), soknad.getSoknadId()));
                 }
                 faktaService.lagreSystemFakta(soknad, systemfaktum);
             }
@@ -437,30 +435,57 @@ public class SoknadDataFletter {
     }
 
     public void sendSoknad(String behandlingsId) {
-        final String eier = getSubjectHandler().getUid();
-        WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
-        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
-            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
-            throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+        final String eier = OidcFeatureToggleUtils.getUserId();
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        SoknadUnderArbeid soknadUnderArbeid;
+        if (soknadUnderArbeidOptional.isPresent() && soknadUnderArbeidOptional.get().erEttersendelse()){
+            soknadUnderArbeid = soknadUnderArbeidOptional.get();
+            if (getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()){
+                logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
+                throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+            }
+            logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
+
+            VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
+            Map<String, String> ekstraMetadata = hentEkstraMetadata(soknadUnderArbeid);
+
+            HovedskjemaMetadata hovedskjema = lagHovedskjema("");
+            henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, hovedskjema, vedlegg, ekstraMetadata);
+            oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
+
+            try {
+                WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+                lokalDb.slettSoknad(soknad, HendelseType.INNSENDT);
+            } catch (Exception ignored) { }
+
+            forberedInnsendingMedNyModell(soknadUnderArbeid);
+
+            soknadMetricsService.sendtSoknad("NAV 35-18.01", true);
+        } else {
+            WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+            if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
+                logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
+                throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+            }
+
+            logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
+
+            legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(behandlingsId, eier, soknad);
+
+            soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+
+            HovedskjemaMetadata hovedskjema = lagHovedskjema(soknad.getUuid());
+            final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
+            final Map<String, String> ekstraMetadata = hentEkstraMetadata(soknadUnderArbeid);
+
+            henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, hovedskjema, vedlegg, ekstraMetadata);
+            oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
+            lokalDb.slettSoknad(soknad, HendelseType.INNSENDT);
+
+            forberedInnsendingMedNyModell(soknadUnderArbeid);
+
+            soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
         }
-
-        logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
-
-        legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(behandlingsId, eier, soknad);
-
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-
-        HovedskjemaMetadata hovedskjema = lagHovedskjema(soknad.getUuid());
-        final VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
-        final Map<String, String> ekstraMetadata = hentEkstraMetadata(soknadUnderArbeid);
-
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, hovedskjema, vedlegg, ekstraMetadata);
-        oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
-        lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
-
-        forberedInnsendingMedNyModell(soknadUnderArbeid);
-
-        soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
         if(!soknadUnderArbeid.erEttersendelse()){
             logAlderTilKibana(eier);
         }

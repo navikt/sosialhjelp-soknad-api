@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
+import no.nav.security.oidc.api.Unprotected;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
@@ -21,6 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Implementerer speccen definert i soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon
  */
 @Controller
+@Unprotected
 @Path("/metadata")
 @Timed
 @Produces(APPLICATION_JSON)

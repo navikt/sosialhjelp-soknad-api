@@ -52,6 +52,15 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <filter>
+        <filter-name>OidcTokenValidatorFilter</filter-name>
+        <filter-class>no.nav.sbl.dialogarena.oidc.OidcTokenValidatorFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+    <filter-mapping>
+        <filter-name>OidcTokenValidatorFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <filter>
         <filter-name>CORSFilter</filter-name>

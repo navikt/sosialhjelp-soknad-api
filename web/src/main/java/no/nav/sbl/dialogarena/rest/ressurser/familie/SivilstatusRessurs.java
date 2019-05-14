@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.familie;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -17,6 +17,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -34,6 +35,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/soknader/{behandlingsId}/familie/sivilstatus")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -56,7 +58,7 @@ public class SivilstatusRessurs {
 
     @GET
     public SivilstatusFrontend hentSivilstatus(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = OidcFeatureToggleUtils.getUserId();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonSivilstatus jsonSivilstatus = soknad.getSoknad().getData().getFamilie().getSivilstatus();
 
@@ -75,7 +77,7 @@ public class SivilstatusRessurs {
     }
 
     private void update(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();
 

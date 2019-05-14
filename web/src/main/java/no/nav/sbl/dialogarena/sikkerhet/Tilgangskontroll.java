@@ -4,17 +4,19 @@ import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.security.tilgangskontroll.URN;
 import no.nav.modig.security.tilgangskontroll.policy.attributes.values.StringValue;
 import no.nav.modig.security.tilgangskontroll.policy.enrichers.EnvironmentRequestEnricher;
-import no.nav.modig.security.tilgangskontroll.policy.enrichers.SecurityContextRequestEnricher;
 import no.nav.modig.security.tilgangskontroll.policy.pdp.DecisionPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pdp.picketlink.PicketLinkDecisionPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.EnforcementPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.config.SikkerhetsConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -24,9 +26,9 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
 import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forRequest;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.sjekkXsrfToken;
@@ -47,6 +49,8 @@ public class Tilgangskontroll {
     private SoknadService soknadService;
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     public Tilgangskontroll() {
         DecisionPoint pdp = new PicketLinkDecisionPoint(SikkerhetsConfig.class.getResource("/security/policyConfig.xml"));
@@ -62,12 +66,19 @@ public class Tilgangskontroll {
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
         String aktoerId = "undefined";
-        try {
-            WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
-            aktoerId = soknad.getAktoerId();
-        } catch (Exception e) {
-            logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
+
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId());
+        if (soknadUnderArbeid.isPresent()){
+            aktoerId = soknadUnderArbeid.get().getEier();
+        } else {
+            try {
+                WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
+                aktoerId = soknad.getAktoerId();
+            } catch (Exception e) {
+                logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
+            }
         }
+
         verifiserTilgangMotPep(aktoerId, behandlingsId);
     }
 
@@ -86,7 +97,7 @@ public class Tilgangskontroll {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
-        String aktorId = getSubjectHandler().getUid();
+        String aktorId = OidcFeatureToggleUtils.getUserId();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
 
