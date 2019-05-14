@@ -1,11 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -49,7 +48,7 @@ public class LegacyHelper {
         }
 
         /* Dette burde egentlig være unødvendig, men sjekker i tilfelle lesing av WebSoknad kan ha sideeffekter: */
-        if (eier == null || !eier.equals(SubjectHandler.getSubjectHandler().getUid())) {
+        if (eier == null || !eier.equals(OidcFeatureToggleUtils.getUserId())) {
             throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);

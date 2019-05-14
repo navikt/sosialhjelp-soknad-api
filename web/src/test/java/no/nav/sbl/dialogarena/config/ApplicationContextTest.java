@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.modig.core.context.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.oidc.OidcConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMO
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {SoknadinnsendingConfig.class})
+@ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcConfig.class})
 public class ApplicationContextTest {
 
     @BeforeClass
@@ -33,7 +33,6 @@ public class ApplicationContextTest {
         System.setProperty("no.nav.modig.security.sts.url", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.password", "");
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 
         SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
@@ -46,9 +45,8 @@ public class ApplicationContextTest {
 
     private static Properties load(String resourcePath) {
         Properties properties = new Properties();
-        try (InputStream inputStream =  Properties.class.getResourceAsStream(resourcePath)) {
+        try (InputStream inputStream =  ApplicationContextTest.class.getResourceAsStream(resourcePath)) {
             properties.load(inputStream);
-            inputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

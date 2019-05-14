@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
-import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -51,7 +50,6 @@ public class SoknadActionsTest {
 
     @Before
     public void setUp() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         System.setProperty("soknadinnsending.ettersending.path", SOKNADINNSENDING_ETTERSENDING_URL);
         System.setProperty("saksoversikt.link.url", SAKSOVERSIKT_URL);
         reset(tekster);

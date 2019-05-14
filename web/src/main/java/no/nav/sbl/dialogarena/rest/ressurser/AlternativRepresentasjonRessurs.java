@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.AlternativRepresentasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,6 +23,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggl
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
 
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/representasjon")
 public class AlternativRepresentasjonRessurs {
 

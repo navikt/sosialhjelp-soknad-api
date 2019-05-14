@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -15,6 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/soknader/{behandlingsId}/arbeid")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -49,7 +51,7 @@ public class ArbeidRessurs {
 
     @GET
     public ArbeidFrontend hentArbeid(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = OidcFeatureToggleUtils.getUserId();
         final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
         final JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
@@ -75,7 +77,7 @@ public class ArbeidRessurs {
     }
 
     private void update(String behandlingsId, ArbeidFrontend arbeidFrontend) {
-        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = arbeid.getKommentarTilArbeidsforhold() != null ?
