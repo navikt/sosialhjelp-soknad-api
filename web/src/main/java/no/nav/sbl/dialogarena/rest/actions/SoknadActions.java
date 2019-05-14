@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import static no.nav.sbl.sosialhjelp.pdf.UrlUtils.getEttersendelseUrl;
 import static no.nav.sbl.sosialhjelp.pdf.UrlUtils.getFortsettUrl;
 
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
 @Timed(name = "SoknadActionsRessurs")

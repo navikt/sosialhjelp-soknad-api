@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -13,7 +14,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.security.auth.Subject;
 import javax.ws.rs.client.Client;
@@ -44,9 +44,10 @@ public class AdresseSokConsumerImplTest {
     
     @BeforeClass
     public static void oppsettForInnloggetBruker() {
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
     }
-    
+
     @AfterClass
     public static void fjernOppsettForInnloggetBruker() {
         if (oldSubjectHandlerImplementationClass == null) {

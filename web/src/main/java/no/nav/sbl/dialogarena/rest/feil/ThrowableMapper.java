@@ -11,6 +11,8 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
 import static no.nav.sbl.dialogarena.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;
@@ -24,7 +26,14 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
         if (e instanceof WebApplicationException) {
             WebApplicationException exception = (WebApplicationException) e;
 
-            if (e instanceof NotFoundException) {
+            int status = exception.getResponse().getStatus();
+            if (status == UNAUTHORIZED.getStatusCode()) {
+                logger.debug(e.getMessage(), e);
+                return status(UNAUTHORIZED.getStatusCode()).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Autentiseringsfeil")).build();
+            } else if(status == FORBIDDEN.getStatusCode()) {
+                logger.debug(e.getMessage(), e);
+                return status(UNAUTHORIZED.getStatusCode()).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Autoriseringsfeil")).build();
+            } else if (e instanceof NotFoundException) {
                 logger.warn(e.getMessage(), e);
             } else {
                 logger.error(e.getMessage(), e);

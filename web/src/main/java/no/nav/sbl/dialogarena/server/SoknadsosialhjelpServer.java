@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.setProperty;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 
 public class SoknadsosialhjelpServer {
 
@@ -74,7 +75,7 @@ public class SoknadsosialhjelpServer {
         if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
-            System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+            System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName());
         } else {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalEnvironment();

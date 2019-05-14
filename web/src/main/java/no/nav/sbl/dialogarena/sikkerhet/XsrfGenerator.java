@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 
@@ -22,8 +22,12 @@ public class XsrfGenerator {
     }
 
     public static String generateXsrfToken(String behandlingsId, String date) {
+            return generateXsrfToken(behandlingsId, date, OidcFeatureToggleUtils.getToken());
+    }
+
+    public static String generateXsrfToken(String behandlingsId, String date, String token) {
         try {
-            String signKey = SubjectHandler.getSubjectHandler().getEksternSsoToken() + behandlingsId + date;
+            String signKey = token + behandlingsId + date;
             Mac hmac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(SECRET.getBytes(), "HmacSHA256");
             hmac.init(secretKey);
