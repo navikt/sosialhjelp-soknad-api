@@ -79,7 +79,7 @@ public class FamilieSystemdata implements Systemdata {
                     if (ansvar.getBarn().getPersonIdentifikator() != null){
                         return ansvar.getBarn().getPersonIdentifikator().equals(jsonAnsvar.getBarn().getPersonIdentifikator());
                     } else {
-                        return ansvar.getBarn().getPersonIdentifikator().equals(jsonAnsvar.getBarn().getPersonIdentifikator());
+                        return ansvar.getBarn().getNavn().equals(jsonAnsvar.getBarn().getNavn());
                     }
                 }
         );
@@ -151,7 +151,8 @@ public class FamilieSystemdata implements Systemdata {
                                 .withMellomnavn(barn.getMellomnavn())
                                 .withEtternavn(barn.getEtternavn()))
                         .withFodselsdato(barn.getFodselsdato() != null ? barn.getFodselsdato().toString() : null)
-                        .withPersonIdentifikator(barn.getFnr()))
+                        .withPersonIdentifikator(barn.getFnr())
+                        .withHarDiskresjonskode(false))
                 .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen()
                         .withKilde(JsonKildeSystem.SYSTEM)
                         .withVerdi(barn.erFolkeregistrertsammen()));
