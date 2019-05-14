@@ -155,7 +155,7 @@ public class BoutgiftRessurs {
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
 
         type = "annenBoutgift";
-        tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.annet);
     }
 

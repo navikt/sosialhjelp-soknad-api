@@ -14,9 +14,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.Adres
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -140,33 +137,7 @@ public class AdresseRessurs {
         if (oppholdsadresse.getType() == JsonAdresse.Type.MATRIKKELADRESSE){
             return null;
         }
-        JsonAdresse jsonAdresse = null;
-        if (oppholdsadresse.getType().equals(JsonAdresse.Type.GATEADRESSE)){
-            jsonAdresse = new JsonGateAdresse()
-                    .withKilde(oppholdsadresse.getKilde())
-                    .withAdresseValg(null)
-                    .withType(oppholdsadresse.getType())
-                    .withLandkode(((JsonGateAdresse) oppholdsadresse).getLandkode())
-                    .withKommunenummer(((JsonGateAdresse) oppholdsadresse).getKommunenummer())
-                    .withBolignummer(((JsonGateAdresse) oppholdsadresse).getBolignummer())
-                    .withGatenavn(((JsonGateAdresse) oppholdsadresse).getGatenavn())
-                    .withHusnummer(((JsonGateAdresse) oppholdsadresse).getHusnummer())
-                    .withHusbokstav(((JsonGateAdresse) oppholdsadresse).getHusbokstav())
-                    .withPostnummer(((JsonGateAdresse) oppholdsadresse).getPostnummer())
-                    .withPoststed(((JsonGateAdresse) oppholdsadresse).getPoststed());
-        } else if (oppholdsadresse.getType().equals(JsonAdresse.Type.MATRIKKELADRESSE)){
-            jsonAdresse = new JsonMatrikkelAdresse()
-                    .withKilde(oppholdsadresse.getKilde())
-                    .withAdresseValg(null)
-                    .withType(oppholdsadresse.getType())
-                    .withKommunenummer(((JsonMatrikkelAdresse) oppholdsadresse).getKommunenummer())
-                    .withGaardsnummer(((JsonMatrikkelAdresse) oppholdsadresse).getGaardsnummer())
-                    .withBruksnummer(((JsonMatrikkelAdresse) oppholdsadresse).getBruksnummer())
-                    .withFestenummer(((JsonMatrikkelAdresse) oppholdsadresse).getFestenummer())
-                    .withSeksjonsnummer(((JsonMatrikkelAdresse) oppholdsadresse).getSeksjonsnummer())
-                    .withUndernummer(((JsonMatrikkelAdresse) oppholdsadresse).getUndernummer());
-        }
-        return jsonAdresse;
+        return adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse).withAdresseValg(null);
     }
 
     private void populerAdresse(final Faktum adresseFaktum, final AdresseFrontend adresse) {
