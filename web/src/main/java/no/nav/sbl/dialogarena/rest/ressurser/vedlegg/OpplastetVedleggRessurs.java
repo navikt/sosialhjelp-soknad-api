@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.vedlegg;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -13,7 +14,10 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import java.io.File;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -43,6 +47,17 @@ public class OpplastetVedleggRessurs {
     public OpplastetVedlegg getVedlegg(@PathParam("vedleggId") final String vedleggId) {
         final String eier = SubjectHandler.getSubjectHandler().getUid();
         return opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
+    }
+
+    @GET
+    @Path("/{vedleggId}/fil")
+    @Produces(APPLICATION_JSON)
+    public Response getVedleggFil(@PathParam("vedleggId") final String vedleggId, @Context HttpServletResponse response) {
+        final String eier = SubjectHandler.getSubjectHandler().getUid();
+        OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + opplastetVedlegg.getFilnavn() + "\"");
+        String mimetype = Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData());
+        return Response.ok(opplastetVedlegg.getData()).type(mimetype).build();
     }
 
     @POST

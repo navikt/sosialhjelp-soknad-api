@@ -36,10 +36,11 @@ public class AdresseSystemdata implements Systemdata {
         if (postadresse == null){
             return;
         }
-        if (postadresse.getAdresseValg() == JsonAdresseValg.FOLKEREGISTRERT){
+        JsonAdresseValg adresseValg = postadresse.getAdresseValg();
+        if (adresseValg == JsonAdresseValg.FOLKEREGISTRERT){
             personalia.setPostadresse(folkeregistrertAdresse);
         }
-        if (postadresse.getAdresseValg() == JsonAdresseValg.MIDLERTIDIG){
+        if (adresseValg == JsonAdresseValg.MIDLERTIDIG){
             personalia.setPostadresse(midlertidigAdresse);
         }
     }
@@ -49,11 +50,14 @@ public class AdresseSystemdata implements Systemdata {
         if (oppholdsadresse == null){
             return;
         }
-        if (oppholdsadresse.getAdresseValg() == JsonAdresseValg.FOLKEREGISTRERT){
+        JsonAdresseValg adresseValg = oppholdsadresse.getAdresseValg();
+        if (adresseValg == JsonAdresseValg.FOLKEREGISTRERT){
             personalia.setOppholdsadresse(folkeregistrertAdresse);
+            personalia.getOppholdsadresse().setAdresseValg(adresseValg);
         }
-        if (oppholdsadresse.getAdresseValg() == JsonAdresseValg.MIDLERTIDIG){
+        if (adresseValg == JsonAdresseValg.MIDLERTIDIG){
             personalia.setOppholdsadresse(midlertidigAdresse);
+            personalia.getOppholdsadresse().setAdresseValg(adresseValg);
         }
     }
 
@@ -111,15 +115,19 @@ public class AdresseSystemdata implements Systemdata {
         final Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) adresse.getStrukturertAdresse();
         final JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
         jsonGateAdresse.setType(JsonAdresse.Type.GATEADRESSE);
-        jsonGateAdresse.setLandkode(adresse.getLandkode());
-        jsonGateAdresse.setKommunenummer(gateadresse.kommunenummer);
-        jsonGateAdresse.setBolignummer(gateadresse.bolignummer);
-        jsonGateAdresse.setGatenavn(gateadresse.gatenavn);
-        jsonGateAdresse.setHusnummer(gateadresse.husnummer);
-        jsonGateAdresse.setHusbokstav(gateadresse.husbokstav);
-        jsonGateAdresse.setPostnummer(gateadresse.postnummer);
-        jsonGateAdresse.setPoststed(gateadresse.poststed);
+        jsonGateAdresse.setLandkode(temporaryFixForLandkode(adresse));
+        jsonGateAdresse.setKommunenummer(nullIfEmpty(gateadresse.kommunenummer));
+        jsonGateAdresse.setBolignummer(nullIfEmpty(gateadresse.bolignummer));
+        jsonGateAdresse.setGatenavn(nullIfEmpty(gateadresse.gatenavn));
+        jsonGateAdresse.setHusnummer(nullIfEmpty(gateadresse.husnummer));
+        jsonGateAdresse.setHusbokstav(nullIfEmpty(gateadresse.husbokstav));
+        jsonGateAdresse.setPostnummer(nullIfEmpty(gateadresse.postnummer));
+        jsonGateAdresse.setPoststed(nullIfEmpty(gateadresse.poststed));
         return jsonGateAdresse;
+    }
+
+    private static String temporaryFixForLandkode(Adresse adresse) {
+        return nullIfEmpty(adresse.getLandkode()) == null ? "NOR" : adresse.getLandkode();
     }
 
     private static JsonAdresse tilMatrikkelAdresse(final Adresse adresse) {
@@ -131,12 +139,12 @@ public class AdresseSystemdata implements Systemdata {
         final Adresse.MatrikkelAdresse matrikkelAdresse = (Adresse.MatrikkelAdresse) adresse.getStrukturertAdresse();
         final JsonMatrikkelAdresse jsonMatrikkelAdresse = new JsonMatrikkelAdresse();
         jsonMatrikkelAdresse.setType(JsonAdresse.Type.MATRIKKELADRESSE);
-        jsonMatrikkelAdresse.setKommunenummer(matrikkelAdresse.kommunenummer);
-        jsonMatrikkelAdresse.setGaardsnummer(matrikkelAdresse.gaardsnummer);
-        jsonMatrikkelAdresse.setBruksnummer(matrikkelAdresse.bruksnummer);
-        jsonMatrikkelAdresse.setFestenummer(matrikkelAdresse.festenummer);
-        jsonMatrikkelAdresse.setSeksjonsnummer(matrikkelAdresse.seksjonsnummer);
-        jsonMatrikkelAdresse.setUndernummer(matrikkelAdresse.undernummer);
+        jsonMatrikkelAdresse.setKommunenummer(nullIfEmpty(matrikkelAdresse.kommunenummer));
+        jsonMatrikkelAdresse.setGaardsnummer(nullIfEmpty(matrikkelAdresse.gaardsnummer));
+        jsonMatrikkelAdresse.setBruksnummer(nullIfEmpty(matrikkelAdresse.bruksnummer));
+        jsonMatrikkelAdresse.setFestenummer(nullIfEmpty(matrikkelAdresse.festenummer));
+        jsonMatrikkelAdresse.setSeksjonsnummer(nullIfEmpty(matrikkelAdresse.seksjonsnummer));
+        jsonMatrikkelAdresse.setUndernummer(nullIfEmpty(matrikkelAdresse.undernummer));
         return jsonMatrikkelAdresse;
     }
 
@@ -157,5 +165,12 @@ public class AdresseSystemdata implements Systemdata {
 
     private boolean isUtenlandskAdresse(final Adresse adresse) {
         return adresse.getLandkode() != null && !adresse.getLandkode().equals("NOR");
+    }
+
+    private static String nullIfEmpty(String s) {
+        if (s != null && s.trim().equals("")) {
+            return null;
+        }
+        return s;
     }
 }
