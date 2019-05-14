@@ -55,23 +55,10 @@ public class FamilieSystemdata implements Systemdata {
 
                 List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
                 if (ansvarList != null && !ansvarList.isEmpty()){
-
-                    Set<JsonAnsvar> diskresjonskodeSet = createSetOfDiskresjonskodeBarn(ansvarList);
-                    ansvarList.removeIf(diskresjonskodeSet::contains);
-
-                    Set<JsonAnsvar> systemDiskresjonskodeSet = createSetOfDiskresjonskodeBarn(systemverdiForsorgerplikt.getAnsvar());
-                    systemverdiForsorgerplikt.getAnsvar().removeIf(systemDiskresjonskodeSet::contains);
-
                     ansvarList.removeIf(jsonAnsvar -> isNotInList(jsonAnsvar, systemverdiForsorgerplikt.getAnsvar()));
                     ansvarList.addAll(systemverdiForsorgerplikt.getAnsvar().stream()
                             .filter(sysAnsvar -> isNotInList(sysAnsvar, forsorgerplikt.getAnsvar()))
                             .collect(Collectors.toList()));
-
-                    if (diskresjonskodeSet.size() == systemDiskresjonskodeSet.size()){
-                        ansvarList.addAll(diskresjonskodeSet);
-                    } else {
-                        ansvarList.addAll(systemDiskresjonskodeSet);
-                    }
                 } else {
                     forsorgerplikt.setAnsvar(systemverdiForsorgerplikt.getAnsvar());
                 }
@@ -82,15 +69,6 @@ public class FamilieSystemdata implements Systemdata {
                 forsorgerplikt.setAnsvar(new ArrayList<>());
             }
         }
-    }
-
-    private Set<JsonAnsvar> createSetOfDiskresjonskodeBarn(List<JsonAnsvar> ansvarList) {
-        return ansvarList.stream().filter(ansvar -> {
-            if (ansvar.getBarn() == null || ansvar.getBarn().getHarDiskresjonskode() == null) {
-                return false;
-            }
-            return ansvar.getBarn().getHarDiskresjonskode();
-        }).collect(Collectors.toSet());
     }
 
     private boolean isNotInList(JsonAnsvar jsonAnsvar, List<JsonAnsvar> jsonAnsvarList) {
@@ -166,27 +144,16 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonAnsvar mapToJsonAnsvar(Barn barn) {
-        JsonBarn jsonBarn = new JsonBarn();
-        if(barn.harIkkeTilgang() != null && barn.harIkkeTilgang()){
-            jsonBarn.withKilde(JsonKilde.SYSTEM)
-                    .withNavn(new JsonNavn()
-                            .withFornavn("")
-                            .withMellomnavn("")
-                            .withEtternavn(""))
-                    .withHarDiskresjonskode(true);
-            return new JsonAnsvar()
-                    .withBarn(jsonBarn);
-        }
-        jsonBarn.withKilde(JsonKilde.SYSTEM)
-                .withNavn(new JsonNavn()
-                        .withFornavn(barn.getFornavn())
-                        .withMellomnavn(barn.getMellomnavn())
-                        .withEtternavn(barn.getEtternavn()))
-                .withFodselsdato(barn.getFodselsdato() != null ? barn.getFodselsdato().toString() : null)
-                .withPersonIdentifikator(barn.getFnr())
-                .withHarDiskresjonskode(false);
         return new JsonAnsvar()
-                .withBarn(jsonBarn).withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen()
+                .withBarn(new JsonBarn()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withNavn(new JsonNavn()
+                                .withFornavn(barn.getFornavn())
+                                .withMellomnavn(barn.getMellomnavn())
+                                .withEtternavn(barn.getEtternavn()))
+                        .withFodselsdato(barn.getFodselsdato() != null ? barn.getFodselsdato().toString() : null)
+                        .withPersonIdentifikator(barn.getFnr()))
+                .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen()
                         .withKilde(JsonKildeSystem.SYSTEM)
                         .withVerdi(barn.erFolkeregistrertsammen()));
     }
