@@ -98,7 +98,7 @@ public class AdresseSystemdataTest {
         assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(postadresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(folkeregistrertAdresse.equals(oppholdsadresse), is(true));
+        assertThat(folkeregistrertAdresse.equals(oppholdsadresse.withAdresseValg(null)), is(true));
         assertThat(folkeregistrertAdresse.equals(postadresse), is(true));
     }
 
