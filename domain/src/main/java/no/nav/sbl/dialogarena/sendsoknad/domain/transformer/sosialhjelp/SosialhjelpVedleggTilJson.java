@@ -111,14 +111,12 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
 
             Long proxyFaktumId = v.getFaktumId();
             if (proxyFaktumId == null) {
-                logger.error("vedlegg.getFaktumId==null");
-                continue;
+                throw new NullPointerException("vedlegg.getFaktumId==null");
             }
             Faktum faktumMedId = webSoknad.getFaktumMedId(String.valueOf(proxyFaktumId));
             if (faktumMedId == null) {
                 String faktumIder = webSoknad.getFakta().stream().map(Faktum::getKey).collect(Collectors.joining(", "));
-                logger.error("faktumMedId==null proxyFaktumId={} tilgjengelige faktumider={}", proxyFaktumId, faktumIder);
-                continue;
+                throw new NullPointerException(String.format("faktumMedId==null proxyFaktumId=%s tilgjengelige faktumider=%s", proxyFaktumId, faktumIder));
             }
             Long belopFaktumId = faktumMedId.getParrentFaktum();
 
