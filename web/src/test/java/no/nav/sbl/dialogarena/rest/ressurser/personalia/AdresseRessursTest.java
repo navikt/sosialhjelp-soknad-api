@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -99,6 +100,7 @@ public class AdresseRessursTest {
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
         when(navEnhetRessurs.mapFromLegacyNavEnhetFrontend(any(SoknadsmottakerRessurs.LegacyNavEnhetFrontend.class), anyString())).thenCallRealMethod();
+        when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
     }
 
     @Test
@@ -294,21 +296,10 @@ public class AdresseRessursTest {
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithOppholdsadresse(final JsonAdresseValg valg) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withPersonalia(new JsonPersonalia()
-                                                .withOppholdsadresse(getSelectedAdresse(valg)
-                                                )
-                                                .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                        .withVerdi(EIER)
-                                                )
-                                        )
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
+                .withOppholdsadresse(getSelectedAdresse(valg));
+        return soknadUnderArbeid;
     }
 
     private JsonAdresse getSelectedAdresse(JsonAdresseValg valg) {
