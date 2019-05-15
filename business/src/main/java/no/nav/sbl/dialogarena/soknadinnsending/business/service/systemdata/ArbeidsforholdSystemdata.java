@@ -54,7 +54,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
             removeUtbetalingIfPresentInOpplysninger(utbetalinger, soknadstype);
         }
 
-        soknadstype = "lonnslipp";
+        soknadstype = "jobb";
         if (typeIsInList(jsonVedleggs, "lonnslipp")){
             final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
             addInntektIfNotPresentInOversikt(inntekter, soknadstype, tittel);
