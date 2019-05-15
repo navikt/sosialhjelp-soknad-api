@@ -8,11 +8,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 @Component
 public class AdresseSystemdata implements Systemdata {
@@ -116,18 +119,18 @@ public class AdresseSystemdata implements Systemdata {
         final JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
         jsonGateAdresse.setType(JsonAdresse.Type.GATEADRESSE);
         jsonGateAdresse.setLandkode(temporaryFixForLandkode(adresse));
-        jsonGateAdresse.setKommunenummer(nullIfEmpty(gateadresse.kommunenummer));
-        jsonGateAdresse.setBolignummer(nullIfEmpty(gateadresse.bolignummer));
-        jsonGateAdresse.setGatenavn(nullIfEmpty(gateadresse.gatenavn));
-        jsonGateAdresse.setHusnummer(nullIfEmpty(gateadresse.husnummer));
-        jsonGateAdresse.setHusbokstav(nullIfEmpty(gateadresse.husbokstav));
-        jsonGateAdresse.setPostnummer(nullIfEmpty(gateadresse.postnummer));
-        jsonGateAdresse.setPoststed(nullIfEmpty(gateadresse.poststed));
+        jsonGateAdresse.setKommunenummer(defaultIfBlank(gateadresse.kommunenummer, null));
+        jsonGateAdresse.setBolignummer(defaultIfBlank(gateadresse.bolignummer, null));
+        jsonGateAdresse.setGatenavn(defaultIfBlank(gateadresse.gatenavn, null));
+        jsonGateAdresse.setHusnummer(defaultIfBlank(gateadresse.husnummer, null));
+        jsonGateAdresse.setHusbokstav(defaultIfBlank(gateadresse.husbokstav, null));
+        jsonGateAdresse.setPostnummer(defaultIfBlank(gateadresse.postnummer, null));
+        jsonGateAdresse.setPoststed(defaultIfBlank(gateadresse.poststed, null));
         return jsonGateAdresse;
     }
 
     private static String temporaryFixForLandkode(Adresse adresse) {
-        return nullIfEmpty(adresse.getLandkode()) == null ? "NOR" : adresse.getLandkode();
+        return defaultIfBlank(adresse.getLandkode(), null) == null ? "NOR" : adresse.getLandkode();
     }
 
     private static JsonAdresse tilMatrikkelAdresse(final Adresse adresse) {
@@ -139,12 +142,12 @@ public class AdresseSystemdata implements Systemdata {
         final Adresse.MatrikkelAdresse matrikkelAdresse = (Adresse.MatrikkelAdresse) adresse.getStrukturertAdresse();
         final JsonMatrikkelAdresse jsonMatrikkelAdresse = new JsonMatrikkelAdresse();
         jsonMatrikkelAdresse.setType(JsonAdresse.Type.MATRIKKELADRESSE);
-        jsonMatrikkelAdresse.setKommunenummer(nullIfEmpty(matrikkelAdresse.kommunenummer));
-        jsonMatrikkelAdresse.setGaardsnummer(nullIfEmpty(matrikkelAdresse.gaardsnummer));
-        jsonMatrikkelAdresse.setBruksnummer(nullIfEmpty(matrikkelAdresse.bruksnummer));
-        jsonMatrikkelAdresse.setFestenummer(nullIfEmpty(matrikkelAdresse.festenummer));
-        jsonMatrikkelAdresse.setSeksjonsnummer(nullIfEmpty(matrikkelAdresse.seksjonsnummer));
-        jsonMatrikkelAdresse.setUndernummer(nullIfEmpty(matrikkelAdresse.undernummer));
+        jsonMatrikkelAdresse.setKommunenummer(defaultIfBlank(matrikkelAdresse.kommunenummer, null));
+        jsonMatrikkelAdresse.setGaardsnummer(defaultIfBlank(matrikkelAdresse.gaardsnummer, null));
+        jsonMatrikkelAdresse.setBruksnummer(defaultIfBlank(matrikkelAdresse.bruksnummer, null));
+        jsonMatrikkelAdresse.setFestenummer(defaultIfBlank(matrikkelAdresse.festenummer, null));
+        jsonMatrikkelAdresse.setSeksjonsnummer(defaultIfBlank(matrikkelAdresse.seksjonsnummer, null));
+        jsonMatrikkelAdresse.setUndernummer(defaultIfBlank(matrikkelAdresse.undernummer, null));
         return jsonMatrikkelAdresse;
     }
 
@@ -165,12 +168,5 @@ public class AdresseSystemdata implements Systemdata {
 
     private boolean isUtenlandskAdresse(final Adresse adresse) {
         return adresse.getLandkode() != null && !adresse.getLandkode().equals("NOR");
-    }
-
-    private static String nullIfEmpty(String s) {
-        if (s != null && s.trim().equals("")) {
-            return null;
-        }
-        return s;
     }
 }

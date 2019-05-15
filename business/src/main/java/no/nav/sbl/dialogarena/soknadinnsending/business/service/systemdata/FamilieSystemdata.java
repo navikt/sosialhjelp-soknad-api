@@ -36,9 +36,9 @@ public class FamilieSystemdata implements Systemdata {
         final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         final JsonFamilie familie = jsonData.getFamilie();
-        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM){
+        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM) {
             final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
-            if (systemverdiSivilstatus != null){
+            if (systemverdiSivilstatus != null) {
                 familie.setSivilstatus(systemverdiSivilstatus);
             }
         }
@@ -46,14 +46,14 @@ public class FamilieSystemdata implements Systemdata {
         JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
         JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getKilde() == null ||
-                harForsorgerplikt.getKilde() == JsonKilde.SYSTEM){
+                harForsorgerplikt.getKilde() == JsonKilde.SYSTEM) {
             JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
 
-            if (systemverdiForsorgerplikt.getHarForsorgerplikt().getVerdi()){
+            if (systemverdiForsorgerplikt.getHarForsorgerplikt().getVerdi()) {
                 forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
 
                 List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
-                if (ansvarList != null && !ansvarList.isEmpty()){
+                if (ansvarList != null && !ansvarList.isEmpty()) {
                     ansvarList.removeIf(jsonAnsvar -> isNotInList(jsonAnsvar, systemverdiForsorgerplikt.getAnsvar()));
                     ansvarList.addAll(systemverdiForsorgerplikt.getAnsvar().stream()
                             .filter(sysAnsvar -> isNotInList(sysAnsvar, forsorgerplikt.getAnsvar()))
@@ -73,10 +73,10 @@ public class FamilieSystemdata implements Systemdata {
     private boolean isNotInList(JsonAnsvar jsonAnsvar, List<JsonAnsvar> jsonAnsvarList) {
         return jsonAnsvarList.stream().noneMatch(
                 ansvar -> {
-                    if (ansvar.getBarn() == null){
+                    if (ansvar.getBarn() == null) {
                         throw new IllegalStateException("JsonAnsvar mangler barn. Ikke mulig å skille fra andre barn");
                     }
-                    if (ansvar.getBarn().getPersonIdentifikator() != null){
+                    if (ansvar.getBarn().getPersonIdentifikator() != null) {
                         return ansvar.getBarn().getPersonIdentifikator().equals(jsonAnsvar.getBarn().getPersonIdentifikator());
                     } else {
                         return ansvar.getBarn().getNavn().equals(jsonAnsvar.getBarn().getNavn());
