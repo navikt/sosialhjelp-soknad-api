@@ -43,6 +43,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
@@ -299,6 +300,14 @@ public class SoknadDataFletter {
                             .withOpplysninger(new JsonOkonomiopplysninger()
                                 .withUtbetaling(new ArrayList<>())
                                 .withUtgift(new ArrayList<>())
+                                .withBeskrivelseAvAnnet(new JsonOkonomibeskrivelserAvAnnet()
+                                    .withKilde(JsonKildeBruker.BRUKER)
+                                        .withBarneutgifter("")
+                                        .withBoutgifter("")
+                                        .withSparing("")
+                                        .withUtbetaling("")
+                                        .withVerdi("")
+                                )
                             )
                             .withOversikt(new JsonOkonomioversikt()
                                 .withInntekt(new ArrayList<>())
