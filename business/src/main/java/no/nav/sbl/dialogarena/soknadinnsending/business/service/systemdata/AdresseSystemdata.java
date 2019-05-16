@@ -128,7 +128,7 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     private static String temporaryFixForLandkode(Adresse adresse) {
-        return defaultIfBlank(adresse.getLandkode(), null) == null ? "NOR" : adresse.getLandkode();
+        return defaultIfBlank(adresse.getLandkode(), "NOR");
     }
 
     private static JsonAdresse tilMatrikkelAdresse(final Adresse adresse) {
