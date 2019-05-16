@@ -139,7 +139,7 @@ public class AdresseRessurs {
         if (oppholdsadresse.getType() == JsonAdresse.Type.MATRIKKELADRESSE){
             return null;
         }
-        return oppholdsadresse;
+        return adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse).withAdresseValg(null);
     }
 
     private void populerAdresse(final Faktum adresseFaktum, final AdresseFrontend adresse) {

@@ -8,10 +8,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -28,6 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -37,6 +36,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class UtdanningRessursTest {
 
+    private static final String EIER = "123456789101";
     private static final String BEHANDLINGSID = "123";
 
     @Mock
@@ -54,6 +54,9 @@ public class UtdanningRessursTest {
     @Mock
     private FaktaService faktaService;
 
+    @Mock
+    private TextService textService;
+
     @InjectMocks
     private UtdanningRessurs utdanningRessurs;
 
@@ -61,6 +64,7 @@ public class UtdanningRessursTest {
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 
     @After
@@ -173,16 +177,11 @@ public class UtdanningRessursTest {
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithUtdanning(Boolean erStudent, JsonUtdanning.Studentgrad studentgrad) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withUtdanning(new JsonUtdanning()
-                                                .withKilde(JsonKilde.BRUKER)
-                                                .withErStudent(erStudent)
-                                                .withStudentgrad(studentgrad))
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning()
+                .withKilde(JsonKilde.BRUKER)
+                .withErStudent(erStudent)
+                .withStudentgrad(studentgrad);
+        return soknadUnderArbeid;
     }
 }

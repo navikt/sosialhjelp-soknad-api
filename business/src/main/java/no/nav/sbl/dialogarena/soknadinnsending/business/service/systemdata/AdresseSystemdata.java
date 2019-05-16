@@ -41,10 +41,10 @@ public class AdresseSystemdata implements Systemdata {
         }
         JsonAdresseValg adresseValg = postadresse.getAdresseValg();
         if (adresseValg == JsonAdresseValg.FOLKEREGISTRERT){
-            personalia.setPostadresse(folkeregistrertAdresse);
+            personalia.setPostadresse(createDeepCopyOfJsonAdresse(folkeregistrertAdresse));
         }
         if (adresseValg == JsonAdresseValg.MIDLERTIDIG){
-            personalia.setPostadresse(midlertidigAdresse);
+            personalia.setPostadresse(createDeepCopyOfJsonAdresse(midlertidigAdresse).withAdresseValg(adresseValg));
         }
     }
 
@@ -55,12 +55,10 @@ public class AdresseSystemdata implements Systemdata {
         }
         JsonAdresseValg adresseValg = oppholdsadresse.getAdresseValg();
         if (adresseValg == JsonAdresseValg.FOLKEREGISTRERT){
-            personalia.setOppholdsadresse(folkeregistrertAdresse);
-            personalia.getOppholdsadresse().setAdresseValg(adresseValg);
+            personalia.setOppholdsadresse(createDeepCopyOfJsonAdresse(folkeregistrertAdresse).withAdresseValg(adresseValg));
         }
         if (adresseValg == JsonAdresseValg.MIDLERTIDIG){
-            personalia.setOppholdsadresse(midlertidigAdresse);
-            personalia.getOppholdsadresse().setAdresseValg(adresseValg);
+            personalia.setOppholdsadresse(createDeepCopyOfJsonAdresse(midlertidigAdresse).withAdresseValg(adresseValg));
         }
     }
 
@@ -164,6 +162,51 @@ public class AdresseSystemdata implements Systemdata {
                 .collect(Collectors.toList()));
 
         return ustrukturertAdresse;
+    }
+
+    public JsonAdresse createDeepCopyOfJsonAdresse(JsonAdresse oppholdsadresse) {
+        switch (oppholdsadresse.getType()){
+            case GATEADRESSE:
+                return new JsonGateAdresse()
+                        .withKilde(oppholdsadresse.getKilde())
+                        .withAdresseValg(oppholdsadresse.getAdresseValg())
+                        .withType(oppholdsadresse.getType())
+                        .withLandkode(((JsonGateAdresse) oppholdsadresse).getLandkode())
+                        .withKommunenummer(((JsonGateAdresse) oppholdsadresse).getKommunenummer())
+                        .withBolignummer(((JsonGateAdresse) oppholdsadresse).getBolignummer())
+                        .withGatenavn(((JsonGateAdresse) oppholdsadresse).getGatenavn())
+                        .withHusnummer(((JsonGateAdresse) oppholdsadresse).getHusnummer())
+                        .withHusbokstav(((JsonGateAdresse) oppholdsadresse).getHusbokstav())
+                        .withPostnummer(((JsonGateAdresse) oppholdsadresse).getPostnummer())
+                        .withPoststed(((JsonGateAdresse) oppholdsadresse).getPoststed());
+            case MATRIKKELADRESSE:
+                return new JsonMatrikkelAdresse()
+                        .withKilde(oppholdsadresse.getKilde())
+                        .withAdresseValg(oppholdsadresse.getAdresseValg())
+                        .withType(oppholdsadresse.getType())
+                        .withKommunenummer(((JsonMatrikkelAdresse) oppholdsadresse).getKommunenummer())
+                        .withGaardsnummer(((JsonMatrikkelAdresse) oppholdsadresse).getGaardsnummer())
+                        .withBruksnummer(((JsonMatrikkelAdresse) oppholdsadresse).getBruksnummer())
+                        .withFestenummer(((JsonMatrikkelAdresse) oppholdsadresse).getFestenummer())
+                        .withSeksjonsnummer(((JsonMatrikkelAdresse) oppholdsadresse).getSeksjonsnummer())
+                        .withUndernummer(((JsonMatrikkelAdresse) oppholdsadresse).getUndernummer());
+            case USTRUKTURERT:
+                return new JsonUstrukturertAdresse()
+                        .withKilde(oppholdsadresse.getKilde())
+                        .withAdresseValg(oppholdsadresse.getAdresseValg())
+                        .withType(oppholdsadresse.getType())
+                        .withAdresse(((JsonUstrukturertAdresse) oppholdsadresse).getAdresse());
+            case POSTBOKS:
+                return new JsonPostboksAdresse()
+                        .withKilde(oppholdsadresse.getKilde())
+                        .withAdresseValg(oppholdsadresse.getAdresseValg())
+                        .withType(oppholdsadresse.getType())
+                        .withPostboks(((JsonPostboksAdresse) oppholdsadresse).getPostboks())
+                        .withPostnummer(((JsonPostboksAdresse) oppholdsadresse).getPostnummer())
+                        .withPoststed(((JsonPostboksAdresse) oppholdsadresse).getPoststed());
+            default:
+                return null;
+        }
     }
 
     private boolean isUtenlandskAdresse(final Adresse adresse) {

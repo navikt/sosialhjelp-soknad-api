@@ -34,6 +34,8 @@ public class OkonomiskeOpplysningerMapper {
 
             inntekter.addAll(mapToInntektList(vedleggFrontend.rader, eksisterendeInntekt.get()));
             jsonOkonomi.getOversikt().setInntekt(inntekter);
+        } else {
+            throw new IllegalStateException("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -49,6 +51,8 @@ public class OkonomiskeOpplysningerMapper {
 
             formuer.addAll(mapToFormueList(vedleggFrontend.rader, eksisterendeFormue.get()));
             jsonOkonomi.getOversikt().setFormue(formuer);
+        } else {
+            throw new IllegalStateException("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -71,6 +75,8 @@ public class OkonomiskeOpplysningerMapper {
             // ----------------------------------------------------------------------------------------
 
             jsonOkonomi.getOversikt().setUtgift(utgifter);
+        } else {
+            throw new IllegalStateException("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -99,6 +105,8 @@ public class OkonomiskeOpplysningerMapper {
             // Frontend må ikke sende med rader = null eller tom liste. Må heller sende med en rad med null verdier
             utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, eksisterendeOpplysningUtgift.get()));
             jsonOkonomi.getOpplysninger().setUtgift(utgifter);
+        } else {
+            throw new IllegalStateException("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -119,20 +127,25 @@ public class OkonomiskeOpplysningerMapper {
 
             utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling.get()));
             jsonOkonomi.getOpplysninger().setUtbetaling(utbetalinger);
+        } else {
+            throw new IllegalStateException("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
     private static void addBoliglanRenterToUtgifter(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, List<JsonOkonomioversiktUtgift> utgifter) {
+        String soknadType = "boliglanRenter";
         final Optional<JsonOkonomioversiktUtgift> eksisterendeRenter = jsonOkonomi.getOversikt().getUtgift().stream()
-                .filter(utgift -> utgift.getType().equals("boliglanRenter"))
+                .filter(utgift -> utgift.getType().equals(soknadType))
                 .findFirst();
 
         if (eksisterendeRenter.isPresent()) {
             utgifter.removeAll(utgifter.stream()
-                    .filter(utgift -> utgift.getType().equals("boliglanRenter"))
+                    .filter(utgift -> utgift.getType().equals(soknadType))
                     .collect(Collectors.toList()));
 
             utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, eksisterendeRenter.get()));
+        } else {
+            throw new IllegalStateException("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -167,8 +180,6 @@ public class OkonomiskeOpplysningerMapper {
                 .withType(eksisterendeUtbetaling.getType())
                 .withTittel(eksisterendeUtbetaling.getTittel())
                 .withBelop(rad.belop)
-                .withBrutto(rad.belop != null ? Double.valueOf(rad.belop) : null)
-                .withNetto(rad.belop != null ? Double.valueOf(rad.belop) : null)
                 .withOverstyrtAvBruker(false);
     }
 

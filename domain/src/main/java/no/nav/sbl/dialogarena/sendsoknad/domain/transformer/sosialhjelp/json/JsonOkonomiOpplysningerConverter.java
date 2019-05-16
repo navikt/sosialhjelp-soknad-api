@@ -262,7 +262,7 @@ public class JsonOkonomiOpplysningerConverter {
                             .withSatsBelop(tilDouble(properties.get("satsbelop")))
                             .withSatsType(properties.get("satstype"))
                             .withSatsAntall(tilDouble(properties.get("satsantall")));
-                }).collect(Collectors.toList());
+                }).distinct().collect(Collectors.toList());
     }
 
     private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn) {
