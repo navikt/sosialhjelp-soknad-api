@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.flipkart.zjsonpatch.DiffFlags;
 import com.flipkart.zjsonpatch.JsonDiff;
 import no.nav.metrics.MetricsFactory;
@@ -549,6 +550,12 @@ public class SoknadDataFletter {
                 JsonNode afterNode = mapper.readTree(jsonSoknad);
                 EnumSet<DiffFlags> flags = EnumSet.of(OMIT_MOVE_OPERATION, OMIT_COPY_OPERATION, ADD_ORIGINAL_VALUE_ON_REPLACE);
                 JsonNode patch = JsonDiff.asJson(beforeNode, afterNode, flags);
+                for (JsonNode node : patch) {
+                    if (node instanceof ObjectNode) {
+                        ObjectNode object = (ObjectNode) node;
+                        object.remove("value");
+                    }
+                }
 //                if (patch.isArray()){
 //                    ArrayNode arrayNode = (ArrayNode) patch;
 //                    for (int i = 0; i < arrayNode.size(); i++){
