@@ -32,6 +32,7 @@ public class SkattbarInntektServiceTest {
 
     @Test
     public void hentSkattbarInntekt() {
+        skattbarInntektService.mockFil = "/mockdata/InntektOgSkatt.json";
         List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt("01234567");
         Map<String, List<Utbetaling>> utbetalingPerTittel = utbetalinger.stream().collect(Collectors.groupingBy(o -> o.tittel));
         List<Utbetaling> lonn = utbetalingPerTittel.get("Lønn");
@@ -39,5 +40,20 @@ public class SkattbarInntektServiceTest {
         Utbetaling utbetaling = lonn.get(0);
         assertThat(utbetaling.tittel).isEqualTo("Lønn");
         assertThat(utbetaling.brutto).isPositive();
+    }
+
+    @Test
+    public void hentSkattbarInntektForToMaanederIgnorererDaArbeidsgiver1IForrigeMaaned() {
+        skattbarInntektService.mockFil = "/mockdata/InntektOgSkattToMaaneder.json";
+        List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt("01234567");
+        assertThat(utbetalinger).hasSize(2);
+    }
+
+    @Test
+    public void hentSkattbarInntektForToMaanederIForrigeMaanedBeggeMaanedeneOgArbeidsgiverneVilVaereMed() {
+        skattbarInntektService.mockFil = "/mockdata/InntektOgSkattToMaanederToArbeidsgivere.json";
+        List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt("01234567");
+        assertThat(utbetalinger).hasSize(3);
+        assertThat(utbetalinger.stream().collect(Collectors.groupingBy(o -> o.orgnummer)).entrySet()).hasSize(2);
     }
 }

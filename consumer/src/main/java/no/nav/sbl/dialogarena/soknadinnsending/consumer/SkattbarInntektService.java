@@ -22,13 +22,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.lang.System.getenv;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class SkattbarInntektService {
@@ -37,6 +36,8 @@ public class SkattbarInntektService {
     private static Logger log = LoggerFactory.getLogger(SkattbarInntektService.class);
     public Function<Sokedata, RestCallContext> restCallContextSelector;
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+    public String mockFil = "/mockdata/InntektOgSkatt.json";
+    ;
 
     public SkattbarInntektService() {
         restCallContextSelector = (sokedata -> new RestCallContext.Builder()
@@ -50,13 +51,31 @@ public class SkattbarInntektService {
     public List<Utbetaling> hentSkattbarInntekt(String fnummer) {
 
         Sokedata sokedata = new Sokedata()
-                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
+                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() >= 10 ? 1 : 2))
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
             return mapTilUtbetalinger(mockRespons());
         }
-        return mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata)));
+
+        return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata))));
+    }
+
+    public List<Utbetaling> filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(List<Utbetaling> utbetalinger) {
+        return utbetalinger.stream()
+                .collect(groupingBy(o1 -> o1.orgnummer))
+                .values()
+                .stream()
+                .map(u -> u.stream()
+                        .collect(groupingBy(o1 -> o1.periodeFom))
+                        .get(u.stream()
+                                .max(Comparator.comparing(o -> o.periodeFom))
+                                .orElseThrow(IllegalStateException::new)
+                                .periodeFom))
+                .collect(toList())
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(toList());
     }
 
     public Invocation.Builder getRequest(Sokedata sokedata) {
@@ -65,7 +84,7 @@ public class SkattbarInntektService {
     }
 
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
-        String apiKey = getenv("SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD"); //https://fasit.adeo.no/resources/7504820????
+        String apiKey = getenv("SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         WebTarget b = executionContext.getClient().target(String.format("%s%s/oppgave/inntekt", endpoint, sokedata.identifikator))
                 .queryParam("fraOgMed", sokedata.fom.format(formatter))
@@ -85,7 +104,7 @@ public class SkattbarInntektService {
             LocalDate tom = kalenderManed.atEndOfMonth();
             oppgaveInntektsmottaker.inntekt.stream()
                     .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
-                    .collect(Collectors.toList()).forEach(inntekt -> {
+                    .collect(toList()).forEach(inntekt -> {
                 if (inntekt.loennsinntekt != null) {
                     utbetalingerLonn.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lønn"));
                 }
@@ -143,7 +162,7 @@ public class SkattbarInntektService {
     private List<Utbetaling> trekkUtUtbetalinger(List<Utbetaling> utbetalinger) {
         List<Utbetaling> aggregertUtbetaling
                 = new ArrayList<>();
-        Map<String, List<Utbetaling>> utbetalingerPerOrganisasjon = utbetalinger.stream().collect(Collectors.groupingBy(utbetaling -> utbetaling.orgnummer));
+        Map<String, List<Utbetaling>> utbetalingerPerOrganisasjon = utbetalinger.stream().collect(groupingBy(utbetaling -> utbetaling.orgnummer));
         for (Map.Entry<String, List<Utbetaling>> entry : utbetalingerPerOrganisasjon.entrySet()) {
             entry.getValue().stream().reduce((u1, u2) -> {
                 u1.brutto += u2.brutto;
@@ -188,7 +207,7 @@ public class SkattbarInntektService {
 
     private SkattbarInntekt mockRespons() {
         try {
-            String json = IOUtils.toString(this.getClass().getResourceAsStream("/mockdata/InntektOgSkatt.json"));
+            String json = IOUtils.toString(this.getClass().getResourceAsStream(mockFil));
             return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, SkattbarInntekt.class);
         } catch (IOException e) {
             log.error("", e);
