@@ -116,7 +116,7 @@ public class AdresseSystemdata implements Systemdata {
         final Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) adresse.getStrukturertAdresse();
         final JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
         jsonGateAdresse.setType(JsonAdresse.Type.GATEADRESSE);
-        jsonGateAdresse.setLandkode(temporaryFixForLandkode(adresse));
+        jsonGateAdresse.setLandkode(defaultIfBlank(adresse.getLandkode(), "NOR"));
         jsonGateAdresse.setKommunenummer(defaultIfBlank(gateadresse.kommunenummer, null));
         jsonGateAdresse.setBolignummer(defaultIfBlank(gateadresse.bolignummer, null));
         jsonGateAdresse.setGatenavn(defaultIfBlank(gateadresse.gatenavn, null));
@@ -125,10 +125,6 @@ public class AdresseSystemdata implements Systemdata {
         jsonGateAdresse.setPostnummer(defaultIfBlank(gateadresse.postnummer, null));
         jsonGateAdresse.setPoststed(defaultIfBlank(gateadresse.poststed, null));
         return jsonGateAdresse;
-    }
-
-    private static String temporaryFixForLandkode(Adresse adresse) {
-        return defaultIfBlank(adresse.getLandkode(), "NOR");
     }
 
     private static JsonAdresse tilMatrikkelAdresse(final Adresse adresse) {
