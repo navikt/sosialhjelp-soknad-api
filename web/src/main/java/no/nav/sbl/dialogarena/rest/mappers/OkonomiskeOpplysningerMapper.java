@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktF
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,10 @@ import java.util.stream.Collectors;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToTittelDelNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOpplysninger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class OkonomiskeOpplysningerMapper {
+    private static final Logger logger = getLogger(OkonomiskeOpplysningerMapper.class);
 
     public static void addAllInntekterToJsonOkonomi(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String soknadType) {
         final Optional<JsonOkonomioversiktInntekt> eksisterendeInntekt = jsonOkonomi.getOversikt().getInntekt().stream()
@@ -35,7 +38,7 @@ public class OkonomiskeOpplysningerMapper {
             inntekter.addAll(mapToInntektList(vedleggFrontend.rader, eksisterendeInntekt.get()));
             jsonOkonomi.getOversikt().setInntekt(inntekter);
         } else {
-            throw new IllegalStateException("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.error("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -52,7 +55,7 @@ public class OkonomiskeOpplysningerMapper {
             formuer.addAll(mapToFormueList(vedleggFrontend.rader, eksisterendeFormue.get()));
             jsonOkonomi.getOversikt().setFormue(formuer);
         } else {
-            throw new IllegalStateException("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.error("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -76,7 +79,7 @@ public class OkonomiskeOpplysningerMapper {
 
             jsonOkonomi.getOversikt().setUtgift(utgifter);
         } else {
-            throw new IllegalStateException("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.error("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -106,7 +109,7 @@ public class OkonomiskeOpplysningerMapper {
             utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, eksisterendeOpplysningUtgift.get()));
             jsonOkonomi.getOpplysninger().setUtgift(utgifter);
         } else {
-            throw new IllegalStateException("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.error("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -128,7 +131,7 @@ public class OkonomiskeOpplysningerMapper {
             utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling.get()));
             jsonOkonomi.getOpplysninger().setUtbetaling(utbetalinger);
         } else {
-            throw new IllegalStateException("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.error("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
@@ -145,7 +148,7 @@ public class OkonomiskeOpplysningerMapper {
 
             utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, eksisterendeRenter.get()));
         } else {
-            throw new IllegalStateException("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.error("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
         }
     }
 
