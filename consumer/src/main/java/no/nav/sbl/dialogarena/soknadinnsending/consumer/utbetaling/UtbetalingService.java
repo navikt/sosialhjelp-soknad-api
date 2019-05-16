@@ -33,7 +33,7 @@ public class UtbetalingService {
             WSHentUtbetalingsinformasjonResponse wsUtbetalinger = utbetalingV1.hentUtbetalingsinformasjon(lagHentUtbetalingRequest(brukerFnr, fom, tom));
             return mapTilUtbetalinger(wsUtbetalinger);
         } catch (Exception e) {
-            logger.error("Kunne ikke hente utbetalinger for {}", brukerFnr, e);
+            logger.warn("Kunne ikke hente utbetalinger for {}", brukerFnr, e);
             return null;
         }
 

@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.stereotype.Component;
@@ -403,7 +404,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
 
     public String hentSoknadType(Long soknadId) {
-        return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
+        try {
+            return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
+        } catch (EmptyResultDataAccessException e) {
+            logger.error("Fant ingen soknad med soknad_id={}", soknadId, e);
+            return null;
+        }
     }
 
     public void settDelstegstatus(Long soknadId, DelstegStatus status) {

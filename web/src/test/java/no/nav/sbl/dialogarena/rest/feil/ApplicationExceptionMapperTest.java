@@ -2,8 +2,11 @@ package no.nav.sbl.dialogarena.rest.feil;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -39,6 +42,27 @@ public class ApplicationExceptionMapperTest {
     @Test
     public void skalGi500MedHeaderForIngenBigIpRedirectForAndreKjenteUnntak() {
         Response response = mapper.toResponse(new ApplicationException("feil"));
+        assertThat(response.getStatus()).isEqualTo(500);
+        assertThat(response.getHeaderString(NO_BIGIP_5XX_REDIRECT)).isEqualTo("true");
+    }
+
+    @Test
+    public void skalGi500MedHeaderForIngenBigIpRedirectVedTjenesteUtilgjengeligException() {
+        Response response = mapper.toResponse(new TjenesteUtilgjengeligException("feil", new RuntimeException()));
+        assertThat(response.getStatus()).isEqualTo(500);
+        assertThat(response.getHeaderString(NO_BIGIP_5XX_REDIRECT)).isEqualTo("true");
+    }
+
+    @Test
+    public void skalGi500MedHeaderForIngenBigIpRedirectVedEttersendelseSendtForSentException() {
+        Response response = mapper.toResponse(new EttersendelseSendtForSentException("feil"));
+        assertThat(response.getStatus()).isEqualTo(500);
+        assertThat(response.getHeaderString(NO_BIGIP_5XX_REDIRECT)).isEqualTo("true");
+    }
+
+    @Test
+    public void skalGi500VMedHeaderForIngenBigIpRedirectedSikkerhetsBegrensningException() {
+        Response response = mapper.toResponse(new SikkerhetsBegrensningException("feil", new RuntimeException()));
         assertThat(response.getStatus()).isEqualTo(500);
         assertThat(response.getHeaderString(NO_BIGIP_5XX_REDIRECT)).isEqualTo("true");
     }
