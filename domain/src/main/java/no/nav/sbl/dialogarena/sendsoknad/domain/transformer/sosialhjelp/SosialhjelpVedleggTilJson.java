@@ -116,7 +116,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
             Faktum faktumMedId = webSoknad.getFaktumMedId(String.valueOf(proxyFaktumId));
             if (faktumMedId == null) {
                 String faktumIder = webSoknad.getFakta().stream().map(Faktum::getKey).collect(Collectors.joining(", "));
-                throw new NullPointerException(String.format("faktumMedId==null proxyFaktumId=%s tilgjengelige faktumider=%s", proxyFaktumId, faktumIder));
+                throw new NullPointerException(String.format("faktumMedId==null proxyFaktumId=%s vedleggNavn=%s tilgjengelige faktumkeys=%s",proxyFaktumId ,v.getNavn(), faktumIder));
             }
             Long belopFaktumId = faktumMedId.getParrentFaktum();
 
