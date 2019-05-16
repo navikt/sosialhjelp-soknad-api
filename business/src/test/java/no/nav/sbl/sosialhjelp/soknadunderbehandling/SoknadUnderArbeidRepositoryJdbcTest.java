@@ -115,7 +115,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withJsonInternalSoknad(JSON_INTERNAL_SOKNAD).withVersjon(5L);
-
+        soknadUnderArbeid.withJsonInternalSoknad(soknadUnderArbeid.getJsonInternalSoknad().withAdditionalProperty("endret", true));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER);
     }
 
