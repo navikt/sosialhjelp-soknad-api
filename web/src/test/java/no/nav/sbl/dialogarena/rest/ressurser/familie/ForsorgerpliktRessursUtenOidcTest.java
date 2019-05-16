@@ -4,6 +4,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
@@ -34,6 +35,9 @@ public class ForsorgerpliktRessursUtenOidcTest {
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Mock
+    private TextService textService;
 
     @InjectMocks
     private ForsorgerpliktRessurs forsorgerpliktRessurs = spy(new ForsorgerpliktRessurs());
