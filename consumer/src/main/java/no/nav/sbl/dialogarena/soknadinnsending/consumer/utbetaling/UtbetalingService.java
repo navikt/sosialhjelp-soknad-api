@@ -7,6 +7,7 @@ import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinfor
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -25,13 +26,14 @@ public class UtbetalingService {
     @Inject
     private UtbetalingV1 utbetalingV1;
 
+    @Cacheable("utbetalingCache")
     public List<Utbetaling> hentUtbetalingerForBrukerIPeriode(String brukerFnr, LocalDate fom, LocalDate tom) {
         logger.info("Henter utbetalinger for {} i perioden {} til {}", brukerFnr, fom, tom);
         try {
             WSHentUtbetalingsinformasjonResponse wsUtbetalinger = utbetalingV1.hentUtbetalingsinformasjon(lagHentUtbetalingRequest(brukerFnr, fom, tom));
             return mapTilUtbetalinger(wsUtbetalinger);
         } catch (Exception e) {
-            logger.error("Kunne ikke hente utbetalinger for {}", brukerFnr, e);
+            logger.warn("Kunne ikke hente utbetalinger for {}", brukerFnr, e);
             return null;
         }
 

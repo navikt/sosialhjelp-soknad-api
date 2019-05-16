@@ -38,12 +38,6 @@ public class PersonaliaFletter {
         } catch (IkkeFunnetException e) {
             logger.error("Ikke funnet person i TPS", e);
             throw new ApplicationException("TPS:PersonIkkefunnet", e);
-        } catch (SikkerhetsBegrensningException e) {
-            logger.warn("Kunne ikke hente bruker fra TPS.", e);
-            throw new ApplicationException("TPS:Sikkerhetsbegrensing", e);
-        } catch (TjenesteUtilgjengeligException e) {
-            logger.error("Ingen kontakt med TPS.", e);
-            throw new ApplicationException("TPS:webserviceException", e);
         }
         if (adresserOgKontonummer == null) {
             return new Personalia();

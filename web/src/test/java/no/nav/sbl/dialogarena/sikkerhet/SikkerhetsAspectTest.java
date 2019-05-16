@@ -1,11 +1,13 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.ws.rs.NotFoundException;
 import java.lang.annotation.Annotation;
 
-import static java.lang.System.setProperty;
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.*;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 import static org.hamcrest.Matchers.is;
@@ -45,8 +46,15 @@ public class SikkerhetsAspectTest {
     private String brukerBehandlingsId = "1";
 
     @Before
-    public void init() {
-        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+    public void setUp() {
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
+    }
+
+    @After
+    public void tearDown() {
+        SubjectHandler.resetOidcSubjectHandlerService();
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test

@@ -4,13 +4,13 @@ import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.security.tilgangskontroll.URN;
 import no.nav.modig.security.tilgangskontroll.policy.attributes.values.StringValue;
 import no.nav.modig.security.tilgangskontroll.policy.enrichers.EnvironmentRequestEnricher;
-import no.nav.modig.security.tilgangskontroll.policy.enrichers.SecurityContextRequestEnricher;
 import no.nav.modig.security.tilgangskontroll.policy.pdp.DecisionPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pdp.picketlink.PicketLinkDecisionPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.EnforcementPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.config.SikkerhetsConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
 import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forRequest;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.sjekkXsrfToken;
@@ -68,7 +67,7 @@ public class Tilgangskontroll {
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
         String aktoerId = "undefined";
 
-        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, getSubjectHandler().getUid());
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId());
         if (soknadUnderArbeid.isPresent()){
             aktoerId = soknadUnderArbeid.get().getEier();
         } else {
@@ -98,7 +97,7 @@ public class Tilgangskontroll {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
-        String aktorId = getSubjectHandler().getUid();
+        String aktorId = OidcFeatureToggleUtils.getUserId();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
 
