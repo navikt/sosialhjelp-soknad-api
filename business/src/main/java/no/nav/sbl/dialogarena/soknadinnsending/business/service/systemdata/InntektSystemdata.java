@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,17 +27,16 @@ public class InntektSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
-        final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
-        final List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalings = jsonData.getOkonomi().getOpplysninger()
-                .getUtbetaling().stream().filter(utbetaling -> !utbetaling.getType().equals("navytelse"))
-                .collect(Collectors.toList());
-        final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = innhentSystemregistrertInntekt(personIdentifikator);
-        if (utbetalinger == null){
+        JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
+        String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
+        List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();
+        List<JsonOkonomiOpplysningUtbetaling> systemUtbetalinger = innhentSystemregistrertInntekt(personIdentifikator);
+
+        okonomiOpplysningUtbetalinger.removeIf(utbetaling -> utbetaling.getKilde().equals(JsonKilde.SYSTEM));
+        if (systemUtbetalinger == null){
             soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente utbetalinger fra NAV");
         } else {
-            okonomiOpplysningUtbetalings.removeAll(utbetalinger);
-            okonomiOpplysningUtbetalings.addAll(utbetalinger);
+            okonomiOpplysningUtbetalinger.addAll(systemUtbetalinger);
         }
     }
 
@@ -76,6 +76,6 @@ public class InntektSystemdata implements Systemdata {
                     .withSatsType(komponent.satsType)
                     .withSatsAntall(komponent.satsAntall)).collect(Collectors.toList());
         }
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 }

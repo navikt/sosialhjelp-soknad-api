@@ -32,6 +32,7 @@ public class AdresseSystemdataTest {
     private static final Adresse.MatrikkelAdresse STRUKTURERT_MATRIKKEL_ADRESSE = new Adresse.MatrikkelAdresse();
     static {
         GATEADRESSE.setAdressetype("gateadresse");
+        GATEADRESSE.setLandkode("NOR");
         STRUKTURERT_GATEADRESSE.gatenavn = "Gata mi";
         STRUKTURERT_GATEADRESSE.husbokstav = "A";
         STRUKTURERT_GATEADRESSE.bolignummer = "1";
@@ -42,6 +43,7 @@ public class AdresseSystemdataTest {
         GATEADRESSE.setStrukturertAdresse(STRUKTURERT_GATEADRESSE);
 
         MATRIKKEL_ADRESSE.setAdressetype("matrikkeladresse");
+        MATRIKKEL_ADRESSE.setLandkode("NOR");
         STRUKTURERT_MATRIKKEL_ADRESSE.eiendomsnavn = "Eiendomsnavnet mitt";
         STRUKTURERT_MATRIKKEL_ADRESSE.bolignummer = "1";
         STRUKTURERT_MATRIKKEL_ADRESSE.bruksnummer = "2";

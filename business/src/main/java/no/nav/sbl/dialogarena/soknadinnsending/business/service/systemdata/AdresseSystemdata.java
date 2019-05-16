@@ -8,11 +8,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 @Component
 public class AdresseSystemdata implements Systemdata {
@@ -36,10 +39,11 @@ public class AdresseSystemdata implements Systemdata {
         if (postadresse == null){
             return;
         }
-        if (postadresse.getAdresseValg() == JsonAdresseValg.FOLKEREGISTRERT){
+        JsonAdresseValg adresseValg = postadresse.getAdresseValg();
+        if (adresseValg == JsonAdresseValg.FOLKEREGISTRERT){
             personalia.setPostadresse(folkeregistrertAdresse);
         }
-        if (postadresse.getAdresseValg() == JsonAdresseValg.MIDLERTIDIG){
+        if (adresseValg == JsonAdresseValg.MIDLERTIDIG){
             personalia.setPostadresse(midlertidigAdresse);
         }
     }
@@ -49,11 +53,14 @@ public class AdresseSystemdata implements Systemdata {
         if (oppholdsadresse == null){
             return;
         }
-        if (oppholdsadresse.getAdresseValg() == JsonAdresseValg.FOLKEREGISTRERT){
+        JsonAdresseValg adresseValg = oppholdsadresse.getAdresseValg();
+        if (adresseValg == JsonAdresseValg.FOLKEREGISTRERT){
             personalia.setOppholdsadresse(folkeregistrertAdresse);
+            personalia.getOppholdsadresse().setAdresseValg(adresseValg);
         }
-        if (oppholdsadresse.getAdresseValg() == JsonAdresseValg.MIDLERTIDIG){
+        if (adresseValg == JsonAdresseValg.MIDLERTIDIG){
             personalia.setOppholdsadresse(midlertidigAdresse);
+            personalia.getOppholdsadresse().setAdresseValg(adresseValg);
         }
     }
 
@@ -111,15 +118,19 @@ public class AdresseSystemdata implements Systemdata {
         final Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) adresse.getStrukturertAdresse();
         final JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
         jsonGateAdresse.setType(JsonAdresse.Type.GATEADRESSE);
-        jsonGateAdresse.setLandkode(adresse.getLandkode());
-        jsonGateAdresse.setKommunenummer(gateadresse.kommunenummer);
-        jsonGateAdresse.setBolignummer(gateadresse.bolignummer);
-        jsonGateAdresse.setGatenavn(gateadresse.gatenavn);
-        jsonGateAdresse.setHusnummer(gateadresse.husnummer);
-        jsonGateAdresse.setHusbokstav(gateadresse.husbokstav);
-        jsonGateAdresse.setPostnummer(gateadresse.postnummer);
-        jsonGateAdresse.setPoststed(gateadresse.poststed);
+        jsonGateAdresse.setLandkode(temporaryFixForLandkode(adresse));
+        jsonGateAdresse.setKommunenummer(defaultIfBlank(gateadresse.kommunenummer, null));
+        jsonGateAdresse.setBolignummer(defaultIfBlank(gateadresse.bolignummer, null));
+        jsonGateAdresse.setGatenavn(defaultIfBlank(gateadresse.gatenavn, null));
+        jsonGateAdresse.setHusnummer(defaultIfBlank(gateadresse.husnummer, null));
+        jsonGateAdresse.setHusbokstav(defaultIfBlank(gateadresse.husbokstav, null));
+        jsonGateAdresse.setPostnummer(defaultIfBlank(gateadresse.postnummer, null));
+        jsonGateAdresse.setPoststed(defaultIfBlank(gateadresse.poststed, null));
         return jsonGateAdresse;
+    }
+
+    private static String temporaryFixForLandkode(Adresse adresse) {
+        return defaultIfBlank(adresse.getLandkode(), "NOR");
     }
 
     private static JsonAdresse tilMatrikkelAdresse(final Adresse adresse) {
@@ -131,12 +142,12 @@ public class AdresseSystemdata implements Systemdata {
         final Adresse.MatrikkelAdresse matrikkelAdresse = (Adresse.MatrikkelAdresse) adresse.getStrukturertAdresse();
         final JsonMatrikkelAdresse jsonMatrikkelAdresse = new JsonMatrikkelAdresse();
         jsonMatrikkelAdresse.setType(JsonAdresse.Type.MATRIKKELADRESSE);
-        jsonMatrikkelAdresse.setKommunenummer(matrikkelAdresse.kommunenummer);
-        jsonMatrikkelAdresse.setGaardsnummer(matrikkelAdresse.gaardsnummer);
-        jsonMatrikkelAdresse.setBruksnummer(matrikkelAdresse.bruksnummer);
-        jsonMatrikkelAdresse.setFestenummer(matrikkelAdresse.festenummer);
-        jsonMatrikkelAdresse.setSeksjonsnummer(matrikkelAdresse.seksjonsnummer);
-        jsonMatrikkelAdresse.setUndernummer(matrikkelAdresse.undernummer);
+        jsonMatrikkelAdresse.setKommunenummer(defaultIfBlank(matrikkelAdresse.kommunenummer, null));
+        jsonMatrikkelAdresse.setGaardsnummer(defaultIfBlank(matrikkelAdresse.gaardsnummer, null));
+        jsonMatrikkelAdresse.setBruksnummer(defaultIfBlank(matrikkelAdresse.bruksnummer, null));
+        jsonMatrikkelAdresse.setFestenummer(defaultIfBlank(matrikkelAdresse.festenummer, null));
+        jsonMatrikkelAdresse.setSeksjonsnummer(defaultIfBlank(matrikkelAdresse.seksjonsnummer, null));
+        jsonMatrikkelAdresse.setUndernummer(defaultIfBlank(matrikkelAdresse.undernummer, null));
         return jsonMatrikkelAdresse;
     }
 
