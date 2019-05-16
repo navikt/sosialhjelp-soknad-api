@@ -75,6 +75,10 @@
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>3.2.18.RELEASE</spring.version>
         <jersey.version>2.25.1</jersey.version>
+        <oidc-support.version>0.2.10</oidc-support.version>
+        <nimbus-jose-jwt.version>6.5</nimbus-jose-jwt.version>
+        <activation.version>1.1.1</activation.version>
+        <jcip-annotations.version>1.0-1</jcip-annotations.version>
         <cxf.version>3.2.1</cxf.version>
         <cxf-rt-transports-http.version>3.2.1</cxf-rt-transports-http.version>
         <modig-security.version>3.0.6</modig-security.version>
@@ -92,7 +96,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.9.8</jackson.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <filformat.version>1.20190412.1520</filformat.version>
+        <filformat.version>1.2019.05.13-12.50-60796f568f50</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
@@ -260,7 +264,7 @@
             <dependency>
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>javax.ws.rs-api</artifactId>
-                <version>2.0.1</version>
+                <version>2.1</version>
             </dependency>
             <dependency>
                 <groupId>javax.annotation</groupId>
@@ -788,6 +792,42 @@
                 <artifactId>jaxb-java-time-adapters</artifactId>
                 <version>1.1.3</version>
             </dependency>
+            <dependency>
+                <groupId>net.minidev</groupId>
+                <artifactId>json-smart</artifactId>
+                <version>2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.security</groupId>
+                <artifactId>oidc-jersey-support</artifactId>
+                <version>${oidc-support.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.security</groupId>
+                <artifactId>oidc-support</artifactId>
+                <version>${oidc-support.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus-jose-jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>${activation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.stephenc.jcip</groupId>
+                <artifactId>jcip-annotations</artifactId>
+                <version>${jcip-annotations.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+                <artifactId>jersey-guava</artifactId>
+                <version>2.6</version>
+            </dependency>
 
             <!-- Avhengigheter med scope runtime -->
 
@@ -827,6 +867,22 @@
 
             <!-- Avhengigheter med scope test -->
 
+            <dependency>
+                <groupId>no.nav.security</groupId>
+                <artifactId>oidc-test-support</artifactId>
+                <version>${oidc-support.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-jersey</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>

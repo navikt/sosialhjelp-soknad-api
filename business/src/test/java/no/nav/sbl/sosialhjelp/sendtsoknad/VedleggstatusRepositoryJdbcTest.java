@@ -31,10 +31,8 @@ public class VedleggstatusRepositoryJdbcTest {
     private static final LocalDateTime BRUKER_OPPRETTET_DATO = now().minusDays(2);
     private static final LocalDateTime BRUKER_FERDIG_DATO = now().minusSeconds(50);
     private static final LocalDateTime SENDT_DATO = now();
-    private static final String TYPE = "bostotte";
-    private static final String TILLEGGSINFO = "annetboutgift";
-    private static final String TYPE2 = "dokumentasjon";
-    private static final String TILLEGGSINFO2 = "aksjer";
+    private static final String TYPE = "bostotte|annetboutgift";
+    private static final String TYPE2 = "dokumentasjon|aksjer";
 
     @Inject
     private VedleggstatusRepository vedleggstatusRepository;
@@ -70,7 +68,7 @@ public class VedleggstatusRepositoryJdbcTest {
         assertThat(vedleggstatus.getVedleggstatusId(), is(vedleggstatusId));
         assertThat(vedleggstatus.getEier(), is(EIER));
         assertThat(vedleggstatus.getStatus(), is(Vedleggstatus.Status.VedleggKreves));
-        assertThat(vedleggstatus.getVedleggType().getType(), is(TYPE));
+        assertThat(vedleggstatus.getVedleggType().getSammensattType(), is(TYPE));
         assertThat(vedleggstatus.getSendtSoknadId(), is(sendtSoknadId));
     }
 
@@ -91,7 +89,7 @@ public class VedleggstatusRepositoryJdbcTest {
     public void hentVedleggForSendtSoknadMedStatusHenterKunVedleggstatusForAngittStatus() {
         final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
         final Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(
-                lagVedleggstatus(EIER, sendtSoknadId, Vedleggstatus.Status.VedleggAlleredeSendt, TYPE2, TILLEGGSINFO2), EIER);
+                lagVedleggstatus(EIER, sendtSoknadId, Vedleggstatus.Status.VedleggAlleredeSendt, TYPE2), EIER);
         vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
 
         List<Vedleggstatus> vedleggstatuser = vedleggstatusRepository.hentVedleggForSendtSoknadMedStatus(
@@ -126,7 +124,7 @@ public class VedleggstatusRepositoryJdbcTest {
     public void slettAlleVedleggForSendtSoknadSletterAlleVedleggForGittSoknad() {
         final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
         final Long vedleggstatusId = vedleggstatusRepository.opprettVedlegg(
-                lagVedleggstatus(EIER, sendtSoknadId, Vedleggstatus.Status.VedleggAlleredeSendt, TYPE2, TILLEGGSINFO2), EIER);
+                lagVedleggstatus(EIER, sendtSoknadId, Vedleggstatus.Status.VedleggAlleredeSendt, TYPE2), EIER);
         final Long vedleggstatusId2 = vedleggstatusRepository.opprettVedlegg(lagVedleggstatus(EIER, sendtSoknadId), EIER);
 
         vedleggstatusRepository.slettAlleVedleggForSendtSoknad(sendtSoknadId, EIER);
@@ -136,13 +134,13 @@ public class VedleggstatusRepositoryJdbcTest {
     }
 
     private Vedleggstatus lagVedleggstatus(String eier, Long sendtSoknadId) {
-        return lagVedleggstatus(eier, sendtSoknadId, Vedleggstatus.Status.VedleggKreves, TYPE, TILLEGGSINFO);
+        return lagVedleggstatus(eier, sendtSoknadId, Vedleggstatus.Status.VedleggKreves, TYPE);
     }
 
-    private Vedleggstatus lagVedleggstatus(String eier, Long sendtSoknadId, Vedleggstatus.Status status, String type, String tilleggsinfo) {
+    private Vedleggstatus lagVedleggstatus(String eier, Long sendtSoknadId, Vedleggstatus.Status status, String type) {
         return new Vedleggstatus().withEier(eier)
                 .withStatus(status)
-                .withVedleggType(new VedleggType(type, tilleggsinfo))
+                .withVedleggType(new VedleggType(type))
                 .withSendtSoknadId(sendtSoknadId);
     }
 

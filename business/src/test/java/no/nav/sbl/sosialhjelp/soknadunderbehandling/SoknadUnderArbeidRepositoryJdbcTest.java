@@ -115,7 +115,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withJsonInternalSoknad(JSON_INTERNAL_SOKNAD).withVersjon(5L);
-
+        soknadUnderArbeid.withJsonInternalSoknad(soknadUnderArbeid.getJsonInternalSoknad().withAdditionalProperty("endret", true));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER);
     }
 
@@ -169,7 +169,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
         return new OpplastetVedlegg()
                 .withEier(EIER)
-                .withVedleggType(new VedleggType("bostotte", "annetboutgift"))
+                .withVedleggType(new VedleggType("bostotte|annetboutgift"))
                 .withData(new byte[]{1, 2, 3})
                 .withSoknadId(soknadId)
                 .withFilnavn("dokumentasjon.pdf")

@@ -38,7 +38,7 @@ public class VedleggsforventningConverter {
             status = Vedleggstatus.Status.VedleggAlleredeSendt;
         }
         return new Vedleggstatus()
-                .withVedleggType(new VedleggType(vedlegg.getSkjemaNummer(), vedlegg.getSkjemanummerTillegg()))
+                .withVedleggType(new VedleggType(vedlegg.getSkjemaNummer() + "|" + vedlegg.getSkjemanummerTillegg()))
                 .withEier(eier)
                 .withStatus(status);
     }

@@ -220,7 +220,7 @@ public class FiksSenderTest {
         opplastedeVedlegg.add(new OpplastetVedlegg()
                 .withFilnavn(FILNAVN)
                 .withSha512("sha512")
-                .withVedleggType(new VedleggType("type", "tilleggsinfo"))
+                .withVedleggType(new VedleggType("type|tilleggsinfo"))
                 .withData(new byte[]{1, 2, 3}));
         return opplastedeVedlegg;
     }

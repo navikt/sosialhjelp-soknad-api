@@ -95,6 +95,10 @@ public class SoknadService {
         soknadMetricsService.avbruttSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
 
+    public String legacyStartEttersending(String behandlingsIdSoknad) {
+        return ettersendingService.legacyStart(behandlingsIdSoknad);
+    }
+
     public String startEttersending(String behandlingsIdSoknad) {
         return ettersendingService.start(behandlingsIdSoknad);
     }

@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +28,8 @@ public class VedleggConverterTest {
     private static final String EIER = "12345678910";
     private static final byte[] DATA = {1, 2, 3, 4};
     private static final String SHA512 = ServiceUtils.getSha512FromByteArray(DATA);
-    private static final String TYPE = "bostotte";
-    private static final String TILLEGGSINFO = "annetboutgift";
+    private static final String TYPE = "bostotte|annetboutgift";
+    private static final VedleggType VEDLEGG_TYPE = new VedleggType(TYPE);
     private static final String FILNAVN = "dokumentasjon.pdf";
 
     @Mock
@@ -79,8 +80,7 @@ public class VedleggConverterTest {
                 lagOpplastetVedleggUtenData());
 
         assertThat(opplastetVedlegg.getSoknadId(), is(SOKNAD_UNDER_ARBEID_ID));
-        assertThat(opplastetVedlegg.getVedleggType().getType(), is(TYPE));
-        assertThat(opplastetVedlegg.getVedleggType().getTilleggsinfo(), is(TILLEGGSINFO));
+        assertThat(opplastetVedlegg.getVedleggType().getSammensattType(), is(TYPE));
         assertThat(opplastetVedlegg.getData(), is(DATA));
         assertThat(opplastetVedlegg.getEier(), is(EIER));
         assertThat(opplastetVedlegg.getFilnavn(), is(FILNAVN));
@@ -100,8 +100,8 @@ public class VedleggConverterTest {
         return new Vedlegg().medVedleggId(1L)
                 .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
                 .medFilnavn(FILNAVN)
-                .medSkjemaNummer(TYPE)
-                .medSkjemanummerTillegg(TILLEGGSINFO)
+                .medSkjemaNummer(VEDLEGG_TYPE.getType())
+                .medSkjemanummerTillegg(VEDLEGG_TYPE.getTilleggsinfo())
                 .medSha512(SHA512);
     }
 

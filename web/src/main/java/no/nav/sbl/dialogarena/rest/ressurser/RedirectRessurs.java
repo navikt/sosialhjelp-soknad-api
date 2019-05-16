@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import static no.nav.sbl.sosialhjelp.pdf.UrlUtils.getEttersendelseUrl;
 import static no.nav.sbl.sosialhjelp.pdf.UrlUtils.getFortsettUrl;
 
 @Path("/")
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 public class RedirectRessurs {
 
     private static final Logger LOG = LoggerFactory.getLogger(RedirectRessurs.class);

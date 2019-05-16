@@ -21,85 +21,88 @@ resources:
     memory: 2Gi
 fasitResources:
   exposed:
-    - alias: soknadsosialhjelpSaksoversikt
-      resourceType: restservice
-      path: /soknadsosialhjelp-server/metadata
+  - alias: soknadsosialhjelpSaksoversikt
+    resourceType: restservice
+    path: /soknadsosialhjelp-server/metadata
   used:
-    - alias: srvsoknadsosialhjelp-server
-      resourceType: credential
-      propertyMap:
-        username: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_USERNAME
-        password: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_PASSWORD
-    - alias: srvsoknadsosialhjelp-server
-      resourceType: certificate
-    - alias: soknadsosialhjelpDataSource
-      resourceType: datasource
-    - alias: virksomhet:Brukerprofil_v1
-      resourceType: webserviceendpoint
-    - alias: virksomhet:DigitalKontakinformasjon_v1
-      resourceType: webserviceendpoint
-    - alias: virksomhet:Person_v1
-      resourceType: webserviceendpoint
-    - alias: virksomhet:Arbeidsforhold_v3
-      resourceType: webserviceendpoint
-    - alias: virksomhet:Organisasjon_v4
-      resourceType: webserviceendpoint
-    - alias: virksomhet:SakOgAktivitet_v1
-      resourceType: webserviceendpoint
-    - alias: virksomhet:Maalgruppe_v1
-      resourceType: webserviceendpoint
-    - alias: virksomhet:Kodeverk_v2
-      resourceType: webserviceendpoint
-    - alias: saksoversikt.link
-      resourceType: baseurl
-    - alias: dittnav.link
-      resourceType: baseurl
-    - alias: appres.cms
-      resourceType: baseurl
-    - alias: dialogarena.navnolink
-      resourceType: baseurl
-    - alias: soknadinnsending.link
-      resourceType: baseurl
-    - alias: soknad.brukerprofil
-      resourceType: baseurl
-    - alias: arbeid.rest
-      resourceType: baseurl
-    - alias: ekstern:ks_svarut_v1
-      resourceType: webserviceendpoint
-    - alias: arena.personinfoservice
-      resourceType: baseurl
-    - alias: dineutbetalinger.link
-      resourceType: baseurl
-    - alias: securityTokenService
-      resourceType: baseurl
-    - alias: Utbetaling_v1
-      resourceType: webserviceendpoint
-    - alias: dokumentinnsending.smtpServer
-      resourceType: smtpserver
-    - alias: arena.personInfoService
-      resourceType: credential
-    - alias: arbeidservice
-      resourceType: credential
-    - alias: servicegateway
-      resourceType: webservicegateway
-    - alias: soknadsosialhjelp.featuretoggles
-      resourceType: applicationProperties
-    - alias: soknadsosialhjelp.properties
-      resourceType: applicationProperties
-    - alias: openam
-      resourceType: openam
-    - alias: tpsws.api.v1
-      resourceType: restservice
-    - alias: soknadsosialhjelp-server-tpsws.api.v1-apiKey
-      resourceType: credential
-    - alias: norg2.api.v1
-      resourceType: restservice
-    - alias: eksternapp.skatt.datasamarbeid.api.inntektsmottaker
-      resourceType: restservice
-    - alias: soknadsosialhjelp-server-norg2.api.v1-apiKey
-      resourceType: credential
-    - alias: soknadsosialhjelp-server-eksternapp.skatt.datasamarbeid.api.inntektsmottaker-apiKey
-      resourceType: credential
-      propertyMap:
-        username: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_USERNAME
-        password: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD
+  - alias: srvsoknadsosialhjelp-server
+    resourceType: credential
+    propertyMap:
+      username: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_USERNAME
+      password: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_PASSWORD
+  - alias: srvsoknadsosialhjelp-server
+    resourceType: certificate
+  - alias: soknadsosialhjelpDataSource
+    resourceType: datasource
+  - alias: virksomhet:Brukerprofil_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:DigitalKontakinformasjon_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Person_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Arbeidsforhold_v3
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Organisasjon_v4
+    resourceType: webserviceendpoint
+  - alias: virksomhet:SakOgAktivitet_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Maalgruppe_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Kodeverk_v2
+    resourceType: webserviceendpoint
+  - alias: saksoversikt.link
+    resourceType: baseurl
+  - alias: dittnav.link
+    resourceType: baseurl
+  - alias: appres.cms
+    resourceType: baseurl
+  - alias: dialogarena.navnolink
+    resourceType: baseurl
+  - alias: soknadinnsending.link
+    resourceType: baseurl
+  - alias: soknad.brukerprofil
+    resourceType: baseurl
+  - alias: arbeid.rest
+    resourceType: baseurl
+  - alias: ekstern:ks_svarut_v1
+    resourceType: webserviceendpoint
+  - alias: arena.personinfoservice
+    resourceType: baseurl
+  - alias: dineutbetalinger.link
+    resourceType: baseurl
+  - alias: securityTokenService
+    resourceType: baseurl
+  - alias: Utbetaling_v1
+    resourceType: webserviceendpoint
+  - alias: dokumentinnsending.smtpServer
+    resourceType: smtpserver
+  - alias: arena.personInfoService
+    resourceType: credential
+  - alias: arbeidservice
+    resourceType: credential
+  - alias: servicegateway
+    resourceType: webservicegateway
+  - alias: soknadsosialhjelp.featuretoggles
+    resourceType: applicationProperties
+  - alias: soknadsosialhjelp.properties
+    resourceType: applicationProperties
+  - alias: openam
+    resourceType: openam
+  - alias: tpsws.api.v1
+    resourceType: restservice
+  - alias: soknadsosialhjelp-server-tpsws.api.v1-apiKey
+    resourceType: credential
+  - alias: norg2.api.v1
+    resourceType: restservice
+  - alias: soknadsosialhjelp-server-norg2.api.v1-apiKey
+    resourceType: credential
+  - alias: "loginservice_oidc"
+    resourceType: azureoidc
+  - alias: soknadsosialhjelp-server-eksternapp.skatt.datasamarbeid.api.inntektsmottaker-apiKey
+    resourceType: credential
+    propertyMap:
+    username: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_USERNAME
+    password: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD
+
+ - alias: eksternapp.skatt.datasamarbeid.api.inntektsmottaker
+   resourceType: restservice
