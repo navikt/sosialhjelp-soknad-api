@@ -32,7 +32,6 @@ public class FaktumNoklerOgBelopNavnMapper {
         soknadTypeToFaktumKey.put("salg", "opplysninger.inntekt.inntekter.salg");
         soknadTypeToFaktumKey.put("forsikring", "opplysninger.inntekt.inntekter.forsikringsutbetalinger");
         soknadTypeToFaktumKey.put("sluttoppgjoer", "opplysninger.arbeid.avsluttet");
-        soknadTypeToFaktumKey.put("lonnslipp", "opplysninger.arbeid.jobb");
         soknadTypeToFaktumKey.put("strom", "opplysninger.utgifter.boutgift.strom");
         soknadTypeToFaktumKey.put("kommunalAvgift", "opplysninger.utgifter.boutgift.kommunaleavgifter");
         soknadTypeToFaktumKey.put("oppvarming", "opplysninger.utgifter.boutgift.oppvarming");
