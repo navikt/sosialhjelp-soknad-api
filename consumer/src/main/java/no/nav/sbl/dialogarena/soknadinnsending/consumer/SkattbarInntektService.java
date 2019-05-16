@@ -51,7 +51,7 @@ public class SkattbarInntektService {
     public List<Utbetaling> hentSkattbarInntekt(String fnummer) {
 
         Sokedata sokedata = new Sokedata()
-                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() >= 10 ? 1 : 2))
+                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
@@ -66,12 +66,15 @@ public class SkattbarInntektService {
                 .collect(groupingBy(o1 -> o1.orgnummer))
                 .values()
                 .stream()
-                .map(u -> u.stream()
-                        .collect(groupingBy(o1 -> o1.periodeFom))
-                        .get(u.stream()
-                                .max(Comparator.comparing(o -> o.periodeFom))
-                                .orElseThrow(IllegalStateException::new)
-                                .periodeFom))
+                .map(u -> {
+                    LocalDate nyesteDato = u.stream()
+                            .max(Comparator.comparing(o -> o.periodeFom))
+                            .orElseThrow(IllegalStateException::new)
+                            .periodeFom;
+                    return u.stream()
+                            .collect(groupingBy(o1 -> o1.periodeFom))
+                            .get(nyesteDato);
+                })
                 .collect(toList())
                 .stream()
                 .flatMap(Collection::stream)

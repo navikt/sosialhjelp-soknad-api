@@ -83,17 +83,7 @@ public class SkattbarInntektRessurs {
                 }
                 Optional<JsonOkonomiOpplysningUtbetaling> first = utbetalingerPerManed.stream().findFirst();
 
-                Organisasjon organisasjon = new Organisasjon().withUtbetalinger(utbetalingListe)
-                        .withOrganisasjonsnavn(jsonOrganisasjon
-                                .getNavn())
-                        .withOrgnr(jsonOrganisasjon
-                                .getOrganisasjonsnummer())
-                        .withFom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeFom).orElse(null))
-                        .withTom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeTom).orElse(null));
-
-                organisasjoner.add(organisasjon);
-
-
+                organisasjoner.add(mapTilOrganisasjon(utbetalingListe, jsonOrganisasjon, first));
             }
             SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = new SkattbarInntektOgForskuddstrekk()
                     .withSamletInntekt(samletSkattbarInntekt)
@@ -103,6 +93,16 @@ public class SkattbarInntektRessurs {
         }
         Collections.reverse(skattbarInntektOgForskuddstrekkListe);
         return skattbarInntektOgForskuddstrekkListe;
+    }
+
+    private Organisasjon mapTilOrganisasjon(List<Utbetaling> utbetalingListe, JsonOrganisasjon jsonOrganisasjon, Optional<JsonOkonomiOpplysningUtbetaling> first) {
+        return new Organisasjon().withUtbetalinger(utbetalingListe)
+                .withOrganisasjonsnavn(jsonOrganisasjon
+                        .getNavn())
+                .withOrgnr(jsonOrganisasjon
+                        .getOrganisasjonsnummer())
+                .withFom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeFom).orElse(null))
+                .withTom(first.map(JsonOkonomiOpplysningUtbetaling::getPeriodeTom).orElse(null));
     }
 
 
