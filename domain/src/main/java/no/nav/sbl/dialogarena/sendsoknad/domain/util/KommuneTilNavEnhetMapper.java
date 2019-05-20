@@ -116,10 +116,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1913", "959469326")    // Skånland
             .put("1852", "959469326")    // Tjelsund
             .put("0417", "994743767")    // Stange
-            .put("5004", "983921000")    // Steinkjer
-            .put("5039", "983921000")    // Verran
-            .put("5041", "983921000")    // Snåsa
-            .put("5053", "983921000")    // Inderøy
+            .put("1702", "983921000")    // Steinkjer, Verran, Snåsa, Inderøy
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
