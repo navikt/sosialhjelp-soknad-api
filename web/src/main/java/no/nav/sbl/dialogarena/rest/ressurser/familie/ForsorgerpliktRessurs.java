@@ -8,10 +8,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -27,6 +31,8 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -46,6 +52,9 @@ public class ForsorgerpliktRessurs {
 
     @Inject
     private FaktaService faktaService;
+
+    @Inject
+    private TextService textService;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -76,6 +85,30 @@ public class ForsorgerpliktRessurs {
                 forsorgerplikt.setBarnebidrag(new JsonBarnebidrag().withKilde(JsonKildeBruker.BRUKER).withVerdi(forsorgerpliktFrontend.barnebidrag));
             } else {
                 forsorgerplikt.getBarnebidrag().setVerdi(forsorgerpliktFrontend.barnebidrag);
+            }
+            String soknadstype = "barnebidrag";
+            JsonOkonomioversikt oversikt = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt();
+            List<JsonOkonomioversiktInntekt> inntekter = oversikt.getInntekt();
+            List<JsonOkonomioversiktUtgift> utgifter = oversikt.getUtgift();
+            String tittel_mottar = textService.getJsonOkonomiTittel("opplysninger.familiesituasjon.barnebidrag.mottar");
+            String tittel_betaler = textService.getJsonOkonomiTittel("opplysninger.familiesituasjon.barnebidrag.betaler");
+            switch (forsorgerpliktFrontend.barnebidrag){
+                case BEGGE:
+                    addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel_mottar, true);
+                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, soknadstype, tittel_betaler, true);
+                    break;
+                case BETALER:
+                    addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel_mottar, false);
+                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, soknadstype, tittel_betaler, true);
+                    break;
+                case MOTTAR:
+                    addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel_mottar, true);
+                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, soknadstype, tittel_betaler, false);
+                    break;
+                case INGEN:
+                    addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel_mottar, false);
+                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, soknadstype, tittel_betaler, false);
+                    break;
             }
         }
 

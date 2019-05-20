@@ -4,6 +4,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
@@ -37,6 +38,9 @@ public class UtdanningRessursUtenOidcTest {
 
     @Mock
     private FaktaService faktaService;
+
+    @Mock
+    private TextService textService;
 
     @InjectMocks
     private UtdanningRessurs utdanningRessurs = spy(new UtdanningRessurs());

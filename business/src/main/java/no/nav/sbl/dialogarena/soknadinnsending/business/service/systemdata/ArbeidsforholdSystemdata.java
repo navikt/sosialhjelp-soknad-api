@@ -38,7 +38,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         jsonData.getArbeid().setForhold(innhentSystemArbeidsforhold(eier));
 
-//        updateVedleggForventninger(jsonData);
+        updateVedleggForventninger(jsonData);
     }
 
     private void updateVedleggForventninger(JsonData jsonData) {
@@ -54,7 +54,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
             removeUtbetalingIfPresentInOpplysninger(utbetalinger, soknadstype);
         }
 
-        soknadstype = "lonnslipp";
+        soknadstype = "jobb";
         if (typeIsInList(jsonVedleggs, "lonnslipp")){
             final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
             addInntektIfNotPresentInOversikt(inntekter, soknadstype, tittel);

@@ -50,6 +50,8 @@ public class NorgService {
             Dette er en midlertidig fix for å få denne casen til å fungere.
             */
             enhet.sosialOrgnr = "974592274";
+        } else if (rsNorgEnhet.enhetNr.equals("0511")  && gt.equals("0512")){
+            enhet.sosialOrgnr = "964949204";
         } else {
             enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
         }

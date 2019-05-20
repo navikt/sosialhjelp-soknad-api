@@ -3,9 +3,12 @@ package no.nav.sbl.dialogarena.rest.feil;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.core.exception.ModigException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +45,15 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             logger.warn("Fant ikke ressurs", e);
         } else if (e instanceof AlleredeHandtertException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
+        } else if (e instanceof EttersendelseSendtForSentException) {
+            response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
+            logger.warn("REST-kall feilet: " + e.getMessage(), e);
+        } else if (e instanceof TjenesteUtilgjengeligException) {
+            response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
+            logger.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig");
+        } else if (e instanceof SikkerhetsBegrensningException) {
+            response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
+            logger.warn("REST-kall feilet: Sikkerhetsbegrensning");
         } else {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.error("REST-kall feilet", e);

@@ -45,7 +45,7 @@ public class BrukerprofilService {
             logger.error("Ikke funnet person i TPS", e);
             throw new IkkeFunnetException("TPS:PersonIkkefunnet", e);
         } catch (WebServiceException e) {
-            logger.error("Ingen kontakt med TPS (Brukerprofil_v1).", e);
+            logger.warn("Ingen kontakt med TPS (Brukerprofil_v1).", e);
             throw new TjenesteUtilgjengeligException("TPS:webserviceException", e);
         }
     }

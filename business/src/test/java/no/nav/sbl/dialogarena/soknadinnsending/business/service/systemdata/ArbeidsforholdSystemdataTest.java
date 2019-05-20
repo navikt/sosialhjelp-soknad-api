@@ -82,7 +82,6 @@ public class ArbeidsforholdSystemdataTest {
         assertThatArbeidsforholdIsCorrectlyConverted(ARBEIDSFORHOLD_SLUTTOPPGJOR, jsonArbeidsforhold_2);
     }
 
-    @Ignore
     @Test
     public void skalLeggeTilInntektForLonnslipp() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -96,12 +95,11 @@ public class ArbeidsforholdSystemdataTest {
         JsonOkonomioversiktInntekt inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt().get(0);
 
         assertThat(inntekt.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(inntekt.getType(), is("lonnslipp"));
+        assertThat(inntekt.getType(), is("jobb"));
         assertThat(inntekt.getTittel(), is(tittel));
         assertThat(inntekt.getOverstyrtAvBruker(), is(false));
     }
 
-    @Ignore
     @Test
     public void skalLeggeTilUtbetalingForSluttoppgjor() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -120,7 +118,6 @@ public class ArbeidsforholdSystemdataTest {
         assertThat(utbetaling.getOverstyrtAvBruker(), is(false));
     }
 
-    @Ignore
     @Test
     public void skalFjerneArbeidsforholdOgFjerneUtbetalingOgInntekt() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp());
@@ -144,7 +141,7 @@ public class ArbeidsforholdSystemdataTest {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getArbeid().getForhold().add(new JsonArbeidsforhold());
         jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().add(new JsonOkonomiOpplysningUtbetaling().withType("sluttoppgjoer"));
-        jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt().add(new JsonOkonomioversiktInntekt().withType("lonnslipp"));
+        jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt().add(new JsonOkonomioversiktInntekt().withType("jobb"));
         return jsonInternalSoknad;
     }
 
