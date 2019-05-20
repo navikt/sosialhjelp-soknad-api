@@ -1,11 +1,15 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSMobiltelefonnummer;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -13,28 +17,50 @@ import static org.mockito.Mockito.when;
 
 public class DkifMock {
 
-    private static final String RIKTIG_IDENT = "03076321565";
-    private static final String EN_EPOST = "test@epost.com";
-    private static final String ET_TELEFONNUMMER = "98765432";
+    private static Map<String, WSHentDigitalKontaktinformasjonResponse> responses = new HashMap<>();
 
     public DigitalKontaktinformasjonV1 dkifMock(){
 
-        DigitalKontaktinformasjonV1 mock = mock(DigitalKontaktinformasjonV1.class);
-        WSHentDigitalKontaktinformasjonResponse response = new WSHentDigitalKontaktinformasjonResponse();
-
-        WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()
-                .withPersonident(RIKTIG_IDENT)
-                .withEpostadresse(new WSEpostadresse().withValue(EN_EPOST))
-                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(ET_TELEFONNUMMER))
-                .withReservasjon("TEST");
-
-        response.setDigitalKontaktinformasjon(kontaktinformasjon);
+        final DigitalKontaktinformasjonV1 mock = mock(DigitalKontaktinformasjonV1.class);
 
         try{
-            when(mock.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class))).thenReturn(response);
-        }catch(HentDigitalKontaktinformasjonPersonIkkeFunnet | HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet | HentDigitalKontaktinformasjonSikkerhetsbegrensing e ) {
+            when(mock.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class)))
+                    .thenAnswer((invocationOnMock) -> getOrCreateCurrentUserResponse(SubjectHandler.getUserIdFromToken()));
+        } catch(HentDigitalKontaktinformasjonPersonIkkeFunnet | HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet | HentDigitalKontaktinformasjonSikkerhetsbegrensing e) {
             throw new RuntimeException(e);
         }
         return mock;
+    }
+
+    private static WSHentDigitalKontaktinformasjonResponse getOrCreateCurrentUserResponse(String fnr) {
+
+        WSHentDigitalKontaktinformasjonResponse response = responses.get(fnr);
+        if (response == null) {
+            response = createNewResponse();
+            responses.put(fnr, response);
+        }
+        System.out.println(responses);
+        return response;
+    }
+
+    private static WSHentDigitalKontaktinformasjonResponse createNewResponse(){
+        final WSHentDigitalKontaktinformasjonResponse response = new WSHentDigitalKontaktinformasjonResponse();
+        final WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon();
+        response.setDigitalKontaktinformasjon(kontaktinformasjon);
+        return response;
+    }
+
+    public static void setTelefonnummer(JsonTelefonnummer telefonnummer, String fnr) {
+
+        WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse(fnr);
+        response
+                .getDigitalKontaktinformasjon()
+                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue(telefonnummer.getVerdi()));
+    }
+
+    public static void resetTelefonnummer(String fnr) {
+
+        WSHentDigitalKontaktinformasjonResponse response = getOrCreateCurrentUserResponse(fnr);
+        response.getDigitalKontaktinformasjon().setMobiltelefonnummer(null);
     }
 }

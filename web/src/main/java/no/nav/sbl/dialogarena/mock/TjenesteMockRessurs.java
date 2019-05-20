@@ -2,6 +2,14 @@ package no.nav.sbl.dialogarena.mock;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.AlternativRepresentasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
@@ -138,7 +146,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        // FIXME: AdresseSokConsumerMock.setAdresser(jsonAdressesokRespons);
+        AdresseSokConsumerMock.setAdresser(jsonAdressesokRespons);
         clearCache();
     }
 
@@ -164,13 +172,12 @@ public class TjenesteMockRessurs {
         }
 
         fnr = getUid() != null ? getUid() : fnr;
-        /* FIXME:
         logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med fnr: " + fnr);
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer, fnr);
         } else {
             DkifMock.resetTelefonnummer(fnr);
-        }*/
+        }
         clearCache();
     }
 
@@ -182,10 +189,9 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        // FIXME: BrukerprofilMock.setBrukerprofil(jsonBrukerProfil);
+        BrukerprofilMock.setBrukerprofil(jsonBrukerProfil);
         clearCache();
     }
-
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -195,22 +201,9 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter arbeidsforhold: " + arbeidsforholdData);
-        // FIXME: ArbeidsforholdMock.setArbeidsforhold(arbeidsforholdData);
+        ArbeidsforholdMock.setArbeidsforhold(arbeidsforholdData);
         clearCache();
     }
-
-
-    @POST
-    @Consumes(APPLICATION_XML)
-    @Path("/arbeid")
-    public void setArbeidsforholdXml(@RequestBody String arbeidsforholdData) {
-        if (!isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
-        }
-        // FIXME: ArbeidsforholdMock.setArbeidsforhold(arbeidsforholdData);
-        clearCache();
-    }
-
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -220,12 +213,11 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
-        /* FIXME:
         if (jsonOrganisasjon != null){
             OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
         } else {
             OrganisasjonMock.resetOrganisasjon();
-        }*/
+        }
         clearCache();
     }
 
@@ -237,7 +229,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter mock familieforhold med data: " + jsonPerson);
-        // FIXME: PersonMock.setPersonMedFamilieforhold(jsonPerson);
+        PersonMock.setPersonMedFamilieforhold(jsonPerson);
         clearCache();
     }
 
@@ -249,7 +241,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        // FIXME: UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
+        UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
         clearCache();
     }
 
@@ -261,7 +253,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        // FIXME: NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
+        NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
         clearCache();
     }
 

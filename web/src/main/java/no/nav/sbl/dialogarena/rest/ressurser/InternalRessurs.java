@@ -37,7 +37,7 @@ public class InternalRessurs {
     @Inject
     private NavMessageSource messageSource;
 
-    private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
+    private PersonPortTypeMock personPortTypeMock = new PersonMock().personPortTypeMock();
 
     private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
 
