@@ -1,9 +1,9 @@
-{antall, plural,
-    =0 {
-        Ingen skattbare inntekter hentet inn fra Skatteetaten
-    }
+Vi har registrert at du
+{ antall, plural,
+    =0 { ikke har hatt }
     other {
-        Vi har hentet inn {antall, plural,
+        har hatt
+        { antall, plural,
             =1 {en}
             =2 {to}
             =3 {tre}
@@ -17,6 +17,7 @@
             =11 {elleve}
             =12 {tolv}
             other {#}
-        } skattbare inntekter fra Skatteetaten
+        }
     }
 }
+skattbare inntekter.
