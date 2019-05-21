@@ -98,7 +98,7 @@ public class KontonummerSystemdataTest {
     }
 
     @Test
-    public void skalSetteNullDersomKontonummerErNull() {
+    public void skalSetteNullOgKildeBrukerDersomKontonummerErNull() {
         Personalia personalia = new Personalia();
         personalia.setKontonummer(null);
         personalia.setErUtenlandskBankkonto(false);
@@ -109,7 +109,7 @@ public class KontonummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
     }
 

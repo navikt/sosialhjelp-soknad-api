@@ -87,7 +87,7 @@ public class FamilieSystemdata implements Systemdata {
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
         final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        if (personalia == null || isEmpty(personalia.getSivilstatus())) {
+        if (personalia == null || isEmpty(personalia.getSivilstatus()) || personalia.getEktefelle() == null) {
             return null;
         }
         JsonSivilstatus jsonSivilstatus = new JsonSivilstatus()

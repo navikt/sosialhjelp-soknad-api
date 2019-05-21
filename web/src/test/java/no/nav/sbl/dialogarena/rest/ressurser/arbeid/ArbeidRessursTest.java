@@ -166,7 +166,7 @@ public class ArbeidRessursTest {
     public void putArbeidSkalOppdatereKommentarTilArbeidsforhold(){
         ignoreTilgangskontrollAndLegacyUpdate();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithArbeid(null, "")));
+                Optional.of(createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")));
 
         final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold(KOMMENTAR);
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
@@ -175,6 +175,20 @@ public class ArbeidRessursTest {
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
         assertThat(kommentarTilArbeidsforhold.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(kommentarTilArbeidsforhold.getVerdi(), is(KOMMENTAR));
+    }
+
+    @Test
+    public void putArbeidSkalSetteLikNullDersomKommentarenErTom(){
+        ignoreTilgangskontrollAndLegacyUpdate();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")));
+
+        final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold("");
+        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
+
+        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
+        assertThat(kommentarTilArbeidsforhold, nullValue());
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
