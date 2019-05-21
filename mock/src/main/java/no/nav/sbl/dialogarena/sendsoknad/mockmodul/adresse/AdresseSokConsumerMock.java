@@ -16,7 +16,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 
 public class AdresseSokConsumerMock {
 
@@ -32,10 +32,10 @@ public class AdresseSokConsumerMock {
     }
 
     private static AdressesokRespons getOrCreateCurrentUserResponse() {
-        AdressesokRespons response = responses.get(SubjectHandler.getUserIdFromToken());
+        AdressesokRespons response = responses.get(OidcFeatureToggleUtils.getUserId());
         if (response == null){
             response = getDefaultRespons();
-            responses.put(SubjectHandler.getUserIdFromToken(), response);
+            responses.put(OidcFeatureToggleUtils.getUserId(), response);
         }
 
         return response;
@@ -66,10 +66,10 @@ public class AdresseSokConsumerMock {
         try {
             ObjectMapper mapper = new ObjectMapper();
             AdressesokRespons response = mapper.readValue(jsonAdressesokRespons, AdressesokRespons.class);
-            if (responses.get(SubjectHandler.getUserIdFromToken()) == null){
-                responses.put(SubjectHandler.getUserIdFromToken(), response);
+            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
+                responses.put(OidcFeatureToggleUtils.getUserId(), response);
             } else {
-                responses.replace(SubjectHandler.getUserIdFromToken(), response);
+                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,6 +78,6 @@ public class AdresseSokConsumerMock {
 
     public static void resetAdresser(){
         AdressesokRespons defaultRespons = new AdressesokRespons();
-        responses.replace(SubjectHandler.getUserIdFromToken(), defaultRespons);
+        responses.replace(OidcFeatureToggleUtils.getUserId(), defaultRespons);
     }
 }

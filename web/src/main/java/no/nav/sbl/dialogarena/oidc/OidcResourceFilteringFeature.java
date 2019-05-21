@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.oidc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.security.oidc.jaxrs.OidcContainerRequestFilter;
@@ -30,7 +31,7 @@ public class OidcResourceFilteringFeature implements DynamicFeature {
     }
 
     private boolean isWhitelistedWhenNotRunningInProd() {
-        return !ServiceUtils.isRunningInProd() && isOidcMock();
+        return !ServiceUtils.isRunningInProd() && (isOidcMock() || MockUtils.isTillatMockRessurs());
     }
 
     private boolean isOidcMock() {

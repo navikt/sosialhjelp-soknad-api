@@ -2,6 +2,11 @@ package no.nav.sbl.dialogarena.server;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import no.nav.sbl.dialogarena.mock.MockSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.flywaydb.core.Flyway;
@@ -34,13 +39,16 @@ public class SoknadsosialhjelpServer {
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
         configure();
 
-        if (isRunningAsTestAppWithMockingActivated()) {
-            dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
+        if (ServiceUtils.isRunningInProd() && MockUtils.isTillatMockRessurs()) {
+            throw new Error("tillatMockRessurs har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
+        if (MockUtils.isTillatMockRessurs()) {
+            dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
+        }
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
 
-        if (isRunningOnNais() && !isRunningAsTestAppWithMockingActivated()) {
+        if (isRunningOnNais() && !MockUtils.isTillatMockRessurs()) {
             databaseSchemaMigration(ds);
         }
 
@@ -77,19 +85,33 @@ public class SoknadsosialhjelpServer {
 
     private void configure() throws IOException {
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
-        if (isRunningAsTestAppWithMockingActivated()){
+        if (isRunningAsTestAppWithMockingActivated() || MockUtils.isTillatMockRessurs()){
             log.info("Running with mocking activated. Totally isolated.");
             setFrom("environment/mock-test.properties");
-            System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+            if (!MockUtils.isTillatMockRessurs()) {
+                throw new Error("Mocking må være aktivert når applikasjonen skal kjøre isolert.");
+            }
         } else if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
-            System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName());
         } else {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalEnvironment();
         }
+
+        if (MockUtils.isTillatMockRessurs()){
+            SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
+        } else {
+            SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
+        }
+        System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs og applikasjon som kjører uten oidc.
+
     }
+
+    private boolean isRunningAsTestAppWithMockingActivated() {
+        return System.getenv("dockerWithDefaultMockActivated") != null && Boolean.parseBoolean(System.getenv("dockerWithDefaultMockActivated"));
+    }
+
 
     public static boolean isRunningOnHeroku(){
         return System.getenv("HEROKU") != null && Boolean.parseBoolean(System.getenv("HEROKU"));
@@ -109,10 +131,6 @@ public class SoknadsosialhjelpServer {
 
     private void disableBatch() {
         setProperty("sendsoknad.batch.enabled", "false");
-    }
-
-    private boolean isRunningAsTestAppWithMockingActivated() {
-        return System.getenv("dockerWithDefaultMockActivated") != null && Boolean.parseBoolean(System.getenv("dockerWithDefaultMockActivated"));
     }
 
     private static boolean isRunningOnNais() {

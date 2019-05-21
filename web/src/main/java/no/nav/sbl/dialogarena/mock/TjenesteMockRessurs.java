@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.mock;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
@@ -36,6 +37,7 @@ import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 
 @Controller
 @Path("/internal/mock/tjeneste")
@@ -62,10 +64,6 @@ public class TjenesteMockRessurs {
         for (String cacheName : cacheManager.getCacheNames()) {
             cacheManager.getCache(cacheName).clear();
         }
-    }
-
-    public static boolean isTillatMockRessurs() {
-        return Boolean.parseBoolean(System.getProperty("tillatMockRessurs", "false"));
     }
 
     @POST
@@ -113,7 +111,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        String eier = getUid();
+        String eier = OidcFeatureToggleUtils.getUserId();
         /* FIXME:
         final SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
         PostAdresse fakeAdresse = new PostAdresse()
@@ -160,7 +158,7 @@ public class TjenesteMockRessurs {
     @GET
     @Path("/session")
     public Response getSession() {
-        return Response.ok(new SessionResponse(getUid())).build();
+        return Response.ok(new SessionResponse(OidcFeatureToggleUtils.getUserId())).build();
     }
 
     @POST
@@ -171,7 +169,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        fnr = getUid() != null ? getUid() : fnr;
+        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
         logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med fnr: " + fnr);
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer, fnr);
@@ -257,7 +255,7 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-    private String getUid() {
+/*    private String getUid() {
         if (!TjenesteMockRessurs.isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
@@ -271,5 +269,5 @@ public class TjenesteMockRessurs {
         } catch (RuntimeException e) {
             return null;
         }
-    }
+    }*/
 }

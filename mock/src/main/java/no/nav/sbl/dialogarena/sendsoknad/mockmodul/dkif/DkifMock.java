@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
@@ -25,7 +25,7 @@ public class DkifMock {
 
         try{
             when(mock.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class)))
-                    .thenAnswer((invocationOnMock) -> getOrCreateCurrentUserResponse(SubjectHandler.getUserIdFromToken()));
+                    .thenAnswer((invocationOnMock) -> getOrCreateCurrentUserResponse(OidcFeatureToggleUtils.getUserId()));
         } catch(HentDigitalKontaktinformasjonPersonIkkeFunnet | HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet | HentDigitalKontaktinformasjonSikkerhetsbegrensing e) {
             throw new RuntimeException(e);
         }

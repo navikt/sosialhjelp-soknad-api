@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -72,10 +72,10 @@ public class BrukerprofilMock {
     }
 
     private static XMLHentKontaktinformasjonOgPreferanserResponse getOrCreateCurrentUserResponse() {
-        XMLHentKontaktinformasjonOgPreferanserResponse respons = responses.get(SubjectHandler.getUserIdFromToken());
+        XMLHentKontaktinformasjonOgPreferanserResponse respons = responses.get(OidcFeatureToggleUtils.getUserId());
         if (respons == null) {
             respons = createNewResponse();
-            responses.put(SubjectHandler.getUserIdFromToken(), respons);
+            responses.put(OidcFeatureToggleUtils.getUserId(), respons);
         }
 
 
@@ -309,9 +309,9 @@ public class BrukerprofilMock {
 
             XMLHentKontaktinformasjonOgPreferanserResponse currentResponse = getOrCreateCurrentUserResponse();
             if (currentResponse == null){
-                responses.put(SubjectHandler.getUserIdFromToken(), newResponse);
+                responses.put(OidcFeatureToggleUtils.getUserId(), newResponse);
             } else {
-                responses.replace(SubjectHandler.getUserIdFromToken(), newResponse);
+                responses.replace(OidcFeatureToggleUtils.getUserId(), newResponse);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -322,9 +322,9 @@ public class BrukerprofilMock {
     public static void resetBrukerprofil(){
         XMLHentKontaktinformasjonOgPreferanserResponse response = getOrCreateCurrentUserResponse();
         if (response == null){
-            responses.put(SubjectHandler.getUserIdFromToken(), response);
+            responses.put(OidcFeatureToggleUtils.getUserId(), response);
         } else {
-            responses.replace(SubjectHandler.getUserIdFromToken(), response);
+            responses.replace(OidcFeatureToggleUtils.getUserId(), response);
         }
     }
 }

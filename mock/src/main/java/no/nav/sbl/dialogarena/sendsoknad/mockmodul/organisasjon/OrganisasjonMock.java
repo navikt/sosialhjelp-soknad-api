@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonOrganisasjonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonUgyldigInput;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
@@ -39,10 +39,10 @@ public class OrganisasjonMock {
 
     private static HentOrganisasjonResponse getOrCreateCurrentUserResponse(){
 
-        HentOrganisasjonResponse response = responses.get(SubjectHandler.getUserIdFromToken());
+        HentOrganisasjonResponse response = responses.get(OidcFeatureToggleUtils.getUserId());
         if (response == null ){
             response = getDefaultResponse();
-            responses.put(SubjectHandler.getUserIdFromToken(), response);
+            responses.put(OidcFeatureToggleUtils.getUserId(), response);
         }
 
         return response;
@@ -63,10 +63,10 @@ public class OrganisasjonMock {
             module.addDeserializer(Organisasjon.class, new OrganisasjonDeserializer());
             mapper.registerModule(module);
             HentOrganisasjonResponse response = mapper.readValue(jsonOrganisasjon, HentOrganisasjonResponse.class);
-            if (responses.get(SubjectHandler.getUserIdFromToken()) == null){
-                responses.put(SubjectHandler.getUserIdFromToken(), response);
+            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
+                responses.put(OidcFeatureToggleUtils.getUserId(), response);
             } else {
-                responses.replace(SubjectHandler.getUserIdFromToken(), response);
+                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class OrganisasjonMock {
     }
 
     public static void resetOrganisasjon(){
-        responses.replace(SubjectHandler.getUserIdFromToken(), new HentOrganisasjonResponse());
+        responses.replace(OidcFeatureToggleUtils.getUserId(), new HentOrganisasjonResponse());
     }
 
 
