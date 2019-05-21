@@ -38,9 +38,7 @@ public class FamilieSystemdata implements Systemdata {
         final JsonFamilie familie = jsonData.getFamilie();
         if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM) {
             final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
-            if (systemverdiSivilstatus != null) {
-                familie.setSivilstatus(systemverdiSivilstatus);
-            }
+            familie.setSivilstatus(systemverdiSivilstatus);
         }
 
         JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
@@ -87,21 +85,22 @@ public class FamilieSystemdata implements Systemdata {
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
         final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        if (personalia == null || isEmpty(personalia.getSivilstatus()) || personalia.getEktefelle() == null) {
+        if (personalia == null || isEmpty(personalia.getSivilstatus())) {
             return null;
         }
-        JsonSivilstatus jsonSivilstatus = new JsonSivilstatus()
-                .withKilde(JsonKilde.SYSTEM)
-                .withStatus(JsonSivilstatus.Status.fromValue(personalia.getSivilstatus()));
 
         Ektefelle ektefelle = personalia.getEktefelle();
-        if (jsonSivilstatus.getStatus().equals(GIFT)) {
-            jsonSivilstatus
-                    .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
-                    .withEktefelleHarDiskresjonskode(ektefelle == null ? null : ektefelle.harIkketilgangtilektefelle())
-                    .withFolkeregistrertMedEktefelle(ektefelle == null ? null : ektefelle.erFolkeregistrertsammen());
+        JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(personalia.getSivilstatus());
+        if (!GIFT.equals(status) || ektefelle == null){
+            return null;
         }
-        return jsonSivilstatus;
+
+        return new JsonSivilstatus()
+                .withKilde(JsonKilde.SYSTEM)
+                .withStatus(JsonSivilstatus.Status.fromValue(personalia.getSivilstatus()))
+                .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
+                .withEktefelleHarDiskresjonskode(ektefelle.harIkketilgangtilektefelle())
+                .withFolkeregistrertMedEktefelle(ektefelle.erFolkeregistrertsammen());
     }
 
     private static JsonEktefelle tilSystemregistrertJsonEktefelle(Ektefelle ektefelle) {

@@ -35,6 +35,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -541,6 +542,7 @@ public class SoknadDataFletter {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonSoknad soknadKonvertert = konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         sortOkonomi(soknad.getData().getOkonomi());
+        sortArbeid(soknad.getData().getArbeid());
         sortOkonomi(soknadKonvertert.getData().getOkonomi());
         if (!soknad.equals(soknadKonvertert)){
             try {
@@ -577,6 +579,10 @@ public class SoknadDataFletter {
                 }
             } catch (IOException ignored) { }
         }
+    }
+
+    private void sortArbeid(JsonArbeid arbeid) {
+        arbeid.getForhold().sort(Comparator.comparing(JsonArbeidsforhold::getArbeidsgivernavn));
     }
 
     public void sortOkonomi(JsonOkonomi okonomi) {
