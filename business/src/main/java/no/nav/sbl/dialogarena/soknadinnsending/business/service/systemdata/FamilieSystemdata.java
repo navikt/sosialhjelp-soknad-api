@@ -97,7 +97,7 @@ public class FamilieSystemdata implements Systemdata {
 
         return new JsonSivilstatus()
                 .withKilde(JsonKilde.SYSTEM)
-                .withStatus(JsonSivilstatus.Status.fromValue(personalia.getSivilstatus()))
+                .withStatus(status)
                 .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
                 .withEktefelleHarDiskresjonskode(ektefelle.harIkketilgangtilektefelle())
                 .withFolkeregistrertMedEktefelle(ektefelle.erFolkeregistrertsammen());
