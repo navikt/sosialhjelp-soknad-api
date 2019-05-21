@@ -14,7 +14,7 @@ public class MockSoknadsosialhjelpServer {
         System.setProperty("tillatMockRessurs", "true");
 
         final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web-mock.xml"), "/soknadsosialhjelp-server", null);
+        System.setProperty("sendsoknad.datadir", System.getProperty("user.home")+"/kodeverk/sendsoknad");
         server.start();
     }
-
 }
