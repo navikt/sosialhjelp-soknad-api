@@ -32,6 +32,9 @@ public class DevSoknadsosialhjelpServer {
         }
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         TestCertificates.setupKeyAndTrustStore();
+        if ("Mac OS X".equals(System.getProperty("os.name")) || "Linux".equals(System.getProperty("os.name"))) {
+            System.setProperty("sendsoknad.datadir", System.getProperty("user.home")+"/kodeverk/sendsoknad");
+        }
         server.start();
     }
 
