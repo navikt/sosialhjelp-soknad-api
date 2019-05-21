@@ -91,7 +91,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     }
 
     private ArbeidsforholdService.Sokeperiode getSoekeperiode() {
-        return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(10), new DateTime());
+        return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(3), new DateTime());
     }
 
     private static JsonArbeidsforhold.Stillingstype tilJsonStillingstype(boolean harFastStilling) {

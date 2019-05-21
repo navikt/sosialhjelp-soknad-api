@@ -163,6 +163,24 @@ public class UtdanningRessursTest {
         assertThat(utdanning.getStudentgrad(), is(JsonUtdanning.Studentgrad.HELTID));
     }
 
+    @Test
+    public void putUtdanningSkalSetteUtdanningMedErIkkeStudentOgSletteStudentgrad(){
+        ignoreTilgangskontrollAndLegacyUpdate();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithUtdanning(true, JsonUtdanning.Studentgrad.DELTID)));
+
+        final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
+                .withErStudent(Boolean.FALSE)
+                .withStudengradErHeltid(Boolean.FALSE);
+        utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend);
+
+        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        final JsonUtdanning utdanning = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
+        assertThat(utdanning.getKilde(), is(JsonKilde.BRUKER));
+        assertThat(utdanning.getErStudent(), is(Boolean.FALSE));
+        assertThat(utdanning.getStudentgrad(), nullValue());
+    }
+
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());

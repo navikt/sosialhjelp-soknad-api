@@ -25,7 +25,13 @@ public class KontonummerSystemdata implements Systemdata {
         final JsonKontonummer kontonummer = personalia.getKontonummer();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (kontonummer.getKilde() == JsonKilde.SYSTEM) {
-            kontonummer.setVerdi(innhentSystemverdiKontonummer(personIdentifikator));
+            String systemverdi = innhentSystemverdiKontonummer(personIdentifikator);
+            if (systemverdi == null){
+                kontonummer.setKilde(JsonKilde.BRUKER);
+                kontonummer.setVerdi(null);
+            } else {
+                kontonummer.setVerdi(systemverdi);
+            }
         }
     }
     

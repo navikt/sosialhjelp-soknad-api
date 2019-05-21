@@ -30,7 +30,8 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
-import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.*;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SKILT;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -161,7 +162,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleMangler() throws JsonProcessingException {
+    public void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
         Personalia personalia = new Personalia();
         personalia.setSivilstatus(GIFT.toString());
         when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
@@ -174,12 +175,25 @@ public class FamilieSystemdataTest {
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
 
-        assertThat(sivilstatus.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(sivilstatus.getStatus(), is(GIFT));
-        assertThatEktefelleIsCorrectlyConverted(TOM_EKTEFELLE, sivilstatus.getEktefelle());
-        assertThat(sivilstatus.getEktefelleHarDiskresjonskode(), nullValue());
-        assertThat(sivilstatus.getFolkeregistrertMedEktefelle(), nullValue());
-        assertThat(sivilstatus.getBorSammenMed(), nullValue());
+        assertThat(sivilstatus, nullValue());
+    }
+
+    @Test
+    public void skalIkkeSetteSivilstatusDersomAnnetEnnGift() throws JsonProcessingException {
+        Personalia personalia = new Personalia();
+        personalia.setSivilstatus(SKILT.toString());
+        personalia.setEktefelle(EKTEFELLE);
+        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
+
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        ensureValidInternalSoknad(internalSoknad);
+
+        JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
+
+        assertThat(sivilstatus, nullValue());
     }
 
     @Test
@@ -203,24 +217,6 @@ public class FamilieSystemdataTest {
         assertThat(sivilstatus.getEktefelleHarDiskresjonskode(), is(true));
         assertThat(sivilstatus.getFolkeregistrertMedEktefelle(), is(false));
         assertThat(sivilstatus.getBorSammenMed(), nullValue());
-    }
-
-    @Test
-    public void skalSetteAndreSivilstatuserEnnGift() throws JsonProcessingException {
-        skalSetteSivilstatusSomIkkeErGift(UGIFT, null);
-        skalSetteSivilstatusSomIkkeErGift(SAMBOER, null);
-        skalSetteSivilstatusSomIkkeErGift(ENKE, null);
-        skalSetteSivilstatusSomIkkeErGift(SKILT, null);
-        skalSetteSivilstatusSomIkkeErGift(SEPARERT, null);
-    }
-
-    @Test
-    public void skalIkkeHaMedEktefelleForAndreSivilstatuserEnnGift() throws JsonProcessingException {
-        skalSetteSivilstatusSomIkkeErGift(UGIFT, EKTEFELLE);
-        skalSetteSivilstatusSomIkkeErGift(SAMBOER, EKTEFELLE);
-        skalSetteSivilstatusSomIkkeErGift(ENKE, EKTEFELLE);
-        skalSetteSivilstatusSomIkkeErGift(SKILT, EKTEFELLE);
-        skalSetteSivilstatusSomIkkeErGift(SEPARERT, EKTEFELLE);
     }
 
     @Test
@@ -314,28 +310,6 @@ public class FamilieSystemdataTest {
         assertThat("fornavn", barn.getFornavn(), is(jsonBarn.getNavn().getFornavn()));
         assertThat("mellomnavn", barn.getMellomnavn(), is(jsonBarn.getNavn().getMellomnavn()));
         assertThat("etternavn", barn.getEtternavn(), is(jsonBarn.getNavn().getEtternavn()));
-    }
-
-    private void skalSetteSivilstatusSomIkkeErGift(JsonSivilstatus.Status status, Ektefelle ektefelle) throws JsonProcessingException {
-        Personalia personalia = new Personalia();
-        personalia.setSivilstatus(status.toString());
-        personalia.setEktefelle(ektefelle);
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
-
-        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
-        ensureValidInternalSoknad(internalSoknad);
-
-        JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
-
-        assertThat(sivilstatus.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(sivilstatus.getStatus(), is(status));
-        assertThat(sivilstatus.getEktefelle(), nullValue());
-        assertThat(sivilstatus.getEktefelleHarDiskresjonskode(), nullValue());
-        assertThat(sivilstatus.getFolkeregistrertMedEktefelle(), nullValue());
-        assertThat(sivilstatus.getBorSammenMed(), nullValue());
     }
 
     private void assertThatEktefelleIsCorrectlyConverted(Ektefelle ektefelle, JsonEktefelle jsonEktefelle) {
