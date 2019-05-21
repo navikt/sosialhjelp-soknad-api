@@ -544,6 +544,7 @@ public class SoknadDataFletter {
         sortOkonomi(soknad.getData().getOkonomi());
         sortArbeid(soknad.getData().getArbeid());
         sortOkonomi(soknadKonvertert.getData().getOkonomi());
+        sortArbeid(soknadKonvertert.getData().getArbeid());
         if (!soknad.equals(soknadKonvertert)){
             try {
                 byte[] jsonSoknad = mapJsonSoknadTilFil(soknad, writer);
