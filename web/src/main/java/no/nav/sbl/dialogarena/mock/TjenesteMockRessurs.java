@@ -59,7 +59,6 @@ public class TjenesteMockRessurs {
     @Inject
     private SoknadDataFletter soknadDataFletter;
 
-
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
             cacheManager.getCache(cacheName).clear();
@@ -136,7 +135,6 @@ public class TjenesteMockRessurs {
         return Response.noContent().build();
     }
 
-
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/adresser")
@@ -179,7 +177,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/brukerprofil")
@@ -198,7 +195,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.info("Setter arbeidsforhold: " + arbeidsforholdData);
+        logger.info("Setter arbeidsforhold med data: " + arbeidsforholdData);
         ArbeidsforholdMock.setArbeidsforhold(arbeidsforholdData);
         clearCache();
     }
@@ -231,7 +228,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/utbetaling")
@@ -243,7 +239,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/norg")
@@ -254,20 +249,4 @@ public class TjenesteMockRessurs {
         NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
         clearCache();
     }
-
-/*    private String getUid() {
-        if (!TjenesteMockRessurs.isTillatMockRessurs()) {
-            throw new RuntimeException("Mocking har ikke blitt aktivert.");
-        }
-
-        try {
-            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-            HttpSession session = attr.getRequest().getSession(true);
-            String uid = (String) session.getAttribute("mockRessursUid");
-            logger.info("getUid " + uid);
-            return uid;
-        } catch (RuntimeException e) {
-            return null;
-        }
-    }*/
 }

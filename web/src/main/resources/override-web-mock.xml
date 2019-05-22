@@ -10,6 +10,7 @@
             <name>SENDSOKNAD_JSESSIONID</name>
             <http-only>true</http-only>
             <secure>false</secure>
+            <path>/</path>
         </cookie-config>
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
