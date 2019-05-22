@@ -192,7 +192,7 @@ public class PersonMapper {
         return null;
     }
 
-    static String finnSivilstatus(Person xmlPerson) {
+    public static String finnSivilstatus(Person xmlPerson) {
         if (xmlPerson.getSivilstand() == null || xmlPerson.getSivilstand().getSivilstand() == null) {
             return null;
         }

@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import java.util.*;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Service
@@ -66,11 +68,12 @@ public class PersonaliaBolk implements BolkService {
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra())
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil()));
 
-        if (isNotEmpty(personalia.getSivilstatus())) {
-            fakta.add(genererSystemregistrertSivilstandFaktum(soknadId, personalia.getSivilstatus()));
+        String sivilstatus = personalia.getSivilstatus();
+        if (isNotEmpty(sivilstatus)) {
+            fakta.add(genererSystemregistrertSivilstandFaktum(soknadId, sivilstatus));
         }
 
-        if (personalia.getEktefelle() != null) {
+        if (personalia.getEktefelle() != null && isNotEmpty(sivilstatus) && GIFT.equals(JsonSivilstatus.Status.fromValue(sivilstatus))) {
             fakta.add(genererSystemregistrertEktefelleFaktum(soknadId, personalia));
             fakta.add(new Faktum().medSoknadId(soknadId)
                     .medKey("familie.sivilstatus.sivilstatusOverskrivesAvBruker")
