@@ -2,11 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>no.nav.sbl</groupId>
-        <artifactId>mor-pom</artifactId>
-        <version>3.1</version>
-    </parent>
 
     <modules>
         <module>tekster</module>
@@ -55,6 +50,8 @@
     </distributionManagement>
 
     <properties>
+
+        <java.jdk.version>1.8</java.jdk.version>
         <sonar.exclusions>
             **/mockmodul/**,
             **/selftest/**
@@ -1058,6 +1055,14 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.3</version>
+                    <configuration>
+                        <source>${java.jdk.version}</source>
+                        <target>${java.jdk.version}</target>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.jboss.as.plugins</groupId>
                     <artifactId>jboss-as-maven-plugin</artifactId>
