@@ -23,11 +23,6 @@
 
     <repositories>
         <repository>
-            <id>maven-releases</id>
-            <name>NAV Internal Repository</name>
-            <url>https://repo.adeo.no/repository/maven-releases/</url>
-        </repository>
-        <repository>
             <id>central</id>
             <name>Maven Repository Switchboard</name>
             <layout>default</layout>
@@ -39,15 +34,6 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
     </repositories>
-
-
-    <distributionManagement>
-        <repository>
-            <id>maven-releases</id>
-            <name>NAV Internal Repository</name>
-            <url>https://repo.adeo.no/repository/maven-releases/</url>
-        </repository>
-    </distributionManagement>
 
     <properties>
 
