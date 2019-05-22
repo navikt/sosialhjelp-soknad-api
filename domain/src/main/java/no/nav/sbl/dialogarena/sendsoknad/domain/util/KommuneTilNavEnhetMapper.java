@@ -117,7 +117,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1852", "959469326")    // Tjelsund
             .put("0417", "994743767")    // Stange
             .put("1702", "983921000")    // Steinkjer, Verran, Snåsa, Inderøy
-            .put("0211", "943485437")    // Vestby
+            .put("0211", "974574306")    // Vestby
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
