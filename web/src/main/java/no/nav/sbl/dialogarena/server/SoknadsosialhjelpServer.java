@@ -28,7 +28,7 @@ import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 public class SoknadsosialhjelpServer {
 
     private static final Logger log = LoggerFactory.getLogger(SoknadsosialhjelpServer.class);
-    public static final int PORT = isRunningOnHeroku() ? Integer.parseInt(System.getenv("PORT")) : 8080;
+    public static final int PORT = 8080;
     public final Jetty jetty;
 
 
@@ -87,7 +87,7 @@ public class SoknadsosialhjelpServer {
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
         if (isRunningAsTestAppWithMockingActivated() || MockUtils.isTillatMockRessurs()){
             log.info("Running with mocking activated. Totally isolated.");
-            setFrom("environment/mock-test.properties");
+            setFrom("environment/environment-mock.properties");
             if (!MockUtils.isTillatMockRessurs()) {
                 throw new Error("Mocking må være aktivert når applikasjonen skal kjøre isolert.");
             }
@@ -112,10 +112,6 @@ public class SoknadsosialhjelpServer {
         return System.getenv("dockerWithDefaultMockActivated") != null && Boolean.parseBoolean(System.getenv("dockerWithDefaultMockActivated"));
     }
 
-
-    public static boolean isRunningOnHeroku(){
-        return System.getenv("HEROKU") != null && Boolean.parseBoolean(System.getenv("HEROKU"));
-    }
 
     private void mapNaisProperties() throws IOException {
         final Properties props = readProperties("naisPropertyMapping.properties", true);
