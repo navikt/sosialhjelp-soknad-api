@@ -1,1 +1,0 @@
-Talet kan ikkje vere mindre enn {0}

@@ -1,1 +1,0 @@
-Tallet kan ikke være større enn {0}.

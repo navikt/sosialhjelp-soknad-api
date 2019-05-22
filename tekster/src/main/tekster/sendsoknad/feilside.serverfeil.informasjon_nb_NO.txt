@@ -1,1 +1,0 @@
-Søknaden er sist lagret {0} og du kan fortsette på søknaden din senere.

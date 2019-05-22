@@ -1,1 +1,0 @@
-{0} av {1} vedlegg blei sende til NAV {2}, klokka {3}
