@@ -49,11 +49,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         SystemdataUpdater.class,
         KontonummerSystemdata.class,
         TelefonnummerSystemdata.class,
+        InntektSystemdata.class,
         ArbeidsforholdSystemdata.class,
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,
-        FamilieSystemdata.class,
-        InntektSystemdata.class
+        FamilieSystemdata.class
 })
 public class BusinessConfig {
 

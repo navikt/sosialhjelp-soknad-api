@@ -1,19 +1,24 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonOkonomiOpplysningerConverter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
@@ -58,10 +63,22 @@ public class ArbeidsforholdSystemdataTest {
     private ArbeidsforholdService arbeidsforholdService;
 
     @Mock
+    private UtbetalingService utbetalingService;
+
+    @Mock
     private TextService textService;
 
     @InjectMocks
+    UtbetalingBolk utbetalingBolk;
+
+    @InjectMocks
     private ArbeidsforholdSystemdata arbeidsforholdSystemdata;
+
+    @Spy
+    SkattbarInntektService skattbarInntektService;
+
+    @InjectMocks
+    InntektSystemdata inntektSystemdata;
 
     @Test
     public void skalOppdatereArbeidsforhold() {
@@ -89,7 +106,14 @@ public class ArbeidsforholdSystemdataTest {
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
+        System.setProperty("tillatmock", "true");
+        skattbarInntektService.mockFil = "tull";
 
+        List<Faktum> mockUtbetalinger = utbetalingBolk.genererSystemFakta("01234567890", 1234L);
+        List<JsonOkonomiOpplysningUtbetaling> okonomiopplysningFraFaktum = JsonOkonomiOpplysningerConverter.getOkonomiopplysningFraFaktum(mockUtbetalinger, Collections.emptyList());
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().withUtbetaling(okonomiopplysningFraFaktum);
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        System.setProperty("tillatmock", "false");
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonOkonomioversiktInntekt inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt().get(0);
@@ -107,9 +131,15 @@ public class ArbeidsforholdSystemdataTest {
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
+        System.setProperty("tillatmock", "true");
+        skattbarInntektService.mockFil = "tull";
 
+        List<Faktum> mockUtbetalinger = utbetalingBolk.genererSystemFakta("01234567890", 1234L);
+        List<JsonOkonomiOpplysningUtbetaling> okonomiopplysningFraFaktum = JsonOkonomiOpplysningerConverter.getOkonomiopplysningFraFaktum(mockUtbetalinger, Collections.emptyList());
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().withUtbetaling(okonomiopplysningFraFaktum);
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        System.setProperty("tillatmock", "false");
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid);
-
         JsonOkonomiOpplysningUtbetaling utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().get(0);
 
         assertThat(utbetaling.getKilde(), is(JsonKilde.BRUKER));

@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Sy
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
@@ -35,16 +36,17 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
         final String eier = soknadUnderArbeid.getEier();
-        final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
+        JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
+        JsonData jsonData = jsonInternalSoknad.getSoknad().getData();
         jsonData.getArbeid().setForhold(innhentSystemArbeidsforhold(eier));
 
-        updateVedleggForventninger(jsonData);
+        updateVedleggForventninger(jsonInternalSoknad);
     }
 
-    private void updateVedleggForventninger(JsonData jsonData) {
-        final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();
-        final List<JsonOkonomioversiktInntekt> inntekter = jsonData.getOkonomi().getOversikt().getInntekt();
-        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(jsonData.getArbeid());
+    private void updateVedleggForventninger(JsonInternalSoknad jsonInternalSoknad) {
+        final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
+        final List<JsonOkonomioversiktInntekt> inntekter = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt();
+        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(jsonInternalSoknad);
 
         String soknadstype = "sluttoppgjoer";
         if (typeIsInList(jsonVedleggs, "sluttoppgjor")){

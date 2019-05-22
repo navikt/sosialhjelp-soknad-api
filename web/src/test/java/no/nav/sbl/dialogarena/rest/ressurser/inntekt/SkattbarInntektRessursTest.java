@@ -19,7 +19,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,9 +54,21 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void hentMockOgProduserObjektmodellTilGui() {
+    public void feilIKalletMotSkattOgReturnereIngenUtbetalinger() {
+        skattbarInntektService.mockFil = "tull";
+        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
 
-        Locale.setDefault(Locale.forLanguageTag("nb-NO"));
+        List<Faktum> mockUtbetalinger = utbetalingBolk.genererSystemFakta("01234567890", 1234L);
+        ressurs.mockUtbetalinger =  JsonOkonomiOpplysningerConverter.getOkonomiopplysningFraFaktum(mockUtbetalinger, Collections.emptyList());
+        List<SkattbarInntektRessurs.SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe = ressurs.hentSkattbareInntekter("");
+        assertThat(skattbarInntektOgForskuddstrekkListe).isEmpty();
+        assertThat(mockUtbetalinger).hasSize(2);
+        assertThat(mockUtbetalinger.get(0).getKey()).isEqualTo("utbetalinger.ingen");
+        assertThat(mockUtbetalinger.get(1).getKey()).isEqualTo("utbetalinger.fra.skatteetaten.feilet");
+    }
+
+    @Test
+    public void hentMockOgProduserObjektmodellTilGui() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
 
         List<Faktum> mockUtbetalinger = utbetalingBolk.genererSystemFakta("01234567890", 1234L);

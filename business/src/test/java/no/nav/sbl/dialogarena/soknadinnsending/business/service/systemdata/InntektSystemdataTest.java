@@ -1,16 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDate;
@@ -79,6 +83,19 @@ public class InntektSystemdataTest {
     @InjectMocks
     private InntektSystemdata inntektSystemdata;
 
+    @Spy
+    SkattbarInntektService skattbarInntektService;
+
+    @Before
+    public void setUp() throws Exception {
+        System.setProperty("tillatmock", "true");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        System.setProperty("tillatmock", "false");
+    }
+
     @Test
     public void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -132,8 +149,8 @@ public class InntektSystemdataTest {
         assertThat("skattetrekk", jsonUtbetaling.getSkattetrekk(), is(utbetaling.skattetrekk));
         assertThat("andreTrekk", jsonUtbetaling.getAndreTrekk(), is(utbetaling.andreTrekk));
         assertThat("overstyrtAvBruker", jsonUtbetaling.getOverstyrtAvBruker(), is(false));
-        if (!utbetaling.komponenter.isEmpty()){
-            for (int i = 0; i < utbetaling.komponenter.size(); i++){
+        if (!utbetaling.komponenter.isEmpty()) {
+            for (int i = 0; i < utbetaling.komponenter.size(); i++) {
                 Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
                 JsonOkonomiOpplysningUtbetalingKomponent jsonKomponent = jsonUtbetaling.getKomponenter().get(i);
                 assertThat("komponentType", jsonKomponent.getType(), is(komponent.type));

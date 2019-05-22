@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -62,6 +62,9 @@ public class SkattbarInntektService {
     }
 
     public List<Utbetaling> filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(List<Utbetaling> utbetalinger) {
+        if (utbetalinger == null) {
+            return null;
+        }
         return utbetalinger.stream()
                 .collect(groupingBy(o1 -> o1.orgnummer))
                 .values()
@@ -96,6 +99,9 @@ public class SkattbarInntektService {
     }
 
     private List<Utbetaling> mapTilUtbetalinger(SkattbarInntekt skattbarInntekt) {
+        if (skattbarInntekt == null) {
+            return null;
+        }
         List<Utbetaling> utbetalingerLonn = new ArrayList<>();
         List<Utbetaling> utbetalingerPensjon = new ArrayList<>();
         List<Utbetaling> dagmammaIEgenBolig = new ArrayList<>();
@@ -177,9 +183,7 @@ public class SkattbarInntektService {
     }
 
     private SkattbarInntekt hentOpplysninger(Invocation.Builder request) {
-        Response response = null;
-        try {
-            response = request.get();
+        try (Response response = request.get()) {
 
             if (log.isDebugEnabled()) {
                 response.bufferEntity();
@@ -200,22 +204,22 @@ public class SkattbarInntektService {
             }
         } catch (RuntimeException e) {
             log.warn("Klarer ikke hente skatteopplysninger", e);
-            return new SkattbarInntekt();
-        } finally {
-            if (response != null) {
-                response.close();
-            }
+            return null;
         }
     }
 
     private SkattbarInntekt mockRespons() {
         try {
-            String json = IOUtils.toString(this.getClass().getResourceAsStream(mockFil));
+            InputStream resourceAsStream = this.getClass().getResourceAsStream(mockFil);
+            if (resourceAsStream == null) {
+                return null;
+            }
+            String json = IOUtils.toString(resourceAsStream);
             return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, SkattbarInntekt.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("", e);
+            return null;
         }
-        return new SkattbarInntekt();
     }
 
 

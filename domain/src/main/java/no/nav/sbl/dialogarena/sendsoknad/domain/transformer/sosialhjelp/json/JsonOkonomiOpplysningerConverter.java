@@ -232,6 +232,7 @@ public class JsonOkonomiOpplysningerConverter {
     public static List<JsonOkonomiOpplysningUtbetaling> getOkonomiopplysningFraFaktum(List<Faktum> fakta, List<Faktum> faktaKomponent) {
         return fakta.stream()
                 .filter(Objects::nonNull)
+                .filter(faktum -> faktum.getProperties().get("kildeType") != null)
                 .map(faktum -> {
                     final Map<String, String> properties = faktum.getProperties();
                     String organisasjonsnavn = isEmpty(properties.get("organisasjon")) ? "Ukjent(Klarer ikke hente)" : properties.get("organisasjon");
