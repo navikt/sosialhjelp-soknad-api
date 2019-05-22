@@ -556,10 +556,7 @@ public class SoknadDataFletter {
                 for (JsonNode node : patch) {
                     if (node instanceof ObjectNode) {
                         ObjectNode object = (ObjectNode) node;
-                        String path = node.path("path").textValue();
-                        if (!path.contains("samvarsgrad")){
-                            object.remove("value");
-                        }
+                        object.remove("value");
                     }
                 }
                 if (patch.isArray()){
@@ -567,8 +564,7 @@ public class SoknadDataFletter {
                     for (int i = 0; i < arrayNode.size(); i++){
                         JsonNode node = arrayNode.get(i);
                         String path = node.path("path").textValue();
-                        String op = node.path("op").textValue();
-                        if (path.contains("komponenter") && op.contains("add")){
+                        if (path.contains("komponenter")){
                             arrayNode.remove(i);
                             i--;
                         }
