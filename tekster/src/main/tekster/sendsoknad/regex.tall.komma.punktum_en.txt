@@ -1,1 +1,0 @@
-The field can only have numbers or decimal numbers with dot or comma
