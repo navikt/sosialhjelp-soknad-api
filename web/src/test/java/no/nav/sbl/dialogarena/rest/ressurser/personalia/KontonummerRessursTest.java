@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.KontonummerRessurs.KontonummerFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -43,9 +42,6 @@ public class KontonummerRessursTest {
     private static final String KONTONUMMER_SYSTEM_OPPDATERT = "44333222123";
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
@@ -78,8 +74,8 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereSystemKontonummer(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM)));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -92,8 +88,8 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereOppdatertSystemKontonummerFraTPS(){
-        SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM);
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(soknadUnderArbeid);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM)));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM_OPPDATERT);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -106,8 +102,8 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereBrukerutfyltKontonummer(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER)));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -120,8 +116,8 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereKontonummerLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null)));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);

@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
@@ -38,9 +37,6 @@ public class KontonummerRessurs {
     private FaktaService faktaService;
 
     @Inject
-    private LegacyHelper legacyHelper;
-
-    @Inject
     private Tilgangskontroll tilgangskontroll;
 
     @Inject
@@ -53,7 +49,7 @@ public class KontonummerRessurs {
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = legacyHelper.hentSoknad(behandlingsId, eier, false);
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
         JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
