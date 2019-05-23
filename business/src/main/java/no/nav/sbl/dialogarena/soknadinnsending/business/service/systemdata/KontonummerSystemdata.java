@@ -29,7 +29,7 @@ public class KontonummerSystemdata implements Systemdata {
                 kontonummer.setKilde(JsonKilde.BRUKER);
                 kontonummer.setVerdi(null);
             } else {
-                String verdi = systemverdi.replaceAll("[ .]", "");
+                String verdi = systemverdi.replaceAll("\\D", "");
                 kontonummer.setVerdi(verdi);
             }
         }
