@@ -1,7 +1,8 @@
 package no.nav.sbl.dialogarena.mock;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.ks.svarut.servicesv9.Dokument;
+import no.ks.svarut.servicesv9.Forsendelse;
+import no.ks.svarut.servicesv9.PostAdresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
@@ -17,6 +18,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -34,9 +37,10 @@ import javax.ws.rs.core.Response;
 
 import java.io.*;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 
 @Controller
@@ -79,16 +83,6 @@ public class TjenesteMockRessurs {
         clearCache();
     }
 
-    @GET
-    @Path("/json/{behandlingsId}")
-    @Produces(APPLICATION_JSON)
-    public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        List<AlternativRepresentasjon> representasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
-        return null; // FIXME: getJsonRepresentasjon(representasjoner, behandlingsId, soknad);
-    }
-
-    /* FIXME: Drar inn transitive avhengigheter som må deklareres i pom
     private byte[] createZipByteArray(List<Dokument> dokumenter) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
@@ -100,7 +94,7 @@ public class TjenesteMockRessurs {
             }
         }
         return byteArrayOutputStream.toByteArray();
-    }*/
+    }
 
     @GET
     @Consumes(APPLICATION_JSON)
@@ -111,7 +105,6 @@ public class TjenesteMockRessurs {
         }
 
         String eier = OidcFeatureToggleUtils.getUserId();
-        /* FIXME:
         final SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
         PostAdresse fakeAdresse = new PostAdresse()
                 .withNavn(sendtSoknad.getNavEnhetsnavn())
@@ -131,7 +124,7 @@ public class TjenesteMockRessurs {
             e.printStackTrace();
         }
 
-        clearCache();*/
+        clearCache();
         return Response.noContent().build();
     }
 
