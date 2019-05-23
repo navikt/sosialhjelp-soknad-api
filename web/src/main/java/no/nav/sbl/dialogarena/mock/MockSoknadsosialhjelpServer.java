@@ -11,7 +11,7 @@ public class MockSoknadsosialhjelpServer {
 
     public static void main(String[] args) throws Exception {
         System.setProperty("tillatMockRessurs", "true");
-        // FIXME: set logback.configurationFile with Heroku logger
+        System.setProperty("logback.configurationFile", "logback-mock.xml");
 
         File override = new File(Objects.requireNonNull(MockSoknadsosialhjelpServer.class.getClassLoader().getResource("override-web-mock.xml")).getFile());
         SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, override, "/soknadsosialhjelp-server", null);
