@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -56,6 +57,7 @@ public class KontonummerRessursUtenOidcTest {
     public void setUp() {
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
+        doCallRealMethod().when(kontonummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class));
     }
 
     @After
