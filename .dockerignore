@@ -1,5 +1,4 @@
 .idea
 /target
 */target
-!web/target
-!web/target/test-classes/*.properties
+!web/target/soknadsosialhjelp-server

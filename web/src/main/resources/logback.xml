@@ -10,7 +10,7 @@
             </customFields>
         </encoder>
     </appender>
-
+  
 
     <logger name="org.springframework" level="warn"></logger>
 

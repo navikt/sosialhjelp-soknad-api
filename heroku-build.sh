@@ -45,11 +45,20 @@ function get_heroku_app_name {
     APP_NAME=$(echo -n $heroku_repo | sed -E 's#^.*/(.*)\.git$#\1#')
 }
 
-function go_to_project_root() {
+function go_to_project_root {
     cd $PROJECT_ROOT
 }
 
-function build_project() {
+# FIXME: Must be inside docker build context, but this will not work on Windows
+function copy_kodeverk {
+    cp -r "$HOME/kodeverk/sendsoknad" .sendsoknad
+}
+
+function remove_kodeverk {
+    rm -rf .sendsoknad
+}
+
+function build_project {
     mvn clean install -DskipTests
 }
 
@@ -67,6 +76,9 @@ if [ -z "$APP_NAME" ]; then
     get_heroku_app_name
 fi
 
-# FIXME: Copy kodeverk from $HOME/kodeverk/sendsoknad to eg. .sendsoknad
+echo "Build and deploy on $APP_NAME"
+
 build_project
+copy_kodeverk
 deploy_to_heroku
+remove_kodeverk
