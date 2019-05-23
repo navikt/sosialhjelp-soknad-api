@@ -91,7 +91,7 @@ public class AdresseRessurs {
 
         switch (adresserFrontend.valg){
             case FOLKEREGISTRERT:
-                personalia.setOppholdsadresse(adresseSystemdata.innhentFolkeregistrertAdresse(eier));
+                personalia.setOppholdsadresse(adresseSystemdata.createDeepCopyOfJsonAdresse(personalia.getFolkeregistrertAdresse()));
                 break;
             case MIDLERTIDIG:
                 personalia.setOppholdsadresse(adresseSystemdata.innhentMidlertidigAdresse(eier));
