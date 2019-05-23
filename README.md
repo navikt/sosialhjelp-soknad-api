@@ -38,7 +38,8 @@ For å se json-representasjon av søknaden:
  git remote add heroku https://git.heroku.com/en-kul-ny-feature-server.git
  ```
  
- Etter deploy vil backenden være tilgjengelig på `https://www.digisos-test.com/en-kul-ny-feature-server/soknadsosialhjelp-server/`.
+ Etter deploy vil backenden være tilgjengelig på `https://www.digisos-test.com/en-kul-ny-feature/soknadsosialhjelp-server/`.
+ (Altså **ikke** `https://www.digisos-test.com/en-kul-ny-feature-server/soknadsosialhjelp-server/`)
 
 ### Tekster
 
