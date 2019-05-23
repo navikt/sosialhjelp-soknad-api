@@ -26,7 +26,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
-import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadinnsendingConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
