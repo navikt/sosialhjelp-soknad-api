@@ -62,4 +62,31 @@ public class NorgServiceTest {
         return rsNorgEnhet;
     }
 
+    @Test
+    public void finnEnhetForLom() {
+        setProperty("environment.name", "p");
+
+        String gt = "0514";
+        String sosialOrgNummer = "974592274";
+        NorgConsumer.RsNorgEnhet norgEnhet = lagRsNorgEnhet();
+        norgEnhet.enhetNr = "0513";
+        when(norgConsumer.finnEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
+
+        NavEnhet navEnhet = norgService.finnEnhetForGt(gt);
+        assertThat(navEnhet.sosialOrgnr, is(sosialOrgNummer));
+    }
+
+    @Test
+    public void finnEnhetForSkjaak() {
+        setProperty("environment.name", "p");
+
+        String gt = "0513";
+        String sosialOrgNummer = "976641175";
+        NorgConsumer.RsNorgEnhet norgEnhet = lagRsNorgEnhet();
+        norgEnhet.enhetNr = "0513";
+        when(norgConsumer.finnEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
+
+        NavEnhet navEnhet = norgService.finnEnhetForGt(gt);
+        assertThat(navEnhet.sosialOrgnr, is(sosialOrgNummer));
+    }
 }

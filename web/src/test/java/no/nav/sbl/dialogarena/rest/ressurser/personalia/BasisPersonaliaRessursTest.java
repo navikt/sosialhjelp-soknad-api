@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static no.nav.sbl.dialogarena.rest.ressurser.personalia.BasisPersonaliaRessurs.BasisPersonaliaFrontend;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyBoolean;
@@ -81,14 +82,14 @@ public class BasisPersonaliaRessursTest {
     @Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty("authentication.isRunningWithOidc", "true");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
         when(vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(anyString())).thenReturn(null);
     }
 
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
@@ -133,15 +133,15 @@ public class UtbetalingRessurs {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = opplysninger.getUtbetaling();
 
         String type = "utbytte";
-        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.utbytte);
 
         type = "salg";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.salg);
 
         type = "forsikring";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.forsikring);
 
         type = "annen";

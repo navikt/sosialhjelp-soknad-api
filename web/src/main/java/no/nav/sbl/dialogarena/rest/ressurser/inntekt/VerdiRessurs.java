@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
@@ -139,23 +139,23 @@ public class VerdiRessurs {
         final List<JsonOkonomioversiktFormue> verdier = oversikt.getFormue();
 
         String type = "bolig";
-        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.bolig);
 
         type = "campingvogn";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.campingvogn);
 
         type = "kjoretoy";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.kjoretoy);
 
         type = "fritidseiendom";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.fritidseiendom);
 
         type = "annet";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.annet);
     }
 

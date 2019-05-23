@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
@@ -78,6 +80,9 @@ public class SoknadRessurs {
 
     @Inject
     private VedleggOriginalFilerService vedleggOriginalFilerService;
+
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -134,11 +139,15 @@ public class SoknadRessurs {
         systemdata.update(soknadUnderArbeid);
 
         final JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
-        final JsonInternalSoknad notUpdatedJsonInternalSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
+        SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final JsonInternalSoknad notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.getJsonInternalSoknad();
+
+        soknadService.sortOkonomi(soknadUnderArbeid, notUpdatedSoknadUnderArbeid);
 
         if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
             return false;
         } else {
+            soknadService.logForskjeller(notUpdatedSoknadUnderArbeid, soknadUnderArbeid, "Forskjell på systemdata i json: ");
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
             return true;
         }
@@ -146,7 +155,7 @@ public class SoknadRessurs {
 
     @POST
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+    public Map<String, String> legacyOpprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
@@ -155,7 +164,35 @@ public class SoknadRessurs {
         } else {
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
             if (soknad == null) {
-                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                opprettetBehandlingsId = soknadService.legacyStartEttersending(behandlingsId);
+            } else {
+                opprettetBehandlingsId = soknad.getBrukerBehandlingId();
+            }
+        }
+        result.put("brukerBehandlingId", opprettetBehandlingsId);
+        response.addCookie(xsrfCookie(opprettetBehandlingsId));
+        return result;
+    }
+
+    @POST
+    @Path("/opprettSoknad")
+    @Consumes(APPLICATION_JSON)
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+        Map<String, String> result = new HashMap<>();
+
+        String opprettetBehandlingsId;
+        if (behandlingsId == null) {
+            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
+        } else {
+            final String eier = OidcFeatureToggleUtils.getUserId();
+            WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
+            if (soknad == null){
+                Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
+                if (soknadUnderArbeid.isPresent()) {
+                    opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();
+                } else {
+                    opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                }
             } else {
                 opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }

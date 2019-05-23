@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -89,13 +90,13 @@ public class ArbeidRessursTest {
     @Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty("authentication.isRunningWithOidc", "true");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
     }
 
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test
@@ -165,7 +166,7 @@ public class ArbeidRessursTest {
     public void putArbeidSkalOppdatereKommentarTilArbeidsforhold(){
         ignoreTilgangskontrollAndLegacyUpdate();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithArbeid(null, "")));
+                Optional.of(createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")));
 
         final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold(KOMMENTAR);
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
@@ -174,6 +175,20 @@ public class ArbeidRessursTest {
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
         assertThat(kommentarTilArbeidsforhold.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(kommentarTilArbeidsforhold.getVerdi(), is(KOMMENTAR));
+    }
+
+    @Test
+    public void putArbeidSkalSetteLikNullDersomKommentarenErTom(){
+        ignoreTilgangskontrollAndLegacyUpdate();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")));
+
+        final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold("");
+        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
+
+        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
+        assertThat(kommentarTilArbeidsforhold, nullValue());
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

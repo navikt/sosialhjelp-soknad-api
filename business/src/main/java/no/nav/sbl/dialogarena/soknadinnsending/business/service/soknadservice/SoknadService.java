@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Component;
@@ -58,6 +59,17 @@ public class SoknadService {
         lokalDb.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
     }
 
+    public void logForskjeller(SoknadUnderArbeid soknadUnderArbeid1, SoknadUnderArbeid soknadUnderArbeid2, String melding){
+        soknadDataFletter.logDersomForskjellMellomFaktumOgNyModell(soknadUnderArbeid1, soknadUnderArbeid2, melding);
+    }
+
+    public void sortOkonomi(SoknadUnderArbeid soknadUnderArbeid1, SoknadUnderArbeid soknadUnderArbeid2){
+        JsonSoknad soknad = soknadUnderArbeid1.getJsonInternalSoknad().getSoknad();
+        JsonSoknad soknadKonvertert = soknadUnderArbeid2.getJsonInternalSoknad().getSoknad();
+        soknadDataFletter.sortOkonomi(soknad.getData().getOkonomi());
+        soknadDataFletter.sortOkonomi(soknadKonvertert.getData().getOkonomi());
+    }
+
     public WebSoknad hentSoknadFraLokalDb(long soknadId) {
         return lokalDb.hentSoknad(soknadId);
     }
@@ -93,6 +105,10 @@ public class SoknadService {
         soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
 
         soknadMetricsService.avbruttSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
+    }
+
+    public String legacyStartEttersending(String behandlingsIdSoknad) {
+        return ettersendingService.legacyStart(behandlingsIdSoknad);
     }
 
     public String startEttersending(String behandlingsIdSoknad) {

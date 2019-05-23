@@ -6,16 +6,16 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
 import java.sql.Types;
 import java.util.*;
 
@@ -319,10 +319,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         Faktum lagretFaktum = hentFaktum(faktum.getFaktumId());
         // Siden faktum-value er endret fra CLOB til Varchar må vi få med oss om det skulle oppstå tilfeller
         // hvor dette lager problemer. Logges som kritisk
-        if (faktum.getValue() != null && faktum.getValue().length() > 500) {
-            logger.error("Prøver å opppdatere faktum med en value som overstiger 500 tegn. (Faktumkey: {}, Faktumtype: {}) ",
+        if (faktum.getValue() != null && faktum.getValue().getBytes(StandardCharsets.UTF_8).length > 699) {
+            logger.error("Prøver å opppdatere faktum med en value som overstiger 699 byte. (Faktumkey: {}, Faktumtype: {}) ",
                     faktum.getKey(), faktum.getTypeString());
-            faktum.setValue(faktum.getValue().substring(0, 500));
+
+            faktum.setValue(begrensTilNBytes(faktum.getValue(), 699));
         }
         if (lagretFaktum.er(Faktum.FaktumType.BRUKERREGISTRERT) || systemLagring) {
             getJdbcTemplate()
@@ -330,6 +331,13 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                             faktum.getValue(), faktum.getFaktumId());
         }
         lagreAlleEgenskaper(faktum, systemLagring);
+    }
+
+    static String begrensTilNBytes(String verdi, int n) {
+        while (verdi.getBytes(StandardCharsets.UTF_8).length > n){
+            verdi = verdi.substring(0, verdi.length()-1);
+        }
+        return verdi;
     }
 
     private void lagreAlleEgenskaper(Faktum faktum, Boolean systemLagring) {
@@ -396,7 +404,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
 
     public String hentSoknadType(Long soknadId) {
-        return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
+        try {
+            return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
+        } catch (EmptyResultDataAccessException e) {
+            logger.error("Fant ingen soknad med soknad_id={}", soknadId, e);
+            return null;
+        }
     }
 
     public void settDelstegstatus(Long soknadId, DelstegStatus status) {

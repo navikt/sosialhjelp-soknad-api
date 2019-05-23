@@ -22,6 +22,7 @@ public class DevSoknadsosialhjelpServer {
         SoknadsosialhjelpServer.setFrom("environment-test.properties");
         DataSource dataSource = null;
 
+
         if (System.getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb").equals("true")) {
             dataSource = buildDataSource("hsqldb.properties");
         }

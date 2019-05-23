@@ -11,6 +11,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -30,6 +31,7 @@ public class BrukerprofilService {
     @Inject
     private Kodeverk kodeverk;
 
+    @Cacheable("adresserOgKontonummerCache")
     public AdresserOgKontonummer hentKontaktinformasjonOgPreferanser(String fodselsnummer) {
         try {
             return mapResponsTilAdresserOgKontonummer(brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer)));
@@ -43,7 +45,7 @@ public class BrukerprofilService {
             logger.error("Ikke funnet person i TPS", e);
             throw new IkkeFunnetException("TPS:PersonIkkefunnet", e);
         } catch (WebServiceException e) {
-            logger.error("Ingen kontakt med TPS (Brukerprofil_v1).", e);
+            logger.warn("Ingen kontakt med TPS (Brukerprofil_v1).", e);
             throw new TjenesteUtilgjengeligException("TPS:webserviceException", e);
         }
     }

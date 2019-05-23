@@ -23,6 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.ws.rs.NotFoundException;
 import java.lang.annotation.Annotation;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.*;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 import static org.hamcrest.Matchers.is;
@@ -47,13 +48,13 @@ public class SikkerhetsAspectTest {
     @Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty("authentication.isRunningWithOidc", "true");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
     }
 
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test

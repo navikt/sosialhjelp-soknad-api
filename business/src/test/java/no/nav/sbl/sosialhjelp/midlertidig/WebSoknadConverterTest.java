@@ -48,6 +48,7 @@ import static java.util.Collections.emptyList;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.FNR_KEY;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -83,7 +84,7 @@ public class WebSoknadConverterTest {
                 .withOrgnummer(ORGNUMMER)
                 .withNavEnhetsnavn(NAVENHET));
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 

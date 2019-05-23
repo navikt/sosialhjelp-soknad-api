@@ -22,6 +22,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,7 +61,7 @@ public class InformasjonRessursUtenOidcTest {
     public void setUp() {
         ressursTest.setUp();
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @After

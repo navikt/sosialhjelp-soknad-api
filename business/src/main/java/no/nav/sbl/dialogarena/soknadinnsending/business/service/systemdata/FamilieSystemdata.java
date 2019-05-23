@@ -15,6 +15,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,20 +36,51 @@ public class FamilieSystemdata implements Systemdata {
         final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         final JsonFamilie familie = jsonData.getFamilie();
-        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM){
+        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM) {
             final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
-            if (systemverdiSivilstatus != null){
-                familie.setSivilstatus(systemverdiSivilstatus);
-            }
+            familie.setSivilstatus(systemverdiSivilstatus);
         }
-        final JsonHarForsorgerplikt harForsorgerplikt = familie.getForsorgerplikt().getHarForsorgerplikt();
+
+        JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
+        JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getKilde() == null ||
-                harForsorgerplikt.getKilde() == JsonKilde.SYSTEM){
-            final JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
-            if(systemverdiForsorgerplikt != null){
-                familie.setForsorgerplikt(systemverdiForsorgerplikt);
+                harForsorgerplikt.getKilde() == JsonKilde.SYSTEM) {
+            JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
+
+            if (systemverdiForsorgerplikt.getHarForsorgerplikt().getVerdi()) {
+                forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
+
+                List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
+                if (ansvarList != null && !ansvarList.isEmpty()) {
+                    ansvarList.removeIf(jsonAnsvar -> isNotInList(jsonAnsvar, systemverdiForsorgerplikt.getAnsvar()));
+                    ansvarList.addAll(systemverdiForsorgerplikt.getAnsvar().stream()
+                            .filter(sysAnsvar -> isNotInList(sysAnsvar, forsorgerplikt.getAnsvar()))
+                            .collect(Collectors.toList()));
+                } else {
+                    forsorgerplikt.setAnsvar(systemverdiForsorgerplikt.getAnsvar());
+                }
+
+            } else {
+                forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
+                forsorgerplikt.setBarnebidrag(null);
+                forsorgerplikt.setAnsvar(new ArrayList<>());
             }
         }
+    }
+
+    private boolean isNotInList(JsonAnsvar jsonAnsvar, List<JsonAnsvar> jsonAnsvarList) {
+        return jsonAnsvarList.stream().noneMatch(
+                ansvar -> {
+                    if (ansvar.getBarn() == null) {
+                        throw new IllegalStateException("JsonAnsvar mangler barn. Ikke mulig å skille fra andre barn");
+                    }
+                    if (ansvar.getBarn().getPersonIdentifikator() != null) {
+                        return ansvar.getBarn().getPersonIdentifikator().equals(jsonAnsvar.getBarn().getPersonIdentifikator());
+                    } else {
+                        return ansvar.getBarn().getNavn().equals(jsonAnsvar.getBarn().getNavn());
+                    }
+                }
+        );
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
@@ -56,18 +88,19 @@ public class FamilieSystemdata implements Systemdata {
         if (personalia == null || isEmpty(personalia.getSivilstatus())) {
             return null;
         }
-        JsonSivilstatus jsonSivilstatus = new JsonSivilstatus()
-                .withKilde(JsonKilde.SYSTEM)
-                .withStatus(JsonSivilstatus.Status.fromValue(personalia.getSivilstatus()));
 
         Ektefelle ektefelle = personalia.getEktefelle();
-        if (jsonSivilstatus.getStatus().equals(GIFT)) {
-            jsonSivilstatus
-                    .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
-                    .withEktefelleHarDiskresjonskode(ektefelle == null ? null : ektefelle.harIkketilgangtilektefelle())
-                    .withFolkeregistrertMedEktefelle(ektefelle == null ? null : ektefelle.erFolkeregistrertsammen());
+        JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(personalia.getSivilstatus());
+        if (!GIFT.equals(status) || ektefelle == null){
+            return null;
         }
-        return jsonSivilstatus;
+
+        return new JsonSivilstatus()
+                .withKilde(JsonKilde.SYSTEM)
+                .withStatus(status)
+                .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
+                .withEktefelleHarDiskresjonskode(ektefelle.harIkketilgangtilektefelle())
+                .withFolkeregistrertMedEktefelle(ektefelle.erFolkeregistrertsammen());
     }
 
     private static JsonEktefelle tilSystemregistrertJsonEktefelle(Ektefelle ektefelle) {
@@ -109,27 +142,17 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonAnsvar mapToJsonAnsvar(Barn barn) {
-        JsonBarn jsonBarn = new JsonBarn();
-        if(barn.harIkkeTilgang() != null && barn.harIkkeTilgang()){
-            jsonBarn.withKilde(JsonKilde.SYSTEM)
-                    .withNavn(new JsonNavn()
-                            .withFornavn("")
-                            .withMellomnavn("")
-                            .withEtternavn(""))
-                    .withHarDiskresjonskode(true);
-            return new JsonAnsvar()
-                    .withBarn(jsonBarn);
-        }
-        jsonBarn.withKilde(JsonKilde.SYSTEM)
-                .withNavn(new JsonNavn()
-                        .withFornavn(barn.getFornavn())
-                        .withMellomnavn(barn.getMellomnavn())
-                        .withEtternavn(barn.getEtternavn()))
-                .withFodselsdato(barn.getFodselsdato() != null ? barn.getFodselsdato().toString() : null)
-                .withPersonIdentifikator(barn.getFnr())
-                .withHarDiskresjonskode(false);
         return new JsonAnsvar()
-                .withBarn(jsonBarn).withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen()
+                .withBarn(new JsonBarn()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withNavn(new JsonNavn()
+                                .withFornavn(barn.getFornavn())
+                                .withMellomnavn(barn.getMellomnavn())
+                                .withEtternavn(barn.getEtternavn()))
+                        .withFodselsdato(barn.getFodselsdato() != null ? barn.getFodselsdato().toString() : null)
+                        .withPersonIdentifikator(barn.getFnr())
+                        .withHarDiskresjonskode(false))
+                .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen()
                         .withKilde(JsonKildeSystem.SYSTEM)
                         .withVerdi(barn.erFolkeregistrertsammen()));
     }

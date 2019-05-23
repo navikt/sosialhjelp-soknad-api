@@ -7,9 +7,11 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -21,7 +23,11 @@ import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import java.util.List;
+
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -41,6 +47,9 @@ public class UtdanningRessurs {
 
     @Inject
     private LegacyHelper legacyHelper;
+
+    @Inject
+    private TextService textService;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -68,9 +77,20 @@ public class UtdanningRessurs {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonUtdanning utdanning = soknad.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
+        final List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         utdanning.setKilde(JsonKilde.BRUKER);
         utdanning.setErStudent(utdanningFrontend.erStudent);
-        utdanning.setStudentgrad(toStudentgrad(utdanningFrontend.studengradErHeltid));
+        if (utdanningFrontend.erStudent){
+            utdanning.setStudentgrad(toStudentgrad(utdanningFrontend.studengradErHeltid));
+        } else {
+            utdanning.setStudentgrad(null);
+        }
+
+        if (utdanning.getErStudent() != null){
+            String soknadstype = "studielanOgStipend";
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
+            addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel, utdanning.getErStudent());
+        }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }

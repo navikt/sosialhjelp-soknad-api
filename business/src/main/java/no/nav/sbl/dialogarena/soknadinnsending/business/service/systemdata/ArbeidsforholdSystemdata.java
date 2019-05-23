@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService.Sokeperiode;
 
@@ -48,15 +48,15 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
         String soknadstype = "sluttoppgjoer";
         if (typeIsInList(jsonVedleggs, "sluttoppgjor")){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(soknadstype));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, soknadstype, tittel);
         } else {
             removeUtbetalingIfPresentInOpplysninger(utbetalinger, soknadstype);
         }
 
-        soknadstype = "lonnslipp";
+        soknadstype = "jobb";
         if (typeIsInList(jsonVedleggs, "lonnslipp")){
-            final String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(soknadstype));
+            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
             addInntektIfNotPresentInOversikt(inntekter, soknadstype, tittel);
         } else {
             removeInntektIfPresentInOversikt(inntekter, soknadstype);
@@ -64,7 +64,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     }
 
     private boolean typeIsInList(List<JsonVedlegg> jsonVedleggs, String vedleggstype) {
-        return jsonVedleggs.stream().anyMatch(jsonVedlegg -> jsonVedlegg.getTilleggsinfo().equals(vedleggstype));
+        return jsonVedleggs.stream().anyMatch(jsonVedlegg -> jsonVedlegg.getType().equals(vedleggstype));
     }
 
     public List<JsonArbeidsforhold> innhentSystemArbeidsforhold(final String personIdentifikator) {
@@ -75,7 +75,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
             return null;
         }
         return arbeidsforholds.stream()
-                .map(arbeidsforhold -> mapToJsonArbeidsforhold(arbeidsforhold))
+                .map(this::mapToJsonArbeidsforhold)
                 .collect(Collectors.toList());
     }
 
@@ -91,7 +91,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     }
 
     private ArbeidsforholdService.Sokeperiode getSoekeperiode() {
-        return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(10), new DateTime());
+        return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(3), new DateTime());
     }
 
     private static JsonArbeidsforhold.Stillingstype tilJsonStillingstype(boolean harFastStilling) {

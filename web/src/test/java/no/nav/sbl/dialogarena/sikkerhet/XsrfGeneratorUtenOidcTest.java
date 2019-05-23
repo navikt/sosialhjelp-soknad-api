@@ -13,13 +13,14 @@ import javax.security.auth.Subject;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.junit.Assert.fail;
 
 public class XsrfGeneratorUtenOidcTest {
 
     @Test
     public void skalGenerereBasertPaaInput() {
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         String token = XsrfGenerator.generateXsrfToken("1L");
         String tokenYesterday = XsrfGenerator.generateXsrfToken("1L", new DateTime().minusDays(1).toString("yyyyMMdd"));

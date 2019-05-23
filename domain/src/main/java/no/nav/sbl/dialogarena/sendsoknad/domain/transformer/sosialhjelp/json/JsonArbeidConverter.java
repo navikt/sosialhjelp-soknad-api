@@ -39,7 +39,7 @@ public final class JsonArbeidConverter {
     private static List<JsonArbeidsforhold> tilJsonArbeidsforhold(WebSoknad webSoknad) {
         final List<Faktum> fakta = webSoknad.getFaktaMedKey("arbeidsforhold");
 
-        return fakta.stream().map(faktum -> {
+        return fakta.stream().filter(faktum -> faktum.getProperties().size() != 0).map(faktum -> {
             final Map<String, String> forhold = faktum.getProperties();
             
             final String fom = forhold.get("fom");

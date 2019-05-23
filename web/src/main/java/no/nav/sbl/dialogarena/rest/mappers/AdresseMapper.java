@@ -7,6 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 public class AdresseMapper {
     public static AdresseRessurs.AdresserFrontend mapToAdresserFrontend(JsonAdresse sysFolkeregistrert, JsonAdresse sysMidlertidig, JsonAdresse jsonOpphold) {
         return new AdresseRessurs.AdresserFrontend()
@@ -76,27 +78,27 @@ public class AdresseMapper {
                 adresse = new JsonGateAdresse()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(JsonAdresse.Type.GATEADRESSE)
-                        .withLandkode(gateadresse.landkode)
-                        .withKommunenummer(gateadresse.kommunenummer)
+                        .withLandkode(defaultIfBlank(gateadresse.landkode, "NOR"))
+                        .withKommunenummer(defaultIfBlank(gateadresse.kommunenummer, null))
                         .withAdresselinjer(gateadresse.adresselinjer)
-                        .withBolignummer(gateadresse.bolignummer)
-                        .withPostnummer(gateadresse.postnummer)
-                        .withPoststed(gateadresse.poststed)
-                        .withGatenavn(gateadresse.gatenavn)
-                        .withHusnummer(gateadresse.husnummer)
-                        .withHusbokstav(gateadresse.husbokstav);
+                        .withBolignummer(defaultIfBlank(gateadresse.bolignummer, null))
+                        .withPostnummer(defaultIfBlank(gateadresse.postnummer, null))
+                        .withPoststed(defaultIfBlank(gateadresse.poststed, null))
+                        .withGatenavn(defaultIfBlank(gateadresse.gatenavn, null))
+                        .withHusnummer(defaultIfBlank(gateadresse.husnummer, null))
+                        .withHusbokstav(defaultIfBlank(gateadresse.husbokstav, null));
                 break;
             case MATRIKKELADRESSE:
                 AdresseRessurs.MatrikkeladresseFrontend matrikkeladresse = adresseFrontend.matrikkeladresse;
                 adresse = new JsonMatrikkelAdresse()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(JsonAdresse.Type.MATRIKKELADRESSE)
-                        .withKommunenummer(matrikkeladresse.kommunenummer)
-                        .withGaardsnummer(matrikkeladresse.gaardsnummer)
-                        .withBruksnummer(matrikkeladresse.bruksnummer)
-                        .withFestenummer(matrikkeladresse.festenummer)
-                        .withSeksjonsnummer(matrikkeladresse.seksjonsnummer)
-                        .withUndernummer(matrikkeladresse.undernummer);
+                        .withKommunenummer(defaultIfBlank(matrikkeladresse.kommunenummer, null))
+                        .withGaardsnummer(defaultIfBlank(matrikkeladresse.gaardsnummer, null))
+                        .withBruksnummer(defaultIfBlank(matrikkeladresse.bruksnummer, null))
+                        .withFestenummer(defaultIfBlank(matrikkeladresse.festenummer, null))
+                        .withSeksjonsnummer(defaultIfBlank(matrikkeladresse.seksjonsnummer, null))
+                        .withUndernummer(defaultIfBlank(matrikkeladresse.undernummer, null));
                 break;
             default:
                 throw new IllegalStateException("Ukjent adressetype: \"" + adresseFrontend.type + "\".");

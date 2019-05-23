@@ -35,6 +35,12 @@ public class AlternativRepresentasjonService {
         return transformers.stream().map(transformer -> transformer.apply(soknad)).collect(toList());
     }
 
+    public List<AlternativRepresentasjon> legacyHentAlternativeRepresentasjoner(WebSoknad soknad, NavMessageSource messageSource) {
+        List<AlternativRepresentasjonTransformer> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers(messageSource, soknad);
+
+        return transformers.stream().map(transformer -> transformer.apply(soknad)).collect(toList());
+    }
+
     public void lagreTilFillager(String brukerBehandlingId, String aktoerId, List<AlternativRepresentasjon> alternativeRepresentasjoner) {
         for (AlternativRepresentasjon r : alternativeRepresentasjoner) {
             fillagerService.lagreFil(brukerBehandlingId,

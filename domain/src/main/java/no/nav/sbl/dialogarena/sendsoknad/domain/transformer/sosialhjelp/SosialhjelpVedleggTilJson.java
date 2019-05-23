@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
@@ -16,6 +17,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toMap;
@@ -32,7 +34,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
         final List<JsonVedlegg> vedlegg = opprettJsonVedleggFraWebSoknad(webSoknad);
         return new JsonVedleggSpesifikasjon().withVedlegg(vedlegg);
     }
-    
+
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         String json;
         try {
@@ -72,7 +74,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
 
         for (Vedlegg vedlegg : alleVedlegg) {
             if (vedlegg.getInnsendingsvalg().erIkke(LastetOpp) && vedlegg.getInnsendingsvalg().erIkke(VedleggAlleredeSendt)
-            && vedlegg.getInnsendingsvalg().erIkke(VedleggKreves)) {
+                    && vedlegg.getInnsendingsvalg().erIkke(VedleggKreves)) {
                 continue;
             }
 
@@ -108,7 +110,15 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
             }
 
             Long proxyFaktumId = v.getFaktumId();
-            Long belopFaktumId = webSoknad.getFaktumMedId(proxyFaktumId + "").getParrentFaktum();
+            if (proxyFaktumId == null) {
+                throw new NullPointerException("vedlegg.getFaktumId==null");
+            }
+            Faktum faktumMedId = webSoknad.getFaktumMedId(String.valueOf(proxyFaktumId));
+            if (faktumMedId == null) {
+                String faktumIder = webSoknad.getFakta().stream().map(Faktum::getKey).collect(Collectors.joining(", "));
+                throw new NullPointerException(String.format("faktumMedId==null proxyFaktumId=%s vedleggNavn=%s tilgjengelige faktumkeys=%s",proxyFaktumId ,v.getNavn(), faktumIder));
+            }
+            Long belopFaktumId = faktumMedId.getParrentFaktum();
 
             JsonVedlegg jsonVedlegg = vedleggMap.get(belopFaktumId);
             if (jsonVedlegg == null) {

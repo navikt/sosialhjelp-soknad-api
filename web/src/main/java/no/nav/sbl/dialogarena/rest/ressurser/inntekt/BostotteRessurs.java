@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -22,10 +23,12 @@ import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -79,12 +82,19 @@ public class BostotteRessurs {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+        final List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
+        String soknadstype = "bostotte";
 
         if (opplysninger.getBekreftelse() == null){
             opplysninger.setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(opplysninger, "bostotte", bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
+        setBekreftelse(opplysninger, soknadstype, bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
+
+        if (bostotteFrontend.bekreftelse != null){
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
+            addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel, bostotteFrontend.bekreftelse);
+        }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }

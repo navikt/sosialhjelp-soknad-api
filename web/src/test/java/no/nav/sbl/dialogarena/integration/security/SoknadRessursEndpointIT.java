@@ -4,12 +4,17 @@ package no.nav.sbl.dialogarena.integration.security;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
+import com.nimbusds.jwt.SignedJWT;
+import no.nav.security.oidc.OIDCConstants;
+import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,7 +37,6 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
         EndpointDataMocking.setupMockWsEndpointData();
     }
 
-
     @Test
     public void skalIkkeHaTilgangTilSeFakta() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
@@ -52,6 +56,20 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
         Response response = sendGetRequest(soknadTester, subUrl, null);
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    @Ignore
+    @Test
+    public void nektetTilgang_opprettEttersendelse() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        String url = "soknader/opprettSoknad";
+
+        Response response = soknadTester.sendsoknadResource(url, webTarget -> webTarget
+                .queryParam("fnr", ANNEN_BRUKER)
+                .queryParam("ettersendTil", soknadTester.getBrukerBehandlingId() )) //fake annen bruker, se FakeLoginFilter
+                .buildPost(null)
+                .invoke();
+        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
     private Response sendGetRequest(SoknadTester soknadTester, String subUrl, SignedJWT signedJWT){

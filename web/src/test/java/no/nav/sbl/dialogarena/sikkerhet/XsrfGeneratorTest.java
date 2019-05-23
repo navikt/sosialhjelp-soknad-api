@@ -6,13 +6,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.junit.Assert.fail;
 
 public class XsrfGeneratorTest {
 
     @Test
     public void skalGenerereBasertPaaInput() {
-        System.setProperty("authentication.isRunningWithOidc", "true");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
 
         String token = XsrfGenerator.generateXsrfToken("1L");

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.jsonTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
@@ -133,31 +133,31 @@ public class BoutgiftRessurs {
         List<JsonOkonomioversiktUtgift> oversiktBoutgifter = okonomi.getOversikt().getUtgift();
 
         String type = "husleie";
-        String tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.husleie);
 
         type = "strom";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.strom);
 
         type = "kommunalAvgift";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.kommunalAvgift);
 
         type = "oppvarming";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.oppvarming);
 
         type = "boliglanAvdrag";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + "." + type);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type) + "." + type);
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
 
         type = "boliglanRenter";
-        tittel = textService.getJsonOkonomiTittel(jsonTypeToFaktumKey.get(type) + "." + type);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type) + "." + type);
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
 
         type = "annenBoutgift";
-        tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.annet);
     }
 

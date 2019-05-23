@@ -2,8 +2,10 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import javax.ws.rs.BadRequestException;
 
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,6 +31,12 @@ public class SoknadRessursUtenOidcTest {
     @Mock
     XsrfGenerator xsrfGenerator;
 
+    @Mock
+    SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
+
     @InjectMocks
     SoknadRessurs ressurs = spy(new SoknadRessurs());
 
@@ -37,7 +46,7 @@ public class SoknadRessursUtenOidcTest {
     @Before
     public void setUp() {
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        System.setProperty("authentication.isRunningWithOidc", "false");
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         ressursTest.type = new StartSoknad();
     }
 

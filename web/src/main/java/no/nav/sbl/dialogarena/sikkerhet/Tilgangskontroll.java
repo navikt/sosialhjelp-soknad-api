@@ -15,6 +15,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -24,6 +26,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
@@ -46,6 +49,8 @@ public class Tilgangskontroll {
     private SoknadService soknadService;
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     public Tilgangskontroll() {
         DecisionPoint pdp = new PicketLinkDecisionPoint(SikkerhetsConfig.class.getResource("/security/policyConfig.xml"));
@@ -61,12 +66,19 @@ public class Tilgangskontroll {
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
         String aktoerId = "undefined";
-        try {
-            WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
-            aktoerId = soknad.getAktoerId();
-        } catch (Exception e) {
-            logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
+
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId());
+        if (soknadUnderArbeid.isPresent()){
+            aktoerId = soknadUnderArbeid.get().getEier();
+        } else {
+            try {
+                WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
+                aktoerId = soknad.getAktoerId();
+            } catch (Exception e) {
+                logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
+            }
         }
+
         verifiserTilgangMotPep(aktoerId, behandlingsId);
     }
 

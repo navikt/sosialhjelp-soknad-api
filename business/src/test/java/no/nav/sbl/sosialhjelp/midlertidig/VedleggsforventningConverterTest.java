@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp.midlertidig;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import org.junit.Test;
 
@@ -14,8 +15,8 @@ import static org.junit.Assert.assertThat;
 
 public class VedleggsforventningConverterTest {
     private static final String EIER = "12345678910";
-    private static final String TYPE = "bostotte";
-    private static final String TILLEGGSINFO = "annetboutgift";
+    private static final String TYPE = "bostotte|annetboutgift";
+    private static final VedleggType VEDLEGG_TYPE = new VedleggType(TYPE);
 
     @Test
     public void mapVedleggsforventningerTilVedleggstatusListeFjernerVedleggSomErNullEllerIkkeVedleggEllerAlleredeLastetOpp() {
@@ -43,15 +44,14 @@ public class VedleggsforventningConverterTest {
         Vedleggstatus vedleggstatus = mapVedleggTilVedleggstatus(lagVedleggMedStatus(Vedlegg.Status.VedleggKreves), EIER);
 
         assertThat(vedleggstatus.getEier(), is(EIER));
-        assertThat(vedleggstatus.getVedleggType().getType(), is(TYPE));
-        assertThat(vedleggstatus.getVedleggType().getTilleggsinfo(), is(TILLEGGSINFO));
+        assertThat(vedleggstatus.getVedleggType().getSammensattType(), is(TYPE));
         assertThat(vedleggstatus.getStatus(), is(Vedleggstatus.Status.VedleggKreves));
     }
 
     private Vedlegg lagVedleggMedStatus(Vedlegg.Status status) {
         return new Vedlegg()
-                .medSkjemaNummer(TYPE)
-                .medSkjemanummerTillegg(TILLEGGSINFO)
+                .medSkjemaNummer(VEDLEGG_TYPE.getType())
+                .medSkjemanummerTillegg(VEDLEGG_TYPE.getTilleggsinfo())
                 .medInnsendingsvalg(status);
     }
 }
