@@ -9,7 +9,6 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -53,10 +52,17 @@ public class KontonummerRessurs {
 
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonKontonummer kontonummer = soknad.getSoknad().getData().getPersonalia().getKontonummer();
-        final String systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = legacyHelper.hentSoknad(behandlingsId, eier, false);
+        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+        JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        String systemverdi;
+        if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)) {
+            systemverdi = kontonummer.getVerdi();
+        } else {
+            systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
+        }
 
         return new KontonummerFrontend()
                 .withBrukerdefinert(kontonummer.getKilde() == JsonKilde.BRUKER)
@@ -87,7 +93,7 @@ public class KontonummerRessurs {
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto);
         } else if (kontonummer.getKilde() == JsonKilde.BRUKER) {
             kontonummer.setKilde(JsonKilde.SYSTEM);
-            kontonummer.setVerdi(kontonummerFrontend.systemverdi);
+            kontonummerSystemdata.updateSystemdataIn(soknad);
             kontonummer.setHarIkkeKonto(null);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);

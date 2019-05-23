@@ -10,13 +10,8 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
@@ -31,6 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -71,6 +67,7 @@ public class KontonummerRessursTest {
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
+        doCallRealMethod().when(kontonummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class));
     }
 
     @After
@@ -95,8 +92,8 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereOppdatertSystemKontonummerFraTPS(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
+        SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM);
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(soknadUnderArbeid);
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM_OPPDATERT);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -124,7 +121,7 @@ public class KontonummerRessursTest {
     @Test
     public void getKontonummerSkalReturnereKontonummerLikNull(){
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null));
+                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -132,7 +129,7 @@ public class KontonummerRessursTest {
         assertThat(kontonummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(kontonummerFrontend.systemverdi, nullValue());
         assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
-        assertThat(kontonummerFrontend.brukerdefinert, is(false));
+        assertThat(kontonummerFrontend.brukerdefinert, is(true));
     }
 
     @Test
@@ -195,23 +192,11 @@ public class KontonummerRessursTest {
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithKontonummer(JsonKilde kilde, String verdi) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withPersonalia(new JsonPersonalia()
-                                                .withKontonummer(new JsonKontonummer()
-                                                        .withKilde(kilde)
-                                                        .withVerdi(verdi)
-                                                )
-                                                .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                        .withVerdi(EIER)
-                                                )
-                                        )
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer()
+                .withKilde(kilde)
+                .withVerdi(verdi);
+        return  soknadUnderArbeid;
     }
 
 }
