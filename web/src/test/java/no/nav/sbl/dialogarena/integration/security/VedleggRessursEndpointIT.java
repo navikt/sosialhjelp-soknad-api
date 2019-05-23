@@ -9,6 +9,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,6 +25,11 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
 
     private static final String ANNEN_BRUKER = "10108000398";
     private static final String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        beforeClass(true);
+    }
 
     @Before
     public void setup() throws Exception {
