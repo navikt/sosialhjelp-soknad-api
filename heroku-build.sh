@@ -49,15 +49,6 @@ function go_to_project_root {
     cd $PROJECT_ROOT
 }
 
-# FIXME: Must be inside docker build context, but this will not work on Windows
-function copy_kodeverk {
-    cp -r "$HOME/kodeverk/sendsoknad" .sendsoknad
-}
-
-function remove_kodeverk {
-    rm -rf .sendsoknad
-}
-
 function build_project {
     mvn clean install -DskipTests
 }
@@ -79,6 +70,4 @@ fi
 echo "Build and deploy on $APP_NAME"
 
 build_project
-copy_kodeverk
 deploy_to_heroku
-remove_kodeverk

@@ -11,10 +11,7 @@ import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.KOMMUNE
 import static org.joda.time.DateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.text.Collator;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +25,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -220,7 +218,11 @@ public class StandardKodeverk implements Kodeverk {
             }
             logger.warn("Kodeverktjeneste feilet ({})! Forsøker fallback", kodeverkfeil.getMessage());
             try {
-                kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
+                if (MockUtils.isTillatMockRessurs()) {
+                    kodeverket = (XMLEnkeltKodeverk) readFromResource(navn);
+                } else {
+                    kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
+                }
             } catch (RuntimeException dumpException) {
                 logger.warn("Fallback feilet ({}), avbryter.", dumpException.getMessage());
                 kodeverkfeil.addSuppressed(dumpException);
@@ -247,6 +249,17 @@ public class StandardKodeverk implements Kodeverk {
 
     private static String createErrorMessage(JAXBException e) {
         return "Unable to load class " + StandardKodeverk.class.getName() +", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage();
+    }
+
+    @SuppressWarnings("unchecked")
+    public XMLKodeverk readFromResource(String resourceName) {
+        InputStream inputStream = StandardKodeverk.class.getClassLoader().getResourceAsStream("kodeverk/" + resourceName + ".xml");
+        try {
+            logger.info("Leser kodeverk fra ressurs '{}'", resourceName);
+            return ((JAXBElement<XMLKodeverk>) JAXB.createUnmarshaller().unmarshal(inputStream)).getValue();
+        } catch (JAXBException e) {
+            throw new RuntimeException("Feil ved innlasting av ressurs " + resourceName + ": " + e.getMessage(), e);
+        }
     }
 
     @SuppressWarnings("unchecked")
