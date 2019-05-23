@@ -476,10 +476,6 @@
                     <groupId>javax.activation</groupId>
                     <artifactId>activation</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>no.nav.modig</groupId>
-                    <artifactId>modig-log-common</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
