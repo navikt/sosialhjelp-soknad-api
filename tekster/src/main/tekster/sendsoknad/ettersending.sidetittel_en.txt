@@ -1,1 +1,0 @@
-Application for unemployment benefit, sending documents after the application is sent
