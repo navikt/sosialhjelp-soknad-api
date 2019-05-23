@@ -1,0 +1,1 @@
+Signert PDF-fil. Du må laste opp filen uten signering.

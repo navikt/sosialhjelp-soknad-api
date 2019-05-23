@@ -1,0 +1,1 @@
+Ugyldig tall. Du må oppgi et heltall.

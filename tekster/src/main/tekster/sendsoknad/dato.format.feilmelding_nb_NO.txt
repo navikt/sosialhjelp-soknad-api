@@ -1,0 +1,1 @@
+Datoen må være på format dd.mm.yyyy

@@ -1,0 +1,1 @@
+Avbryter du søknaden du har begynt på blir den ikke lagret og det du har fylt ut til nå blir slettet.

@@ -1,0 +1,1 @@
+Du fyller selv inn opplysninger i søknaden. I tillegg henter vi opplysninger fra offentlige registre som vi har lov til å hente fra. Eksempler er opplysninger om familie fra Folkeregisteret, opplysninger om arbeidsforhold fra Arbeidstakerregisteret og opplysninger om statlige ytelser fra Arbeids- og velferdsetaten.
