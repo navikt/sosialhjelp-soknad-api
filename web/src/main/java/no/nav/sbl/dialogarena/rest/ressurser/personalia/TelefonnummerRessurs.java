@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -61,7 +61,7 @@ public class TelefonnummerRessurs {
         final String systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
 
         return new TelefonnummerFrontend()
-                .withBrukerdefinert(telefonnummer != null ? telefonnummer.getKilde() == JsonKilde.BRUKER : true)
+                .withBrukerdefinert(telefonnummer == null || telefonnummer.getKilde() == JsonKilde.BRUKER)
                 .withSystemverdi(systemverdi)
                 .withBrukerutfyltVerdi(telefonnummer != null && telefonnummer.getKilde() == JsonKilde.BRUKER ? telefonnummer.getVerdi() : null);
     }
@@ -80,7 +80,6 @@ public class TelefonnummerRessurs {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         final JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
                 personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
         if (telefonnummerFrontend.brukerdefinert) {
@@ -91,13 +90,8 @@ public class TelefonnummerRessurs {
                 jsonTelefonnummer.setVerdi(telefonnummerFrontend.brukerutfyltVerdi);
             }
         } else {
-            String systemverdiTelefonnummer = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
-            if (systemverdiTelefonnummer == null) {
-                personalia.setTelefonnummer(null);
-            } else {
-                jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
-                jsonTelefonnummer.setVerdi(systemverdiTelefonnummer);
-            }
+            jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
+            jsonTelefonnummer.setVerdi(telefonnummerFrontend.systemverdi);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }

@@ -133,7 +133,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void putTelefonnummerSkalLageNyJsonTelefonnummerDersomDenVarNull(){
-        startWithoutTelefonnummerAndNoSystemTelefonnummer();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
         ignoreTilgangskontrollAndLegacyUpdate();
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
@@ -149,7 +150,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void putTelefonnummerSkalOppdatereBrukerutfyltTelefonnummer(){
-        startWithoutTelefonnummerAndNoSystemTelefonnummer();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
         ignoreTilgangskontrollAndLegacyUpdate();
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
@@ -165,11 +167,13 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void putTelefonnummerSkalOverskriveBrukerutfyltTelefonnummerMedSystemTelefonnummer(){
-        startWithBrukerTelefonnummerAndSystemTelefonnummerInTPS();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)));
         ignoreTilgangskontrollAndLegacyUpdate();
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
-                .withBrukerdefinert(false);
+                .withBrukerdefinert(false)
+                .withSystemverdi(TELEFONNUMMER_SYSTEM);
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
@@ -189,18 +193,6 @@ public class TelefonnummerRessursTest {
         when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
         when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
         when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
-    }
-
-    private void startWithBrukerTelefonnummerAndSystemTelefonnummerInTPS() {
-        when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)));
-    }
-
-    private void startWithoutTelefonnummerAndNoSystemTelefonnummer() {
-        when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithTelefonnummer(JsonKilde kilde, String verdi) {

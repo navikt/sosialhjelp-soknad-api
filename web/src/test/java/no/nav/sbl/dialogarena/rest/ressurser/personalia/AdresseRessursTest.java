@@ -110,9 +110,9 @@ public class AdresseRessursTest {
 
     @Test
     public void getAdresserSkalReturnereAdresserRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD));
-        when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
+        SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD);
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(soknadUnderArbeid);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
         final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
@@ -122,9 +122,9 @@ public class AdresseRessursTest {
 
     @Test
     public void getAdresserSkalReturnereOppholdsAdresseLikFolkeregistrertAdresse(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT));
-        when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
+        SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT);
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(soknadUnderArbeid);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
         final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
@@ -134,9 +134,9 @@ public class AdresseRessursTest {
 
     @Test
     public void getAdresserSkalReturnereOppholdsAdresseLikMidlertidigAdresse(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.MIDLERTIDIG));
-        when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
+        SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.MIDLERTIDIG);
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(soknadUnderArbeid);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
         final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
@@ -148,7 +148,6 @@ public class AdresseRessursTest {
     public void getAdresserSkalReturnereAdresserLikNull(){
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(null));
-        when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(null);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(null);
 
         final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
@@ -158,9 +157,9 @@ public class AdresseRessursTest {
 
     @Test
     public void putAdresseSkalSetteOppholdsAdresseLikFolkeregistrertAdresseOgReturnereTilhorendeNavenhet(){
-        when(adresseSystemdata.innhentFolkeregistrertAdresse(anyString())).thenReturn(JSON_SYS_MATRIKKELADRESSE);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)));
+        Optional<SoknadUnderArbeid> optionalSoknadUnderArbeid = Optional.of(createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD));
+        optionalSoknadUnderArbeid.get().getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(optionalSoknadUnderArbeid);
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
         ignoreTilgangskontrollAndLegacyUpdate();
 
@@ -171,8 +170,7 @@ public class AdresseRessursTest {
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(oppholdsadresse, is(JSON_SYS_MATRIKKELADRESSE));
-        assertThat(oppholdsadresse.getAdresseValg(), is(JsonAdresseValg.FOLKEREGISTRERT));
+        assertThat(oppholdsadresse, is(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE).withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)));
         assertThat(navEnheter.size(), is(1));
         assertThat(navEnheter.get(0).enhetsnavn, is("Folkeregistrert NavEnhet"));
     }
