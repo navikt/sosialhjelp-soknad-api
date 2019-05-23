@@ -556,7 +556,10 @@ public class SoknadDataFletter {
                 for (JsonNode node : patch) {
                     if (node instanceof ObjectNode) {
                         ObjectNode object = (ObjectNode) node;
-                        object.remove("value");
+                        String path = node.path("path").textValue();
+                        if (!(path.contains("periodeFom") || path.contains("periodeTom"))){
+                            object.remove("value");
+                        }
                     }
                 }
                 if (patch.isArray()){
