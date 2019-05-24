@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
+import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
@@ -40,6 +41,9 @@ public class TelefonnummerRessurs {
     private Tilgangskontroll tilgangskontroll;
 
     @Inject
+    private LegacyHelper legacyHelper;
+
+    @Inject
     TelefonnummerSystemdata telefonnummerSystemdata;
 
     @Inject
@@ -49,9 +53,7 @@ public class TelefonnummerRessurs {
     @GET
     public TelefonnummerFrontend hentTelefonnummer(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+        SoknadUnderArbeid soknadUnderArbeid = legacyHelper.hentSoknad(behandlingsId, eier, false);
         JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
         String systemverdi;
         if (telefonnummer != null && telefonnummer.getKilde().equals(JsonKilde.SYSTEM)) {

@@ -136,7 +136,6 @@ public class KontonummerRessursTest {
         assertThat(kontonummer.getVerdi(), is(KONTONUMMER_BRUKER));
     }
 
-    @Ignore
     @Test
     public void putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer(){
         startWithBrukerKontonummerAndSystemKontonummerInTPS();

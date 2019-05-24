@@ -65,11 +65,6 @@ public class TelefonnummerRessursUtenOidcTest {
     }
 
     @Test
-    public void getTelefonnummerSkalReturnereOppdatertSystemTelefonnummerFraTPS(){
-        telefonnummerRessursTest.getTelefonnummerSkalReturnereOppdatertSystemTelefonnummerFraTPS();
-    }
-
-    @Test
     public void getTelefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull(){
         telefonnummerRessursTest.getTelefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull();
     }

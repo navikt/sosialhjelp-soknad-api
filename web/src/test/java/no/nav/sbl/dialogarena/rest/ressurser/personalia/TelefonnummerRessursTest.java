@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
+import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.TelefonnummerRessurs.TelefonnummerFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -42,6 +43,9 @@ public class TelefonnummerRessursTest {
     private static final String TELEFONNUMMER_SYSTEM_OPPDATERT = "12345678";
 
     @Mock
+    private LegacyHelper legacyHelper;
+
+    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
@@ -74,8 +78,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereSystemTelefonnummer(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM)));
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+                createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
@@ -86,22 +90,9 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void getTelefonnummerSkalReturnereOppdatertSystemTelefonnummerFraTPS(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM)));
-        when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM_OPPDATERT);
-
-        final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
-
-        assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
-        assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM_OPPDATERT));
-        assertThat(telefonnummerFrontend.brukerdefinert, is(false));
-    }
-
-    @Test
     public void getTelefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+                createJsonInternalSoknadWithTelefonnummer(null, null));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
@@ -113,8 +104,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereBrukerutfyltTelefonnummer(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)));
+        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+                createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
