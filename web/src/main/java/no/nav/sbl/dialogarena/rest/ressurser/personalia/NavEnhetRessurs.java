@@ -1,18 +1,12 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -30,7 +24,6 @@ import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -45,22 +38,10 @@ public class NavEnhetRessurs {
     private static final Logger logger = LoggerFactory.getLogger(AdresseRessurs.class);
 
     @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
-
-    @Inject
     private Tilgangskontroll tilgangskontroll;
 
     @Inject
-    private LegacyHelper legacyHelper;
-
-    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SoknadsmottakerRessurs soknadsmottakerRessurs;
 
     @Inject
     private SoknadsmottakerService soknadsmottakerService;
@@ -71,7 +52,7 @@ public class NavEnhetRessurs {
     @GET
     public List<NavEnhetFrontend> hentNavEnheter(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
         final String valgtOrgnr = soknad.getMottaker() == null ? null : soknad.getMottaker().getOrganisasjonsnummer();
 
         final JsonAdresse oppholdsadresse = soknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -79,16 +60,13 @@ public class NavEnhetRessurs {
                 oppholdsadresse.getAdresseValg() == null ? null :
                         oppholdsadresse.getAdresseValg().toString();
 
-        /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg)); Bruk når faktum er fjernet*/
-        return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresseValg)
-                .stream().map(navEnhet -> mapFromLegacyNavEnhetFrontend(navEnhet, valgtOrgnr)).collect(Collectors.toList());
+        return findSoknadsmottaker(behandlingsId, adresseValg, valgtOrgnr);
     }
 
     @PUT
     public void updateNavEnhet(@PathParam("behandlingsId") String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, navEnhetFrontend);
-        legacyUpdate(behandlingsId, navEnhetFrontend);
     }
 
     private void update(String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
@@ -102,28 +80,7 @@ public class NavEnhetRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    private void legacyUpdate(String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum soknadsmottaker = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "soknadsmottaker");
-
-        final Map<String, String> properties = soknadsmottaker.getProperties();
-        properties.put("sosialOrgnr", navEnhetFrontend.orgnr);
-        properties.put("enhetsnavn", navEnhetFrontend.enhetsnavn);
-        properties.put("kommunenavn", navEnhetFrontend.kommunenavn);
-
-        faktaService.lagreBrukerFaktum(soknadsmottaker);
-    }
-
-    public NavEnhetRessurs.NavEnhetFrontend mapFromLegacyNavEnhetFrontend(SoknadsmottakerRessurs.LegacyNavEnhetFrontend legacyNavEnhetFrontend, String valgtOrgnr) {
-        return new NavEnhetRessurs.NavEnhetFrontend()
-                .withEnhetsnavn(legacyNavEnhetFrontend.enhetsnavn)
-                .withKommunenavn(legacyNavEnhetFrontend.kommunenavn)
-                .withOrgnr(legacyNavEnhetFrontend.sosialOrgnr)
-                .withValgt(legacyNavEnhetFrontend.sosialOrgnr != null && legacyNavEnhetFrontend.sosialOrgnr.equals(valgtOrgnr));
-    }
-
-    private List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg) {
+    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg, String valgtOrgnr) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
@@ -136,11 +93,11 @@ public class NavEnhetRessurs {
          */
         return adresseForslagene.stream().map((adresseForslag) -> {
             final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
+            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtOrgnr);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
 
-    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
+    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtOrgnr) {
         if (navEnhet == null) {
             logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
@@ -151,10 +108,12 @@ public class NavEnhetRessurs {
         }
 
         final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
+        String sosialOrgnr = digisosKommune ? navEnhet.sosialOrgnr : null;
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
                 .withKommunenavn(adresseForslag.kommunenavn)
-                .withOrgnr((digisosKommune) ? navEnhet.sosialOrgnr : null);
+                .withOrgnr(sosialOrgnr)
+                .withValgt(sosialOrgnr != null && sosialOrgnr.equals(valgtOrgnr));
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

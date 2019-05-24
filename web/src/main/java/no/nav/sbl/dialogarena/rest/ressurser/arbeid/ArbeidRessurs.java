@@ -1,13 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
@@ -36,24 +31,15 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.j
 public class ArbeidRessurs {
 
     @Inject
-    private LegacyHelper legacyHelper;
-
-    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SoknadService soknadService;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
-    @Inject
-    private FaktaService faktaService;
-
     @GET
     public ArbeidFrontend hentArbeid(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
         final JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
 
@@ -74,7 +60,6 @@ public class ArbeidRessurs {
     public void updateArbeid(@PathParam("behandlingsId") String behandlingsId, ArbeidFrontend arbeidFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, arbeidFrontend);
-        legacyUpdate(behandlingsId, arbeidFrontend);
     }
 
     private void update(String behandlingsId, ArbeidFrontend arbeidFrontend) {
@@ -89,14 +74,6 @@ public class ArbeidRessurs {
             arbeid.setKommentarTilArbeidsforhold(null);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
-    }
-
-    private void legacyUpdate(String behandlingsId, ArbeidFrontend arbeidFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum kommentarTilArbeidsforhold = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "opplysninger.arbeidsituasjon.kommentarer");
-        kommentarTilArbeidsforhold.setValue(arbeidFrontend.kommentarTilArbeidsforhold);
-        faktaService.lagreBrukerFaktum(kommentarTilArbeidsforhold);
     }
 
     private ArbeidsforholdFrontend mapToArbeidsforholdFrontend(JsonArbeidsforhold arbeidsforhold) {

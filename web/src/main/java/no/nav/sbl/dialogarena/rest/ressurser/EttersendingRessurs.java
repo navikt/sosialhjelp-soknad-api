@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede;
@@ -27,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
@@ -82,15 +80,7 @@ public class EttersendingRessurs {
     @Path("/ettersendteVedlegg/{behandlingsId}")
     public List<EttersendtVedlegg> hentVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         String eier = getSubjectHandler().getUid();
-        SoknadUnderArbeid soknadUnderArbeid;
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        if (soknadUnderArbeidOptional.isPresent()){
-            soknadUnderArbeid = soknadUnderArbeidOptional.get();
-        } else {
-            WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
-            soknadDataFletter.legacyKonverterVedleggOgOppdaterSoknadUnderArbeid(behandlingsId, eier, webSoknad);
-            soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        }
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), eier);
         List<JsonVedlegg> originaleVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg();
 

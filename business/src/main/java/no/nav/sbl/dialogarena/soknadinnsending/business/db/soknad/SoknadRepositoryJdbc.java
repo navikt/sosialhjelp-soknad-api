@@ -169,7 +169,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     private WebSoknad leggTilBrukerdataOgVedleggPaaSoknad(WebSoknad soknad, String behandlingsId) {
-        return soknad.medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(vedleggRepository.hentVedlegg(behandlingsId));
+        return soknad.medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(new ArrayList<>());
     }
 
     public Faktum hentFaktum(Long faktumId) {

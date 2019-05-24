@@ -49,6 +49,9 @@ public class SoknadsmottakerService {
     }
 
     private JsonAdresse hentValgtAdresse(JsonPersonalia personalia, String valg) {
+        if (valg == null) {
+            return null;
+        }
         switch (valg){
             case "folkeregistrert":
                 return personalia.getFolkeregistrertAdresse();

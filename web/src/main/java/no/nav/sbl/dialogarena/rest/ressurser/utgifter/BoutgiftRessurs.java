@@ -2,13 +2,8 @@ package no.nav.sbl.dialogarena.rest.ressurser.utgifter;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
@@ -40,19 +35,10 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMa
 public class BoutgiftRessurs {
 
     @Inject
-    private LegacyHelper legacyHelper;
-
-    @Inject
     private Tilgangskontroll tilgangskontroll;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
 
     @Inject
     private TextService textService;
@@ -60,7 +46,7 @@ public class BoutgiftRessurs {
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
 
@@ -78,7 +64,6 @@ public class BoutgiftRessurs {
     public void updateBoutgifter(@PathParam("behandlingsId") String behandlingsId, BoutgifterFrontend boutgifterFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, boutgifterFrontend);
-        legacyUpdate(behandlingsId, boutgifterFrontend);
     }
 
     private void update(String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
@@ -94,38 +79,6 @@ public class BoutgiftRessurs {
         setBoutgifter(okonomi, boutgifterFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
-    }
-
-    private void legacyUpdate(String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift");
-        bekreftelse.setValue(boutgifterFrontend.bekreftelse.toString());
-        faktaService.lagreBrukerFaktum(bekreftelse);
-
-        final Faktum husleie = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.husleie");
-        husleie.setValue(String.valueOf(boutgifterFrontend.husleie));
-        faktaService.lagreBrukerFaktum(husleie);
-
-        final Faktum strom = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.strom");
-        strom.setValue(String.valueOf(boutgifterFrontend.strom));
-        faktaService.lagreBrukerFaktum(strom);
-
-        final Faktum kommunaleavgifter = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.kommunaleavgifter");
-        kommunaleavgifter.setValue(String.valueOf(boutgifterFrontend.kommunalAvgift));
-        faktaService.lagreBrukerFaktum(kommunaleavgifter);
-
-        final Faktum oppvarming = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.oppvarming");
-        oppvarming.setValue(String.valueOf(boutgifterFrontend.oppvarming));
-        faktaService.lagreBrukerFaktum(oppvarming);
-
-        final Faktum avdraglaan = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.avdraglaan");
-        avdraglaan.setValue(String.valueOf(boutgifterFrontend.boliglan));
-        faktaService.lagreBrukerFaktum(avdraglaan);
-
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.andreutgifter");
-        annet.setValue(String.valueOf(boutgifterFrontend.annet));
-        faktaService.lagreBrukerFaktum(annet);
     }
 
     private void setBoutgifter(JsonOkonomi okonomi, BoutgifterFrontend boutgifterFrontend) {

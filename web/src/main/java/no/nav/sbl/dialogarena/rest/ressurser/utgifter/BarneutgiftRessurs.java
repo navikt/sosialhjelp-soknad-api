@@ -2,13 +2,8 @@ package no.nav.sbl.dialogarena.rest.ressurser.utgifter;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
@@ -41,9 +36,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMa
 public class BarneutgiftRessurs {
 
     @Inject
-    private LegacyHelper legacyHelper;
-
-    @Inject
     private Tilgangskontroll tilgangskontroll;
 
     @Inject
@@ -52,16 +44,10 @@ public class BarneutgiftRessurs {
     @Inject
     private TextService textService;
 
-    @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
-
     @GET
     public BarneutgifterFrontend hentBarneutgifter(@PathParam("behandlingsId") String behandlingsId){
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
 
         final JsonHarForsorgerplikt harForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getVerdi() == null || !harForsorgerplikt.getVerdi()){
@@ -85,7 +71,6 @@ public class BarneutgiftRessurs {
     public void updateBarneutgifter(@PathParam("behandlingsId") String behandlingsId, BarneutgifterFrontend barneutgifterFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, barneutgifterFrontend);
-        legacyUpdate(behandlingsId, barneutgifterFrontend);
     }
 
     private void update(String behandlingsId, BarneutgifterFrontend barneutgifterFrontend) {
@@ -101,34 +86,6 @@ public class BarneutgiftRessurs {
         setBarneutgifter(okonomi, barneutgifterFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
-    }
-
-    private void legacyUpdate(String behandlingsId, BarneutgifterFrontend barneutgifterFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn");
-        bekreftelse.setValue(barneutgifterFrontend.bekreftelse.toString());
-        faktaService.lagreBrukerFaktum(bekreftelse);
-
-        final Faktum fritidsaktivitet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.fritidsaktivitet");
-        fritidsaktivitet.setValue(String.valueOf(barneutgifterFrontend.fritidsaktiviteter));
-        faktaService.lagreBrukerFaktum(fritidsaktivitet);
-
-        final Faktum barnehage = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.barnehage");
-        barnehage.setValue(String.valueOf(barneutgifterFrontend.barnehage));
-        faktaService.lagreBrukerFaktum(barnehage);
-
-        final Faktum sfo = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.sfo");
-        sfo.setValue(String.valueOf(barneutgifterFrontend.sfo));
-        faktaService.lagreBrukerFaktum(sfo);
-
-        final Faktum tannbehandling = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.tannbehandling");
-        tannbehandling.setValue(String.valueOf(barneutgifterFrontend.tannregulering));
-        faktaService.lagreBrukerFaktum(tannbehandling);
-
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.barn.true.utgifter.annet");
-        annet.setValue(String.valueOf(barneutgifterFrontend.annet));
-        faktaService.lagreBrukerFaktum(annet);
     }
 
     private void setBarneutgifter(JsonOkonomi okonomi, BarneutgifterFrontend barneutgifterFrontend) {

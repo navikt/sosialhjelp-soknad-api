@@ -59,7 +59,6 @@ public class AdresseRessursUtenOidcTest {
     @Before
     public void setUp() {
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        when(navEnhetRessurs.mapFromLegacyNavEnhetFrontend(any(SoknadsmottakerRessurs.LegacyNavEnhetFrontend.class), anyString())).thenCallRealMethod();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
     }

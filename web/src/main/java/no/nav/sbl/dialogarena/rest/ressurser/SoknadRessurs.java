@@ -2,18 +2,15 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
@@ -21,12 +18,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Sy
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -34,7 +28,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +45,6 @@ import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
-    private static final Logger LOG = LoggerFactory.getLogger(SoknadRessurs.class);
 
     @Inject
     private FaktaService faktaService;
@@ -67,22 +59,10 @@ public class SoknadRessurs {
     private HtmlGenerator pdfTemplate;
 
     @Inject
-    private WebSoknadConfig webSoknadConfig;
-
-    @Inject
     private SynligeFaktaService synligeFaktaService;
 
     @Inject
-    private WebSoknadConverter webSoknadConverter;
-
-    @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
-
-    @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -98,37 +78,15 @@ public class SoknadRessurs {
         return soknadService.hentSoknad(behandlingsId, true, false);
     }
 
-    /*
-    * Denne metoden er deprecated og erstattet av en lik metode med egen mediatype.
-    * I utgangspunktet skal den nye mediatypen i produksjon i HL2-2016.
-    * Etter en stund i prod (feks en måned) kan man sjekke accesslogger og se om dette endepunktet med mediatype text/html fortsatt er i bruk
-    * Som fallback ettersom vi er usikre på om accessloggene indekseres, har jeg lagt inn et logstatment med en warning.
-    * Dersom man ser at metoden ikke er i bruk, kan denne den slettes.
-    * */
-    @Deprecated
-    @GET
-    @Path("/{behandlingsId}")
-    @Produces(MediaType.TEXT_HTML)
-    @SjekkTilgangTilSoknad
-    public String hentOppsummeringMedStandardMediatype(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        LOG.warn("Bruk av deprecated metode for å hente oppsummering");
-        return hentOppsummering(behandlingsId);
-    }
-
     @GET
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-        vedleggService.hentPaakrevdeVedlegg(behandlingsId);
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(soknad.getskjemaNummer()));
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
-        final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
-
-        return pdfTemplate.fyllHtmlMalMedInnhold(konvertertSoknadUnderArbeid.getJsonInternalSoknad());
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
     }
 
     @GET
@@ -142,12 +100,13 @@ public class SoknadRessurs {
         SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonInternalSoknad notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.getJsonInternalSoknad();
 
-        soknadService.sortOkonomi(soknadUnderArbeid, notUpdatedSoknadUnderArbeid);
+        soknadUnderArbeidService.sortOkonomi(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi());
+        soknadUnderArbeidService.sortOkonomi(notUpdatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi());
 
         if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
             return false;
         } else {
-            soknadService.logForskjeller(notUpdatedSoknadUnderArbeid, soknadUnderArbeid, "Forskjell på systemdata i json: ");
+            soknadUnderArbeidService.logDifferences(notUpdatedSoknadUnderArbeid, soknadUnderArbeid, "Forskjell på systemdata i json: ");
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
             return true;
         }
