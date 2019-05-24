@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
+import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
@@ -34,6 +35,9 @@ public class KontonummerRessurs {
     private SoknadService soknadService;
 
     @Inject
+    private LegacyHelper legacyHelper;
+
+    @Inject
     private FaktaService faktaService;
 
     @Inject
@@ -49,7 +53,7 @@ public class KontonummerRessurs {
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        SoknadUnderArbeid soknadUnderArbeid = legacyHelper.hentSoknad(behandlingsId, eier, false);
         JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
         String systemverdi;
         if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)) {
@@ -89,8 +93,6 @@ public class KontonummerRessurs {
             kontonummer.setKilde(JsonKilde.SYSTEM);
             kontonummerSystemdata.updateSystemdataIn(soknad);
             kontonummer.setHarIkkeKonto(null);
-
-            legacyOppdatererFaktumSystemdata(behandlingsId, kontonummerFrontend, kontonummer);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }

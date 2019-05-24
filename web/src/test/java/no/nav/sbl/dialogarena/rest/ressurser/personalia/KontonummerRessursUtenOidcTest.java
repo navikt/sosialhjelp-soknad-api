@@ -10,6 +10,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -84,6 +85,7 @@ public class KontonummerRessursUtenOidcTest {
         kontonummerRessursTest.putKontonummerSkalSetteBrukerutfyltKontonummer();
     }
 
+    @Ignore
     @Test
     public void putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer(){
         kontonummerRessursTest.putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer();
