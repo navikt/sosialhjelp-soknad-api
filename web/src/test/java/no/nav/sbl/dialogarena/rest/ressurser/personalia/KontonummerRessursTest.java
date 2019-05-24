@@ -87,20 +87,6 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void getKontonummerSkalReturnereOppdatertSystemKontonummerFraTPS(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM)));
-        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM_OPPDATERT);
-
-        final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
-
-        assertThat(kontonummerFrontend.brukerutfyltVerdi, nullValue());
-        assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM_OPPDATERT));
-        assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
-        assertThat(kontonummerFrontend.brukerdefinert, is(false));
-    }
-
-    @Test
     public void getKontonummerSkalReturnereBrukerutfyltKontonummer(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER)));

@@ -50,8 +50,6 @@ public class KontonummerRessurs {
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
         JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
         String systemverdi;
         if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)) {
@@ -91,8 +89,21 @@ public class KontonummerRessurs {
             kontonummer.setKilde(JsonKilde.SYSTEM);
             kontonummerSystemdata.updateSystemdataIn(soknad);
             kontonummer.setHarIkkeKonto(null);
+
+            legacyOppdatererFaktumSystemdata(behandlingsId, kontonummerFrontend, kontonummer);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    private void legacyOppdatererFaktumSystemdata(String behandlingsId, KontonummerFrontend kontonummerFrontend, JsonKontonummer kontonummer) {
+        if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)){
+            WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+            Faktum systemKonotnummerFatkum = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.system.kontonummer");
+            systemKonotnummerFatkum.setValue(kontonummer.getVerdi());
+            faktaService.lagreSystemFaktum(webSoknad.getSoknadId(), systemKonotnummerFatkum);
+        } else {
+            kontonummerFrontend.brukerdefinert = true;
+        }
     }
 
     private void legacyUpdate(String behandlingsId, KontonummerFrontend kontonummerFrontend) {

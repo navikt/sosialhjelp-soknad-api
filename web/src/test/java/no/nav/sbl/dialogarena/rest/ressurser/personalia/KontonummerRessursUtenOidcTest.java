@@ -71,11 +71,6 @@ public class KontonummerRessursUtenOidcTest {
     }
 
     @Test
-    public void getKontonummerSkalReturnereOppdatertSystemKontonummerFraTPS(){
-        kontonummerRessursTest.getKontonummerSkalReturnereOppdatertSystemKontonummerFraTPS();
-    }
-
-    @Test
     public void getKontonummerSkalReturnereBrukerutfyltKontonummer(){
         kontonummerRessursTest.getKontonummerSkalReturnereBrukerutfyltKontonummer();
     }
