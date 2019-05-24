@@ -158,7 +158,8 @@ public class KontonummerRessursTest {
         ignoreTilgangskontrollAndLegacyUpdate();
 
         final KontonummerFrontend kontonummerFrontend = new KontonummerFrontend()
-                .withBrukerdefinert(false);
+                .withBrukerdefinert(false)
+                .withSystemverdi(KONTONUMMER_SYSTEM);
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();

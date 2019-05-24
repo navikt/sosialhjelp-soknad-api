@@ -56,7 +56,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public void ping() {
-        final String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        final String consumerId = OidcFeatureToggleUtils.getConsumerId();
         final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         

@@ -23,9 +23,12 @@ public class OidcFeatureToggleUtils {
     }
 
     public static String getConsumerId() {
+        String consumerId;
         if (isRunningWithOidc()) {
-            return SubjectHandler.getConsumerId();
+            consumerId = SubjectHandler.getConsumerId();
+        } else {
+            consumerId = no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getConsumerId();
         }
-        return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getConsumerId();
+        return consumerId != null? consumerId : "srvsoknadsosialhje";
     }
 }
