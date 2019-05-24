@@ -13,6 +13,7 @@ public class OkonomiskGruppeMapper {
             case "husleiekontrakt|kommunal":
                 return "bosituasjon";
             case "sluttoppgjor|arbeid":
+            case "lonnslipp|arbeid":
             case "student|vedtak":
                 return "arbeid";
             case "annet|annet":
