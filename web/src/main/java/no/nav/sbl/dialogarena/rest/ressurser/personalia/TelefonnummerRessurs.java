@@ -9,7 +9,6 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
@@ -53,12 +52,15 @@ public class TelefonnummerRessurs {
 
     @GET
     public TelefonnummerFrontend hentTelefonnummer(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
-        final JsonTelefonnummer telefonnummer = soknad.getSoknad().getData().getPersonalia().getTelefonnummer();
-
-        final String systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(personIdentifikator);
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = legacyHelper.hentSoknad(behandlingsId, eier, false);
+        JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
+        String systemverdi;
+        if (telefonnummer != null && telefonnummer.getKilde().equals(JsonKilde.SYSTEM)) {
+            systemverdi = telefonnummer.getVerdi();
+        } else {
+            systemverdi = telefonnummerSystemdata.innhentSystemverdiTelefonnummer(eier);
+        }
 
         return new TelefonnummerFrontend()
                 .withBrukerdefinert(telefonnummer == null || telefonnummer.getKilde() == JsonKilde.BRUKER)
@@ -91,7 +93,7 @@ public class TelefonnummerRessurs {
             }
         } else {
             jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
-            jsonTelefonnummer.setVerdi(telefonnummerFrontend.systemverdi);
+            telefonnummerSystemdata.updateSystemdataIn(soknad);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }

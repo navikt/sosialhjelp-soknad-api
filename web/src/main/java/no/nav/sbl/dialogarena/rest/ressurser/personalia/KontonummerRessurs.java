@@ -9,7 +9,6 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -36,10 +35,10 @@ public class KontonummerRessurs {
     private SoknadService soknadService;
 
     @Inject
-    private FaktaService faktaService;
+    private LegacyHelper legacyHelper;
 
     @Inject
-    private LegacyHelper legacyHelper;
+    private FaktaService faktaService;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -53,10 +52,15 @@ public class KontonummerRessurs {
 
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonKontonummer kontonummer = soknad.getSoknad().getData().getPersonalia().getKontonummer();
-        final String systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = legacyHelper.hentSoknad(behandlingsId, eier, false);
+        JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        String systemverdi;
+        if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)) {
+            systemverdi = kontonummer.getVerdi();
+        } else {
+            systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
+        }
 
         return new KontonummerFrontend()
                 .withBrukerdefinert(kontonummer.getKilde() == JsonKilde.BRUKER)
@@ -87,10 +91,21 @@ public class KontonummerRessurs {
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto);
         } else if (kontonummer.getKilde() == JsonKilde.BRUKER) {
             kontonummer.setKilde(JsonKilde.SYSTEM);
-            kontonummer.setVerdi(kontonummerFrontend.systemverdi);
+            kontonummerSystemdata.updateSystemdataIn(soknad);
             kontonummer.setHarIkkeKonto(null);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    private void legacyOppdatererFaktumSystemdata(String behandlingsId, KontonummerFrontend kontonummerFrontend, JsonKontonummer kontonummer) {
+        if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)){
+            WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+            Faktum systemKonotnummerFatkum = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.system.kontonummer");
+            systemKonotnummerFatkum.setValue(kontonummer.getVerdi());
+            faktaService.lagreSystemFaktum(webSoknad.getSoknadId(), systemKonotnummerFatkum);
+        } else {
+            kontonummerFrontend.brukerdefinert = true;
+        }
     }
 
     private void legacyUpdate(String behandlingsId, KontonummerFrontend kontonummerFrontend) {

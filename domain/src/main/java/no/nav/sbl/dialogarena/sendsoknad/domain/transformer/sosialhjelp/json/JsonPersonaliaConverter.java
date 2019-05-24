@@ -143,6 +143,8 @@ public final class JsonPersonaliaConverter {
         final String kontonummer = webSoknad.getValueForFaktum("kontakt.system.kontonummer");
         if (erIkkeTom(kontonummer)) {
             jsonKontonummer.setVerdi(kontonummer);
+        } else {
+            jsonKontonummer.setKilde(JsonKilde.BRUKER);
         }
     }
 }
