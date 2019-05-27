@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.apache.commons.io.FilenameUtils.getBaseName;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -43,7 +44,7 @@ public final class Jetty {
         private File war;
         private String contextPath;
         private int port = 35000;
-        private java.util.Optional<Integer> sslPort = java.util.Optional.empty();
+        private Optional<Integer> sslPort = java.util.Optional.empty();
         private WebAppContext context;
         private File overridewebXmlFile;
         private JAASLoginService loginService;
@@ -136,7 +137,7 @@ public final class Jetty {
 
 
     private final int port;
-    private final java.util.Optional<Integer> sslPort;
+    private final Optional<Integer> sslPort;
     private final File overrideWebXmlFile;
     private final String warPath;
     private final String contextPath;
