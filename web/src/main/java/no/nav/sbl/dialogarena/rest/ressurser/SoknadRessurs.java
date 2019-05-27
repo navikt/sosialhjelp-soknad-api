@@ -5,13 +5,10 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
@@ -48,9 +45,6 @@ public class SoknadRessurs {
 
     @Inject
     private FaktaService faktaService;
-
-    @Inject
-    private VedleggService vedleggService;
 
     @Inject
     private SoknadService soknadService;
@@ -200,20 +194,6 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public void lagreFakta(@PathParam("behandlingsId") String behandlingsId, WebSoknad soknad) {
         soknad.getFakta().stream().forEach(faktum -> faktaService.lagreBrukerFaktum(faktum));
-    }
-
-    @GET
-    @Path("/{behandlingsId}/vedlegg")
-    @SjekkTilgangTilSoknad
-    public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
-        return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
-    }
-
-    @GET
-    @Path("/{behandlingsId}/synligsoknadstruktur")
-    @SjekkTilgangTilSoknad
-    public List<FaktumStruktur> hentSynligSoknadStruktur(@PathParam("behandlingsId") String behandlingsId, @QueryParam("panelFilter") String filter) {
-        return synligeFaktaService.finnSynligeFaktaForSoknad(behandlingsId, filter);
     }
 
 

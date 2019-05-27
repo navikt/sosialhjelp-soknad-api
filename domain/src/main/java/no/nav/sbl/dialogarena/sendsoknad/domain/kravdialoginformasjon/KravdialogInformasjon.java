@@ -27,10 +27,6 @@ public interface KravdialogInformasjon {
 
     String getFortsettSoknadUrlKey();
 
-    List<String> getSoknadBolker(WebSoknad soknad);
-
-    String getStrukturFilnavn();
-
     List<String> getSkjemanummer();
 
     List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad);

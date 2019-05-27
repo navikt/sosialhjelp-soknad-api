@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMeta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-
 import org.springframework.context.MessageSource;
 
 import java.util.List;
@@ -31,14 +30,6 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
 
     public String getFortsettSoknadUrlKey() {
         return "soknadsosialhjelp.fortsett.path";
-    }
-
-    public List<String> getSoknadBolker(WebSoknad soknad) {
-        return asList(BOLK_PERSONALIA, BOLK_BARN, "SosialhjelpArbeidsforhold", "SosialhjelpKontakt", UTBETALING_BOLK);
-    }
-
-    public String getStrukturFilnavn() {
-        return "sosialhjelp/sosialhjelp.xml";
     }
 
     public List<String> getSkjemanummer() {

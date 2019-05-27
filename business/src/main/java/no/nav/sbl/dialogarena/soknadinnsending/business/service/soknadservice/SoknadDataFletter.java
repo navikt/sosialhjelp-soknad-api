@@ -16,7 +16,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.Ve
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -87,8 +86,6 @@ public class SoknadDataFletter {
     @Inject
     private FillagerService fillagerService;
     @Inject
-    private VedleggService vedleggService;
-    @Inject
     private FaktaService faktaService;
     @Inject
     @Named("soknadInnsendingRepository")
@@ -132,8 +129,6 @@ public class SoknadDataFletter {
         if (UNDER_ARBEID.equals(soknadMetadata.status)) {
             byte[] xmlFraFillager = fillagerService.hentFil(soknadMetadata.hovedskjema.filUuid);
             WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(xmlFraFillager), WebSoknad.class);
-            lokalDb.populerFraStruktur(soknadFraFillager);
-            vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, fillagerService.hentFiler(soknadFraFillager.getBrukerBehandlingId()));
             if (hentFaktumOgVedlegg) {
                 return lokalDb.hentSoknadMedVedlegg(behandlingsId);
             }

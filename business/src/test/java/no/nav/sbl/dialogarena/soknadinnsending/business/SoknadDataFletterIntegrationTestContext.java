@@ -15,13 +15,15 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
-import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
@@ -77,11 +79,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public FillagerRepository fillagerRepository() {
         return mock(FillagerRepository.class);
-    }
-
-    @Bean
-    public VedleggService vedleggService() {
-        return new VedleggService();
     }
 
     @Bean
@@ -173,11 +170,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     WebSoknadConverter webSoknadConverter() {
         return mock(WebSoknadConverter.class);
-    }
-
-    @Bean
-    VedleggConverter vedleggConverter() {
-        return mock(VedleggConverter.class);
     }
 
     @Bean

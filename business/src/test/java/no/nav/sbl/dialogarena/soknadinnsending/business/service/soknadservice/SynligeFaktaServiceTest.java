@@ -5,16 +5,12 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
@@ -46,24 +42,12 @@ public class SynligeFaktaServiceTest {
 
         soknadStruktur.setFakta(asList(key1Struktur, key2Struktur, spm1Struktur, spm2Struktur, spm3Struktur));
 
-        when(soknadService.hentSoknadStruktur(anyString())).thenReturn(soknadStruktur);
-
         when(soknadService.hentSoknad(any(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad()
                 .medFaktum(new Faktum().medFaktumId(1L).medKey("key1").medValue("123"))
                 .medFaktum(new Faktum().medFaktumId(2L).medKey("key1.spm1").medParrentFaktumId(1L))
                 .medFaktum(new Faktum().medFaktumId(3L).medKey("key1.spm2").medParrentFaktumId(1L))
                 .medFaktum(new Faktum().medFaktumId(4L).medKey("key2").medValue("ghi"))
         );
-    }
-
-    @Test
-    public void returnererSynligeFakta() {
-        List<FaktumStruktur> synligeFakta = synligeFaktaService.finnSynligeFaktaForSoknad("10000BBB", "panel1");
-
-        assertEquals(3, synligeFakta.size());
-        assertEquals("hidden", synligeFakta.get(0).getType());
-        assertEquals("key1.spm1", synligeFakta.get(1).getId());
-        assertEquals("key1.spm3", synligeFakta.get(2).getId());
     }
 
 }

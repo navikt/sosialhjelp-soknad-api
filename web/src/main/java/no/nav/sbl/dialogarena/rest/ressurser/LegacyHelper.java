@@ -1,11 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -16,15 +14,9 @@ import java.util.Objects;
 
 @Component
 public class LegacyHelper {
-    
-    @Inject
-    private VedleggService vedleggService;
 
     @Inject
     private SoknadService soknadService;
-    
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
 
     @Inject
     private WebSoknadConverter webSoknadConverter;
@@ -57,8 +49,6 @@ public class LegacyHelper {
         if (!eier.equals(webSoknad.getAktoerId())) {
             throw new AuthorizationException("Ingen tilgang til angitt søknad for angitt bruker");
         }
-        webSoknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(webSoknad.getskjemaNummer()));
-        vedleggService.leggTilKodeverkFelter(webSoknad.hentPaakrevdeVedlegg());
 
         return webSoknad;
     }

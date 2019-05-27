@@ -62,10 +62,6 @@ public class SoknadService {
         return lokalDb.hentSoknad(soknadId);
     }
 
-    public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
-        return config.hentStruktur(skjemanummer);
-    }
-
     public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
         return lokalDb.hentEttersendingMedBehandlingskjedeId(behandlingsId).orElse(null);
     }

@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,8 +36,6 @@ public class SikkerhetsAspectTest {
     @Mock
     private Tilgangskontroll tilgangskontroll;
     @Mock
-    private VedleggService vedleggService;
-    @Mock
     private FaktaService faktaService;
     @InjectMocks
     private SikkerhetsAspect sikkerhetsAspect;
@@ -55,13 +52,6 @@ public class SikkerhetsAspectTest {
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }
-
-    @Test
-    public void skalSjekkeSikkerhetForBehandling() {
-        setup(generateXsrfToken(brukerBehandlingsId));
-        sikkerhetsAspect.sjekkOmBrukerHarTilgang(brukerBehandlingsId, getSjekkTilgangTilSoknad(Behandling));
-        verifyNoMoreInteractions(faktaService, vedleggService);
     }
 
     @Test
@@ -82,17 +72,12 @@ public class SikkerhetsAspectTest {
 
     @Test
     public void skalSjekkeOmBrukerHarTilgangTilVedlegg() {
-        setup(generateXsrfToken(brukerBehandlingsId));
-        when(vedleggService.hentBehandlingsId(1L)).thenReturn(brukerBehandlingsId);
-        sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Vedlegg));
-        verify(vedleggService, times(1)).hentBehandlingsId(1L);
+        //TODO: Lag denne for opplastetVedlegg
     }
 
     @Test(expected = NotFoundException.class)
     public void skalHandtereHvisIkkeVedleggFinnes() {
-        setup(generateXsrfToken(brukerBehandlingsId));
-        when(vedleggService.hentBehandlingsId(1L)).thenReturn(null);
-        sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Vedlegg));
+        //TODO: Lag denne for opplastetVedlegg
     }
 
     @Test(expected = AuthorizationException.class)

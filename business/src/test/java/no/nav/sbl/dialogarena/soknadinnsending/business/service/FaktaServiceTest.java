@@ -53,7 +53,6 @@ public class FaktaServiceTest {
     public void before() {
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(soknadRepository.hentSoknad(anyLong())).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
-        when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
     }
 
     @Test

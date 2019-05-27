@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sosialhjel
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
@@ -24,7 +23,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.Ve
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
@@ -44,7 +42,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static java.lang.System.setProperty;
@@ -80,8 +77,6 @@ public class SoknadDataFletterTest {
     @Mock
     private FillagerService fillagerService;
     @Mock
-    private VedleggService vedleggService;
-    @Mock
     private FaktaService faktaService;
     @Mock
     private WebSoknadConfig config;
@@ -115,7 +110,6 @@ public class SoknadDataFletterTest {
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(lokalDb.hentLedigeFaktumIder(1)).thenReturn(Arrays.asList(1L));
-        when(config.hentStruktur(any(String.class))).thenReturn(new SoknadStruktur());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
         when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(new KravdialogInformasjonHolder().getSoknadsKonfigurasjoner().get(0));
     }
@@ -186,7 +180,6 @@ public class SoknadDataFletterTest {
 
         when(vedleggRepository.hentVedleggForskjemaNummer(1L, null, Kodeverk.KVITTERING))
                 .thenReturn(KVITTERING_REF);
-        when(vedleggService.hentVedleggOgKvittering(webSoknad)).thenReturn(mockHentVedleggForventninger(webSoknad));
 
         when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMA_NUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER));
         soknadServiceUtil.sendSoknad(behandlingsId);

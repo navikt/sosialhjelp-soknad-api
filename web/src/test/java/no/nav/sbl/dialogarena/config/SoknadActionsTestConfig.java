@@ -1,17 +1,15 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
-import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
-import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepositoryJdbc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -35,11 +33,6 @@ public class SoknadActionsTestConfig {
     @Bean
     public SoknadService soknadService() {
         return mock(SoknadService.class);
-    }
-
-    @Bean
-    public VedleggService vedleggService() {
-        return mock(VedleggService.class);
     }
 
     @Bean

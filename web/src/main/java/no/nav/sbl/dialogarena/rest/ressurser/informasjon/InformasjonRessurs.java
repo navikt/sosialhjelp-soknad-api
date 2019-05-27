@@ -97,16 +97,6 @@ public class InformasjonRessurs {
     }
 
     @GET
-    @Path("/vedleggsskjema")
-    public Map<String, String> hentVedleggsskjema(@QueryParam("type") String type, @QueryParam("behandlingsId") String behandlingsId) {
-        if (type != null) {
-            return informasjon.hentVedleggsskjema(type);
-        } else {
-            return informasjon.hentVedleggsskjemaForBehandlingsId(behandlingsId);
-        }
-    }
-
-    @GET
     @Path("/personalia")
     public Personalia hentPersonalia() {
         return innloggetBruker.hentPersonalia();
@@ -165,18 +155,6 @@ public class InformasjonRessurs {
     @Path("/kodeverk")
     public Map<String, String> hentKodeverk(@QueryParam("kodeverk") Kodeverk.EksponertKodeverk kodeverkKey) {
         return kodeverk.hentAlleKodenavnMedForsteTerm(kodeverkKey);
-    }
-
-    @GET
-    @Path("/soknadstruktur")
-    public SoknadStruktur hentSoknadStruktur(@QueryParam("skjemanummer") String skjemanummer, @QueryParam("filter") String filter) {
-        SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(skjemanummer);
-        if ("temakode".equalsIgnoreCase(filter)) {
-            SoknadStruktur miniSoknadstruktur = new SoknadStruktur();
-            miniSoknadstruktur.setTemaKode(soknadStruktur.getTemaKode());
-            return miniSoknadstruktur;
-        }
-        return soknadStruktur;
     }
 
     @GET

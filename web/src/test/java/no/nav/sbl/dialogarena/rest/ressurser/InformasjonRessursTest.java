@@ -80,7 +80,6 @@ public class InformasjonRessursTest {
         struktur = new SoknadStruktur();
         struktur.setTemaKode(TEMAKODE);
         struktur.setFakta(singletonList(new FaktumStruktur()));
-        when(soknadConfig.hentStruktur(anyString())).thenReturn(struktur);
     }
 
     @After
@@ -159,20 +158,6 @@ public class InformasjonRessursTest {
     @Test(expected = IllegalArgumentException.class)
     public void kastExceptionHvisIkkeSpraakErPaaRiktigFormat() {
         ressurs.hentTekster(SOKNADSTYPE, "NORSK");
-    }
-
-    @Test
-    public void returnerFullStrukturHvisIkkeFilterErSatt() {
-        SoknadStruktur struktur = ressurs.hentSoknadStruktur("NAV123", null);
-        assertThat(struktur.getTemaKode()).isEqualTo(TEMAKODE);
-        assertThat(struktur.getFakta()).isNotEmpty();
-    }
-
-    @Test
-    public void returnerStrukturMedBareTemakodeHvisFilterErSattTilTemakode() {
-        SoknadStruktur struktur = ressurs.hentSoknadStruktur("NAV123", "temakode");
-        assertThat(struktur.getTemaKode()).isEqualTo(TEMAKODE);
-        assertThat(struktur.getFakta()).isEmpty();
     }
 
     private Personalia personalia() {

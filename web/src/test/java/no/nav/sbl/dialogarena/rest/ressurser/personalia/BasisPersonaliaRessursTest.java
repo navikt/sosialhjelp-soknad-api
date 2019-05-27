@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -73,9 +72,6 @@ public class BasisPersonaliaRessursTest {
     @Mock
     private Adressekodeverk adressekodeverk;
 
-    @Mock
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
     @InjectMocks
     private BasisPersonaliaRessurs basisPersonaliaRessurs;
 
@@ -83,7 +79,6 @@ public class BasisPersonaliaRessursTest {
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
-        when(vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(anyString())).thenReturn(null);
     }
 
     @After

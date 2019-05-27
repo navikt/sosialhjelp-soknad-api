@@ -3,11 +3,9 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.meldinger.FortsettSenere;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -38,9 +36,6 @@ public class SoknadActions {
     private static Logger logger = LoggerFactory.getLogger(SoknadActions.class);
 
     @Inject
-    private VedleggService vedleggService;
-
-    @Inject
     private SoknadService soknadService;
 
     @Inject
@@ -48,14 +43,6 @@ public class SoknadActions {
 
     @Inject
     private NavMessageSource tekster;
-
-    @GET
-    @Path("/leggved")
-    @SjekkTilgangTilSoknad
-    public Vedlegg leggVedVedlegg(@PathParam("behandlingsId") final String behandlingsId, @QueryParam("vedleggId") final Long vedleggId) {
-        vedleggService.genererVedleggFaktum(behandlingsId, vedleggId);
-        return vedleggService.hentVedlegg(vedleggId);
-    }
 
     @POST
     @Path("/send")
