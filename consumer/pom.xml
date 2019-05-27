@@ -132,11 +132,6 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-authorization</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-ws-policy</artifactId>
             <version>3.2.1</version>
@@ -181,12 +176,6 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-core-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <scope>test</scope>
@@ -225,20 +214,12 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-lang</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-core</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
@@ -283,10 +264,6 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-core</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
