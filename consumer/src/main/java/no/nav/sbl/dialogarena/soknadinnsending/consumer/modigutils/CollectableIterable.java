@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.modigutils;
 
-import no.nav.modig.lang.MayBeEmpty;
-import no.nav.modig.lang.option.Optional;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
@@ -15,8 +13,6 @@ import java.util.List;
 
 import static java.util.Collections.sort;
 import static java.util.Collections.unmodifiableList;
-import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
-import static no.nav.modig.lang.option.Optional.optional;
 import static org.apache.commons.collections15.CollectionUtils.forAllDo;
 import static org.apache.commons.collections15.TransformerUtils.stringValueTransformer;
 
@@ -50,7 +46,7 @@ public abstract class CollectableIterable<T> implements Iterable<T>, Serializabl
      */
     public Optional<T> head() {
         Iterator<T> iterator = iterator();
-        return iterator.hasNext() ? optional(iterator.next()) : Optional.<T> none();
+        return iterator.hasNext() ? Optional.optional(iterator.next()) : Optional.<T> none();
     }
 
 
@@ -62,7 +58,7 @@ public abstract class CollectableIterable<T> implements Iterable<T>, Serializabl
      * @return true if <code>element</code> exists, false otherwise.
      */
     public boolean exists(T element) {
-        return exists(equalTo(element));
+        return exists(PredicateUtils.equalTo(element));
     }
 
     /**

@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.modigutils;
 
 import org.apache.commons.collections15.Transformer;
-
 import java.io.Serializable;
-
 
 abstract class ComparatorDecorator<T> implements EnhancedComparator<T>, Serializable {
 

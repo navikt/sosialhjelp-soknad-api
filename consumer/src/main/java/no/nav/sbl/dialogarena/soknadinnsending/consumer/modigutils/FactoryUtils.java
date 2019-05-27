@@ -1,11 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.modigutils;
 
-import no.nav.modig.lang.collections.factory.ClosedPredicate;
-import no.nav.modig.lang.collections.factory.DisjunctionFactory;
-import no.nav.modig.lang.collections.factory.HasReceivedPing;
-import no.nav.modig.lang.collections.factory.NotFactory;
-import no.nav.modig.lang.collections.factory.StreamHasContent;
-import no.nav.modig.lang.collections.factory.TransforOutputFromFactory;
 import org.apache.commons.collections15.Factory;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
