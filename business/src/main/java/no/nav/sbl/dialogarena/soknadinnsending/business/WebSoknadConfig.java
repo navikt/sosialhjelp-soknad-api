@@ -95,19 +95,6 @@ public class WebSoknadConfig {
         }
     }
 
-    public List<BolkService> getSoknadBolker(WebSoknad soknad, Collection<BolkService> alleBolker) {
-        KravdialogInformasjon skjemaConfig = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer());
-        List<String> configBolker = skjemaConfig.getSoknadBolker(soknad);
-
-        List<BolkService> soknadBolker = new ArrayList<>();
-        for (BolkService bolk : alleBolker) {
-            if (configBolker.contains(bolk.tilbyrBolk())) {
-                soknadBolker.add(bolk);
-            }
-        }
-        return soknadBolker;
-    }
-
     private KravdialogInformasjon finnSkjemaConfig(Long soknadId) {
         String skjemanummer = repository.hentSoknadType(soknadId);
         return kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer);

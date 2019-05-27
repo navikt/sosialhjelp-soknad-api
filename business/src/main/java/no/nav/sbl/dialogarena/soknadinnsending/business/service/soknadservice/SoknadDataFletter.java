@@ -4,20 +4,19 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -51,7 +50,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
@@ -62,18 +60,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -134,13 +128,6 @@ public class SoknadDataFletter {
     @Inject
     private SystemdataUpdater systemdata;
 
-    private Map<String, BolkService> bolker;
-
-    @PostConstruct
-    public void initBolker() {
-        bolker = applicationContext.getBeansOfType(BolkService.class);
-    }
-
 
     private WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
         SoknadMetadata soknadMetadata = henvendelseService.hentSoknad(behandlingsId, true);
@@ -168,9 +155,8 @@ public class SoknadDataFletter {
         if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(skjemanummer)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + skjemanummer);
         }
-        KravdialogInformasjon kravdialog = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer);
-        String soknadnavn = kravdialog.getSoknadTypePrefix();
-        SoknadType soknadType = kravdialog.getSoknadstype();
+        String soknadnavn = "soknadsosialhjelp";
+        SoknadType soknadType = SoknadType.SEND_SOKNAD_KOMMUNAL;
         String mainUid = randomUUID().toString();
 
         Timer startTimer = createDebugTimer("startTimer", soknadnavn, mainUid);
@@ -183,39 +169,10 @@ public class SoknadDataFletter {
 
 
         Timer oprettIDbTimer = createDebugTimer("oprettIDb", soknadnavn, mainUid);
-        int versjon = kravdialog.getSkjemaVersjon();
-        Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId, versjon).getSoknadId();
-        faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
-        faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
-
-        /*  TODO: Teknisk gjeld -
-         *    Bakgrunn for endringen i no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter
-         *
-         *    Koden som skal håndtere at man ikke overskriver systemdata med brukerdata er basert på at faktum allerede har blitt lagret
-         *   (sjekken ligger i "SoknadRepository"). Opprettelse av søknaden og populering av data (bolk) gjøres som to separate steg.
-         *   Av sikkerhetsgrunner er det derfor nødvendig å lagre systemfaktumet som en del av søknadsopprettelsen.
-         *
-         *    Det å opprette systemfaktum som en del av søknadsopprettelse benyttes allerede i dag for å sikre "personalia".
-         *
-         *    For søknad om økonomisk sosialhjelp er det viktig at arbeidsholddataene ikke kan redigeres av bruker uten at dette blir markert.
-         *    Vi trenger derfor å benytte samme løsning for å sikre "arbeidsforhold" som i dag benyttes for "personalia".
-         *
-         *    Løsninger hvis man ønsker å bli kvitt behovet for å opprette faktum som en del av søknadsopprettelse:
-         *
-         *    1) Kalle på bolkene og lagre systemdata som en del av søknadsopprettelsen.
-         *    2) Bruke XML-definisjonen til faktumet for å verifisere at brukerendring er tillatt fremfor dagens løsning
-         *    som er basert på sjekk av lagret faktum.
-         */
-        if (SosialhjelpInformasjon.SKJEMANUMMER.equals(skjemanummer)) {
-            faktaService.lagreSystemFaktum(soknadId, arbeidsforhold(soknadId));
-
-
-        }
+        lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId, 0);
 
         oprettIDbTimer.stop();
         oprettIDbTimer.report();
-
-        lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer, soknadnavn, mainUid);
 
         soknadMetricsService.startetSoknad(skjemanummer, false);
 
@@ -304,47 +261,6 @@ public class SoknadDataFletter {
         return timer;
     }
 
-    private void lagreTommeFaktaFraStrukturTilLokalDb(Long soknadId, String skjemanummer, String soknadsType, String id) {
-        Timer strukturTimer = createDebugTimer("lagStruktur", soknadsType, id);
-        List<FaktumStruktur> faktaStruktur = config.hentStruktur(skjemanummer).getFakta();
-        sort(faktaStruktur, sammenlignEtterDependOn());
-        strukturTimer.stop();
-        strukturTimer.report();
-
-        Timer lagreTimer = createDebugTimer("lagreTommeFakta", soknadsType, id);
-
-        List<Faktum> fakta = new ArrayList<>();
-        List<Long> faktumIder = lokalDb.hentLedigeFaktumIder(faktaStruktur.size());
-        Map<String, Long> faktumKeyTilFaktumId = new HashMap<>();
-        int idNr = 0;
-
-        for (FaktumStruktur faktumStruktur : faktaStruktur) {
-            if (faktumStruktur.ikkeSystemFaktum() && faktumStruktur.ikkeFlereTillatt()) {
-                Long faktumId = faktumIder.get(idNr++);
-
-                Faktum faktum = new Faktum()
-                        .medFaktumId(faktumId)
-                        .medSoknadId(soknadId)
-                        .medKey(faktumStruktur.getId())
-                        .medType(BRUKERREGISTRERT);
-
-                faktumKeyTilFaktumId.put(faktumStruktur.getId(), faktumId);
-
-                if (faktumStruktur.getDependOn() != null) {
-                    Long parentId = faktumKeyTilFaktumId.get(faktumStruktur.getDependOn().getId());
-                    faktum.setParrentFaktum(parentId);
-                }
-
-                fakta.add(faktum);
-            }
-        }
-
-        lokalDb.batchOpprettTommeFakta(fakta);
-
-        lagreTimer.stop();
-        lagreTimer.report();
-    }
-
     private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId, int versjon) {
         WebSoknad nySoknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId)
@@ -354,30 +270,23 @@ public class SoknadDataFletter {
                 .medOppretteDato(DateTime.now())
                 .medVersjon(versjon);
 
+
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
         nySoknad.setSoknadId(soknadId);
+
+        Iterator<Long> faktumIder = lokalDb.hentLedigeFaktumIder(1).iterator();
+        Faktum faktum = new Faktum()
+                .medFaktumId(faktumIder.next())
+                .medKey("progresjon")
+                .medValue("1")
+                .medType(BRUKERREGISTRERT)
+                .medSoknadId(soknadId);
+        faktaService.opprettBrukerFaktum(behandlingsId, faktum);
+        List<Faktum> fakta = new ArrayList<>();
+        fakta.add(faktum);
+        nySoknad.setFakta(fakta);
+
         return nySoknad;
-    }
-
-    private Faktum bolkerFaktum(Long soknadId) {
-        return new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("bolker")
-                .medType(BRUKERREGISTRERT);
-    }
-
-    private Faktum personalia(Long soknadId) {
-        return new Faktum()
-                .medSoknadId(soknadId)
-                .medType(SYSTEMREGISTRERT)
-                .medKey("personalia");
-    }
-
-    private Faktum arbeidsforhold(Long soknadId) {
-        return new Faktum()
-                .medSoknadId(soknadId)
-                .medType(SYSTEMREGISTRERT)
-                .medKey("arbeidsforhold");
     }
 
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
@@ -401,31 +310,19 @@ public class SoknadDataFletter {
         }
 
         if (medData) {
-            soknad = populerSoknadMedData(populerSystemfakta, soknad);
+            soknad = populerSoknadMedData(soknad);
         }
 
         return soknad;
     }
 
-    private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
+    private WebSoknad populerSoknadMedData(WebSoknad soknad) {
         soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medStegliste(config.getStegliste(soknad.getSoknadId()))
                 .medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
-
-        if (populerSystemfakta) {
-            if (soknad.erEttersending()) {
-                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(OidcFeatureToggleUtils.getUserId(), soknad.getSoknadId()));
-            } else {
-                List<Faktum> systemfaktum = new ArrayList<>();
-                for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
-                    systemfaktum.addAll(bolk.genererSystemFakta(OidcFeatureToggleUtils.getUserId(), soknad.getSoknadId()));
-                }
-                faktaService.lagreSystemFakta(soknad, systemfaktum);
-            }
-        }
 
         soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))

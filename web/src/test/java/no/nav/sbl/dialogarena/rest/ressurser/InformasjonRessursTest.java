@@ -5,17 +5,17 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class InformasjonRessursTest {
     @Spy
     LandService landService;
     @Mock
-    PersonaliaBolk personaliaBolk;
+    PersonaliaFletter personaliaFletter;
     @Mock
     PersonInfoService personInfoService;
     @Mock
@@ -72,7 +72,7 @@ public class InformasjonRessursTest {
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
 
         when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
-        when(personaliaBolk.hentPersonalia(anyString())).thenReturn(personalia());
+        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia());
 
         KravdialogInformasjonHolder kravdialogInformasjonHolder = new KravdialogInformasjonHolder();
         when(this.kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()).thenReturn(kravdialogInformasjonHolder.getSoknadsKonfigurasjoner());
