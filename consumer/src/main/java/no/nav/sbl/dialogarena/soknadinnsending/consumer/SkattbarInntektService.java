@@ -65,8 +65,7 @@ public class SkattbarInntektService {
         if (utbetalinger == null) {
             return null;
         }
-        return utbetalinger.stream()
-                .collect(groupingBy(o1 -> o1.orgnummer))
+        return grupperEtterOrganisasjon(utbetalinger)
                 .values()
                 .stream()
                 .map(u -> {
@@ -74,8 +73,7 @@ public class SkattbarInntektService {
                             .max(Comparator.comparing(o -> o.periodeFom))
                             .orElseThrow(IllegalStateException::new)
                             .periodeFom;
-                    return u.stream()
-                            .collect(groupingBy(o1 -> o1.periodeFom))
+                    return grupperEtterUtbetalingsStartDato(u)
                             .get(nyesteDato);
                 })
                 .collect(toList())
@@ -148,13 +146,54 @@ public class SkattbarInntektService {
 
 
         List<Utbetaling> aggregertUtbetaling = new ArrayList<>();
-        aggregertUtbetaling.addAll(trekkUtUtbetalinger(utbetalingerLonn));
-        aggregertUtbetaling.addAll(trekkUtUtbetalinger(utbetalingerPensjon));
-        aggregertUtbetaling.addAll(trekkUtUtbetalinger(dagmammaIEgenBolig));
-        aggregertUtbetaling.addAll(trekkUtUtbetalinger(lottOgPartInnenFiske));
-        aggregertUtbetaling.addAll(trekkUtUtbetalinger(forskuddstrekk));
+        aggregertUtbetaling.addAll(utbetalingerLonn);
+        aggregertUtbetaling.addAll(utbetalingerPensjon);
+        aggregertUtbetaling.addAll(dagmammaIEgenBolig);
+        aggregertUtbetaling.addAll(lottOgPartInnenFiske);
+        aggregertUtbetaling.addAll(forskuddstrekk);
 
-        return aggregertUtbetaling;
+        return summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSsamletUtbetaling(aggregertUtbetaling, forskuddstrekk);
+    }
+
+    private List<Utbetaling> summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSsamletUtbetaling(List<Utbetaling> utbetalinger, List<Utbetaling> trekk) {
+        Map<String, List<Utbetaling>> collect = grupperEtterOrganisasjon(utbetalinger);
+        List<Utbetaling> sum = new ArrayList<>();
+        for (List<Utbetaling> value : collect.values()) {
+            Map<LocalDate, List<Utbetaling>> utbetalingerPerMaaned = grupperEtterUtbetalingsStartDato(value);
+            for (List<Utbetaling> utbetaling : utbetalingerPerMaaned.values()) {
+                summerSammenUtbetalinger(utbetaling).ifPresent(sum::add);
+            }
+        }
+        Map<String, List<Utbetaling>> trekkPerOrg = grupperEtterOrganisasjon(trekk);
+
+        List<Utbetaling> retur = new ArrayList<>();
+        for (Map.Entry<String, List<Utbetaling>> orgUtbetalinger : grupperEtterOrganisasjon(sum).entrySet()) {
+            Map<LocalDate, List<Utbetaling>> utbetalingPerMaaned = grupperEtterUtbetalingsStartDato(orgUtbetalinger.getValue());
+
+            List<Utbetaling> trekkForOrganisasjon = trekkPerOrg.get(orgUtbetalinger.getKey());
+            for (Utbetaling utbetaling : trekkForOrganisasjon) {
+                summerSammenUtbetalinger(utbetalingPerMaaned.get(utbetaling.periodeFom)).ifPresent(u -> utbetaling.brutto = u.brutto);
+                retur.add(utbetaling);
+            }
+        }
+
+        return retur;
+    }
+
+    private Optional<Utbetaling> summerSammenUtbetalinger(List<Utbetaling> utbetaling) {
+        return utbetaling.stream().reduce((u1, u2) -> {
+            u1.brutto += u2.brutto;
+            u1.skattetrekk += u2.skattetrekk;
+            return u1;
+        });
+    }
+
+    private Map<LocalDate, List<Utbetaling>> grupperEtterUtbetalingsStartDato(List<Utbetaling> value) {
+        return value.stream().collect(groupingBy(utbetaling -> utbetaling.periodeFom));
+    }
+
+    private Map<String, List<Utbetaling>> grupperEtterOrganisasjon(List<Utbetaling> sum) {
+        return sum.stream().collect(groupingBy(utbetaling2 -> utbetaling2.orgnummer));
     }
 
     private Utbetaling getUtbetaling(OppgaveInntektsmottaker oppgaveInntektsmottaker, LocalDate fom, LocalDate tom, Inntekt inntekt, String tittel) {
@@ -166,20 +205,6 @@ public class SkattbarInntektService {
         utbetaling.type = "skatteopplysninger";
         utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
         return utbetaling;
-    }
-
-    private List<Utbetaling> trekkUtUtbetalinger(List<Utbetaling> utbetalinger) {
-        List<Utbetaling> aggregertUtbetaling
-                = new ArrayList<>();
-        Map<String, List<Utbetaling>> utbetalingerPerOrganisasjon = utbetalinger.stream().collect(groupingBy(utbetaling -> utbetaling.orgnummer));
-        for (Map.Entry<String, List<Utbetaling>> entry : utbetalingerPerOrganisasjon.entrySet()) {
-            entry.getValue().stream().reduce((u1, u2) -> {
-                u1.brutto += u2.brutto;
-                u1.skattetrekk += u2.skattetrekk;
-                return u1;
-            }).ifPresent(aggregertUtbetaling::add);
-        }
-        return aggregertUtbetaling;
     }
 
     private SkattbarInntekt hentOpplysninger(Invocation.Builder request) {
