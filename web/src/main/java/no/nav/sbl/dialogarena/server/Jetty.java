@@ -44,7 +44,7 @@ public final class Jetty {
         private File war;
         private String contextPath;
         private int port = 35000;
-        private Optional<Integer> sslPort = java.util.Optional.empty();
+        private Optional<Integer> sslPort = Optional.empty();
         private WebAppContext context;
         private File overridewebXmlFile;
         private JAASLoginService loginService;
