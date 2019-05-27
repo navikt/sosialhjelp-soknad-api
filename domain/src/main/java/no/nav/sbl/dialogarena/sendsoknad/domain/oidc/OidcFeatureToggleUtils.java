@@ -12,14 +12,14 @@ public class OidcFeatureToggleUtils {
         if (isRunningWithOidc()) {
             return SubjectHandler.getUserIdFromToken();
         }
-        return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getUid();
+        return no.nav.sbl.dialogarena.sendsoknad.domain.saml.SubjectHandler.getSubjectHandler().getUid();
     }
 
     public static String getToken() {
         if (isRunningWithOidc()) {
             return SubjectHandler.getToken();
         }
-        return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getEksternSsoToken();
+        return no.nav.sbl.dialogarena.sendsoknad.domain.saml.SubjectHandler.getSubjectHandler().getEksternSsoToken();
     }
 
     public static String getConsumerId() {
@@ -27,7 +27,7 @@ public class OidcFeatureToggleUtils {
         if (isRunningWithOidc()) {
             consumerId = SubjectHandler.getConsumerId();
         } else {
-            consumerId = no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getConsumerId();
+            consumerId = no.nav.sbl.dialogarena.sendsoknad.domain.saml.SubjectHandler.getSubjectHandler().getConsumerId();
         }
         return consumerId != null? consumerId : "srvsoknadsosialhje";
     }

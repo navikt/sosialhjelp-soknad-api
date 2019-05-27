@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.sts;
+package no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain;
 
 /* Originally from common-java-modules (no.nav.sbl.dialogarena.common.cxf) */
 

@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sts.utility;
 
 /* Originally from common-java-modules (no.nav.sbl.dialogarena.common.cxf) */
 
-import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.StsSecurityConstants;
 import no.nav.sbl.dialogarena.sts.StsType;
 import no.nav.sbl.dialogarena.sts.client.ModigClaimsCallbackHandler;
 import no.nav.sbl.dialogarena.sts.client.NAVOidcSTSClient;

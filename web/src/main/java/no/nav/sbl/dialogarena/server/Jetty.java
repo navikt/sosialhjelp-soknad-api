@@ -1,8 +1,5 @@
 package no.nav.sbl.dialogarena.server;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.option.Optional.none;
-import static no.nav.modig.lang.option.Optional.optional;
 import static org.apache.commons.io.FilenameUtils.getBaseName;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -17,6 +14,8 @@ import java.util.Map;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.modigutils.IterUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.modigutils.Optional;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.plus.webapp.PlusConfiguration;
@@ -36,7 +35,6 @@ import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.modig.lang.option.Optional;
 
 
 /**
@@ -57,7 +55,7 @@ public final class Jetty {
         private File war;
         private String contextPath;
         private int port = 35000;
-        private Optional<Integer> sslPort = none();
+        private Optional<Integer> sslPort = Optional.none();
         private WebAppContext context;
         private File overridewebXmlFile;
         private JAASLoginService loginService;
@@ -80,7 +78,7 @@ public final class Jetty {
         }
 
         public final JettyBuilder sslPort(int sslPort) {
-            this.sslPort = optional(sslPort);
+            this.sslPort = Optional.optional(sslPort);
             return this;
         }
 
@@ -248,7 +246,7 @@ public final class Jetty {
         httpConnector.setPort(port);
 
 
-        jetty.setConnectors(on(new Connector[]{httpConnector}).append(sslPort.map(new CreateSslConnector(jetty, configuration))).collectIn(new Connector[] {}));
+        jetty.setConnectors(IterUtils.on(new Connector[]{httpConnector}).append(sslPort.map(new CreateSslConnector(jetty, configuration))).collectIn(new Connector[] {}));
         context.setServer(jetty);
         jetty.setHandler(context);
         return jetty;
@@ -291,7 +289,7 @@ public final class Jetty {
     }
 
     public Iterable<URL> getBaseUrls() {
-        return on(optional(port).map(new ToUrl("http", contextPath))).append(sslPort.map(new ToUrl("https", contextPath)));
+        return IterUtils.on(Optional.optional(port).map(new ToUrl("http", contextPath))).append(sslPort.map(new ToUrl("https", contextPath)));
     };
 
 }

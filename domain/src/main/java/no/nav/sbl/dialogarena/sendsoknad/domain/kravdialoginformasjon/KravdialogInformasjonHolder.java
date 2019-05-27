@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
-import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.ApplicationException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

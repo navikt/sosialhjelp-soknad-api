@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 @Ignore
 public class ApachePDFBoxPreflightTest {
 
-    private static final String pathToDir = "src/test/java/no/nav/sbl/dialogarena/utils";
+    private static final String pathToDir = "src/test/java/no/nav/sbl/dialogarena/modigutils";
 
     private Path pdfUtenVannmerkePath;
     private File pdfUtenVannmerkeFile;

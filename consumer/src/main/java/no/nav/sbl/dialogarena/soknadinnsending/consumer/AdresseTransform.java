@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.ApplicationException;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.modigutils.Optional.optional;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseTransform {
@@ -226,6 +226,7 @@ public class AdresseTransform {
         }
         throw new ApplicationException("ukjent adressetype med klassenavn: " + strukturertAdresse.getClass().getCanonicalName());
     }
+
 
     private static final Transformer<XMLGyldighetsperiode, DateTime> TIL_DATO = new Transformer<XMLGyldighetsperiode, DateTime>() {
         @Override

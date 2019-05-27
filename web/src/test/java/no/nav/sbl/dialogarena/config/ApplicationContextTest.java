@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.oidc.OidcConfig;
-import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.StsSecurityConstants;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;

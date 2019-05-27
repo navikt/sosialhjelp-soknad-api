@@ -33,14 +33,6 @@
 
         <!-- Avhengigheter med scope compile -->
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.tjenester.fim</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
             <classifier>jaxws</classifier>
@@ -263,12 +255,6 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-core</artifactId>
-            <scope>test</scope>
-            <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
