@@ -1,40 +1,28 @@
 package no.nav.sbl.dialogarena.server;
 
-import static org.apache.commons.io.FilenameUtils.getBaseName;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.modigutils.IterUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.modigutils.Optional;
+import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.plus.webapp.PlusConfiguration;
 import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.webapp.FragmentConfiguration;
-import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
-import org.eclipse.jetty.webapp.MetaInfConfiguration;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.webapp.WebInfConfiguration;
-import org.eclipse.jetty.webapp.WebXmlConfiguration;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.webapp.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.IOException;
+import java.net.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.apache.commons.io.FilenameUtils.getBaseName;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 /**
@@ -55,7 +43,7 @@ public final class Jetty {
         private File war;
         private String contextPath;
         private int port = 35000;
-        private Optional<Integer> sslPort = Optional.none();
+        private java.util.Optional<Integer> sslPort = java.util.Optional.empty();
         private WebAppContext context;
         private File overridewebXmlFile;
         private JAASLoginService loginService;
@@ -78,7 +66,7 @@ public final class Jetty {
         }
 
         public final JettyBuilder sslPort(int sslPort) {
-            this.sslPort = Optional.optional(sslPort);
+            this.sslPort = java.util.Optional.of(sslPort);
             return this;
         }
 
@@ -104,7 +92,7 @@ public final class Jetty {
                 if (context == null) {
                     context = new WebAppContext();
                 }
-                
+
                 if (war == null) {
                     useWebapp(context);
                     return new Jetty(null, this);
@@ -119,7 +107,7 @@ public final class Jetty {
                 throw new RuntimeException(e);
             }
         }
-        
+
         private static void useWebapp(WebAppContext webAppContext) {
             if (isDevEnviroment()) {
                 if (new File("src/main/webapp").exists()) {
@@ -148,7 +136,7 @@ public final class Jetty {
 
 
     private final int port;
-    private final Optional<Integer> sslPort;
+    private final java.util.Optional<Integer> sslPort;
     private final File overrideWebXmlFile;
     private final String warPath;
     private final String contextPath;
@@ -194,7 +182,7 @@ public final class Jetty {
         this.server = setupJetty(new Server());
     }
 
-    private WebAppContext setupWebapp(final WebAppContext webAppContext) {
+    private WebAppContext setupWebapp(WebAppContext webAppContext) {
         if (isNotBlank(contextPath)) {
             webAppContext.setContextPath(contextPath);
         }
@@ -234,7 +222,7 @@ public final class Jetty {
     }
 
 
-    private Server setupJetty(final Server jetty) {
+    private Server setupJetty(Server jetty) {
 
         Resource.setDefaultUseCaches(false);
 
@@ -246,18 +234,32 @@ public final class Jetty {
         httpConnector.setPort(port);
 
 
-        jetty.setConnectors(IterUtils.on(new Connector[]{httpConnector}).append(sslPort.map(new CreateSslConnector(jetty, configuration))).collectIn(new Connector[] {}));
+        SslContextFactory factory = new SslContextFactory(true);
+        factory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
+        factory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
+        if (sslPort.isPresent()) {
+
+            HttpConfiguration httpsConfiguration = new HttpConfiguration(configuration);
+            httpsConfiguration.setSecureScheme("https");
+            httpsConfiguration.setSecurePort(sslPort.get());
+            httpsConfiguration.addCustomizer(new SecureRequestCustomizer());
+
+            ServerConnector sslConnector = new ServerConnector(jetty,
+                    new SslConnectionFactory(factory, HttpVersion.HTTP_1_1.toString()),
+                    new HttpConnectionFactory(httpsConfiguration));
+
+            jetty.setConnectors(new Connector[]{httpConnector, sslConnector});
+        } else {
+            jetty.setConnectors(new Connector[]{httpConnector});
+        }
         context.setServer(jetty);
         jetty.setHandler(context);
         return jetty;
     }
 
     public Jetty start() {
-        return startAnd(new Runnable() {
-            @Override
-            public void run() {
+        return startAnd(() -> {
 
-            }
         });
     }
 
@@ -272,24 +274,24 @@ public final class Jetty {
         return this;
     }
 
-    private String getStatusString() {
-        final StringBuilder statusBuilder = new StringBuilder(
-                    "STARTED JETTY"
-                    + "\n * WAR: " + warPath
-                    + "\n * Context path: " + contextPath
-                    + "\n * Http port: " + port
-                    );
-        for (Integer httpsPort : sslPort) {
-            statusBuilder.append("\n * Https port: " + httpsPort);
-        }
-        for (URL url : getBaseUrls()) {
-            statusBuilder.append("\n * " + url);
+    private String getStatusString() throws UnknownHostException, MalformedURLException {
+        StringBuilder statusBuilder = new StringBuilder(
+                "STARTED JETTY"
+                        + "\n * WAR: " + warPath
+                        + "\n * Context path: " + contextPath
+                        + "\n * Http port: " + port
+        );
+        sslPort.ifPresent(httpsPort -> {
+            statusBuilder.append("\n * Https port: ").append(httpsPort);
+        });
+
+        String canonicalHostName = InetAddress.getLocalHost().getCanonicalHostName();
+
+        statusBuilder.append("\n * ").append(new URL("http://" + canonicalHostName + ":" + port + contextPath));
+        if (sslPort.isPresent()) {
+            statusBuilder.append("\n * ").append(new URL("https://" + canonicalHostName + ":" + sslPort.get() + contextPath));
         }
         return statusBuilder.toString();
     }
-
-    public Iterable<URL> getBaseUrls() {
-        return IterUtils.on(Optional.optional(port).map(new ToUrl("http", contextPath))).append(sslPort.map(new ToUrl("https", contextPath)));
-    };
 
 }
