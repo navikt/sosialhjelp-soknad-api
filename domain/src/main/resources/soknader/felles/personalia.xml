@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<soknad xmlns="urn:no.nav.sbl">
-    <faktum>
-        <id>personalia</id>
-        <panel>Personalia</panel>
-        <erSystemFaktum>true</erSystemFaktum>
-        <type>hidden</type>
-    </faktum>
-</soknad>
