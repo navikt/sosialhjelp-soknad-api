@@ -44,6 +44,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SoknadUnderArbeidService {
     private static final Logger logger = getLogger(SoknadUnderArbeidService.class);
 
+    private final ObjectMapper mapper;
+    private final ObjectWriter writer;
+    {
+        mapper = new ObjectMapper();
+        mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
+        writer = mapper.writerWithDefaultPrettyPrinter();
+    }
+
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
@@ -108,9 +116,6 @@ public class SoknadUnderArbeidService {
     }
 
     public void logDifferences(SoknadUnderArbeid soknadUnderArbeid, SoknadUnderArbeid soknadUnderArbeid_2, String melding) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
-        ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
         JsonSoknad soknad = soknadUnderArbeid_2.getJsonInternalSoknad().getSoknad();
         JsonSoknad soknadKonvertert = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         sortOkonomi(soknad.getData().getOkonomi());
@@ -119,8 +124,8 @@ public class SoknadUnderArbeidService {
         sortArbeid(soknadKonvertert.getData().getArbeid());
         if (!soknad.equals(soknadKonvertert)){
             try {
-                byte[] jsonSoknad = mapJsonSoknadTilFil(soknad, writer);
-                byte[] jsonSoknadKonvertert = mapJsonSoknadTilFil(soknadKonvertert, writer);
+                byte[] jsonSoknad = mapJsonSoknadTilFil(soknad);
+                byte[] jsonSoknadKonvertert = mapJsonSoknadTilFil(soknadKonvertert);
                 JsonNode beforeNode = mapper.readTree(jsonSoknadKonvertert);
                 JsonNode afterNode = mapper.readTree(jsonSoknad);
                 EnumSet<DiffFlags> flags = EnumSet.of(OMIT_MOVE_OPERATION, OMIT_COPY_OPERATION);
@@ -146,7 +151,7 @@ public class SoknadUnderArbeidService {
         okonomi.getOversikt().getFormue().sort(Comparator.comparing(JsonOkonomioversiktFormue::getType));
     }
 
-    private byte[] mapJsonSoknadTilFil(JsonSoknad jsonSoknad, ObjectWriter writer) {
+    public byte[] mapJsonSoknadTilFil(JsonSoknad jsonSoknad) {
         try {
             final String soknad = writer.writeValueAsString(jsonSoknad);
             ensureValidSoknad(soknad);

@@ -103,15 +103,12 @@ public class SoknadDataFletterTest {
     private SoknadDataFletter soknadServiceUtil;
 
     @InjectMocks
-    private AlternativRepresentasjonService alternativRepresentasjonService;
-    @InjectMocks
     private EkstraMetadataService ekstraMetadataService;
 
 
     @SuppressWarnings("unchecked")
     @Before
     public void before() {
-        soknadServiceUtil.alternativRepresentasjonService = alternativRepresentasjonService;
         soknadServiceUtil.ekstraMetadataService = ekstraMetadataService;
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());

@@ -108,9 +108,6 @@ public class SoknadDataFletter {
     private NavMessageSource messageSource;
 
     @Inject
-    AlternativRepresentasjonService alternativRepresentasjonService;
-
-    @Inject
     EkstraMetadataService ekstraMetadataService;
 
     @Inject
