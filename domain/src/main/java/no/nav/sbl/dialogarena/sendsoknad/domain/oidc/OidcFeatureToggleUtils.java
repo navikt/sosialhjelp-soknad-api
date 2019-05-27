@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler;
+
 public class OidcFeatureToggleUtils {
 
     public final static String IS_RUNNING_WITH_OIDC = "authentication.isRunningWithOidc";
@@ -12,14 +14,14 @@ public class OidcFeatureToggleUtils {
         if (isRunningWithOidc()) {
             return SubjectHandler.getUserIdFromToken();
         }
-        return no.nav.sbl.dialogarena.sendsoknad.domain.saml.SubjectHandler.getSubjectHandler().getUid();
+        return SamlSubjectHandler.getSubjectHandler().getUid();
     }
 
     public static String getToken() {
         if (isRunningWithOidc()) {
             return SubjectHandler.getToken();
         }
-        return no.nav.sbl.dialogarena.sendsoknad.domain.saml.SubjectHandler.getSubjectHandler().getEksternSsoToken();
+        return SamlSubjectHandler.getSubjectHandler().getEksternSsoToken();
     }
 
     public static String getConsumerId() {
@@ -27,7 +29,7 @@ public class OidcFeatureToggleUtils {
         if (isRunningWithOidc()) {
             consumerId = SubjectHandler.getConsumerId();
         } else {
-            consumerId = no.nav.sbl.dialogarena.sendsoknad.domain.saml.SubjectHandler.getSubjectHandler().getConsumerId();
+            consumerId = SamlSubjectHandler.getSubjectHandler().getConsumerId();
         }
         return consumerId != null? consumerId : "srvsoknadsosialhje";
     }

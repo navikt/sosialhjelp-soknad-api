@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-import no.nav.modig.core.exception.SystemException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SystemException;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
@@ -9,8 +9,6 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLPeriode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
-import org.assertj.core.api.Assertions;
-import org.hamcrest.Matchers;
 import org.joda.time.DateMidnight;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,7 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.File;
 import java.util.*;
 
-import static no.nav.modig.core.test.FilesAndDirs.BUILD_OUTPUT;
+import static no.nav.sbl.dialogarena.kodeverk.FilesAndDirs.*;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;

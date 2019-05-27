@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -10,6 +9,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +53,7 @@ public class OpplastetVedleggServiceTest {
 
     @Before
     public void setUp() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
+        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", SamlStaticSubjectHandler.class.getName());
         opplastetVedleggService.setUp();
     }
 

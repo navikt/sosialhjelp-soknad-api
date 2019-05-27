@@ -3,21 +3,18 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.saml;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 import javax.security.auth.Subject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
-public abstract class SubjectHandler {
+public abstract class SamlSubjectHandler {
     public static final String SUBJECTHANDLER_KEY = "no.nav.modig.core.context.subjectHandlerImplementationClass";
-    private static final Logger logger = LoggerFactory.getLogger(SubjectHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(SamlSubjectHandler.class);
     public static final String WLS_PROPERTY_KEY = "wls.home";
     public static final String WAS_PROPERTY_KEY = "was.install.root";
     public static final String JBOSS_PROPERTY_KEY = "jboss.home.dir";
 
-    public static SubjectHandler getSubjectHandler() {
+    public static SamlSubjectHandler getSubjectHandler() {
 
         String subjectHandlerImplementationClass = resolveProperty(SUBJECTHANDLER_KEY);
 
@@ -29,7 +26,7 @@ public abstract class SubjectHandler {
 
         try {
             Class<?> clazz = Class.forName(subjectHandlerImplementationClass);
-            return (SubjectHandler) clazz.newInstance();
+            return (SamlSubjectHandler) clazz.newInstance();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Could not configure platform dependent subject handler", e);
         } catch (InstantiationException e) {

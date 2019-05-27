@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -13,6 +12,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
@@ -126,7 +126,7 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.initBolker();
         soknadServiceUtil.alternativRepresentasjonService = alternativRepresentasjonService;
         soknadServiceUtil.ekstraMetadataService = ekstraMetadataService;
-        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);

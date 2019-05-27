@@ -181,6 +181,13 @@
         </dependency>
 
         <!-- Avhengigheter med scope test -->
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-domain</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>

@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -74,7 +74,7 @@ public class VedleggServiceTest {
     public void before() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(soknadService.hentSprak(anyLong())).thenReturn(new Faktum().medValue("nb_NO"));
     }

@@ -1,12 +1,12 @@
 package no.nav.sbl.sosialhjelp.midlertidig;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
@@ -83,7 +83,7 @@ public class WebSoknadConverterTest {
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withOrgnummer(ORGNUMMER)
                 .withNavEnhetsnavn(NAVENHET));
-        System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        System.setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
