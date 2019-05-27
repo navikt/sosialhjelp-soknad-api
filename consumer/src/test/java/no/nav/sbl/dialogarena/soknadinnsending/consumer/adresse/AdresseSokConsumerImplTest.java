@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -67,7 +65,7 @@ public class AdresseSokConsumerImplTest {
         final AdressesokRespons adressesokRespons = adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
         
         assertTrue(adressesokRespons.adresseDataList.isEmpty());
-        assertEquals(false, adressesokRespons.flereTreff);
+        assertFalse(adressesokRespons.flereTreff);
     }
     
     @Test

@@ -50,6 +50,22 @@ public class KontonummerSystemdataTest {
     }
 
     @Test
+    public void skalOppdatereKontonummerOgFjerneUlovligeSymboler() {
+        Personalia personalia = new Personalia();
+        personalia.setKontonummer(KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* ");
+        personalia.setErUtenlandskBankkonto(false);
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+
+        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+
+        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+
+        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_SYSTEM));
+    }
+
+    @Test
     public void skalIkkeOppdatereKontonummerDersomKildeErBruker() {
         Personalia personalia = new Personalia();
         personalia.setKontonummer(KONTONUMMER_SYSTEM);
@@ -77,7 +93,7 @@ public class KontonummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
     }
 
@@ -93,12 +109,12 @@ public class KontonummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
     }
 
     @Test
-    public void skalSetteNullDersomKontonummerErNull() {
+    public void skalSetteNullOgKildeBrukerDersomKontonummerErNull() {
         Personalia personalia = new Personalia();
         personalia.setKontonummer(null);
         personalia.setErUtenlandskBankkonto(false);
@@ -109,7 +125,7 @@ public class KontonummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
     }
 

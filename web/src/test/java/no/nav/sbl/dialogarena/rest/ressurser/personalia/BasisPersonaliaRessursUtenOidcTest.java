@@ -58,11 +58,6 @@ public class BasisPersonaliaRessursUtenOidcTest {
     }
 
     @Test
-    public void getBasisPersonaliaSkalReturnereOppdatertSystemBasisPersonaliaFraTPS(){
-        basisPersonaliaRessursTest.getBasisPersonaliaSkalReturnereOppdatertSystemBasisPersonaliaFraTPS();
-    }
-
-    @Test
     public void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger(){
         basisPersonaliaRessursTest.getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger();
     }

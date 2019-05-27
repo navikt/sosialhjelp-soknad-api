@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
@@ -51,8 +50,6 @@ public class InformasjonRessursTest {
     PersonaliaBolk personaliaBolk;
     @Mock
     PersonInfoService personInfoService;
-    @Mock
-    ThreadLocalSubjectHandler subjectHandler;
     @Mock
     NavMessageSource messageSource;
     @Mock

@@ -80,7 +80,11 @@ public class UtdanningRessurs {
         final List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         utdanning.setKilde(JsonKilde.BRUKER);
         utdanning.setErStudent(utdanningFrontend.erStudent);
-        utdanning.setStudentgrad(toStudentgrad(utdanningFrontend.studengradErHeltid));
+        if (utdanningFrontend.erStudent){
+            utdanning.setStudentgrad(toStudentgrad(utdanningFrontend.studengradErHeltid));
+        } else {
+            utdanning.setStudentgrad(null);
+        }
 
         if (utdanning.getErStudent() != null){
             String soknadstype = "studielanOgStipend";

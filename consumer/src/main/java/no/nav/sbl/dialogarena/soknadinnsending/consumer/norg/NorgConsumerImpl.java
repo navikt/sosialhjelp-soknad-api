@@ -58,7 +58,7 @@ public class NorgConsumerImpl implements NorgConsumer {
          * urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
          * at vi når tjenesten).
          */
-        final String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        final String consumerId = OidcFeatureToggleUtils.getConsumerId();
         final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
 

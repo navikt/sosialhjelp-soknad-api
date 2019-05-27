@@ -82,9 +82,9 @@ public class InntektSystemdata implements Systemdata {
                 .withBrutto(utbetaling.brutto)
                 .withSkattetrekk(utbetaling.skattetrekk)
                 .withAndreTrekk(utbetaling.andreTrekk)
+                .withPeriodeFom(utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
+                .withPeriodeTom(utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
                 .withUtbetalingsdato(utbetaling.utbetalingsdato == null ? null : utbetaling.utbetalingsdato.toString())
-                .withPeriodeFom(utbetaling.periodeFom.toString())
-                .withPeriodeTom(utbetaling.periodeTom.toString())
                 .withKomponenter(tilUtbetalingskomponentListe(utbetaling.komponenter))
                 .withOverstyrtAvBruker(false);
     }

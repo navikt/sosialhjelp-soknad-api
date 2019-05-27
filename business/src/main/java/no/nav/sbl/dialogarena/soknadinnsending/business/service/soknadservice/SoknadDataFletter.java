@@ -35,6 +35,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -541,19 +542,28 @@ public class SoknadDataFletter {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonSoknad soknadKonvertert = konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         sortOkonomi(soknad.getData().getOkonomi());
+        sortArbeid(soknad.getData().getArbeid());
         sortOkonomi(soknadKonvertert.getData().getOkonomi());
+        sortArbeid(soknadKonvertert.getData().getArbeid());
         if (!soknad.equals(soknadKonvertert)){
             try {
                 byte[] jsonSoknad = mapJsonSoknadTilFil(soknad, writer);
                 byte[] jsonSoknadKonvertert = mapJsonSoknadTilFil(soknadKonvertert, writer);
                 JsonNode beforeNode = mapper.readTree(jsonSoknadKonvertert);
                 JsonNode afterNode = mapper.readTree(jsonSoknad);
-                EnumSet<DiffFlags> flags = EnumSet.of(OMIT_MOVE_OPERATION, OMIT_COPY_OPERATION);
+                EnumSet<DiffFlags> flags = EnumSet.of(OMIT_MOVE_OPERATION, OMIT_COPY_OPERATION, ADD_ORIGINAL_VALUE_ON_REPLACE);
                 JsonNode patch = JsonDiff.asJson(beforeNode, afterNode, flags);
                 for (JsonNode node : patch) {
                     if (node instanceof ObjectNode) {
                         ObjectNode object = (ObjectNode) node;
-                        object.remove("value");
+                        String path = node.path("path").textValue();
+                        String op = node.path("op").textValue();
+                        if (!(path.contains("periodeFom") || path.contains("periodeTom"))){
+                            object.remove("value");
+                            if (op.contains("replace")){
+                                object.remove("fromValue");
+                            }
+                        }
                     }
                 }
                 if (patch.isArray()){
@@ -561,9 +571,9 @@ public class SoknadDataFletter {
                     for (int i = 0; i < arrayNode.size(); i++){
                         JsonNode node = arrayNode.get(i);
                         String path = node.path("path").textValue();
-                        String op = node.path("op").textValue();
-                        if (path.contains("komponenter") && op.contains("add")){
+                        if (path.contains("komponenter")){
                             arrayNode.remove(i);
+                            i--;
                         }
                     }
                 }
@@ -573,6 +583,10 @@ public class SoknadDataFletter {
                 }
             } catch (IOException ignored) { }
         }
+    }
+
+    private void sortArbeid(JsonArbeid arbeid) {
+        arbeid.getForhold().sort(Comparator.comparing(JsonArbeidsforhold::getArbeidsgivernavn));
     }
 
     public void sortOkonomi(JsonOkonomi okonomi) {

@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erIkkeTom;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -80,11 +81,13 @@ public class ArbeidRessurs {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
-        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = arbeid.getKommentarTilArbeidsforhold() != null ?
-                arbeid.getKommentarTilArbeidsforhold() :
-                arbeid.withKommentarTilArbeidsforhold(new JsonKommentarTilArbeidsforhold()).getKommentarTilArbeidsforhold();
-        kommentarTilArbeidsforhold.setKilde(JsonKildeBruker.BRUKER);
-        kommentarTilArbeidsforhold.setVerdi(arbeidFrontend.kommentarTilArbeidsforhold);
+        if (erIkkeTom(arbeidFrontend.kommentarTilArbeidsforhold)){
+            arbeid.setKommentarTilArbeidsforhold(new JsonKommentarTilArbeidsforhold()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(arbeidFrontend.kommentarTilArbeidsforhold));
+        } else {
+            arbeid.setKommentarTilArbeidsforhold(null);
+        }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
