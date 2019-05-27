@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.utdanning;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
@@ -50,7 +50,7 @@ public class UtdanningRessursUtenOidcTest {
 
     @Before
     public void setUp() {
-        System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        System.setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 

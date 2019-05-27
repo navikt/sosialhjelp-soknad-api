@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.TestThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
@@ -40,7 +40,7 @@ public class InformasjonRessursUtenOidcTest {
     @Mock
     PersonInfoService personInfoService;
     @Mock
-    ThreadLocalSubjectHandler subjectHandler;
+    TestThreadLocalSubjectHandler subjectHandler;
     @Mock
     NavMessageSource messageSource;
     @Mock
@@ -60,7 +60,7 @@ public class InformasjonRessursUtenOidcTest {
     @Before
     public void setUp() {
         ressursTest.setUp();
-        System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        System.setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 

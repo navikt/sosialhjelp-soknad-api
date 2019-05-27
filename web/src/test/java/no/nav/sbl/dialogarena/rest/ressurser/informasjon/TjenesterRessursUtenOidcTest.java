@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
 import org.junit.After;
@@ -35,8 +35,8 @@ public class TjenesterRessursUtenOidcTest {
 
     @Before
     public void setUp() throws Exception {
-        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        tjenesterRessursTest.fodselsnummer = StaticSubjectHandler.getSubjectHandler().getUid();
+        setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
+        tjenesterRessursTest.fodselsnummer = SamlStaticSubjectHandler.getSubjectHandler().getUid();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 

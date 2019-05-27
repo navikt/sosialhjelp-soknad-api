@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.filter;
 
-import no.nav.modig.core.context.SubjectHandlerUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SubjectHandlerUtils;
 import org.slf4j.Logger;
 
 import javax.servlet.*;
