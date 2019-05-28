@@ -219,7 +219,7 @@ public class StandardKodeverk implements Kodeverk {
             logger.warn("Kodeverktjeneste feilet ({})! Forsøker fallback", kodeverkfeil.getMessage());
             try {
                 if (MockUtils.isTillatMockRessurs()) {
-                    kodeverket = (XMLEnkeltKodeverk) readFromResource(navn);
+                    kodeverket = new XMLEnkeltKodeverk();
                 } else {
                     kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
                 }
@@ -249,17 +249,6 @@ public class StandardKodeverk implements Kodeverk {
 
     private static String createErrorMessage(JAXBException e) {
         return "Unable to load class " + StandardKodeverk.class.getName() +", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage();
-    }
-
-    @SuppressWarnings("unchecked")
-    public XMLKodeverk readFromResource(String resourceName) {
-        InputStream inputStream = StandardKodeverk.class.getClassLoader().getResourceAsStream("kodeverk/" + resourceName + ".xml");
-        try {
-            logger.info("Leser kodeverk fra ressurs '{}'", resourceName);
-            return ((JAXBElement<XMLKodeverk>) JAXB.createUnmarshaller().unmarshal(inputStream)).getValue();
-        } catch (JAXBException e) {
-            throw new RuntimeException("Feil ved innlasting av ressurs " + resourceName + ": " + e.getMessage(), e);
-        }
     }
 
     @SuppressWarnings("unchecked")
