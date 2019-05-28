@@ -1,20 +1,11 @@
 package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.arbeid.ArbeidRessurs.ArbeidFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.arbeid.ArbeidRessurs.ArbeidsforholdFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.ArbeidsforholdSystemdata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -35,16 +26,18 @@ import java.util.List;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArbeidRessursTest {
 
     private static final String BEHANDLINGSID = "123";
+    private static final String EIER = "123456789101";
     private static final String KOMMENTAR = "Hath not the potter power over the clay, to make one vessel unto honor and another unto dishonor?";
 
     private static final JsonArbeidsforhold ARBEIDSFORHOLD_1 = new JsonArbeidsforhold()
@@ -66,9 +59,6 @@ public class ArbeidRessursTest {
             .withOverstyrtAvBruker(Boolean.FALSE);
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private ArbeidsforholdSystemdata arbeidsforholdSystemdata;
 
     @Mock
@@ -76,12 +66,6 @@ public class ArbeidRessursTest {
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @InjectMocks
     private ArbeidRessurs arbeidRessurs;
@@ -101,8 +85,8 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null)));
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(createArbeidsforholdListe());
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
@@ -118,8 +102,8 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereArbeidsforholdLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithArbeid(null, null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithArbeid(null, null)));
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(null);
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
@@ -129,8 +113,8 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereKommentarTilArbeidsforholdLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithArbeid(null, null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithArbeid(null, null)));
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
@@ -139,8 +123,8 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereKommentarTilArbeidsforhold(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithArbeid(null, KOMMENTAR));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithArbeid(null, KOMMENTAR)));
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
@@ -149,7 +133,7 @@ public class ArbeidRessursTest {
 
     @Test
     public void putArbeidSkalLageNyJsonKommentarTilArbeidsforholdDersomDenVarNull(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithArbeid(null, null)));
 
@@ -164,7 +148,7 @@ public class ArbeidRessursTest {
 
     @Test
     public void putArbeidSkalOppdatereKommentarTilArbeidsforhold(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")));
 
@@ -179,7 +163,7 @@ public class ArbeidRessursTest {
 
     @Test
     public void putArbeidSkalSetteLikNullDersomKommentarenErTom(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")));
 
@@ -195,13 +179,6 @@ public class ArbeidRessursTest {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
         return argument.getValue();
-    }
-
-    private void ignoreTilgangskontrollAndLegacyUpdate() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
-        when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
-        when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
     }
 
     private void assertThatArbeidsforholdIsCorrectlyConverted(ArbeidsforholdFrontend forholdFrontend, JsonArbeidsforhold jsonForhold) {
@@ -232,19 +209,12 @@ public class ArbeidRessursTest {
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithArbeid(List<JsonArbeidsforhold> arbeidsforholdList, String kommentar) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withArbeid(new JsonArbeid()
-                                                .withForhold(arbeidsforholdList)
-                                                .withKommentarTilArbeidsforhold(kommentar == null ? null : new JsonKommentarTilArbeidsforhold()
-                                                        .withKilde(JsonKildeBruker.BRUKER)
-                                                        .withVerdi(kommentar)
-                                                )
-                                        )
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid()
+                .withForhold(arbeidsforholdList)
+                .withKommentarTilArbeidsforhold(kommentar == null ? null : new JsonKommentarTilArbeidsforhold()
+                        .withKilde(JsonKildeBruker.BRUKER)
+                        .withVerdi(kommentar));
+        return soknadUnderArbeid;
     }
 }

@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.spy;
 public class BasisPersonaliaRessursUtenOidcTest {
 
     @Mock
-    private LegacyHelper legacyHelper;
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;

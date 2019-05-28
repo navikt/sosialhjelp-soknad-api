@@ -1,16 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser.begrunnelse;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -28,32 +20,25 @@ import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.rest.ressurser.begrunnelse.BegrunnelseRessurs.BegrunnelseFrontend;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BegrunnelseRessursTest {
 
     private static final String BEHANDLINGSID = "123";
+    private static final String EIER = "123456789101";
     private static final String SOKER_FORDI = "Jeg søker fordi...";
     private static final String SOKER_OM = "Jeg søker om...";
-
-    @Mock
-    private LegacyHelper legacyHelper;
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @InjectMocks
     private BegrunnelseRessurs begrunnelseRessurs;
@@ -72,8 +57,8 @@ public class BegrunnelseRessursTest {
 
     @Test
     public void getBegrunnelseSkalReturnereBegrunnelseMedTommeStrenger(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithBegrunnelse("", ""));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithBegrunnelse("", "")));
 
         final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
 
@@ -83,8 +68,8 @@ public class BegrunnelseRessursTest {
 
     @Test
     public void getBegrunnelseSkalReturnereBegrunnelse(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI)));
 
         final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
 
@@ -94,7 +79,7 @@ public class BegrunnelseRessursTest {
 
     @Test
     public void putBegrunnelseSkalSetteBegrunnelse(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithBegrunnelse("", "")));
 
@@ -116,24 +101,11 @@ public class BegrunnelseRessursTest {
         return argument.getValue();
     }
 
-    private void ignoreTilgangskontrollAndLegacyUpdate() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
-        when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
-        when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
-    }
-
     private SoknadUnderArbeid createJsonInternalSoknadWithBegrunnelse(String hvaSokesOm, String hvorforSoke) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withBegrunnelse(new JsonBegrunnelse()
-                                                .withHvaSokesOm(hvaSokesOm)
-                                                .withHvorforSoke(hvorforSoke)
-                                        )
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse()
+                .withHvaSokesOm(hvaSokesOm)
+                .withHvorforSoke(hvorforSoke);
+        return soknadUnderArbeid;
     }
 }
