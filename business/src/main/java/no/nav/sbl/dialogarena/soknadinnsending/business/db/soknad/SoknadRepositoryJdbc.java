@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
@@ -214,47 +212,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             }
         }
         return fakta;
-    }
-
-    public Boolean isVedleggPaakrevd(Long soknadId, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-        FaktumStruktur faktum = vedleggForFaktumStruktur.getFaktum();
-        String key = faktum.getId();
-        Integer count = 0;
-        count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, key, vedleggForFaktumStruktur.getOnValues());
-        return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
-    }
-
-    private Boolean sjekkOmVedleggErPaakrevd(Long soknadId, Integer antallFunnet, FaktumStruktur faktum) {
-        if (antallFunnet > 0) {
-            return faktum.getDependOn() != null ? isVedleggPaakrevdParent(soknadId, faktum.getDependOn(), faktum) : true;
-        }
-        return false;
-    }
-
-    private Boolean isVedleggPaakrevdParent(Long soknadId, FaktumStruktur faktum, FaktumStruktur barneFaktum) {
-        Integer count = 0;
-        if (barneFaktum.getDependOnValues() != null) {
-            count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, faktum.getId(), barneFaktum.getDependOnValues());
-        }
-        return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
-    }
-
-    private Integer finnAntallFaktumMedGittKeyOgEnAvFlereValues(Long soknadId, String key, List<String> values) {
-        if (values == null || values.isEmpty()) {
-            return 0;
-        }
-        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=:soknadid AND key=:faktumkey AND value IN (:dependonvalues)";
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("soknadid", soknadId);
-        params.addValue("faktumkey", key);
-        params.addValue("dependonvalues", values);
-        try {
-            NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(getJdbcTemplate().getDataSource());
-            return template.queryForObject(sql, params, Integer.class);
-        } catch (DataAccessException e) {
-            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
-            return 0;
-        }
     }
 
     public List<Faktum> hentSystemFaktumList(Long soknadId, String key) {

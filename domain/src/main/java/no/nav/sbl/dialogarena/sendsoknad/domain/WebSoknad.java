@@ -1,25 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_ANNET_VEDLEGG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_LASTET_OPP;
-
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -27,12 +9,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.xml.bind.annotation.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import static java.util.stream.Collectors.toList;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -90,16 +75,8 @@ public class WebSoknad implements Serializable {
         return journalforendeEnhet;
     }
 
-    public void setJournalforendeEnhet(String journalforendeEnhet) {
-        this.journalforendeEnhet = journalforendeEnhet;
-    }
-
     public String getBehandlingskjedeId() {
         return behandlingskjedeId;
-    }
-
-    public void setBehandlingskjedeId(String behandlingskjedeId) {
-        this.behandlingskjedeId = behandlingskjedeId;
     }
 
     public void setSistLagret(DateTime sistLagret) {
@@ -141,10 +118,6 @@ public class WebSoknad implements Serializable {
         return vedlegg;
     }
 
-    public List<Vedlegg> hentPaakrevdeVedlegg() {
-        return getVedlegg().stream().filter(Vedlegg.PAAKREVDE_VEDLEGG).collect(toList());
-    }
-
     public void setVedlegg(List<Vedlegg> vedlegg) {
         this.vedlegg = vedlegg;
     }
@@ -165,11 +138,6 @@ public class WebSoknad implements Serializable {
         }
     }
 
-    public final WebSoknad leggTilFaktum(Faktum faktum) {
-        this.fakta.add(faktum);
-        return this;
-    }
-
     public Locale getSprak() {
         Faktum sprakFaktum = this.getFaktumMedKey("skjema.sprak");
         return sprakFaktum == null ? new Locale("nb", "NO") : LocaleUtils.toLocale(sprakFaktum.getValue());
@@ -181,14 +149,6 @@ public class WebSoknad implements Serializable {
 
     public void setBrukerBehandlingId(String brukerBehandlingId) {
         this.brukerBehandlingId = brukerBehandlingId;
-    }
-
-    public long antallFakta() {
-        long antallFaktum = 0;
-        if (fakta != null) {
-            antallFaktum = fakta.size();
-        }
-        return antallFaktum;
     }
 
 
@@ -293,11 +253,6 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
-    public WebSoknad medVedlegg(Vedlegg... vedlegg) {
-        getVedlegg().addAll(Arrays.asList(vedlegg));
-        return this;
-    }
-
     public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
         setDelstegStatus(delstegStatus);
         return this;
@@ -329,55 +284,6 @@ public class WebSoknad implements Serializable {
         return Optional.ofNullable(getFaktumMedKey(key))
                 .map(Faktum::getValue)
                 .orElse("");
-    }
-
-    /**
-     * Returnerer liste over vedlegg som er lastet opp i denne behandlingen.
-     *
-     * @return liste over vedlegg som er lastet opp i nåværende behandling
-     */
-    public List<Vedlegg> getOpplastedeVedlegg() {
-        return getVedlegg().stream().filter(vedlegg -> vedlegg.getStorrelse() > 0).collect(toList());
-    }
-
-    public List<Vedlegg> getInnsendteVedlegg() {
-        return getVedlegg().stream()
-                .filter(vedlegg -> vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp))
-                .collect(toList());
-    }
-
-    public List<Vedlegg> getIkkeInnsendteVedlegg() {
-        List<Vedlegg> paakrevdeVedlegg = hentPaakrevdeVedlegg();
-        return paakrevdeVedlegg.stream()
-                .filter(vedlegg -> vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp)
-                        && vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.IkkeVedlegg))
-                .collect(toList());
-    }
-
-    public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
-        return getFakta().stream()
-                .filter(faktum -> faktum.getKey().equals(key)
-                        && faktum.getProperties().get(propertyKey) != null
-                        && faktum.getProperties().get(propertyKey).equals("true"))
-                .collect(toList());
-    }
-
-    public List<Faktum> getFaktaSomStarterMed(final String key) {
-        return getFakta().stream()
-                .filter(faktum -> faktum.getKey().startsWith(key))
-                .collect(toList());
-    }
-
-    public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
-        return getFakta().stream()
-                .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
-                .collect(toList());
-    }
-
-    public Faktum getFaktumMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
-        return getFakta().stream()
-                .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
-                .findFirst().orElse(null);
     }
 
     public Faktum getFaktaMedKeyOgProperty(final String key, final String property, final String value) {
@@ -448,54 +354,13 @@ public class WebSoknad implements Serializable {
                 .toString();
     }
 
-    public Vedlegg hentVedleggMedUID(String uuid) {
-        for (Vedlegg v : vedlegg) {
-            if (v.getFillagerReferanse().equals(uuid)) {
-                return v;
-            }
-        }
-        return null;
-    }
-
     public boolean erEttersending() {
         return delstegStatus != null && delstegStatus.erEttersending();
-    }
-
-    public boolean harAnnetVedleggSomIkkeErLastetOpp() {
-        return !getVedlegg().stream()
-                .filter(ER_ANNET_VEDLEGG)
-                .filter(ER_LASTET_OPP.negate())
-                .collect(toList())
-                .isEmpty();
-    }
-
-    public boolean erUnderArbeid() {
-        return status.equals(SoknadInnsendingStatus.UNDER_ARBEID);
-    }
-
-    public boolean erAvbrutt() {
-        return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER) || status.equals(SoknadInnsendingStatus.AVBRUTT_AUTOMATISK);
     }
 
     public WebSoknad medSoknadPrefix(String prefix) {
         soknadPrefix = prefix;
         return this;
-    }
-
-    public String getSoknadPrefix() {
-        return soknadPrefix;
-    }
-
-    public String getSoknadUrl() {
-        return soknadUrl;
-    }
-
-    public Steg[] getStegliste() {
-        return stegliste;
-    }
-
-    public String getFortsettSoknadUrl() {
-        return fortsettSoknadUrl;
     }
 
     public void validerDelstegEndring(DelstegStatus nyStatus) {
@@ -509,55 +374,5 @@ public class WebSoknad implements Serializable {
                 .filter(faktum -> faktum.getFaktumId() != null
                         && faktum.getFaktumId().equals(faktumId))
                 .findFirst().orElse(null);
-    }
-
-    private static class VedleggSomMatcherForventningPredicate implements Predicate<Vedlegg> {
-        private final VedleggForFaktumStruktur vedleggForFaktumStruktur;
-        private final Long faktumId;
-
-        public VedleggSomMatcherForventningPredicate(VedleggForFaktumStruktur vedleggForFaktumStruktur, Long faktumId) {
-            this.vedleggForFaktumStruktur = vedleggForFaktumStruktur;
-            this.faktumId = faktumId;
-        }
-
-        @Override
-        public boolean test(Vedlegg vedlegg) {
-            return liktFaktum(vedlegg) && liktSkjema(vedlegg);
-        }
-
-        private boolean liktFaktum(Vedlegg vedlegg) {
-            return liktFaktumVedEttTillatt(vedlegg) || liktFakutumVedFlereTillatt(vedlegg);
-        }
-
-        private boolean liktFakutumVedFlereTillatt(Vedlegg vedlegg) {
-            return vedlegg.getFaktumId() != null && vedleggForFaktumStruktur.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId);
-        }
-
-        private boolean liktFaktumVedEttTillatt(Vedlegg vedlegg) {
-            return vedlegg.getFaktumId() == null && !vedleggForFaktumStruktur.getFlereTillatt();
-        }
-
-        private boolean liktSkjema(Vedlegg vedlegg) {
-            return liktSkjemanummer(vedlegg) && liktSkjemanummerTillegg(vedlegg);
-        }
-
-        private boolean liktSkjemanummer(Vedlegg vedlegg) {
-            return vedlegg.getSkjemaNummer().equals(vedleggForFaktumStruktur.getSkjemaNummer());
-        }
-
-        private boolean liktSkjemanummerTillegg(Vedlegg vedlegg) {
-            return Objects.equals(vedlegg.getSkjemanummerTillegg(), vedleggForFaktumStruktur.getSkjemanummerTillegg());
-        }
-    }
-
-    public Vedlegg finnVedleggSomMatcherForventning(final VedleggForFaktumStruktur vedleggForFaktumStruktur, final Long faktumId) {
-        return getVedlegg().stream().filter(new VedleggSomMatcherForventningPredicate(vedleggForFaktumStruktur, faktumId)).findFirst().orElse(null);
-    }
-
-    public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
-        fakta = fakta.stream().filter(faktum -> {
-            FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(faktum.getKey());
-            return faktumStruktur == null || faktumStruktur.erSynlig(this, faktum);
-        }).collect(toList());
     }
 }

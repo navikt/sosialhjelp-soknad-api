@@ -80,16 +80,6 @@ public class Vedlegg {
         return this;
     }
 
-    public Vedlegg medTittel(String tittel) {
-        setTittel(tittel);
-        return this;
-    }
-
-    public Vedlegg medUrl(String key, String value) {
-        urls.put(key, value);
-        return this;
-    }
-
     public Vedlegg medNavn(String navn) {
         setNavn(navn);
         return this;
@@ -167,11 +157,6 @@ public class Vedlegg {
         return opprinneligInnsendingsvalg;
     }
 
-
-    public void setOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
-        this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
-    }
-
     public Long getVedleggId() {
         return vedleggId;
     }
@@ -190,15 +175,6 @@ public class Vedlegg {
 
     public void setFaktumId(Long faktumId) {
         this.faktumId = faktumId;
-    }
-
-
-    public void setStorrelse(Long storrelse) {
-        this.storrelse = storrelse;
-    }
-
-    public void setAntallSider(Integer antallSider) {
-        this.antallSider = antallSider;
     }
 
     public Long getFaktumId() {
@@ -364,26 +340,6 @@ public class Vedlegg {
                 .toString();
     }
 
-    public void leggTilInnhold(byte[] doc, int antallSider) {
-        this.data = doc.clone();
-        this.innsendingsvalg = Status.LastetOpp;
-        this.antallSider = antallSider;
-        this.storrelse = (long) doc.length;
-        this.sha512 = ServiceUtils.getSha512FromByteArray(doc);
-    }
-
-    public void fjernInnhold() {
-        this.data = new byte[0];
-        this.innsendingsvalg = VedleggKreves;
-        this.antallSider = 0;
-        this.storrelse = 0L;
-        this.sha512 = "";
-    }
-
-    public void leggTilURL(String nokkel, String url) {
-        urls.put(nokkel, url);
-    }
-
     public String getTittel() {
         return tittel;
     }
@@ -405,18 +361,6 @@ public class Vedlegg {
         this.sha512 = ServiceUtils.getSha512FromByteArray(data);
     }
 
-    public void oppdatertInnsendtStatus() {
-        if (getStorrelse() > 0) {
-            innsendingsvalg = Status.LastetOpp;
-        } else {
-            innsendingsvalg = Status.VedleggKreves;
-        }
-    }
-
-    public boolean erNyttVedlegg() {
-        return vedleggId == null;
-    }
-
     @JsonIgnore
     public String lagFilNavn() {
         if (isEmpty(filnavn)) {
@@ -425,12 +369,6 @@ public class Vedlegg {
             return filnavn;
         }
     }
-
-    public static final Predicate<Vedlegg> ER_ANNET_VEDLEGG = vedlegg -> "N6".equals(vedlegg.skjemaNummer);
-
-    public static final Predicate<Vedlegg> ER_LASTET_OPP = vedlegg ->
-            vedlegg.innsendingsvalg.er(Status.LastetOpp) || vedlegg.opprinneligInnsendingsvalg != null
-                    && vedlegg.opprinneligInnsendingsvalg.er(Status.LastetOpp);
 
 
     /**

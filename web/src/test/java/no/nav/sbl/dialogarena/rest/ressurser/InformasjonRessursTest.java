@@ -5,8 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
@@ -28,7 +26,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Locale;
 import java.util.Map;
 
-import static java.util.Collections.singletonList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -64,7 +61,6 @@ public class InformasjonRessursTest {
     InformasjonRessurs ressurs;
 
     Locale norskBokmaal = new Locale("nb", "NO");
-    SoknadStruktur struktur;
 
     @Before
     public void setUp() {
@@ -76,10 +72,6 @@ public class InformasjonRessursTest {
 
         KravdialogInformasjonHolder kravdialogInformasjonHolder = new KravdialogInformasjonHolder();
         when(this.kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()).thenReturn(kravdialogInformasjonHolder.getSoknadsKonfigurasjoner());
-
-        struktur = new SoknadStruktur();
-        struktur.setTemaKode(TEMAKODE);
-        struktur.setFakta(singletonList(new FaktumStruktur()));
     }
 
     @After
