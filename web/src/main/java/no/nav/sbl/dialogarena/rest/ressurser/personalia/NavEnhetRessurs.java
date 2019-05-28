@@ -52,15 +52,16 @@ public class NavEnhetRessurs {
     @GET
     public List<NavEnhetFrontend> hentNavEnheter(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
-        final String valgtOrgnr = soknad.getMottaker() == null ? null : soknad.getMottaker().getOrganisasjonsnummer();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonInternalSoknad internalSoknad = soknad.getJsonInternalSoknad();
+        String valgtOrgnr = internalSoknad.getMottaker() == null ? null : internalSoknad.getMottaker().getOrganisasjonsnummer();
 
-        final JsonAdresse oppholdsadresse = soknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
+        final JsonAdresse oppholdsadresse = internalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
         final String adresseValg = oppholdsadresse == null ? null :
                 oppholdsadresse.getAdresseValg() == null ? null :
                         oppholdsadresse.getAdresseValg().toString();
 
-        return findSoknadsmottaker(behandlingsId, adresseValg, valgtOrgnr);
+        return findSoknadsmottaker(soknad, adresseValg, valgtOrgnr);
     }
 
     @PUT
@@ -80,9 +81,7 @@ public class NavEnhetRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String behandlingsId, String valg, String valgtOrgnr) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(SoknadUnderArbeid soknad, String valg, String valgtOrgnr) {
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);

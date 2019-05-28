@@ -57,11 +57,6 @@ public class AdresseRessurs {
     @PUT
     public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresserFrontend adresserFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, adresserFrontend);
-        return navEnhetRessurs.findSoknadsmottaker(behandlingsId, adresserFrontend.valg.toString(), null);
-    }
-
-    private void update(String behandlingsId, AdresserFrontend adresserFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
@@ -82,6 +77,7 @@ public class AdresseRessurs {
         personalia.setPostadresse(midlertidigLosningForPostadresse(personalia.getOppholdsadresse()));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        return navEnhetRessurs.findSoknadsmottaker(soknad, adresserFrontend.valg.toString(), null);
     }
 
     private JsonAdresse midlertidigLosningForPostadresse(JsonAdresse oppholdsadresse) {
