@@ -56,10 +56,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl</groupId>
-            <artifactId>arena-sakOgAktivitet_v1</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
             <artifactId>arena-maalgruppe_v1</artifactId>
         </dependency>
         <dependency>
