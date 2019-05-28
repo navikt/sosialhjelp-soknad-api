@@ -24,16 +24,6 @@ public class FaktaRessursEndpointUtenOidcIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void nektetTilgang_hentFaktum() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-            Response response = soknadTester.sendsoknadResource("fakta/1", webTarget -> webTarget
-                    .queryParam("fnr", ANNEN_BRUKER)) //fake annen bruker, se FakeLoginFilter
-                    .buildGet()
-                    .invoke();
-            assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-    }
-
-    @Test
     public void nektetTilgangUtenToken_opprettFaktum() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         Response response = soknadTester.sendsoknadResource("fakta", webTarget -> webTarget

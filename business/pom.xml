@@ -52,6 +52,7 @@
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-pdf</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>

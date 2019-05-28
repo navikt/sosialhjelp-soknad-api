@@ -59,7 +59,7 @@ public class SikkerhetsAspectUtenOidcTest {
         sikkerhetsAspectTest.skalSjekkeOmBrukerHarTilgangTilVedlegg();
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void skalHandtereHvisIkkeVedleggFinnes() {
         sikkerhetsAspectTest.skalHandtereHvisIkkeVedleggFinnes();
     }

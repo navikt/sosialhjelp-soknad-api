@@ -75,7 +75,7 @@ public class SikkerhetsAspectTest {
         //TODO: Lag denne for opplastetVedlegg
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void skalHandtereHvisIkkeVedleggFinnes() {
         //TODO: Lag denne for opplastetVedlegg
     }

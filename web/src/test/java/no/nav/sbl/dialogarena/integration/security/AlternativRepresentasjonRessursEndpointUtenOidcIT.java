@@ -21,23 +21,6 @@ public class AlternativRepresentasjonRessursEndpointUtenOidcIT extends AbstractS
         EndpointDataMocking.setupMockWsEndpointData();
     }
 
-    @Test
-    public void accessDeniedMedAnnenBruker_xmlRepresentasjon() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
-                .buildGet()
-                .invoke();
-
-        Response responseUtenFnr = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget)
-                .buildGet()
-                .invoke();
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-        assertThat(responseUtenFnr.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-    }
 
     @Test
     public void accessDeniedMedAnnenBruker_jsonRepresentasjon() {
