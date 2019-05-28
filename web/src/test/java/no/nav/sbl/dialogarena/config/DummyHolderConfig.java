@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
@@ -70,11 +69,6 @@ public class DummyHolderConfig {
 
     @Bean
     public WebSoknadConfig config() {
-        return null;
-    }
-
-    @Bean
-    public XmlService xmlService() {
         return null;
     }
 

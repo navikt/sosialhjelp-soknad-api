@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
@@ -19,7 +18,6 @@ import org.springframework.context.annotation.Import;
         FaktaService.class,
         SoknadDataFletter.class,
         EttersendingService.class,
-        XmlService.class,
         SoknadMetricsService.class,
         FillagerService.class,
         HenvendelseService.class,
