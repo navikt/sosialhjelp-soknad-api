@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Import;
 @Import({
         LagringsScheduler.class,
         DbConfig.class,
-        AktivitetService.class,
-        MaalgrupperService.class,
         ConsumerConfig.class,
         ServiceConfig.class,
         ServicesApplicationConfig.class,

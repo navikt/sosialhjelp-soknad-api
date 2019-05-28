@@ -73,21 +73,11 @@ public class InformasjonRessurs {
     @Inject
     private PersonInfoService personInfoService;
     @Inject
-    private WebSoknadConfig webSoknadConfig;
-    @Inject
-    private TjenesterRessurs tjenesterRessurs;
-    @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Inject
     private AdresseSokService adresseSokService;
     @Inject
     private NorgService norgService;
-
-
-    @Path("/tjenester")
-    public Object getTjenesterRessurs(){
-        return tjenesterRessurs;
-    }
 
     @GET
     @Path("/miljovariabler")
