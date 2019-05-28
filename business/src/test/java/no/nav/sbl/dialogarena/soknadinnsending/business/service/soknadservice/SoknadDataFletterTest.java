@@ -202,40 +202,6 @@ public class SoknadDataFletterTest {
     }
 
     @Test
-    public void skalPopulereFraMetadataNaarSoknadIkkeFinnes() throws IOException {
-        Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg");
-        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medskjemaNummer(SKJEMA_NUMMER).medId(11L)
-                .medVedlegg(asList(vedlegg)).medStatus(UNDER_ARBEID);
-
-        SoknadMetadata metadata = new SoknadMetadata();
-        metadata.status = UNDER_ARBEID;
-        metadata.hovedskjema = new HovedskjemaMetadata();
-        metadata.hovedskjema.filUuid = "uidHovedskjema";
-        VedleggMetadata v = new VedleggMetadata();
-        v.filUuid = "uidVedlegg";
-        metadata.vedlegg.vedleggListe.add(v);
-
-        when(henvendelsesConnector.hentSoknad("123", true)).thenReturn(metadata);
-        when(lokalDb.hentSoknad("123")).thenReturn(null, soknad, soknad);
-        when(lokalDb.hentSoknadMedVedlegg("123")).thenReturn(soknad, soknad);
-        when(lokalDb.hentSoknadMedData(11L)).thenReturn(soknad);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        JAXB.marshal(soknad, baos);
-        when(fillagerService.hentFil("uidHovedskjema"))
-                .thenReturn(baos.toByteArray());
-        WebSoknad webSoknad = soknadServiceUtil.hentSoknad("123", true, false);
-        soknadServiceUtil.hentSoknad("123", true, false);
-        ArgumentCaptor<WebSoknad> captor = ArgumentCaptor.forClass(WebSoknad.class);
-        verify(lokalDb, times(1)).populerFraStruktur(captor.capture());
-
-        WebSoknad captured = captor.getValue();
-        assertThat(captured.getVedlegg().get(0).getFillagerReferanse()).isEqualTo("uidVedlegg");
-
-        assertThat(webSoknad.getSoknadId()).isEqualTo(11L);
-    }
-
-    @Test
     public void lagreSystemfakumSomDefinertForSoknadVedHenting() {
         WebSoknad soknad = new WebSoknad()
                 .medBehandlingId("123")

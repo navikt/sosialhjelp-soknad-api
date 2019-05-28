@@ -51,10 +51,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-pdf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-lokalt-kodeverk</artifactId>
         </dependency>
         <dependency>
@@ -98,11 +94,6 @@
         <dependency>
             <groupId>no.nav</groupId>
             <artifactId>metrics</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.tjenester.fim</groupId>
-            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
         </dependency>
 
         <dependency>
@@ -169,10 +160,6 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.stephenc.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
         </dependency>
 
         <!-- Avhengigheter med runtime-scope -->

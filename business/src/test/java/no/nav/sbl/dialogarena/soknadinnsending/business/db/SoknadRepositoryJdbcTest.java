@@ -438,30 +438,6 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalRepopulereDatabaseOgSetteSistLagret() {
-        soknad = WebSoknad.startSoknad()
-                .medId(101L)
-                .medUuid(uuid)
-                .medAktorId("123123")
-                .medBehandlingId("AH123")
-                .medskjemaNummer(skjemaNummer)
-                .medOppretteDato(now())
-                .medVersjon(0)
-                .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(11L).medKey("key1").medValue("val1").medType(BRUKERREGISTRERT).medProperty("test", "test"))
-                .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(12L).medKey("key2").medValue("val2").medType(SYSTEMREGISTRERT).medProperty("test2", "test2"))
-                .medVedlegg(Arrays.asList(new Vedlegg(101L, 11L, "L6", Vedlegg.Status.LastetOpp).medOpprettetDato(System.currentTimeMillis())));
-
-        soknadRepository.populerFraStruktur(soknad);
-        WebSoknad res = soknadRepository.hentSoknadMedData(soknad.getSoknadId());
-
-        soknad.getVedlegg().get(0).setOpprettetDato(res.getVedlegg().get(0).getOpprettetDato());
-        soknad.setSistLagret(res.getSistLagret());
-
-        assertThat(res, is(equalTo(soknad)));
-        assertNotNull(res.getSistLagret());
-    }
-
-    @Test
     public void skalKunneHenteUtEttersendingMedBehandlingskjedeId() {
         opprettOgPersisterEttersending();
 

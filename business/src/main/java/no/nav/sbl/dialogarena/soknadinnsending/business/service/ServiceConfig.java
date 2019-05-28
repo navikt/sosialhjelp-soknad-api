@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Import;
         EkstraMetadataService.class,
         EttersendingService.class,
         XmlService.class,
-        SynligeFaktaService.class,
         SoknadMetricsService.class,
         FillagerService.class,
         HenvendelseService.class,
