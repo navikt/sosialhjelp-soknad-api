@@ -12,14 +12,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
@@ -90,11 +87,6 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public VedleggRepository vedleggRepository() {
-        return new VedleggRepositoryJdbc();
-    }
-
-    @Bean
     public RepositoryTestSupport testSupport() {
         return new TestSupport(dataSource);
     }
@@ -127,11 +119,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public NavMessageSource navMessageSource(){
         return new NavMessageSource();
-    }
-
-    @Bean
-    public StartDatoUtil startDatoService(){
-        return new StartDatoUtil();
     }
 
     @Bean

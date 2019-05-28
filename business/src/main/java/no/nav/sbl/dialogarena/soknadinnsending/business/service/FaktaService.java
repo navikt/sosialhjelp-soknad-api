@@ -2,13 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import org.apache.commons.collections15.Closure;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
@@ -29,10 +26,6 @@ public class FaktaService {
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
-
-    @Inject
-    @Named("vedleggRepository")
-    private VedleggRepository vedleggRepository;
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private static final Logger logger = getLogger(FaktaService.class);
@@ -135,11 +128,6 @@ public class FaktaService {
         Long soknadId = faktum.getSoknadId();
 
         String faktumKey = faktum.getKey();
-        List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
-
-        for (Vedlegg vedlegg : vedleggliste) {
-            vedleggRepository.slettVedleggOgData(soknadId, vedlegg);
-        }
         repository.slettBrukerFaktum(soknadId, faktumId);
         repository.settSistLagretTidspunkt(soknadId);
         settDelstegStatus(soknadId, faktumKey);

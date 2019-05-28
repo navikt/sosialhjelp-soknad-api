@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import org.slf4j.Logger;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.*;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Types;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
@@ -41,9 +40,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     private static final FaktumRowMapper FAKTUM_ROW_MAPPER = new FaktumRowMapper();
     private static final FaktumEgenskapRowMapper FAKTUM_EGENSKAP_ROW_MAPPER = new FaktumEgenskapRowMapper();
     private static final SoknadRowMapper SOKNAD_ROW_MAPPER = new SoknadRowMapper();
-
-    @Inject
-    private VedleggRepository vedleggRepository;
 
     @Inject
     private HendelseRepository hendelseRepository;
@@ -79,23 +75,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getDelstegStatus().name(),
                         soknad.getBehandlingskjedeId(),
                         soknad.getJournalforendeEnhet());
-    }
-
-
-
-    public void populerFraStruktur(WebSoknad soknad) {
-        insertSoknad(soknad, soknad.getSoknadId());
-        hendelseRepository.registrerHendelse(soknad, HendelseType.HENTET_FRA_HENVENDELSE);
-
-        List<FaktumEgenskap> egenskaper = soknad.getFakta().stream()
-                .flatMap(faktum -> faktum.getFaktumEgenskaper().stream())
-                .collect(toList());
-
-        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(soknad.getFakta().toArray()));
-        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUMEGENSKAP, SqlParameterSourceUtils.createBatch(egenskaper.toArray()));
-        for (Vedlegg vedlegg : soknad.getVedlegg()) {
-            vedleggRepository.opprettEllerEndreVedlegg(vedlegg, null);
-        }
     }
 
     public Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId) {

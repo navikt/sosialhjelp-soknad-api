@@ -15,10 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
@@ -37,9 +34,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
 
-import javax.xml.bind.JAXB;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +47,8 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UN
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadDataFletterTest {
@@ -82,8 +77,6 @@ public class SoknadDataFletterTest {
     private WebSoknadConfig config;
     @Mock
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-    @Mock
-    private VedleggRepository vedleggRepository;
     @Mock
     private SystemdataUpdater systemdataUpdater;
     @Mock
@@ -173,9 +166,6 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedVedlegg(behandlingsId)).thenReturn(
                 webSoknad);
         when(lokalDb.hentSoknadMedData(1L)).thenReturn(webSoknad);
-
-        when(vedleggRepository.hentVedleggForskjemaNummer(1L, null, Kodeverk.KVITTERING))
-                .thenReturn(KVITTERING_REF);
 
         when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMA_NUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER));
         soknadServiceUtil.sendSoknad(behandlingsId);

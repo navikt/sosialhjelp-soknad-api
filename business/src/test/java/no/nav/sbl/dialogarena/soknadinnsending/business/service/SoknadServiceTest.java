@@ -9,11 +9,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -50,8 +48,6 @@ public class SoknadServiceTest {
     @Mock
     private SoknadRepository soknadRepository;
     @Mock
-    private VedleggRepository vedleggRepository;
-    @Mock
     private HenvendelseService henvendelsesConnector;
     @Mock
     private FillagerService fillagerService;
@@ -59,8 +55,6 @@ public class SoknadServiceTest {
     private Kodeverk kodeverk;
     @Mock
     private NavMessageSource navMessageSource;
-    @Mock
-    private StartDatoUtil startDatoUtil;
     @Mock
     private FaktaService faktaService;
     @Mock
