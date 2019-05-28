@@ -14,11 +14,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.*;
 
 public interface KravdialogInformasjon {
 
-    String BOLK_PERSONALIA = "Personalia";
-    String BOLK_BARN = "Barn";
-    String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
-    String UTBETALING_BOLK = "UtbetalingBolk";
-
     Steg[] getStegliste();
 
     String getSoknadTypePrefix();
@@ -29,58 +24,15 @@ public interface KravdialogInformasjon {
 
     List<String> getSkjemanummer();
 
-    List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad);
-
-    List<EkstraMetadataTransformer> getMetadataTransformers(WebSoknad soknad);
-
-    boolean brukerNyOppsummering();
-
-    boolean skalSendeMedFullSoknad();
-
     String getBundleName();
-
-    SoknadType getSoknadstype();
-
-    String getKvitteringTemplate();
-
-    Integer getSkjemaVersjon();
 
     abstract class DefaultOppsett implements KravdialogInformasjon {
 
         public static final int VERSJON = 0;
 
         @Override
-        public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
-            return new ArrayList<>();
-        }
-
-        @Override
-        public List<EkstraMetadataTransformer> getMetadataTransformers(WebSoknad soknad) {
-            return Collections.emptyList();
-        }
-
-        @Override
         public Steg[] getStegliste() {
             return new Steg[]{VEILEDNING, SOKNAD, VEDLEGG, OPPSUMMERING};
         }
-
-        @Override
-        public boolean brukerNyOppsummering(){
-            return false;
-        }
-        public boolean skalSendeMedFullSoknad(){
-            return false;
-        }
-
-        public SoknadType getSoknadstype() {
-            return SoknadType.SEND_SOKNAD;
-        }
-
-        public String getKvitteringTemplate() {
-            return "/skjema/kvittering";
-        }
-
-        @Override
-        public Integer getSkjemaVersjon() { return VERSJON; }
     }
 }

@@ -24,7 +24,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
-import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
@@ -54,11 +53,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public SoknadDataFletter fletter() {
         return new SoknadDataFletter();
-    }
-
-    @Bean
-    public EkstraMetadataService ekstraMetadataService() {
-        return new EkstraMetadataService();
     }
 
     @Bean
@@ -165,11 +159,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     OpplastetVedleggRepository opplastetVedleggRepository() {
         return mock(OpplastetVedleggRepository.class);
-    }
-
-    @Bean
-    WebSoknadConverter webSoknadConverter() {
-        return mock(WebSoknadConverter.class);
     }
 
     @Bean

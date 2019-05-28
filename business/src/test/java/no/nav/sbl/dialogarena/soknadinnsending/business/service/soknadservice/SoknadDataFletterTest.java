@@ -97,14 +97,10 @@ public class SoknadDataFletterTest {
     @InjectMocks
     private SoknadDataFletter soknadServiceUtil;
 
-    @InjectMocks
-    private EkstraMetadataService ekstraMetadataService;
-
 
     @SuppressWarnings("unchecked")
     @Before
     public void before() {
-        soknadServiceUtil.ekstraMetadataService = ekstraMetadataService;
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");

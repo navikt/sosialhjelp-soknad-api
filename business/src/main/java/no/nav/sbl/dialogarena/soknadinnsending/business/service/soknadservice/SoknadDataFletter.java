@@ -105,9 +105,6 @@ public class SoknadDataFletter {
     private NavMessageSource messageSource;
 
     @Inject
-    EkstraMetadataService ekstraMetadataService;
-
-    @Inject
     private SoknadMetricsService soknadMetricsService;
 
     @Inject

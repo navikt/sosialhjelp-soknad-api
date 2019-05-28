@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erIkkeTom;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -66,7 +66,7 @@ public class ArbeidRessurs {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
-        if (erIkkeTom(arbeidFrontend.kommentarTilArbeidsforhold)){
+        if (!isBlank(arbeidFrontend.kommentarTilArbeidsforhold)){
             arbeid.setKommentarTilArbeidsforhold(new JsonKommentarTilArbeidsforhold()
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(arbeidFrontend.kommentarTilArbeidsforhold));
