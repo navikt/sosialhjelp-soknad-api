@@ -805,7 +805,6 @@
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
                 <version>2.10.4</version>
-                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>

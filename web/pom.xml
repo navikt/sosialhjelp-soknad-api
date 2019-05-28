@@ -160,10 +160,6 @@
         </dependency>
 
         <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>args4j</groupId>
             <artifactId>args4j</artifactId>
         </dependency>
@@ -244,7 +240,6 @@
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>

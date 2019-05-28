@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.config;
 
-import net.sf.ehcache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -23,8 +22,7 @@ public class CacheConfig {
     @Bean
     public EhCacheCacheManager cacheManager() {
         EhCacheCacheManager cacheManager = new EhCacheCacheManager();
-        ehCacheManagerFactoryBean().getObject();
-        CacheManager manager = ehCacheManagerFactoryBean().getObject();
+        net.sf.ehcache.CacheManager manager = ehCacheManagerFactoryBean().getObject();
         cacheManager.setCacheManager(manager);
         return cacheManager;
     }
