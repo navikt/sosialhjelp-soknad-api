@@ -1,1 +1,0 @@
-Din sesjon vil utløpe om ${timer} minutter. Dersom du ikke foretar deg noe, vil du bli logget ut. For å fortsette, vennligst trykk «Fortsett».

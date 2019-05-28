@@ -31,26 +31,5 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <plugins>
-            <plugin>
-                <groupId>no.nav.sbl.tekster</groupId>
-                <artifactId>maven-tekster-merger</artifactId>
-                <version>1.11</version>
-                <executions>
-                    <execution>
-                        <id>merge</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>merge</goal>
-                        </goals>
-                        <configuration>
-                            <tekster>src/main/tekster</tekster>
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-
     </build>
 </project>

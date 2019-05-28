@@ -10,12 +10,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -31,6 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -71,6 +67,7 @@ public class TelefonnummerRessursTest {
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
+        doCallRealMethod().when(telefonnummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class));
     }
 
     @After
@@ -89,19 +86,6 @@ public class TelefonnummerRessursTest {
 
         assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
         assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM));
-        assertThat(telefonnummerFrontend.brukerdefinert, is(false));
-    }
-
-    @Test
-    public void getTelefonnummerSkalReturnereOppdatertSystemTelefonnummerFraTPS(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM));
-        when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM_OPPDATERT);
-
-        final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
-
-        assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
-        assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM_OPPDATERT));
         assertThat(telefonnummerFrontend.brukerdefinert, is(false));
     }
 
@@ -133,7 +117,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void putTelefonnummerSkalLageNyJsonTelefonnummerDersomDenVarNull(){
-        startWithoutTelefonnummerAndNoSystemTelefonnummer();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
         ignoreTilgangskontrollAndLegacyUpdate();
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
@@ -149,7 +134,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void putTelefonnummerSkalOppdatereBrukerutfyltTelefonnummer(){
-        startWithoutTelefonnummerAndNoSystemTelefonnummer();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
         ignoreTilgangskontrollAndLegacyUpdate();
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
@@ -165,7 +151,9 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void putTelefonnummerSkalOverskriveBrukerutfyltTelefonnummerMedSystemTelefonnummer(){
-        startWithBrukerTelefonnummerAndSystemTelefonnummerInTPS();
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                Optional.of(createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)));
+        when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
         ignoreTilgangskontrollAndLegacyUpdate();
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
@@ -191,35 +179,12 @@ public class TelefonnummerRessursTest {
         when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
     }
 
-    private void startWithBrukerTelefonnummerAndSystemTelefonnummerInTPS() {
-        when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)));
-    }
-
-    private void startWithoutTelefonnummerAndNoSystemTelefonnummer() {
-        when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
-    }
-
     private SoknadUnderArbeid createJsonInternalSoknadWithTelefonnummer(JsonKilde kilde, String verdi) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withPersonalia(new JsonPersonalia()
-                                                .withTelefonnummer(verdi == null ? null : new JsonTelefonnummer()
-                                                        .withKilde(kilde)
-                                                        .withVerdi(verdi)
-                                                )
-                                                .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                        .withVerdi(EIER)
-                                                )
-                                        )
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
+                .withTelefonnummer(verdi == null ? null : new JsonTelefonnummer()
+                        .withKilde(kilde)
+                        .withVerdi(verdi));
+        return soknadUnderArbeid;
     }
 }

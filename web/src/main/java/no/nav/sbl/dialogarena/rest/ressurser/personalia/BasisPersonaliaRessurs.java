@@ -2,10 +2,11 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -29,22 +30,22 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class BasisPersonaliaRessurs {
 
     @Inject
-    private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
-
-    @Inject
     private Adressekodeverk adressekodeverk;
 
     @Inject
     private VedleggOriginalFilerService vedleggOriginalFilerService;
+
+    @Inject
+    private LegacyHelper legacyHelper;
 
     @GET
     public BasisPersonaliaFrontend hentBasisPersonalia(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
 
         vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-        JsonPersonalia jsonPersonalia = basisPersonaliaSystemdata.innhentSystemBasisPersonalia(eier);
+        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
 
-        return mapToBasisPersonaliaFrontend(jsonPersonalia);
+        return mapToBasisPersonaliaFrontend(soknad.getSoknad().getData().getPersonalia());
     }
 
     private BasisPersonaliaFrontend mapToBasisPersonaliaFrontend(JsonPersonalia jsonPersonalia) {

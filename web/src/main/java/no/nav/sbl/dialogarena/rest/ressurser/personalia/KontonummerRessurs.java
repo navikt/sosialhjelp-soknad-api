@@ -1,34 +1,28 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.security.oidc.api.ProtectedWithClaims;
-import org.springframework.stereotype.Controller;
-
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.security.oidc.api.ProtectedWithClaims;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -41,10 +35,10 @@ public class KontonummerRessurs {
     private SoknadService soknadService;
 
     @Inject
-    private FaktaService faktaService;
+    private LegacyHelper legacyHelper;
 
     @Inject
-    private LegacyHelper legacyHelper;
+    private FaktaService faktaService;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -58,10 +52,15 @@ public class KontonummerRessurs {
 
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
-        final JsonKontonummer kontonummer = soknad.getSoknad().getData().getPersonalia().getKontonummer();
-        final String systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = legacyHelper.hentSoknad(behandlingsId, eier, false);
+        JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        String systemverdi;
+        if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)) {
+            systemverdi = kontonummer.getVerdi();
+        } else {
+            systemverdi = kontonummerSystemdata.innhentSystemverdiKontonummer(eier);
+        }
 
         return new KontonummerFrontend()
                 .withBrukerdefinert(kontonummer.getKilde() == JsonKilde.BRUKER)
@@ -83,7 +82,6 @@ public class KontonummerRessurs {
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final JsonKontonummer kontonummer = personalia.getKontonummer();
-        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.setKilde(JsonKilde.BRUKER);
             if ("".equals(kontonummerFrontend.brukerutfyltVerdi)) {
@@ -93,12 +91,21 @@ public class KontonummerRessurs {
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto);
         } else if (kontonummer.getKilde() == JsonKilde.BRUKER) {
             kontonummer.setKilde(JsonKilde.SYSTEM);
-            String systemverdiKontonummer = kontonummerSystemdata.innhentSystemverdiKontonummer(personIdentifikator);
-            String verdi = systemverdiKontonummer.replaceAll("[ \\.]", "");
-            kontonummer.setVerdi(verdi);
+            kontonummerSystemdata.updateSystemdataIn(soknad);
             kontonummer.setHarIkkeKonto(null);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    private void legacyOppdatererFaktumSystemdata(String behandlingsId, KontonummerFrontend kontonummerFrontend, JsonKontonummer kontonummer) {
+        if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)){
+            WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
+            Faktum systemKonotnummerFatkum = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "kontakt.system.kontonummer");
+            systemKonotnummerFatkum.setValue(kontonummer.getVerdi());
+            faktaService.lagreSystemFaktum(webSoknad.getSoknadId(), systemKonotnummerFatkum);
+        } else {
+            kontonummerFrontend.brukerdefinert = true;
+        }
     }
 
     private void legacyUpdate(String behandlingsId, KontonummerFrontend kontonummerFrontend) {

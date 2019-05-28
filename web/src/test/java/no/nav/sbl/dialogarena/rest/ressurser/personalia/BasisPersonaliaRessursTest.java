@@ -105,18 +105,6 @@ public class BasisPersonaliaRessursTest {
     }
 
     @Test
-    public void getBasisPersonaliaSkalReturnereOppdatertSystemBasisPersonaliaFraTPS(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithBasisPersonalia(false, false, false));
-        when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
-        when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
-
-        final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
-
-        assertThatPersonaliaIsCorrectlyConverted(basisPersonaliaFrontend, JSON_PERSONALIA);
-    }
-
-    @Test
     public void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger(){
         when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(false, false, true));

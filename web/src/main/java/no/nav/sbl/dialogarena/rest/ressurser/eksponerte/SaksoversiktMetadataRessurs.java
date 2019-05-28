@@ -22,7 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Implementerer speccen definert i soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon
  */
 @Controller
-@Unprotected
+@Unprotected // Er sikret med SAML frem til team personbruker er klare med å bytte ut SAML med OIDC
 @Path("/metadata")
 @Timed
 @Produces(APPLICATION_JSON)

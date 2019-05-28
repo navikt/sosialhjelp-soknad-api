@@ -1,1 +1,0 @@
-The name must not have more than 25 letters

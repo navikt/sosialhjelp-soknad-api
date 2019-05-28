@@ -44,13 +44,13 @@ public class TjenesterRessursTest {
     }
 
     @Test
-    public void skalHenteAktiviteter() throws Exception {
+    public void skalHenteAktiviteter() {
         ressurs.hentAktiviteter();
         verify(aktivitetService).hentAktiviteter(fodselsnummer);
     }
 
     @Test
-    public void skalHenteMaalgrupper() throws Exception {
+    public void skalHenteMaalgrupper() {
         ressurs.hentMaalgrupper();
         verify(maalgrupperService).hentMaalgrupper(fodselsnummer);
     }

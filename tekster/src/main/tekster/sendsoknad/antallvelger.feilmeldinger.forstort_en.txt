@@ -1,1 +1,0 @@
-The number cannot be more than { 0 }

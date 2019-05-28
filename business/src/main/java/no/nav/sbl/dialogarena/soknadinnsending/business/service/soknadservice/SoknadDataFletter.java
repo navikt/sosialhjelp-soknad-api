@@ -551,12 +551,19 @@ public class SoknadDataFletter {
                 byte[] jsonSoknadKonvertert = mapJsonSoknadTilFil(soknadKonvertert, writer);
                 JsonNode beforeNode = mapper.readTree(jsonSoknadKonvertert);
                 JsonNode afterNode = mapper.readTree(jsonSoknad);
-                EnumSet<DiffFlags> flags = EnumSet.of(OMIT_MOVE_OPERATION, OMIT_COPY_OPERATION);
+                EnumSet<DiffFlags> flags = EnumSet.of(OMIT_MOVE_OPERATION, OMIT_COPY_OPERATION, ADD_ORIGINAL_VALUE_ON_REPLACE);
                 JsonNode patch = JsonDiff.asJson(beforeNode, afterNode, flags);
                 for (JsonNode node : patch) {
                     if (node instanceof ObjectNode) {
                         ObjectNode object = (ObjectNode) node;
-                        object.remove("value");
+                        String path = node.path("path").textValue();
+                        String op = node.path("op").textValue();
+                        if (!(path.contains("periodeFom") || path.contains("periodeTom"))){
+                            object.remove("value");
+                            if (op.contains("replace")){
+                                object.remove("fromValue");
+                            }
+                        }
                     }
                 }
                 if (patch.isArray()){

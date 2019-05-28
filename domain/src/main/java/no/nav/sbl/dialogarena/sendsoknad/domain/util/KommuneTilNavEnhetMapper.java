@@ -107,9 +107,6 @@ public class KommuneTilNavEnhetMapper {
             .put("0502", "974567776")    // Gjøvik
             .put("0906", "976825950")    // Arendal
             .put("1903", "978608418")    // Harstad
-            .put("1517", "978607063")    // Hareid
-            .put("1516", "978607063")    // Ulstein
-            .put("1514", "978607063")    // Sande
             .put("0511", "919059303")    // Dovre
             .put("0512", "964949204")    // Lesja
             .put("1804", "983942962")    // Bodø
@@ -118,6 +115,10 @@ public class KommuneTilNavEnhetMapper {
             .put("0417", "994743767")    // Stange
             .put("1702", "983921000")    // Steinkjer, Verran, Snåsa, Inderøy
             .put("0211", "974574306")    // Vestby
+            .put("1222", "974575728")    // Fitjar
+            .put("1517", "978607063")    // Hareid
+            .put("1516", "978607063")    // Ulstein
+            .put("1514", "978607063")    // Sande
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -369,9 +370,6 @@ public class KommuneTilNavEnhetMapper {
                     "0502",
                     "0906",
                     "1903",
-                    "1517",
-                    "1516",
-                    "1514",
                     "0511",
                     "0512",
                     "1804",
@@ -382,7 +380,11 @@ public class KommuneTilNavEnhetMapper {
                     "5039",
                     "5041",
                     "5053",
-                    "0211"
+                    "0211",
+                    "1222",
+                    "1517",
+                    "1516",
+                    "1514"
                                 
                 
             ));

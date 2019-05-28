@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Component;
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
@@ -11,6 +7,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 @Component
 public class KontonummerSystemdata implements Systemdata {
@@ -30,7 +29,8 @@ public class KontonummerSystemdata implements Systemdata {
                 kontonummer.setKilde(JsonKilde.BRUKER);
                 kontonummer.setVerdi(null);
             } else {
-                kontonummer.setVerdi(systemverdi);
+                String verdi = systemverdi.replaceAll("\\D", "");
+                kontonummer.setVerdi(verdi);
             }
         }
     }
