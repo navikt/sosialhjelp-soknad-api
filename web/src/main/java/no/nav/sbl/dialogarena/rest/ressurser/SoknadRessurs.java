@@ -129,34 +129,6 @@ public class SoknadRessurs {
         return result;
     }
 
-    @POST
-    @Path("/opprettSoknad")
-    @Consumes(APPLICATION_JSON)
-    public Map<String, String> midlertidigOpprettSoknadDuplikat(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
-        Map<String, String> result = new HashMap<>();
-
-        String opprettetBehandlingsId;
-        if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
-        } else {
-            final String eier = OidcFeatureToggleUtils.getUserId();
-            WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
-            if (soknad == null){
-                Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
-                if (soknadUnderArbeid.isPresent()) {
-                    opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();
-                } else {
-                    opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
-                }
-            } else {
-                opprettetBehandlingsId = soknad.getBrukerBehandlingId();
-            }
-        }
-        result.put("brukerBehandlingId", opprettetBehandlingsId);
-        response.addCookie(xsrfCookie(opprettetBehandlingsId));
-        return result;
-    }
-
     @PUT  //TODO: Burde endres til å sende med hele objektet for å følge spec'en
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad

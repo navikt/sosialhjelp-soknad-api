@@ -6,14 +6,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFle
 
 import javax.inject.Inject;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 public class InnloggetBruker {
 
     @Inject
     private PersonaliaFletter personaliaFletter;
 
-    public Personalia hentPersonalia() {
+    public Personalia hentKunFornavnPersonalia() {
         String fnr = OidcFeatureToggleUtils.getUserId();
         Personalia personalia = personaliaFletter.mapTilPersonalia(fnr);
         if (personalia == null){

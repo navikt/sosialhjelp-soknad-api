@@ -86,8 +86,14 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/personalia")
-    public Personalia hentPersonalia() {
-        return innloggetBruker.hentPersonalia();
+    public Personalia hentKunFornavnPersonalia() {
+        return innloggetBruker.hentKunFornavnPersonalia();
+    }
+
+    @GET
+    @Path("/fornavn")
+    public String hentFornavn() {
+        return innloggetBruker.hentFornavn();
     }
 
     @GET
