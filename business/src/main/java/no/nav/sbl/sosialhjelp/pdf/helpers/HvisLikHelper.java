@@ -12,11 +12,12 @@ public class HvisLikHelper extends RegistryAwareHelper<Object>{
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
-        if (key != null && key.toString().equals(options.param(0))) {
-            return options.fn(this);
-        } else {
-            return options.inverse(this);
+        for (Object param : options.params) {
+            if (key != null && key.toString().equals(param)) {
+                return options.fn(this);
+            }
         }
+        return options.inverse(this);
     }
 
     @Override
