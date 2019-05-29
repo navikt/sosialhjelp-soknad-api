@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
@@ -95,11 +94,7 @@ public class SoknadDataFletter {
     @Inject
     private OppgaveHandterer oppgaveHandterer;
     @Inject
-    private WebSoknadConfig config;
-    @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
 
     @Inject
     private NavMessageSource messageSource;
@@ -299,25 +294,9 @@ public class SoknadDataFletter {
         }
 
         if (medData) {
-            soknad = populerSoknadMedData(soknad);
+            soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId()).medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()));
         }
 
-        return soknad;
-    }
-
-    private WebSoknad populerSoknadMedData(WebSoknad soknad) {
-        soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
-                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                .medStegliste(config.getStegliste(soknad.getSoknadId()))
-                .medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()))
-                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
-
-        soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
-                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                .medStegliste(config.getStegliste(soknad.getSoknadId()))
-                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
         return soknad;
     }
 

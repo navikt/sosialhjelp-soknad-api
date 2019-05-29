@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sosialhjel
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
@@ -73,8 +72,6 @@ public class SoknadDataFletterTest {
     private FillagerService fillagerService;
     @Mock
     private FaktaService faktaService;
-    @Mock
-    private WebSoknadConfig config;
     @Mock
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Mock

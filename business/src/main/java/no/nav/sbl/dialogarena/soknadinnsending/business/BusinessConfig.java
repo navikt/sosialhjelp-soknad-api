@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Import;
         ServiceConfig.class,
         ServicesApplicationConfig.class,
         KravdialogInformasjonHolder.class,
-        WebSoknadConfig.class,
         ArbeidsforholdService.class,
         ArbeidsforholdTransformer.class,
         OppgaveHandtererImpl.class,

@@ -102,11 +102,6 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public WebSoknadConfig webSoknadConfig() {
-        return new WebSoknadConfig();
-    }
-
-    @Bean
     public KravdialogInformasjonHolder kravdialogInformasjonHolder(){
         return new KravdialogInformasjonHolder();
     }

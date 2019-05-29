@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.Before;
@@ -32,8 +31,6 @@ public class FaktaServiceTest {
     private SoknadRepository soknadRepository;
     @Mock
     private NavMessageSource navMessageSource;
-    @Mock
-    private WebSoknadConfig config;
 
     @InjectMocks
     private FaktaService faktaService;
