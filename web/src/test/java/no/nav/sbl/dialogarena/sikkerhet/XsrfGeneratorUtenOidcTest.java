@@ -1,19 +1,19 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
-import no.nav.modig.core.context.AuthenticationLevelCredential;
-import no.nav.modig.core.context.OpenAmTokenCredential;
-import no.nav.modig.core.domain.ConsumerId;
-import no.nav.modig.core.domain.SluttBruker;
-import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.AuthenticationLevelCredential;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.ConsumerId;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.OpenAmTokenCredential;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.SluttBruker;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
 import javax.security.auth.Subject;
 
 import static java.lang.System.setProperty;
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler.SUBJECTHANDLER_KEY;
 import static org.junit.Assert.fail;
 
 public class XsrfGeneratorUtenOidcTest {

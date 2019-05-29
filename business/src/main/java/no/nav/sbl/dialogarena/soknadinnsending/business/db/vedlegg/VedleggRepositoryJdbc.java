@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
-import no.nav.modig.core.exception.SystemException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SystemException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;

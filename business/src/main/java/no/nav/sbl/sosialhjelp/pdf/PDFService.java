@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.ApplicationException;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import org.springframework.stereotype.Component;
 

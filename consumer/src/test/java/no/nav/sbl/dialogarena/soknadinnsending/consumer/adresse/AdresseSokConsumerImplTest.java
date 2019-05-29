@@ -19,6 +19,7 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -28,7 +29,6 @@ import org.slf4j.MDC.MDCCloseable;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
@@ -43,15 +43,15 @@ public class AdresseSokConsumerImplTest {
     @BeforeClass
     public static void oppsettForInnloggetBruker() {
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-        oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
+        oldSubjectHandlerImplementationClass = System.setProperty(SamlSubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
     }
 
     @AfterClass
     public static void fjernOppsettForInnloggetBruker() {
         if (oldSubjectHandlerImplementationClass == null) {
-            System.clearProperty(SubjectHandler.SUBJECTHANDLER_KEY);
+            System.clearProperty(SamlSubjectHandler.SUBJECTHANDLER_KEY);
         } else {
-            System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, oldSubjectHandlerImplementationClass);
+            System.setProperty(SamlSubjectHandler.SUBJECTHANDLER_KEY, oldSubjectHandlerImplementationClass);
         }
     }
     
@@ -274,7 +274,7 @@ public class AdresseSokConsumerImplTest {
         return new ClientMock(client, webTarget, builder, response);
     }
     
-    public static class TestSubjectHandler extends SubjectHandler {
+    public static class TestSubjectHandler extends SamlSubjectHandler {
         @Override
         public Subject getSubject() {
             return null;

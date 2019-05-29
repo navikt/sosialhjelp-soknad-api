@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;

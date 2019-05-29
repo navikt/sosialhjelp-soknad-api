@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.service;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
-import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;

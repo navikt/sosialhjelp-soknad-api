@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.lang.System.setProperty;
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler.SUBJECTHANDLER_KEY;
 import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,7 +34,7 @@ public class TjenesterRessursUtenOidcTest {
     private TjenesterRessursTest tjenesterRessursTest;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
         tjenesterRessursTest.fodselsnummer = SamlStaticSubjectHandler.getSubjectHandler().getUid();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
@@ -46,12 +46,12 @@ public class TjenesterRessursUtenOidcTest {
     }
 
     @Test
-    public void skalHenteAktiviteter() throws Exception {
+    public void skalHenteAktiviteter(){
         tjenesterRessursTest.skalHenteAktiviteter();
     }
 
     @Test
-    public void skalHenteMaalgrupper() throws Exception {
+    public void skalHenteMaalgrupper(){
         tjenesterRessursTest.skalHenteMaalgrupper();
     }
 }

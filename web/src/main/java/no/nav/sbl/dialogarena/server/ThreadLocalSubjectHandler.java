@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler;
 
-public class ThreadLocalSubjectHandler extends SubjectHandler {
+public class ThreadLocalSubjectHandler extends SamlSubjectHandler {
     
     private static final Logger log = LoggerFactory.getLogger(ThreadLocalSubjectHandler.class);
 

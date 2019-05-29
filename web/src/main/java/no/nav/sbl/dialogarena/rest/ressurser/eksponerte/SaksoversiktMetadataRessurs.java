@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.eksponerte;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
 import no.nav.security.oidc.api.Unprotected;
@@ -36,7 +36,7 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        String fnr = SamlSubjectHandler.getSubjectHandler().getUid();
         logger.debug("Henter innsendte for fnr {}", fnr);
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
@@ -48,7 +48,7 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        String fnr = SamlSubjectHandler.getSubjectHandler().getUid();
         logger.debug("Henter ettersendelse for fnr {}", fnr);
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
@@ -60,7 +60,7 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        String fnr = SamlSubjectHandler.getSubjectHandler().getUid();
         logger.debug("Henter pabegynte for fnr {}", fnr);
 
         List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);

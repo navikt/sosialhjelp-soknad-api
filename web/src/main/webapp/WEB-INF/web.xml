@@ -84,7 +84,7 @@
 
     <filter>
         <filter-name>MDCFilter</filter-name>
-        <filter-class>no.nav.modig.presentation.logging.session.MDCFilter</filter-class>
+        <filter-class>no.nav.sbl.dialogarena.mdc.MDCFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
     <filter-mapping>

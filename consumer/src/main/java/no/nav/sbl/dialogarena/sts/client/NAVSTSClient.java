@@ -3,10 +3,8 @@ package no.nav.sbl.dialogarena.sts.client;
 /* Originally from modig (no.nav.modig.security.sts.client).
  * Should be removed when the application is running with OIDC. */
 
-import no.nav.modig.core.context.SubjectHandler;
-
-import no.nav.modig.core.domain.IdentType;
-
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.IdentType;
 import org.apache.cxf.Bus;
 import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
@@ -71,7 +69,7 @@ public class NAVSTSClient extends STSClient {
     }
 
     private String chooseCachekey() {
-        SubjectHandler subjectHandler = SubjectHandler.getSubjectHandler();
+        SamlSubjectHandler subjectHandler = SamlSubjectHandler.getSubjectHandler();
         // choose cachekey based on IdentType
         String key;
         if(subjectHandler.getIdentType() != null && subjectHandler.getIdentType().equals(IdentType.EksternBruker)) {
