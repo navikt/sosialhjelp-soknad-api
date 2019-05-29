@@ -315,11 +315,6 @@
                 <artifactId>metrics</artifactId>
                 <version>${metrics.version}</version>
             </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-lokalt-kodeverk</artifactId>
-                <version>${lokalt.kodeverk}</version>
-            </dependency>
 
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -975,18 +970,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <systemPropertyVariables>
-                            <java.awt.headless>true</java.awt.headless>
-                        </systemPropertyVariables>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.9</version>
                     <configuration>
                         <systemPropertyVariables>
+                            <java.awt.headless>true</java.awt.headless>
                             <user.language>nb</user.language>
                             <user.region>NO</user.region>
                         </systemPropertyVariables>

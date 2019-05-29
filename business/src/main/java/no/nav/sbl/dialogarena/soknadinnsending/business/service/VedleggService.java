@@ -7,7 +7,6 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.ApplicationException;
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.pdf.Convert;
@@ -21,6 +20,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertExcept
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.Kodeverk.Nokkel;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
@@ -52,14 +53,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel;
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel.TITTEL;
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel.TITTEL_EN;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.SKJEMA_VALIDERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.PAAKREVDE_VEDLEGG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.UnderBehandling;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.Kodeverk.KVITTERING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.Kodeverk.Nokkel.TITTEL;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.Kodeverk.Nokkel.TITTEL_EN;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component

@@ -235,11 +235,10 @@ public final class Jetty {
         httpConnector.setPort(port);
 
 
-        SslContextFactory factory = new SslContextFactory(true);
-        factory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
-        factory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
         if (sslPort.isPresent()) {
-
+            SslContextFactory factory = new SslContextFactory(true);
+            factory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
+            factory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
             HttpConfiguration httpsConfiguration = new HttpConfiguration(configuration);
             httpsConfiguration.setSecureScheme("https");
             httpsConfiguration.setSecurePort(sslPort.get());

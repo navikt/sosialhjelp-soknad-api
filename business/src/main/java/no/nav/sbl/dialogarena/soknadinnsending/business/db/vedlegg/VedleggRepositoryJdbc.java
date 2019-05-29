@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SystemException;
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.Kodeverk;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;

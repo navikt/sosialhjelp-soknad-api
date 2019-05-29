@@ -1,13 +1,13 @@
 package no.nav.sbl.dialogarena.modigcertificates;
 
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+/*
+    Copied from https://github.com/navikt/modig-testcertificates-safe-fork
+ */
 
 import java.util.Properties;
 
 public class KeyStore extends PropertySetter {
+
     public KeyStore(String filePath, String password) {
         super(createKeyStoreProperties(filePath, password));
     }

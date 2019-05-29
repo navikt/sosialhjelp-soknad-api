@@ -7,6 +7,7 @@ import java.time.Clock;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;

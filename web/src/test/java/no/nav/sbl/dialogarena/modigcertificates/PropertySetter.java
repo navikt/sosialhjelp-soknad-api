@@ -1,7 +1,8 @@
 package no.nav.sbl.dialogarena.modigcertificates;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+/*
+    Copied from https://github.com/navikt/modig-testcertificates-safe-fork
+ */
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,42 +28,6 @@ public class PropertySetter {
                 LOG.info("Setting {} = {}", propName, propertiesToSet.getProperty(propName));
             }
             properties.setProperty(propName, propertiesToSet.getProperty(propName));
-        }
-    }
-
-    public static class PropertySetterTester extends PropertySetter {
-
-        public PropertySetterTester() {
-            super(createKeyStoreProperties());
-        }
-
-        private static Properties createKeyStoreProperties() {
-            Properties p = new Properties();
-            p.setProperty("key1", "value1");
-            p.setProperty("key2", "value2");
-            return p;
-        }
-
-        public void setProperties(PropertySetter ps, String key1, String value1, String key2, String value2) {
-            Properties p = (Properties) System.getProperties().clone();
-
-            assertFalse(value1.equals(p.getProperty(key1)));
-            assertFalse(value2.equals(p.getProperty(key2)));
-            ps.setOn(p);
-            assertTrue(value1.equals(p.getProperty(key1)));
-            assertTrue(value2.equals(p.getProperty(key2)));
-        }
-
-        public void overwriteProperties(PropertySetter ps, String key1, String value1, String key2, String value2) {
-            Properties p = (Properties) System.getProperties().clone();
-            p.setProperty(key1, "verdi");
-            p.setProperty(key2, "verdi");
-
-            assertFalse(value1.equals(p.getProperty(key1)));
-            assertFalse(value2.equals(p.getProperty(key2)));
-            ps.setOn(p);
-            assertTrue(value1.equals(p.getProperty(key1)));
-            assertTrue(value2.equals(p.getProperty(key2)));
         }
     }
 }

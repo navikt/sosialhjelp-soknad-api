@@ -36,10 +36,6 @@
             <artifactId>soknadsosialhjelp-filformat</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-lokalt-kodeverk</artifactId>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-mock</artifactId>
         </dependency>

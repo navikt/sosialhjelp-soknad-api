@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.KodeverkConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -54,6 +55,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
         AdresseSystemdata.class,
         FamilieSystemdata.class,
         InntektSystemdata.class
+        //KodeverkConfig.class
 })
 public class BusinessConfig {
 

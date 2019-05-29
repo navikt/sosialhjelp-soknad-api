@@ -24,9 +24,9 @@ import javax.xml.bind.JAXB;
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kodeverk.Kodeverk.KVITTERING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;

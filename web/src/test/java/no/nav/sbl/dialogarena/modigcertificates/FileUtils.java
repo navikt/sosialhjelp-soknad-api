@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.modigcertificates;
 
+/*
+    Copied from https://github.com/navikt/modig-testcertificates-safe-fork
+ */
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,7 +14,6 @@ import static java.io.File.createTempFile;
 import static java.lang.System.currentTimeMillis;
 import static org.apache.commons.io.IOUtils.copy;
 
-//TestCertificates.class.getSimpleName()
 public final class FileUtils {
     private FileUtils() {
     }
