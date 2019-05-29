@@ -74,7 +74,7 @@
     <!--HttpSessionSecurityIntegrationFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
     <filter>
         <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
-        <filter-class>no.nav.modig.security.filter.OpenAMLoginFilter</filter-class>
+        <filter-class>no.nav.sbl.dialogarena.sendsoknad.domain.saml.domain.OpenAMLoginFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
