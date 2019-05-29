@@ -19,6 +19,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -127,6 +129,14 @@ public class SoknadRessurs {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
+
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonTelefonnummer telefonnummerNyModell = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
+        JsonKontonummer kontonummerNyModell = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setTelefonnummer(telefonnummerNyModell);
+        konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setKontonummer(kontonummerNyModell);
+
 
         return pdfTemplate.fyllHtmlMalMedInnhold(konvertertSoknadUnderArbeid.getJsonInternalSoknad());
     }
