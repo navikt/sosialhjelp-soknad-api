@@ -11,7 +11,7 @@ public class InnloggetBruker {
     @Inject
     private PersonaliaFletter personaliaFletter;
 
-    public Personalia hentPersonalia() {
+    public Personalia hentKunFornavnPersonalia() {
         String fnr = OidcFeatureToggleUtils.getUserId();
         Personalia personalia = personaliaFletter.mapTilPersonalia(fnr);
         if (personalia == null){
