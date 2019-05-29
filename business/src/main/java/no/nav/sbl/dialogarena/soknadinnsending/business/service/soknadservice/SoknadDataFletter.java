@@ -258,17 +258,17 @@ public class SoknadDataFletter {
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
         nySoknad.setSoknadId(soknadId);
 
-//        Iterator<Long> faktumIder = lokalDb.hentLedigeFaktumIder(1).iterator();
-//        Faktum faktum = new Faktum()
-//                .medFaktumId(faktumIder.next())
-//                .medKey("progresjon")
-//                .medValue("1")
-//                .medType(BRUKERREGISTRERT)
-//                .medSoknadId(soknadId);
-//        faktaService.opprettBrukerFaktum(behandlingsId, faktum);
-//        List<Faktum> fakta = new ArrayList<>();
-//        fakta.add(faktum);
-//        nySoknad.setFakta(fakta);
+        Iterator<Long> faktumIder = lokalDb.hentLedigeFaktumIder(1).iterator();
+        Faktum faktum = new Faktum()
+                .medFaktumId(faktumIder.next())
+                .medKey("progresjon")
+                .medValue("1")
+                .medType(BRUKERREGISTRERT)
+                .medSoknadId(soknadId);
+        faktaService.opprettBrukerFaktum(behandlingsId, faktum);
+        List<Faktum> fakta = new ArrayList<>();
+        fakta.add(faktum);
+        nySoknad.setFakta(fakta);
 
         return nySoknad;
     }
