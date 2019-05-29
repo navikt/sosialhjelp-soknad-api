@@ -97,12 +97,6 @@ public class InformasjonRessurs {
     }
 
     @GET
-    @Path("/fornavn")
-    public String hentFornavn() {
-        return innloggetBruker.hentFornavn();
-    }
-
-    @GET
     @Path("/poststed")
     @Produces("text/plain")
     public String hentPoststed(@QueryParam("postnummer") String postnummer) {
