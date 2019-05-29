@@ -20,10 +20,8 @@ public class NorgConsumerMock {
 
     private static Map<String, Map<String, RsNorgEnhet>> responses = new HashMap<>();
 
-
     public NorgConsumer norgConsumerMock(){
-        final NorgConsumer mock = mock(NorgConsumer.class);
-
+        NorgConsumer mock = mock(NorgConsumer.class);
 
         when(mock.finnEnhetForGeografiskTilknytning(any(String.class)))
                 .thenAnswer(invocationOnMock -> getOrCreateCurrentUserResponse(invocationOnMock));

@@ -22,10 +22,9 @@ public class SammensattNavnDeserializer extends StdDeserializer<SammensattNavn> 
     @Override
     public SammensattNavn deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
 
-        final JsonNode node = parser.getCodec().readTree(parser);
-        final ObjectMapper mapper = (ObjectMapper)parser.getCodec();
+        JsonNode node = parser.getCodec().readTree(parser);
+        ObjectMapper mapper = (ObjectMapper)parser.getCodec();
+
         return mapper.treeToValue(node, UstrukturertNavn.class);
-
-
     }
 }

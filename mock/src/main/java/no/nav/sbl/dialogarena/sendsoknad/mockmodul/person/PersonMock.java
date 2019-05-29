@@ -24,17 +24,16 @@ public class PersonMock {
 
     private static Map<String, HentKjerneinformasjonResponse> responses = new HashMap<>();
 
-
     public PersonPortType personMock() {
 
-        final PersonPortType mock = mock(PersonPortType.class);
+        PersonPortType mock = mock(PersonPortType.class);
 
         return getPersonPortType(mock);
     }
 
     public PersonPortTypeMock personPortTypeMock() {
 
-        final PersonPortTypeMock mock = mock(PersonPortTypeMock.class);
+        PersonPortTypeMock mock = mock(PersonPortTypeMock.class);
 
         return getPersonPortType(mock);
     }

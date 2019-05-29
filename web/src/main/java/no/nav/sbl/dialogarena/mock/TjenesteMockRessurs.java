@@ -77,8 +77,8 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpSession session = attr.getRequest().getSession(true);
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attr.getRequest().getSession(true);
         session.setAttribute("mockRessursUid", uid.getUid());
         clearCache();
     }
@@ -105,7 +105,7 @@ public class TjenesteMockRessurs {
         }
 
         String eier = OidcFeatureToggleUtils.getUserId();
-        final SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
+        SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
         PostAdresse fakeAdresse = new PostAdresse()
                 .withNavn(sendtSoknad.getNavEnhetsnavn())
                 .withPostnr("0000")

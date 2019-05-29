@@ -25,8 +25,9 @@ public class OrganisasjonDeserializer extends StdDeserializer<Organisasjon> {
     @Override
     public Organisasjon deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
 
-        final JsonNode node = parser.getCodec().readTree(parser);
-        final ObjectMapper mapper = (ObjectMapper)parser.getCodec();
+        JsonNode node = parser.getCodec().readTree(parser);
+        ObjectMapper mapper = (ObjectMapper)parser.getCodec();
+
         if (node.has("driverVirksomhet")) {
             return mapper.treeToValue(node, JuridiskEnhet.class);
         } else if (node.has("inngaarIJuridiskEnhet")){

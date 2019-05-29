@@ -15,9 +15,8 @@ public class MockSubjectHandlerService implements SubjectHandlerService {
         }
 
         try {
-            final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-            final HttpSession session = attr.getRequest().getSession(true);
-
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpSession session = attr.getRequest().getSession(true);
 
             return (String) session.getAttribute("mockRessursUid");
         } catch (RuntimeException e) {

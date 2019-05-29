@@ -60,7 +60,7 @@ public class BrukerprofilMock {
 
 
     public BrukerprofilPortType brukerProfilMock() {
-        final BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
+        BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
 
         try{
             when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class)))
@@ -292,8 +292,7 @@ public class BrukerprofilMock {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-
-            final SimpleModule module = new SimpleModule();
+            SimpleModule module = new SimpleModule();
             module.addDeserializer(XMLStrukturertAdresse.class, new XMLStrukturertAdresseDeserializer());
             module.addDeserializer(XMLStedsadresse.class, new XMLStedsadresseDeserializer());
             module.addDeserializer(XMLPostboksadresse.class, new XMLPostboksadresseDeserializer());
@@ -302,12 +301,11 @@ public class BrukerprofilMock {
             module.addDeserializer(XMLElektroniskAdresse.class, new XMLElektroniskAdresseDeserializer());
             module.addDeserializer(XMLMidlertidigPostadresse.class, new XMLMidlertidigPostadresseDeserializer());
             module.addDeserializer(XMLBankkonto.class, new XMLBankkontoDeserializer());
-
             mapper.registerModule(module);
 
             XMLHentKontaktinformasjonOgPreferanserResponse newResponse = mapper.readValue(jsonBrukerprofil, XMLHentKontaktinformasjonOgPreferanserResponse.class);
-
             XMLHentKontaktinformasjonOgPreferanserResponse currentResponse = getOrCreateCurrentUserResponse();
+
             if (currentResponse == null){
                 responses.put(OidcFeatureToggleUtils.getUserId(), newResponse);
             } else {

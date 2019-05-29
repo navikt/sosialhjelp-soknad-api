@@ -24,8 +24,9 @@ public class XMLStrukturertAdresseDeserializer extends StdDeserializer<XMLStrukt
     @Override
     public XMLStrukturertAdresse deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
 
-        final JsonNode node = parser.getCodec().readTree(parser);
-        final ObjectMapper mapper = (ObjectMapper)parser.getCodec();
+        JsonNode node = parser.getCodec().readTree(parser);
+        ObjectMapper mapper = (ObjectMapper)parser.getCodec();
+
         if (node.has("postboksnummer")) {
             return mapper.treeToValue(node, XMLPostboksadresse.class);
         } else {

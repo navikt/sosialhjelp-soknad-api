@@ -46,11 +46,13 @@ public class ArbeidsforholdMock {
     public static void setArbeidsforhold(String arbeidsforholdData) {
 
         try {
-            final ObjectMapper mapper = new ObjectMapper();
-            final SimpleModule module = new SimpleModule();
+            ObjectMapper mapper = new ObjectMapper();
+            SimpleModule module = new SimpleModule();
             module.addDeserializer(Aktoer.class, new AktoerDeserializer());
             mapper.registerModule(module);
-            final FinnArbeidsforholdPrArbeidstakerResponse response = mapper.readValue(arbeidsforholdData, FinnArbeidsforholdPrArbeidstakerResponse.class);
+
+            FinnArbeidsforholdPrArbeidstakerResponse response = mapper.readValue(arbeidsforholdData, FinnArbeidsforholdPrArbeidstakerResponse.class);
+
             if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
                 responses.put(OidcFeatureToggleUtils.getUserId(), response);
             } else {

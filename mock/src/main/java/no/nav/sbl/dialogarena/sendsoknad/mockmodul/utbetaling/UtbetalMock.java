@@ -39,7 +39,7 @@ public class UtbetalMock {
 
     public UtbetalingV1 utbetalMock() {
 
-        final UtbetalingV1 mock = mock(UtbetalingV1.class);
+        UtbetalingV1 mock = mock(UtbetalingV1.class);
 
         try {
             when(mock.hentUtbetalingsinformasjon(any(WSHentUtbetalingsinformasjonRequest.class)))
@@ -53,12 +53,7 @@ public class UtbetalMock {
     }
 
     public static WSHentUtbetalingsinformasjonResponse getOrCreateCurrentUserResponse(){
-        WSHentUtbetalingsinformasjonResponse response = responses.get(OidcFeatureToggleUtils.getUserId());
-        if (response == null){
-            response = getDefaultResponse();
-            responses.put(OidcFeatureToggleUtils.getUserId(), response);
-        }
-        return response;
+        return responses.computeIfAbsent(OidcFeatureToggleUtils.getUserId(), k -> getDefaultResponse());
     }
 
     public static WSHentUtbetalingsinformasjonResponse getDefaultResponse(){
@@ -68,11 +63,10 @@ public class UtbetalMock {
     public static void setUtbetalinger(String jsonWSUtbetaling){
 
         WSHentUtbetalingsinformasjonResponse newResponse = new WSHentUtbetalingsinformasjonResponse();
-        WSHentUtbetalingsinformasjonResponse currentResponse = getOrCreateCurrentUserResponse();
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            final SimpleModule module = new SimpleModule();
+            SimpleModule module = new SimpleModule();
             module.addDeserializer(WSAktoer.class, new WSAktoerDeserializer());
             module.addDeserializer(DateTime.class, new CustomDateDeserializer());
             mapper.registerModule(module);
@@ -87,7 +81,6 @@ public class UtbetalMock {
 
         logger.info("Setter utbetalingsresponse: " + jsonWSUtbetaling);
         responses.replace(OidcFeatureToggleUtils.getUserId(), newResponse);
-
     }
 
     public static void resetUtbetalinger(){

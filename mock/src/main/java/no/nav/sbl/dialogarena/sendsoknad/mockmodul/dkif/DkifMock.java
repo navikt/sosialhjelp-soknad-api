@@ -21,7 +21,7 @@ public class DkifMock {
 
     public DigitalKontaktinformasjonV1 dkifMock(){
 
-        final DigitalKontaktinformasjonV1 mock = mock(DigitalKontaktinformasjonV1.class);
+        DigitalKontaktinformasjonV1 mock = mock(DigitalKontaktinformasjonV1.class);
 
         try{
             when(mock.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class)))
@@ -44,8 +44,8 @@ public class DkifMock {
     }
 
     private static WSHentDigitalKontaktinformasjonResponse createNewResponse(){
-        final WSHentDigitalKontaktinformasjonResponse response = new WSHentDigitalKontaktinformasjonResponse();
-        final WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon();
+        WSHentDigitalKontaktinformasjonResponse response = new WSHentDigitalKontaktinformasjonResponse();
+        WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon();
         response.setDigitalKontaktinformasjon(kontaktinformasjon);
         return response;
     }

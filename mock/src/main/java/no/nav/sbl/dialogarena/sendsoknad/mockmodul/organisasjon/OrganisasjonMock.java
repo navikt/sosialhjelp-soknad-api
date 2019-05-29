@@ -25,7 +25,7 @@ public class OrganisasjonMock {
 
     public OrganisasjonV4 organisasjonMock(){
 
-        final OrganisasjonV4 mock = mock(OrganisasjonV4.class);
+        OrganisasjonV4 mock = mock(OrganisasjonV4.class);
 
         try {
             when(mock.hentOrganisasjon(any(HentOrganisasjonRequest.class)))
@@ -58,11 +58,13 @@ public class OrganisasjonMock {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            final SimpleModule module = new SimpleModule();
+            SimpleModule module = new SimpleModule();
             module.addDeserializer(SammensattNavn.class, new SammensattNavnDeserializer());
             module.addDeserializer(Organisasjon.class, new OrganisasjonDeserializer());
             mapper.registerModule(module);
+
             HentOrganisasjonResponse response = mapper.readValue(jsonOrganisasjon, HentOrganisasjonResponse.class);
+
             if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
                 responses.put(OidcFeatureToggleUtils.getUserId(), response);
             } else {
