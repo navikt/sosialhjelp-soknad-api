@@ -1,10 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -31,9 +28,6 @@ public class KontonummerRessursUtenOidcTest {
     private static final String KONTONUMMER_SYSTEM_OPPDATERT = "44333222123";
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
@@ -41,12 +35,6 @@ public class KontonummerRessursUtenOidcTest {
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @InjectMocks
     private KontonummerRessurs kontonummerRessurs = spy(new KontonummerRessurs());
@@ -85,7 +73,6 @@ public class KontonummerRessursUtenOidcTest {
         kontonummerRessursTest.putKontonummerSkalSetteBrukerutfyltKontonummer();
     }
 
-    @Ignore
     @Test
     public void putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer(){
         kontonummerRessursTest.putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer();

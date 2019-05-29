@@ -155,16 +155,22 @@ public class SoknadRessurs {
 
     @POST
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> legacyOpprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
             opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
         } else {
+            final String eier = OidcFeatureToggleUtils.getUserId();
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
-            if (soknad == null) {
-                opprettetBehandlingsId = soknadService.legacyStartEttersending(behandlingsId);
+            if (soknad == null){
+                Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
+                if (soknadUnderArbeid.isPresent()) {
+                    opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();
+                } else {
+                    opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                }
             } else {
                 opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }
@@ -177,7 +183,7 @@ public class SoknadRessurs {
     @POST
     @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+    public Map<String, String> midlertidigOpprettSoknadDuplikat(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;

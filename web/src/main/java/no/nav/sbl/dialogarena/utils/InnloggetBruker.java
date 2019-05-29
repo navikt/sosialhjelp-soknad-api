@@ -2,28 +2,32 @@ package no.nav.sbl.dialogarena.utils;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import org.slf4j.Logger;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 
 import javax.inject.Inject;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class InnloggetBruker {
 
     @Inject
-    private PersonaliaBolk personaliaBolk;
-
-    private static final Logger logger = getLogger(InnloggetBruker.class);
+    private PersonaliaFletter personaliaFletter;
 
     public Personalia hentPersonalia() {
         String fnr = OidcFeatureToggleUtils.getUserId();
-        Personalia personalia = null;
-        try {
-            personalia = personaliaBolk.hentPersonalia(fnr);
-        } catch (Exception e) {
-            logger.error("Kunne ikke hente personalia");
+        Personalia personalia = personaliaFletter.mapTilPersonalia(fnr);
+        if (personalia == null){
+            return new Personalia();
         }
-        return personalia;
+        Personalia kunFornavnPersonalia = new Personalia();
+        kunFornavnPersonalia.setFornavn(personalia.getFornavn() != null ? personalia.getFornavn() : "");
+        return kunFornavnPersonalia;
+    }
+
+    public String hentFornavn() {
+        String fnr = OidcFeatureToggleUtils.getUserId();
+        Personalia personalia = personaliaFletter.mapTilPersonalia(fnr);
+        if (personalia == null){
+            return "";
+        }
+        return personalia.getFornavn() != null ? personalia.getFornavn() : "";
     }
 }
