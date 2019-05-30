@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -38,16 +37,12 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
         super.setDataSource(ds);
     }
 
-    public void registrerOpprettetHendelse(WebSoknad soknad) {
-        insertHendelse(soknad.getBrukerBehandlingId(), OPPRETTET.name(), soknad.getVersjon(), soknad.getskjemaNummer());
+    public void registrerOpprettetHendelse(String behandlingsId, Integer versjon) {
+        insertHendelse(behandlingsId, OPPRETTET.name(), versjon, "NAV 35-18.01");
     }
 
-    public void registrerHendelse(WebSoknad soknad, HendelseType hendelse) {
-        insertHendelse(soknad.getBrukerBehandlingId(), hendelse.name(), soknad.getVersjon(), soknad.getskjemaNummer());
-    }
-
-    public void registrerMigrertHendelse(WebSoknad soknad) {
-        insertHendelse(soknad.getBrukerBehandlingId(), MIGRERT.name(), soknad.getVersjon(), soknad.getskjemaNummer());
+    public void registrerHendelse(String behandlingsId, HendelseType hendelse, Integer versjon) {
+        insertHendelse(behandlingsId, hendelse.name(), versjon, "NAV 35-18.01");
     }
 
     @Override

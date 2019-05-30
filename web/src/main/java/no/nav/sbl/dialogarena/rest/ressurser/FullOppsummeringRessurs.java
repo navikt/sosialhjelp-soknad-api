@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
@@ -32,13 +32,15 @@ public class FullOppsummeringRessurs {
     private PDFService pdfService;
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
     private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
 
     @GET
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
-    @SjekkTilgangTilSoknad
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         sjekkOmFullOppsummeringErAktivert("hentOppsummeringNew");
 
         String eier = getSubjectHandler().getUid();
@@ -49,8 +51,8 @@ public class FullOppsummeringRessurs {
     @GET
     @Path("/{behandlingsId}/fullsoknadpdf")
     @Produces("application/pdf")
-    @SjekkTilgangTilSoknad
     public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
 
         String eier = getSubjectHandler().getUid();

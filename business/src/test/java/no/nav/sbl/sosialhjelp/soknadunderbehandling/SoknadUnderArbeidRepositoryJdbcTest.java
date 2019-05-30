@@ -2,6 +2,7 @@ package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.SoknadLaastException;
@@ -11,6 +12,7 @@ import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

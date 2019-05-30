@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.flipkart.zjsonpatch.DiffFlags;
 import com.flipkart.zjsonpatch.JsonDiff;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -55,6 +56,9 @@ public class SoknadUnderArbeidService {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Inject
+    private HendelseRepository hendelseRepository;
+
     public void settOrgnummerOgNavEnhetsnavnPaSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn, String eier) {
         if (soknadUnderArbeid == null) {
             throw new RuntimeException("Søknad under arbeid mangler");
@@ -100,6 +104,7 @@ public class SoknadUnderArbeidService {
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeidFraDB, eier);
         } else {
             soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier);
+            hendelseRepository.registrerOpprettetHendelse(soknadUnderArbeid.getBehandlingsId(), Math.toIntExact(soknadUnderArbeid.getVersjon()));
         }
         Optional<SoknadUnderArbeid> oppdatertSoknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.getBehandlingsId(), eier);
         if (!oppdatertSoknadUnderArbeidOptional.isPresent()) {

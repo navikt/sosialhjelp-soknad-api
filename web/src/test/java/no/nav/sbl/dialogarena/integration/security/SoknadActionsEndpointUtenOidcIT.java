@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.integration.security;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SoknadActionsEndpointUtenOidcIT extends AbstractSecurityIT {
 
     private static final String ANNEN_BRUKER = "01010112345";
-    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @Before
     public void setup() throws Exception {
@@ -25,7 +23,7 @@ public class SoknadActionsEndpointUtenOidcIT extends AbstractSecurityIT {
 
     @Test
     public void sendSoknad() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))
@@ -37,7 +35,7 @@ public class SoknadActionsEndpointUtenOidcIT extends AbstractSecurityIT {
 
     @Test
     public void sendEpost_fortsettsenere() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
         Response responseMedBrukersEgenXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))
@@ -58,7 +56,7 @@ public class SoknadActionsEndpointUtenOidcIT extends AbstractSecurityIT {
 
     @Test
     public void sendEpost_bekreftinnsending() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/bekreftinnsending";
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import java.io.IOException;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -27,14 +26,16 @@ public class AlternativRepresentasjonRessurs {
     private SoknadUnderArbeidService soknadUnderArbeidService;
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
     private static final Logger LOG = LoggerFactory.getLogger(AlternativRepresentasjonRessurs.class);
 
     @Deprecated
     @GET
     @Path("/json/{behandlingsId}")
     @Produces(APPLICATION_JSON)
-    @SjekkTilgangTilSoknad
     public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         erRessursAktiv("jsonRepresentasjon");
         String eier = getSubjectHandler().getUid();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();

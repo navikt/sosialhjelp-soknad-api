@@ -1,7 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
@@ -51,17 +50,14 @@ public class HentTekstHelperTest {
 
     @Test
     public void henterTekstFraCmsTekst() throws IOException {
-        WebSoknad webSoknad = new WebSoknad().medSoknadPrefix("mittprefix");
-        String compiled = handlebars.compileInline("{{hentTekst \"test\"}}").apply(webSoknad);
+        String compiled = handlebars.compileInline("{{hentTekst \"test\"}}").apply(new Object());
 
         Assert.assertThat(compiled, is("test"));
     }
 
     @Test
     public void senderParametereTilCmsTekst() throws IOException {
-        WebSoknad webSoknad = new WebSoknad().medSoknadPrefix("mittprefix");
-
-        handlebars.compileInline("{{hentTekst \"test\" \"param1\" \"param2\"}}").apply(webSoknad);
+        handlebars.compileInline("{{hentTekst \"test\" \"param1\" \"param2\"}}").apply(new Object());
 
         verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix", "bundlename", toLocale("nb_NO"));
     }

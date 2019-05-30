@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;

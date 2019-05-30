@@ -11,7 +11,6 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.config.SikkerhetsConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -24,9 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
@@ -65,19 +62,8 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        String aktoerId = "undefined";
-
-        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId());
-        if (soknadUnderArbeid.isPresent()){
-            aktoerId = soknadUnderArbeid.get().getEier();
-        } else {
-            try {
-                WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
-                aktoerId = soknad.getAktoerId();
-            } catch (Exception e) {
-                logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
-            }
-        }
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId()).get();
+        String aktoerId = soknadUnderArbeid.getEier();
 
         verifiserTilgangMotPep(aktoerId, behandlingsId);
     }

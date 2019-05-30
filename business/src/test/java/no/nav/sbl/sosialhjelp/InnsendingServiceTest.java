@@ -6,7 +6,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
-import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.Before;
@@ -15,19 +14,20 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.transaction.support.*;
+import org.springframework.transaction.support.SimpleTransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,8 +57,6 @@ public class InnsendingServiceTest {
     @Mock
     private OpplastetVedleggRepository opplastetVedleggRepository;
     @Mock
-    private VedleggstatusRepository vedleggstatusRepository;
-    @Mock
     private SoknadUnderArbeidService soknadUnderArbeidService;
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -75,7 +73,6 @@ public class InnsendingServiceTest {
         when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(createOpplastetVedleggListe());
         when(sendtSoknadRepository.opprettSendtSoknad(any(), anyString())).thenReturn(SENDT_SOKNAD_ID);
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(createSendtSoknad());
-        when(vedleggstatusRepository.opprettVedlegg(any(), anyString())).thenReturn(5L);
     }
 
     @Test
@@ -85,25 +82,6 @@ public class InnsendingServiceTest {
 
         verify(soknadUnderArbeidRepository, times(1)).oppdaterInnsendingStatus(any(SoknadUnderArbeid.class), eq(EIER));
         verify(sendtSoknadRepository, times(1)).opprettSendtSoknad(any(SendtSoknad.class), eq(EIER));
-        verify(vedleggstatusRepository, times(1)).opprettVedlegg(any(Vedleggstatus.class), eq(EIER));
-    }
-
-    @Test
-    public void finnAlleVedleggHenterAlleOpplastedeOgManglendeVedlegg() {
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(createOpplastetVedleggListe());
-
-        List<Vedleggstatus> alleVedlegg = innsendingService.finnAlleVedlegg(createSoknadUnderArbeid(), createIkkeOpplastedePaakrevdeVedlegg());
-
-        assertThat(alleVedlegg.size(), is(2));
-    }
-
-    @Test
-    public void finnAlleVedleggHenterHenterBareOpplastedeVedleggVedEttersendelse() {
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(createOpplastetVedleggListe());
-
-        List<Vedleggstatus> alleVedlegg = innsendingService.finnAlleVedlegg(createSoknadUnderArbeidForEttersendelse(), createIkkeOpplastedePaakrevdeVedlegg());
-
-        assertThat(alleVedlegg.size(), is(1));
     }
 
     @Test

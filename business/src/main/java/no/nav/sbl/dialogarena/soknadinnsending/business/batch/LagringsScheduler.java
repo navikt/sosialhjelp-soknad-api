@@ -2,13 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
-import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -16,14 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXB;
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.LAGRET_I_HENVENDELSE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -37,17 +24,12 @@ public class LagringsScheduler {
     private int feilet;
 
     @Inject
-    private SoknadRepository soknadRepository;
-    @Inject
-    private FillagerService fillagerService;
-    @Inject
     private HenvendelseService henvendelseService;
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
-        List<Optional<WebSoknad>> feilListe = new ArrayList<>();
         batchStartTime = DateTime.now();
         vellykket = 0;
         feilet = 0;
@@ -56,8 +38,7 @@ public class LagringsScheduler {
             Timer batchTimer = MetricsFactory.createTimer("debug.lagringsjobb");
             batchTimer.start();
 
-            mellomlagre(feilListe, batchTimer);
-            leggTilbakeFeilende(feilListe);
+            mellomlagre(batchTimer);
 
             batchTimer.stop();
             batchTimer.addFieldToReport("vellykket", vellykket);
@@ -69,95 +50,8 @@ public class LagringsScheduler {
         }
     }
 
-    private void leggTilbakeFeilende(List<Optional<WebSoknad>> feilListe) {
-        for (Optional<WebSoknad> ws : feilListe) {
-            WebSoknad soknad = ws.get();
-            try {
-                soknadRepository.leggTilbake(soknad);
-            } catch (Exception e1) {
-                logger.error("Klarte ikke å legge tilbake søknad {}", soknad.getSoknadId(), e1);
-            }
-        }
-    }
-
-    private void mellomlagre(List<Optional<WebSoknad>> feilListe, Timer metrikk) throws InterruptedException {
-        for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isPresent(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
-            if (isPaabegyntEttersendelse(ws)) {
-                if (!avbrytOgSlettEttersendelse(ws)) {
-                    feilListe.add(ws);
-                }
-            } else {
-                if (!lagreFilTilHenvendelseOgSlettILokalDb(ws)) {
-                    feilListe.add(ws);
-                }
-            }
-            // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
-            if (harGaattForLangTid()) {
-                logger.warn("Jobben har kjørt i mer enn {} ms. Den blir derfor terminert", SCHEDULE_INTERRUPT_MS);
-                metrikk.addFieldToReport("avbruttPgaTid", true);
-                return;
-            }
-            if (!SuspendServlet.isRunning()) {
-                logger.warn("Avbryter jobben da appen skal suspendes");
-                metrikk.addFieldToReport("avbruttPgaAppErSuspendert", true);
-                return;
-            }
-        }
-    }
-
-    private boolean avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
-        WebSoknad soknad = ws.get();
-        try {
-            henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId(), true);
-            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknad.getBrukerBehandlingId(), soknad.getAktoerId());
-            soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknad.getAktoerId()));
-            slettFiler(soknad);
-            soknadRepository.slettSoknad(soknad, LAGRET_I_HENVENDELSE);
-
-            vellykket++;
-            return true;
-        } catch (Exception e) {
-            feilet++;
-            logger.error("Avbryt feilet for ettersending {}.", soknad.getSoknadId(), e);
-            Thread.sleep(1000); // Så loggen ikke blir fylt opp
-
-            return false;
-        }
-    }
-
-    private void slettFiler(WebSoknad soknad) {
-        try {
-            fillagerService.slettAlle(soknad.getBrukerBehandlingId());
-        } catch (Exception e) {
-            logger.error("Sletting av filer feilet for ettersending {}. Henvendelsen de hører til er satt til avbrutt, og ettersendingen slettes i sendsøknad.", soknad.getSoknadId(), e);
-        }
-    }
-
-    private boolean isPaabegyntEttersendelse(Optional<WebSoknad> ws) {
-        WebSoknad soknad = ws.get();
-        return soknad.erEttersending();
-    }
-
-    protected boolean lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
-        WebSoknad soknad = ws.get();
-        try {
-            if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID) && !soknad.erEttersending()) {
-                StringWriter xml = new StringWriter();
-                JAXB.marshal(soknad, xml);
-                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
-            }
-            soknadRepository.slettSoknad(soknad, LAGRET_I_HENVENDELSE);
-
-            logger.info("Lagret soknad til henvendelse og slettet lokalt. Soknadsid: {}", soknad.getSoknadId());
-            vellykket++;
-            return true;
-        } catch (Exception e) {
-            feilet++;
-            logger.error("Lagring eller sletting feilet for soknad {}", soknad.getSoknadId(), e);
-
-            Thread.sleep(1000); // Så loggen ikke blir fylt opp
-            return false;
-        }
+    private void mellomlagre(Timer metrikk) throws InterruptedException {
+        //TODO: Slett alle ettersendelser (og søknader) som er utenfor tidsgrensen for lagring (to uker).
     }
 
     private boolean harGaattForLangTid() {

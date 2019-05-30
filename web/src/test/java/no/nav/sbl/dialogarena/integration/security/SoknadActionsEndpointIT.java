@@ -17,13 +17,11 @@ import org.junit.Test;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 
 public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     private static final String ANNEN_BRUKER = "01010112345";
-    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -37,7 +35,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void sendSoknad_skalGiForbiddenMedAnnenBruker() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
@@ -48,7 +46,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void sendEpost_fortsettsenere_skalGiForbiddenMedAnnenBruker() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
         String token = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER).serialize();
 
@@ -59,7 +57,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void sendEpost_fortsettsenere_skalGiForbiddenTilAnnenBrukerMedStjeltXSRF() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
         String token = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER).serialize();
 
@@ -70,7 +68,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void sendEpost_bekreftinnsending() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/bekreftinnsending";
         SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
@@ -81,7 +79,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void sendSoknad_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
 
         Response response = sendPostRequest(soknadTester, subUrl, Entity.json(""), null, null);
@@ -91,7 +89,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void fortsettsenere_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
 
         Response response = sendPostRequest(soknadTester, subUrl,  Entity.json(""), null, null);
@@ -101,7 +99,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void bekreftinnsending_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/bekreftinnsending";
 
         Response response = sendPostRequest(soknadTester, subUrl, Entity.json(""), null, null);

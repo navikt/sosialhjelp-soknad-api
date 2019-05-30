@@ -87,12 +87,12 @@ public class HenvendelseService {
         return soknadMetadataRepository.hentBehandlingskjede(behandlingskjedeId);
     }
 
-    public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, String uuid, SoknadMetadata.VedleggMetadataListe vedlegg, SoknadUnderArbeid soknadUnderArbeid) {
+    public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, SoknadMetadata.VedleggMetadataListe vedlegg, SoknadUnderArbeid soknadUnderArbeid) {
         SoknadMetadata meta = soknadMetadataRepository.hent(behandlingsId);
 
         HovedskjemaMetadata hovedskjema = new HovedskjemaMetadata();
         hovedskjema.filnavn = "NAV 35-18.01";
-        hovedskjema.filUuid = uuid;
+        hovedskjema.filUuid = "";
         meta.hovedskjema = hovedskjema;
         meta.vedlegg = vedlegg;
 

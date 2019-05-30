@@ -56,11 +56,6 @@ public class SoknadRessursUtenOidcTest {
     }
 
     @Test
-    public void hentingAvSoknadSkalSetteXsrfToken() {
-        ressursTest.hentingAvSoknadSkalSetteXsrfToken();
-    }
-
-    @Test
     public void opprettingAvSoknadSkalSetteXsrfToken() {
         ressursTest.opprettingAvSoknadSkalSetteXsrfToken();
     }
@@ -78,35 +73,5 @@ public class SoknadRessursUtenOidcTest {
     @Test
     public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
         ressursTest.opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending();
-    }
-
-    @Test(expected = BadRequestException.class)
-    public void oppdaterSoknadUtenParametreSkalKasteException() {
-        ressursTest.oppdaterSoknadUtenParametreSkalKasteException();
-    }
-
-    @Test
-    public void oppdaterSoknadMedDelstegUtfyllingSkalSetteRiktigDelstegStatus() {
-        ressursTest.oppdaterSoknadMedDelstegUtfyllingSkalSetteRiktigDelstegStatus();
-    }
-
-    @Test
-    public void oppdaterSoknadMedDelstegOpprettetSkalSetteRiktigDelstegStatus() {
-        ressursTest.oppdaterSoknadMedDelstegOpprettetSkalSetteRiktigDelstegStatus();
-    }
-
-    @Test
-    public void oppdaterSoknadMedDelstegVedleggSkalSetteRiktigDelstegStatus() {
-        ressursTest.oppdaterSoknadMedDelstegVedleggSkalSetteRiktigDelstegStatus();
-    }
-
-    @Test
-    public void oppdaterSoknadMedDelstegOppsummeringSkalSetteRiktigDelstegStatus() {
-        ressursTest.oppdaterSoknadMedDelstegOppsummeringSkalSetteRiktigDelstegStatus();
-    }
-
-    @Test
-    public void oppdaterSoknadMedJournalforendeenhetSkalSetteJournalforendeEnhet() {
-        ressursTest.oppdaterSoknadMedJournalforendeenhetSkalSetteJournalforendeEnhet();
     }
 }

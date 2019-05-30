@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ public class InnsendtSoknadService {
     private HenvendelseService henvendelseService;
 
     private Predicate<VedleggMetadata> ikkeKvittering = v -> !SKJEMANUMMER_KVITTERING.equals(v.skjema);
-    private Predicate<VedleggMetadata> lastetOpp = v -> v.status.er(Vedlegg.Status.LastetOpp);
+    private Predicate<VedleggMetadata> lastetOpp = v -> v.status.er(Vedleggstatus.Status.LastetOpp);
     private Predicate<VedleggMetadata> ikkeLastetOpp = lastetOpp.negate();
 
     private DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");

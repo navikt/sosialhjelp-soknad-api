@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
-import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.inject.Inject;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -33,8 +31,6 @@ public class InnsendingService {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
-    @Inject
-    private VedleggstatusRepository vedleggstatusRepository;
     @Inject
     private SoknadUnderArbeidService soknadUnderArbeidService;
     @Inject
@@ -51,15 +47,8 @@ public class InnsendingService {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-                final List<Vedleggstatus> alleVedlegg = finnAlleVedlegg(soknadUnderArbeid, ikkeOpplastedePaakrevdeVedlegg);
                 SendtSoknad sendtSoknad = mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid);
-                final Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, sendtSoknad.getEier());
-                sendtSoknad.setSendtSoknadId(sendtSoknadId);
-
-                for (Vedleggstatus vedleggstatus : alleVedlegg) {
-                    vedleggstatus.setSendtSoknadId(sendtSoknad.getSendtSoknadId());
-                    vedleggstatusRepository.opprettVedlegg(vedleggstatus, sendtSoknad.getEier());
-                }
+                sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, sendtSoknad.getEier());
             }
         });
     }
@@ -122,24 +111,6 @@ public class InnsendingService {
                 .withOrgnummer(originalSoknadGammeltFormat.orgnr)
                 .withNavEnhetsnavn(originalSoknadGammeltFormat.navEnhet)
                 .withFiksforsendelseId(originalSoknadGammeltFormat.fiksForsendelseId);
-    }
-
-    List<Vedleggstatus> finnAlleVedlegg(SoknadUnderArbeid soknadUnderArbeid, List<Vedleggstatus> ikkeOpplastedePaakrevdeVedlegg) {
-        List<Vedleggstatus> opplastedeVedlegg = mapOpplastedeVedleggTilVedleggstatusListe(opplastetVedleggRepository
-                .hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier()));
-
-        List<Vedleggstatus> alleVedlegg = new ArrayList<>();
-        if (opplastedeVedlegg != null && !opplastedeVedlegg.isEmpty()) {
-            alleVedlegg.addAll(opplastedeVedlegg.stream()
-                    .filter(Objects::nonNull)
-                    .collect(toList()));
-        }
-        if (!soknadUnderArbeid.erEttersendelse() && ikkeOpplastedePaakrevdeVedlegg != null && !ikkeOpplastedePaakrevdeVedlegg.isEmpty()) {
-            alleVedlegg.addAll(ikkeOpplastedePaakrevdeVedlegg.stream()
-                    .filter(Objects::nonNull)
-                    .collect(toList()));
-        }
-        return alleVedlegg;
     }
 
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {

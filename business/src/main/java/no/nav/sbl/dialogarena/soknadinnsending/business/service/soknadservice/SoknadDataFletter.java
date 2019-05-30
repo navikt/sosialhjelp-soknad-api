@@ -3,19 +3,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -42,15 +37,11 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -58,14 +49,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
-import static javax.xml.bind.JAXB.unmarshal;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -75,29 +63,13 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SoknadDataFletter {
 
     private static final Logger logger = getLogger(SoknadDataFletter.class);
-    private static final boolean MED_DATA = true;
-    private static final boolean MED_VEDLEGG = true;
 
     @Inject
-    public ApplicationContext applicationContext;
-    @Inject
     private HenvendelseService henvendelseService;
-    @Inject
-    private FillagerService fillagerService;
-    @Inject
-    private FaktaService faktaService;
-    @Inject
-    @Named("soknadInnsendingRepository")
-    private SoknadRepository lokalDb;
-    @Inject
-    private HendelseRepository hendelseRepository;
     @Inject
     private OppgaveHandterer oppgaveHandterer;
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-
-    @Inject
-    private NavMessageSource messageSource;
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
@@ -113,26 +85,6 @@ public class SoknadDataFletter {
 
     @Inject
     private SystemdataUpdater systemdata;
-
-
-    private WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
-        SoknadMetadata soknadMetadata = henvendelseService.hentSoknad(behandlingsId, true);
-
-        if (UNDER_ARBEID.equals(soknadMetadata.status)) {
-            byte[] xmlFraFillager = fillagerService.hentFil(soknadMetadata.hovedskjema.filUuid);
-            WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(xmlFraFillager), WebSoknad.class);
-            if (hentFaktumOgVedlegg) {
-                return lokalDb.hentSoknadMedVedlegg(behandlingsId);
-            }
-            return lokalDb.hentSoknad(behandlingsId);
-        } else {
-            // søkndadsdata er slettet, har kun metadata
-            return new WebSoknad()
-                    .medBehandlingId(behandlingsId)
-                    .medStatus(soknadMetadata.status)
-                    .medskjemaNummer(soknadMetadata.skjema);
-        }
-    }
 
     @Transactional
     public String startSoknad(String skjemanummer) {
@@ -153,7 +105,6 @@ public class SoknadDataFletter {
 
 
         Timer oprettIDbTimer = createDebugTimer("oprettIDb", soknadnavn, mainUid);
-        lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId, 0);
 
         oprettIDbTimer.stop();
         oprettIDbTimer.report();
@@ -245,61 +196,6 @@ public class SoknadDataFletter {
         return timer;
     }
 
-    private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId, int versjon) {
-        WebSoknad nySoknad = WebSoknad.startSoknad()
-                .medBehandlingId(behandlingsId)
-                .medskjemaNummer(skjemanummer)
-                .medUuid(uuid)
-                .medAktorId(aktorId)
-                .medOppretteDato(DateTime.now())
-                .medVersjon(versjon);
-
-
-        Long soknadId = lokalDb.opprettSoknad(nySoknad);
-        nySoknad.setSoknadId(soknadId);
-
-        Iterator<Long> faktumIder = lokalDb.hentLedigeFaktumIder(1).iterator();
-        Faktum faktum = new Faktum()
-                .medFaktumId(faktumIder.next())
-                .medKey("progresjon")
-                .medValue("1")
-                .medType(BRUKERREGISTRERT)
-                .medSoknadId(soknadId);
-        faktaService.opprettBrukerFaktum(behandlingsId, faktum);
-        List<Faktum> fakta = new ArrayList<>();
-        fakta.add(faktum);
-        nySoknad.setFakta(fakta);
-
-        return nySoknad;
-    }
-
-    public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
-        return this.hentSoknad(behandlingsId, medData, medVedlegg, true);
-    }
-
-    public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg, boolean populerSystemfakta) {
-        WebSoknad soknadFraLokalDb;
-
-        if (medVedlegg) {
-            soknadFraLokalDb = lokalDb.hentSoknadMedVedlegg(behandlingsId);
-        } else {
-            soknadFraLokalDb = lokalDb.hentSoknad(behandlingsId);
-        }
-
-        WebSoknad soknad;
-        if (medData) {
-            soknad = soknadFraLokalDb != null ? lokalDb.hentSoknadMedData(soknadFraLokalDb.getSoknadId()) : hentFraHenvendelse(behandlingsId, true);
-        } else {
-            soknad = soknadFraLokalDb != null ? soknadFraLokalDb : hentFraHenvendelse(behandlingsId, false);
-        }
-
-        if (medData) {
-            soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId()).medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()));
-        }
-
-        return soknad;
-    }
-
     public void sendSoknad(String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
@@ -309,23 +205,13 @@ public class SoknadDataFletter {
         }
         logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
 
-        String webSoknadUuid = "";
-        if (!soknadUnderArbeid.erEttersendelse()) {
-            webSoknadUuid = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG).getUuid();
-        }
-
         VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, webSoknadUuid, vedlegg, soknadUnderArbeid);
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
-
-        try {
-            WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
-            lokalDb.slettSoknad(soknad, HendelseType.INNSENDT);
-        } catch (Exception ignored) { }
 
         forberedInnsendingMedNyModell(soknadUnderArbeid);
 
-        soknadMetricsService.sendtSoknad("NAV 35-18.01", soknadUnderArbeid.erEttersendelse());
+        soknadMetricsService.sendtSoknad(SKJEMANUMMER, soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse()) {
             logAlderTilKibana(eier);
         }
@@ -368,7 +254,7 @@ public class SoknadDataFletter {
         m.skjema = jsonVedlegg.getType();
         m.tillegg = jsonVedlegg.getTilleggsinfo();
         m.filnavn = jsonVedlegg.getType();
-        m.status = Vedlegg.Status.valueOf(jsonVedlegg.getStatus());
+        m.status = Vedleggstatus.Status.valueOf(jsonVedlegg.getStatus());
         return m;
     }
 

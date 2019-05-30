@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -27,7 +27,6 @@ import java.util.List;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggMapper.mapVedleggToSortedListOfEttersendteVedlegg;
-import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Metadata;
 
 
 @Controller
@@ -46,11 +45,13 @@ public class EttersendingRessurs {
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
 
+    @Inject
+    private Tilgangskontroll tilgangskontroll;
 
     @GET
     @Path("/innsendte/{behandlingsId}")
-    @SjekkTilgangTilSoknad(type = Metadata)
     public BehandlingsKjede hentBehandlingskjede(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         return innsendtSoknadService.hentBehandlingskjede(behandlingsId);
     }
 

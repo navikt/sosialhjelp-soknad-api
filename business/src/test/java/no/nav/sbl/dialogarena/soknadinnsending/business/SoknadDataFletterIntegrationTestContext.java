@@ -6,14 +6,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHan
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
@@ -21,7 +16,6 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
-import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -62,23 +56,8 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public FillagerService fillagerService() {
-        return new FillagerService();
-    }
-
-    @Bean
-    public FillagerRepository fillagerRepository() {
-        return mock(FillagerRepository.class);
-    }
-
-    @Bean
     public OpplastetVedleggService opplastetVedleggService() {
         return new OpplastetVedleggService();
-    }
-
-    @Bean
-    public SoknadRepository soknadInnsendingRepository() {
-        return new SoknadRepositoryJdbc();
     }
 
     @Bean
@@ -104,11 +83,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public KravdialogInformasjonHolder kravdialogInformasjonHolder(){
         return new KravdialogInformasjonHolder();
-    }
-
-    @Bean
-    public FaktaService faktaService(){
-        return new FaktaService();
     }
 
     @Bean
@@ -147,11 +121,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     SendtSoknadRepository sendtSoknadRepository() {
         return mock(SendtSoknadRepository.class);
-    }
-
-    @Bean
-    VedleggstatusRepository vedleggstatusRepository() {
-        return mock(VedleggstatusRepository.class);
     }
 
     @Bean

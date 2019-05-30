@@ -42,12 +42,10 @@ public abstract class AbstractIT {
         jetty.jetty.stop.run();
     }
 
-    protected SoknadTester soknadMedDelstegstatusOpprettet(String skjemaNummer) {
+    protected SoknadTester soknadOpprettet() {
         try {
-            return SoknadTester.startSoknad(skjemaNummer)
-                    .settDelstegstatus("opprettet")
-                    .hentSoknad()
-                    .hentFakta();
+            return SoknadTester.startSoknad()
+                    .hentSoknad();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Kunne ikke opprette søknad");

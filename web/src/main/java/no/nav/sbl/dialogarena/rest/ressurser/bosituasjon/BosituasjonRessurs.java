@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.rest.ressurser.bosituasjon;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
@@ -26,12 +24,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Timed
 @Produces(APPLICATION_JSON)
 public class BosituasjonRessurs {
-
-    @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;

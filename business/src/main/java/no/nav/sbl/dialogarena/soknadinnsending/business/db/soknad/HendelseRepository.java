@@ -1,19 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.List;
 
 public interface HendelseRepository {
 
-    void registrerOpprettetHendelse(WebSoknad soknad);
-
-    void registrerMigrertHendelse(WebSoknad soknad);
+    void registrerOpprettetHendelse(String behandlingsId, Integer versjon);
 
     void registrerAutomatiskAvsluttetHendelse(String behandlingsId);
 
-    void registrerHendelse(WebSoknad soknad, HendelseType hendelse);
+    void registrerHendelse(String behandlingsId, HendelseType hendelse, Integer versjon);
 
     Integer hentVersjon(String behandlingsId);
 

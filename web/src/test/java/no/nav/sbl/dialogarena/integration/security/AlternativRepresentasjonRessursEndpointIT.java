@@ -4,7 +4,6 @@ import com.nimbusds.jwt.SignedJWT;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.junit.Before;
@@ -19,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityIT {
 
     private static final String ANNEN_BRUKER = "10108000398";
-    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
 
     @BeforeClass
@@ -37,7 +35,7 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
 
     @Test
     public void jsonRepresentasjon_skalGiForbiddenMedAnnenBruker() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
@@ -48,7 +46,7 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
 
     @Test
     public void jsonRepresentasjon_skalIkkeGiForbiddenMedRettBruker() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
         SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
 
@@ -59,7 +57,7 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
 
     @Test
     public void jsonRepresentasjon_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
 
         Response response = sendGetRequest(soknadTester, subUrl, null);

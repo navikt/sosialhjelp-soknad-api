@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -12,24 +10,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.Optional;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 
 @Component
 public class SoknadService {
-
-    @Inject
-    @Named("soknadInnsendingRepository")
-    private SoknadRepository lokalDb;
 
     @Inject
     private HenvendelseService henvendelseService;
 
     @Inject
     private EttersendingService ettersendingService;
-
-    @Inject
-    private FillagerService fillagerService;
 
     @Inject
     private SoknadDataFletter soknadDataFletter;
@@ -40,22 +32,6 @@ public class SoknadService {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
-        lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
-    }
-
-    public void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet) {
-        lokalDb.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
-    }
-
-    public WebSoknad hentSoknadFraLokalDb(long soknadId) {
-        return lokalDb.hentSoknad(soknadId);
-    }
-
-    public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
-        return lokalDb.hentEttersendingMedBehandlingskjedeId(behandlingsId).orElse(null);
-    }
-
     @Transactional
     public String startSoknad(String skjemanummer) {
         return soknadDataFletter.startSoknad(skjemanummer);
@@ -63,30 +39,17 @@ public class SoknadService {
 
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
-        WebSoknad soknad = lokalDb.hentSoknad(behandlingsId);
-
-        /**
-         * Sletter alle vedlegg til søknader som blir avbrutt.
-         * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
-         * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
-         * */
-        fillagerService.slettAlle(soknad.getBrukerBehandlingId());
-        henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId(), false);
-        lokalDb.slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
-
-        final String eier = soknad.getAktoerId();
+        String eier = OidcFeatureToggleUtils.getUserId();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
-
-        soknadMetricsService.avbruttSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
+        if (soknadUnderArbeidOptional.isPresent()){
+            soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
+            henvendelseService.avbrytSoknad(soknadUnderArbeidOptional.get().getBehandlingsId(), false);
+            soknadMetricsService.avbruttSoknad(SKJEMANUMMER, soknadUnderArbeidOptional.get().erEttersendelse());
+        }
     }
 
     public String startEttersending(String behandlingsIdSoknad) {
         return ettersendingService.start(behandlingsIdSoknad);
-    }
-
-    public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
-        return soknadDataFletter.hentSoknad(behandlingsId, medData, medVedlegg);
     }
 
     @Transactional

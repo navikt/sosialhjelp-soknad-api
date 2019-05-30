@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.digipost.time.ControllableClock;
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
 import org.junit.After;
@@ -50,7 +49,7 @@ public class HendelseRepositoryJdbcTest {
 
     @Test
     public void skalHenteVersjonForOpprettetSoknad() {
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 1);
 
         assertThat(hendelseRepository.hentVersjon(BEHANDLINGS_ID_1)).isEqualTo(1);
     }
@@ -63,39 +62,10 @@ public class HendelseRepositoryJdbcTest {
 
 
     @Test
-    public void skalHenteVersjonForMigrertSoknad() {
-        String behandlingsId1 = "ABD";
-        hendelseRepository.registrerOpprettetHendelse(soknad(behandlingsId1));
-        controllableClock.set(LocalDateTime.now().plusMinutes(1));
-        hendelseRepository.registrerMigrertHendelse(soknad(behandlingsId1).medVersjon(2));
-
-        assertThat(hendelseRepository.hentVersjon(behandlingsId1)).isEqualTo(2);
-    }
-
-    @Test
-    public void skalHenteVersjonForMellomlagretSoknad() {
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerHendelse(new WebSoknad().medBehandlingId(BEHANDLINGS_ID_1), HendelseType.LAGRET_I_HENVENDELSE);
-
-        assertThat(hendelseRepository.hentVersjon(BEHANDLINGS_ID_1)).isEqualTo(1);
-    }
-
-    @Test
-    public void skalHenteVersjonForOpphentetMigrertSoknad() {
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerHendelse(new WebSoknad().medBehandlingId(BEHANDLINGS_ID_1), HendelseType.LAGRET_I_HENVENDELSE);
-        hendelseRepository.registrerHendelse(new WebSoknad().medBehandlingId(BEHANDLINGS_ID_1), HendelseType.HENTET_FRA_HENVENDELSE);
-        controllableClock.set(LocalDateTime.now().plusMinutes(1));
-        hendelseRepository.registrerMigrertHendelse(soknad(BEHANDLINGS_ID_1).medVersjon(2));
-
-        assertThat(hendelseRepository.hentVersjon(BEHANDLINGS_ID_1)).isEqualTo(2);
-    }
-
-    @Test
     public void skalHenteForGammelUnderArbeidSak() {
         stillTidenTilbake(FEMTISEKS_DAGER);
 
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 0);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).hasSize(1);
     }
@@ -105,7 +75,7 @@ public class HendelseRepositoryJdbcTest {
     @Test
     public void skalIkkeHenteNyereUnderArbeidSak() {
         stillTidenTilbake(EN_DAG);
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 0);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).isEmpty();
     }
@@ -113,8 +83,7 @@ public class HendelseRepositoryJdbcTest {
     @Test
     public void skalBehandleMigertSoknadSomUnderArbeid() {
         stillTidenTilbake(FEMTISEKS_DAGER);
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerMigrertHendelse(soknad(BEHANDLINGS_ID_1).medVersjon(2));
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 0);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).hasSize(1);
     }
@@ -122,8 +91,8 @@ public class HendelseRepositoryJdbcTest {
     @Test
     public void skalBehandleMellomlagretSoknadSomUnderArbeid() {
         stillTidenTilbake(FEMTISEKS_DAGER);
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerHendelse(soknad(BEHANDLINGS_ID_1), HendelseType.LAGRET_I_HENVENDELSE);
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 0);
+        hendelseRepository.registrerHendelse(BEHANDLINGS_ID_1, HendelseType.LAGRET_I_HENVENDELSE, 1);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).hasSize(1);
     }
@@ -131,21 +100,21 @@ public class HendelseRepositoryJdbcTest {
     @Test
     public void skalBehandleOpphentetSoknadSomUnderArbeid() {
         stillTidenTilbake(FEMTISEKS_DAGER);
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerHendelse(soknad(BEHANDLINGS_ID_1), HendelseType.LAGRET_I_HENVENDELSE);
-        hendelseRepository.registrerHendelse(soknad(BEHANDLINGS_ID_1), HendelseType.HENTET_FRA_HENVENDELSE);
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 0);
+        hendelseRepository.registrerHendelse(BEHANDLINGS_ID_1, HendelseType.LAGRET_I_HENVENDELSE, 1);
+        hendelseRepository.registrerHendelse(BEHANDLINGS_ID_1, HendelseType.HENTET_FRA_HENVENDELSE, 2);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).hasSize(1);
     }
     @Test
     public void skalIkkeHenteSakHvorSisteHendelseErAvbruttAvBruker() {
         stillTidenTilbake(FEMTISEKS_DAGER);
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerHendelse(soknad(BEHANDLINGS_ID_1), HendelseType.AVBRUTT_AV_BRUKER);
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 0);
+        hendelseRepository.registrerHendelse(BEHANDLINGS_ID_1, HendelseType.AVBRUTT_AV_BRUKER, 1);
 
         stillTidenTilbake(EN_DAG);
-        hendelseRepository.registrerOpprettetHendelse(soknad("2"));
-        hendelseRepository.registrerHendelse(soknad("2"), HendelseType.AVBRUTT_AV_BRUKER);
+        hendelseRepository.registrerOpprettetHendelse("2", 0);
+        hendelseRepository.registrerHendelse("2", HendelseType.AVBRUTT_AV_BRUKER, 1);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).isEmpty();
     }
@@ -153,13 +122,13 @@ public class HendelseRepositoryJdbcTest {
     @Test
     public void skalIkkeHenteSakHvorSisteHendelseErAvbruttAutomatisk() {
         stillTidenTilbake(FEMTISEKS_DAGER);
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerHendelse(soknad(BEHANDLINGS_ID_1), HendelseType.LAGRET_I_HENVENDELSE);
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 0);
+        hendelseRepository.registrerHendelse(BEHANDLINGS_ID_1, HendelseType.LAGRET_I_HENVENDELSE, 1);
         hendelseRepository.registrerAutomatiskAvsluttetHendelse(BEHANDLINGS_ID_1);
 
         stillTidenTilbake(EN_DAG);
-        hendelseRepository.registrerOpprettetHendelse(soknad("2"));
-        hendelseRepository.registrerHendelse(soknad("2"), HendelseType.LAGRET_I_HENVENDELSE);
+        hendelseRepository.registrerOpprettetHendelse("2", 0);
+        hendelseRepository.registrerHendelse("2", HendelseType.LAGRET_I_HENVENDELSE, 1);
         hendelseRepository.registrerAutomatiskAvsluttetHendelse("2");
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).isEmpty();
@@ -168,19 +137,14 @@ public class HendelseRepositoryJdbcTest {
     @Test
     public void skalIkkeHenteSakHvorSisteHendelseErInnsendt() {
         stillTidenTilbake(FEMTISEKS_DAGER);
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerHendelse(soknad(BEHANDLINGS_ID_1), HendelseType.INNSENDT);
+        hendelseRepository.registrerOpprettetHendelse(BEHANDLINGS_ID_1, 0);
+        hendelseRepository.registrerHendelse(BEHANDLINGS_ID_1, HendelseType.INNSENDT, 1);
 
         stillTidenTilbake(EN_DAG);
-        hendelseRepository.registrerOpprettetHendelse(soknad("2"));
-        hendelseRepository.registrerHendelse(soknad("2"), HendelseType.INNSENDT);
+        hendelseRepository.registrerOpprettetHendelse("2", 0);
+        hendelseRepository.registrerHendelse("2", HendelseType.INNSENDT, 1);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).isEmpty();
-    }
-
-
-    private WebSoknad soknad(String behandlingsId) {
-        return new WebSoknad().medskjemaNummer("NAV-01").medBehandlingId(behandlingsId).medVersjon(1);
     }
 
     private void stillTidenTilbake(int antallDager) {

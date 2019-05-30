@@ -4,12 +4,8 @@ package no.nav.sbl.dialogarena.integration.security;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
-import com.nimbusds.jwt.SignedJWT;
-import no.nav.security.oidc.OIDCConstants;
-import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
@@ -21,11 +17,9 @@ import org.junit.Test;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 
 public class SoknadRessursEndpointIT extends AbstractSecurityIT {
     public static final String ANNEN_BRUKER = "12345679811";
-    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -39,7 +33,7 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void skalIkkeHaTilgangTilSeFakta() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/fakta";
         SignedJWT signedJWTForAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
@@ -50,7 +44,7 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void fakta_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/fakta";
 
         Response response = sendGetRequest(soknadTester, subUrl, null);
@@ -61,7 +55,7 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
     @Ignore
     @Test
     public void nektetTilgang_opprettEttersendelse() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String url = "soknader/opprettSoknad";
 
         Response response = soknadTester.sendsoknadResource(url, webTarget -> webTarget
