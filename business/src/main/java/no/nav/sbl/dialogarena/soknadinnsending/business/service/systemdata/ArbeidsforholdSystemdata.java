@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +50,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     private void updateVedleggForventninger(JsonInternalSoknad jsonInternalSoknad) {
         final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         final List<JsonOkonomioversiktInntekt> inntekter = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt();
-        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(jsonInternalSoknad);
+        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(jsonInternalSoknad.getSoknad().getData().getArbeid());
 
         String soknadstype = "sluttoppgjoer";
         if (typeIsInList(jsonVedleggs, "sluttoppgjor")){

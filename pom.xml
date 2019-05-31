@@ -2,6 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>no.nav.sbl</groupId>
+        <artifactId>mor-pom</artifactId>
+        <version>3.1</version>
+    </parent>
 
     <modules>
         <module>tekster</module>
@@ -20,24 +25,20 @@
     <version>18.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-
-    <repositories>
+    <distributionManagement>
         <repository>
-            <id>central</id>
-            <name>Maven Repository Switchboard</name>
-            <layout>default</layout>
-            <url>http://repo1.maven.org/maven2</url>
+            <id>maven-releases</id>
+            <name>NAV Internal Repository</name>
+            <url>https://repo.adeo.no/repository/maven-releases/</url>
         </repository>
-        <repository>
+        <snapshotRepository>
             <id>maven-snapshots</id>
-            <name>Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
+            <name>NAV Snapshot Repository</name>
+            <url>https://repo.adeo.no/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
-
-        <java.jdk.version>1.8</java.jdk.version>
         <sonar.exclusions>
             **/mockmodul/**,
             **/selftest/**
@@ -74,7 +75,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.9.8</jackson.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <filformat.version>1.2019.05.22-11.55-8b1706e8c80a-SNAPSHOT</filformat.version>
+        <filformat.version>1.2019.05.20-12.32-5e1e34047f54</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
@@ -1042,14 +1043,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.3</version>
-                    <configuration>
-                        <source>${java.jdk.version}</source>
-                        <target>${java.jdk.version}</target>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>org.jboss.as.plugins</groupId>
                     <artifactId>jboss-as-maven-plugin</artifactId>
                     <version>7.4.Final</version>
@@ -1094,10 +1087,18 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.9</version>
                     <configuration>
                         <systemPropertyVariables>
                             <java.awt.headless>true</java.awt.headless>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.9</version>
+                    <configuration>
+                        <systemPropertyVariables>
                             <user.language>nb</user.language>
                             <user.region>NO</user.region>
                         </systemPropertyVariables>
@@ -1105,6 +1106,7 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
     </build>
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>

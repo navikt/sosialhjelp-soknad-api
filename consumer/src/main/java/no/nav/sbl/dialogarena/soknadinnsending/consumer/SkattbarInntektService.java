@@ -24,6 +24,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.lang.System.getenv;
 import static java.util.stream.Collectors.groupingBy;
@@ -55,7 +56,7 @@ public class SkattbarInntektService {
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
-            return mapTilUtbetalinger(mockRespons());
+            return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(mockRespons()));
         }
 
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata))));
@@ -73,13 +74,9 @@ public class SkattbarInntektService {
                             .max(Comparator.comparing(o -> o.periodeFom))
                             .orElseThrow(IllegalStateException::new)
                             .periodeFom;
-                    return grupperEtterUtbetalingsStartDato(u)
+                    return grupperOgsummerEtterUtbetalingsStartDato(u)
                             .get(nyesteDato);
-                })
-                .collect(toList())
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(toList());
+                }).collect(Collectors.toList());
     }
 
     public Invocation.Builder getRequest(Sokedata sokedata) {
@@ -156,40 +153,39 @@ public class SkattbarInntektService {
     }
 
     private List<Utbetaling> summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSsamletUtbetaling(List<Utbetaling> utbetalinger, List<Utbetaling> trekk) {
-        Map<String, List<Utbetaling>> collect = grupperEtterOrganisasjon(utbetalinger);
-        List<Utbetaling> sum = new ArrayList<>();
-        for (List<Utbetaling> value : collect.values()) {
-            Map<LocalDate, List<Utbetaling>> utbetalingerPerMaaned = grupperEtterUtbetalingsStartDato(value);
-            for (List<Utbetaling> utbetaling : utbetalingerPerMaaned.values()) {
-                summerSammenUtbetalinger(utbetaling).ifPresent(sum::add);
+        Map<String, Map<LocalDate, Utbetaling>> bruttoOrgPerMaaned = getUtBetalingPerMaanedPerOrg(grupperEtterOrganisasjon(utbetalinger));
+        Map<String, Map<LocalDate, Utbetaling>> trekkOrgPerMaaned = getUtBetalingPerMaanedPerOrg(grupperEtterOrganisasjon(trekk));
+
+        List<Utbetaling> utbetalingerBrutto = bruttoOrgPerMaaned.values().stream().flatMap(m -> m.values().stream()).collect(toList());
+        return utbetalingerBrutto.stream().peek(utbetaling -> {
+            Map<LocalDate, Utbetaling> localDateUtbetalingMap = trekkOrgPerMaaned.get(utbetaling.orgnummer);
+            if (localDateUtbetalingMap != null) {
+                Utbetaling trekkUtbetaling = localDateUtbetalingMap.get(utbetaling.periodeFom);
+                if (trekkUtbetaling != null) {
+                    utbetaling.skattetrekk = trekkUtbetaling.skattetrekk;
+                }
             }
-        }
-        Map<String, List<Utbetaling>> trekkPerOrg = grupperEtterOrganisasjon(trekk);
-
-        List<Utbetaling> retur = new ArrayList<>();
-        for (Map.Entry<String, List<Utbetaling>> orgUtbetalinger : grupperEtterOrganisasjon(sum).entrySet()) {
-            Map<LocalDate, List<Utbetaling>> utbetalingPerMaaned = grupperEtterUtbetalingsStartDato(orgUtbetalinger.getValue());
-
-            List<Utbetaling> trekkForOrganisasjon = trekkPerOrg.get(orgUtbetalinger.getKey());
-            for (Utbetaling utbetaling : trekkForOrganisasjon) {
-                summerSammenUtbetalinger(utbetalingPerMaaned.get(utbetaling.periodeFom)).ifPresent(u -> utbetaling.brutto = u.brutto);
-                retur.add(utbetaling);
-            }
-        }
-
-        return retur;
+            utbetaling.tittel = "Brutto";
+        }).collect(toList());
     }
 
-    private Optional<Utbetaling> summerSammenUtbetalinger(List<Utbetaling> utbetaling) {
-        return utbetaling.stream().reduce((u1, u2) -> {
-            u1.brutto += u2.brutto;
-            u1.skattetrekk += u2.skattetrekk;
-            return u1;
-        });
+    private Map<String, Map<LocalDate, Utbetaling>> getUtBetalingPerMaanedPerOrg(Map<String, List<Utbetaling>> orgUtbetaling) {
+        Map<String, Map<LocalDate, Utbetaling>> bruttoOrgPerMaaned = new HashMap<>();
+        for (Map.Entry<String, List<Utbetaling>> value : orgUtbetaling.entrySet()) {
+            bruttoOrgPerMaaned.put(value.getKey(), grupperOgsummerEtterUtbetalingsStartDato(value.getValue()));
+        }
+        return bruttoOrgPerMaaned;
     }
 
-    private Map<LocalDate, List<Utbetaling>> grupperEtterUtbetalingsStartDato(List<Utbetaling> value) {
-        return value.stream().collect(groupingBy(utbetaling -> utbetaling.periodeFom));
+
+    private Map<LocalDate, Utbetaling> grupperOgsummerEtterUtbetalingsStartDato(List<Utbetaling> utbetalinger) {
+        Map<LocalDate, Utbetaling> ret = new HashMap<>();
+        utbetalinger.stream().collect(groupingBy(utbetaling1 -> utbetaling1.periodeFom)).forEach((key, value) -> value.stream().reduce((utbetaling, utbetaling2) -> {
+            utbetaling.brutto += utbetaling2.brutto;
+            utbetaling.skattetrekk += utbetaling2.skattetrekk;
+            return utbetaling;
+        }).ifPresent(utbetaling -> ret.put(key, utbetaling)));
+        return ret;
     }
 
     private Map<String, List<Utbetaling>> grupperEtterOrganisasjon(List<Utbetaling> sum) {
