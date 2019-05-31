@@ -1,33 +1,5 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.security.oidc.api.ProtectedWithClaims;
-import no.nav.security.oidc.api.Unprotected;
-import org.apache.commons.lang3.LocaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
@@ -37,19 +9,35 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
+import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.oidc.api.Unprotected;
+import org.apache.commons.lang3.LocaleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
 /**
@@ -78,27 +66,17 @@ public class InformasjonRessurs {
     @Inject
     private LandService landService;
     @Inject
-    private PersonaliaBolk personaliaBolk;
+    private PersonaliaFletter personaliaFletter;
     @Inject
     private ArbeidssokerInfoService arbeidssokerInfoService;
     @Inject
     private PersonInfoService personInfoService;
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
-    @Inject
-    private TjenesterRessurs tjenesterRessurs;
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Inject
     private AdresseSokService adresseSokService;
     @Inject
     private NorgService norgService;
-
-
-    @Path("/tjenester")
-    public Object getTjenesterRessurs(){
-        return tjenesterRessurs;
-    }
 
     @GET
     @Path("/miljovariabler")
@@ -107,19 +85,15 @@ public class InformasjonRessurs {
     }
 
     @GET
-    @Path("/vedleggsskjema")
-    public Map<String, String> hentVedleggsskjema(@QueryParam("type") String type, @QueryParam("behandlingsId") String behandlingsId) {
-        if (type != null) {
-            return informasjon.hentVedleggsskjema(type);
-        } else {
-            return informasjon.hentVedleggsskjemaForBehandlingsId(behandlingsId);
-        }
+    @Path("/personalia")
+    public Personalia hentKunFornavnPersonalia() {
+        return innloggetBruker.hentKunFornavnPersonalia();
     }
 
     @GET
-    @Path("/personalia")
-    public Personalia hentPersonalia() {
-        return innloggetBruker.hentPersonalia();
+    @Path("/fornavn")
+    public String hentFornavn() {
+        return innloggetBruker.hentFornavn();
     }
 
     @GET
@@ -172,18 +146,6 @@ public class InformasjonRessurs {
     }
 
     @GET
-    @Path("/soknadstruktur")
-    public SoknadStruktur hentSoknadStruktur(@QueryParam("skjemanummer") String skjemanummer, @QueryParam("filter") String filter) {
-        SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(skjemanummer);
-        if ("temakode".equalsIgnoreCase(filter)) {
-            SoknadStruktur miniSoknadstruktur = new SoknadStruktur();
-            miniSoknadstruktur.setTemaKode(soknadStruktur.getTemaKode());
-            return miniSoknadstruktur;
-        }
-        return soknadStruktur;
-    }
-
-    @GET
     @Path("/utslagskriterier")
     public Map<String, Object> hentUtslagskriterier() {
         String uid = OidcFeatureToggleUtils.getUserId();
@@ -193,7 +155,7 @@ public class InformasjonRessurs {
         utslagskriterierResultat.put("ytelsesstatus", personInfoService.hentYtelseStatus(uid));
 
         try {
-            Personalia personalia = personaliaBolk.hentPersonalia(uid);
+            Personalia personalia = personaliaFletter.mapTilPersonalia(uid);
             utslagskriterierResultat.put("alder", Integer.toString(new PersonAlder(uid).getAlder()));
             utslagskriterierResultat.put("fodselsdato", personalia.getFodselsdato());
             utslagskriterierResultat.put("bosattINorge", ((Boolean) !personalia.harUtenlandskAdresse()).toString());
@@ -222,7 +184,7 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = OidcFeatureToggleUtils.getUserId();
-        Personalia personalia = personaliaBolk.hentPersonalia(uid);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 
