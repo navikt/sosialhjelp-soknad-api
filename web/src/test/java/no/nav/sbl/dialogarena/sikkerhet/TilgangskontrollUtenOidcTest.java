@@ -53,7 +53,7 @@ public class TilgangskontrollUtenOidcTest {
         tilgangskontrollTest.skalFeileForAndre();
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = AuthorizationException.class)
     public void skalFeileOmSoknadenIkkeFinnes() {
         tilgangskontrollTest.skalFeileOmSoknadenIkkeFinnes();
     }
