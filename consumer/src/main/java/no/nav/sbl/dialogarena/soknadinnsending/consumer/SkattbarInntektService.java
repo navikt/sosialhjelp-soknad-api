@@ -165,7 +165,7 @@ public class SkattbarInntektService {
                     utbetaling.skattetrekk = trekkUtbetaling.skattetrekk;
                 }
             }
-            utbetaling.tittel = "Bruttoinntekt";
+            utbetaling.tittel = "Lønnsinntekt";
         }).collect(toList());
     }
 
