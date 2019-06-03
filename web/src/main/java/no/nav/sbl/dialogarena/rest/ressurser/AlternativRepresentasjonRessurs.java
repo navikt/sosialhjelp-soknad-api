@@ -35,7 +35,7 @@ public class AlternativRepresentasjonRessurs {
     @Path("/json/{behandlingsId}")
     @Produces(APPLICATION_JSON)
     public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         erRessursAktiv("jsonRepresentasjon");
         String eier = getSubjectHandler().getUid();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();

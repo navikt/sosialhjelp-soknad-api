@@ -32,37 +32,4 @@ public class SoknadActionsEndpointUtenOidcIT extends AbstractSecurityIT {
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
-
-    @Test
-    public void sendEpost_fortsettsenere() {
-        SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
-        Response responseMedBrukersEgenXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
-                .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken("BRUKER_2_SIN_BEHANDLINGSID"))
-                .buildPost(Entity.json(""))
-                .invoke();
-
-        assertThat(responseMedBrukersEgenXSRFToken.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-
-        Response responseMedStjeltXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
-                .header("X-XSRF-TOKEN", soknadTester.getXhrHeader())
-                .buildPost(Entity.json(""))
-                .invoke();
-
-        assertThat(responseMedStjeltXSRFToken.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-    }
-
-    @Test
-    public void sendEpost_bekreftinnsending() {
-        SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/bekreftinnsending";
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-                webTarget.queryParam("fnr", ANNEN_BRUKER))
-                .buildPost(Entity.json(""))
-                .invoke();
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-    }
 }

@@ -40,7 +40,7 @@ public class FullOppsummeringRessurs {
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         sjekkOmFullOppsummeringErAktivert("hentOppsummeringNew");
 
         String eier = getSubjectHandler().getUid();
@@ -52,7 +52,7 @@ public class FullOppsummeringRessurs {
     @Path("/{behandlingsId}/fullsoknadpdf")
     @Produces("application/pdf")
     public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
 
         String eier = getSubjectHandler().getUid();

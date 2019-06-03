@@ -13,7 +13,6 @@ import no.nav.sbl.dialogarena.config.SikkerhetsConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
@@ -24,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
@@ -43,8 +43,6 @@ public class Tilgangskontroll {
 
     private final EnforcementPoint pep;
     @Inject
-    private SoknadService soknadService;
-    @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -62,8 +60,13 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId()).get();
-        String aktoerId = soknadUnderArbeid.getEier();
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId());
+        String aktoerId;
+        if (soknadUnderArbeid.isPresent()) {
+            aktoerId = soknadUnderArbeid.get().getEier();
+        } else {
+            throw new AuthorizationException("Bruker har ikke tilgang til søknaden.");
+        }
 
         verifiserTilgangMotPep(aktoerId, behandlingsId);
     }

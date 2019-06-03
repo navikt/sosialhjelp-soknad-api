@@ -26,17 +26,16 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
         EndpointDataMocking.setupMockWsEndpointData();
     }
 
-    @Ignore
     @Test
     public void nektetTilgang_opprettEttersendelse() {
         SoknadTester soknadTester = soknadOpprettet();
-        String url = "soknader/opprettSoknad";
+        String url = "soknader";
 
         Response response = soknadTester.sendsoknadResource(url, webTarget -> webTarget
                 .queryParam("fnr", ANNEN_BRUKER)
                 .queryParam("ettersendTil", soknadTester.getBrukerBehandlingId() )) //fake annen bruker, se FakeLoginFilter
                 .buildPost(null)
                 .invoke();
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 }

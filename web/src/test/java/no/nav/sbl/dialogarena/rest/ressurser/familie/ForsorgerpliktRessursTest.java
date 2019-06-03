@@ -16,7 +16,6 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -60,14 +59,6 @@ public class ForsorgerpliktRessursTest {
                     .withEtternavn("Beethoven"))
             .withFodselsdato("1770-12-16")
             .withPersonIdentifikator("16127054321");
-
-    private static final JsonBarn JSON_BARN_MED_DISKRESJONSKODE = new JsonBarn()
-            .withKilde(JsonKilde.SYSTEM)
-            .withNavn(new JsonNavn()
-                    .withFornavn("")
-                    .withMellomnavn("")
-                    .withEtternavn(""))
-            .withHarDiskresjonskode(true);
 
     @InjectMocks
     private ForsorgerpliktRessurs forsorgerpliktRessurs;
@@ -168,21 +159,6 @@ public class ForsorgerpliktRessursTest {
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
-    @Ignore
-    @Test
-    public void getForsorgerpliktSkalReturnereEtBarnMedDiskresjonskode(){
-        final JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN_MED_DISKRESJONSKODE);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithForsorgerplikt(true, null, Collections.singletonList(jsonAnsvar))));
-
-        final ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
-
-        assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
-        assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
-    }
-
     @Test
     public void putForsorgerpliktSkalSetteBarnebidrag(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
@@ -199,27 +175,6 @@ public class ForsorgerpliktRessursTest {
         assertThat(forsorgerplikt.getBarnebidrag().getVerdi(), is(JsonBarnebidrag.Verdi.BETALER));
         assertThat(forsorgerplikt.getHarForsorgerplikt(), nullValue());
         assertThat(forsorgerplikt.getAnsvar(), nullValue());
-    }
-
-    @Ignore
-    @Test
-    public void putForsorgerpliktSkalKunneSetteBarnebidragForBarnMedDiskresjonskode(){
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN_MED_DISKRESJONSKODE);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithForsorgerplikt(true, null, Collections.singletonList(jsonAnsvar))));
-
-        ForsorgerpliktFrontend forsorgerpliktFrontend = new ForsorgerpliktFrontend()
-                .withBarnebidrag(JsonBarnebidrag.Verdi.BETALER)
-                .withAnsvar(Collections.singletonList(createBarnMedDiskresjonskode()));
-
-        forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend);
-
-        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getBarnebidrag().getVerdi(), is(JsonBarnebidrag.Verdi.BETALER));
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
-        assertThat(forsorgerplikt.getAnsvar().size(), is(1));
     }
 
     @Test
@@ -257,12 +212,6 @@ public class ForsorgerpliktRessursTest {
                             .withFodselsnummer(JSON_BARN.getPersonIdentifikator())
                             .withPersonnummer(getPersonnummerFromFnr(JSON_BARN.getPersonIdentifikator())))
                     .withHarDeltBosted(true);
-    }
-
-    private AnsvarFrontend createBarnMedDiskresjonskode() {
-        return new AnsvarFrontend()
-                .withBarn(new BarnFrontend())
-                .withHarDiskresjonskode(true);
     }
 
     private void assertThatAnsvarIsCorrectlyConverted(AnsvarFrontend ansvarFrontend, JsonAnsvar jsonAnsvar) {

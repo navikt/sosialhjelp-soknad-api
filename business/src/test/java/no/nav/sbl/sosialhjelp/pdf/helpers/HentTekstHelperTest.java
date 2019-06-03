@@ -14,6 +14,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.Locale;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
@@ -49,7 +51,7 @@ public class HentTekstHelperTest {
     public void senderParametereTilCmsTekst() throws IOException {
         handlebars.compileInline("{{hentTekst \"test\" \"param1\" \"param2\"}}").apply(new Object());
 
-        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix", "bundlename", toLocale("nb_NO"));
+        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, SOKNAD_TYPE_PREFIX, BUNDLE_NAME, toLocale("nb_NO"));
     }
 
 
