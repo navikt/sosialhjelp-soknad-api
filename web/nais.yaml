@@ -101,8 +101,8 @@ fasitResources:
   - alias: soknadsosialhjelp-server-eksternapp.skatt.datasamarbeid.api.inntektsmottaker-apiKey
     resourceType: credential
     propertyMap:
-    username: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_USERNAME
-    password: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD
+      username: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_USERNAME
+      password: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD
 
  - alias: eksternapp.skatt.datasamarbeid.api.inntektsmottaker
    resourceType: restservice
