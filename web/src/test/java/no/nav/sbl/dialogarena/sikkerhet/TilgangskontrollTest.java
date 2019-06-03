@@ -61,7 +61,7 @@ public class TilgangskontrollTest {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX");
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = AuthorizationException.class)
     public void skalFeileOmSoknadenIkkeFinnes() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
