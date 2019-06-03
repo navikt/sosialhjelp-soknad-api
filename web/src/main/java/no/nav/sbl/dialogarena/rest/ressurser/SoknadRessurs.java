@@ -19,6 +19,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
@@ -128,6 +130,14 @@ public class SoknadRessurs {
 
         final SoknadUnderArbeid konvertertSoknadUnderArbeid = webSoknadConverter.mapWebSoknadTilSoknadUnderArbeid(soknad, true);
 
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        JsonTelefonnummer telefonnummerNyModell = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
+        JsonKontonummer kontonummerNyModell = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setTelefonnummer(telefonnummerNyModell);
+        konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setKontonummer(kontonummerNyModell);
+
+
         return pdfTemplate.fyllHtmlMalMedInnhold(konvertertSoknadUnderArbeid.getJsonInternalSoknad());
     }
 
@@ -155,28 +165,6 @@ public class SoknadRessurs {
 
     @POST
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> legacyOpprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
-        Map<String, String> result = new HashMap<>();
-
-        String opprettetBehandlingsId;
-        if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
-        } else {
-            WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
-            if (soknad == null) {
-                opprettetBehandlingsId = soknadService.legacyStartEttersending(behandlingsId);
-            } else {
-                opprettetBehandlingsId = soknad.getBrukerBehandlingId();
-            }
-        }
-        result.put("brukerBehandlingId", opprettetBehandlingsId);
-        response.addCookie(xsrfCookie(opprettetBehandlingsId));
-        return result;
-    }
-
-    @POST
-    @Path("/opprettSoknad")
-    @Consumes(APPLICATION_JSON)
     public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
@@ -200,6 +188,13 @@ public class SoknadRessurs {
         result.put("brukerBehandlingId", opprettetBehandlingsId);
         response.addCookie(xsrfCookie(opprettetBehandlingsId));
         return result;
+    }
+
+    @POST
+    @Path("/opprettSoknad")
+    @Consumes(APPLICATION_JSON)
+    public Map<String, String> midlertidigOpprettSoknadDuplikat(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+        return opprettSoknad(behandlingsId, soknadType, response);
     }
 
     @PUT  //TODO: Burde endres til å sende med hele objektet for å følge spec'en

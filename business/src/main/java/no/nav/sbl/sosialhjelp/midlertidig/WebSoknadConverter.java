@@ -78,10 +78,8 @@ public class WebSoknadConverter {
 
         final String eier = OidcFeatureToggleUtils.getUserId();
         final Optional<SoknadUnderArbeid> soknadNyModell = soknadUnderArbeidRepository.hentSoknad(webSoknad.getBrukerBehandlingId(), eier);
-        if (soknadNyModell.isPresent() && soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null) {
+        if (soknadNyModell.get().getJsonInternalSoknad().getVedlegg() != null) {
             jsonVedlegg = soknadNyModell.get().getJsonInternalSoknad().getVedlegg().getVedlegg();
-        } else if (medVedlegg) {
-            jsonVedlegg = sosialhjelpVedleggTilJson.opprettJsonVedleggFraWebSoknad(webSoknad);
         }
 
         if (webSoknad.erEttersending()) {

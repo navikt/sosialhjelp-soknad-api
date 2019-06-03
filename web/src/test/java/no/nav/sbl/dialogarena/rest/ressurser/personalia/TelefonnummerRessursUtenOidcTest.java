@@ -1,11 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -23,9 +21,6 @@ import static org.mockito.Mockito.*;
 public class TelefonnummerRessursUtenOidcTest {
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
@@ -33,12 +28,6 @@ public class TelefonnummerRessursUtenOidcTest {
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @InjectMocks
     private TelefonnummerRessurs telefonnummerRessurs = spy(new TelefonnummerRessurs());
@@ -50,6 +39,7 @@ public class TelefonnummerRessursUtenOidcTest {
     public void setUp() {
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
+        doCallRealMethod().when(telefonnummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class));
     }
 
     @After
@@ -60,11 +50,6 @@ public class TelefonnummerRessursUtenOidcTest {
     @Test
     public void getTelefonnummerSkalReturnereSystemTelefonnummer(){
         telefonnummerRessursTest.getTelefonnummerSkalReturnereSystemTelefonnummer();
-    }
-
-    @Test
-    public void getTelefonnummerSkalReturnereOppdatertSystemTelefonnummerFraTPS(){
-        telefonnummerRessursTest.getTelefonnummerSkalReturnereOppdatertSystemTelefonnummerFraTPS();
     }
 
     @Test
