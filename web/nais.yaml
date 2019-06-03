@@ -96,7 +96,7 @@ fasitResources:
     resourceType: restservice
   - alias: soknadsosialhjelp-server-norg2.api.v1-apiKey
     resourceType: credential
-  - alias: "loginservice_oidc"
+  - alias: loginservice_oidc
     resourceType: azureoidc
   - alias: soknadsosialhjelp-server-eksternapp.skatt.datasamarbeid.api.inntektsmottaker-apiKey
     resourceType: credential
