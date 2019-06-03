@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
@@ -14,7 +13,6 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -25,7 +23,6 @@ import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -69,9 +66,6 @@ public class NavEnhetRessurs {
     private SoknadsmottakerService soknadsmottakerService;
 
     @Inject
-    private AdresseSokService adresseSokService;
-
-    @Inject
     private NorgService norgService;
 
     @GET
@@ -88,17 +82,6 @@ public class NavEnhetRessurs {
         /*return findSoknadsmottaker(behandlingsId, mapper.mapValgToString(adresseFrontend.valg)); Bruk når faktum er fjernet*/
         return soknadsmottakerRessurs.findSoknadsmottaker(behandlingsId, adresseValg)
                 .stream().map(navEnhet -> mapFromLegacyNavEnhetFrontend(navEnhet, valgtOrgnr)).collect(Collectors.toList());
-    }
-
-    @GET
-    @Path("/sok")
-    @Cacheable("navEnhetSokCache")
-    public List<NavEnhetFrontend> sokEtterNavEnheter(@QueryParam("kommunenr") String kommunenr) {
-        return adresseSokService.sokEtterNavKontor(new AdresseSokConsumer.Sokedata().withKommunenummer(kommunenr))
-            .stream().map(adresseForslag -> {
-                NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-                return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet);
-            }).collect(Collectors.toList());
     }
 
     @PUT

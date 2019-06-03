@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
@@ -26,6 +27,7 @@ import no.nav.security.oidc.api.Unprotected;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -33,6 +35,7 @@ import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -267,5 +270,44 @@ public class InformasjonRessurs {
             this.type = type;
             this.features = features;
         }
-    }   
+    }
+
+    @GET
+    @Path("/kommunesok")
+    @Cacheable("kommunesokCache")
+    public List<NavEnhetKommunesok> sokEtterNavEnheter(@QueryParam("kommunenr") String kommunenr) {
+        return adresseSokService.sokEtterNavKontor(new AdresseSokConsumer.Sokedata().withKommunenummer(kommunenr))
+                .stream().map(adresseForslag -> {
+                    NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+                    return mapFraAdresseForslagOgNavEnhetTilNavEnhetKommunesok(adresseForslag, navEnhet);
+                }).collect(Collectors.toList());
+    }
+
+    private static class NavEnhetKommunesok {
+        public String orgnr;
+        public String enhetsnavn;
+        public String kommunenavn;
+        public boolean valgt;
+
+        private NavEnhetKommunesok(String orgnr, String enhetsnavn, String kommunenavn) {
+            this.orgnr = orgnr;
+            this.enhetsnavn = enhetsnavn;
+            this.kommunenavn = kommunenavn;
+        }
+    }
+
+    private NavEnhetKommunesok mapFraAdresseForslagOgNavEnhetTilNavEnhetKommunesok(AdresseForslag adresseForslag, NavEnhet navEnhet) {
+        if (navEnhet == null) {
+            logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
+            return null;
+        }
+        if (adresseForslag.kommunenummer == null
+                || adresseForslag.kommunenummer.length() != 4) {
+            return null;
+        }
+
+        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
+        return new NavEnhetKommunesok((digisosKommune) ? navEnhet.sosialOrgnr : null, navEnhet.navn, adresseForslag.kommunenavn);
+    }
+
 }
