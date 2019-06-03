@@ -130,22 +130,6 @@ public class WebSoknadConverterTest {
     }
 
     @Test
-    public void mapWebSoknadTilJsonSoknadInternalReturnererKunVedleggForEttersendelse() {
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad())));
-
-        JsonInternalSoknad jsonInternalSoknad = webSoknadConverter.mapWebSoknadTilJsonSoknadInternal(lagGyldigWebSoknadForEttersending(), true);
-
-        JsonVedlegg vedlegg = jsonInternalSoknad.getVedlegg().getVedlegg().get(0);
-        assertThat(jsonInternalSoknad.getSoknad(), nullValue());
-        assertThat(jsonInternalSoknad.getVedlegg().getVedlegg().size(), is(1));
-        assertThat(vedlegg.getType(), is(TYPE));
-        assertThat(vedlegg.getTilleggsinfo(), is(TILLEGGSINFO));
-        assertThat(vedlegg.getStatus(), is(LastetOpp.name()));
-        assertThat(vedlegg.getFiler().get(0).getFilnavn(), is(FILNAVN));
-        assertThat(vedlegg.getFiler().get(0).getSha512(), notNullValue());
-    }
-
-    @Test
     public void mapWebSoknadTilJsonSoknadInternalReturnererKunVedleggForEttersendelseFraNyModell() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(
                 new JsonInternalSoknad().withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(

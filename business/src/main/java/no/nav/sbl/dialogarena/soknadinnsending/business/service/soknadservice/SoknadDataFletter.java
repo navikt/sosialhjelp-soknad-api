@@ -52,10 +52,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskriv
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -529,6 +526,11 @@ public class SoknadDataFletter {
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
         logDersomForskjellMellomFaktumOgNyModell(konvertertSoknadUnderArbeid, soknadUnderArbeid, "DIGISOS-1212 Forskjell i json: ");
+
+        JsonTelefonnummer telefonnummerNyModell = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
+        JsonKontonummer kontonummerNyModell = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
+        konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setTelefonnummer(telefonnummerNyModell);
+        konvertertSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setKontonummer(kontonummerNyModell);
 
         soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(konvertertSoknadUnderArbeid, eier);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getSoknadId();

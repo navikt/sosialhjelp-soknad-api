@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
@@ -13,9 +14,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +29,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdSer
 
 @Component
 public class ArbeidsforholdSystemdata implements Systemdata {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdSystemdata.class);
 
     @Inject
     private ArbeidsforholdService arbeidsforholdService;
@@ -69,7 +75,13 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
     public List<JsonArbeidsforhold> innhentSystemArbeidsforhold(final String personIdentifikator) {
         Sokeperiode sokeperiode = getSoekeperiode();
-        List<Arbeidsforhold> arbeidsforholds = arbeidsforholdService.hentArbeidsforhold(personIdentifikator, sokeperiode);
+        List<Arbeidsforhold> arbeidsforholds;
+        try {
+            arbeidsforholds = arbeidsforholdService.hentArbeidsforhold(personIdentifikator, sokeperiode);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke hente arbeidsforhold: " + e, e);
+            arbeidsforholds = null;
+        }
 
         if (arbeidsforholds == null){
             return null;
