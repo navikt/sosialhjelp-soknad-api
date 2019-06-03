@@ -68,10 +68,6 @@ public class UtbetalingRessurs {
     @PUT
     public void updateUtbetalinger(@PathParam("behandlingsId") String behandlingsId, UtbetalingerFrontend utbetalingerFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, utbetalingerFrontend);
-    }
-
-    private void update(String behandlingsId, UtbetalingerFrontend utbetalingerFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();

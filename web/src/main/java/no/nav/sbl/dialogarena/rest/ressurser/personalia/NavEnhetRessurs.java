@@ -67,10 +67,6 @@ public class NavEnhetRessurs {
     @PUT
     public void updateNavEnhet(@PathParam("behandlingsId") String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, navEnhetFrontend);
-    }
-
-    private void update(String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonInternalSoknad jsonInternalSoknad = soknad.getJsonInternalSoknad();

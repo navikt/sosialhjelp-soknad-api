@@ -70,10 +70,6 @@ public class BarneutgiftRessurs {
     @PUT
     public void updateBarneutgifter(@PathParam("behandlingsId") String behandlingsId, BarneutgifterFrontend barneutgifterFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, barneutgifterFrontend);
-    }
-
-    private void update(String behandlingsId, BarneutgifterFrontend barneutgifterFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();

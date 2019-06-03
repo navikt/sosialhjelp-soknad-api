@@ -45,10 +45,6 @@ public class BosituasjonRessurs {
     @PUT
     public void updateBosituasjon(@PathParam("behandlingsId") String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, bosituasjonFrontend);
-    }
-
-    private void update(String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonBosituasjon bosituasjon = soknad.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();

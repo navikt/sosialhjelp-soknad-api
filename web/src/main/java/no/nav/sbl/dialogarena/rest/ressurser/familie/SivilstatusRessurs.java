@@ -56,10 +56,6 @@ public class SivilstatusRessurs {
     @PUT
     public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, sivilstatusFrontend);
-    }
-
-    private void update(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();

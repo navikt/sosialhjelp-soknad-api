@@ -70,10 +70,6 @@ public class VerdiRessurs {
     @PUT
     public void updateVerdier(@PathParam("behandlingsId") String behandlingsId, VerdierFrontend verdierFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, verdierFrontend);
-    }
-
-    private void update(String behandlingsId, VerdierFrontend verdierFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
