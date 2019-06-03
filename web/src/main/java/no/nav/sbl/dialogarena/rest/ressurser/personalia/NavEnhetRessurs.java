@@ -25,6 +25,7 @@ import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -91,6 +92,7 @@ public class NavEnhetRessurs {
 
     @GET
     @Path("/sok")
+    @Cacheable("navEnhetSokCache")
     public List<NavEnhetFrontend> sokEtterNavEnheter(@QueryParam("kommunenr") String kommunenr) {
         return adresseSokService.sokEtterNavKontor(new AdresseSokConsumer.Sokedata().withKommunenummer(kommunenr))
             .stream().map(adresseForslag -> {
