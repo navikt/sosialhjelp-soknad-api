@@ -35,7 +35,7 @@ public class SkattbarInntektServiceTest {
         skattbarInntektService.mockFil = "/mockdata/InntektOgSkatt.json";
         List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt("01234567");
         Map<String, List<Utbetaling>> utbetalingPerTittel = utbetalinger.stream().collect(Collectors.groupingBy(o -> o.tittel));
-        List<Utbetaling> lonn = utbetalingPerTittel.get("Brutto");
+        List<Utbetaling> lonn = utbetalingPerTittel.get("Bruttoinntekt");
 
         Utbetaling utbetaling = lonn.get(0);
         assertThat(utbetaling.brutto).isPositive();

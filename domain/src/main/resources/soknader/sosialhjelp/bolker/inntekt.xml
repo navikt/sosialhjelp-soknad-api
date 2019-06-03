@@ -23,12 +23,7 @@
     </faktum>
 
     <faktum>
-        <id>utbetalinger.fra.nav.feilet</id>
-        <panel>inntektBolk</panel>
-        <type>hidden</type>
-    </faktum>
-    <faktum>
-        <id>utbetalinger.utbetalinger.fra.skatteetaten.feilet</id>
+        <id>utbetalinger.feilet</id>
         <panel>inntektBolk</panel>
         <type>hidden</type>
     </faktum>

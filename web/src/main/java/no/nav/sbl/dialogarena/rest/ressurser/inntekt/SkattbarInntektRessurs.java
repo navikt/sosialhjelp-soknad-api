@@ -77,8 +77,8 @@ public class SkattbarInntektRessurs {
                 for (JsonOkonomiOpplysningUtbetaling jsonOkonomiOpplysningUtbetaling : jsonOrganisasjonListEntry.getValue()) {
                     Utbetaling utbetaling = new Utbetaling()
                             .withTittel(jsonOkonomiOpplysningUtbetaling.getTittel())
-                            .withBelop(jsonOkonomiOpplysningUtbetaling.getBrutto() == null
-                                    || jsonOkonomiOpplysningUtbetaling.getBrutto() == 0.0 ? jsonOkonomiOpplysningUtbetaling.getSkattetrekk() : jsonOkonomiOpplysningUtbetaling.getBrutto());
+                            .withBrutto(jsonOkonomiOpplysningUtbetaling.getBrutto())
+                            .withForskuddstrekk(jsonOkonomiOpplysningUtbetaling.getSkattetrekk());
                     utbetalingListe.add(utbetaling);
                 }
                 Optional<JsonOkonomiOpplysningUtbetaling> first = utbetalingerPerManed.stream().findFirst();
@@ -86,9 +86,7 @@ public class SkattbarInntektRessurs {
                 organisasjoner.add(mapTilOrganisasjon(utbetalingListe, jsonOrganisasjon, first));
             }
             SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = new SkattbarInntektOgForskuddstrekk()
-                    .withSamletInntekt(samletSkattbarInntekt)
-                    .withSamletTrekk(samletTrekk)
-                    .withOrganisasjoner(organisasjoner);
+                   .withOrganisasjoner(organisasjoner);
             skattbarInntektOgForskuddstrekkListe.add(skattbarInntektOgForskuddstrekk);
         }
         Collections.reverse(skattbarInntektOgForskuddstrekkListe);
@@ -108,20 +106,7 @@ public class SkattbarInntektRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class SkattbarInntektOgForskuddstrekk {
-        public Double samletInntekt;
-        public Double samletTrekk;
         public List<Organisasjon> organisasjoner;
-
-
-        public SkattbarInntektOgForskuddstrekk withSamletInntekt(Double samletInntekt) {
-            this.samletInntekt = samletInntekt;
-            return this;
-        }
-
-        public SkattbarInntektOgForskuddstrekk withSamletTrekk(Double samletTrekk) {
-            this.samletTrekk = samletTrekk;
-            return this;
-        }
 
         public SkattbarInntektOgForskuddstrekk withOrganisasjoner(List<Organisasjon> organisasjoner) {
             this.organisasjoner = organisasjoner;
@@ -167,11 +152,17 @@ public class SkattbarInntektRessurs {
     public static final class Utbetaling {
 
 
-        public Double belop;
+        public Double brutto;
+        public Double forskuddstrekk;
         public String tittel;
 
-        public Utbetaling withBelop(Double belop) {
-            this.belop = belop;
+        public Utbetaling withBrutto(Double brutto) {
+            this.brutto = brutto;
+            return this;
+        }
+
+        public Utbetaling withForskuddstrekk(Double forskuddstrekk) {
+            this.forskuddstrekk = forskuddstrekk;
             return this;
         }
 
