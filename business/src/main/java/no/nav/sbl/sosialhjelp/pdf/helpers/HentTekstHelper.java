@@ -1,18 +1,15 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import java.io.IOException;
-
-import javax.inject.Inject;
-
+import com.github.jknack.handlebars.Options;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
 import org.springframework.stereotype.Component;
 
-import com.github.jknack.handlebars.Options;
+import javax.inject.Inject;
+import java.io.IOException;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
@@ -20,9 +17,6 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
 
     @Inject
     private CmsTekst cmsTekst;
-
-    @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     @Override
     public String getNavn() {
@@ -36,10 +30,7 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
-        final String bundleName = konfigurasjon.getBundleName();
-
-        String tekst = this.cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
+        String tekst = this.cmsTekst.getCmsTekst(key, options.params, SOKNAD_TYPE_PREFIX, BUNDLE_NAME, SPRAK);
 
         String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
 

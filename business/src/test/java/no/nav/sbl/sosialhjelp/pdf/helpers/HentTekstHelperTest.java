@@ -1,8 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,16 +31,8 @@ public class HentTekstHelperTest {
     @Mock
     CmsTekst cmsTekst;
 
-    @Mock
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-
     @Before
     public void setup() {
-        KravdialogInformasjon kravdialogInformasjon = mock(KravdialogInformasjon.class);
-        when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(kravdialogInformasjon);
-        when(kravdialogInformasjon.getBundleName()).thenReturn("bundlename");
-        when(kravdialogInformasjon.getSoknadTypePrefix()).thenReturn("mittprefix");
-
         handlebars = new Handlebars();
         handlebars.registerHelper(hentTekstHelper.getNavn(), hentTekstHelper);
         when(cmsTekst.getCmsTekst(anyString(), any(Object[].class), anyString(), anyString(), any(Locale.class))).then(AdditionalAnswers.returnsFirstArg());

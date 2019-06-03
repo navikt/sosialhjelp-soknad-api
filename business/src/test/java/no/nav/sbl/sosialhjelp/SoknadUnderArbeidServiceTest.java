@@ -1,7 +1,6 @@
 package no.nav.sbl.sosialhjelp;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -51,8 +50,6 @@ public class SoknadUnderArbeidServiceTest {
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    @Mock
-    private HendelseRepository hendelseRepository;
     @InjectMocks
     private SoknadUnderArbeidService soknadUnderArbeidService;
 

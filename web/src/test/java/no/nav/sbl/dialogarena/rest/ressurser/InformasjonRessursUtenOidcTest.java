@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
@@ -44,8 +43,6 @@ public class InformasjonRessursUtenOidcTest {
     NavMessageSource messageSource;
     @Mock
     ArbeidssokerInfoService arbeidssokerInfoService;
-    @Mock
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
 
     @InjectMocks

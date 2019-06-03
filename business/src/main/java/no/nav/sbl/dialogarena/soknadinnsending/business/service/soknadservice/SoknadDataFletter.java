@@ -4,7 +4,6 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
@@ -68,8 +67,6 @@ public class SoknadDataFletter {
     private HenvendelseService henvendelseService;
     @Inject
     private OppgaveHandterer oppgaveHandterer;
-    @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
@@ -88,7 +85,7 @@ public class SoknadDataFletter {
 
     @Transactional
     public String startSoknad(String skjemanummer) {
-        if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(skjemanummer)) {
+        if (!SKJEMANUMMER.equals(skjemanummer)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + skjemanummer);
         }
         String soknadnavn = "soknadsosialhjelp";
@@ -109,7 +106,7 @@ public class SoknadDataFletter {
         oprettIDbTimer.stop();
         oprettIDbTimer.report();
 
-        soknadMetricsService.startetSoknad(skjemanummer, false);
+        soknadMetricsService.startetSoknad(false);
 
         final SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withVersjon(1L)
@@ -211,7 +208,7 @@ public class SoknadDataFletter {
 
         forberedInnsendingMedNyModell(soknadUnderArbeid);
 
-        soknadMetricsService.sendtSoknad(SKJEMANUMMER, soknadUnderArbeid.erEttersendelse());
+        soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse()) {
             logAlderTilKibana(eier);
         }

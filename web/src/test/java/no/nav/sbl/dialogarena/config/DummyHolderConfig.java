@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
@@ -31,11 +30,6 @@ public class DummyHolderConfig {
 
     @Bean
     public EttersendingService ettersendingService() {
-        return null;
-    }
-
-    @Bean
-    public KravdialogInformasjonHolder kravdialogInformasjonHolder() {
         return null;
     }
 

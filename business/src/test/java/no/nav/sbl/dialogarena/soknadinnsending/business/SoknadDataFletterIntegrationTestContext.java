@@ -1,13 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
@@ -61,11 +58,6 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public HendelseRepository hendelseRepository() {
-        return new HendelseRepositoryJdbc();
-    }
-
-    @Bean
     public RepositoryTestSupport testSupport() {
         return new TestSupport(dataSource);
     }
@@ -78,11 +70,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public SoknadService soknadService() {
         return new SoknadService();
-    }
-
-    @Bean
-    public KravdialogInformasjonHolder kravdialogInformasjonHolder(){
-        return new KravdialogInformasjonHolder();
     }
 
     @Bean

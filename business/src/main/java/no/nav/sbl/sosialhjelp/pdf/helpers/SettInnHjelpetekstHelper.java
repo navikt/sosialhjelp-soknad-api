@@ -1,20 +1,15 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 
-import java.io.IOException;
-
-import javax.inject.Inject;
-
+import com.github.jknack.handlebars.Options;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
-import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
 import org.springframework.stereotype.Component;
 
-import com.github.jknack.handlebars.Options;
+import javax.inject.Inject;
+import java.io.IOException;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
@@ -22,9 +17,6 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> implem
 
     @Inject
     private CmsTekst cmsTekst;
-
-    @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     @Override
     public String getNavn() {
@@ -38,16 +30,13 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> implem
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
-        final String bundleName = konfigurasjon.getBundleName();
-
-        String hjelpetekst = TextWithTitle.getText(key, options, konfigurasjon, bundleName, cmsTekst);
+        String hjelpetekst = TextWithTitle.getText(key, options, SOKNAD_TYPE_PREFIX, BUNDLE_NAME, cmsTekst);
         
         if (hjelpetekst == null) {
             return "";
         }
         
-        final String hjelpetekstTittel = this.cmsTekst.getCmsTekst("hjelpetekst.oppsummering.tittel", options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
+        final String hjelpetekstTittel = this.cmsTekst.getCmsTekst("hjelpetekst.oppsummering.tittel", options.params, SOKNAD_TYPE_PREFIX, BUNDLE_NAME, SPRAK);
         
         return TextWithTitle.createHtmlLayout(hjelpetekst, hjelpetekstTittel);
     }

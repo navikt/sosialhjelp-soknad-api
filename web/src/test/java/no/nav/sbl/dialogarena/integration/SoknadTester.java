@@ -4,8 +4,6 @@ package no.nav.sbl.dialogarena.integration;
 import no.nav.sbl.dialogarena.rest.SoknadApplication;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -23,7 +21,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static javax.ws.rs.core.MediaType.*;
-import static org.apache.http.HttpStatus.SC_NO_CONTENT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class SoknadTester extends JerseyTest {
@@ -32,7 +30,6 @@ public class SoknadTester extends JerseyTest {
 
     private String brukerBehandlingId;
 
-    private SoknadUnderArbeid soknadUnderArbeid;
     private Pair<String, String> xhrHeader;
     private SoknadTester() {
         super();
@@ -54,7 +51,7 @@ public class SoknadTester extends JerseyTest {
         client().register(GsonProvider.class);
 
         StartSoknad soknadType = new StartSoknad();
-        soknadType.setSoknadType(SosialhjelpInformasjon.SKJEMANUMMER);
+        soknadType.setSoknadType(SKJEMANUMMER);
         Entity sokEntity = Entity.json(soknadType);
         Response response = sendsoknad().path("soknader")
                 .request(APPLICATION_JSON_TYPE)
@@ -74,30 +71,6 @@ public class SoknadTester extends JerseyTest {
 
     private void saveXhrValue(String value){
         this.xhrHeader =  new ImmutablePair("X-XSRF-TOKEN", value);
-    }
-
-    public Invocation.Builder soknadResource(String suburl) {
-        return soknadResource(suburl, Function.identity());
-    }
-
-    private Invocation.Builder soknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
-        WebTarget target = sendsoknad().path("soknader/").path(brukerBehandlingId).path(suburl);
-        return webTargetDecorator.apply(target)
-                .request(APPLICATION_JSON_TYPE)
-                .accept(APPLICATION_JSON_TYPE)
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token);
-    }
-
-
-    private Invocation.Builder soknadResource() {
-        return soknadResource("");
-    }
-
-    public SoknadTester hentSoknad() {
-        Response response = soknadResource().build("GET").invoke();
-        soknadUnderArbeid = response.readEntity(SoknadUnderArbeid.class);
-        checkResponse(response, SC_OK);
-        return this;
     }
 
     private void checkResponse(Response invoke, int expectedStatusCode) {

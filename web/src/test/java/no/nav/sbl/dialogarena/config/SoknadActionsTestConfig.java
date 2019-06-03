@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
@@ -58,11 +57,6 @@ public class SoknadActionsTestConfig {
     @Bean
     public SoknadMetricsService soknadMetricsService() {
         return mock(SoknadMetricsService.class);
-    }
-
-    @Bean
-    public KravdialogInformasjonHolder kravdialogInformasjonHolder() {
-        return mock(KravdialogInformasjonHolder.class);
     }
 
     @Bean

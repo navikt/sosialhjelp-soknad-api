@@ -1,13 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
-
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,8 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContentConfigTest extends ApplicationContextTest {
@@ -27,13 +25,9 @@ public class ContentConfigTest extends ApplicationContextTest {
     @InjectMocks
     ContentConfig contentConfig;
 
-    @Mock
-    KravdialogInformasjonHolder kravdialogInformasjonHolder;
-
     @Before
     public void setup() throws URISyntaxException {
         when(brukerprofilDataDirectory.toURI()).thenReturn(new URI("uri/"));
-        when(kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()).thenReturn(new KravdialogInformasjonHolder().getSoknadsKonfigurasjoner());
     }
 
     @Test

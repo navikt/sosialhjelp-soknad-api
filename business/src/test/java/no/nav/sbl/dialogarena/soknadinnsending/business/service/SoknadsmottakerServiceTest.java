@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
@@ -151,20 +150,6 @@ public class SoknadsmottakerServiceTest {
                 .withBolignummer(BOLIGNUMMER);
     }
 
-    private Faktum lagFaktumForSoknadGateadresse() {
-        return new Faktum()
-                .medKey("kontakt.adresse.bruker")
-                .medSystemProperty("type", GATEADRESSE)
-                .medSystemProperty("landkode", LANDKODE)
-                .medSystemProperty("kommunenummer", KOMMUNENUMMER)
-                .medSystemProperty("postnummer", POSTNUMMER)
-                .medSystemProperty("poststed", POSTSTED)
-                .medSystemProperty("gatenavn", GATENAVN)
-                .medSystemProperty("husnummer", HUSNUMMER)
-                .medSystemProperty("husbokstav", HUSBOKSTAV)
-                .medSystemProperty("bolignummer", BOLIGNUMMER);
-    }
-    
     private AdresseForslag lagAdresseForslag(String kommunenummer, String kommunenavn) {
         return lagAdresseForslag(kommunenummer, kommunenavn, "Gateveien");
     }

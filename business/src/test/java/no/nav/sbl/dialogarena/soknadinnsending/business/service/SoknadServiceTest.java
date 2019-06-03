@@ -2,8 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -16,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,10 +31,6 @@ public class SoknadServiceTest {
 
     @Mock
     private HenvendelseService henvendelsesConnector;
-    @Mock
-    private HendelseRepository hendelseRepository;
-    @Mock
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Mock
     SoknadDataFletter soknadDataFletter;
     @Mock
@@ -57,7 +50,6 @@ public class SoknadServiceTest {
     @Before
     public void before() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
-        when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid()));
     }
 

@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -44,7 +42,7 @@ public class SoknadService {
         if (soknadUnderArbeidOptional.isPresent()){
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
             henvendelseService.avbrytSoknad(soknadUnderArbeidOptional.get().getBehandlingsId(), false);
-            soknadMetricsService.avbruttSoknad(SKJEMANUMMER, soknadUnderArbeidOptional.get().erEttersendelse());
+            soknadMetricsService.avbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse());
         }
     }
 

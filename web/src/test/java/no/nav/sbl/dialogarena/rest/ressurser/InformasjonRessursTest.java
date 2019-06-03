@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
@@ -50,8 +49,6 @@ public class InformasjonRessursTest {
     NavMessageSource messageSource;
     @Mock
     ArbeidssokerInfoService arbeidssokerInfoService;
-    @Mock
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
 
     @InjectMocks
@@ -66,9 +63,6 @@ public class InformasjonRessursTest {
 
         when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
         when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia());
-
-        KravdialogInformasjonHolder kravdialogInformasjonHolder = new KravdialogInformasjonHolder();
-        when(this.kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()).thenReturn(kravdialogInformasjonHolder.getSoknadsKonfigurasjoner());
     }
 
     @After

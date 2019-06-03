@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.digipost.time.ControllableClock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
@@ -31,11 +29,6 @@ public class DbTestConfig {
 
     @Inject
     private DataSource dataSource;
-
-    @Bean
-    public HendelseRepository hendelseRepository() {
-        return new HendelseRepositoryJdbc();
-    }
     
     @Bean SoknadMetadataRepository soknadMetadataRepository() {
         return new SoknadMetadataRepositoryJdbc();

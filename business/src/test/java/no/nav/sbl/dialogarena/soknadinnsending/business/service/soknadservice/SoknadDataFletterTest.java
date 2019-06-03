@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
@@ -24,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -50,8 +48,6 @@ public class SoknadDataFletterTest {
     @Mock
     private OppgaveHandterer oppgaveHandterer;
     @Mock
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-    @Mock
     private SystemdataUpdater systemdataUpdater;
     @Mock
     SoknadMetricsService soknadMetricsService;
@@ -70,8 +66,6 @@ public class SoknadDataFletterTest {
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-        when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
-        when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(new KravdialogInformasjonHolder().getSoknadsKonfigurasjoner().get(0));
     }
 
     @Test
@@ -110,7 +104,6 @@ public class SoknadDataFletterTest {
         soknadUnderArbeid.getJsonInternalSoknad().setVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg));
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, anyString())).thenReturn(Optional.of(soknadUnderArbeid));
 
-        when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMANUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon(SKJEMANUMMER));
         soknadDataFletter.sendSoknad(behandlingsId);
 
         ArgumentCaptor<HovedskjemaMetadata> hovedCaptor = ArgumentCaptor.forClass(HovedskjemaMetadata.class);

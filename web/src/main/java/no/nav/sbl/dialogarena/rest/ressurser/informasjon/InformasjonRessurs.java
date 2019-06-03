@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
@@ -30,13 +29,11 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
@@ -71,8 +68,6 @@ public class InformasjonRessurs {
     private ArbeidssokerInfoService arbeidssokerInfoService;
     @Inject
     private PersonInfoService personInfoService;
-    @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Inject
     private AdresseSokService adresseSokService;
     @Inject
@@ -111,14 +106,10 @@ public class InformasjonRessurs {
             sprak = "nb_NO";
         }
 
-        List<String> bundleNames = kravdialogInformasjonHolder.getSoknadsKonfigurasjoner().stream()
-                .map(k -> k.getBundleName())
-                .collect(toList());
-
-        if(isNotEmpty(type) && !bundleNames.contains(type.toLowerCase())){
+        if(isNotEmpty(type) && !BUNDLE_NAME.equals(type.toLowerCase())){
             String prefiksetType = new StringBuilder("soknad").append(type.toLowerCase()).toString();
             logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType);
-            if(bundleNames.contains(prefiksetType)){
+            if(BUNDLE_NAME.equals(prefiksetType)){
                 type = prefiksetType;
             }
         }
@@ -246,26 +237,4 @@ public class InformasjonRessurs {
     public List<String> hentAktiviteter() {
         return KommuneTilNavEnhetMapper.getDigisoskommuner();
     }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @SuppressWarnings("unused")
-    private static class NavEnhetFrontend {
-        public String id;
-        public String orgnr;
-        public String navn;
-        public String kommuneId;
-        public String fulltNavn;
-        public String type;
-        public Map<String, Boolean> features;
-        
-        private NavEnhetFrontend(String id, String orgnr, String navn, String kommuneId, String fulltNavn, String type, Map<String, Boolean> features) {
-            this.id = id;
-            this.orgnr = orgnr;
-            this.navn = navn;
-            this.kommuneId = kommuneId;
-            this.fulltNavn = fulltNavn;
-            this.type = type;
-            this.features = features;
-        }
-    }   
 }
