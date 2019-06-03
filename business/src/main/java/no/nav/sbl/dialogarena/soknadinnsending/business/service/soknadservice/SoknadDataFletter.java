@@ -33,7 +33,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
@@ -54,7 +53,6 @@ import java.util.stream.Collectors;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
@@ -225,25 +223,8 @@ public class SoknadDataFletter {
 
     private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid) {
         if (soknadUnderArbeid != null) {
-            final List<Vedleggstatus> vedleggstatuser = mapSoknadToVedleggstatusListe(soknadUnderArbeid);
-
-            innsendingService.opprettSendtSoknad(soknadUnderArbeid, vedleggstatuser);
+            innsendingService.opprettSendtSoknad(soknadUnderArbeid);
         }
-    }
-
-    private List<Vedleggstatus> mapSoknadToVedleggstatusListe(SoknadUnderArbeid soknadUnderArbeid) {
-        final List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid);
-
-        if (jsonVedleggs.isEmpty()){
-            return new ArrayList<>();
-        }
-
-        return jsonVedleggs.stream().filter(jsonVedlegg -> !jsonVedlegg.getStatus().equals(LastetOpp.toString()))
-                .map(jsonVedlegg -> new Vedleggstatus()
-                        .withVedleggType(new VedleggType(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo()))
-                        .withEier(soknadUnderArbeid.getEier())
-                        .withStatus(Vedleggstatus.Status.valueOf(jsonVedlegg.getStatus())))
-                .collect(Collectors.toList());
     }
 
     private static SoknadMetadata.VedleggMetadata mapJsonVedleggToVedleggMetadata(JsonVedlegg jsonVedlegg) {
@@ -272,7 +253,7 @@ public class SoknadDataFletter {
         }
     }
 
-    static int calculateAge(LocalDate birthDate) {
+    private static int calculateAge(LocalDate birthDate) {
         if (birthDate != null) {
             return Period.between(birthDate, LocalDate.now()).getYears();
         } else {

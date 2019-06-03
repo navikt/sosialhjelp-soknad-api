@@ -4,7 +4,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
-import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -35,10 +38,7 @@ public class InnsendingServiceTest {
     private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;
     private static final Long SENDT_SOKNAD_ID = 2L;
     private static final String EIER = "12345678910";
-    private static final String TYPE = "bostotte|annetboutgift";
     private static final VedleggType VEDLEGGTYPE = new VedleggType("bostotte|annetboutgift");
-    private static final VedleggType VEDLEGGTYPE2 = new VedleggType("type2|tilleggsinfo2");
-    private static final VedleggType VEDLEGGTYPE3 = new VedleggType("bostotte|tilleggsinfo2");
     private static final String BEHANDLINGSID = "1100001L";
     private static final String TILKNYTTET_BEHANDLINGSID = "1100002K";
     private static final String FIKSFORSENDELSEID = "12345";
@@ -78,7 +78,7 @@ public class InnsendingServiceTest {
     @Test
     public void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
         innsendingService.opprettSendtSoknad(createSoknadUnderArbeid().
-                withJsonInternalSoknad(createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()), new ArrayList<>());
+                withJsonInternalSoknad(createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()));
 
         verify(soknadUnderArbeidRepository, times(1)).oppdaterInnsendingStatus(any(SoknadUnderArbeid.class), eq(EIER));
         verify(sendtSoknadRepository, times(1)).opprettSendtSoknad(any(SendtSoknad.class), eq(EIER));
@@ -135,51 +135,12 @@ public class InnsendingServiceTest {
         innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
     }
 
-    @Test
-    public void mapOpplastedeVedleggTilVedleggstatusListeMapperInfoRiktig() {
-        List<OpplastetVedlegg> opplastedeVedlegg = createOpplastetVedleggListe();
-
-        List<Vedleggstatus> vedleggstatuser = innsendingService.mapOpplastedeVedleggTilVedleggstatusListe(opplastedeVedlegg);
-        Vedleggstatus vedleggstatus = vedleggstatuser.get(0);
-
-        assertThat(vedleggstatuser.size(), is(1));
-        assertThat(vedleggstatus.getStatus(), is(Vedleggstatus.Status.LastetOpp));
-        assertThat(vedleggstatus.getEier(), is(EIER));
-        assertThat(vedleggstatus.getVedleggType().getSammensattType(), is(TYPE));
-    }
-
-    @Test
-    public void fjernDuplikateVedleggstatuserFjernerVedleggstatuserMedSammeVedleggType() {
-        List<Vedleggstatus> vedleggstatuserUtenDuplikater = innsendingService.fjernDuplikateVedleggstatuser(createVedleggstatusListeMedDuplikater());
-
-        assertThat(vedleggstatuserUtenDuplikater.size(), is(4));
-        assertThat(vedleggstatuserUtenDuplikater.get(0).getVedleggType(), is(VEDLEGGTYPE));
-        assertThat(vedleggstatuserUtenDuplikater.get(1).getVedleggType(), is(VEDLEGGTYPE2));
-        assertThat(vedleggstatuserUtenDuplikater.get(2).getVedleggType(), is(VEDLEGGTYPE3));
-        assertThat(vedleggstatuserUtenDuplikater.get(3).getVedleggType(), nullValue());
-    }
-
     private List<OpplastetVedlegg> createOpplastetVedleggListe() {
         List<OpplastetVedlegg> opplastedeVedlegg = new ArrayList<>();
         opplastedeVedlegg.add(createOpplastetVedlegg());
         opplastedeVedlegg.add(createOpplastetVedlegg());
         opplastedeVedlegg.add(null);
         return opplastedeVedlegg;
-    }
-
-    private List<Vedleggstatus> createVedleggstatusListeMedDuplikater() {
-        List<Vedleggstatus> vedleggstatuser = new ArrayList<>();
-        vedleggstatuser.add(new Vedleggstatus()
-                .withVedleggType(VEDLEGGTYPE));
-        vedleggstatuser.add(new Vedleggstatus()
-                .withVedleggType(VEDLEGGTYPE));
-        vedleggstatuser.add(new Vedleggstatus()
-                .withVedleggType(VEDLEGGTYPE2));
-        vedleggstatuser.add(new Vedleggstatus()
-                .withVedleggType(VEDLEGGTYPE3));
-        vedleggstatuser.add(new Vedleggstatus());
-        vedleggstatuser.add(new Vedleggstatus());
-        return vedleggstatuser;
     }
 
     private SoknadUnderArbeid createSoknadUnderArbeid() {
@@ -220,17 +181,6 @@ public class InnsendingServiceTest {
         return new OpplastetVedlegg()
                 .withVedleggType(VEDLEGGTYPE)
                 .withEier(EIER);
-    }
-
-    private List<Vedleggstatus> createIkkeOpplastedePaakrevdeVedlegg() {
-        List<Vedleggstatus> paakrevdeVedlegg = new ArrayList<>();
-        paakrevdeVedlegg.add(new Vedleggstatus()
-                .withEier(EIER)
-                .withStatus(Vedleggstatus.Status.VedleggKreves)
-                .withVedleggType(VEDLEGGTYPE)
-                .withSendtSoknadId(SOKNAD_UNDER_ARBEID_ID));
-        paakrevdeVedlegg.add(null);
-        return paakrevdeVedlegg;
     }
 
     private Optional<SendtSoknad> createSendtSoknad() {
