@@ -7,10 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
@@ -28,6 +32,9 @@ public class AdresseSokService {
     
     @Inject
     private Kodeverk kodeverk;
+
+    @Inject
+    private NorgService norgService;
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
         if (sok == null || sok.trim().length() <= 2) {
@@ -50,7 +57,8 @@ public class AdresseSokService {
                 .collect(toList());
         return forslag;
     }
-    
+
+
     public List<AdresseForslag> sokEtterNavKontor(Sokedata sokedata) {
         if (sokedata.adresse != null && sokedata.adresse.trim().length() <= 2) {
             return Collections.emptyList();
@@ -63,6 +71,15 @@ public class AdresseSokService {
                 .collect(toList());
 
         return forslag;
+    }
+
+    @Cacheable("kommunesokCache")
+    public List<Kommunesok> sokEtterNavEnheter(String kommunenr) {
+        return sokEtterNavKontor(new AdresseSokConsumer.Sokedata().withKommunenummer(kommunenr))
+                .stream().map(adresseForslag -> {
+                    NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+                    return new Kommunesok(kommunenr, adresseForslag, navEnhet);
+                }).collect(Collectors.toList());
     }
 
     static AdresseForslag toAdresseForslag(AdresseData data) {
@@ -118,6 +135,18 @@ public class AdresseSokService {
     private static Predicate<AdresseForslag> distinkte() {
         Set<String> funnet = new HashSet<>();
         return a -> funnet.add(a.adresse + "|" + a.kommunenummer + "|" + a.bydel + "|" + a.gatekode);
+    }
+
+    public class Kommunesok {
+        public String kommunenr;
+        public AdresseForslag adresseForslag;
+        public NavEnhet navEnhet;
+
+        Kommunesok(String kommunenr, AdresseForslag adresseForslag, NavEnhet navEnhet) {
+            this.kommunenr = kommunenr;
+            this.adresseForslag = adresseForslag;
+            this.navEnhet = navEnhet;
+        }
     }
 
 }
