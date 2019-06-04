@@ -44,10 +44,6 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: virksomhet:Organisasjon_v4
     resourceType: webserviceendpoint
-  - alias: virksomhet:SakOgAktivitet_v1
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Maalgruppe_v1
-    resourceType: webserviceendpoint
   - alias: virksomhet:Kodeverk_v2
     resourceType: webserviceendpoint
   - alias: saksoversikt.link

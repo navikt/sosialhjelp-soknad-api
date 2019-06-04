@@ -35,14 +35,6 @@
             <classifier>jaxws</classifier>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>arena-sakOgAktivitet_v1</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>arena-maalgruppe_v1</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.tjenester.fim</groupId>
             <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
             <classifier>jaxws</classifier>
