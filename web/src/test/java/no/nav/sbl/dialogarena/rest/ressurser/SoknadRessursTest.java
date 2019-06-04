@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -39,9 +38,6 @@ public class SoknadRessursTest {
 
     @Mock
     SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Mock
-    XsrfGenerator xsrfGenerator;
 
     @Mock
     private Tilgangskontroll tilgangskontroll;

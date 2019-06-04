@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
@@ -24,9 +23,6 @@ public class SoknadRessursUtenOidcTest {
 
     @Mock
     SoknadService soknadService;
-
-    @Mock
-    XsrfGenerator xsrfGenerator;
 
     @Mock
     SoknadUnderArbeidRepository soknadUnderArbeidRepository;

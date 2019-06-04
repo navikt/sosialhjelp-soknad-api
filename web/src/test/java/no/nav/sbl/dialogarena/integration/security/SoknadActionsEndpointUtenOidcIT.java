@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.integration.security;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
