@@ -237,7 +237,7 @@ public class SoknadDataFletter {
     }
 
     private static void logAlderTilKibana(String eier) {
-        if (eier != null && Integer.parseInt(eier.substring(0, 1)) < 4){
+        if (eier != null && eier.length() == 11 && Integer.parseInt(eier.substring(0, 1)) < 4) {
             String fodselsdato = eier.substring(0, 6);
             DateTimeFormatter fmt = new DateTimeFormatterBuilder()
                     .appendPattern("ddMM")
