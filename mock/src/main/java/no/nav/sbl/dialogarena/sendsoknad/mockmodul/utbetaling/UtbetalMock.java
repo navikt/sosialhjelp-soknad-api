@@ -1,5 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonIkkeTilgang;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPeriodeIkkeGyldig;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPersonIkkeFunnet;
@@ -9,38 +12,86 @@ import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinfor
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
 import org.joda.time.*;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class UtbetalMock implements UtbetalingV1 {
 
-    private static final Logger logger = getLogger(UtbetalMock.class);
+public class UtbetalMock {
+
     private static final LocalDateTime POSTERINGSDATO = LocalDateTime.now().minusDays(40);
     private static final LocalDateTime UTBETALINGSDATO_INNENFOR_PERIODE = LocalDateTime.now().minusDays(30);
     private static final LocalDateTime UTBETALINGSDATO_INNENFOR_PERIODE2 = LocalDateTime.now().minusDays(15);
     private static final LocalDateTime UTBETALINGSDATO_UTENFOR_PERIODE = LocalDateTime.now().minusDays(35);
     private static final LocalDateTime FORFALLSDATO = LocalDateTime.now().minusDays(25);
 
+    private static final Logger logger = LoggerFactory.getLogger(UtbetalMock.class);
 
-    @Override
-    public void ping() {
-        logger.info("Pinger mock");
+    private static Map<String, WSHentUtbetalingsinformasjonResponse> responses = new HashMap<>();
+
+    public UtbetalingV1 utbetalMock() {
+
+        UtbetalingV1 mock = mock(UtbetalingV1.class);
+
+        try {
+            when(mock.hentUtbetalingsinformasjon(any(WSHentUtbetalingsinformasjonRequest.class)))
+                    .thenAnswer((invocationOnMock -> getOrCreateCurrentUserResponse()));
+        } catch (HentUtbetalingsinformasjonPeriodeIkkeGyldig | HentUtbetalingsinformasjonPersonIkkeFunnet
+                | HentUtbetalingsinformasjonIkkeTilgang hentUtbetalingsinformasjonPeriodeIkkeGyldig) {
+            hentUtbetalingsinformasjonPeriodeIkkeGyldig.printStackTrace();
+        }
+
+        return mock;
     }
 
-    @Override
-    public WSHentUtbetalingsinformasjonResponse hentUtbetalingsinformasjon(WSHentUtbetalingsinformasjonRequest req) throws HentUtbetalingsinformasjonPeriodeIkkeGyldig, HentUtbetalingsinformasjonPersonIkkeFunnet, HentUtbetalingsinformasjonIkkeTilgang {
-        logger.info("Mocker svar på request: Id=(ident={}, type={}, rolle={}), Periode=(fom={}, tom={}), ytelsetyper={} ",
-                req.getId().getIdent(), req.getId().getIdentType().getValue(), req.getId().getRolle().getValue(),
-                req.getPeriode().getFom(), req.getPeriode().getTom(),
-                Arrays.toString(req.getYtelsestypeListe().toArray())
-        );
+    public static WSHentUtbetalingsinformasjonResponse getOrCreateCurrentUserResponse(){
+        return responses.computeIfAbsent(OidcFeatureToggleUtils.getUserId(), k -> getDefaultResponse());
+    }
+
+    public static WSHentUtbetalingsinformasjonResponse getDefaultResponse(){
+        return new WSHentUtbetalingsinformasjonResponse();
+    }
+
+    public static void setUtbetalinger(String jsonWSUtbetaling){
+
+        WSHentUtbetalingsinformasjonResponse newResponse = new WSHentUtbetalingsinformasjonResponse();
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            SimpleModule module = new SimpleModule();
+            module.addDeserializer(WSAktoer.class, new WSAktoerDeserializer());
+            module.addDeserializer(DateTime.class, new CustomDateDeserializer());
+            mapper.registerModule(module);
+
+            WSUtbetaling wsUtbetaling = mapper.readValue(jsonWSUtbetaling, WSUtbetaling.class);
+
+            newResponse.withUtbetalingListe(wsUtbetaling);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        logger.info("Setter utbetalingsresponse: " + jsonWSUtbetaling);
+        responses.replace(OidcFeatureToggleUtils.getUserId(), newResponse);
+    }
+
+    public static void resetUtbetalinger(){
+        responses.replace(OidcFeatureToggleUtils.getUserId(), new WSHentUtbetalingsinformasjonResponse());
+    }
+
+    // Ikke i bruk, men har beholdt funksjonen her i tilfelle den kan bli nyttig senere.
+    public static WSHentUtbetalingsinformasjonResponse getDefaultResponseWithUtbetalinger(){
 
         WSPerson person = new WSPerson()
-                .withAktoerId(req.getId().getIdent())
+                .withAktoerId("12345678910")
                 .withNavn("Dummy");
         WSOrganisasjon dummyOrg = new WSOrganisasjon()
                 .withAktoerId("000000000");
@@ -48,7 +99,7 @@ public class UtbetalMock implements UtbetalingV1 {
                 .withKontotype("Norsk bankkonto")
                 .withKontonummer("32902095534");
 
-        return new WSHentUtbetalingsinformasjonResponse()
+        WSHentUtbetalingsinformasjonResponse response = new WSHentUtbetalingsinformasjonResponse()
                 .withUtbetalingListe(
                         new WSUtbetaling()
                                 .withPosteringsdato(dato(POSTERINGSDATO))
@@ -157,6 +208,8 @@ public class UtbetalMock implements UtbetalingV1 {
                                 .withUtbetalingsmetode("Norsk bankkonto")
                                 .withUtbetalingsstatus("Utbetalt")
                 );
+
+        return response;
     }
 
     public static DateTime dato(LocalDateTime localDateTime) {

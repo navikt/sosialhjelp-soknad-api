@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+
 public class OidcFeatureToggleUtils {
 
     public final static String IS_RUNNING_WITH_OIDC = "authentication.isRunningWithOidc";
@@ -9,14 +11,14 @@ public class OidcFeatureToggleUtils {
     }
 
     public static String getUserId() {
-        if (isRunningWithOidc()) {
+        if (isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
             return SubjectHandler.getUserIdFromToken();
         }
         return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getUid();
     }
 
     public static String getToken() {
-        if (isRunningWithOidc()) {
+        if (isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
             return SubjectHandler.getToken();
         }
         return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getEksternSsoToken();
@@ -24,11 +26,11 @@ public class OidcFeatureToggleUtils {
 
     public static String getConsumerId() {
         String consumerId;
-        if (isRunningWithOidc()) {
+        if (isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
             consumerId = SubjectHandler.getConsumerId();
         } else {
             consumerId = no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getConsumerId();
         }
-        return consumerId != null? consumerId : "srvsoknadsosialhje";
+        return consumerId != null ? consumerId : "srvsoknadsosialhje";
     }
 }

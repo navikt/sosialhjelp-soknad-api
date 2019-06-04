@@ -1,0 +1,10 @@
+FROM navikt/java:8
+
+COPY web/target/soknadsosialhjelp-server/ /app
+
+ENV JAVA_OPTS="-Xmx1536m"
+ENV MAIN_CLASS="no.nav.sbl.dialogarena.mock.MockSoknadsosialhjelpServer"
+ENV dockerWithDefaultMockActivated=true
+ENV HEROKU=true
+
+CMD ["/bin/sh", "find . -type f"]

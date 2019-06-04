@@ -36,7 +36,7 @@ public class UtbetalingWSConfig {
 
     @Bean
     public UtbetalingV1 utbetalingV1() {
-        UtbetalingV1 mock = new UtbetalMock();
+        UtbetalingV1 mock = new UtbetalMock().utbetalMock();
         UtbetalingV1 prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Utbetaling", prod, mock, UTBETALING_KEY, UtbetalingV1.class);
     }
