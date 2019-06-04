@@ -101,9 +101,8 @@ public class SoknadsosialhjelpServer {
 
         if (MockUtils.isTillatMockRessurs()){
             SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
-        } else {
-            SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
         }
+
         System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs og applikasjon som kjører uten oidc.
 
     }
