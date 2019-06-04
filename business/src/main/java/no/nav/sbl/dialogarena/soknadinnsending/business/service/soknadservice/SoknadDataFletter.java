@@ -4,7 +4,6 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -49,7 +48,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -85,7 +83,7 @@ public class SoknadDataFletter {
 
         String aktorId = OidcFeatureToggleUtils.getUserId();
         Timer henvendelseTimer = createDebugTimer("startHenvendelse", mainUid);
-        String behandlingsId = henvendelseService.startSoknad(aktorId, SKJEMANUMMER, SoknadType.SEND_SOKNAD_KOMMUNAL);
+        String behandlingsId = henvendelseService.startSoknad(aktorId);
         henvendelseTimer.stop();
         henvendelseTimer.report();
 

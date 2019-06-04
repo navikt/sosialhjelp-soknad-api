@@ -2,16 +2,11 @@ package no.nav.sbl.dialogarena.integration;
 
 
 import no.nav.sbl.dialogarena.rest.SoknadApplication;
-import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
-import no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs;
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.glassfish.jersey.test.JerseyTest;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
@@ -21,7 +16,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static javax.ws.rs.core.MediaType.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class SoknadTester extends JerseyTest {
@@ -30,7 +24,6 @@ public class SoknadTester extends JerseyTest {
 
     private String brukerBehandlingId;
 
-    private Pair<String, String> xhrHeader;
     private SoknadTester() {
         super();
         this.user = "01015245464";
@@ -50,27 +43,19 @@ public class SoknadTester extends JerseyTest {
         setUp();
         client().register(GsonProvider.class);
 
-        StartSoknad soknadType = new StartSoknad();
-        soknadType.setSoknadType(SKJEMANUMMER);
-        Entity sokEntity = Entity.json(soknadType);
-        Response response = sendsoknad().path("soknader")
+        Response response = sendsoknad().path("soknader/opprettSoknad")
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
                 .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token)
-                .buildPost(sokEntity)
+                .buildPost(null)
                 .invoke();
         checkResponse(response, SC_OK);
         brukerBehandlingId = (String) response.readEntity(Map.class).get("brukerBehandlingId");
-        saveXhrValue(response.getCookies().get(SoknadRessurs.XSRF_TOKEN).getValue());
         return this;
     }
 
     private WebTarget sendsoknad() {
         return target("/sendsoknad/").queryParam("fnr", this.user);
-    }
-
-    private void saveXhrValue(String value){
-        this.xhrHeader =  new ImmutablePair("X-XSRF-TOKEN", value);
     }
 
     private void checkResponse(Response invoke, int expectedStatusCode) {
@@ -90,10 +75,6 @@ public class SoknadTester extends JerseyTest {
 
     public String getBrukerBehandlingId() {
         return brukerBehandlingId;
-    }
-
-    public String getXhrHeader() {
-        return xhrHeader.getValue();
     }
 
     public String getUser() {

@@ -30,15 +30,15 @@ public class HenvendelseService {
     @Inject
     private Clock clock;
 
-    public String startSoknad(String fnr, String skjema, SoknadType soknadType) {
+    public String startSoknad(String fnr) {
         logger.info("Starter søknad");
 
         SoknadMetadata meta = new SoknadMetadata();
         meta.id = soknadMetadataRepository.hentNesteId();
         meta.behandlingsId = lagBehandlingsId(meta.id);
         meta.fnr = fnr;
-        meta.type = soknadType;
-        meta.skjema = skjema;
+        meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
+        meta.skjema = SKJEMANUMMER;
         meta.status = SoknadInnsendingStatus.UNDER_ARBEID;
         meta.opprettetDato = LocalDateTime.now(clock);
         meta.sistEndretDato = LocalDateTime.now(clock);

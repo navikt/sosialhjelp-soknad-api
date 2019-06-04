@@ -69,11 +69,11 @@ public class SoknadDataFletterTest {
     @Test
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString(), anyString(), any(SoknadType.class))).thenReturn("123");
+        when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
         soknadDataFletter.startSoknad();
 
         String bruker = OidcFeatureToggleUtils.getUserId();
-        verify(henvendelsesConnector).startSoknad(eq(bruker), eq(SKJEMANUMMER), any(SoknadType.class));
+        verify(henvendelsesConnector).startSoknad(eq(bruker));
         verify(soknadUnderArbeidRepository).opprettSoknad(any(SoknadUnderArbeid.class), eq(bruker));
         DateTimeUtils.setCurrentMillisSystem();
     }
