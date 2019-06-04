@@ -90,12 +90,19 @@ public class SoknadRessurs {
 
     @POST
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+    public Map<String, String> legacyOpprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+        return opprettSoknad(behandlingsId, response);
+    }
+
+    @POST
+    @Path("/opprettSoknad")
+    @Consumes(APPLICATION_JSON)
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
+            opprettetBehandlingsId = soknadService.startSoknad();
         } else {
             final String eier = OidcFeatureToggleUtils.getUserId();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);

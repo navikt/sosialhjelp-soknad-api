@@ -23,7 +23,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -31,7 +30,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -52,6 +50,7 @@ import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -73,38 +72,26 @@ public class SoknadDataFletter {
     private InnsendingService innsendingService;
 
     @Inject
-    private SoknadUnderArbeidService soknadUnderArbeidService;
-
-    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
     private SystemdataUpdater systemdata;
 
     @Transactional
-    public String startSoknad(String skjemanummer) {
-        if (!SKJEMANUMMER.equals(skjemanummer)) {
-            throw new ApplicationException("Ikke gyldig skjemanummer " + skjemanummer);
-        }
-        String soknadnavn = "soknadsosialhjelp";
-        SoknadType soknadType = SoknadType.SEND_SOKNAD_KOMMUNAL;
+    public String startSoknad() {
         String mainUid = randomUUID().toString();
 
-        Timer startTimer = createDebugTimer("startTimer", soknadnavn, mainUid);
+        Timer startTimer = createDebugTimer("startTimer", mainUid);
 
         String aktorId = OidcFeatureToggleUtils.getUserId();
-        Timer henvendelseTimer = createDebugTimer("startHenvendelse", soknadnavn, mainUid);
-        String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid, soknadType);
+        Timer henvendelseTimer = createDebugTimer("startHenvendelse", mainUid);
+        String behandlingsId = henvendelseService.startSoknad(aktorId, SKJEMANUMMER, SoknadType.SEND_SOKNAD_KOMMUNAL);
         henvendelseTimer.stop();
         henvendelseTimer.report();
 
-
-        Timer oprettIDbTimer = createDebugTimer("oprettIDb", soknadnavn, mainUid);
-
-        oprettIDbTimer.stop();
-        oprettIDbTimer.report();
-
         soknadMetricsService.startetSoknad(false);
+
+        Timer oprettIDbTimer = createDebugTimer("oprettIDb", mainUid);
 
         final SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withVersjon(1L)
@@ -117,8 +104,10 @@ public class SoknadDataFletter {
 
         systemdata.update(soknadUnderArbeid);
 
-        soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, aktorId);
+        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, aktorId);
 
+        oprettIDbTimer.stop();
+        oprettIDbTimer.report();
         startTimer.stop();
         startTimer.report();
 
@@ -162,14 +151,6 @@ public class SoknadDataFletter {
                             .withOpplysninger(new JsonOkonomiopplysninger()
                                 .withUtbetaling(new ArrayList<>())
                                 .withUtgift(new ArrayList<>())
-                                .withBeskrivelseAvAnnet(new JsonOkonomibeskrivelserAvAnnet()
-                                    .withKilde(JsonKildeBruker.BRUKER)
-                                        .withBarneutgifter("")
-                                        .withBoutgifter("")
-                                        .withSparing("")
-                                        .withUtbetaling("")
-                                        .withVerdi("")
-                                )
                             )
                             .withOversikt(new JsonOkonomioversikt()
                                 .withInntekt(new ArrayList<>())
@@ -183,9 +164,9 @@ public class SoknadDataFletter {
                 );
     }
 
-    private Timer createDebugTimer(String name, String soknadsType, String id) {
+    private Timer createDebugTimer(String name, String id) {
         Timer timer = MetricsFactory.createTimer("debug.startsoknad." + name);
-        timer.addFieldToReport("soknadstype", soknadsType);
+        timer.addFieldToReport("soknadstype", SOKNAD_TYPE_PREFIX);
         timer.addFieldToReport("randomid", id);
         timer.start();
         return timer;
@@ -204,7 +185,7 @@ public class SoknadDataFletter {
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
 
-        forberedInnsendingMedNyModell(soknadUnderArbeid);
+        innsendingService.opprettSendtSoknad(soknadUnderArbeid);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse()) {
@@ -219,12 +200,6 @@ public class SoknadDataFletter {
         vedlegg.vedleggListe = jsonVedleggs.stream().map(SoknadDataFletter::mapJsonVedleggToVedleggMetadata).collect(Collectors.toList());
 
         return vedlegg;
-    }
-
-    private void forberedInnsendingMedNyModell(SoknadUnderArbeid soknadUnderArbeid) {
-        if (soknadUnderArbeid != null) {
-            innsendingService.opprettSendtSoknad(soknadUnderArbeid);
-        }
     }
 
     private static SoknadMetadata.VedleggMetadata mapJsonVedleggToVedleggMetadata(JsonVedlegg jsonVedlegg) {

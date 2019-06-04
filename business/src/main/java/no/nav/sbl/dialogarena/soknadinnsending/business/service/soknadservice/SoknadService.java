@@ -31,8 +31,8 @@ public class SoknadService {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Transactional
-    public String startSoknad(String skjemanummer) {
-        return soknadDataFletter.startSoknad(skjemanummer);
+    public String startSoknad() {
+        return soknadDataFletter.startSoknad();
     }
 
     @Transactional

@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -14,11 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.ws.rs.BadRequestException;
-
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadRessursUtenOidcTest {
@@ -47,7 +44,6 @@ public class SoknadRessursUtenOidcTest {
     public void setUp() {
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-        ressursTest.type = new StartSoknad();
     }
 
     @After

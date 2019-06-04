@@ -20,7 +20,6 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -45,8 +44,7 @@ public class EttersendingService {
         SoknadMetadata originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa);
         SoknadMetadata nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad);
 
-        String uuid = UUID.randomUUID().toString();
-        String nyBehandlingsId = henvendelseService.startEttersending(originalSoknad, uuid);
+        String nyBehandlingsId = henvendelseService.startEttersending(originalSoknad);
 
         List<VedleggMetadata> manglendeVedlegg = lagListeOverVedlegg(nyesteSoknad);
         List<JsonVedlegg> manglendeJsonVedlegg = convertVedleggMetadataToJsonVedlegg(manglendeVedlegg);

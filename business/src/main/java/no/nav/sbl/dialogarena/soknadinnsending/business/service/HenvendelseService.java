@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -29,7 +30,7 @@ public class HenvendelseService {
     @Inject
     private Clock clock;
 
-    public String startSoknad(String fnr, String skjema, String uid, SoknadType soknadType) {
+    public String startSoknad(String fnr, String skjema, SoknadType soknadType) {
         logger.info("Starter søknad");
 
         SoknadMetadata meta = new SoknadMetadata();
@@ -43,7 +44,6 @@ public class HenvendelseService {
         meta.sistEndretDato = LocalDateTime.now(clock);
 
         meta.hovedskjema = new HovedskjemaMetadata();
-        meta.hovedskjema.filUuid = uid;
 
         soknadMetadataRepository.opprett(meta);
 
@@ -60,7 +60,7 @@ public class HenvendelseService {
         return behandlingsId;
     }
 
-    public String startEttersending(SoknadMetadata ettersendesPaSoknad, String uid) {
+    public String startEttersending(SoknadMetadata ettersendesPaSoknad) {
         SoknadMetadata ettersendelse = new SoknadMetadata();
         ettersendelse.id = soknadMetadataRepository.hentNesteId();
         ettersendelse.behandlingsId = lagBehandlingsId(ettersendelse.id);
@@ -73,7 +73,6 @@ public class HenvendelseService {
         ettersendelse.sistEndretDato = LocalDateTime.now(clock);
 
         ettersendelse.hovedskjema = new HovedskjemaMetadata();
-        ettersendelse.hovedskjema.filUuid = uid;
 
         ettersendelse.orgnr = ettersendesPaSoknad.orgnr;
         ettersendelse.navEnhet = ettersendesPaSoknad.navEnhet;
@@ -91,8 +90,7 @@ public class HenvendelseService {
         SoknadMetadata meta = soknadMetadataRepository.hent(behandlingsId);
 
         HovedskjemaMetadata hovedskjema = new HovedskjemaMetadata();
-        hovedskjema.filnavn = "NAV 35-18.01";
-        hovedskjema.filUuid = "";
+        hovedskjema.filnavn = SKJEMANUMMER;
         meta.hovedskjema = hovedskjema;
         meta.vedlegg = vedlegg;
 
