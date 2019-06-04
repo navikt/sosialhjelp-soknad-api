@@ -1,62 +1,70 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ArbeidsforholdMock {
+
+    public static Map<String, FinnArbeidsforholdPrArbeidstakerResponse> responses = new HashMap<>();
+
     public ArbeidsforholdV3 arbeidMock() {
-        ArbeidsforholdV3 amock = mock(ArbeidsforholdV3.class);
+        ArbeidsforholdV3 mock = mock(ArbeidsforholdV3.class);
 
         try {
-            when(amock.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class))).then(new Answer<FinnArbeidsforholdPrArbeidstakerResponse>() {
-                @Override
-                public FinnArbeidsforholdPrArbeidstakerResponse answer(InvocationOnMock invocationOnMock) throws Throwable {
-                    FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
-                    Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
-                    Organisasjon organisasjon = new Organisasjon();
-                    organisasjon.setOrgnummer("123");
-                    arbeidsforhold.setArbeidsgiver(organisasjon);
-                    arbeidsforhold.setAnsettelsesPeriode(hentPeriode());
-                    arbeidsforhold.getArbeidsavtale().add(lagArbeidsavtale());
-                    response.getArbeidsforhold().add(arbeidsforhold);
-                    return response;
-                }
-            });
-        } catch (Exception ignored) {
+            when(mock.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class)))
+                    .thenAnswer((invocationOnMock -> getOrCreateCurrentUserResponse()));
+        } catch (Exception err) {
+            System.out.println(err);
         }
-        return amock;
+
+        return mock;
     }
 
-    private AnsettelsesPeriode hentPeriode() {
-        AnsettelsesPeriode periode = new AnsettelsesPeriode();
-        Gyldighetsperiode gperiode = new Gyldighetsperiode();
-        gperiode.setFom(ServiceUtils.stringTilXmldato("2014-01-02"));
-        // Denne avgjør om man er ansatt eller ikke for øyeblikket
-        gperiode.setTom(ServiceUtils.stringTilXmldato(LocalDate.now().plusMonths(1).format(DateTimeFormatter.ISO_DATE)));
-        periode.setPeriode(gperiode);
-        return periode;
+    private static FinnArbeidsforholdPrArbeidstakerResponse getOrCreateCurrentUserResponse() {
+        FinnArbeidsforholdPrArbeidstakerResponse response = responses.get(OidcFeatureToggleUtils.getUserId());
+        if (response == null) {
+            response = new FinnArbeidsforholdPrArbeidstakerResponse();
+            responses.put(OidcFeatureToggleUtils.getUserId(), response);
+        }
+
+        return response;
     }
 
-    private Arbeidsavtale lagArbeidsavtale() {
-        Arbeidsavtale avtale = new Arbeidsavtale();
-        avtale.setStillingsprosent(BigDecimal.valueOf(100));
-        Avloenningstyper avloenningstyper = new Avloenningstyper();
-        avloenningstyper.setKodeRef("fast");
-        avtale.setAvloenningstype(avloenningstyper);
-        return avtale;
+    public static void setArbeidsforhold(String arbeidsforholdData) {
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            SimpleModule module = new SimpleModule();
+            module.addDeserializer(Aktoer.class, new AktoerDeserializer());
+            mapper.registerModule(module);
+
+            FinnArbeidsforholdPrArbeidstakerResponse response = mapper.readValue(arbeidsforholdData, FinnArbeidsforholdPrArbeidstakerResponse.class);
+
+            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
+                responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            } else {
+                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    public static void resetArbeidsforhold(){
+        FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
+        responses.replace(OidcFeatureToggleUtils.getUserId(), response);
+    }
 }
