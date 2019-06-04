@@ -38,7 +38,7 @@ public class PersonMock {
         doedsdato.setDoedsdato(ServiceUtils.stringTilXmldato("2014-02-02"));
         Familierelasjon barn = lagBarn(FNR_BARN, "Dole", "Mockmann", doedsdato);
         Familierelasjon barn2 = lagBarn(FNR_BARN2, "Ole", "Mockmann");
-        barn2.setHarSammeBosted(false);
+        barn2.setHarSammeBosted(true);
         Familierelasjon barn3 = lagBarn(FNR_BARN3, "Doffen", "Mockmann");
         barn3.setHarSammeBosted(false);
         familieRelasjoner.add(barn);
@@ -46,14 +46,14 @@ public class PersonMock {
         familieRelasjoner.add(barn3);
 
         // Case: gift
-//        Person ektefelle = genererPersonMedGyldigIdentOgNavn(FNR_EKTEFELLE, "Daisy", null, "Duck");
-//        familieRelasjoner.add(lagEktefelle(person, ektefelle));
-//        ektefelle.setFoedselsdato(fodseldato(1973, 12, 7));
-//        ektefelle.setBostedsadresse(person.getBostedsadresse());
+        Person ektefelle = genererPersonMedGyldigIdentOgNavn(FNR_EKTEFELLE, "Daisy", null, "Duck");
+        familieRelasjoner.add(lagEktefelle(person, ektefelle));
+        ektefelle.setFoedselsdato(fodseldato(1973, 12, 7));
+        ektefelle.setBostedsadresse(person.getBostedsadresse());
 
         // Case: gift, og ektefelle har kode 6
-//        Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
-//        diskresjonskoder.setValue(KODE_6);
+        Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
+        diskresjonskoder.setValue(KODE_6);
         //ektefelle.setDiskresjonskode(diskresjonskoder);
 
         // Case: ugift
