@@ -2,7 +2,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
+import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -29,7 +32,7 @@ public class LagringsScheduler {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
-    public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
+    public void slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase() throws InterruptedException {
         batchStartTime = DateTime.now();
         vellykket = 0;
         feilet = 0;
@@ -38,7 +41,7 @@ public class LagringsScheduler {
             Timer batchTimer = MetricsFactory.createTimer("debug.lagringsjobb");
             batchTimer.start();
 
-            mellomlagre(batchTimer);
+            hentForeldedeEttersendelserFraDatabaseOgSlett(batchTimer);
 
             batchTimer.stop();
             batchTimer.addFieldToReport("vellykket", vellykket);
@@ -50,8 +53,43 @@ public class LagringsScheduler {
         }
     }
 
-    private void mellomlagre(Timer metrikk) throws InterruptedException {
-        //TODO: Slett alle ettersendelser (og søknader) som er utenfor tidsgrensen for lagring (to uker).
+    private void hentForeldedeEttersendelserFraDatabaseOgSlett(Timer metrikk) throws InterruptedException {
+        List<SoknadUnderArbeid> soknadUnderArbeidList = soknadUnderArbeidRepository.hentForeldedeEttersendelser();
+        for (SoknadUnderArbeid soknadUnderArbeid : soknadUnderArbeidList) {
+            if (soknadUnderArbeid.erEttersendelse()) {
+                avbrytOgSlettEttersendelse(soknadUnderArbeid);
+
+                // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
+                if (harGaattForLangTid()) {
+                    logger.warn("Jobben har kjørt i mer enn {} ms. Den blir derfor terminert", SCHEDULE_INTERRUPT_MS);
+                    metrikk.addFieldToReport("avbruttPgaTid", true);
+                    return;
+                }
+                if (!SuspendServlet.isRunning()) {
+                    logger.warn("Avbryter jobben da appen skal suspendes");
+                    metrikk.addFieldToReport("avbruttPgaAppErSuspendert", true);
+                    return;
+                }
+            } else {
+                logger.warn("hentForeldedeEttersendelser har returnet soknadUnderArbeid som ikke er ettersendelse");
+            }
+        }
+    }
+
+    private boolean avbrytOgSlettEttersendelse(SoknadUnderArbeid soknadUnderArbeid) throws InterruptedException {
+        try {
+            henvendelseService.avbrytSoknad(soknadUnderArbeid.getBehandlingsId(), true);
+            soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
+
+            vellykket++;
+            return true;
+        } catch (Exception e) {
+            feilet++;
+            logger.error("Avbryt feilet for ettersending {}.", soknadUnderArbeid.getSoknadId(), e);
+            Thread.sleep(1000); // Så loggen ikke blir fylt opp
+
+            return false;
+        }
     }
 
     private boolean harGaattForLangTid() {

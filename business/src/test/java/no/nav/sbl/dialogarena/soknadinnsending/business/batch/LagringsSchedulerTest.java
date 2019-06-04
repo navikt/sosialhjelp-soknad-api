@@ -1,21 +1,22 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
+import java.util.Arrays;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LagringsSchedulerTest {
@@ -27,27 +28,44 @@ public class LagringsSchedulerTest {
     @Before
     public void setup() {
         System.setProperty("sendsoknad.batch.enabled", "true");
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid()));
     }
 
-    @Ignore
-    @Test
-    public void skalFlytteAlleSoknaderTilHenvendelse() throws InterruptedException {
-    }
-
-    @Ignore
-    @Test
-    public void skalLagreSoknadIHenvendelseOgSletteFraDatabase() throws InterruptedException {
-    }
-
-    @Ignore
     @Test
     public void skalAvbryteIHenvendelseOgSletteFraDatabase() throws InterruptedException {
+        String behandlingsId = "2";
+        String tilknyttetBehandlingsId = "1";
+        long soknadId = 2;
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withSoknadId(soknadId)
+                .withEier("11111111111")
+                .withBehandlingsId(behandlingsId)
+                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .withTilknyttetBehandlingsId(tilknyttetBehandlingsId);
+
+        when(soknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
+
+        scheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase();
+
+        verify(henvendelseService).avbrytSoknad(behandlingsId, true);
+        verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
     }
 
-    @Ignore
     @Test
-    public void leggerTilbakeSoknadenHvisNoeFeiler() throws InterruptedException {
+    public void skalIkkeAvbryteIHenvendelseOgSletteFraDatabaseDersomDetIkkeErEttersendelse() throws InterruptedException {
+        String behandlingsId = "2";
+        long soknadId = 2;
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withSoknadId(soknadId)
+                .withEier("11111111111")
+                .withBehandlingsId(behandlingsId)
+                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID) ;
+
+        when(soknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
+
+        scheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase();
+
+        verify(henvendelseService, times(0)).avbrytSoknad(behandlingsId, true);
+        verify(soknadUnderArbeidRepository, times(0)).slettSoknad(any(SoknadUnderArbeid.class), anyString());
     }
 
     @After
