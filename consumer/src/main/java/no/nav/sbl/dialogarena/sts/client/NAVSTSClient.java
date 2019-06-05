@@ -33,9 +33,7 @@ public class NAVSTSClient extends STSClient {
     public SecurityToken requestSecurityToken(
             String appliesTo, String action, String requestType, String binaryExchange
     ) throws Exception {
-
         String key = chooseCachekey();
-
         ensureTokenStoreExists();
 
         SecurityToken token;
@@ -43,15 +41,11 @@ public class NAVSTSClient extends STSClient {
             // try to use cache
             token = tokenStore.getToken(key);
             if (token == null) {
-                logger.debug("Missing token for {}, fetching it from STS", key);
                 token = super.requestSecurityToken(appliesTo, action, requestType, binaryExchange);
                 tokenStore.add(key, token);
-            } else {
-                logger.debug("Retrived token for {} from tokenStore", key);
             }
         } else {
             // skip use of cache since we don't have a key to use
-            logger.debug("No cackekey for this request, skip use of cache");
             token = super.requestSecurityToken(appliesTo, action, requestType, binaryExchange);
         }
         return token;
@@ -64,7 +58,6 @@ public class NAVSTSClient extends STSClient {
     }
 
     private synchronized void createTokenStore() {
-        logger.debug("Creating tokenStore");
         if (tokenStore == null) {
             tokenStore = TokenStoreFactory.newInstance().newTokenStore(SecurityConstants.TOKEN_STORE_CACHE_INSTANCE, message);
         }
@@ -81,7 +74,6 @@ public class NAVSTSClient extends STSClient {
         } else {
             key = "systemSAML";
         }
-        logger.debug("Chosen cachekey for this request is {}", key);
         return key;
     }
 }

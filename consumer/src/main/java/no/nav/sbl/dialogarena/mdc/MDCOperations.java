@@ -25,34 +25,23 @@ public final class MDCOperations {
         int randomNr = getRandomNumber();
         long systemTime = getSystemTime();
 
-        StringBuilder callId = new StringBuilder();
-        callId.append("CallId_");
-        callId.append(systemTime);
-        callId.append("_");
-        callId.append(randomNr);
-
-        return callId.toString();
+        return String.format("CallId_%s_%s", systemTime, randomNr);
     }
 
     public static String getFromMDC(String key) {
-        String value = MDC.get(key);
-        log.debug("Getting key: " + key + " from MDC with value: " + value);
-        return value;
+        return MDC.get(key);
     }
 
     public static void putToMDC(String key, String value) {
-        log.debug("Putting value: " + value + " on MDC with key: " + key);
         MDC.put(key, value);
     }
 
     public static void remove(String key) {
-        log.debug("Removing key: " + key);
         MDC.remove(key);
     }
 
     private static int getRandomNumber() {
-        int value = RANDOM.nextInt(Integer.MAX_VALUE);
-        return value;
+        return RANDOM.nextInt(Integer.MAX_VALUE);
     }
 
     private static long getSystemTime() {

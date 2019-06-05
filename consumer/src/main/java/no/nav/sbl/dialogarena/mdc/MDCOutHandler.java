@@ -14,7 +14,7 @@ import javax.xml.ws.ProtocolException;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -39,7 +39,6 @@ public class MDCOutHandler implements SOAPHandler<SOAPMessageContext> {
                         "(oppskrift på dette: http://confluence.adeo.no/display/Modernisering/MDCFilter). " +
                         "Om du er noe annet må du generere callId selv og legge på MDC. Hjelpemetoder finnes i no.nav.sbl.dialogarena.mdc.MDCOperations.");
             }
-            log.debug("Add the callId to the SOAP message: " + callId);
             try {
                 SOAPEnvelope envelope = context.getMessage().getSOAPPart().getEnvelope();
                 SOAPHeader header = envelope.getHeader();
@@ -65,11 +64,6 @@ public class MDCOutHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Override
     public Set<QName> getHeaders() {
-        return new HashSet<QName>() {
-            {
-                add(CALLID_QNAME);
-            }
-        };
+        return Collections.singleton(CALLID_QNAME);
     }
-
 }
