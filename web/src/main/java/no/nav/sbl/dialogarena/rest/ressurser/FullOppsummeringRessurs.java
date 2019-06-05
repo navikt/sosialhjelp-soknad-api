@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
@@ -17,7 +18,6 @@ import javax.ws.rs.core.Context;
 import java.io.IOException;
 
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.RESSURS_FULLOPPSUMERING;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
 
@@ -43,7 +43,7 @@ public class FullOppsummeringRessurs {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         sjekkOmFullOppsummeringErAktivert("hentOppsummeringNew");
 
-        String eier = getSubjectHandler().getUid();
+        String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
     }
@@ -55,7 +55,7 @@ public class FullOppsummeringRessurs {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
 
-        String eier = getSubjectHandler().getUid();
+        String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         return pdfService.genererJuridiskPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
     }

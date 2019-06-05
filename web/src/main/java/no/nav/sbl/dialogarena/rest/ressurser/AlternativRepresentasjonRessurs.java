@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -13,7 +14,6 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.RESSURS_ALTERNATIVREPRESENTASJON;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
 
@@ -37,7 +37,7 @@ public class AlternativRepresentasjonRessurs {
     public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         erRessursAktiv("jsonRepresentasjon");
-        String eier = getSubjectHandler().getUid();
+        String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         return  soknadUnderArbeidService.mapJsonSoknadTilFil(soknadUnderArbeid.getJsonInternalSoknad().getSoknad());
     }
