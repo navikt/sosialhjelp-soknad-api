@@ -294,7 +294,11 @@ public class SoknadDataFletter {
         }
 
         if (medData) {
-            soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId()).medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()));
+            Long soknadId = soknad.getSoknadId();
+            String brukerBehandlingId = soknad.getBrukerBehandlingId();
+            WebSoknad webSoknad = lokalDb.hentSoknadMedData(soknadId);
+            Integer versjon = hendelseRepository.hentVersjon(brukerBehandlingId);
+            soknad = webSoknad.medVersjon(versjon);
         }
 
         return soknad;
