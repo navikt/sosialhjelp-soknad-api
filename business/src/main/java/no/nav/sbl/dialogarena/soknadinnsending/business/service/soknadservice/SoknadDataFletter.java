@@ -294,6 +294,10 @@ public class SoknadDataFletter {
         }
 
         if (medData) {
+            if (soknad == null) {
+                String eier = OidcFeatureToggleUtils.getUserId();
+                soknad = lagreSoknadILokalDb("NAV 35-18.01", "", eier, behandlingsId, 0);
+            }
             Long soknadId = soknad.getSoknadId();
             String brukerBehandlingId = soknad.getBrukerBehandlingId();
             WebSoknad webSoknad = lokalDb.hentSoknadMedData(soknadId);
