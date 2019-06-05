@@ -73,9 +73,8 @@ public class HentOkonomiBekreftelseHelperTest {
         
         final List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<JsonOkonomibekreftelse>();
         bekreftelser.add(bostotteBekreftelse);
-        
-        final JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger()
+
+        return new JsonOkonomiopplysninger()
                 .withBekreftelse(bekreftelser);
-        return opplysninger;
     }
 }

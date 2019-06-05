@@ -8,7 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -154,7 +153,7 @@ public class AdresseSystemdata implements Systemdata {
         ustrukturertAdresse.setType(JsonAdresse.Type.USTRUKTURERT);
 
         ustrukturertAdresse.setAdresse(Arrays.stream(adresse.getAdresse().split(","))
-                .map(s -> s.trim())
+                .map(String::trim)
                 .collect(Collectors.toList()));
 
         return ustrukturertAdresse;

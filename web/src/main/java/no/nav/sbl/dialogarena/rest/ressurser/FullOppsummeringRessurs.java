@@ -51,7 +51,7 @@ public class FullOppsummeringRessurs {
     @GET
     @Path("/{behandlingsId}/fullsoknadpdf")
     @Produces("application/pdf")
-    public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
+    public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
 

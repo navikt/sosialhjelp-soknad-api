@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadDataFletterIntegrationTestContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -15,8 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
-import javax.naming.NamingException;
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.mockito.Matchers.any;
@@ -39,7 +36,7 @@ public class SoknadServiceIntegrasjonsTest {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @BeforeClass
-    public static void beforeClass() throws IOException, NamingException {
+    public static void beforeClass() {
         System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
     }
 

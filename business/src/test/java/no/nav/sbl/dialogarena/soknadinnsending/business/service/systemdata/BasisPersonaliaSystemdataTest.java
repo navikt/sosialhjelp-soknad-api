@@ -38,9 +38,8 @@ public class BasisPersonaliaSystemdataTest {
 
     @Test
     public void skalIkkeOppdatereDersomPersonaliaErNull() {
-        Personalia personalia = null;
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(null);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 

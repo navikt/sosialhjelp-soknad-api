@@ -9,7 +9,7 @@ public class PersonPortTypeMock implements PersonPortType {
     private Person person;
 
     @Override
-    public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+    public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) {
         HentKjerneinformasjonResponse respons = new HentKjerneinformasjonResponse();
         respons.setPerson(person);
         return respons;

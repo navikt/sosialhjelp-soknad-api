@@ -47,7 +47,7 @@ public class SaksoversiktMetadataService {
 
         List<SoknadMetadata> soknader = soknadMetadataRepository.hentInnsendteSoknaderForBruker(fnr);
 
-        List<InnsendtSoknad> innsendte = soknader.stream().map(soknad ->
+        return soknader.stream().map(soknad ->
                 new InnsendtSoknad()
                         .withAvsender(new Part()
                                 .withType(Part.Type.BRUKER)
@@ -64,8 +64,6 @@ public class SaksoversiktMetadataService {
                         .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
                         .withLenke(lagEttersendelseLenke(soknad.behandlingsId)))
                 .collect(toList());
-
-        return innsendte;
     }
 
     public List<PabegyntSoknad> hentPabegynteSoknaderForBruker(String fnr) {

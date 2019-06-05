@@ -1,24 +1,23 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import static java.lang.System.getenv;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.function.Function;
+import no.nav.modig.common.MDCOperations;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import org.slf4j.Logger;
 
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.util.function.Function;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import org.slf4j.Logger;
-
-import no.nav.modig.common.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import static java.lang.System.getenv;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
@@ -49,9 +48,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         final RestCallContext executionContext = restCallContextSelector.apply(sokedata);
         final Invocation.Builder request = lagRequest(executionContext, sokedata, sokedata.soketype.toTpsKode());
 
-        return RestCallUtils.performRequestUsingContext(executionContext, () -> {
-            return sokAdresseMotTjeneste(sokedata, request);
-        });
+        return RestCallUtils.performRequestUsingContext(executionContext, () -> sokAdresseMotTjeneste(sokedata, request));
     }
     
     @Override
@@ -71,42 +68,34 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .header("x-nav-apiKey", apiKey);
-        
-        Response response = null;
-        try {
-            response = request.get();
+
+        try (Response response = request.get()) {
             final String melding = response.readEntity(String.class);
             final int status = response.getStatus();
-            
+
             if (status == 400) {
                 /*
                  * Vi forventer feilmelding på maxretur. Dette er en stygg hack som
                  * er laget fordi vi mangler et fungerende ping-kall mot TPSWS-REST.
-                 * 
+                 *
                  * Vi kan dessverre heller ikke sjekke om feilresponsen inneholder
                  * "maxretur er ikke numerisk" fordi denne fjernes av APIGW.
                  */
                 return;
             }
-            
+
             throw new RuntimeException(status + ": " + melding);
-        } finally {
-            if (response != null) {
-                response.close();
-            }
         }
     }
 
     private AdressesokRespons sokAdresseMotTjeneste(Sokedata sokedata, final Invocation.Builder request) {
-        Response response = null;
-        try {
-            response = request.get();
-            
+        try (Response response = request.get()) {
+
             if (logger.isDebugEnabled()) {
                 response.bufferEntity();
                 logger.debug("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
             }
-            
+
             if (response.getStatus() == 200) {
                 return createAdressesokRespons(sokedata, response);
             } else if (response.getStatus() == 404) {
@@ -119,10 +108,6 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         } catch (RuntimeException e) {
             logger.info("Noe uventet gikk galt ved oppslag av adresse", e);
             throw new TjenesteUtilgjengeligException("TPS adresse", e);
-        } finally {
-            if (response != null) {
-                response.close();
-            }
         }
     }
 
@@ -142,13 +127,9 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     }
 
     private boolean skalTasMed(AdresseData adresseData) {
-        return !isEmpty(adresseData.adressenavn)
-                && !isEmpty(adresseData.postnummer)
-                && !isEmpty(adresseData.poststed);
-    }
-    
-    private static boolean isEmpty(String s) {
-        return s == null || s.trim().length() == 0;
+        return !isBlank(adresseData.adressenavn)
+                && !isBlank(adresseData.postnummer)
+                && !isBlank(adresseData.poststed);
     }
 
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata, String soketype) {

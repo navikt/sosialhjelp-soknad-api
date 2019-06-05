@@ -1,13 +1,11 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import java.io.IOException;
+import com.github.jknack.handlebars.Options;
+import org.springframework.stereotype.Component;
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
-import org.springframework.stereotype.Component;
-
-import com.github.jknack.handlebars.Options;
 
 @Component
 public class FormaterDatoKlokkeslettHelper extends RegistryAwareHelper<String>{
@@ -23,7 +21,7 @@ public class FormaterDatoKlokkeslettHelper extends RegistryAwareHelper<String>{
     }
 
     @Override
-    public CharSequence apply(String datoStreng, Options options) throws IOException {
+    public CharSequence apply(String datoStreng, Options options) {
         if (datoStreng == null) {
             return "";
         }
@@ -42,7 +40,6 @@ public class FormaterDatoKlokkeslettHelper extends RegistryAwareHelper<String>{
 
     private ZonedDateTime toOsloZonedDateTime(final ZonedDateTime zonedDate) {
         final ZoneId osloZone = ZoneId.of("Europe/Oslo");
-        final ZonedDateTime osloZonedDate = zonedDate.withZoneSameInstant(osloZone);
-        return osloZonedDate;
+        return zonedDate.withZoneSameInstant(osloZone);
     }
 }

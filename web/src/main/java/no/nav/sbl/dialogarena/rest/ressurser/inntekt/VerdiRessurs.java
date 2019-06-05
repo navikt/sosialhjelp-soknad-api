@@ -9,7 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -23,7 +22,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
@@ -123,11 +121,9 @@ public class VerdiRessurs {
     }
 
     private void setBekreftelseOnVerdierFrontend(JsonOkonomiopplysninger opplysninger, VerdierFrontend verdierFrontend) {
-        final Optional<JsonOkonomibekreftelse> verdiBekreftelse = opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("verdi")).findFirst();
-        if (verdiBekreftelse.isPresent()){
-            verdierFrontend.setBekreftelse(verdiBekreftelse.get().getVerdi());
-        }
+        opplysninger.getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals("verdi")).findFirst()
+                .ifPresent(jsonOkonomibekreftelse -> verdierFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
     private void setVerdityperOnVerdierFrontend(JsonOkonomioversikt oversikt, VerdierFrontend verdierFrontend) {

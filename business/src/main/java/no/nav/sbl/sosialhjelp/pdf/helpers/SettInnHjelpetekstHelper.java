@@ -6,7 +6,6 @@ import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.io.IOException;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
@@ -29,7 +28,7 @@ public class SettInnHjelpetekstHelper extends RegistryAwareHelper<String> implem
     }
 
     @Override
-    public CharSequence apply(String key, Options options) throws IOException {
+    public CharSequence apply(String key, Options options) {
         String hjelpetekst = TextWithTitle.getText(key, options, SOKNAD_TYPE_PREFIX, BUNDLE_NAME, cmsTekst);
         
         if (hjelpetekst == null) {

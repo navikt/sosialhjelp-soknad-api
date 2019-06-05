@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +53,7 @@ public class PersonInfoWSConfig {
         map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
         CallbackHandler passwordCallbackHandler = new CallbackHandler() {
             @Override
-            public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+            public void handle(Callback[] callbacks) {
                 WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
                 callback.setPassword(getProperty("arena.personInfoService.password"));
             }

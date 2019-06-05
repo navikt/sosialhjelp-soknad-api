@@ -87,9 +87,8 @@ public class KallMotAdressesok {
         final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
         builder.bind("jdbc/SoknadInnsendingDS", dataSource);
         builder.activate();
-        
-        final ApplicationContext context = new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
-        return context;
+
+        return new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
     }
 
     private static void setupCloseShutdownHook(final PrintWriter report) {

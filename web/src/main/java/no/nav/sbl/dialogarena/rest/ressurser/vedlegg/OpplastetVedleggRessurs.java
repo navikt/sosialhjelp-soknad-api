@@ -55,7 +55,11 @@ public class OpplastetVedleggRessurs {
     public Response getVedleggFil(@PathParam("vedleggId") final String vedleggId, @Context HttpServletResponse response) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + opplastetVedlegg.getFilnavn() + "\"");
+        if (opplastetVedlegg != null) {
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + opplastetVedlegg.getFilnavn() + "\"");
+        } else {
+            return Response.noContent().build();
+        }
         String mimetype = Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData());
         return Response.ok(opplastetVedlegg.getData()).type(mimetype).build();
     }

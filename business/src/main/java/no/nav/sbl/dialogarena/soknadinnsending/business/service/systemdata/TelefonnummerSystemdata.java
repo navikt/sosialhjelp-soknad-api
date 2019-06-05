@@ -37,8 +37,7 @@ public class TelefonnummerSystemdata implements Systemdata {
 
     public String innhentSystemverdiTelefonnummer(final String personIdentifikator) {
         final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        final String systemVerdi = norskTelefonnummer(personalia.getMobiltelefonnummer());
-        return systemVerdi;
+        return norskTelefonnummer(personalia.getMobiltelefonnummer());
     }
 
     private static String norskTelefonnummer(String mobiltelefonnummer) {

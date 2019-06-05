@@ -107,8 +107,7 @@ public final class ServiceBuilder<T> {
     }
 
     public T portType() {
-        T port = factoryBean.create(resultClass);
-        return port;
+        return factoryBean.create(resultClass);
     }
 
     public ServiceBuilder<T> asStandardService() {

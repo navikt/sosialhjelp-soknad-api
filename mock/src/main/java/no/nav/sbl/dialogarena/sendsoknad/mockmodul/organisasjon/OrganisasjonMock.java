@@ -49,9 +49,7 @@ public class OrganisasjonMock {
     }
 
     private static HentOrganisasjonResponse getDefaultResponse(){
-        HentOrganisasjonResponse response = new HentOrganisasjonResponse();
-
-        return response;
+        return new HentOrganisasjonResponse();
     }
 
     public static void setOrganisasjon(String  jsonOrganisasjon){

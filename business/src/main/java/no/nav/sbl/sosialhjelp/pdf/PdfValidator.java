@@ -55,8 +55,7 @@ public final class PdfValidator {
                 sb.append(testAssertion.toString() + "\n\n");
             }
         }
-        final String failedAssertions = sb.toString();
-        return failedAssertions;
+        return sb.toString();
     }
 
     private static ValidationResult validatePdfA1b(byte[] pdf) {

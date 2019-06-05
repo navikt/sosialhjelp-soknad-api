@@ -1,24 +1,23 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
-
-import javax.inject.Inject;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
-import org.springframework.stereotype.Service;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class AdresseSokService {
@@ -43,12 +42,11 @@ public class AdresseSokService {
         }
         
         final AdressesokRespons adressesokRespons = adresseSokConsumer.sokAdresse(sokedata);
-        final List<AdresseForslag> forslag = adressesokRespons.adresseDataList.stream()
+        return adressesokRespons.adresseDataList.stream()
                 .filter(isGateadresse())
                 .map(AdresseSokService::toAdresseForslag) // "gateadresse" er hardkodet.
                 .filter(distinkte())
                 .collect(toList());
-        return forslag;
     }
     
     public List<AdresseForslag> sokEtterNavKontor(Sokedata sokedata) {
@@ -57,12 +55,10 @@ public class AdresseSokService {
         }
         
         final AdressesokRespons adressesokRespons = adresseSokConsumer.sokAdresse(sokedata);
-        final List<AdresseForslag> forslag = adressesokRespons.adresseDataList.stream()
+        return adressesokRespons.adresseDataList.stream()
                 .filter(distinktGeografiskTilknytning())
                 .map(AdresseSokService::toKunTilknytningAdresseForslag)
                 .collect(toList());
-
-        return forslag;
     }
 
     static AdresseForslag toAdresseForslag(AdresseData data) {
@@ -91,16 +87,10 @@ public class AdresseSokService {
     }
 
     private static Predicate<? super AdresseData> isGateadresse() {
-        return data -> {
-            return !erTom(data.adressenavn)
-                    && !erTom(data.postnummer)
-                    && !erTom(data.poststed)
-                    && !erTom(data.gatekode);
-        };
-    }
-
-    private static boolean erTom(String s) {
-        return s == null || s.trim().equals("");
+        return data -> !isBlank(data.adressenavn)
+                && !isBlank(data.postnummer)
+                && !isBlank(data.poststed)
+                && !isBlank(data.gatekode);
     }
     
     private static String upperCase(String s) {

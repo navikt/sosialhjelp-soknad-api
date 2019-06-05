@@ -28,7 +28,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMO
 public class ApplicationContextTest {
 
     @BeforeClass
-    public static void beforeClass() throws IOException, NamingException {
+    public static void beforeClass() throws NamingException {
         load("/environment-test.properties");
         System.setProperty("no.nav.modig.security.sts.url", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");

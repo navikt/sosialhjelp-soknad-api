@@ -37,11 +37,11 @@ public class NavFodselsnummer extends StringNumber {
         int birthYear = Integer.parseInt(get2DigitBirthYear());
         if (individnummerInt <= 499) {
             result = "19";
-        } else if (individnummerInt >= 500 && birthYear < 40) {
+        } else if (birthYear < 40) {
             result = "20";
-        } else if (individnummerInt >= 500 && individnummerInt <= 749 && birthYear > 54) {
+        } else if (individnummerInt <= 749 && birthYear > 54) {
             result = "18";
-        } else if (individnummerInt >= 900 && birthYear > 39) {
+        } else if (individnummerInt >= 900) {
             result = "19";
         }
         return result;

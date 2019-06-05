@@ -170,10 +170,7 @@ public class Personalia {
             return false;
         }
 
-        if (harUtenlandsAdressekode(adressetype)) {
-            return true;
-        }
-        return false;
+        return harUtenlandsAdressekode(adressetype);
     }
 
     public String erBosattIEOSLand() {
@@ -193,19 +190,13 @@ public class Personalia {
             return false;
         }
 
-        if ((harUtenlandsAdressekode(adressetype)) && (StatsborgerskapType.get(landkode).equals(EOS))) {
-            return true;
-        }
-        return false;
+        return (harUtenlandsAdressekode(adressetype)) && (StatsborgerskapType.get(landkode).equals(EOS));
     }
 
     private boolean harUtenlandsAdressekode(String adressetype) {
-        if (adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_UTLAND.name()) ||
+        return adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_UTLAND.name()) ||
                 adressetype.equalsIgnoreCase(POSTADRESSE_UTLAND.name()) ||
-                adressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
-            return true;
-        }
-        return false;
+                adressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name());
     }
 
     public String getKontonummer() {

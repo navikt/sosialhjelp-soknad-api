@@ -127,9 +127,7 @@ public class AdresseTransform {
     private boolean harMidlertidigAdresseSomErGjeldendeAdresse(XMLBruker soapPerson) {
         if (soapPerson.getMidlertidigPostadresse() != null) {
             String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
-            if (gjeldendeAdressetype.toLowerCase().startsWith(MIDLERTIDIG)) {
-                return true;
-            }
+            return gjeldendeAdressetype.toLowerCase().startsWith(MIDLERTIDIG);
         }
         return false;
     }
@@ -137,9 +135,7 @@ public class AdresseTransform {
     private boolean harStrukturertAdresseSomErGjeldendeAdresse(XMLBruker soapPerson) {
         if (strukturertAdresseExists(soapPerson.getBostedsadresse())) {
             String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
-            if (gjeldendeAdressetype.equalsIgnoreCase(BOSTEDSADRESSE.name())) {
-                return true;
-            }
+            return gjeldendeAdressetype.equalsIgnoreCase(BOSTEDSADRESSE.name());
         }
         return false;
     }
@@ -147,9 +143,7 @@ public class AdresseTransform {
     private boolean harUstrukturertAdresseSomErGjeldendeAdresse(XMLBruker soapPerson) {
         if (ustrukturertAdresseExists(soapPerson.getPostadresse())) {
             String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
-            if (gjeldendeAdressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) || gjeldendeAdressetype.equalsIgnoreCase(POSTADRESSE.name())) {
-                return true;
-            }
+            return gjeldendeAdressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) || gjeldendeAdressetype.equalsIgnoreCase(POSTADRESSE.name());
         }
         return false;
     }
@@ -157,9 +151,7 @@ public class AdresseTransform {
     private boolean harMidlertidigAdresseSomIkkeErGjeldendeAdresse(XMLBruker soapPerson) {
         if (soapPerson.getMidlertidigPostadresse() != null) {
             String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
-            if (!gjeldendeAdressetype.toLowerCase().startsWith(MIDLERTIDIG)) {
-                return true;
-            }
+            return !gjeldendeAdressetype.toLowerCase().startsWith(MIDLERTIDIG);
         }
         return false;
     }
@@ -167,9 +159,7 @@ public class AdresseTransform {
     private boolean harStrukturertAdresseSomIkkeErGjeldendeAdresse(XMLBruker soapPerson) {
         if (strukturertAdresseExists(soapPerson.getBostedsadresse())) {
             String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
-            if (!gjeldendeAdressetype.equalsIgnoreCase(BOSTEDSADRESSE.name())) {
-                return true;
-            }
+            return !gjeldendeAdressetype.equalsIgnoreCase(BOSTEDSADRESSE.name());
         }
         return false;
     }
@@ -177,9 +167,7 @@ public class AdresseTransform {
     private boolean harUstrukturertAdresseSomIkkeErGjeldendeAdresse(XMLBruker soapPerson) {
         if (ustrukturertAdresseExists(soapPerson.getPostadresse())) {
             String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
-            if (!gjeldendeAdressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) && !gjeldendeAdressetype.equalsIgnoreCase(POSTADRESSE.name())) {
-                return true;
-            }
+            return !gjeldendeAdressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) && !gjeldendeAdressetype.equalsIgnoreCase(POSTADRESSE.name());
         }
         return false;
     }
@@ -468,7 +456,7 @@ public class AdresseTransform {
         adresse.poststed = kodeverk.getPoststed(adresse.postnummer);
         adresse.gatenavn = xmlAdresse.getGatenavn();
         adresse.husnummer = xmlAdresse.getHusnummer() != null ? xmlAdresse.getHusnummer().toString() : "";
-        adresse.husbokstav = xmlAdresse.getHusbokstav() != null ? xmlAdresse.getHusbokstav().toString() : "";
+        adresse.husbokstav = xmlAdresse.getHusbokstav() != null ? xmlAdresse.getHusbokstav() : "";
 
         return adresse;
     }

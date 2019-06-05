@@ -39,7 +39,7 @@ public class RegistryAwareHelperTest {
     HandlebarRegistry registry;
 
     @Test
-    public void listUtRegistrerteHelpers() throws Exception {
+    public void listUtRegistrerteHelpers() {
         for (RegistryAwareHelper helper : helpers) {
             LOG.info("Helper: " + helper.getNavn());
         }

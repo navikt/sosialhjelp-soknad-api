@@ -76,19 +76,17 @@ public class LagringsScheduler {
         }
     }
 
-    private boolean avbrytOgSlettEttersendelse(SoknadUnderArbeid soknadUnderArbeid) throws InterruptedException {
+    private void avbrytOgSlettEttersendelse(SoknadUnderArbeid soknadUnderArbeid) throws InterruptedException {
         try {
             henvendelseService.avbrytSoknad(soknadUnderArbeid.getBehandlingsId(), true);
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
 
             vellykket++;
-            return true;
         } catch (Exception e) {
             feilet++;
             logger.error("Avbryt feilet for ettersending {}.", soknadUnderArbeid.getSoknadId(), e);
             Thread.sleep(1000); // Så loggen ikke blir fylt opp
 
-            return false;
         }
     }
 

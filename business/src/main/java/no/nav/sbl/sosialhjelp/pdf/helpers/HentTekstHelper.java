@@ -6,7 +6,6 @@ import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.io.IOException;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
@@ -29,7 +28,7 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
     }
 
     @Override
-    public CharSequence apply(String key, Options options) throws IOException {
+    public CharSequence apply(String key, Options options) {
         String tekst = this.cmsTekst.getCmsTekst(key, options.params, SOKNAD_TYPE_PREFIX, BUNDLE_NAME, SPRAK);
 
         String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);

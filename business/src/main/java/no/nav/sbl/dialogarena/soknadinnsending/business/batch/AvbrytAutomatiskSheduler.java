@@ -61,7 +61,7 @@ public class AvbrytAutomatiskSheduler {
         }
     }
 
-    private void avbryt() throws InterruptedException {
+    private void avbryt() {
         Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
 
         while (soknad.isPresent()) {

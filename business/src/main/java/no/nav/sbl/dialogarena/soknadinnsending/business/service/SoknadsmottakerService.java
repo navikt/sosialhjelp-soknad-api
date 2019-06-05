@@ -84,10 +84,8 @@ public class SoknadsmottakerService {
         if (forste.adresse == null || forste.postnummer == null || forste.poststed == null) {
             return true;
         }
-        return adresser.stream().anyMatch(af -> {
-            return !forste.adresse.equals(af.adresse)
-                    || !forste.postnummer.equals(af.postnummer)
-                    || !forste.poststed.equals(af.poststed);
-        });
+        return adresser.stream().anyMatch(af -> !forste.adresse.equals(af.adresse)
+                || !forste.postnummer.equals(af.postnummer)
+                || !forste.poststed.equals(af.poststed));
     }
 }
