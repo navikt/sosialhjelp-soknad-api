@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import no.nav.modig.common.MDCOperations;
+import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;

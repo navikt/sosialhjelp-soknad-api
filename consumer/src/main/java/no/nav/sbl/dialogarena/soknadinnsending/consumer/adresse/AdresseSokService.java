@@ -6,7 +6,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -15,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -27,6 +31,9 @@ public class AdresseSokService {
     
     @Inject
     private Kodeverk kodeverk;
+
+    @Inject
+    private NorgService norgService;
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
         if (sok == null || sok.trim().length() <= 2) {
@@ -59,6 +66,15 @@ public class AdresseSokService {
                 .filter(distinktGeografiskTilknytning())
                 .map(AdresseSokService::toKunTilknytningAdresseForslag)
                 .collect(toList());
+    }
+
+    @Cacheable("kommunesokCache")
+    public List<Kommunesok> sokEtterNavEnheter(String kommunenr) {
+        return sokEtterNavKontor(new AdresseSokConsumer.Sokedata().withKommunenummer(kommunenr))
+                .stream().map(adresseForslag -> {
+                    NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+                    return new Kommunesok(kommunenr, adresseForslag, navEnhet);
+                }).collect(Collectors.toList());
     }
 
     static AdresseForslag toAdresseForslag(AdresseData data) {
@@ -108,6 +124,18 @@ public class AdresseSokService {
     private static Predicate<AdresseForslag> distinkte() {
         Set<String> funnet = new HashSet<>();
         return a -> funnet.add(a.adresse + "|" + a.kommunenummer + "|" + a.bydel + "|" + a.gatekode);
+    }
+
+    public class Kommunesok {
+        public String kommunenr;
+        public AdresseForslag adresseForslag;
+        public NavEnhet navEnhet;
+
+        Kommunesok(String kommunenr, AdresseForslag adresseForslag, NavEnhet navEnhet) {
+            this.kommunenr = kommunenr;
+            this.adresseForslag = adresseForslag;
+            this.navEnhet = navEnhet;
+        }
     }
 
 }

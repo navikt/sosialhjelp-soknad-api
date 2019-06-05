@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -237,4 +239,26 @@ public class InformasjonRessurs {
     public List<String> hentAktiviteter() {
         return KommuneTilNavEnhetMapper.getDigisoskommuner();
     }
+
+    @GET
+    @Path("/kommunesok")
+    public List<NavEnhetRessurs.NavEnhetFrontend> sokEtterNavEnheter(@QueryParam("kommunenr") String kommunenr) {
+        return adresseSokService.sokEtterNavEnheter(kommunenr).stream()
+                .map(this::mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend)
+                .collect(Collectors.toList());
+    }
+
+    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseSokService.Kommunesok kommunesok) {
+        if (kommunesok.navEnhet == null) {
+            logger.warn("Kunne ikke hente NAV-enhet: " + kommunesok.adresseForslag.geografiskTilknytning);
+            return null;
+        }
+        boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunesok.kommunenr);
+        String kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunesok.kommunenr, kommunesok.adresseForslag.kommunenavn);
+        return new NavEnhetRessurs.NavEnhetFrontend()
+                .withEnhetsnavn(kommunesok.navEnhet.navn)
+                .withKommunenavn(kommunenavn)
+                .withOrgnr((digisosKommune) ? kommunesok.navEnhet.sosialOrgnr : null);
+    }
+
 }

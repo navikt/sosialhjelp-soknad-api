@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
+import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;

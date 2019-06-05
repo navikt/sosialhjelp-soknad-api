@@ -118,12 +118,12 @@ public class NavEnhetRessurs {
         public String kommunenavn;
         public boolean valgt;
 
-        NavEnhetFrontend withOrgnr(String orgnr) {
+        public NavEnhetFrontend withOrgnr(String orgnr) {
             this.orgnr = orgnr;
             return this;
         }
 
-        NavEnhetFrontend withEnhetsnavn(String enhetsnavn) {
+        public NavEnhetFrontend withEnhetsnavn(String enhetsnavn) {
             this.enhetsnavn = enhetsnavn;
             return this;
         }

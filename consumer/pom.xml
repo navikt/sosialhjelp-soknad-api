@@ -129,20 +129,18 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-sts</artifactId>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-policy</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.neethi</groupId>
+            <artifactId>neethi</artifactId>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-cxf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-log-jaxws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-log-common</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>

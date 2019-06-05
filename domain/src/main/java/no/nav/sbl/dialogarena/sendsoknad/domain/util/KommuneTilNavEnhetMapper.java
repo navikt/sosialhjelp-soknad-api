@@ -18,6 +18,8 @@ public class KommuneTilNavEnhetMapper {
     public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
             .put("0519", "Nord-Fron") // Sør-Fron
             .put("0520", "Nord-Fron") // Ringebu
+            .put("0631", "Rollag")    // Flesberg
+            .put("0633", "Rollag")    // Nore og Uvdal
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -113,6 +115,11 @@ public class KommuneTilNavEnhetMapper {
             .put("1514", "978607063")    // Sande
             .put("0105", "974560593")    // Sarpsborg
             .put("1221", "991459634")    // Stord
+            .put("0827", "973802003")    // Hjartdal
+            .put("0807", "984001797")    // Notodden
+            .put("0632", "964963282")    // Rollag, Flesberg, Nore og Uvdal
+            .put("0604", "974572486")    // Kongsberg
+            .put("0826", "874548472")    // Tinn
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -246,7 +253,14 @@ public class KommuneTilNavEnhetMapper {
                     "1516",
                     "1514",
                     "0105",
-                    "1221"
+                    "1221",
+                    "0827",
+                    "0807",
+                    "0633",
+                    "0604",
+                    "0826",
+                    "0631",
+                    "0632"
                 
             ));
 

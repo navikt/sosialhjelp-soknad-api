@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.modig.jaxws.handlers.MDCOutHandler;
+import no.nav.sbl.dialogarena.mdc.MDCOutHandler;
 import no.nav.sbl.dialogarena.common.cxf.LoggingFeatureUtenBinaryOgUtenSamlTokenLogging;
 import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -19,8 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.lang.System.getProperty;
-import static no.nav.modig.security.sts.utility.STSConfigurationUtility.configureStsForExternalSSO;
-import static no.nav.modig.security.sts.utility.STSConfigurationUtility.configureStsForSystemUser;
+import static no.nav.sbl.dialogarena.sts.utility.STSConfigurationUtility.*;
 import static org.apache.cxf.frontend.ClientProxy.getClient;
 import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 
@@ -125,12 +125,16 @@ public final class ServiceBuilder<T> {
         }
 
         public PortTypeBuilder<U> withUserSecurity() {
-            configureStsForExternalSSO(ClientProxy.getClient(portType));
+            if (OidcFeatureToggleUtils.isRunningWithOidc()) {
+                configureStsForOnBehalfOfWithJWT(ClientProxy.getClient(portType));
+            } else {
+                configureStsForExternalSSO(ClientProxy.getClient(portType));
+            }
             return this;
         }
 
         public PortTypeBuilder<U> withSystemSecurity() {
-            configureStsForSystemUser(ClientProxy.getClient(portType));
+            configureStsForSystemUserInFSS(ClientProxy.getClient(portType));
             return this;
         }
 
