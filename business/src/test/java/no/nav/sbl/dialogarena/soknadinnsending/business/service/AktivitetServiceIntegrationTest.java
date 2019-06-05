@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
-import no.nav.modig.common.MDCOperations;
+import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.SakOgAktivitetWSConfig;

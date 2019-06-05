@@ -30,7 +30,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import no.nav.modig.common.MDCOperations;
+import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
