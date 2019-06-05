@@ -124,7 +124,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0105", "974560593")    // Sarpsborg
             .put("1221", "991459634")    // Stord
             .put("0827", "973802003")    // Hjartdal
-            .put("0807", "938583986")    // Notodden
+            .put("0807", "984001797")    // Notodden
             .put("0632", "964963282")    // Rollag, Flesberg, Nore og Uvdal
             .put("0604", "974572486")    // Kongsberg
             .put("0826", "874548472")    // Tinn
