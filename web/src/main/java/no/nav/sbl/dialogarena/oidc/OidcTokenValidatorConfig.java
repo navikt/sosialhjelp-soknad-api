@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.oidc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.security.oidc.configuration.IssuerProperties;
 import no.nav.security.oidc.configuration.MultiIssuerConfiguration;
 import no.nav.security.oidc.configuration.OIDCResourceRetriever;
@@ -24,6 +25,9 @@ public class OidcTokenValidatorConfig {
 
     @Bean
     public MultiIssuerConfiguration MultiIssuerConfiguration(OIDCResourceRetriever resourceRetriever) {
+        if (MockUtils.isTillatMockRessurs()) {
+            return new MultiIssuerConfiguration(new HashMap<>(), resourceRetriever);
+        }
         return new MultiIssuerConfiguration(getIssuerPropertiesMap(), resourceRetriever);
     }
 

@@ -5,8 +5,6 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
-import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock.*;
-
 public class PersonPortTypeMock implements PersonPortType {
     private Person person;
 

@@ -1,84 +1,84 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon;
 
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.FinnOrganisasjonForMangeForekomster;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.FinnOrganisasjonUgyldigInput;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.FinnOrganisasjonsendringerListeUgyldigInput;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentNoekkelinfoOrganisasjonOrganisasjonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentNoekkelinfoOrganisasjonUgyldigInput;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonOrganisasjonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonUgyldigInput;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.ValiderOrganisasjonOrganisasjonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.ValiderOrganisasjonUgyldigInput;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Virksomhet;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.FinnOrganisasjonRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.FinnOrganisasjonResponse;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.FinnOrganisasjonsendringerListeRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.FinnOrganisasjonsendringerListeResponse;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentNoekkelinfoOrganisasjonRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentNoekkelinfoOrganisasjonResponse;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.SammensattNavn;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonsnavnBolkRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonsnavnBolkResponse;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentVirksomhetsOrgnrForJuridiskOrgnrBolkRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentVirksomhetsOrgnrForJuridiskOrgnrBolkResponse;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.ValiderOrganisasjonRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.ValiderOrganisasjonResponse;
 
-public class OrganisasjonMock implements OrganisasjonV4 {
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    public void ping() {
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class OrganisasjonMock {
+
+    private static Map<String, HentOrganisasjonResponse> responses = new HashMap<>();
+
+    public OrganisasjonV4 organisasjonMock(){
+
+        OrganisasjonV4 mock = mock(OrganisasjonV4.class);
+
+        try {
+            when(mock.hentOrganisasjon(any(HentOrganisasjonRequest.class)))
+                    .thenAnswer(invocationOnMock -> getOrCreateCurrentUserResponse());
+        } catch (HentOrganisasjonOrganisasjonIkkeFunnet | HentOrganisasjonUgyldigInput err) {
+            err.printStackTrace();
+        }
+        return mock;
+
     }
 
-    @Override
-    public FinnOrganisasjonResponse finnOrganisasjon(FinnOrganisasjonRequest request)
-            throws FinnOrganisasjonForMangeForekomster, FinnOrganisasjonUgyldigInput {
-        throw new UnsupportedOperationException();
-    }
+    private static HentOrganisasjonResponse getOrCreateCurrentUserResponse(){
 
-    @Override
-    public HentOrganisasjonsnavnBolkResponse hentOrganisasjonsnavnBolk(HentOrganisasjonsnavnBolkRequest request) {
-        throw new UnsupportedOperationException();
-    }
+        HentOrganisasjonResponse response = responses.get(OidcFeatureToggleUtils.getUserId());
+        if (response == null ){
+            response = getDefaultResponse();
+            responses.put(OidcFeatureToggleUtils.getUserId(), response);
+        }
 
-    @Override
-    public HentOrganisasjonResponse hentOrganisasjon(HentOrganisasjonRequest request)
-            throws HentOrganisasjonOrganisasjonIkkeFunnet, HentOrganisasjonUgyldigInput {
-        HentOrganisasjonResponse response = new HentOrganisasjonResponse();
-        Organisasjon organisasjon = new Virksomhet();
-        UstrukturertNavn value = new UstrukturertNavn();
-        value.getNavnelinje().add("Mock navn arbeidsgiver");
-        organisasjon.setNavn(value);
-        response.setOrganisasjon(organisasjon);
         return response;
     }
 
-    @Override
-    public HentNoekkelinfoOrganisasjonResponse hentNoekkelinfoOrganisasjon(HentNoekkelinfoOrganisasjonRequest request)
-            throws HentNoekkelinfoOrganisasjonOrganisasjonIkkeFunnet, HentNoekkelinfoOrganisasjonUgyldigInput {
-        throw new UnsupportedOperationException();
+    private static HentOrganisasjonResponse getDefaultResponse(){
+        HentOrganisasjonResponse response = new HentOrganisasjonResponse();
+
+        return response;
     }
 
-    @Override
-    public ValiderOrganisasjonResponse validerOrganisasjon(ValiderOrganisasjonRequest request)
-            throws ValiderOrganisasjonOrganisasjonIkkeFunnet, ValiderOrganisasjonUgyldigInput {
-        throw new UnsupportedOperationException();
+    public static void setOrganisasjon(String  jsonOrganisasjon){
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            SimpleModule module = new SimpleModule();
+            module.addDeserializer(SammensattNavn.class, new SammensattNavnDeserializer());
+            module.addDeserializer(Organisasjon.class, new OrganisasjonDeserializer());
+            mapper.registerModule(module);
+
+            HentOrganisasjonResponse response = mapper.readValue(jsonOrganisasjon, HentOrganisasjonResponse.class);
+
+            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
+                responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            } else {
+                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    @Override
-    public HentVirksomhetsOrgnrForJuridiskOrgnrBolkResponse hentVirksomhetsOrgnrForJuridiskOrgnrBolk(
-            HentVirksomhetsOrgnrForJuridiskOrgnrBolkRequest request) {
-        throw new UnsupportedOperationException();
+    public static void resetOrganisasjon(){
+        responses.replace(OidcFeatureToggleUtils.getUserId(), new HentOrganisasjonResponse());
     }
 
-    @Override
-    public FinnOrganisasjonsendringerListeResponse finnOrganisasjonsendringerListe(
-            FinnOrganisasjonsendringerListeRequest request) throws FinnOrganisasjonsendringerListeUgyldigInput {
-        throw new UnsupportedOperationException();
-    }
 
 }

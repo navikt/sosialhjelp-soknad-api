@@ -1,129 +1,78 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import org.mockito.invocation.InvocationOnMock;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
-public class NorgConsumerMock implements NorgConsumer {
-    @Override
-    public RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning) {
-        return ENHETER_PROD.get(geografiskTilknytning);
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class NorgConsumerMock {
+
+    private static Map<String, Map<String, RsNorgEnhet>> responses = new HashMap<>();
+
+    public NorgConsumer norgConsumerMock(){
+        NorgConsumer mock = mock(NorgConsumer.class);
+
+        when(mock.finnEnhetForGeografiskTilknytning(any(String.class)))
+                .thenAnswer(invocationOnMock -> getOrCreateCurrentUserResponse(invocationOnMock));
+
+        return mock;
     }
 
-    @Override
-    public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {
-        throw new UnsupportedOperationException("Kontaktinformasjon for enhet er ikke støttet ennå");
-    }
-    
-    @Override
-    public void ping() {
+    public static RsNorgEnhet getOrCreateCurrentUserResponse(InvocationOnMock invocationOnMock){
+
+        Map<String, RsNorgEnhet> rsNorgEnhetMap = responses.get(OidcFeatureToggleUtils.getUserId());
+        if (rsNorgEnhetMap == null){
+            rsNorgEnhetMap = getDefaultMap();
+            responses.put(OidcFeatureToggleUtils.getUserId(), rsNorgEnhetMap);
+        }
+        
+        String argumentAt = invocationOnMock.getArgumentAt(0, String.class);
+        RsNorgEnhet rsNorgEnhet = rsNorgEnhetMap.get(argumentAt);
+        return rsNorgEnhet;
     }
 
-    private static final Map<String, RsNorgEnhet> ENHETER_PROD = new ImmutableMap.Builder<String, RsNorgEnhet>()
-            .put("0701", new RsNorgEnhet().withEnhetId(100000141)
-                    .withEnhetNr("0701")
-                    .withNavn("NAV Horten")
-                    .withOrgNrTilKommunaltNavKontor("974605171"))
-            .put("120107", new RsNorgEnhet().withEnhetId(100000249)
-                    .withEnhetNr("1208")
-                    .withNavn("NAV Årstad")
-                    .withOrgNrTilKommunaltNavKontor("976830172"))
-            .put("120102", new RsNorgEnhet().withEnhetId(100000250)
-                    .withEnhetNr("1209")
-                    .withNavn("NAV Bergenhus")
-                    .withOrgNrTilKommunaltNavKontor("976830563"))
-            .put("120106", new RsNorgEnhet().withEnhetId(100000251)
-                    .withEnhetNr("1210")
-                    .withNavn("NAV Ytrebygda")
-                    .withOrgNrTilKommunaltNavKontor("976830652"))
-            .put("120103", new RsNorgEnhet().withEnhetId(100000244)
-                    .withEnhetNr("1202")
-                    .withNavn("NAV Fana")
-                    .withOrgNrTilKommunaltNavKontor("976829948"))
-            .put("030105", new RsNorgEnhet().withEnhetId(100000046)
-                    .withEnhetNr("0312")
-                    .withNavn("NAV Frogner")
-                    .withOrgNrTilKommunaltNavKontor("874778702"))
-            .put("1247", new RsNorgEnhet().withEnhetId(100000273)
-                    .withEnhetNr("1247")
-                    .withNavn("NAV Askøy")
-                    .withOrgNrTilKommunaltNavKontor("974600889"))
-            .put("030102", new RsNorgEnhet().withEnhetId(100000049)
-                    .withEnhetNr("0315")
-                    .withNavn("NAV Grünerløkka")
-                    .withOrgNrTilKommunaltNavKontor("870534612"))
-            .put("030110", new RsNorgEnhet().withEnhetId(100000056)
-                    .withEnhetNr("0328")
-                    .withNavn("NAV Grorud")
-                    .withOrgNrTilKommunaltNavKontor("974778866"))
-            .put("030111", new RsNorgEnhet().withEnhetId(100000055)
-                    .withEnhetNr("0327")
-                    .withNavn("NAV Stovner")
-                    .withOrgNrTilKommunaltNavKontor("874778842"))
-            .put("030103", new RsNorgEnhet().withEnhetId(100000048)
-                    .withEnhetNr("0314")
-                    .withNavn("NAV Sagene")
-                    .withOrgNrTilKommunaltNavKontor("974778726"))
-            .put("030114", new RsNorgEnhet().withEnhetId(100000051)
-                    .withEnhetNr("0318")
-                    .withNavn("NAV Nordstrand")
-                    .withOrgNrTilKommunaltNavKontor("970534679"))
-            .put("030115", new RsNorgEnhet().withEnhetId(100000052)
-                    .withEnhetNr("0319")
-                    .withNavn("NAV Søndre Nordstrand")
-                    .withOrgNrTilKommunaltNavKontor("972408875"))
-            .put("120101", new RsNorgEnhet().withEnhetId(100000246)
-                    .withEnhetNr("1204")
-                    .withNavn("NAV Arna")
-                    .withOrgNrTilKommunaltNavKontor("976829786"))
-            .put("120108", new RsNorgEnhet().withEnhetId(100000245)
-                    .withEnhetNr("1203")
-                    .withNavn("NAV Åsane")
-                    .withOrgNrTilKommunaltNavKontor("976830784"))
-            .put("120104", new RsNorgEnhet().withEnhetId(100000247)
-                    .withEnhetNr("1205")
-                    .withNavn("NAV Fyllingsdalen")
-                    .withOrgNrTilKommunaltNavKontor("976830032"))
-            .put("120105", new RsNorgEnhet().withEnhetId(100000248)
-                    .withEnhetNr("1206")
-                    .withNavn("NAV Laksevåg")
-                    .withOrgNrTilKommunaltNavKontor("976830121"))
-            .put("030112", new RsNorgEnhet().withEnhetId(100000054)
-                    .withEnhetNr("0326")
-                    .withNavn("NAV Alna")
-                    .withOrgNrTilKommunaltNavKontor("970534644"))
-            .put("030109", new RsNorgEnhet().withEnhetId(100000057)
-                    .withEnhetNr("0330")
-                    .withNavn("NAV Bjerke")
-                    .withOrgNrTilKommunaltNavKontor("974778874"))
-            .put("030101", new RsNorgEnhet().withEnhetId(100000050)
-                    .withEnhetNr("0316")
-                    .withNavn("NAV Gamle Oslo")
-                    .withOrgNrTilKommunaltNavKontor("974778742"))
-            .put("030108", new RsNorgEnhet().withEnhetId(100000058)
-                    .withEnhetNr("0331")
-                    .withNavn("NAV Nordre Aker")
-                    .withOrgNrTilKommunaltNavKontor("974778882"))
-            .put("030104", new RsNorgEnhet().withEnhetId(100000047)
-                    .withEnhetNr("0313")
-                    .withNavn("NAV St.Hanshaugen")
-                    .withOrgNrTilKommunaltNavKontor("971179686"))
-            .put("030116", new RsNorgEnhet().withEnhetId(100000047)
-                    .withEnhetNr("0313")
-                    .withNavn("NAV St.Hanshaugen")
-                    .withOrgNrTilKommunaltNavKontor("971179686"))
-            .put("030106", new RsNorgEnhet().withEnhetId(100000060)
-                    .withEnhetNr("0335")
-                    .withNavn("NAV Ullern")
-                    .withOrgNrTilKommunaltNavKontor("971022051"))
-            .put("030107", new RsNorgEnhet().withEnhetId(100000059)
-                    .withEnhetNr("0334")
-                    .withNavn("NAV Vestre Aker")
-                    .withOrgNrTilKommunaltNavKontor("970145311"))
-            .put("030113", new RsNorgEnhet().withEnhetId(100000053)
-                    .withEnhetNr("0321")
-                    .withNavn("NAV Østensjø")
-                    .withOrgNrTilKommunaltNavKontor("974778807"))
-            .build();
+    private static Map<String, RsNorgEnhet> getDefaultMap(){
+        ImmutableMap<String, RsNorgEnhet> defaultMap = new ImmutableMap.Builder<String, RsNorgEnhet>()
+                .put("120102", new RsNorgEnhet().withEnhetId(100000250)
+                        .withEnhetNr("1209")
+                        .withNavn("NAV Bergenhus")
+                        .withOrgNrTilKommunaltNavKontor("976830563"))
+                .build();
+        return defaultMap;
+    }
+
+    public static void setNorgMap(String rsNorgEnhetMap){
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+
+            TypeReference<HashMap<String, RsNorgEnhet>> typeRef
+                    = new TypeReference<HashMap<String, RsNorgEnhet>>() {};
+
+            Map<String, RsNorgEnhet> map = mapper.readValue(rsNorgEnhetMap, typeRef);
+
+            Map<String, RsNorgEnhet> response = responses.get(OidcFeatureToggleUtils.getUserId());
+            if (response == null){
+                responses.put(OidcFeatureToggleUtils.getUserId(), map);
+            } else {
+                responses.replace(OidcFeatureToggleUtils.getUserId(), map);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void resetNorgMap(){
+        responses.replace(OidcFeatureToggleUtils.getUserId(), getDefaultMap());
+    }
 }

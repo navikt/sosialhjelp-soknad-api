@@ -54,7 +54,7 @@ public class FiksSender {
         return forsendelsesService.sendForsendelse(forsendelse);
     }
 
-    Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
+    public Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
         final SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
         return new Forsendelse()
                 .withMottaker(new Adresse()
