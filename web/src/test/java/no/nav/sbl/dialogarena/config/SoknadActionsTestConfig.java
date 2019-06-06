@@ -15,7 +15,6 @@ import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import static org.mockito.Mockito.mock;
 
