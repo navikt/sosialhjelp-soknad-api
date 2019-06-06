@@ -3,10 +3,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -88,15 +87,18 @@ public class HenvendelseService {
         return soknadMetadataRepository.hentBehandlingskjede(behandlingskjedeId);
     }
 
-    public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, HovedskjemaMetadata hovedskjema, SoknadMetadata.VedleggMetadataListe vedlegg, Map<String, String> ekstraMetadata) {
+    public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, String uuid, SoknadMetadata.VedleggMetadataListe vedlegg, SoknadUnderArbeid soknadUnderArbeid) {
         SoknadMetadata meta = soknadMetadataRepository.hent(behandlingsId);
 
+        HovedskjemaMetadata hovedskjema = new HovedskjemaMetadata();
+        hovedskjema.filnavn = "NAV 35-18.01";
+        hovedskjema.filUuid = uuid;
         meta.hovedskjema = hovedskjema;
         meta.vedlegg = vedlegg;
 
         if (meta.type != SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            meta.orgnr = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
-            meta.navEnhet = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
+            meta.orgnr = soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getOrganisasjonsnummer();
+            meta.navEnhet = soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getNavEnhetsnavn();
         }
 
         meta.sistEndretDato = LocalDateTime.now(clock);

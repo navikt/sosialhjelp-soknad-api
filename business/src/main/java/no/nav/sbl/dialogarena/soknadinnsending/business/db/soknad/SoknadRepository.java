@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 
 import java.util.List;
 import java.util.Map;
@@ -49,16 +48,12 @@ public interface SoknadRepository {
 
     String hentSoknadType(Long soknadId);
 
-    Boolean isVedleggPaakrevd(Long soknadId, VedleggForFaktumStruktur vedleggForFaktumStruktur);
-
     void settDelstegstatus(Long soknadId, DelstegStatus status);
     void settDelstegstatus(String behandlingsId, DelstegStatus status);
 
     void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet);
 
     List<Faktum> hentBarneFakta(Long soknadId, Long faktumId);
-
-    void populerFraStruktur(WebSoknad soknad);
 
     Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId);
 

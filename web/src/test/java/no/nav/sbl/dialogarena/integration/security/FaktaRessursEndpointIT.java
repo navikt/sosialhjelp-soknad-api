@@ -35,16 +35,6 @@ public class FaktaRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void nektetTilgang_hentFaktum() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
-
-        Response response = sendGetRequest(soknadTester, signedJWT);
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-    }
-
-    @Test
     public void nektetTilgangUtenToken_opprettFaktum() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);

@@ -24,18 +24,6 @@ public class SoknadActionsEndpointUtenOidcIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void leggVedVedlegg() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/leggved";
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
-            webTarget.queryParam("fnr", ANNEN_BRUKER))
-                .buildGet()
-                .invoke();
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-    }
-
-    @Test
     public void sendSoknad() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";

@@ -13,7 +13,6 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.AlternativRepresentasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
@@ -34,8 +33,8 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -56,8 +55,6 @@ public class TjenesteMockRessurs {
     private InnsendingService innsendingService;
     @Inject
     private FiksSender fiksSender;
-    @Inject
-    private AlternativRepresentasjonService alternativRepresentasjonService;
     @Inject
     private NavMessageSource messageSource;
     @Inject

@@ -1,15 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser.familie;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
@@ -26,13 +21,12 @@ import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -42,16 +36,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMa
 public class ForsorgerpliktRessurs {
 
     @Inject
-    private LegacyHelper legacyHelper;
-
-    @Inject
     private Tilgangskontroll tilgangskontroll;
-
-    @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
 
     @Inject
     private TextService textService;
@@ -62,7 +47,7 @@ public class ForsorgerpliktRessurs {
     @GET
     public ForsorgerpliktFrontend hentForsorgerplikt(@PathParam("behandlingsId") String behandlingsId){
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
         final JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
 
         return mapToForsorgerpliktFrontend(jsonForsorgerplikt);
@@ -72,7 +57,6 @@ public class ForsorgerpliktRessurs {
     public void updateForsorgerplikt(@PathParam("behandlingsId") String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, forsorgerpliktFrontend);
-        legacyUpdate(behandlingsId, forsorgerpliktFrontend);
     }
 
     private void update(String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
@@ -134,31 +118,6 @@ public class ForsorgerpliktRessurs {
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
-    }
-
-    private void legacyUpdate(String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
-
-        if(forsorgerpliktFrontend.barnebidrag != null) {
-            final Faktum barnebidrag = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "familie.barn.true.barnebidrag");
-            barnebidrag.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-            barnebidrag.setValue(forsorgerpliktFrontend.barnebidrag.toString());
-            faktaService.lagreBrukerFaktum(barnebidrag);
-        }
-
-        if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
-            List<Faktum> barnefakta = webSoknad.getFaktaMedKey("system.familie.barn.true.barn");
-            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar) {
-                for (Faktum faktum : barnefakta) {
-                    Map<String, String> barn = faktum.getProperties();
-                    if (barn.get("fnr").equals(ansvarFrontend.barn.fodselsnummer)) {
-                        barn.put("grad", ansvarFrontend.samvarsgrad != null ? ansvarFrontend.samvarsgrad.toString() : null);
-                        barn.put("deltbosted", ansvarFrontend.harDeltBosted != null ? ansvarFrontend.harDeltBosted.toString() : null);
-                    }
-                    faktaService.lagreBrukerFaktum(faktum);
-                }
-            }
-        }
     }
 
     private ForsorgerpliktFrontend mapToForsorgerpliktFrontend(JsonForsorgerplikt jsonForsorgerplikt) {

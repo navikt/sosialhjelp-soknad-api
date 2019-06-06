@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.sikkerhet;
 
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -31,9 +30,6 @@ public class SikkerhetsAspect {
     @Inject
     private FaktaService faktaService;
 
-    @Inject
-    private VedleggService vedleggService;
-
     @Pointcut("@annotation(no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad)")
     public void requestMapping() {
     }
@@ -51,7 +47,7 @@ public class SikkerhetsAspect {
                 behandlingsId = faktaService.hentBehandlingsId((Long) id);
                 break;
             case Vedlegg:
-                behandlingsId = vedleggService.hentBehandlingsId((Long) id);
+                behandlingsId = null;
                 break;
             default:
                 behandlingsId = (String) id;

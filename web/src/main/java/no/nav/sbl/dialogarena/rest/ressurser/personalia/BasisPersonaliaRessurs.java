@@ -2,13 +2,12 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
@@ -33,17 +32,12 @@ public class BasisPersonaliaRessurs {
     private Adressekodeverk adressekodeverk;
 
     @Inject
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
-
-    @Inject
-    private LegacyHelper legacyHelper;
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @GET
     public BasisPersonaliaFrontend hentBasisPersonalia(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-
-        vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
-        JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
 
         return mapToBasisPersonaliaFrontend(soknad.getSoknad().getData().getPersonalia());
     }

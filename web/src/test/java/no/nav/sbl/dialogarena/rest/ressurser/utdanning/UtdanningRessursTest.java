@@ -1,15 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser.utdanning;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.utdanning.UtdanningRessurs.UtdanningFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -30,7 +25,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,19 +35,10 @@ public class UtdanningRessursTest {
     private static final String BEHANDLINGSID = "123";
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @Mock
     private TextService textService;
@@ -75,8 +61,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningUtenErStudentOgStudentgrad(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithUtdanning(null, null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithUtdanning(null, null)));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -86,8 +72,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErIkkeStudent(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithUtdanning(Boolean.FALSE, null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithUtdanning(Boolean.FALSE, null)));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -97,8 +83,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudent(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, null)));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -108,8 +94,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradHeltid(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.HELTID));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.HELTID)));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -119,8 +105,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradDeltid(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.DELTID));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.DELTID)));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -130,7 +116,7 @@ public class UtdanningRessursTest {
 
     @Test
     public void putUtdanningSkalSetteUtdanningMedErStudent(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
 
@@ -147,7 +133,7 @@ public class UtdanningRessursTest {
 
     @Test
     public void putUtdanningSkalSetteUtdanningMedErStudentOgStudentgrad(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
 
@@ -165,7 +151,7 @@ public class UtdanningRessursTest {
 
     @Test
     public void putUtdanningSkalSetteUtdanningMedErIkkeStudentOgSletteStudentgrad(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 Optional.of(createJsonInternalSoknadWithUtdanning(true, JsonUtdanning.Studentgrad.DELTID)));
 
@@ -185,13 +171,6 @@ public class UtdanningRessursTest {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
         return argument.getValue();
-    }
-
-    private void ignoreTilgangskontrollAndLegacyUpdate() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
-        when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
-        when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithUtdanning(Boolean erStudent, JsonUtdanning.Studentgrad studentgrad) {

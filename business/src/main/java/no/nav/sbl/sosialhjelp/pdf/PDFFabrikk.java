@@ -2,6 +2,7 @@ package no.nav.sbl.sosialhjelp.pdf;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
@@ -52,8 +53,13 @@ public class PDFFabrikk {
             renderer.layout();
             renderer.setPDFVersion(PdfWriter.VERSION_1_4);
             renderer.createPDF(os, false, 0);
-            renderer.getWriter().setOutputIntents("Custom", "PDF/A", "http://www.color.org", "AdobeRGB1998",
-                    IOUtils.toByteArray(PDFFabrikk.class.getClassLoader().getResourceAsStream("AdobeRGB1998.icc")));
+            InputStream resourceAsStream = PDFFabrikk.class.getClassLoader().getResourceAsStream("AdobeRGB1998.icc");
+            byte[] byteArray = IOUtils.toByteArray(resourceAsStream);
+            renderer.getWriter().setOutputIntents(
+                    "Custom",
+                    "PDF/A", "http://www.color.org",
+                    "AdobeRGB1998",
+                    byteArray);
             renderer.finishPDF();
         } catch (DocumentException|IOException e) {
             throw new ApplicationException("Kunne ikke lagre oppsummering som PDF", e);

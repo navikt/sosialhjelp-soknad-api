@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepositoryJdbc;
@@ -25,7 +24,6 @@ import java.time.Clock;
         VedleggstatusRepositoryJdbc.class,
         SoknadUnderArbeidRepositoryJdbc.class,
         OpplastetVedleggRepositoryJdbc.class,
-        VedleggRepositoryJdbc.class,
         FillagerRepositoryJdbc.class,
         SoknadMetadataRepositoryJdbc.class,
         OppgaveRepositoryJdbc.class,

@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.EmailService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.Before;
@@ -21,10 +20,7 @@ import javax.servlet.ServletContext;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -41,8 +37,6 @@ public class SoknadActionsTest {
     EmailService emailService;
     @Inject
     SoknadService soknadService;
-    @Inject
-    VedleggService vedleggService;
     @Inject
     SoknadActions actions;
 

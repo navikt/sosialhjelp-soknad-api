@@ -2,16 +2,13 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import java.util.List;
 
 import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -30,9 +27,6 @@ public class FaktaRessurs {
 
     @Inject
     private FaktaService faktaService;
-
-    @Inject
-    private VedleggService vedleggService;
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -75,12 +69,5 @@ public class FaktaRessurs {
     @SjekkTilgangTilSoknad(type = Faktum)
     public void slettFaktum(@PathParam("faktumId") final Long faktumId) {
         faktaService.slettBrukerFaktum(faktumId);
-    }
-
-    @GET
-    @Path("/{faktumId}/vedlegg")
-    @SjekkTilgangTilSoknad(type = Faktum)
-    public List<Vedlegg> hentVedlegg(@PathParam("faktumId") final Long faktumId) {
-        return vedleggService.hentPaakrevdeVedlegg(faktumId);
     }
 }

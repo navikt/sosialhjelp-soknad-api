@@ -1,21 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import static org.mockito.Mockito.mock;
-
-import java.time.Clock;
-
-import javax.inject.Inject;
-import javax.sql.DataSource;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
@@ -27,26 +12,29 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.AlternativRepresentasjonService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EkstraMetadataService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
-import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
-import no.nav.sbl.sosialhjelp.midlertidig.WebSoknadConverter;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+import java.time.Clock;
+
+import static org.mockito.Mockito.mock;
 
 @Import(value = {DatabaseTestContext.class})
 @EnableTransactionManagement()
@@ -61,16 +49,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public SoknadDataFletter fletter() {
         return new SoknadDataFletter();
-    }
-
-    @Bean
-    public AlternativRepresentasjonService alternativRepresentasjonService() {
-        return new AlternativRepresentasjonService();
-    }
-
-    @Bean
-    public EkstraMetadataService ekstraMetadataService() {
-        return new EkstraMetadataService();
     }
 
     @Bean
@@ -94,11 +72,6 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public VedleggService vedleggService() {
-        return new VedleggService();
-    }
-
-    @Bean
     public OpplastetVedleggService opplastetVedleggService() {
         return new OpplastetVedleggService();
     }
@@ -111,11 +84,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public HendelseRepository hendelseRepository() {
         return new HendelseRepositoryJdbc();
-    }
-
-    @Bean
-    public VedleggRepository vedleggRepository() {
-        return new VedleggRepositoryJdbc();
     }
 
     @Bean
@@ -134,11 +102,6 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public WebSoknadConfig webSoknadConfig() {
-        return new WebSoknadConfig();
-    }
-
-    @Bean
     public KravdialogInformasjonHolder kravdialogInformasjonHolder(){
         return new KravdialogInformasjonHolder();
     }
@@ -154,15 +117,7 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public StartDatoUtil startDatoService(){
-        return new StartDatoUtil();
-    }
-
-    @Bean
     public EttersendingService ettersendingService() { return new EttersendingService(); }
-
-    @Bean
-    public XmlService xmlService() { return new XmlService(); }
 
     @Bean
     public SoknadMetricsService metricsService() {
@@ -182,16 +137,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     OpplastetVedleggRepository opplastetVedleggRepository() {
         return mock(OpplastetVedleggRepository.class);
-    }
-
-    @Bean
-    WebSoknadConverter webSoknadConverter() {
-        return mock(WebSoknadConverter.class);
-    }
-
-    @Bean
-    VedleggConverter vedleggConverter() {
-        return mock(VedleggConverter.class);
     }
 
     @Bean

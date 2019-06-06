@@ -1,19 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,28 +16,21 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FaktaServiceTest {
     @Mock
     private SoknadRepository soknadRepository;
     @Mock
-    private VedleggRepository vedleggRepository;
-    @Mock
     private NavMessageSource navMessageSource;
-    @Mock
-    private WebSoknadConfig config;
 
     @InjectMocks
     private FaktaService faktaService;
@@ -53,7 +39,6 @@ public class FaktaServiceTest {
     public void before() {
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
         when(soknadRepository.hentSoknad(anyLong())).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
-        when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
     }
 
     @Test
@@ -107,33 +92,11 @@ public class FaktaServiceTest {
 
     @Test
     public void skalSletteBrukerfaktum() {
-        Vedlegg vedlegg = new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L);
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medDelstegStatus(DelstegStatus.UTFYLLING));
-        when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Collections.singletonList(vedlegg));
         when(soknadRepository.hentFaktum(1L)).thenReturn(new Faktum().medKey("key").medSoknadId(1L));
         faktaService.slettBrukerFaktum(1L);
-        verify(vedleggRepository).slettVedleggOgData(1L, vedlegg);
         verify(soknadRepository).slettBrukerFaktum(1L, 1L);
         verify(soknadRepository).settDelstegstatus(1L, DelstegStatus.UTFYLLING);
-    }
-
-    @Test
-    public void skalSletteVedlegg() {
-        Long soknadId = 1L;
-        Long faktumId = 1L;
-        Faktum arbeidsforholdFaktum = new Faktum().medKey("arbeidsforhold").medProperty("type", "Permittert").medFaktumId(1L).medSoknadId(soknadId);
-        Vedlegg permitteringsVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("G2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(faktumId);
-        Vedlegg arbeidsgiverVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("O2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(faktumId);
-
-        when(soknadRepository.hentFaktum(faktumId)).thenReturn(arbeidsforholdFaktum);
-        when(vedleggRepository.hentVedleggForFaktum(soknadId, faktumId)).thenReturn(Arrays.asList(permitteringsVedlegg, arbeidsgiverVedlegg));
-        when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medDelstegStatus(DelstegStatus.UTFYLLING));
-
-        faktaService.slettBrukerFaktum(faktumId);
-
-        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, permitteringsVedlegg);
-        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, arbeidsgiverVedlegg);
-        verify(soknadRepository, times(1)).slettBrukerFaktum(soknadId, faktumId);
     }
 
     @Test

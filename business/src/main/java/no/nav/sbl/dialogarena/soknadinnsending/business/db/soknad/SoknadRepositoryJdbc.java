@@ -1,14 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import org.slf4j.Logger;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.*;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Types;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
@@ -43,9 +40,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     private static final FaktumRowMapper FAKTUM_ROW_MAPPER = new FaktumRowMapper();
     private static final FaktumEgenskapRowMapper FAKTUM_EGENSKAP_ROW_MAPPER = new FaktumEgenskapRowMapper();
     private static final SoknadRowMapper SOKNAD_ROW_MAPPER = new SoknadRowMapper();
-
-    @Inject
-    private VedleggRepository vedleggRepository;
 
     @Inject
     private HendelseRepository hendelseRepository;
@@ -81,23 +75,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getDelstegStatus().name(),
                         soknad.getBehandlingskjedeId(),
                         soknad.getJournalforendeEnhet());
-    }
-
-
-
-    public void populerFraStruktur(WebSoknad soknad) {
-        insertSoknad(soknad, soknad.getSoknadId());
-        hendelseRepository.registrerHendelse(soknad, HendelseType.HENTET_FRA_HENVENDELSE);
-
-        List<FaktumEgenskap> egenskaper = soknad.getFakta().stream()
-                .flatMap(faktum -> faktum.getFaktumEgenskaper().stream())
-                .collect(toList());
-
-        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(soknad.getFakta().toArray()));
-        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUMEGENSKAP, SqlParameterSourceUtils.createBatch(egenskaper.toArray()));
-        for (Vedlegg vedlegg : soknad.getVedlegg()) {
-            vedleggRepository.opprettEllerEndreVedlegg(vedlegg, null);
-        }
     }
 
     public Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId) {
@@ -169,7 +146,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     private WebSoknad leggTilBrukerdataOgVedleggPaaSoknad(WebSoknad soknad, String behandlingsId) {
-        return soknad.medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(vedleggRepository.hentVedlegg(behandlingsId));
+        return soknad.medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(new ArrayList<>());
     }
 
     public Faktum hentFaktum(Long faktumId) {
@@ -214,47 +191,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             }
         }
         return fakta;
-    }
-
-    public Boolean isVedleggPaakrevd(Long soknadId, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-        FaktumStruktur faktum = vedleggForFaktumStruktur.getFaktum();
-        String key = faktum.getId();
-        Integer count = 0;
-        count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, key, vedleggForFaktumStruktur.getOnValues());
-        return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
-    }
-
-    private Boolean sjekkOmVedleggErPaakrevd(Long soknadId, Integer antallFunnet, FaktumStruktur faktum) {
-        if (antallFunnet > 0) {
-            return faktum.getDependOn() != null ? isVedleggPaakrevdParent(soknadId, faktum.getDependOn(), faktum) : true;
-        }
-        return false;
-    }
-
-    private Boolean isVedleggPaakrevdParent(Long soknadId, FaktumStruktur faktum, FaktumStruktur barneFaktum) {
-        Integer count = 0;
-        if (barneFaktum.getDependOnValues() != null) {
-            count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, faktum.getId(), barneFaktum.getDependOnValues());
-        }
-        return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
-    }
-
-    private Integer finnAntallFaktumMedGittKeyOgEnAvFlereValues(Long soknadId, String key, List<String> values) {
-        if (values == null || values.isEmpty()) {
-            return 0;
-        }
-        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=:soknadid AND key=:faktumkey AND value IN (:dependonvalues)";
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("soknadid", soknadId);
-        params.addValue("faktumkey", key);
-        params.addValue("dependonvalues", values);
-        try {
-            NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(getJdbcTemplate().getDataSource());
-            return template.queryForObject(sql, params, Integer.class);
-        } catch (DataAccessException e) {
-            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
-            return 0;
-        }
     }
 
     public List<Faktum> hentSystemFaktumList(Long soknadId, String key) {

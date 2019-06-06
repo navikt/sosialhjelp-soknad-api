@@ -1,25 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class InformasjonService implements Miljovariabler {
-
-    @Inject
-    private Kodeverk kodeverk;
-
-    @Inject
-    private SoknadService soknadService;
 
     @Value("${saksoversikt.link.url}")
     private String saksoversiktUrl;
@@ -73,28 +61,6 @@ public class InformasjonService implements Miljovariabler {
         return result;
     }
 
-    public Map<String,String> hentVedleggsskjemaForBehandlingsId(String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
-        return hentVedleggsskjema(soknad.getskjemaNummer());
-    }
-
-
-    public Map<String,String> hentVedleggsskjema(String type) {
-        Map<String, String> result = new HashMap<>();
-
-        SoknadStruktur struktur = soknadService.hentSoknadStruktur(type);
-
-        for (VedleggForFaktumStruktur vedleggForFaktumStruktur : struktur.getVedlegg()) {
-            settInnUrlForSkjema(vedleggForFaktumStruktur.getSkjemaNummer(), result);
-        }
-
-        for (String skjemanummer : struktur.getVedleggReferanser()) {
-            settInnUrlForSkjema(skjemanummer, result);
-        }
-
-        return result;
-    }
-
     private Map<String, String> getTestSpesifikkConfig() {
         Map<String, String> testEnvVars = new HashMap<>();
 
@@ -104,14 +70,6 @@ public class InformasjonService implements Miljovariabler {
             }
         }
         return testEnvVars;
-    }
-
-    private void settInnUrlForSkjema(String skjemanummer, Map<String, String> resultMap) {
-        String url = kodeverk.getKode(skjemanummer, Kodeverk.Nokkel.URL);
-
-        if (!url.isEmpty()) {
-            resultMap.put(skjemanummer.toLowerCase().replaceAll("\\s+", "") + ".url", url);
-        }
     }
 
 

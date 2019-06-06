@@ -1,22 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.commons.io.IOUtils;
@@ -28,23 +23,16 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
 
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Optional;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadServiceTest {
@@ -59,29 +47,15 @@ public class SoknadServiceTest {
     @Mock
     private SoknadRepository soknadRepository;
     @Mock
-    private VedleggRepository vedleggRepository;
-    @Mock
     private HenvendelseService henvendelsesConnector;
     @Mock
     private FillagerService fillagerService;
     @Mock
     private Kodeverk kodeverk;
     @Mock
-    private VedleggService vedleggService;
-    @Mock
     private NavMessageSource navMessageSource;
     @Mock
-    private StartDatoUtil startDatoUtil;
-    @Mock
     private FaktaService faktaService;
-    @Mock
-    private PersonaliaBolk personaliaBolk;
-    @Mock
-    private BarnBolk barnBolk;
-    @Mock
-    private ArbeidsforholdBolk arbeidsforholdBolk;
-    @Mock
-    private WebSoknadConfig config;
     @Mock
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Mock
@@ -104,14 +78,7 @@ public class SoknadServiceTest {
     @SuppressWarnings("unchecked")
     @Before
     public void before() {
-        Map<String, BolkService> bolker = new HashMap<>();
-        bolker.put(PersonaliaBolk.class.getName(), personaliaBolk);
-        bolker.put(BarnBolk.class.getName(), barnBolk);
-        bolker.put(ArbeidsforholdBolk.class.getName(), arbeidsforholdBolk);
-        when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
-
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(SosialhjelpInformasjon.SKJEMANUMMER);
-        when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(Collections.emptyList());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid()));
     }

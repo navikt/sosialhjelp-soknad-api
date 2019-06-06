@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
@@ -49,8 +48,6 @@ public class InformasjonRessursTest {
     PersonInfoService personInfoService;
     @Mock
     NavMessageSource messageSource;
-    @Mock
-    WebSoknadConfig soknadConfig;
     @Mock
     ArbeidssokerInfoService arbeidssokerInfoService;
     @Mock

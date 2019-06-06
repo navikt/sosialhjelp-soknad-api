@@ -2,9 +2,6 @@ package no.nav.sbl.dialogarena.rest.ressurser.bosituasjon;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -40,15 +37,12 @@ public class BosituasjonRessurs {
     private Tilgangskontroll tilgangskontroll;
 
     @Inject
-    private LegacyHelper legacyHelper;
-
-    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @GET
     public BosituasjonFrontend hentBosituasjon(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get().getJsonInternalSoknad();
         final JsonBosituasjon bosituasjon = soknad.getSoknad().getData().getBosituasjon();
 
         return new BosituasjonFrontend()
@@ -60,7 +54,6 @@ public class BosituasjonRessurs {
     public void updateBosituasjon(@PathParam("behandlingsId") String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         update(behandlingsId, bosituasjonFrontend);
-        legacyUpdate(behandlingsId, bosituasjonFrontend);
     }
 
     private void update(String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
@@ -73,51 +66,6 @@ public class BosituasjonRessurs {
         }
         bosituasjon.setAntallPersoner(bosituasjonFrontend.antallPersoner);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
-    }
-
-    private void legacyUpdate(String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        if (bosituasjonFrontend.botype != null) {
-            final Faktum bosituasjon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon");
-            final Faktum annenBosituasjon = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon.annet.botype");
-
-            if (isAnnenBotype(bosituasjonFrontend.botype)) {
-                bosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-                bosituasjon.setValue("annet");
-
-                annenBosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-                annenBosituasjon.setValue(bosituasjonFrontend.botype.toString());
-            } else {
-                annenBosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-                annenBosituasjon.setValue(null);
-                bosituasjon.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-                bosituasjon.setValue(bosituasjonFrontend.botype.toString());
-            }
-
-            faktaService.lagreBrukerFaktum(bosituasjon);
-            faktaService.lagreBrukerFaktum(annenBosituasjon);
-        }
-
-        final Faktum antallPersoner = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "bosituasjon.antallpersoner");
-        antallPersoner.setType(Faktum.FaktumType.BRUKERREGISTRERT);
-        antallPersoner.setValue(bosituasjonFrontend.antallPersoner == null ? null : bosituasjonFrontend.antallPersoner.toString());
-
-        faktaService.lagreBrukerFaktum(antallPersoner);
-    }
-
-    private boolean isAnnenBotype(JsonBosituasjon.Botype botype){
-        switch (botype) {
-            case INSTITUSJON:
-            case KRISESENTER:
-            case FENGSEL:
-            case VENNER:
-            case FORELDRE:
-            case FAMILIE:
-                return true;
-            default:
-                return false;
-        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

@@ -36,17 +36,6 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void leggVedVedlegg() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/leggved";
-        SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
-
-        Response response = sendGetRequest(soknadTester, subUrl, signedJWT.serialize());
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-    }
-
-    @Test
     public void sendSoknad_skalGiForbiddenMedAnnenBruker() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
@@ -88,16 +77,6 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
         Response response = sendPostRequest(soknadTester, subUrl, Entity.json(""), signedJWT.serialize(), null);
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
-    }
-
-    @Test
-    public void leggVedVedlegg_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/leggved";
-
-        Response response = sendGetRequest(soknadTester, subUrl, null);
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 
     @Test

@@ -4,7 +4,6 @@ package no.nav.sbl.dialogarena.sikkerhet;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,15 +16,13 @@ import javax.ws.rs.NotFoundException;
 
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SikkerhetsAspectUtenOidcTest {
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-    @Mock
-    private VedleggService vedleggService;
     @Mock
     private FaktaService faktaService;
     @InjectMocks
@@ -48,11 +45,6 @@ public class SikkerhetsAspectUtenOidcTest {
     }
 
     @Test
-    public void skalSjekkeSikkerhetForBehandling() {
-        sikkerhetsAspectTest.skalSjekkeSikkerhetForBehandling();
-    }
-
-    @Test
     public void skalSjekkeOmBrukerHarTilgangTilFakta() {
         sikkerhetsAspectTest.skalSjekkeOmBrukerHarTilgangTilFakta();
     }
@@ -67,7 +59,7 @@ public class SikkerhetsAspectUtenOidcTest {
         sikkerhetsAspectTest.skalSjekkeOmBrukerHarTilgangTilVedlegg();
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void skalHandtereHvisIkkeVedleggFinnes() {
         sikkerhetsAspectTest.skalHandtereHvisIkkeVedleggFinnes();
     }

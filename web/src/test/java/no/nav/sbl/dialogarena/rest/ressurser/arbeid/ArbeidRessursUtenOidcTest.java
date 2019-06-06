@@ -1,10 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.ArbeidsforholdSystemdata;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
@@ -17,13 +14,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArbeidRessursUtenOidcTest {
-
-    @Mock
-    private LegacyHelper legacyHelper;
 
     @Mock
     private ArbeidsforholdSystemdata arbeidsforholdSystemdata;
@@ -33,12 +27,6 @@ public class ArbeidRessursUtenOidcTest {
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @InjectMocks
     private ArbeidRessurs arbeidRessurs = spy(new ArbeidRessurs());
