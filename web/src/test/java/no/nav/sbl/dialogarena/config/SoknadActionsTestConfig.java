@@ -2,16 +2,20 @@ package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import static org.mockito.Mockito.mock;
 
@@ -27,6 +31,21 @@ public class SoknadActionsTestConfig {
     @Bean
     public SoknadService soknadService() {
         return mock(SoknadService.class);
+    }
+
+    @Bean
+    public OppgaveHandterer oppgaveHandterer() {
+        return mock(OppgaveHandterer.class);
+    }
+
+    @Bean
+    public InnsendingService innsendingService() {
+        return null;
+    }
+
+    @Bean
+    public SystemdataUpdater systemdataUpdater() {
+        return null;
     }
 
     @Bean

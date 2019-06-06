@@ -2,13 +2,17 @@ package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.sosialhjelp.InnsendingService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -29,6 +33,12 @@ public class SoknadActionsTest {
     NavMessageSource tekster;
     @Inject
     SoknadService soknadService;
+    @Inject
+    OppgaveHandterer oppgaveHandterer;
+    @Inject
+    InnsendingService innsendingService;
+    @Inject
+    SystemdataUpdater systemdataUpdater;
     @Inject
     SoknadActions actions;
     @Inject

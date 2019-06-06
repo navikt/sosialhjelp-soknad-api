@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.config;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -19,7 +19,7 @@ public class DummyHolderConfig {
     }
 
     @Bean
-    public SoknadDataFletter soknadDataFletter() {
+    public SoknadService soknadService() {
         return null;
     }
 

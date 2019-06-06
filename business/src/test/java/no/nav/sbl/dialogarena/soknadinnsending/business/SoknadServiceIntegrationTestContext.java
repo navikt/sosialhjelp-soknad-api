@@ -30,17 +30,12 @@ import static org.mockito.Mockito.mock;
 @Import(value = {DatabaseTestContext.class})
 @EnableTransactionManagement()
 @Configuration
-public class SoknadDataFletterIntegrationTestContext {
+public class SoknadServiceIntegrationTestContext {
     @Inject
     private DataSource dataSource;
 
     @Bean
     public Clock clock(){ return Clock.systemDefaultZone(); }
-
-    @Bean
-    public SoknadDataFletter fletter() {
-        return new SoknadDataFletter();
-    }
 
     @Bean
     public HenvendelseService henvendelseService() {

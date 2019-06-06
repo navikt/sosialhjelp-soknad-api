@@ -1,14 +1,13 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import org.joda.time.LocalDate;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
 
-import static org.joda.time.LocalDate.parse;
-import static org.joda.time.Years.yearsBetween;
+import static java.time.LocalDate.parse;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -21,7 +20,7 @@ public class PersonAlder implements Serializable{
     }
 
     public int getAlder() {
-        return yearsBetween(fodselsdato, new LocalDate()).getYears();
+        return Period.between(fodselsdato, LocalDate.now()).getYears();
     }
 
     private String hentFodselsdatoFraFnr(String fodselsnummer){

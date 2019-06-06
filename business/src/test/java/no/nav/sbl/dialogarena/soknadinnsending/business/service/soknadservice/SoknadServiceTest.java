@@ -29,13 +29,16 @@ import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SoknadDataFletterTest {
+public class SoknadServiceTest {
+
+    private static final String EIER = "Hans og Grete";
+    private static final String BEHANDLINGSID = "123";
 
     @Mock
     private HenvendelseService henvendelsesConnector;
@@ -51,7 +54,7 @@ public class SoknadDataFletterTest {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @InjectMocks
-    private SoknadDataFletter soknadDataFletter;
+    private SoknadService soknadService;
 
 
     @SuppressWarnings("unchecked")
@@ -66,7 +69,7 @@ public class SoknadDataFletterTest {
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
-        soknadDataFletter.startSoknad();
+        soknadService.startSoknad();
 
         String bruker = OidcFeatureToggleUtils.getUserId();
         verify(henvendelsesConnector).startSoknad(eq(bruker));
@@ -96,7 +99,7 @@ public class SoknadDataFletterTest {
         soknadUnderArbeid.getJsonInternalSoknad().setVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg));
         when(soknadUnderArbeidRepository.hentSoknad(eq(behandlingsId), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
 
-        soknadDataFletter.sendSoknad(behandlingsId);
+        soknadService.sendSoknad(behandlingsId);
 
         ArgumentCaptor<SoknadUnderArbeid> soknadUnderArbeidCaptor = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
@@ -114,5 +117,19 @@ public class SoknadDataFletterTest {
         assertThat(capturedVedlegg.vedleggListe.get(1).filnavn).isEqualTo(testType2);
         assertThat(capturedVedlegg.vedleggListe.get(1).skjema).isEqualTo(testType2);
         assertThat(capturedVedlegg.vedleggListe.get(1).tillegg).isEqualTo(testTilleggsinfo2);
+    }
+
+    @Test
+    public void skalAvbryteSoknad() {
+        when(soknadUnderArbeidRepository.hentSoknad(eq(BEHANDLINGSID), anyString())).thenReturn(
+                Optional.of(new SoknadUnderArbeid()
+                        .withBehandlingsId(BEHANDLINGSID)
+                        .withVersjon(1L)
+                        .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
+
+        soknadService.avbrytSoknad(BEHANDLINGSID);
+
+        verify(henvendelsesConnector).avbrytSoknad(BEHANDLINGSID, false);
+        verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
     }
 }
