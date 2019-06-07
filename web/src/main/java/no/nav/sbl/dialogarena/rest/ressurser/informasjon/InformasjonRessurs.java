@@ -4,20 +4,22 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
@@ -65,7 +67,9 @@ public class InformasjonRessurs {
     @Inject
     private LandService landService;
     @Inject
-    private PersonaliaFletter personaliaFletter;
+    private BrukerprofilService brukerprofilService;
+    @Inject
+    private PersonService personService;
     @Inject
     private ArbeidssokerInfoService arbeidssokerInfoService;
     @Inject
@@ -79,12 +83,6 @@ public class InformasjonRessurs {
     @Path("/miljovariabler")
     public Map<String, String> hentMiljovariabler() {
         return informasjon.hentMiljovariabler();
-    }
-
-    @GET
-    @Path("/personalia")
-    public Personalia hentKunFornavnPersonalia() {
-        return innloggetBruker.hentKunFornavnPersonalia();
     }
 
     @GET
@@ -148,15 +146,16 @@ public class InformasjonRessurs {
         utslagskriterierResultat.put("ytelsesstatus", personInfoService.hentYtelseStatus(uid));
 
         try {
-            Personalia personalia = personaliaFletter.mapTilPersonalia(uid);
+            Person person = personService.hentPerson(uid);
+            AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(uid);
             utslagskriterierResultat.put("alder", Integer.toString(new PersonAlder(uid).getAlder()));
-            utslagskriterierResultat.put("fodselsdato", personalia.getFodselsdato());
-            utslagskriterierResultat.put("bosattINorge", ((Boolean) !personalia.harUtenlandskAdresse()).toString());
-            utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
-            utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
-            utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
-            utslagskriterierResultat.put("erBosattIEOSLand", personalia.erBosattIEOSLand());
-            utslagskriterierResultat.put("statsborgerskap", personalia.getStatsborgerskap());
+            utslagskriterierResultat.put("fodselsdato", person.getFodselsdato());
+            utslagskriterierResultat.put("bosattINorge", ((Boolean) !adresserOgKontonummer.isUtenlandskAdresse()).toString());
+            utslagskriterierResultat.put("registrertAdresse", adresserOgKontonummer.getGjeldendeAdresse().getAdresse());
+            utslagskriterierResultat.put("registrertAdresseGyldigFra", adresserOgKontonummer.getGjeldendeAdresse().getGyldigFra());
+            utslagskriterierResultat.put("registrertAdresseGyldigTil", adresserOgKontonummer.getGjeldendeAdresse().getGyldigTil());
+            utslagskriterierResultat.put("erBosattIEOSLand", String.valueOf(adresserOgKontonummer.isBosattIEOSLand()));
+            utslagskriterierResultat.put("statsborgerskap", person.getStatsborgerskap());
 
         } catch (Exception e) {
             logger.error("Kunne ikke hente personalia", e);
@@ -177,14 +176,14 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = OidcFeatureToggleUtils.getUserId();
-        Personalia personalia = personaliaFletter.mapTilPersonalia(uid);
+        Person person = personService.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 
         boolean harTilgang = true;
         String sperrekode = "";
 
-        if (DISKRESJONSKODER.contains(personalia.getDiskresjonskode())) {
+        if (DISKRESJONSKODER.contains(person.getDiskresjonskode())) {
             harTilgang = false;
             sperrekode = "bruker";
         }

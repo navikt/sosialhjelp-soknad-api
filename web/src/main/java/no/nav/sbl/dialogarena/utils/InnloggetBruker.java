@@ -1,33 +1,22 @@
 package no.nav.sbl.dialogarena.utils;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 
 import javax.inject.Inject;
 
 public class InnloggetBruker {
 
     @Inject
-    private PersonaliaFletter personaliaFletter;
-
-    public Personalia hentKunFornavnPersonalia() {
-        String fnr = OidcFeatureToggleUtils.getUserId();
-        Personalia personalia = personaliaFletter.mapTilPersonalia(fnr);
-        if (personalia == null){
-            return new Personalia();
-        }
-        Personalia kunFornavnPersonalia = new Personalia();
-        kunFornavnPersonalia.setFornavn(personalia.getFornavn() != null ? personalia.getFornavn() : "");
-        return kunFornavnPersonalia;
-    }
+    private PersonService personService;
 
     public String hentFornavn() {
         String fnr = OidcFeatureToggleUtils.getUserId();
-        Personalia personalia = personaliaFletter.mapTilPersonalia(fnr);
-        if (personalia == null){
+        Person person = personService.hentPerson(fnr);
+        if (person == null){
             return "";
         }
-        return personalia.getFornavn() != null ? personalia.getFornavn() : "";
+        return person.getFornavn() != null ? person.getFornavn() : "";
     }
 }

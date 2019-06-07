@@ -1,22 +1,26 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Component
 public class KontonummerSystemdata implements Systemdata {
+
+    private static final Logger logger = getLogger(KontonummerSystemdata.class);
         
     @Inject
-    private PersonaliaFletter personaliaFletter;
-
+    private BrukerprofilService brukerprofilService;
     
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
@@ -36,16 +40,19 @@ public class KontonummerSystemdata implements Systemdata {
     }
     
     public String innhentSystemverdiKontonummer(final String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        return norskKontonummer(personalia);
+        AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(personIdentifikator);
+        if (adresserOgKontonummer == null) {
+            return null;
+        }
+        return norskKontonummer(adresserOgKontonummer);
     }
     
     
-    private String norskKontonummer(Personalia personalia) {
-        if (personalia.getErUtenlandskBankkonto() != null && personalia.getErUtenlandskBankkonto()) {
+    private String norskKontonummer(AdresserOgKontonummer adresserOgKontonummer) {
+        if (adresserOgKontonummer.isUtenlandskBankkonto()) {
             return null;
         } else {
-            final String kontonummer = personalia.getKontonummer();
+            final String kontonummer = adresserOgKontonummer.getKontonummer();
             if (kontonummer == null || kontonummer.isEmpty()) {
                 return null;
             }
