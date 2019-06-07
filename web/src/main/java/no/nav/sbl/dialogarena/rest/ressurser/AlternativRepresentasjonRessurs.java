@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -26,8 +25,6 @@ public class AlternativRepresentasjonRessurs {
     private SoknadUnderArbeidService soknadUnderArbeidService;
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
     private static final Logger LOG = LoggerFactory.getLogger(AlternativRepresentasjonRessurs.class);
 
     @Deprecated
@@ -35,7 +32,6 @@ public class AlternativRepresentasjonRessurs {
     @Path("/json/{behandlingsId}")
     @Produces(APPLICATION_JSON)
     public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         erRessursAktiv("jsonRepresentasjon");
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
