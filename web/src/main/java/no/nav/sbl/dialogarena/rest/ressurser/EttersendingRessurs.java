@@ -51,7 +51,7 @@ public class EttersendingRessurs {
     @GET
     @Path("/innsendte/{behandlingsId}")
     public BehandlingsKjede hentBehandlingskjede(@PathParam("behandlingsId") String behandlingsId) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         return innsendtSoknadService.hentBehandlingskjede(behandlingsId);
     }
 
