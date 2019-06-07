@@ -55,6 +55,14 @@ public class SoknadRessurs {
     private Tilgangskontroll tilgangskontroll;
 
     @GET
+    @Path("/{behandlingsId}/xsrfCookie")
+    public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
+        response.addCookie(xsrfCookie(behandlingsId));
+        return true;
+    }
+
+    @GET
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
