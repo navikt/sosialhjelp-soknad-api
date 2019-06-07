@@ -34,14 +34,14 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     /* JsonRepresentasjon */
 
     @Test
-    public void jsonRepresentasjon_skalGiForbiddenMedAnnenBruker() {
+    public void jsonRepresentasjon_skalGiServerErrorMedAnnenBruker() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
         Response responseForAnnenBruker = sendGetRequest(soknadTester, subUrl, signedJWTforAnnenBruker);
 
-        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
     @Test

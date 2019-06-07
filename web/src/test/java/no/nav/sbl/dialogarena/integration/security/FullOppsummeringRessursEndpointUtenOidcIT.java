@@ -30,7 +30,7 @@ public class FullOppsummeringRessursEndpointUtenOidcIT extends AbstractSecurityI
                 .buildGet()
                 .invoke();
 
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         assertThat(responseUtenFnr.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
@@ -42,6 +42,6 @@ public class FullOppsummeringRessursEndpointUtenOidcIT extends AbstractSecurityI
                 .queryParam("fnr", ANNEN_BRUKER))
                 .buildGet()
                 .invoke();
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
 }

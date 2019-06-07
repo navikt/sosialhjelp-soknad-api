@@ -34,7 +34,7 @@ public class AlternativRepresentasjonRessursEndpointUtenOidcIT extends AbstractS
                 .buildGet()
                 .invoke();
 
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         assertThat(responseUtenFnr.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 }
