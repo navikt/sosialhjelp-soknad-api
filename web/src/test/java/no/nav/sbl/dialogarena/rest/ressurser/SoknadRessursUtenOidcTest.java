@@ -47,7 +47,6 @@ public class SoknadRessursUtenOidcTest {
     public void setUp() {
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-        ressursTest.type = new StartSoknad();
     }
 
     @After

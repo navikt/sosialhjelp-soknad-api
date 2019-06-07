@@ -52,13 +52,10 @@ public class SoknadRessursTest {
     @InjectMocks
     SoknadRessurs ressurs;
 
-    StartSoknad type;
-
     @Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
-        type = new StartSoknad();
     }
 
     @After
@@ -80,14 +77,14 @@ public class SoknadRessursTest {
     public void opprettingAvSoknadSkalSetteXsrfToken() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
-        ressurs.opprettSoknad(null, type, response);
+        ressurs.opprettSoknad(null, response);
         verify(response).addCookie(cookie.capture());
         assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN);
     }
 
     @Test
     public void opprettSoknadUtenBehandlingsidSkalStarteNySoknad() {
-        ressurs.opprettSoknad(null, type, mock(HttpServletResponse.class));
+        ressurs.opprettSoknad(null, mock(HttpServletResponse.class));
         verify(soknadService).startSoknad(anyString());
     }
 
@@ -95,7 +92,7 @@ public class SoknadRessursTest {
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(anyString(), anyString())).thenReturn(Optional.empty());
-        ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
+        ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class));
         verify(soknadService).startEttersending(eq(BEHANDLINGSID));
     }
 
@@ -103,7 +100,7 @@ public class SoknadRessursTest {
     public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(new WebSoknad());
-        ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
+        ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class));
         verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID));
     }
 
