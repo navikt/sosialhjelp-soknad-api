@@ -65,7 +65,6 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
 
