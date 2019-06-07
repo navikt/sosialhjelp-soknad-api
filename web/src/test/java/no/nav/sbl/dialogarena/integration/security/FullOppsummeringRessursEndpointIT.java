@@ -30,14 +30,14 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void hentOppsummeringNew_skalGiForbiddenMedAnnenBruker() {
+    public void hentOppsummeringNew_skalGiServerErrorMedAnnenBruker() {
         SoknadTester soknadTester = soknadOpprettet();
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/nyoppsummering";
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
         Response responseForAnnenBruker = sendGetRequest(soknadTester, suburl, signedJWTforAnnenBruker);
 
-        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
     @Test
     public void hentOppsummeringNew_skalIkkeGiForbiddenMedRettBruker() {
@@ -58,7 +58,7 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
 
         Response responseForAnnenBruker = sendGetRequest(soknadTester, suburl, signedJWTforAnnenBruker);
 
-        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
     @Test
