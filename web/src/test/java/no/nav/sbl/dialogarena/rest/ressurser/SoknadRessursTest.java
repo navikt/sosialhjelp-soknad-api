@@ -58,7 +58,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void hentingAvSoknadSkalSetteXsrfToken() {
+    public void skalSetteXsrfToken() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
         ressurs.hentXsrfCookie(BEHANDLINGSID, response);
