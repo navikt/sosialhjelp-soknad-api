@@ -28,7 +28,7 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
     @Test
     public void nektetTilgang_opprettEttersendelse() {
         SoknadTester soknadTester = soknadOpprettet();
-        String url = "soknader";
+        String url = "soknader/opprettSoknad";
 
         Response response = soknadTester.sendsoknadResource(url, webTarget -> webTarget
                 .queryParam("fnr", ANNEN_BRUKER)
