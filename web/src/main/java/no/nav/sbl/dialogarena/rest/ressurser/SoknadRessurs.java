@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
@@ -69,6 +70,14 @@ public class SoknadRessurs {
     }
 
     @GET
+    @Path("/{behandlingsId}/xsrfCookie")
+    @SjekkTilgangTilSoknad
+    public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+        response.addCookie(xsrfCookie(behandlingsId));
+        return true;
+    }
+
+    @GET
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
@@ -104,12 +113,19 @@ public class SoknadRessurs {
 
     @POST
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+    public Map<String, String> legacyOpprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
+        return opprettSoknad(behandlingsId, response);
+    }
+
+    @POST
+    @Path("/opprettSoknad")
+    @Consumes(APPLICATION_JSON)
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
+            opprettetBehandlingsId = soknadService.startSoknad(SKJEMANUMMER);
         } else {
             final String eier = OidcFeatureToggleUtils.getUserId();
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
