@@ -58,6 +58,15 @@ public class SoknadRessursTest {
     }
 
     @Test
+    public void hentingAvSoknadSkalSetteXsrfToken() {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
+        ressurs.hentXsrfCookie(BEHANDLINGSID, response);
+        verify(response).addCookie(cookie.capture());
+        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN);
+    }
+
+    @Test
     public void opprettingAvSoknadSkalSetteXsrfToken() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
