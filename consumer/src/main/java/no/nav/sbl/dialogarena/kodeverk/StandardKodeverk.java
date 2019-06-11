@@ -158,21 +158,6 @@ public class StandardKodeverk implements Kodeverk {
         return kodeverk.get(kodeverknavn);
     }
 
-    public List<String> hentAlleKodenavnFraKodeverk(EksponertKodeverk kodeverknavn) {
-        return kodeverkMedNavn(kodeverknavn.toString()).getKode().stream()
-                .map(xmlKode->xmlKode.getNavn())
-                .collect(toList());
-    }
-
-    public Map<String, String> hentAlleKodenavnMedForsteTerm(EksponertKodeverk kodeverknavn) {
-        List<String> kodenavn = hentAlleKodenavnFraKodeverk(kodeverknavn);
-        HashMap<String, String> koderTilKodenavnMap = new HashMap<>();
-        for(String kode : kodenavn) {
-            koderTilKodenavnMap.put(kode, hentFoersteTermnavnFraKodeIKodeverk(kode, kodeverknavn.toString()));
-        }
-        return koderTilKodenavnMap;
-    }
-
     private String hentFoersteTermnavnFraKodeIKodeverk(String kodenavn, String kodeverknavn) {
         for (XMLKode kode : kodeverkMedNavn(kodeverknavn).getKode()) {
             if (kode.getNavn().equalsIgnoreCase(kodenavn)) {

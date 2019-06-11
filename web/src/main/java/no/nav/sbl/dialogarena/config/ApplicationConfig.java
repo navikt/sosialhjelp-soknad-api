@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,11 +57,6 @@ public class ApplicationConfig {
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
         commonsMultipartResolver.setMaxUploadSize(10 * 1024 * 1024);
         return commonsMultipartResolver;
-    }
-
-    @Bean
-    public InnloggetBruker innloggetBruker() {
-        return new InnloggetBruker();
     }
 
     @Bean

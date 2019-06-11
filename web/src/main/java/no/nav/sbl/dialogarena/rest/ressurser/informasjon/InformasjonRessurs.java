@@ -1,28 +1,15 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
-import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 import org.apache.commons.lang3.LocaleUtils;
@@ -61,23 +48,9 @@ public class InformasjonRessurs {
     @Inject
     private NavMessageSource messageSource;
     @Inject
-    private InnloggetBruker innloggetBruker;
-    @Inject
-    private Kodeverk kodeverk;
-    @Inject
-    private LandService landService;
-    @Inject
-    private BrukerprofilService brukerprofilService;
-    @Inject
     private PersonService personService;
     @Inject
-    private ArbeidssokerInfoService arbeidssokerInfoService;
-    @Inject
-    private PersonInfoService personInfoService;
-    @Inject
     private AdresseSokService adresseSokService;
-    @Inject
-    private NorgService norgService;
 
     @GET
     @Path("/miljovariabler")
@@ -88,16 +61,16 @@ public class InformasjonRessurs {
     @GET
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
-        Map<String, String> fornavn = new HashMap<>();
-        fornavn.put("fornavn", innloggetBruker.hentFornavn());
-        return fornavn;
-    }
+        String fnr = OidcFeatureToggleUtils.getUserId();
+        Person person = personService.hentPerson(fnr);
+        if (person == null){
+            return new HashMap<>();
+        }
+        String fornavn = person.getFornavn() != null ? person.getFornavn() : "";
 
-    @GET
-    @Path("/poststed")
-    @Produces("text/plain")
-    public String hentPoststed(@QueryParam("postnummer") String postnummer) {
-        return kodeverk.getPoststed(postnummer);
+        Map<String, String> fornavnMap = new HashMap<>();
+        fornavnMap.put("fornavn", fornavn);
+        return fornavnMap;
     }
 
     @Unprotected
@@ -121,60 +94,6 @@ public class InformasjonRessurs {
     }
 
     @GET
-    @Path("/land")
-    public List<Land> hentLand(@QueryParam("filter") String filter) {
-        return landService.hentLand(filter);
-    }
-
-    @GET
-    @Path("/land/actions/hentstatsborgerskapstype")
-    public Map<String, String> hentStatsborgerskapstype(@QueryParam("landkode") String landkode) {
-        return landService.hentStatsborgerskapstype(landkode);
-    }
-
-    @GET
-    @Path("/kodeverk")
-    public Map<String, String> hentKodeverk(@QueryParam("kodeverk") Kodeverk.EksponertKodeverk kodeverkKey) {
-        return kodeverk.hentAlleKodenavnMedForsteTerm(kodeverkKey);
-    }
-
-    @GET
-    @Path("/utslagskriterier")
-    public Map<String, Object> hentUtslagskriterier() {
-        String uid = OidcFeatureToggleUtils.getUserId();
-        Map<String, Object> utslagskriterierResultat = new HashMap<>();
-        utslagskriterierResultat.put("arbeidssokerstatus", personInfoService.hentArbeidssokerStatus(uid));
-        utslagskriterierResultat.put("arbeidssokertatusFraSBLArbeid", arbeidssokerInfoService.getArbeidssokerArenaStatus(uid));
-        utslagskriterierResultat.put("ytelsesstatus", personInfoService.hentYtelseStatus(uid));
-
-        try {
-            Person person = personService.hentPerson(uid);
-            AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(uid);
-            utslagskriterierResultat.put("alder", Integer.toString(new PersonAlder(uid).getAlder()));
-            utslagskriterierResultat.put("fodselsdato", person.getFodselsdato());
-            utslagskriterierResultat.put("bosattINorge", ((Boolean) !adresserOgKontonummer.isUtenlandskAdresse()).toString());
-            utslagskriterierResultat.put("registrertAdresse", adresserOgKontonummer.getGjeldendeAdresse().getAdresse());
-            utslagskriterierResultat.put("registrertAdresseGyldigFra", adresserOgKontonummer.getGjeldendeAdresse().getGyldigFra());
-            utslagskriterierResultat.put("registrertAdresseGyldigTil", adresserOgKontonummer.getGjeldendeAdresse().getGyldigTil());
-            utslagskriterierResultat.put("erBosattIEOSLand", String.valueOf(adresserOgKontonummer.isBosattIEOSLand()));
-            utslagskriterierResultat.put("statsborgerskap", person.getStatsborgerskap());
-
-        } catch (Exception e) {
-            logger.error("Kunne ikke hente personalia", e);
-            utslagskriterierResultat.put("error", e.getMessage());
-        }
-        return utslagskriterierResultat;
-    }
-
-    @GET
-    @Path("/utslagskriterier/alder")
-    public int hentAlder() {
-        String uid = OidcFeatureToggleUtils.getUserId();
-
-        return new PersonAlder(uid).getAlder();
-    }
-
-    @GET
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = OidcFeatureToggleUtils.getUserId();
@@ -194,24 +113,6 @@ public class InformasjonRessurs {
         resultat.put("sperrekode", sperrekode);
 
         return resultat;
-    }
-
-    @GET
-    @Path("/adressesok")
-    public List<AdresseForslag> adresseSok(@QueryParam("sokestreng") String sokestreng) {
-        return adresseSokService.sokEtterAdresser(sokestreng);
-    }
-
-    @GET
-    @Path("/enhet/geografisktilknytning")
-    public NavEnhet finnEnhet(@QueryParam("gt") String gt) {
-        return norgService.finnEnhetForGt(gt);
-    }
-
-    @GET
-    @Path("/enhet/kontaktinfo")
-    public Kontaktinformasjon kontaktInfo(@QueryParam("enhetId") String enhetId) {
-        return norgService.hentKontaktInformasjon(enhetId);
     }
 
     @POST
@@ -237,7 +138,7 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/tilgjengelige_kommuner")
-    public List<String> hentAktiviteter() {
+    public List<String> hentTilgjengeligeKommuner() {
         return KommuneTilNavEnhetMapper.getDigisoskommuner();
     }
 

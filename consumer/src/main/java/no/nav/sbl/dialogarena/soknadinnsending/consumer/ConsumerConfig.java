@@ -1,13 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
 import org.springframework.cache.annotation.EnableCaching;
@@ -21,10 +19,8 @@ import static java.lang.System.setProperty;
 @EnableCaching
 @Import({
         PersonService.class,
-        PersonInfoService.class,
         EpostService.class,
         BrukerprofilService.class,
-        ArbeidssokerInfoService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         AdresseSokService.class,
@@ -42,7 +38,6 @@ public class ConsumerConfig {
     @Configuration
     @Profile("!integration")
     @Import({
-            PersonInfoWSConfig.class,
             ArbeidWSConfig.class,
             OrganisasjonWSConfig.class,
             BrukerProfilWSConfig.class,
