@@ -87,8 +87,10 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/fornavn")
-    public String hentFornavn() {
-        return innloggetBruker.hentFornavn();
+    public Map<String, String> hentFornavn() {
+        Map<String, String> fornavn = new HashMap<>();
+        fornavn.put("fornavn", innloggetBruker.hentFornavn());
+        return fornavn;
     }
 
     @GET
