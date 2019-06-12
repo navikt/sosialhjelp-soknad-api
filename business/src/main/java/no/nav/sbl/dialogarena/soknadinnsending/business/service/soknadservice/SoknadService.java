@@ -28,6 +28,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
@@ -194,7 +195,7 @@ public class SoknadService {
                 )
                 .withDriftsinformasjon("")
                 .withKompatibilitet(new ArrayList<>())
-        );
+        ).withVedlegg(new JsonVedleggSpesifikasjon());
     }
 
     private Timer createDebugTimer(String name, String id) {
