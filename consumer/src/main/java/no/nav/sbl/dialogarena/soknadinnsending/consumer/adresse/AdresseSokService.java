@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
@@ -29,8 +30,19 @@ public class AdresseSokService {
     private AdresseSokConsumer adresseSokConsumer;
 
     @Inject
+    private Kodeverk kodeverk;
+
+    @Inject
     private NorgService norgService;
-   
+
+    public List<AdresseForslag> sokEtterAdresser(String sok) {
+        if (sok == null || sok.trim().length() <= 2) {
+            return Collections.emptyList();
+        }
+        final Sokedata sokedata = AdresseStringSplitter.toSokedata(kodeverk, sok);
+        return sokEtterAdresser(sokedata);
+    }
+
     public List<AdresseForslag> sokEtterAdresser(Sokedata sokedata) {
         if (sokedata.adresse != null && sokedata.adresse.trim().length() <= 2) {
             return Collections.emptyList();

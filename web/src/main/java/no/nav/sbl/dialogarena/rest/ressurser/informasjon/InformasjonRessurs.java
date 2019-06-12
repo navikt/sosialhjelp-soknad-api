@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
@@ -113,6 +114,12 @@ public class InformasjonRessurs {
         resultat.put("sperrekode", sperrekode);
 
         return resultat;
+    }
+
+    @GET
+    @Path("/adressesok")
+    public List<AdresseForslag> adresseSok(@QueryParam("sokestreng") String sokestreng) {
+        return adresseSokService.sokEtterAdresser(sokestreng);
     }
 
     @POST
