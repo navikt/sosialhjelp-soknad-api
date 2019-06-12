@@ -26,6 +26,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -130,6 +131,11 @@ public class StandardKodeverk implements Kodeverk {
     @Override
     @Scheduled(cron = "0 0 0 * * *")
     public void lastInnNyeKodeverk() {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
         for (String kodeverksnavn : ALLE_KODEVERK) {

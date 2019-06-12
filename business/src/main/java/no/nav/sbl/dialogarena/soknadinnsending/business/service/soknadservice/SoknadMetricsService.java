@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,11 @@ public class SoknadMetricsService {
 
     @Scheduled(fixedRate = RAPPORTERINGS_RATE)
     public void rapporterSoknadDatabaseStatus() {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         logger.info("Henter databasestatus for å rapportere metrics");
         Map<String, Integer> statuser = lokalDb.hentDatabaseStatus();
 

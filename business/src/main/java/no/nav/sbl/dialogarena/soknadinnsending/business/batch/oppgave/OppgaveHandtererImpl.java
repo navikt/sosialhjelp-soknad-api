@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
@@ -44,6 +45,11 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
 
     @Scheduled(fixedDelay = PROSESS_RATE)
     public void prosesserOppgaver() {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         while (true) {
             Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentNeste();
 
@@ -76,6 +82,11 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     
     @Scheduled(fixedDelay = RETRY_STUCK_RATE)
     public void retryStuckUnderArbeid() {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         try {
             final int antall = oppgaveRepository.retryOppgaveStuckUnderArbeid();
             if (antall > 0) {
@@ -89,6 +100,11 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
 
     @Scheduled(fixedRate = RAPPORTER_RATE)
     public void rapporterFeilede() {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         Map<String, Integer> statuser = oppgaveRepository.hentStatus();
 
         for (Map.Entry<String, Integer> entry : statuser.entrySet()) {
