@@ -87,11 +87,11 @@ public class SoknadServiceTest {
                 new JsonVedlegg()
                         .withType(testType)
                         .withTilleggsinfo(testTilleggsinfo)
-                        .withStatus(Vedleggstatus.Status.LastetOpp.toString()),
+                        .withStatus(Vedleggstatus.LastetOpp.toString()),
                 new JsonVedlegg()
                         .withType(testType2)
                         .withTilleggsinfo(testTilleggsinfo2)
-                        .withStatus(Vedleggstatus.Status.LastetOpp.toString()));
+                        .withStatus(Vedleggstatus.LastetOpp.toString()));
 
         String behandlingsId = "123";
         String aktorId = "123456";

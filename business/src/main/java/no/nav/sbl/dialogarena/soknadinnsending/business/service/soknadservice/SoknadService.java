@@ -219,7 +219,7 @@ public class SoknadService {
         m.skjema = jsonVedlegg.getType();
         m.tillegg = jsonVedlegg.getTilleggsinfo();
         m.filnavn = jsonVedlegg.getType();
-        m.status = Vedleggstatus.Status.valueOf(jsonVedlegg.getStatus());
+        m.status = Vedleggstatus.valueOf(jsonVedlegg.getStatus());
         return m;
     }
 

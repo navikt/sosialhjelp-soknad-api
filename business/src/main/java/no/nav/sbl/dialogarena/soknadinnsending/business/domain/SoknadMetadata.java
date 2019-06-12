@@ -35,7 +35,7 @@ public class SoknadMetadata {
 
     @XmlRootElement
     public static class VedleggMetadata extends FilData {
-        public Vedleggstatus.Status status;
+        public Vedleggstatus status;
         public String skjema;
         public String tillegg;
     }
