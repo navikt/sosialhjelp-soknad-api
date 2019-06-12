@@ -105,7 +105,7 @@ public class EttersendingService {
 
     protected List<VedleggMetadata> lagListeOverVedlegg(SoknadMetadata nyesteSoknad) {
         List<VedleggMetadata> manglendeVedlegg = nyesteSoknad.vedlegg.vedleggListe.stream()
-                .filter(v -> v.status == Vedleggstatus.Status.VedleggKreves)
+                .filter(v -> v.status == Vedleggstatus.VedleggKreves)
                 .collect(toList());
 
         if (manglendeVedlegg.stream()

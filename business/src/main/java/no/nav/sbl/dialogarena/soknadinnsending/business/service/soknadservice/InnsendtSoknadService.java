@@ -26,7 +26,7 @@ public class InnsendtSoknadService {
     private HenvendelseService henvendelseService;
 
     private Predicate<VedleggMetadata> ikkeKvittering = v -> !SKJEMANUMMER_KVITTERING.equals(v.skjema);
-    private Predicate<VedleggMetadata> lastetOpp = v -> v.status.er(Vedleggstatus.Status.LastetOpp);
+    private Predicate<VedleggMetadata> lastetOpp = v -> v.status.er(Vedleggstatus.LastetOpp);
     private Predicate<VedleggMetadata> ikkeLastetOpp = lastetOpp.negate();
 
     private DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");

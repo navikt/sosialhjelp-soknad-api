@@ -229,16 +229,16 @@ public class FiksDokumentHelperTest {
     private JsonInternalSoknad lagInternalSoknadForVedlegg() {
         List<JsonVedlegg> jsonVedlegg = new ArrayList<>();
         jsonVedlegg.add(new JsonVedlegg()
-                .withStatus(Vedleggstatus.Status.VedleggKreves.name())
+                .withStatus(Vedleggstatus.VedleggKreves.name())
                 .withType(TYPE)
                 .withTilleggsinfo(TILLEGGSINFO2));
         jsonVedlegg.add(new JsonVedlegg()
-                .withStatus(Vedleggstatus.Status.LastetOpp.name())
+                .withStatus(Vedleggstatus.LastetOpp.name())
                 .withType(TYPE)
                 .withTilleggsinfo(TILLEGGSINFO)
                 .withFiler(lagJsonFiler(FILNAVN, SHA512)));
         jsonVedlegg.add(new JsonVedlegg()
-                .withStatus(Vedleggstatus.Status.LastetOpp.name())
+                .withStatus(Vedleggstatus.LastetOpp.name())
                 .withType(TYPE2)
                 .withTilleggsinfo(TILLEGGSINFO2)
                 .withFiler(lagJsonFilerMedToFiler(ANNET_FILNAVN, ANNEN_SHA512, TREDJE_FILNAVN, TREDJE_SHA512)));

@@ -1,14 +1,11 @@
 package no.nav.sbl.sosialhjelp.domain;
 
-public class Vedleggstatus {
+public enum Vedleggstatus {
+    VedleggKreves,
+    LastetOpp,
+    VedleggAlleredeSendt;
 
-    public enum Status {
-        VedleggKreves,
-        LastetOpp,
-        VedleggAlleredeSendt;
-
-        public boolean er(Vedleggstatus.Status status) {
-            return this.equals(status);
-        }
+    public boolean er(Vedleggstatus status) {
+        return this.equals(status);
     }
 }

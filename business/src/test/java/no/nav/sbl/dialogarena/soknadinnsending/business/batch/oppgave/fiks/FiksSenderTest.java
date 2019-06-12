@@ -203,7 +203,7 @@ public class FiksSenderTest {
         jsonFiler.add(new JsonFiler().withFilnavn(FILNAVN).withSha512("sha512"));
         List<JsonVedlegg> jsonVedlegg = new ArrayList<>();
         jsonVedlegg.add(new JsonVedlegg()
-                .withStatus(Vedleggstatus.Status.LastetOpp.name())
+                .withStatus(Vedleggstatus.LastetOpp.name())
                 .withType("type")
                 .withTilleggsinfo("tilleggsinfo")
                 .withFiler(jsonFiler));

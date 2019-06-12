@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,12 +69,12 @@ public class BehandlingsKjede {
         public static class Vedlegg {
             public String skjemaNummer;
             public String skjemanummerTillegg;
-            public Status innsendingsvalg;
+            public Vedleggstatus innsendingsvalg;
 
             public Vedlegg() {
             }
 
-            public Vedlegg(String skjemaNummer, String skjemanummerTillegg, Status innsendingsvalg) {
+            public Vedlegg(String skjemaNummer, String skjemanummerTillegg, Vedleggstatus innsendingsvalg) {
                 this.skjemaNummer = skjemaNummer;
                 this.skjemanummerTillegg = skjemanummerTillegg;
                 this.innsendingsvalg = innsendingsvalg;
