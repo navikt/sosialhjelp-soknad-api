@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -53,11 +54,15 @@ public class SoknadRessurs {
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
+    @Inject
+    private HenvendelseService henvendelseService;
+
     @GET
     @Path("/{behandlingsId}/xsrfCookie")
     public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         response.addCookie(xsrfCookie(behandlingsId));
+        henvendelseService.oppdaterSistEndretDatoPaaMetadata(behandlingsId);
         return true;
     }
 
