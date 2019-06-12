@@ -63,7 +63,7 @@ public class OkonomiskeOpplysningerRessurs {
         List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
 
-        soknad.getJsonInternalSoknad().setVedlegg(jsonVedleggs.isEmpty() ? null : new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
+        soknad.getJsonInternalSoknad().setVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
 
         return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()

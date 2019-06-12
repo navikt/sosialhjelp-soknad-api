@@ -55,7 +55,7 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
         }
 
         if (tekst == null) {
-            LOG.debug(String.format("Fant ikke tekst til oppsummering for nokkel %s i bundelen %s", key, BUNDLE_NAME));
+            LOG.debug("Fant ikke tekst til oppsummering for nokkel {} i bundelen {}", key, BUNDLE_NAME);
             return tekst;
         } else {
 
