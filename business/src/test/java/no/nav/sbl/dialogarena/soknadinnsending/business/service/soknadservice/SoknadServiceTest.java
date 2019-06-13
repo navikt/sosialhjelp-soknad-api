@@ -1,0 +1,135 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
+
+import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.joda.time.DateTimeUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.lang.System.setProperty;
+import static java.util.Arrays.asList;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
+public class SoknadServiceTest {
+
+    private static final String EIER = "Hans og Grete";
+    private static final String BEHANDLINGSID = "123";
+
+    @Mock
+    private HenvendelseService henvendelsesConnector;
+    @Mock
+    private OppgaveHandterer oppgaveHandterer;
+    @Mock
+    private SystemdataUpdater systemdataUpdater;
+    @Mock
+    SoknadMetricsService soknadMetricsService;
+    @Mock
+    InnsendingService innsendingService;
+    @Mock
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @InjectMocks
+    private SoknadService soknadService;
+
+
+    @SuppressWarnings("unchecked")
+    @Before
+    public void before() {
+        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
+    }
+
+    @Test
+    public void skalStarteSoknad() {
+        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
+        when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
+        soknadService.startSoknad();
+
+        String bruker = OidcFeatureToggleUtils.getUserId();
+        verify(henvendelsesConnector).startSoknad(eq(bruker));
+        verify(soknadUnderArbeidRepository).opprettSoknad(any(SoknadUnderArbeid.class), eq(bruker));
+        DateTimeUtils.setCurrentMillisSystem();
+    }
+
+    @Test
+    public void skalSendeSoknad() {
+        String testType = "testType";
+        String testTilleggsinfo = "testTilleggsinfo";
+        String testType2 = "testType2";
+        String testTilleggsinfo2 = "testTilleggsinfo2";
+        List<JsonVedlegg> jsonVedlegg = asList(
+                new JsonVedlegg()
+                        .withType(testType)
+                        .withTilleggsinfo(testTilleggsinfo)
+                        .withStatus(Vedleggstatus.LastetOpp.toString()),
+                new JsonVedlegg()
+                        .withType(testType2)
+                        .withTilleggsinfo(testTilleggsinfo2)
+                        .withStatus(Vedleggstatus.LastetOpp.toString()));
+
+        String behandlingsId = "123";
+        String aktorId = "123456";
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId));
+        soknadUnderArbeid.getJsonInternalSoknad().setVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg));
+        when(soknadUnderArbeidRepository.hentSoknad(eq(behandlingsId), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
+
+        soknadService.sendSoknad(behandlingsId);
+
+        ArgumentCaptor<SoknadUnderArbeid> soknadUnderArbeidCaptor = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
+        verify(henvendelsesConnector, atLeastOnce()).oppdaterMetadataVedAvslutningAvSoknad(eq(behandlingsId), vedleggCaptor.capture(), soknadUnderArbeidCaptor.capture());
+        verify(oppgaveHandterer).leggTilOppgave(eq(behandlingsId), anyString());
+
+        SoknadUnderArbeid capturedSoknadUnderArbeid = soknadUnderArbeidCaptor.getValue();
+        assertThat(capturedSoknadUnderArbeid).isEqualTo(soknadUnderArbeid);
+
+        VedleggMetadataListe capturedVedlegg = vedleggCaptor.getValue();
+        assertThat(capturedVedlegg.vedleggListe).hasSize(2);
+        assertThat(capturedVedlegg.vedleggListe.get(0).filnavn).isEqualTo(testType);
+        assertThat(capturedVedlegg.vedleggListe.get(0).skjema).isEqualTo(testType);
+        assertThat(capturedVedlegg.vedleggListe.get(0).tillegg).isEqualTo(testTilleggsinfo);
+        assertThat(capturedVedlegg.vedleggListe.get(1).filnavn).isEqualTo(testType2);
+        assertThat(capturedVedlegg.vedleggListe.get(1).skjema).isEqualTo(testType2);
+        assertThat(capturedVedlegg.vedleggListe.get(1).tillegg).isEqualTo(testTilleggsinfo2);
+    }
+
+    @Test
+    public void skalAvbryteSoknad() {
+        when(soknadUnderArbeidRepository.hentSoknad(eq(BEHANDLINGSID), anyString())).thenReturn(
+                Optional.of(new SoknadUnderArbeid()
+                        .withBehandlingsId(BEHANDLINGSID)
+                        .withVersjon(1L)
+                        .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
+
+        soknadService.avbrytSoknad(BEHANDLINGSID);
+
+        verify(henvendelsesConnector).avbrytSoknad(BEHANDLINGSID, false);
+        verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
+    }
+}

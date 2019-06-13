@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import org.junit.Test;
@@ -29,9 +28,6 @@ public class FiksHandtererTest {
     FiksSender fiksSender;
 
     @Mock
-    FillagerService fillagerService;
-
-    @Mock
     InnsendingService innsendingService;
 
     @InjectMocks
@@ -45,14 +41,12 @@ public class FiksHandtererTest {
 
         fiksHandterer.eksekver(oppgave);
 
-        verify(fillagerService, never()).slettAlle(any());
         verify(fiksSender, times(1)).sendTilFiks(any(SendtSoknad.class));
         verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
         assertThat(oppgave.steg, is(22));
 
         fiksHandterer.eksekver(oppgave);
-        verify(fillagerService, times(1)).slettAlle(eq(BEHANDLINGSID));
         verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(eq(BEHANDLINGSID),
                 eq(AVSENDER));
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());

@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
@@ -37,7 +36,6 @@ public class FullOppsummeringRessurs {
     @GET
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
-    @SjekkTilgangTilSoknad
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         sjekkOmFullOppsummeringErAktivert("hentOppsummeringNew");
 
@@ -49,8 +47,7 @@ public class FullOppsummeringRessurs {
     @GET
     @Path("/{behandlingsId}/fullsoknadpdf")
     @Produces("application/pdf")
-    @SjekkTilgangTilSoknad
-    public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
+    public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
         sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
 
         String eier = OidcFeatureToggleUtils.getUserId();

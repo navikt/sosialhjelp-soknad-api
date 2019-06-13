@@ -7,7 +7,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
@@ -26,7 +25,7 @@ public class HentTidspunktNaaHelper extends RegistryAwareHelper<Object> {
     }
 
     @Override
-    public CharSequence apply(Object o, Options options) throws IOException {
+    public CharSequence apply(Object o, Options options) {
         
         DateTime now = DateTime.now();
 

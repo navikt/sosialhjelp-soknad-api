@@ -3,16 +3,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.digipost.time.ControllableClock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepositoryJdbc;
-import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepository;
-import no.nav.sbl.sosialhjelp.sendtsoknad.VedleggstatusRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepositoryJdbc;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -35,16 +29,6 @@ public class DbTestConfig {
 
     @Inject
     private DataSource dataSource;
-
-    @Bean
-    public SoknadRepository soknadInnsendingRepository() {
-        return new SoknadRepositoryJdbc();
-    }
-
-    @Bean
-    public HendelseRepository hendelseRepository() {
-        return new HendelseRepositoryJdbc();
-    }
     
     @Bean SoknadMetadataRepository soknadMetadataRepository() {
         return new SoknadMetadataRepositoryJdbc();
@@ -53,11 +37,6 @@ public class DbTestConfig {
     @Bean
     public SendtSoknadRepository sendtSoknadRepository() {
         return new SendtSoknadRepositoryJdbc();
-    }
-
-    @Bean
-    public VedleggstatusRepository vedleggstatusRepository() {
-        return new VedleggstatusRepositoryJdbc();
     }
 
     @Bean

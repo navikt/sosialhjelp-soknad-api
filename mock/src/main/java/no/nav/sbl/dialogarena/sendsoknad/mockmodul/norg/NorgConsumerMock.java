@@ -38,18 +38,16 @@ public class NorgConsumerMock {
         }
         
         String argumentAt = invocationOnMock.getArgumentAt(0, String.class);
-        RsNorgEnhet rsNorgEnhet = rsNorgEnhetMap.get(argumentAt);
-        return rsNorgEnhet;
+        return rsNorgEnhetMap.get(argumentAt);
     }
 
     private static Map<String, RsNorgEnhet> getDefaultMap(){
-        ImmutableMap<String, RsNorgEnhet> defaultMap = new ImmutableMap.Builder<String, RsNorgEnhet>()
+        return new ImmutableMap.Builder<String, RsNorgEnhet>()
                 .put("120102", new RsNorgEnhet().withEnhetId(100000250)
                         .withEnhetNr("1209")
                         .withNavn("NAV Bergenhus")
                         .withOrgNrTilKommunaltNavKontor("976830563"))
                 .build();
-        return defaultMap;
     }
 
     public static void setNorgMap(String rsNorgEnhetMap){

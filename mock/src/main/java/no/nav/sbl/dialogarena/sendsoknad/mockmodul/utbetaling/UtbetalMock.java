@@ -99,7 +99,7 @@ public class UtbetalMock {
                 .withKontotype("Norsk bankkonto")
                 .withKontonummer("32902095534");
 
-        WSHentUtbetalingsinformasjonResponse response = new WSHentUtbetalingsinformasjonResponse()
+        return new WSHentUtbetalingsinformasjonResponse()
                 .withUtbetalingListe(
                         new WSUtbetaling()
                                 .withPosteringsdato(dato(POSTERINGSDATO))
@@ -208,8 +208,6 @@ public class UtbetalMock {
                                 .withUtbetalingsmetode("Norsk bankkonto")
                                 .withUtbetalingsstatus("Utbetalt")
                 );
-
-        return response;
     }
 
     public static DateTime dato(LocalDateTime localDateTime) {

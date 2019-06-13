@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.JAXBHelper;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
@@ -35,7 +35,7 @@ public class SoknadMetadata {
 
     @XmlRootElement
     public static class VedleggMetadata extends FilData {
-        public Vedlegg.Status status;
+        public Vedleggstatus status;
         public String skjema;
         public String tillegg;
     }

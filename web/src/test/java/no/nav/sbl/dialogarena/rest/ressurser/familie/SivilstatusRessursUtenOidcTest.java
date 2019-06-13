@@ -11,8 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.text.ParseException;
-
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.mockito.Mockito.spy;
@@ -69,12 +67,12 @@ public class SivilstatusRessursUtenOidcTest {
     }
 
     @Test
-    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() throws ParseException {
+    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() {
         sivilstatusRessursTest.getSivilstatusSkalReturnereNull();
     }
 
     @Test
-    public void putSivilstatusSkalSetteStatusGiftOgEktefelle() throws ParseException {
+    public void putSivilstatusSkalSetteStatusGiftOgEktefelle() {
         sivilstatusRessursTest.getSivilstatusSkalReturnereNull();
     }
 }

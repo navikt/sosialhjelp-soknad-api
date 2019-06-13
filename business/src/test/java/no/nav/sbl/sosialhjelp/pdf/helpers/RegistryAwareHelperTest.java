@@ -1,37 +1,26 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.time.Clock;
-import java.util.List;
-
-import javax.inject.Inject;
-
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
+import no.nav.sbl.sosialhjelp.pdf.HandlebarRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.sosialhjelp.pdf.HandlebarRegistry;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import javax.inject.Inject;
+import java.time.Clock;
+import java.util.List;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class})
@@ -50,7 +39,7 @@ public class RegistryAwareHelperTest {
     HandlebarRegistry registry;
 
     @Test
-    public void listUtRegistrerteHelpers() throws Exception {
+    public void listUtRegistrerteHelpers() {
         for (RegistryAwareHelper helper : helpers) {
             LOG.info("Helper: " + helper.getNavn());
         }
@@ -79,11 +68,6 @@ public class RegistryAwareHelperTest {
         @Bean
         public NavMessageSource navMessageSource() {
             return mock(NavMessageSource.class);
-        }
-
-        @Bean()
-        public KravdialogInformasjonHolder kravdialogInformasjonHolder() {
-            return mock(KravdialogInformasjonHolder.class);
         }
 
         @Bean()

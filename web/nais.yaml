@@ -44,10 +44,6 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: virksomhet:Organisasjon_v4
     resourceType: webserviceendpoint
-  - alias: virksomhet:SakOgAktivitet_v1
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Maalgruppe_v1
-    resourceType: webserviceendpoint
   - alias: virksomhet:Kodeverk_v2
     resourceType: webserviceendpoint
   - alias: saksoversikt.link
@@ -66,8 +62,6 @@ fasitResources:
     resourceType: baseurl
   - alias: ekstern:ks_svarut_v1
     resourceType: webserviceendpoint
-  - alias: arena.personinfoservice
-    resourceType: baseurl
   - alias: dineutbetalinger.link
     resourceType: baseurl
   - alias: securityTokenService
@@ -76,8 +70,6 @@ fasitResources:
     resourceType: webserviceendpoint
   - alias: dokumentinnsending.smtpServer
     resourceType: smtpserver
-  - alias: arena.personInfoService
-    resourceType: credential
   - alias: arbeidservice
     resourceType: credential
   - alias: servicegateway

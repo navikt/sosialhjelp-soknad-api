@@ -1,13 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
 
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AdresseTransform;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkonto;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoNorge;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoUtland;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.slf4j.Logger;
@@ -18,6 +25,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.LandListe.EOS;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -50,16 +59,30 @@ public class BrukerprofilService {
         }
     }
 
+    public AdresserOgKontonummer hentAddresserOgKontonummer(String fodselsnummer) {
+        AdresserOgKontonummer adresserOgKontonummer;
+        try {
+            adresserOgKontonummer = hentKontaktinformasjonOgPreferanser(fodselsnummer);
+        } catch (IkkeFunnetException e) {
+            logger.error("Ikke funnet person i TPS", e);
+            throw new ApplicationException("TPS:PersonIkkefunnet", e);
+        }
+        return adresserOgKontonummer;
+    }
+
     AdresserOgKontonummer mapResponsTilAdresserOgKontonummer(XMLHentKontaktinformasjonOgPreferanserResponse response) {
         if (response == null || response.getPerson() == null) {
             return null;
         }
         XMLBruker xmlBruker = (XMLBruker) response.getPerson();
+        Adresse gjeldendeAdresse = finnGjeldendeAdresse(xmlBruker);
         return new AdresserOgKontonummer()
-                .withGjeldendeAdresse(finnGjeldendeAdresse(xmlBruker))
+                .withGjeldendeAdresse(gjeldendeAdresse)
                 .withMidlertidigAdresse(finnMidlertidigAdresse(xmlBruker))
                 .withFolkeregistrertAdresse(finnFolkeregistrertAdresse(xmlBruker))
                 .withSekundarAdresse(finnSekundarAdresse(xmlBruker))
+                .withUtenlandskAdresse(harUtenlandskAdresse(gjeldendeAdresse))
+                .withBosattIEOSLand(erBosattIEOSLand(gjeldendeAdresse))
                 .withKontonummer(finnKontonummer(xmlBruker))
                 .withUtenlandskBankkonto(erUtenlandskKonto(xmlBruker))
                 .withUtenlandskKontoBanknavn(finnUtenlandsKontoNavn(xmlBruker))
@@ -117,5 +140,44 @@ public class BrukerprofilService {
 
     private XMLHentKontaktinformasjonOgPreferanserRequest lagXMLRequestPreferanser(String ident) {
         return new XMLHentKontaktinformasjonOgPreferanserRequest().withIdent(ident);
+    }
+
+    private boolean erBosattIEOSLand(Adresse gjeldendeAdresse) {
+        return !harUtenlandskAdresse(gjeldendeAdresse) || harUtenlandskAdresseIEOS(gjeldendeAdresse);
+    }
+
+    private boolean harUtenlandskAdresseIEOS(Adresse gjeldendeAdresse) {
+        String adressetype = null;
+        String landkode = null;
+        if (gjeldendeAdresse != null) {
+            adressetype = gjeldendeAdresse.getAdressetype();
+            landkode = gjeldendeAdresse.getLandkode();
+        }
+
+        if (adressetype == null) {
+            return false;
+        }
+
+        return (harUtenlandsAdressekode(adressetype)) && (StatsborgerskapType.get(landkode).equals(EOS));
+    }
+
+    private boolean harUtenlandsAdressekode(String adressetype) {
+        return adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_UTLAND.name()) ||
+                adressetype.equalsIgnoreCase(POSTADRESSE_UTLAND.name()) ||
+                adressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name());
+    }
+
+    private boolean harUtenlandskAdresse(Adresse gjeldendeAdresse) {
+        String adressetype = null;
+
+        if (gjeldendeAdresse != null) {
+            adressetype = gjeldendeAdresse.getAdressetype();
+        }
+
+        if (adressetype == null) {
+            return false;
+        }
+
+        return harUtenlandsAdressekode(adressetype);
     }
 }

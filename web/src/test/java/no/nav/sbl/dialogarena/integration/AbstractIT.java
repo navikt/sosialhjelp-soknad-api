@@ -1,18 +1,17 @@
 package no.nav.sbl.dialogarena.integration;
 
-import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
-import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
-
-import java.io.File;
-
+import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
+import java.io.File;
+
+import static java.lang.System.setProperty;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
+import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 
 public abstract class AbstractIT {
     private static final int PORT = 10001;
@@ -42,12 +41,9 @@ public abstract class AbstractIT {
         jetty.jetty.stop.run();
     }
 
-    protected SoknadTester soknadMedDelstegstatusOpprettet(String skjemaNummer) {
+    protected SoknadTester soknadOpprettet() {
         try {
-            return SoknadTester.startSoknad(skjemaNummer)
-                    .settDelstegstatus("opprettet")
-                    .hentSoknad()
-                    .hentFakta();
+            return SoknadTester.startSoknad();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Kunne ikke opprette søknad");
