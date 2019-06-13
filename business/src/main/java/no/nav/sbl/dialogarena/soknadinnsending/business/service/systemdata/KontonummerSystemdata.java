@@ -7,18 +7,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 @Component
 public class KontonummerSystemdata implements Systemdata {
 
-    private static final Logger logger = getLogger(KontonummerSystemdata.class);
-        
     @Inject
     private BrukerprofilService brukerprofilService;
     
