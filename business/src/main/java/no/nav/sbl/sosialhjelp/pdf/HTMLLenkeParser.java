@@ -1,10 +1,8 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class HTMLLenkeParser {
 
@@ -71,7 +69,7 @@ public class HTMLLenkeParser {
             int length = 80;
             if (this.getLenke().length() > length) {
                 String[] tekststrenger = splittLinjeEtterAntallTegn(this.getLenke(), length);
-                this.setLenke((Arrays.stream(tekststrenger).collect(Collectors.joining("<br />"))));
+                this.setLenke((String.join("<br />", tekststrenger)));
 
             }
             return new StringBuffer().append(this.lenkeTekst)

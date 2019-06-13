@@ -1,17 +1,12 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.inject.Named;
 
@@ -19,28 +14,12 @@ import javax.inject.Named;
 public class DummyHolderConfig {
 
     @Bean
-    @Named("soknadInnsendingRepository")
-    public SoknadRepository soknadInnsendingRepository() {
-        return null;
-    }
-
-    @Bean
     public Kodeverk kodeverk() {
         return null;
     }
 
     @Bean
-    public SoknadDataFletter soknadDataFletter() {
-        return null;
-    }
-
-    @Bean
-    public FillagerService fillagerService() {
-        return null;
-    }
-
-    @Bean
-    public FaktaService faktaService() {
+    public SoknadService soknadService() {
         return null;
     }
 
@@ -51,16 +30,6 @@ public class DummyHolderConfig {
 
     @Bean
     public EttersendingService ettersendingService() {
-        return null;
-    }
-
-    @Bean
-    public KravdialogInformasjonHolder kravdialogInformasjonHolder() {
-        return null;
-    }
-
-    @Bean
-    public JavaMailSender mailSender() {
         return null;
     }
 

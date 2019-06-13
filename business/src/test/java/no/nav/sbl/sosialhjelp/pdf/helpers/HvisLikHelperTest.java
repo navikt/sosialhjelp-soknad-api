@@ -17,7 +17,7 @@ public class HvisLikHelperTest {
     private Handlebars handlebars;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         handlebars = new Handlebars();
         HvisLikHelper helper = new HvisLikHelper();
         handlebars.registerHelper(helper.getNavn(), helper);

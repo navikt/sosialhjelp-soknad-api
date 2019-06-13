@@ -25,7 +25,7 @@ public class LandServiceTest {
     LandService service = new LandService();
     
     @Test
-    public void resultatetSkalInneholdeNorgeSelvOmNorgeIkkeKomFraKodeverk() throws Exception {
+    public void resultatetSkalInneholdeNorgeSelvOmNorgeIkkeKomFraKodeverk() {
         when(kodeverk.getLand("SE")).thenReturn("Sverige");
         when(kodeverk.getLand("IS")).thenReturn("Island");
         when(kodeverk.getLand("PL")).thenReturn("Polen");

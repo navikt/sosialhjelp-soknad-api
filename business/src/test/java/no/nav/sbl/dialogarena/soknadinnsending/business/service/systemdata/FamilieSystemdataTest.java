@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnSivilstatus;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.*;

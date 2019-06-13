@@ -9,8 +9,6 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLPeriode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
-import org.assertj.core.api.Assertions;
-import org.hamcrest.Matchers;
 import org.joda.time.DateMidnight;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,13 +19,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import static no.nav.modig.core.test.FilesAndDirs.BUILD_OUTPUT;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;

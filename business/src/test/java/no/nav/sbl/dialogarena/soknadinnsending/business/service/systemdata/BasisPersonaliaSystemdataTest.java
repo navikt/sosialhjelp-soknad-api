@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -38,9 +38,8 @@ public class BasisPersonaliaSystemdataTest {
 
     @Test
     public void skalIkkeOppdatereDersomPersonaliaErNull() {
-        Personalia personalia = null;
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(null);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 

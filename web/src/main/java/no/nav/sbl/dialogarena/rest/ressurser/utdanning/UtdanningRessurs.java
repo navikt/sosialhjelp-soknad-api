@@ -54,10 +54,6 @@ public class UtdanningRessurs {
     @PUT
     public void updateUtdanning(@PathParam("behandlingsId") String behandlingsId, UtdanningFrontend utdanningFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, utdanningFrontend);
-    }
-
-    private void update(String behandlingsId, UtdanningFrontend utdanningFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonUtdanning utdanning = soknad.getJsonInternalSoknad().getSoknad().getData().getUtdanning();

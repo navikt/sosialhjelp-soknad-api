@@ -60,10 +60,6 @@ public class TelefonnummerRessurs {
         if ("".equals(telefonnummerFrontend.brukerutfyltVerdi)) {
             telefonnummerFrontend.brukerutfyltVerdi = null;
         }
-        update(behandlingsId, telefonnummerFrontend);
-    }
-
-    private void update(String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();

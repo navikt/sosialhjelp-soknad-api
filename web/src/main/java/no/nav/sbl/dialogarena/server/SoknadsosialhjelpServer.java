@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import no.nav.sbl.dialogarena.mock.MockSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
@@ -207,7 +206,7 @@ public class SoknadsosialhjelpServer {
         updateJavaProperties(readProperties("oracledb.properties", false));
     }
 
-    private static DataSource buildDataSource() throws IOException {
+    private static DataSource buildDataSource() {
 
         final HikariConfig config = new HikariConfig();
 

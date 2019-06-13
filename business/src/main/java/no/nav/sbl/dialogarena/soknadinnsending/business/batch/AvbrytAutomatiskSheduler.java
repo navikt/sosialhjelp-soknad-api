@@ -5,7 +5,6 @@ import no.nav.metrics.Timer;
 import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
@@ -31,8 +30,6 @@ public class AvbrytAutomatiskSheduler {
     private LocalDateTime batchStartTime;
     private int vellykket;
 
-    @Inject
-    private FillagerService fillagerService;
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
     @Inject
@@ -64,7 +61,7 @@ public class AvbrytAutomatiskSheduler {
         }
     }
 
-    private void avbryt() throws InterruptedException {
+    private void avbryt() {
         Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
 
         while (soknad.isPresent()) {
@@ -75,8 +72,6 @@ public class AvbrytAutomatiskSheduler {
 
             final String behandlingsId = soknadMetadata.behandlingsId;
             final String eier = soknadMetadata.fnr;
-
-            fillagerService.slettAlle(behandlingsId);
 
             Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
             soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));

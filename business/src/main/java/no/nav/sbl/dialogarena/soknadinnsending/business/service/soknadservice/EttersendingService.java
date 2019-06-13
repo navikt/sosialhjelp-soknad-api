@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
@@ -12,6 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,6 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -45,8 +44,7 @@ public class EttersendingService {
         SoknadMetadata originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa);
         SoknadMetadata nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad);
 
-        String uuid = UUID.randomUUID().toString();
-        String nyBehandlingsId = henvendelseService.startEttersending(originalSoknad, uuid);
+        String nyBehandlingsId = henvendelseService.startEttersending(originalSoknad);
 
         List<VedleggMetadata> manglendeVedlegg = lagListeOverVedlegg(nyesteSoknad);
         List<JsonVedlegg> manglendeJsonVedlegg = convertVedleggMetadataToJsonVedlegg(manglendeVedlegg);
@@ -107,7 +105,7 @@ public class EttersendingService {
 
     protected List<VedleggMetadata> lagListeOverVedlegg(SoknadMetadata nyesteSoknad) {
         List<VedleggMetadata> manglendeVedlegg = nyesteSoknad.vedlegg.vedleggListe.stream()
-                .filter(v -> v.status == Vedlegg.Status.VedleggKreves)
+                .filter(v -> v.status == Vedleggstatus.VedleggKreves)
                 .collect(toList());
 
         if (manglendeVedlegg.stream()

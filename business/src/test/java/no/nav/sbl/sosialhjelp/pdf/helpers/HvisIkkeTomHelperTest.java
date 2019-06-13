@@ -17,7 +17,7 @@ public class HvisIkkeTomHelperTest {
     private Handlebars handlebars;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         handlebars = new Handlebars();
         HvisIkkeTomHelper helper = new HvisIkkeTomHelper();
         handlebars.registerHelper(helper.getNavn(), helper);

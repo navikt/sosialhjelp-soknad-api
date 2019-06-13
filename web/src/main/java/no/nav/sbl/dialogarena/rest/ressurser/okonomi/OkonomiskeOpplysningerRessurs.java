@@ -31,7 +31,7 @@ import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggMapper.mapToVedleggFrontend;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.VedleggKreves;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -63,7 +63,7 @@ public class OkonomiskeOpplysningerRessurs {
         List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg);
 
-        soknad.getJsonInternalSoknad().setVedlegg(jsonVedleggs.isEmpty() ? null : new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
+        soknad.getJsonInternalSoknad().setVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
 
         return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
@@ -72,12 +72,8 @@ public class OkonomiskeOpplysningerRessurs {
     }
 
     @PUT
-    public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend) throws Exception {
+    public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, vedleggFrontend);
-    }
-
-    private void update(String behandlingsId, VedleggFrontend vedleggFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();

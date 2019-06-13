@@ -25,7 +25,7 @@ public class LandService {
 
     public Map<String, String> hentStatsborgerskapstype(String landkode) {
         Map<String, String> result = new HashMap<>();
-        result.put("result", String.valueOf(StatsborgerskapType.get(landkode)));
+        result.put("result", StatsborgerskapType.get(landkode));
         return result;
     }
 
@@ -52,10 +52,9 @@ public class LandService {
     }
 
     private List<Land> hentEosLand() {
-        List<String> eosLand = EOS_LAND;
         List<Land> landliste = new ArrayList<>();
 
-        for (String landkode : eosLand) {
+        for (String landkode : EOS_LAND) {
             Land land = new Land();
             String landnavn = kodeverk.getLand(landkode);
             landnavn = landnavn != null ? landnavn : landkode;

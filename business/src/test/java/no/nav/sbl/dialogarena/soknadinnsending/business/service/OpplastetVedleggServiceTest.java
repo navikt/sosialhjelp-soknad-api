@@ -58,7 +58,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void lagerFilnavn() throws IOException {
+    public void lagerFilnavn() {
         String filnavn = opplastetVedleggService.lagFilnavn("minfil.jpg", "image/jpeg", "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertEquals("minfil-5c2a1cea.jpg", filnavn);
 

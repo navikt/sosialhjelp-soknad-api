@@ -67,10 +67,6 @@ public class FormueRessurs {
     @PUT
     public void updateFormue(@PathParam("behandlingsId") String behandlingsId, FormueFrontend formueFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, formueFrontend);
-    }
-
-    private void update(String behandlingsId, FormueFrontend formueFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();

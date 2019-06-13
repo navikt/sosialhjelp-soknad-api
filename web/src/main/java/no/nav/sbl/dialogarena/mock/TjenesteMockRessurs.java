@@ -13,7 +13,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -58,7 +58,7 @@ public class TjenesteMockRessurs {
     @Inject
     private NavMessageSource messageSource;
     @Inject
-    private SoknadDataFletter soknadDataFletter;
+    private SoknadService soknadService;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {

@@ -11,7 +11,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +27,6 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
 
     @Inject
     private TransactionTemplate transactionTemplate;
-
-    @Inject
-    private VedleggstatusRepository vedleggstatusRepository;
 
     @Inject
     public void setDS(DataSource ds) {
@@ -87,7 +86,6 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                 if (sendtSoknadId == null) {
                     throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
                 }
-                vedleggstatusRepository.slettAlleVedleggForSendtSoknad(sendtSoknadId, eier);
                 getJdbcTemplate().update("delete from SENDT_SOKNAD where EIER = ? and SENDT_SOKNAD_ID = ?", eier, sendtSoknadId);
             }
         });

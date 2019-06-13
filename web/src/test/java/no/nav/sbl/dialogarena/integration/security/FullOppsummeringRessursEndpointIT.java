@@ -15,11 +15,9 @@ import org.junit.Test;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 
 public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
     public static final String ANNEN_BRUKER = "12345679811";
-    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -32,18 +30,18 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void hentOppsummeringNew_skalGiForbiddenMedAnnenBruker() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+    public void hentOppsummeringNew_skalGiServerErrorMedAnnenBruker() {
+        SoknadTester soknadTester = soknadOpprettet();
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/nyoppsummering";
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
         Response responseForAnnenBruker = sendGetRequest(soknadTester, suburl, signedJWTforAnnenBruker);
 
-        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
     @Test
     public void hentOppsummeringNew_skalIkkeGiForbiddenMedRettBruker() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/nyoppsummering";
         SignedJWT signedJWT = JwtTokenGenerator.createSignedJWT(soknadTester.getUser());
 
@@ -54,18 +52,18 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void fullSoknadPdf() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/fullsoknadpdf";
         SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
         Response responseForAnnenBruker = sendGetRequest(soknadTester, suburl, signedJWTforAnnenBruker);
 
-        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseForAnnenBruker.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
     @Test
     public void fullSoknadPdf_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/fullsoknadpdf";
 
         Response response = sendGetRequest(soknadTester, suburl, null);
@@ -75,7 +73,7 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
 
     @Test
     public void hentOppsummeringNew_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/nyoppsummering";
 
         Response response = sendGetRequest(soknadTester, suburl, null);

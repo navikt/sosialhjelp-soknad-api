@@ -54,12 +54,12 @@ public class MocksetupUtils {
 
     public static void settPostadressetype(String type){
         XMLBruker bruker = getBrukerFraBrukerprofil();
-        brukerprofilMock.settPostadresse(bruker, mapValueTilAdressetype(type));
+        BrukerprofilMock.settPostadresse(bruker, mapValueTilAdressetype(type));
     }
 
     public static void settSekundarAdressetype(String type) {
         XMLBruker bruker = getBrukerFraBrukerprofil();
-        brukerprofilMock.settSekundarAdresse(bruker, mapValueTilAdressetype(type));
+        BrukerprofilMock.settSekundarAdresse(bruker, mapValueTilAdressetype(type));
     }
 
     private static XMLBruker getBrukerFraBrukerprofil(){

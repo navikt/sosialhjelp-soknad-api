@@ -51,7 +51,6 @@ public class ConsumerConfig {
             DkifWSConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class,
-            MaalgruppeWSConfig.class,
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
             NorgRestConfig.class,

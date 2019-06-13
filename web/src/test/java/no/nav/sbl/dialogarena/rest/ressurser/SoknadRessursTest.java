@@ -1,13 +1,11 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -20,12 +18,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.BadRequestException;
-
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs.XSRF_TOKEN;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -34,8 +31,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadRessursTest {
 
-    public static final String BEHANDLINGSID = "123";
-    public static final String EIER = "Hans og Grete";
+    private static final String BEHANDLINGSID = "123";
+    private static final String EIER = "Hans og Grete";
 
     @Mock
     SoknadService soknadService;
@@ -44,10 +41,10 @@ public class SoknadRessursTest {
     SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
-    XsrfGenerator xsrfGenerator;
+    private Tilgangskontroll tilgangskontroll;
 
     @Mock
-    private Tilgangskontroll tilgangskontroll;
+    private HenvendelseService henvendelseService;
 
     @InjectMocks
     SoknadRessurs ressurs;
@@ -65,10 +62,10 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void hentingAvSoknadSkalSetteXsrfToken() {
+    public void skalSetteXsrfToken() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
-        ressurs.hentSoknadData(BEHANDLINGSID, response);
+        ressurs.hentXsrfCookie(BEHANDLINGSID, response);
         verify(response).addCookie(cookie.capture());
         assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN);
     }
@@ -85,7 +82,7 @@ public class SoknadRessursTest {
     @Test
     public void opprettSoknadUtenBehandlingsidSkalStarteNySoknad() {
         ressurs.opprettSoknad(null, mock(HttpServletResponse.class));
-        verify(soknadService).startSoknad(anyString());
+        verify(soknadService).startSoknad();
     }
 
     @Test
@@ -99,43 +96,9 @@ public class SoknadRessursTest {
     @Test
     public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(new WebSoknad());
+        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(eq(BEHANDLINGSID), anyString())).thenReturn(
+                Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
         ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class));
         verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID));
-    }
-
-    @Test(expected = BadRequestException.class)
-    public void oppdaterSoknadUtenParametreSkalKasteException() {
-        ressurs.oppdaterSoknad(BEHANDLINGSID, null, null);
-    }
-
-    @Test
-    public void oppdaterSoknadMedDelstegUtfyllingSkalSetteRiktigDelstegStatus() {
-        ressurs.oppdaterSoknad(BEHANDLINGSID, "utfylling", null);
-        verify(soknadService).settDelsteg(BEHANDLINGSID, DelstegStatus.UTFYLLING);
-    }
-
-    @Test
-    public void oppdaterSoknadMedDelstegOpprettetSkalSetteRiktigDelstegStatus() {
-        ressurs.oppdaterSoknad(BEHANDLINGSID, "opprettet", null);
-        verify(soknadService).settDelsteg(BEHANDLINGSID, DelstegStatus.OPPRETTET);
-    }
-
-    @Test
-    public void oppdaterSoknadMedDelstegVedleggSkalSetteRiktigDelstegStatus() {
-        ressurs.oppdaterSoknad(BEHANDLINGSID, "vedlegg", null);
-        verify(soknadService).settDelsteg(BEHANDLINGSID, DelstegStatus.SKJEMA_VALIDERT);
-    }
-
-    @Test
-    public void oppdaterSoknadMedDelstegOppsummeringSkalSetteRiktigDelstegStatus() {
-        ressurs.oppdaterSoknad(BEHANDLINGSID, "oppsummering", null);
-        verify(soknadService).settDelsteg(BEHANDLINGSID, DelstegStatus.VEDLEGG_VALIDERT);
-    }
-
-    @Test
-    public void oppdaterSoknadMedJournalforendeenhetSkalSetteJournalforendeEnhet() {
-        ressurs.oppdaterSoknad(BEHANDLINGSID, null, "NAV UTLAND");
-        verify(soknadService).settJournalforendeEnhet(BEHANDLINGSID, "NAV UTLAND");
     }
 }

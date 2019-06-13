@@ -55,10 +55,6 @@
             <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>arena-maalgruppe_v1</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>svarut-ks-forsendelsesservice</artifactId>
         </dependency>

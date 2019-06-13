@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.VedleggKreves;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 
 @Component
 public class OpplastetVedleggService {
