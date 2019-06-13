@@ -19,13 +19,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 import static no.nav.modig.core.test.FilesAndDirs.BUILD_OUTPUT;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -66,13 +66,6 @@ public class StandardKodeverkTest {
         assertThat(kodeverk.getLand("NOR"), nullValue());
         assertThat(kodeverk.getLand("SWE"), is("Sverige"));
         assertThat(kodeverk.getLand("ALB"), nullValue());
-    }
-
-    @Test
-    public void skalReturnereLandkoderSortertEtterTerm() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-        when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
-        List<String> strings = kodeverk.hentAlleKodenavnFraKodeverk(Kodeverk.EksponertKodeverk.LANDKODE);
-        assertThat(strings, contains("ALB", "DNK", "NOR", "SWE", "OST","ALA"));
     }
 
     @Test(expected = SystemException.class)

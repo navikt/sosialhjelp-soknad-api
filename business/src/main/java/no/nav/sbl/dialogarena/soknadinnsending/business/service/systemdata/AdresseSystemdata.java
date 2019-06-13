@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -20,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 public class AdresseSystemdata implements Systemdata {
 
     @Inject
-    private PersonaliaFletter personaliaFletter;
+    private BrukerprofilService brukerprofilService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
@@ -62,13 +62,13 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     public JsonAdresse innhentFolkeregistrertAdresse(final String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        return mapToJsonAdresse(personalia.getFolkeregistrertAdresse());
+        AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(personIdentifikator);
+        return mapToJsonAdresse(adresserOgKontonummer.getFolkeregistrertAdresse());
     }
 
     public JsonAdresse innhentMidlertidigAdresse(final String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        return mapToJsonAdresse(personalia.getMidlertidigAdresse());
+        AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(personIdentifikator);
+        return mapToJsonAdresse(adresserOgKontonummer.getMidlertidigAdresse());
     }
 
     private JsonAdresse mapToJsonAdresse(Adresse adresse) {

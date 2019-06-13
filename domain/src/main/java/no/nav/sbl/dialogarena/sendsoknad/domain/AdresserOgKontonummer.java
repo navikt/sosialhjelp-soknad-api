@@ -4,6 +4,8 @@ public class AdresserOgKontonummer {
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
     private Adresse folkeregistrertAdresse;
+    private boolean utenlandskAdresse;
+    private boolean bosattIEOSLand;
     private String kontonummer;
     private boolean utenlandskBankkonto;
     private String utenlandskKontoBanknavn;
@@ -13,7 +15,6 @@ public class AdresserOgKontonummer {
     public Adresse getGjeldendeAdresse() {
         return gjeldendeAdresse;
     }
-
     public Adresse getMidlertidigAdresse() { return midlertidigAdresse; }
 
     public Adresse getSekundarAdresse() {
@@ -24,11 +25,19 @@ public class AdresserOgKontonummer {
         return folkeregistrertAdresse;
     }
 
+    public boolean isUtenlandskAdresse() {
+        return utenlandskAdresse;
+    }
+
+    public boolean isBosattIEOSLand() {
+        return bosattIEOSLand;
+    }
+
     public String getKontonummer() {
         return kontonummer;
     }
 
-    public boolean erUtenlandskBankkonto() {
+    public boolean isUtenlandskBankkonto() {
         return utenlandskBankkonto;
     }
 
@@ -54,6 +63,16 @@ public class AdresserOgKontonummer {
 
     public AdresserOgKontonummer withFolkeregistrertAdresse(Adresse folkeregistrertAdresse) {
         this.folkeregistrertAdresse = folkeregistrertAdresse;
+        return this;
+    }
+
+    public AdresserOgKontonummer withUtenlandskAdresse(boolean utenlandskAdresse) {
+        this.utenlandskAdresse = utenlandskAdresse;
+        return this;
+    }
+
+    public AdresserOgKontonummer withBosattIEOSLand(boolean bosattIEOSLand) {
+        this.bosattIEOSLand = bosattIEOSLand;
         return this;
     }
 

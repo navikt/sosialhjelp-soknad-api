@@ -28,7 +28,7 @@ public class AdresseSokService {
 
     @Inject
     private AdresseSokConsumer adresseSokConsumer;
-    
+
     @Inject
     private Kodeverk kodeverk;
 
@@ -42,7 +42,7 @@ public class AdresseSokService {
         final Sokedata sokedata = AdresseStringSplitter.toSokedata(kodeverk, sok);
         return sokEtterAdresser(sokedata);
     }
-   
+
     public List<AdresseForslag> sokEtterAdresser(Sokedata sokedata) {
         if (sokedata.adresse != null && sokedata.adresse.trim().length() <= 2) {
             return Collections.emptyList();

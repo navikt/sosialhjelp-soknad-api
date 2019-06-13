@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
@@ -15,8 +15,7 @@ import javax.inject.Inject;
 public class TelefonnummerSystemdata implements Systemdata {
 
     @Inject
-    private PersonaliaFletter personaliaFletter;
-
+    private EpostService epostService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
@@ -36,8 +35,8 @@ public class TelefonnummerSystemdata implements Systemdata {
     }
 
     public String innhentSystemverdiTelefonnummer(final String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        return norskTelefonnummer(personalia.getMobiltelefonnummer());
+        DigitalKontaktinfo digitalKontaktinfo = epostService.hentInfoFraDKIF(personIdentifikator);
+        return norskTelefonnummer(digitalKontaktinfo.getMobilnummer());
     }
 
     private static String norskTelefonnummer(String mobiltelefonnummer) {

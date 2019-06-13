@@ -5,8 +5,6 @@ import java.util.List;
 public interface NorgConsumer {
 
     RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning);
-
-    RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr);
     
     void ping();
 

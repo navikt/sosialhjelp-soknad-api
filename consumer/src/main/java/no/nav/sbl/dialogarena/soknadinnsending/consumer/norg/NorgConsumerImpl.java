@@ -70,18 +70,6 @@ public class NorgConsumerImpl implements NorgConsumer {
         }
     }
 
-    @Override
-    public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {
-
-        final Invocation.Builder request = lagRequest(endpoint + "enhet/" + enhetNr + "/kontaktinformasjon");
-        try (Response response = request.get()) {
-            return response.readEntity(RsKontaktinformasjon.class);
-        } catch (RuntimeException e) {
-            logger.warn("Noe uventet feilet ved kall til NORG/kontaktinformasjon", e);
-            throw new TjenesteUtilgjengeligException("NORG", e);
-        }
-    }
-
     private Invocation.Builder lagRequest(String endpoint) {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);

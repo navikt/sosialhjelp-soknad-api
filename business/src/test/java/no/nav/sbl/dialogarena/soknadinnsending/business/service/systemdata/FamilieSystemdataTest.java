@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -134,9 +132,6 @@ public class FamilieSystemdataTest {
     }
 
     @Mock
-    private PersonaliaFletter personaliaFletter;
-
-    @Mock
     private PersonService personService;
 
     @InjectMocks
@@ -144,10 +139,10 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalSetteSivilstatusGiftMedEktefelle() throws JsonProcessingException {
-        Personalia personalia = new Personalia();
-        personalia.setSivilstatus(GIFT.toString());
-        personalia.setEktefelle(EKTEFELLE);
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+                .withSivilstatus(GIFT.toString())
+                .withEktefelle(EKTEFELLE);
+        when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
@@ -167,9 +162,9 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
-        Personalia personalia = new Personalia();
-        personalia.setSivilstatus(GIFT.toString());
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+                .withSivilstatus(GIFT.toString());
+        when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
@@ -214,10 +209,10 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
-        Personalia personalia = new Personalia();
-        personalia.setSivilstatus(GIFT.toString());
-        personalia.setEktefelle(EKTEFELLE_MED_DISKRESJONSKODE);
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+                .withSivilstatus(GIFT.toString())
+                .withEktefelle(EKTEFELLE_MED_DISKRESJONSKODE);
+        when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
@@ -299,10 +294,10 @@ public class FamilieSystemdataTest {
     }
 
     private void sivilstatusSkalIkkeSettes(JsonSivilstatus.Status status, Ektefelle ektefelle) throws JsonProcessingException {
-        Personalia personalia = new Personalia();
-        personalia.setSivilstatus(status.toString());
-        personalia.setEktefelle(ektefelle);
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+                .withSivilstatus(status.toString())
+                .withEktefelle(ektefelle);
+        when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
