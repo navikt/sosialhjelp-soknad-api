@@ -4,8 +4,6 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
@@ -40,12 +38,6 @@ public class SivilstatusRessurs {
     private Tilgangskontroll tilgangskontroll;
 
     @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
-
-    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @GET
@@ -64,10 +56,6 @@ public class SivilstatusRessurs {
     @PUT
     public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, sivilstatusFrontend);
-    }
-
-    private void update(String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
         final JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();

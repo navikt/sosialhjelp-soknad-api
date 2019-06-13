@@ -31,7 +31,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.EnumSet;
-import java.util.Optional;
 
 import static com.flipkart.zjsonpatch.DiffFlags.OMIT_COPY_OPERATION;
 import static com.flipkart.zjsonpatch.DiffFlags.OMIT_MOVE_OPERATION;
@@ -85,27 +84,6 @@ public class SoknadUnderArbeidService {
             return now.plusNanos(1_000_000).toString();
         }
         return now.toString();
-    }
-
-    public SoknadUnderArbeid oppdaterEllerOpprettSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid, String eier) {
-        if (soknadUnderArbeid == null) {
-            throw new RuntimeException("Søknad under arbeid mangler");
-        } else if (isEmpty(soknadUnderArbeid.getBehandlingsId())) {
-            throw new RuntimeException("Søknad under arbeid mangler behandlingsId");
-        }
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.getBehandlingsId(), eier);
-        if (soknadUnderArbeidOptional.isPresent()) {
-            SoknadUnderArbeid soknadUnderArbeidFraDB = soknadUnderArbeidOptional.get();
-            soknadUnderArbeidFraDB.withJsonInternalSoknad(soknadUnderArbeid.getJsonInternalSoknad());
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeidFraDB, eier);
-        } else {
-            soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier);
-        }
-        Optional<SoknadUnderArbeid> oppdatertSoknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.getBehandlingsId(), eier);
-        if (!oppdatertSoknadUnderArbeidOptional.isPresent()) {
-            throw new RuntimeException("Kunne ikke hente oppdatert søknad under arbeid fra database");
-        }
-        return oppdatertSoknadUnderArbeidOptional.get();
     }
 
     SoknadUnderArbeid oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn) {

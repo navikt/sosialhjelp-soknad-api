@@ -7,7 +7,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilg
 import org.slf4j.Logger;
 
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.client.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import static java.lang.System.getenv;
@@ -28,11 +30,9 @@ public class NorgConsumerImpl implements NorgConsumer {
 
     @Override
     public RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning) {
-        Response response = null;
-        final Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
 
-        try {
-            response = request.get();
+        final Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
+        try (Response response = request.get()) {
             if (response.getStatus() != 200) {
                 logger.warn("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
                 return null;
@@ -44,10 +44,6 @@ public class NorgConsumerImpl implements NorgConsumer {
         } catch (RuntimeException e) {
             logger.warn("Noe uventet feilet ved kall til NORG/gt", e);
             throw new TjenesteUtilgjengeligException("NORG", e);
-        } finally {
-            if (response != null) {
-                response.close();
-            }
         }
     }
     
@@ -67,33 +63,9 @@ public class NorgConsumerImpl implements NorgConsumer {
                 .header("Nav-Consumer-Id", consumerId)
                 .header("x-nav-apiKey", apiKey);
 
-        Response response = null;
-        try {
-            response = request.get();
+        try (Response response = request.get()) {
             if (response.getStatus() != 200) {
                 throw new RuntimeException("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
-            }
-        } finally {
-            if (response != null) {
-                response.close();
-            }
-        }
-    }
-
-    @Override
-    public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {
-        Response response = null;
-        final Invocation.Builder request = lagRequest(endpoint + "enhet/" + enhetNr + "/kontaktinformasjon");
-
-        try {
-            response = request.get();
-            return response.readEntity(RsKontaktinformasjon.class);
-        } catch (RuntimeException e) {
-            logger.warn("Noe uventet feilet ved kall til NORG/kontaktinformasjon", e);
-            throw new TjenesteUtilgjengeligException("NORG", e);
-        } finally {
-            if (response != null) {
-                response.close();
             }
         }
     }

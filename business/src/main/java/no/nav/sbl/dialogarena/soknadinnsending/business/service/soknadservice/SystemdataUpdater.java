@@ -15,6 +15,6 @@ public class SystemdataUpdater {
     private List<Systemdata> systemdatas;
 
     public void update(SoknadUnderArbeid soknadUnderArbeid) {
-        systemdatas.stream().forEach((s) -> s.updateSystemdataIn(soknadUnderArbeid));
+        systemdatas.forEach((s) -> s.updateSystemdataIn(soknadUnderArbeid));
     }
 }

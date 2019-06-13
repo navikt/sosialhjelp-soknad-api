@@ -45,7 +45,7 @@ public class InternalRessurs {
     @Path(value = "/lagre")
     public void kjorLagring() throws InterruptedException {
         logAccess("kjorLagring");
-        lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
+        lagringsScheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase();
     }
 
 

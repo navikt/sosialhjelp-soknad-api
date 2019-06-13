@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -32,7 +31,6 @@ public class AlternativRepresentasjonRessurs {
     @GET
     @Path("/json/{behandlingsId}")
     @Produces(APPLICATION_JSON)
-    @SjekkTilgangTilSoknad
     public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) {
         erRessursAktiv("jsonRepresentasjon");
         String eier = OidcFeatureToggleUtils.getUserId();

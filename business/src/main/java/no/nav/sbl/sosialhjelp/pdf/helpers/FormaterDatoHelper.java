@@ -1,13 +1,10 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
-
-import java.io.IOException;
-
+import com.github.jknack.handlebars.Options;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
-import com.github.jknack.handlebars.Options;
+import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
 public class FormaterDatoHelper extends RegistryAwareHelper<String>{
@@ -23,7 +20,7 @@ public class FormaterDatoHelper extends RegistryAwareHelper<String>{
     }
 
     @Override
-    public CharSequence apply(String datoStreng, Options options) throws IOException {
+    public CharSequence apply(String datoStreng, Options options) {
         if (datoStreng == null) {
             return "";
         }

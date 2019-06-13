@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
@@ -73,19 +73,19 @@ public class SaksoversiktMetadataServiceTest {
         VedleggMetadata v = new VedleggMetadata();
         v.skjema = "skjema1";
         v.tillegg = "tillegg1";
-        v.status = Status.LastetOpp;
+        v.status = Vedleggstatus.LastetOpp;
         VedleggMetadata v2 = new VedleggMetadata();
         v2.skjema = "skjema1";
         v2.tillegg = "tillegg1";
-        v2.status = Status.LastetOpp;
+        v2.status = Vedleggstatus.LastetOpp;
         VedleggMetadata v3 = new VedleggMetadata();
         v3.skjema = "skjema2";
         v3.tillegg = "tillegg1";
-        v3.status = Status.VedleggKreves;
+        v3.status = Vedleggstatus.VedleggKreves;
         VedleggMetadata v4 = new VedleggMetadata();
         v4.skjema = "annet";
         v4.tillegg = "annet";
-        v4.status = Status.VedleggKreves;
+        v4.status = Vedleggstatus.VedleggKreves;
 
         List<VedleggMetadata> vedleggListe = soknadMetadata.vedlegg.vedleggListe;
         vedleggListe.add(v);

@@ -71,18 +71,8 @@ public class ForsorgerpliktRessursUtenOidcTest {
     }
 
     @Test
-    public void getForsorgerpliktSkalReturnereEtBarnMedDiskresjonskode(){
-        forsorgerpliktRessursTest.getForsorgerpliktSkalReturnereEtBarnMedDiskresjonskode();
-    }
-
-    @Test
     public void putForsorgerpliktSkalSetteBarnebidrag(){
         forsorgerpliktRessursTest.putForsorgerpliktSkalSetteBarnebidrag();
-    }
-
-    @Test
-    public void putForsorgerpliktSkalKunneSetteBarnebidragForBarnMedDiskresjonskode(){
-        forsorgerpliktRessursTest.putForsorgerpliktSkalKunneSetteBarnebidragForBarnMedDiskresjonskode();
     }
 
     @Test

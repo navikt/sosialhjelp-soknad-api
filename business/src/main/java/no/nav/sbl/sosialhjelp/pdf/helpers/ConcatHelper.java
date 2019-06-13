@@ -3,8 +3,6 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 public class ConcatHelper extends RegistryAwareHelper<String>{
 
@@ -21,7 +19,7 @@ public class ConcatHelper extends RegistryAwareHelper<String>{
     }
 
     @Override
-    public CharSequence apply(String first, Options options) throws IOException {
+    public CharSequence apply(String first, Options options) {
         StringBuilder builder = new StringBuilder(first);
         for (Object string : options.params) {
             builder.append(string);

@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.AvbrytAutomatiskSheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandtererImpl;
@@ -9,7 +8,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -20,7 +21,6 @@ import org.springframework.context.annotation.Import;
         ConsumerConfig.class,
         ServiceConfig.class,
         ServicesApplicationConfig.class,
-        KravdialogInformasjonHolder.class,
         ArbeidsforholdService.class,
         ArbeidsforholdTransformer.class,
         OppgaveHandtererImpl.class,

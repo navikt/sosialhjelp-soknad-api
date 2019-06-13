@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -36,7 +35,7 @@ public class CmsTekstTest {
     }
 
     @Test
-    public void kallerMessageSourceToGangerMedOgUtenPrefixNarKeyIkkeEksisterer() throws IOException {
+    public void kallerMessageSourceToGangerMedOgUtenPrefixNarKeyIkkeEksisterer() {
         properties.put("min.key", "jegFinnes");
 
         String tekst = this.cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
@@ -55,7 +54,7 @@ public class CmsTekstTest {
     }
 
     @Test
-    public void getCmsTekstReturnererNullNarKeyMangler() throws IOException {
+    public void getCmsTekstReturnererNullNarKeyMangler() {
         String tekst = cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
 
         assertThat(tekst).isEqualTo(null);

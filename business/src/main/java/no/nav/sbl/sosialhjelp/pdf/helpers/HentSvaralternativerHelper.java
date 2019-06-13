@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
@@ -32,8 +31,8 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
     }
 
     @Override
-    public CharSequence apply(String key, Options options) throws IOException {
-        final Set<String> svarAlternativer = findChildPropertyValues(key, SPRAK);
+    public CharSequence apply(String key, Options options) {
+        final Set<String> svarAlternativer = findChildPropertyValues(key);
         
         StringBuilder stringBuilder = new StringBuilder();
         createHtmlLayout(svarAlternativer, stringBuilder);
@@ -41,13 +40,13 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
         return stringBuilder.toString();
     }
 
-    private Set<String> findChildPropertyValues(final String parentKey, final Locale locale) {
+    private Set<String> findChildPropertyValues(final String parentKey) {
         final Set<String> result = new HashSet<>();
 
         final Pattern tekstfilNavnStruktur = directChildPattern(parentKey);
-        for (Entry<String, String> tekstfil : allProperties(locale)) {
+        for (Entry<String, String> tekstfil : allProperties(SPRAK)) {
             findValueForMatchingSubKey(tekstfilNavnStruktur, tekstfil, HentSvaralternativerHelper::shouldIncludeSubKey)
-                .ifPresent((v) -> result.add(v));
+                .ifPresent(result::add);
         }
         
         return result;
@@ -59,7 +58,7 @@ public class HentSvaralternativerHelper extends RegistryAwareHelper<String> {
         final Pattern tekstfilNavnStruktur = directChildPattern(parentKey);
         for (Entry<String, String> tekstfil : allProperties(locale)) {
             findMatchingSubKey(tekstfilNavnStruktur, tekstfil, HentSvaralternativerHelper::shouldIncludeSubKey)
-                    .ifPresent((v) -> result.add(v));
+                    .ifPresent(result::add);
         }
 
         return result;

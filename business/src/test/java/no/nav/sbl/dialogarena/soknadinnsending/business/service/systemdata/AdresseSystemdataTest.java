@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
@@ -15,7 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -58,17 +58,16 @@ public class AdresseSystemdataTest {
     }
 
     @Mock
-    private PersonaliaFletter personaliaFletter;
+    private BrukerprofilService brukerprofilService;
 
     @InjectMocks
     private AdresseSystemdata adresseSystemdata;
 
     @Test
     public void skalOppdatereFolkeregistrertAdresse() {
-        Personalia personalia = new Personalia();
-        personalia.setFolkeregistrertAdresse(GATEADRESSE);
+        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer().withFolkeregistrertAdresse(GATEADRESSE);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -81,13 +80,12 @@ public class AdresseSystemdataTest {
 
     @Test
     public void skalOppdatereOppholdsadresseOgPostAdresseMedFolkeregistrertAdresse() {
-        Personalia personalia = new Personalia();
-        personalia.setFolkeregistrertAdresse(GATEADRESSE);
+        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer().withFolkeregistrertAdresse(GATEADRESSE);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -104,13 +102,12 @@ public class AdresseSystemdataTest {
 
     @Test
     public void skalIkkeOppdatereOppholdsadresseEllerPostAdresseDersomAdresseValgErNull() {
-        Personalia personalia = new Personalia();
-        personalia.setFolkeregistrertAdresse(GATEADRESSE);
+        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer().withFolkeregistrertAdresse(GATEADRESSE);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse())
                 .withPostadresse(new JsonAdresse());
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -125,14 +122,14 @@ public class AdresseSystemdataTest {
 
     @Test
     public void skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse() {
-        Personalia personalia = new Personalia();
-        personalia.setFolkeregistrertAdresse(MATRIKKEL_ADRESSE);
-        personalia.setMidlertidigAdresse(GATEADRESSE);
+        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
+                .withFolkeregistrertAdresse(MATRIKKEL_ADRESSE)
+                .withMidlertidigAdresse(GATEADRESSE);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
+        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 

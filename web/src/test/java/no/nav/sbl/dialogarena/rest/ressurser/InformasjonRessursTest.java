@@ -1,17 +1,12 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.After;
 import org.junit.Before;
@@ -34,24 +29,15 @@ import static org.mockito.Mockito.*;
 public class InformasjonRessursTest {
 
     public static final String SOKNADSTYPE = "type";
-    public static final String TEMAKODE = "TEMAKODE";
 
     @Spy
     InformasjonService informasjonService;
     @Spy
     SoknadService soknadService;
-    @Spy
-    LandService landService;
     @Mock
-    PersonaliaFletter personaliaFletter;
-    @Mock
-    PersonInfoService personInfoService;
+    private PersonService personService;
     @Mock
     NavMessageSource messageSource;
-    @Mock
-    ArbeidssokerInfoService arbeidssokerInfoService;
-    @Mock
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
 
     @InjectMocks
@@ -64,11 +50,7 @@ public class InformasjonRessursTest {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
 
-        when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia());
-
-        KravdialogInformasjonHolder kravdialogInformasjonHolder = new KravdialogInformasjonHolder();
-        when(this.kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()).thenReturn(kravdialogInformasjonHolder.getSoknadsKonfigurasjoner());
+        when(personService.hentPerson(anyString())).thenReturn(new Person().withFnr("01018012345"));
     }
 
     @After
@@ -92,31 +74,6 @@ public class InformasjonRessursTest {
         assertThat(miljovariabler.containsKey("dialogarena.cms.url")).isTrue();
         assertThat(miljovariabler.containsKey("soknadinnsending.soknad.path")).isTrue();
         assertThat(miljovariabler.containsKey("soknad.ettersending.antalldager")).isTrue();
-    }
-
-    @Test
-    public void statsborgerskapTypeSkalReturnereEosVedSvensk() {
-        Map<String, String> statsborgerskapType = ressurs.hentStatsborgerskapstype("SWE");
-        assertThat(statsborgerskapType.get("result")).isEqualTo("eos");
-    }
-
-    @Test
-    public void utslagskriterierInneholderAlleKriteriene() {
-        when(arbeidssokerInfoService.getArbeidssokerArenaStatus(anyString())).thenReturn("ARBS");
-        Map<String, Object> utslagskriterier = ressurs.hentUtslagskriterier();
-        assertThat(utslagskriterier.containsKey("arbeidssokertatusFraSBLArbeid")).isTrue();
-        assertThat(utslagskriterier.containsKey("arbeidssokerstatus")).isTrue();
-        assertThat(utslagskriterier.containsKey("ytelsesstatus")).isTrue();
-        assertThat(utslagskriterier.containsKey("alder")).isTrue();
-        assertThat(utslagskriterier.containsKey("fodselsdato")).isTrue();
-        assertThat(utslagskriterier.containsKey("bosattINorge")).isTrue();
-        assertThat(utslagskriterier.containsKey("registrertAdresse")).isTrue();
-        assertThat(utslagskriterier.containsKey("registrertAdresseGyldigFra")).isTrue();
-        assertThat(utslagskriterier.containsKey("registrertAdresseGyldigTil")).isTrue();
-        assertThat(utslagskriterier.containsKey("erBosattIEOSLand")).isTrue();
-        assertThat(utslagskriterier.containsKey("statsborgerskap")).isTrue();
-
-        assertThat(utslagskriterier.size()).isEqualTo(11);
     }
 
     @Test
@@ -148,13 +105,4 @@ public class InformasjonRessursTest {
     public void kastExceptionHvisIkkeSpraakErPaaRiktigFormat() {
         ressurs.hentTekster(SOKNADSTYPE, "NORSK");
     }
-
-    private Personalia personalia() {
-        Personalia personalia = new Personalia();
-        personalia.setFnr("01018012345");
-        Adresse adresse = new Adresse();
-        personalia.setGjeldendeAdresse(adresse);
-        return personalia;
-    }
-
 }

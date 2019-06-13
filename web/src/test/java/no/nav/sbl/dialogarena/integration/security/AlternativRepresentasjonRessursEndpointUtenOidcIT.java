@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.integration.security;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AlternativRepresentasjonRessursEndpointUtenOidcIT extends AbstractSecurityIT {
 
     private static final String ANNEN_BRUKER = "10108000398";
-    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @Before
     public void setup() throws Exception {
@@ -24,7 +22,7 @@ public class AlternativRepresentasjonRessursEndpointUtenOidcIT extends AbstractS
 
     @Test
     public void accessDeniedMedAnnenBruker_jsonRepresentasjon() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))
@@ -36,7 +34,7 @@ public class AlternativRepresentasjonRessursEndpointUtenOidcIT extends AbstractS
                 .buildGet()
                 .invoke();
 
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         assertThat(responseUtenFnr.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 }

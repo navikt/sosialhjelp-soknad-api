@@ -29,8 +29,6 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     private OrganisasjonV4 organisasjonWebService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
-    public static final String KODEVERK_AVLONNING_FAST = "fast";
-
 
     @Override
     public Arbeidsforhold transform(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
@@ -56,12 +54,8 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
 
         if (arbeidsforhold.getArbeidsavtale() != null) {
             for (Arbeidsavtale arbeidsavtale : arbeidsforhold.getArbeidsavtale()) {
-                if (erFastStilling(arbeidsavtale)) {
-                    result.harFastStilling = true;
-                    result.fastStillingsprosent += nullSafe(arbeidsavtale.getStillingsprosent());
-                } else {
-                    result.variabelStillingsprosent = true;
-                }
+                result.harFastStilling = true;
+                result.fastStillingsprosent += nullSafe(arbeidsavtale.getStillingsprosent());
             }
         }
         return result;
@@ -74,10 +68,6 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
 
     private Long nullSafe(BigDecimal number) {
         return number != null ? number.longValue() : 0;
-    }
-
-    private boolean erFastStilling(Arbeidsavtale arbeidsavtale) {
-        return true;
     }
 
 
