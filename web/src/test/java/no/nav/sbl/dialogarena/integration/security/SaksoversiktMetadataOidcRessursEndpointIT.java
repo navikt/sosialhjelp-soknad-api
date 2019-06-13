@@ -36,7 +36,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
 
     @Test
     public void innsendte_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/innsendte";
 
         Response response = sendGetRequest(soknadTester, subUrl, null);
@@ -46,7 +46,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
 
     @Test
     public void ettersendelse_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/ettersendelse";
 
         Response response = sendGetRequest(soknadTester, subUrl, null);
@@ -56,7 +56,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
 
     @Test
     public void pabegynte_skalGi401UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/pabegynte";
 
         Response response = sendGetRequest(soknadTester, subUrl, null);
@@ -66,7 +66,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
 
     @Test
     public void skalIkkeSePabegynteForAnnenBruker() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/pabegynte";
         SignedJWT signedJWTForAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
 
@@ -79,7 +79,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
 
     @Test
     public void ping_skalGi200UtenToken() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
+        SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/ping";
 
         Response response = sendGetRequest(soknadTester, subUrl, null);
