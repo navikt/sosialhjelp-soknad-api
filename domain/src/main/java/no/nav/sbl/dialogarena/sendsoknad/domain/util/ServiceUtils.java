@@ -10,6 +10,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 public class ServiceUtils {
+    public final static String FASIT_ENVIRONMENT_NAME = "FASIT_ENVIRONMENT_NAME";
+    public final static String IS_SCHEDULED_TASKS_DISABLED = "scheduler.disable";
 
     public static XMLGregorianCalendar stringTilXmldato(String dato) {
         return lagDatatypeFactory().newXMLGregorianCalendar(DateTime.parse(dato).toGregorianCalendar());
@@ -36,6 +38,10 @@ public class ServiceUtils {
     }
 
     public static boolean isRunningInProd(){
-        return "p".equals(System.getenv("FASIT_ENVIRONMENT_NAME"));
+        return "p".equals(System.getenv(FASIT_ENVIRONMENT_NAME));
+    }
+
+    public static boolean isScheduledTasksDisabled(){
+        return Boolean.valueOf(System.getProperty(IS_SCHEDULED_TASKS_DISABLED, "false"));
     }
 }
