@@ -1,9 +1,10 @@
 package no.nav.sbl.dialogarena.rest.ressurser.eksponerte;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -22,13 +23,13 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Implementerer speccen definert i soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon
  */
 @Controller
-@Unprotected // Er sikret med SAML frem til team personbruker er klare med å bytte ut SAML med OIDC
-@Path("/metadata")
+@ProtectedWithClaims(issuer = "selvbetjening", combineWithOr = true, claimMap = {"acr=Level3", "acr=Level4"})
+@Path("/metadata/oidc")
 @Timed
 @Produces(APPLICATION_JSON)
-public class SaksoversiktMetadataRessurs {
+public class SaksoversiktMetadataOidcRessurs {
 
-    private static final Logger logger = getLogger(SaksoversiktMetadataRessurs.class);
+    private static final Logger logger = getLogger(SaksoversiktMetadataOidcRessurs.class);
 
     @Inject
     private SaksoversiktMetadataService saksoversiktMetadataService;
@@ -36,8 +37,8 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
-        logger.info("Henter metadata for innsendte soknader uten oidc");
+        String fnr = SubjectHandler.getUserIdFromToken();
+        logger.debug("Henter innsendte for fnr {}", fnr);
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
 
@@ -48,8 +49,8 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
-        logger.info("Henter metadata for ettersendelse uten oidc");
+        String fnr = SubjectHandler.getUserIdFromToken();
+        logger.debug("Henter ettersendelse for fnr {}", fnr);
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
 
@@ -60,8 +61,8 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
-        logger.info("Henter metadata for pabegynte uten oidc");
+        String fnr = SubjectHandler.getUserIdFromToken();
+        logger.debug("Henter pabegynte for fnr {}", fnr);
 
         List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
 
@@ -70,9 +71,10 @@ public class SaksoversiktMetadataRessurs {
     }
 
     @GET
+    @Unprotected
     @Path("/ping")
     public PingRespons ping() {
-        logger.info("Ping for saksoversikt uten oidc");
+        logger.debug("Ping for saksoversikt");
         return new PingRespons()
                 .withStatus(PingRespons.Status.OK)
                 .withMelding("Sosialhjelp Saksoversikt API er oppe");
