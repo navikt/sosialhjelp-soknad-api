@@ -44,7 +44,7 @@ public class SoknadServiceIntegrasjonsTest {
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(new SoknadMetadata());
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withVersjon(0L)));
+        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withVersjon(0L)));
     }
 
     @Test

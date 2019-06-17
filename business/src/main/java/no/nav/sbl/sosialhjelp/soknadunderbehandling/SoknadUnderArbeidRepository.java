@@ -11,6 +11,7 @@ public interface SoknadUnderArbeidRepository {
     Long opprettSoknad(SoknadUnderArbeid soknadUnderArbeid, String eier);
     Optional<SoknadUnderArbeid> hentSoknad(Long soknadId, String eier);
     Optional<SoknadUnderArbeid> hentSoknad(String behandlingsId, String eier);
+    Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier);
     Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String behandlingsId, String eier);
     List<SoknadUnderArbeid> hentForeldedeEttersendelser();
     void oppdaterSoknadsdata(SoknadUnderArbeid soknadUnderArbeid, String eier) throws SamtidigOppdateringException;

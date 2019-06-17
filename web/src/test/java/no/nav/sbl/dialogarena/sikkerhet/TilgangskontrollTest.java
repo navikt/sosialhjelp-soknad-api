@@ -49,20 +49,20 @@ public class TilgangskontrollTest {
     public void skalGiTilgangForBruker() {
         String userId = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
+        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
     }
 
     @Test(expected = AuthorizationException.class)
     public void skalFeileForAndre() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("other_user"));
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
+        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX");
     }
 
     @Test(expected = AuthorizationException.class)
     public void skalFeileOmSoknadenIkkeFinnes() {
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.empty());
+        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.empty());
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
     }
 

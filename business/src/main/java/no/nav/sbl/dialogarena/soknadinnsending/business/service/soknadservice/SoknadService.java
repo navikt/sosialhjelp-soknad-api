@@ -136,7 +136,7 @@ public class SoknadService {
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
         if (soknadUnderArbeidOptional.isPresent()){
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
             henvendelseService.avbrytSoknad(soknadUnderArbeidOptional.get().getBehandlingsId(), false);

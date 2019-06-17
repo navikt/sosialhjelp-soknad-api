@@ -121,7 +121,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalAvbryteSoknad() {
-        when(soknadUnderArbeidRepository.hentSoknad(eq(BEHANDLINGSID), anyString())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknadOptional(eq(BEHANDLINGSID), anyString())).thenReturn(
                 Optional.of(new SoknadUnderArbeid()
                         .withBehandlingsId(BEHANDLINGSID)
                         .withVersjon(1L)
