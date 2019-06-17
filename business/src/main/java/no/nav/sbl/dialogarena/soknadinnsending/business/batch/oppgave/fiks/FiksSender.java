@@ -115,11 +115,16 @@ public class FiksSender {
             List<JsonVedlegg> opplastedeVedleggstyper = internalSoknad.getVedlegg().getVedlegg().stream().filter(jsonVedlegg -> jsonVedlegg.getStatus().equals("LastetOpp"))
                     .collect(Collectors.toList());
             int antallBrukerOpplastedeVedlegg = 0;
+            String typerVedleggJson = "";
             for (JsonVedlegg vedlegg : opplastedeVedleggstyper){
-                antallBrukerOpplastedeVedlegg += vedlegg.getFiler().size();
+                int size = vedlegg.getFiler().size();
+                antallBrukerOpplastedeVedlegg += size;
+                if (size > 0) {
+                    typerVedleggJson = typerVedleggJson.concat(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo() + " ");
+                }
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse);
+                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Typer i vedlegg.json: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse, typerVedleggJson);
             }
         } catch (RuntimeException e) {
             log.debug("Ignored exception");
