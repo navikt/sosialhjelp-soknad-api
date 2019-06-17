@@ -18,8 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
-
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
@@ -36,7 +34,6 @@ public class TelefonnummerRessursTest {
     private static final String EIER = "123456789101";
     private static final String TELEFONNUMMER_BRUKER = "98765432";
     private static final String TELEFONNUMMER_SYSTEM = "23456789";
-    private static final String TELEFONNUMMER_SYSTEM_OPPDATERT = "12345678";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -65,8 +62,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereSystemTelefonnummer(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
@@ -78,8 +75,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithTelefonnummer(null, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithTelefonnummer(null, null));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
@@ -91,8 +88,8 @@ public class TelefonnummerRessursTest {
 
     @Test
     public void getTelefonnummerSkalReturnereBrukerutfyltTelefonnummer(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
@@ -105,7 +102,7 @@ public class TelefonnummerRessursTest {
     @Test
     public void putTelefonnummerSkalLageNyJsonTelefonnummerDersomDenVarNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
+                createJsonInternalSoknadWithTelefonnummer(null, null));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
@@ -122,7 +119,7 @@ public class TelefonnummerRessursTest {
     @Test
     public void putTelefonnummerSkalOppdatereBrukerutfyltTelefonnummer(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(null, null)));
+                createJsonInternalSoknadWithTelefonnummer(null, null));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         final TelefonnummerFrontend telefonnummerFrontend = new TelefonnummerFrontend()
@@ -139,7 +136,7 @@ public class TelefonnummerRessursTest {
     @Test
     public void putTelefonnummerSkalOverskriveBrukerutfyltTelefonnummerMedSystemTelefonnummer(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)));
+                createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 

@@ -18,8 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
-
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
@@ -36,7 +34,6 @@ public class KontonummerRessursTest {
     private static final String EIER = "123456789101";
     private static final String KONTONUMMER_BRUKER = "11122233344";
     private static final String KONTONUMMER_SYSTEM = "44333222111";
-    private static final String KONTONUMMER_SYSTEM_OPPDATERT = "44333222123";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -65,8 +62,8 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereSystemKontonummer(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -79,8 +76,8 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereBrukerutfyltKontonummer(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -93,8 +90,8 @@ public class KontonummerRessursTest {
 
     @Test
     public void getKontonummerSkalReturnereKontonummerLikNull(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
@@ -148,13 +145,13 @@ public class KontonummerRessursTest {
     private void startWithBrukerKontonummerAndSystemKontonummerInTPS() {
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER)));
+                createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER));
     }
 
     private void startWithEmptyKontonummerAndNoSystemKontonummer() {
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null)));
+                createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null));
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithKontonummer(JsonKilde kilde, String verdi) {

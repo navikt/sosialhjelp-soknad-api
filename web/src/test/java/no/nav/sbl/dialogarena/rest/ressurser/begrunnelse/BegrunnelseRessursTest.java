@@ -16,8 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
-
 import static no.nav.sbl.dialogarena.rest.ressurser.begrunnelse.BegrunnelseRessurs.BegrunnelseFrontend;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
@@ -57,8 +55,8 @@ public class BegrunnelseRessursTest {
 
     @Test
     public void getBegrunnelseSkalReturnereBegrunnelseMedTommeStrenger(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithBegrunnelse("", "")));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithBegrunnelse("", ""));
 
         final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
 
@@ -68,8 +66,8 @@ public class BegrunnelseRessursTest {
 
     @Test
     public void getBegrunnelseSkalReturnereBegrunnelse(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI));
 
         final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
 
@@ -81,7 +79,7 @@ public class BegrunnelseRessursTest {
     public void putBegrunnelseSkalSetteBegrunnelse(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithBegrunnelse("", "")));
+                createJsonInternalSoknadWithBegrunnelse("", ""));
 
         final BegrunnelseFrontend begrunnelseFrontend = new BegrunnelseFrontend()
                 .withHvaSokesOm(SOKER_OM)

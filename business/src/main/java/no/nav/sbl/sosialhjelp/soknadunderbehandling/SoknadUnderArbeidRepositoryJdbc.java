@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
@@ -90,9 +91,14 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public Optional<SoknadUnderArbeid> hentSoknad(String behandlingsId, String eier) {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
+    public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
                 new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
+        if (soknadUnderArbeidOptional.isPresent()) {
+            return soknadUnderArbeidOptional.get();
+        } else {
+            throw new NoSuchElementException("Ingen SoknadUnderArbeid funnet på behandlingsId: " + behandlingsId);
+        }
     }
 
     @Override

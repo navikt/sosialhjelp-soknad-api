@@ -29,7 +29,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
@@ -125,8 +124,8 @@ public class NavEnhetRessursTest {
 
     @Test
     public void getNavEnheterSkalReturnereEnheterRiktigKonvertert(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg.FOLKEREGISTRERT, SOKNADSMOTTAKER)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg.FOLKEREGISTRERT, SOKNADSMOTTAKER));
         when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert"))).thenReturn(
                 Arrays.asList(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2));
         when(norgService.finnEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
@@ -141,8 +140,8 @@ public class NavEnhetRessursTest {
 
     @Test
     public void getNavEnheterSkalReturnereTomListeNaarOppholdsadresseIkkeErValgt(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(null, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(null, null));
         when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq(null))).thenReturn(new ArrayList<>());
         when(norgService.finnEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
         when(norgService.finnEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
@@ -155,7 +154,7 @@ public class NavEnhetRessursTest {
     @Test
     public void putNavEnhetSkalSetteNavenhet(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg.FOLKEREGISTRERT, SOKNADSMOTTAKER)));
+                createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg.FOLKEREGISTRERT, SOKNADSMOTTAKER));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         final NavEnhetFrontend navEnhetFrontend = new NavEnhetFrontend()
                 .withEnhetsnavn(ENHETSNAVN_2)
