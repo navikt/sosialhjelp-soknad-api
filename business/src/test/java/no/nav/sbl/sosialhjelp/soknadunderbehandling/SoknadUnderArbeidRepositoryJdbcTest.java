@@ -89,7 +89,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     public void hentSoknadHenterSoknadUnderArbeidGittRiktigEierOgBehandlingsId() {
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER);
 
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, EIER);
 
         assertThat(soknadUnderArbeid.getSoknadId(), is(soknadUnderArbeidId));
         assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
