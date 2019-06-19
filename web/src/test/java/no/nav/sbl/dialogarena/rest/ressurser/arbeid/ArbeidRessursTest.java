@@ -23,7 +23,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
@@ -85,8 +84,8 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null));
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(createArbeidsforholdListe());
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
@@ -102,8 +101,8 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereArbeidsforholdLikNull(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithArbeid(null, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithArbeid(null, null));
         when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(null);
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
@@ -113,8 +112,8 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereKommentarTilArbeidsforholdLikNull(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithArbeid(null, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithArbeid(null, null));
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
@@ -123,8 +122,8 @@ public class ArbeidRessursTest {
 
     @Test
     public void getArbeidSkalReturnereKommentarTilArbeidsforhold(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithArbeid(null, KOMMENTAR)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithArbeid(null, KOMMENTAR));
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
@@ -135,7 +134,7 @@ public class ArbeidRessursTest {
     public void putArbeidSkalLageNyJsonKommentarTilArbeidsforholdDersomDenVarNull(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithArbeid(null, null)));
+                createJsonInternalSoknadWithArbeid(null, null));
 
         final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold(KOMMENTAR);
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
@@ -150,7 +149,7 @@ public class ArbeidRessursTest {
     public void putArbeidSkalOppdatereKommentarTilArbeidsforhold(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")));
+                createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar"));
 
         final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold(KOMMENTAR);
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
@@ -165,7 +164,7 @@ public class ArbeidRessursTest {
     public void putArbeidSkalSetteLikNullDersomKommentarenErTom(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")));
+                createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar"));
 
         final ArbeidFrontend arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold("");
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);

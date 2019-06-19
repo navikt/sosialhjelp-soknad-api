@@ -17,8 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
-
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
@@ -56,8 +54,8 @@ public class BosituasjonRessursTest {
 
     @Test
     public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersonerLikNull(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithBosituasjon(null, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithBosituasjon(null, null));
 
         final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
 
@@ -67,8 +65,8 @@ public class BosituasjonRessursTest {
 
     @Test
     public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersoner(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.EIER, 2)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.EIER, 2));
 
         final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
 
@@ -80,7 +78,7 @@ public class BosituasjonRessursTest {
     public void putBosituasjonSkalSetteBosituasjon(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.LEIER, 2)));
+                createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.LEIER, 2));
 
         final BosituasjonFrontend bosituasjonFrontend = new BosituasjonFrontend()
                 .withBotype(JsonBosituasjon.Botype.ANNET)
@@ -98,7 +96,7 @@ public class BosituasjonRessursTest {
     public void putBosituasjonSkalSetteAntallPersonerLikNull(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithBosituasjon(null, 2)));
+                createJsonInternalSoknadWithBosituasjon(null, 2));
 
         final BosituasjonFrontend bosituasjonFrontend = new BosituasjonFrontend();
         bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend);
