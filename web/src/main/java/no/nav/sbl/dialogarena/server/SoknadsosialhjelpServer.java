@@ -32,7 +32,7 @@ public class SoknadsosialhjelpServer {
 
 
     public SoknadsosialhjelpServer() throws Exception {
-        this(PORT, null, "/soknadsosialhjelp-server", null);
+        this(PORT, null, "/soknadsosialhjelp/soknad-api", null);
     }
 
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
@@ -226,7 +226,7 @@ public class SoknadsosialhjelpServer {
             final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer();
             server.start();
         } catch (Exception e) {
-            log.error("Kunne ikke starte opp soknadsosialhjelp-server", e);
+            log.error("Kunne ikke starte opp sosialhjelp-soknad-api", e);
         }
     }
 }
