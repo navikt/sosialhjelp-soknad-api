@@ -90,3 +90,5 @@ fasitResources:
     resourceType: credential
   - alias: "loginservice_oidc"
     resourceType: azureoidc
+  - alias: loginservice
+    resourceType: restservice
