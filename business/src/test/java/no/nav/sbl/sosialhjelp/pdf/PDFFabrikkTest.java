@@ -87,7 +87,7 @@ public class PDFFabrikkTest {
 
     @Test
     public void skalKunneLagePDF() throws IOException {
-        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(lagGyldigJsonInternalSoknad());
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(lagGyldigJsonInternalSoknad(), null);
         String skjemaPath = "file://" + PDFFabrikk.class.getResource("/").getPath();
         byte[] pdfFil = PDFFabrikk.lagPdfFil(html, skjemaPath);
 

@@ -45,16 +45,26 @@
                 <h3>{{ hentTekst "kontakt.system.adresse.sporsmal" }}</h3>
             {{/if}}
             <li>
-                <span class="label">{{hentTekst "kontakt.system.oppholdsadresse.folkeregistrertAdresse"}}</span>
                 {{#with folkeregistrertAdresse}}
+                    <span class="label">{{hentTekst "kontakt.system.oppholdsadresse.folkeregistrertAdresse"}}</span>
                     {{> skjema/soknad/adresse}}
                 {{/with}}
-                {{hentTekst "soknadsmottaker.infotekst.tekst"}}
                 {{#with oppholdsadresse}}
+                    {{hentTekst "soknadsmottaker.infotekst.tekst"}}
                     {{> skjema/soknad/adresse}}
                 {{/with}}
-	            {{#if @root.utvidetSoknad}}
-	                {{> skjema/soknad/personalia_adresse_svaralternativer}}
+                {{#if @root.utvidetSoknad}}
+                    <span class="label">Valgt adresse:</span>
+                    <ul class="svar-liste">
+                        <li>
+                            {{#hvisLik oppholdsadresse.adresseValg "soknad"}}
+                                {{hentTekst "kontakt.system.oppholdsadresse.valg.soknad"}}
+                            {{else}}
+                                {{hentTekst (concat 'kontakt.system.oppholdsadresse.' oppholdsadresse.adresseValg 'Adresse')}}
+                            {{/hvisLik}}
+                        </li>
+                    </ul>
+                    {{> skjema/soknad/personalia_adresse_svaralternativer}}
 	            {{/if}}
             </li>
             {{#hvisLik telefonnummer.kilde "system"}}
