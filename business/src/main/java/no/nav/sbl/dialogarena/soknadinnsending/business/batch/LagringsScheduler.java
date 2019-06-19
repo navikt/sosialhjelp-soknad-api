@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -33,6 +34,11 @@ public class LagringsScheduler {
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase() throws InterruptedException {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         batchStartTime = DateTime.now();
         vellykket = 0;
         feilet = 0;

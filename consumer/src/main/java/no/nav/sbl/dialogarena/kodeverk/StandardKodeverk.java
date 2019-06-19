@@ -3,15 +3,17 @@ package no.nav.sbl.dialogarena.kodeverk;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
+
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
@@ -123,6 +125,11 @@ public class StandardKodeverk implements Kodeverk {
     @Override
     @Scheduled(cron = "0 0 0 * * *")
     public void lastInnNyeKodeverk() {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
         for (String kodeverksnavn : ALLE_KODEVERK) {

@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -37,6 +38,11 @@ public class AvbrytAutomatiskSheduler {
 
     @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
     public void avbrytGamleSoknader() throws InterruptedException {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         batchStartTime = LocalDateTime.now();
         vellykket = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {

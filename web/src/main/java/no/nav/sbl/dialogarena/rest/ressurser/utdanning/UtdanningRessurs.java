@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 
 @Controller
@@ -68,7 +68,7 @@ public class UtdanningRessurs {
 
         if (utdanning.getErStudent() != null){
             String soknadstype = "studielanOgStipend";
-            String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
             addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel, utdanning.getErStudent());
         }
 

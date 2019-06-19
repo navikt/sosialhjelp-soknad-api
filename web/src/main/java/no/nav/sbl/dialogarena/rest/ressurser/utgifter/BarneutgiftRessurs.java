@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
@@ -87,23 +87,23 @@ public class BarneutgiftRessurs {
         List<JsonOkonomioversiktUtgift> oversiktBarneutgifter = okonomi.getOversikt().getUtgift();
 
         String type = "barnehage";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBarneutgifter, type, tittel, barneutgifterFrontend.barnehage);
 
         type = "sfo";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBarneutgifter, type, tittel, barneutgifterFrontend.sfo);
 
         type = "barnFritidsaktiviteter";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.fritidsaktiviteter);
 
         type = "barnTannregulering";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.tannregulering);
 
         type = "annenBarneutgift";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.annet);
     }
 

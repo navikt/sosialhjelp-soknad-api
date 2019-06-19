@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 
@@ -72,7 +72,7 @@ public class BostotteRessurs {
         setBekreftelse(opplysninger, soknadstype, bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
 
         if (bostotteFrontend.bekreftelse != null){
-            String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
             addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel, bostotteFrontend.bekreftelse);
         }
 

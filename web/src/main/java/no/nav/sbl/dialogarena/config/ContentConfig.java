@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.config;
 
 
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,11 @@ public class ContentConfig {
 
     @Scheduled(fixedRate = FEM_MINUTTER)
     private void slettCache() {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         navMessageSource().clearCache();
     }
 
