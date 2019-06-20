@@ -63,7 +63,6 @@ public final class HandlebarContext {
         final List<JsonOkonomioversiktFormue> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getFormue();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
-            .distinct()
             .collect(Collectors.toSet());
     }
     
@@ -71,7 +70,6 @@ public final class HandlebarContext {
         final List<JsonOkonomiOpplysningUtbetaling> formue = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
-            .distinct()
             .collect(Collectors.toSet());
     }
     
@@ -79,7 +77,6 @@ public final class HandlebarContext {
         final List<JsonOkonomiOpplysningUtgift> formue = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtgift();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
-            .distinct()
             .collect(Collectors.toSet());
     }
     
@@ -87,7 +84,6 @@ public final class HandlebarContext {
         final List<JsonOkonomioversiktUtgift> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getUtgift();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
-            .distinct()
             .collect(Collectors.toSet());
     }
     

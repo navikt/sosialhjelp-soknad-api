@@ -1,3 +1,4 @@
 .idea
 /target
 */target
+!web/target/soknadsosialhjelp-server

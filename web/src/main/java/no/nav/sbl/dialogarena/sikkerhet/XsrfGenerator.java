@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
@@ -40,7 +41,7 @@ public class XsrfGenerator {
     public static void sjekkXsrfToken(String givenToken, String behandlingsId) {
         String token = generateXsrfToken(behandlingsId);
         boolean valid = token.equals(givenToken) || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
-        if (!valid) {
+        if (!valid && !MockUtils.isTillatMockRessurs()) {
             throw new AuthorizationException("Feil token");
         }
     }

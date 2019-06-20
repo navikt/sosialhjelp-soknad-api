@@ -70,10 +70,7 @@ public class UtbetalingService {
     }
 
     boolean utbetaltSisteFortiDager(WSUtbetaling wsUtbetaling) {
-        if (tilLocalDate(wsUtbetaling.getUtbetalingsdato()).isBefore(LocalDate.now().minusDays(40))) {
-            return false;
-        }
-        return true;
+        return !tilLocalDate(wsUtbetaling.getUtbetalingsdato()).isBefore(LocalDate.now().minusDays(40));
     }
 
     Utbetaling ytelseTilUtbetaling(WSUtbetaling wsUtbetaling, WSYtelse ytelse) {

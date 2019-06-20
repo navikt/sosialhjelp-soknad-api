@@ -29,6 +29,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
@@ -89,7 +91,18 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public Optional<SoknadUnderArbeid> hentSoknad(String behandlingsId, String eier) {
+    public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
+                new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
+        if (soknadUnderArbeidOptional.isPresent()) {
+            return soknadUnderArbeidOptional.get();
+        } else {
+            throw new NoSuchElementException("Ingen SoknadUnderArbeid funnet på behandlingsId: " + behandlingsId);
+        }
+    }
+
+    @Override
+    public Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier) {
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
                 new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
     }
@@ -98,6 +111,13 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     public Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String tilknyttetBehandlingsId, String eier) {
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
                 new SoknadUnderArbeidRowMapper(), eier, tilknyttetBehandlingsId, UNDER_ARBEID.toString()).stream().findFirst();
+    }
+
+    @Override
+    public List<SoknadUnderArbeid> hentForeldedeEttersendelser() {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) " +
+                        "and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
+                new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
     }
 
     @Override

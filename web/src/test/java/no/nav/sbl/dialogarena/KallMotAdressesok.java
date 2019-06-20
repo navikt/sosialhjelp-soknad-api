@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena;
 
-import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -20,13 +19,14 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadinnsendingConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
@@ -81,15 +81,14 @@ public class KallMotAdressesok {
     
     private static ApplicationContext initializeContext() throws IOException, NamingException {
         SoknadsosialhjelpServer.setFrom("environment-test.properties");
-        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         final DataSource dataSource = buildDataSource("hsqldb.properties");
 
         final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
         builder.bind("jdbc/SoknadInnsendingDS", dataSource);
         builder.activate();
-        
-        final ApplicationContext context = new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
-        return context;
+
+        return new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
     }
 
     private static void setupCloseShutdownHook(final PrintWriter report) {

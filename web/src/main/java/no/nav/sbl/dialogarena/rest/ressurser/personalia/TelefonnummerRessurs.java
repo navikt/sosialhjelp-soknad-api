@@ -39,7 +39,7 @@ public class TelefonnummerRessurs {
     @GET
     public TelefonnummerFrontend hentTelefonnummer(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
         String systemverdi;
         if (telefonnummer != null && telefonnummer.getKilde().equals(JsonKilde.SYSTEM)) {
@@ -60,12 +60,8 @@ public class TelefonnummerRessurs {
         if ("".equals(telefonnummerFrontend.brukerutfyltVerdi)) {
             telefonnummerFrontend.brukerutfyltVerdi = null;
         }
-        update(behandlingsId, telefonnummerFrontend);
-    }
-
-    private void update(String behandlingsId, TelefonnummerFrontend telefonnummerFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
                 personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();

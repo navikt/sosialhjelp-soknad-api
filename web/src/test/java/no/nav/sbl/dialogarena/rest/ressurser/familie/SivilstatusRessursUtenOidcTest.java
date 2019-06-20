@@ -1,10 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.familie;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -14,26 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.text.ParseException;
-
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SivilstatusRessursUtenOidcTest {
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -81,12 +67,12 @@ public class SivilstatusRessursUtenOidcTest {
     }
 
     @Test
-    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() throws ParseException {
+    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() {
         sivilstatusRessursTest.getSivilstatusSkalReturnereNull();
     }
 
     @Test
-    public void putSivilstatusSkalSetteStatusGiftOgEktefelle() throws ParseException {
+    public void putSivilstatusSkalSetteStatusGiftOgEktefelle() {
         sivilstatusRessursTest.getSivilstatusSkalReturnereNull();
     }
 }

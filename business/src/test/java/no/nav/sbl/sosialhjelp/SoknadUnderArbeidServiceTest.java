@@ -1,14 +1,9 @@
 package no.nav.sbl.sosialhjelp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
@@ -31,17 +26,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
-import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadUnderArbeidServiceTest {
@@ -82,32 +75,6 @@ public class SoknadUnderArbeidServiceTest {
         JsonInternalSoknad oppdatertInternalSoknad = oppdatertSoknadUnderArbeid.getJsonInternalSoknad();
         assertThat(oppdatertInternalSoknad.getMottaker().getOrganisasjonsnummer(), is(ORGNR));
         assertThat(oppdatertInternalSoknad.getMottaker().getNavEnhetsnavn(), is(NAVENHETSNAVN));
-    }
-
-    @Test
-    public void oppdaterEllerOpprettSoknadUnderArbeidOppretterSoknadHvisDenIkkeFinnes() {
-        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid();
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString()))
-                .thenReturn(Optional.empty())
-                .thenReturn(Optional.of(soknadUnderArbeid));
-
-        SoknadUnderArbeid opprettetSoknadUnderArbeidFraDb = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, EIER);
-
-        assertThat(opprettetSoknadUnderArbeidFraDb.getVersjon(), is(1L));
-        verify(soknadUnderArbeidRepository, times(1)).opprettSoknad(eq(soknadUnderArbeid), eq(EIER));
-    }
-
-    @Test
-    public void oppdaterEllerOpprettSoknadUnderArbeidOppdatererSoknadHvisDenFinnes() {
-        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid().withJsonInternalSoknad(lagGyldigJsonInternalSoknad());
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString()))
-                .thenReturn(Optional.of(soknadUnderArbeid))
-                .thenReturn(Optional.of(soknadUnderArbeid.withVersjon(2L)));
-
-        SoknadUnderArbeid oppdatertSoknadUnderArbeidFraDb = soknadUnderArbeidService.oppdaterEllerOpprettSoknadUnderArbeid(soknadUnderArbeid, EIER);
-
-        assertThat(oppdatertSoknadUnderArbeidFraDb.getVersjon(), is(2L));
-        verify(soknadUnderArbeidRepository, times(1)).oppdaterSoknadsdata(eq(soknadUnderArbeid), eq(EIER));
     }
 
     private SoknadUnderArbeid lagSoknadUnderArbeid() {

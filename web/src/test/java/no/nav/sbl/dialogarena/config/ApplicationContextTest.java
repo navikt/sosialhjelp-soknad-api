@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.oidc.OidcConfig;
+import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,11 +29,11 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMO
 public class ApplicationContextTest {
 
     @BeforeClass
-    public static void beforeClass() throws IOException, NamingException {
+    public static void beforeClass() throws NamingException {
         load("/environment-test.properties");
-        System.setProperty("no.nav.modig.security.sts.url", "dummyvalue");
-        System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
-        System.setProperty("no.nav.modig.security.systemuser.password", "");
+        System.setProperty(StsSecurityConstants.STS_URL_KEY, "dummyvalue");
+        System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, "dummyvalue");
+        System.setProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD, "");
         getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 
         SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();

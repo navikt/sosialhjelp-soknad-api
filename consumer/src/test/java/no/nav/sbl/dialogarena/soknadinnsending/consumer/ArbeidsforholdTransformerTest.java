@@ -64,7 +64,6 @@ public class ArbeidsforholdTransformerTest {
         Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold("fast"));
         assertThat(arbeidsforhold.harFastStilling, equalTo(true));
         assertThat(arbeidsforhold.fastStillingsprosent, equalTo(100L));
-        assertThat(arbeidsforhold.variabelStillingsprosent, equalTo(false));
         assertThat(arbeidsforhold.fom, equalTo("2015-01-01"));
         assertThat(arbeidsforhold.tom, equalTo(null));
         assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
@@ -90,7 +89,6 @@ public class ArbeidsforholdTransformerTest {
         Arbeidsforhold result = arbeidsforholdTransformer.transform(lagArbeidsforhold("time"));
         assertThat(result.harFastStilling, equalTo(false));
         assertThat(result.fastStillingsprosent, equalTo(0L));
-        assertThat(result.variabelStillingsprosent, equalTo(true));
     }
 
     @Ignore
@@ -99,7 +97,6 @@ public class ArbeidsforholdTransformerTest {
         Arbeidsforhold result = arbeidsforholdTransformer.transform(lagArbeidsforhold("time", "fast"));
         assertThat(result.harFastStilling, equalTo(true));
         assertThat(result.fastStillingsprosent, equalTo(100L));
-        assertThat(result.variabelStillingsprosent, equalTo(true));
     }
 
     private no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold lagArbeidsforhold(String... stillingstyper) {

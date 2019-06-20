@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -28,18 +28,15 @@ public class TelefonnummerSystemdataTest {
     private static final String TELEFONNUMMER_BRUKER = "+4723456789";
 
     @Mock
-    private PersonaliaFletter personaliaFletter;
+    private EpostService epostService;
 
     @InjectMocks
     private TelefonnummerSystemdata telefonnummerSystemdata;
 
     @Test
     public void skalOppdatereTelefonnummerUtenLandkode() {
-        Personalia personalia = new Personalia();
-        personalia.setMobiltelefonnummer(TELEFONNUMMER_SYSTEM);
-        personalia.setErUtenlandskBankkonto(false);
+        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(TELEFONNUMMER_SYSTEM));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -51,11 +48,8 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalOppdatereTelefonnummerMedLandkode() {
-        Personalia personalia = new Personalia();
-        personalia.setMobiltelefonnummer("+47" + TELEFONNUMMER_SYSTEM);
-        personalia.setErUtenlandskBankkonto(false);
+        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer("+47" + TELEFONNUMMER_SYSTEM));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -67,11 +61,8 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalIkkeOppdatereTelefonnummerDersomKildeErBruker() {
-        Personalia personalia = new Personalia();
-        personalia.setMobiltelefonnummer(TELEFONNUMMER_SYSTEM);
-        personalia.setErUtenlandskBankkonto(false);
+        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(TELEFONNUMMER_SYSTEM));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedTelefonnummer());
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -83,11 +74,8 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalSetteNullDersomTelefonnummerErTomStreng() {
-        Personalia personalia = new Personalia();
-        personalia.setMobiltelefonnummer("");
-        personalia.setErUtenlandskBankkonto(false);
+        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(""));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -98,11 +86,8 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalSetteNullDersomTelefonnummerErNull() {
-        Personalia personalia = new Personalia();
-        personalia.setMobiltelefonnummer(null);
-        personalia.setErUtenlandskBankkonto(false);
+        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(null));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personaliaFletter.mapTilPersonalia(anyString())).thenReturn(personalia);
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
 

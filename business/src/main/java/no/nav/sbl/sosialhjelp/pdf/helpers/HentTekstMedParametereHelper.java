@@ -1,25 +1,18 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.github.jknack.handlebars.Options;
+import javax.inject.Inject;
+import java.util.Properties;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
@@ -28,9 +21,6 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
     @Inject
     private NavMessageSource navMessageSource;
 
-    @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-    
     private static final Logger LOG = LoggerFactory.getLogger(CmsTekst.class);
 
     @Override
@@ -44,11 +34,8 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
     }
 
     @Override
-    public CharSequence apply(String key, Options options) throws IOException {
-        final KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(SosialhjelpInformasjon.SKJEMANUMMER);
-        final String bundleName = konfigurasjon.getBundleName();
-
-        String tekst = this.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK, options);
+    public CharSequence apply(String key, Options options) {
+        String tekst = this.getCmsTekst(key, options);
         
         String nyTekst = UrlUtils.endreHyperLenkerTilTekst(tekst);
 
@@ -58,17 +45,17 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
         return tekst != null ? tekst : "";
     }
 
-    private String getCmsTekst(String key, Object[] parameters, String soknadTypePrefix, String bundleName, Locale locale, Options options) {
-        Properties bundle = navMessageSource.getBundleFor(bundleName, locale);
+    private String getCmsTekst(String key, Options options) {
+        Properties bundle = navMessageSource.getBundleFor(BUNDLE_NAME, SPRAK);
 
-        String tekst = bundle.getProperty(soknadTypePrefix + "." + key);
+        String tekst = bundle.getProperty(SOKNAD_TYPE_PREFIX + "." + key);
 
         if (tekst == null) {
             tekst = bundle.getProperty(key);
         }
 
         if (tekst == null) {
-            LOG.debug(String.format("Fant ikke tekst til oppsummering for nokkel %s i bundelen %s", key, bundleName));
+            LOG.debug("Fant ikke tekst til oppsummering for nokkel {} i bundelen {}", key, BUNDLE_NAME);
             return tekst;
         } else {
 
@@ -81,12 +68,12 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
         }
     }
     
-    protected String erstattTekst(final String regex, final String input, final String replacement) {
+    private String erstattTekst(final String regex, final String input, final String replacement) {
         String[] lines = input.split("\n");
         for (int i = 0; i < lines.length; i++) {
             lines[i] = lines[i].replace(regex, replacement);
             
         }
-        return Arrays.stream(lines).collect(Collectors.joining("\n"));
+        return String.join("\n", lines);
     }
 }

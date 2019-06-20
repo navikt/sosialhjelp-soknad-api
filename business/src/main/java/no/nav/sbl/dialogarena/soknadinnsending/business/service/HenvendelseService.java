@@ -3,10 +3,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,9 @@ import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -30,21 +30,20 @@ public class HenvendelseService {
     @Inject
     private Clock clock;
 
-    public String startSoknad(String fnr, String skjema, String uid, SoknadType soknadType) {
+    public String startSoknad(String fnr) {
         logger.info("Starter søknad");
 
         SoknadMetadata meta = new SoknadMetadata();
         meta.id = soknadMetadataRepository.hentNesteId();
         meta.behandlingsId = lagBehandlingsId(meta.id);
         meta.fnr = fnr;
-        meta.type = soknadType;
-        meta.skjema = skjema;
+        meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
+        meta.skjema = SKJEMANUMMER;
         meta.status = SoknadInnsendingStatus.UNDER_ARBEID;
         meta.opprettetDato = LocalDateTime.now(clock);
         meta.sistEndretDato = LocalDateTime.now(clock);
 
         meta.hovedskjema = new HovedskjemaMetadata();
-        meta.hovedskjema.filUuid = uid;
 
         soknadMetadataRepository.opprett(meta);
 
@@ -61,7 +60,7 @@ public class HenvendelseService {
         return behandlingsId;
     }
 
-    public String startEttersending(SoknadMetadata ettersendesPaSoknad, String uid) {
+    public String startEttersending(SoknadMetadata ettersendesPaSoknad) {
         SoknadMetadata ettersendelse = new SoknadMetadata();
         ettersendelse.id = soknadMetadataRepository.hentNesteId();
         ettersendelse.behandlingsId = lagBehandlingsId(ettersendelse.id);
@@ -74,7 +73,6 @@ public class HenvendelseService {
         ettersendelse.sistEndretDato = LocalDateTime.now(clock);
 
         ettersendelse.hovedskjema = new HovedskjemaMetadata();
-        ettersendelse.hovedskjema.filUuid = uid;
 
         ettersendelse.orgnr = ettersendesPaSoknad.orgnr;
         ettersendelse.navEnhet = ettersendesPaSoknad.navEnhet;
@@ -88,15 +86,17 @@ public class HenvendelseService {
         return soknadMetadataRepository.hentBehandlingskjede(behandlingskjedeId);
     }
 
-    public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, HovedskjemaMetadata hovedskjema, SoknadMetadata.VedleggMetadataListe vedlegg, Map<String, String> ekstraMetadata) {
+    public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, SoknadMetadata.VedleggMetadataListe vedlegg, SoknadUnderArbeid soknadUnderArbeid) {
         SoknadMetadata meta = soknadMetadataRepository.hent(behandlingsId);
 
+        HovedskjemaMetadata hovedskjema = new HovedskjemaMetadata();
+        hovedskjema.filnavn = SKJEMANUMMER;
         meta.hovedskjema = hovedskjema;
         meta.vedlegg = vedlegg;
 
         if (meta.type != SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            meta.orgnr = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
-            meta.navEnhet = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
+            meta.orgnr = soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getOrganisasjonsnummer();
+            meta.navEnhet = soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getNavEnhetsnavn();
         }
 
         meta.sistEndretDato = LocalDateTime.now(clock);
@@ -109,16 +109,13 @@ public class HenvendelseService {
     }
 
     public SoknadMetadata hentSoknad(String behandlingsId) {
-        return hentSoknad(behandlingsId, false);
+        return soknadMetadataRepository.hent(behandlingsId);
     }
 
-    public SoknadMetadata hentSoknad(String behandlingsId, boolean oppdaterSistEndret) {
+    public void oppdaterSistEndretDatoPaaMetadata(String behandlingsId) {
         SoknadMetadata hentet = soknadMetadataRepository.hent(behandlingsId);
-        if (oppdaterSistEndret) {
-            hentet.sistEndretDato = LocalDateTime.now(clock);
-            soknadMetadataRepository.oppdater(hentet);
-        }
-        return hentet;
+        hentet.sistEndretDato = LocalDateTime.now(clock);
+        soknadMetadataRepository.oppdater(hentet);
     }
 
     public void avbrytSoknad(String behandlingsId, boolean avbruttAutomatisk) {

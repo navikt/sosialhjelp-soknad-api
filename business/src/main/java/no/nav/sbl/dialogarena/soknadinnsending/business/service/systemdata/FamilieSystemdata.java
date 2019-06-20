@@ -2,10 +2,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -24,9 +23,6 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
 public class FamilieSystemdata implements Systemdata {
-
-    @Inject
-    private PersonaliaFletter personaliaFletter;
 
     @Inject
     private PersonService personService;
@@ -84,13 +80,13 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
-        final Personalia personalia = personaliaFletter.mapTilPersonalia(personIdentifikator);
-        if (personalia == null || isEmpty(personalia.getSivilstatus())) {
+        Person person = personService.hentPerson(personIdentifikator);
+        if (person == null || isEmpty(person.getSivilstatus())) {
             return null;
         }
 
-        Ektefelle ektefelle = personalia.getEktefelle();
-        JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(personalia.getSivilstatus());
+        Ektefelle ektefelle = person.getEktefelle();
+        JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(person.getSivilstatus());
         if (!GIFT.equals(status) || ektefelle == null){
             return null;
         }

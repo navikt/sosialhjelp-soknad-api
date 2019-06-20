@@ -35,7 +35,7 @@ public class SoknadMetadataRepositoryJdbcTest {
 
 
     @After
-    public void teardown() throws Exception {
+    public void teardown() {
         support.getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE behandlingsid = ?", behandlingsId);
     }
 

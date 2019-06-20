@@ -19,7 +19,7 @@ public class MocksetupUtils {
     private final static String VALG_NORSK = "NORSK";
     private final static String VALG_INGEN = "INGEN";
 
-    private static PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
+    private static PersonPortTypeMock personPortTypeMock = new PersonMock().personPortTypeMock();
     private static BrukerprofilMock brukerprofilMock = BrukerprofilMock.getInstance();
 
     public static Diskresjonskoder getDiskresjonskode() {
@@ -54,12 +54,12 @@ public class MocksetupUtils {
 
     public static void settPostadressetype(String type){
         XMLBruker bruker = getBrukerFraBrukerprofil();
-        brukerprofilMock.settPostadresse(bruker, mapValueTilAdressetype(type));
+        BrukerprofilMock.settPostadresse(bruker, mapValueTilAdressetype(type));
     }
 
     public static void settSekundarAdressetype(String type) {
         XMLBruker bruker = getBrukerFraBrukerprofil();
-        brukerprofilMock.settSekundarAdresse(bruker, mapValueTilAdressetype(type));
+        BrukerprofilMock.settSekundarAdresse(bruker, mapValueTilAdressetype(type));
     }
 
     private static XMLBruker getBrukerFraBrukerprofil(){

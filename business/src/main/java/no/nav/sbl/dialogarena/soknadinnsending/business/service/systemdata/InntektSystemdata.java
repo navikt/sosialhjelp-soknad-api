@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.tilIntegerMedAvrunding;
+import static java.lang.Double.parseDouble;
+import static java.lang.Math.round;
+import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class InntektSystemdata implements Systemdata {
@@ -100,5 +103,22 @@ public class InntektSystemdata implements Systemdata {
                             .withSatsAntall(komponent.satsAntall)).collect(Collectors.toList());
         }
         return new ArrayList<>();
+    }
+
+    static Integer tilIntegerMedAvrunding(String s) {
+        Double d = tilDouble(s);
+        if (d == null) {
+            return null;
+        }
+        return (int) round(d);
+    }
+
+    private static Double tilDouble(String s) {
+        if (isBlank(s)) {
+            return null;
+        }
+        s = s.replaceAll(",", ".");
+        s = s.replaceAll("\u00A0", "");
+        return parseDouble(deleteWhitespace(s));
     }
 }

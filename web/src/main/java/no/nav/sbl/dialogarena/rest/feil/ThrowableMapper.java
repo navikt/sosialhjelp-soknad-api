@@ -10,9 +10,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import java.net.URI;
+
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.FORBIDDEN;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static javax.ws.rs.core.Response.Status.*;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
 import static no.nav.sbl.dialogarena.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;
@@ -29,10 +30,10 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
             int status = exception.getResponse().getStatus();
             if (status == UNAUTHORIZED.getStatusCode()) {
                 logger.debug(e.getMessage(), e);
-                return status(UNAUTHORIZED.getStatusCode()).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Autentiseringsfeil")).build();
+                return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil");
             } else if(status == FORBIDDEN.getStatusCode()) {
                 logger.debug(e.getMessage(), e);
-                return status(UNAUTHORIZED.getStatusCode()).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Autoriseringsfeil")).build();
+                return createUnauthorizedWithLoginLocationResponse( "Autoriseringsfeil");
             } else if (e instanceof NotFoundException) {
                 logger.warn(e.getMessage(), e);
             } else {
@@ -47,5 +48,14 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
             logger.error("Noe uventet feilet", e);
             return serverError().header(NO_BIGIP_5XX_REDIRECT, true).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "Noe uventet feilet")).build();
         }
+    }
+
+    private Response createUnauthorizedWithLoginLocationResponse(String message) {
+        URI loginUrl = URI.create(System.getProperty("loginservice.url"));
+        return status(UNAUTHORIZED.getStatusCode())
+                .location(loginUrl)
+                .type(APPLICATION_JSON)
+                .entity(new UnauthorizedMelding("web_application_error", message, loginUrl))
+                .build();
     }
 }

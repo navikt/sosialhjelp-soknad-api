@@ -2,13 +2,8 @@ package no.nav.sbl.dialogarena.rest.ressurser.utdanning;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
@@ -22,11 +17,10 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 
 @Controller
@@ -37,16 +31,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMa
 public class UtdanningRessurs {
 
     @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
-
-    @Inject
     private Tilgangskontroll tilgangskontroll;
-
-    @Inject
-    private LegacyHelper legacyHelper;
 
     @Inject
     private TextService textService;
@@ -58,7 +43,7 @@ public class UtdanningRessurs {
     @GET
     public UtdanningFrontend hentUtdanning(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
 
         return new UtdanningFrontend()
@@ -69,13 +54,8 @@ public class UtdanningRessurs {
     @PUT
     public void updateUtdanning(@PathParam("behandlingsId") String behandlingsId, UtdanningFrontend utdanningFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, utdanningFrontend);
-        legacyUpdate(behandlingsId, utdanningFrontend);
-    }
-
-    private void update(String behandlingsId, UtdanningFrontend utdanningFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonUtdanning utdanning = soknad.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
         final List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         utdanning.setKilde(JsonKilde.BRUKER);
@@ -88,23 +68,11 @@ public class UtdanningRessurs {
 
         if (utdanning.getErStudent() != null){
             String soknadstype = "studielanOgStipend";
-            String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(soknadstype));
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
             addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel, utdanning.getErStudent());
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
-    }
-
-    private void legacyUpdate(String behandlingsId, UtdanningFrontend utdanningFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum studerer = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "dinsituasjon.studerer");
-        studerer.setValue(Boolean.toString(utdanningFrontend.erStudent));
-        faktaService.lagreBrukerFaktum(studerer);
-
-        final Faktum studentgrad = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "dinsituasjon.studerer.true.grad");
-        studentgrad.setValue(tilFaktumStudentgrad(utdanningFrontend.studengradErHeltid));
-        faktaService.lagreBrukerFaktum(studentgrad);
     }
 
     private static Boolean toStudentgradErHeltid(JsonUtdanning.Studentgrad studentgrad) {
@@ -119,13 +87,6 @@ public class UtdanningRessurs {
             return null;
         }
         return studentgrad ? JsonUtdanning.Studentgrad.HELTID : JsonUtdanning.Studentgrad.DELTID;
-    }
-
-    private static String tilFaktumStudentgrad(Boolean studentgrad) {
-        if (studentgrad == null) {
-            return null;
-        }
-        return studentgrad ? "heltid" : "deltid";
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

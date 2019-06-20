@@ -1,30 +1,24 @@
 package no.nav.sbl.dialogarena;
 
-import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadinnsendingConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 
 
 /**
@@ -104,15 +98,14 @@ public class FinnGyldigeAdresser {
     
     private static ApplicationContext initializeContext() throws IOException, NamingException {
         SoknadsosialhjelpServer.setFrom("environment-test.properties");
-        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         final DataSource dataSource = buildDataSource("hsqldb.properties");
 
         final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
         builder.bind("jdbc/SoknadInnsendingDS", dataSource);
         builder.activate();
-        
-        final ApplicationContext context = new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
-        return context;
+
+        return new AnnotationConfigApplicationContext(SoknadinnsendingConfig.class);
     }
     
     private static void skrivUt(Map<String, List<AdresseData>> adresser) {

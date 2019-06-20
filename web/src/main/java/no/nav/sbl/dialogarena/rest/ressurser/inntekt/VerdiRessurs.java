@@ -2,19 +2,13 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -28,11 +22,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -40,9 +34,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMa
 @Timed
 @Produces(APPLICATION_JSON)
 public class VerdiRessurs {
-
-    @Inject
-    private LegacyHelper legacyHelper;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -53,16 +44,10 @@ public class VerdiRessurs {
     @Inject
     private TextService textService;
 
-    @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
-
     @GET
     public VerdierFrontend hentVerdier(@PathParam("behandlingsId") String behandlingsId){
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final VerdierFrontend verdierFrontend = new VerdierFrontend();
 
@@ -83,13 +68,8 @@ public class VerdiRessurs {
     @PUT
     public void updateVerdier(@PathParam("behandlingsId") String behandlingsId, VerdierFrontend verdierFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, verdierFrontend);
-        legacyUpdate(behandlingsId, verdierFrontend);
-    }
-
-    private void update(String behandlingsId, VerdierFrontend verdierFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
@@ -103,59 +83,27 @@ public class VerdiRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    private void legacyUpdate(String behandlingsId, VerdierFrontend verdierFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.eierandeler");
-        bekreftelse.setValue(verdierFrontend.bekreftelse.toString());
-        faktaService.lagreBrukerFaktum(bekreftelse);
-
-        final Faktum bolig = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.eierandeler.true.type.bolig");
-        bolig.setValue(String.valueOf(verdierFrontend.bolig));
-        faktaService.lagreBrukerFaktum(bolig);
-
-        final Faktum campingvogn = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.eierandeler.true.type.campingvogn");
-        campingvogn.setValue(String.valueOf(verdierFrontend.campingvogn));
-        faktaService.lagreBrukerFaktum(campingvogn);
-
-        final Faktum kjoretoy = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.eierandeler.true.type.kjoretoy");
-        kjoretoy.setValue(String.valueOf(verdierFrontend.kjoretoy));
-        faktaService.lagreBrukerFaktum(kjoretoy);
-
-        final Faktum fritidseiendom = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.eierandeler.true.type.fritidseiendom");
-        fritidseiendom.setValue(String.valueOf(verdierFrontend.fritidseiendom));
-        faktaService.lagreBrukerFaktum(fritidseiendom);
-
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.eierandeler.true.type.annet");
-        annet.setValue(String.valueOf(verdierFrontend.annet));
-        faktaService.lagreBrukerFaktum(annet);
-
-        final Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.eierandeler.true.type.annet.true.beskrivelse");
-        beskrivelse.setValue(verdierFrontend.beskrivelseAvAnnet != null ? verdierFrontend.beskrivelseAvAnnet : "");
-        faktaService.lagreBrukerFaktum(beskrivelse);
-    }
-
     private void setVerdier(JsonOkonomioversikt oversikt, VerdierFrontend verdierFrontend) {
         final List<JsonOkonomioversiktFormue> verdier = oversikt.getFormue();
 
         String type = "bolig";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.bolig);
 
         type = "campingvogn";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.campingvogn);
 
         type = "kjoretoy";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.kjoretoy);
 
         type = "fritidseiendom";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.fritidseiendom);
 
         type = "annet";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.annet);
     }
 
@@ -173,11 +121,9 @@ public class VerdiRessurs {
     }
 
     private void setBekreftelseOnVerdierFrontend(JsonOkonomiopplysninger opplysninger, VerdierFrontend verdierFrontend) {
-        final Optional<JsonOkonomibekreftelse> verdiBekreftelse = opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("verdi")).findFirst();
-        if (verdiBekreftelse.isPresent()){
-            verdierFrontend.setBekreftelse(verdiBekreftelse.get().getVerdi());
-        }
+        opplysninger.getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals("verdi")).findFirst()
+                .ifPresent(jsonOkonomibekreftelse -> verdierFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
     private void setVerdityperOnVerdierFrontend(JsonOkonomioversikt oversikt, VerdierFrontend verdierFrontend) {

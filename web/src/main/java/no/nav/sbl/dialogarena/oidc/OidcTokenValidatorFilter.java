@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.oidc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.security.oidc.jaxrs.servlet.JaxrsOIDCTokenValidationFilter;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -21,7 +22,7 @@ public class OidcTokenValidatorFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if (!isRunningWithOidc()) {
+        if (!isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             jaxrsOIDCTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain);

@@ -2,12 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.begrunnelse;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
@@ -31,16 +26,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class BegrunnelseRessurs {
 
     @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
-
-    @Inject
     private Tilgangskontroll tilgangskontroll;
-
-    @Inject
-    private LegacyHelper legacyHelper;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -49,7 +35,7 @@ public class BegrunnelseRessurs {
     @GET
     public BegrunnelseFrontend hentBegrunnelse(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
 
         return new BegrunnelseFrontend()
@@ -60,32 +46,14 @@ public class BegrunnelseRessurs {
     @PUT
     public void updateBegrunnelse(@PathParam("behandlingsId") String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, begrunnelseFrontend);
-        legacyUpdate(behandlingsId, begrunnelseFrontend);
-    }
-
-    private void update(String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
         begrunnelse.setKilde(JsonKildeBruker.BRUKER);
         begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvaSokesOm);
         begrunnelse.setHvorforSoke(begrunnelseFrontend.hvorforSoke);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
-
-    private void legacyUpdate(String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum hva = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "begrunnelse.hva");
-        hva.setValue(begrunnelseFrontend.hvaSokesOm);
-        faktaService.lagreBrukerFaktum(hva);
-
-        final Faktum hvorfor = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "begrunnelse.hvorfor");
-        hvorfor.setValue(begrunnelseFrontend.hvorforSoke);
-        faktaService.lagreBrukerFaktum(hvorfor);
-    }
-
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BegrunnelseFrontend {

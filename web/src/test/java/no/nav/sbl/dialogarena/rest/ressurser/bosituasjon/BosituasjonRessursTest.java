@@ -1,17 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser.bosituasjon;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.bosituasjon.BosituasjonRessurs.BosituasjonFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -25,38 +17,25 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
-
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BosituasjonRessursTest {
 
     private static final String BEHANDLINGSID = "123";
-
-    @Mock
-    private LegacyHelper legacyHelper;
+    private static final String EIER = "123456789101";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @InjectMocks
     private BosituasjonRessurs bosituasjonRessurs;
@@ -75,7 +54,7 @@ public class BosituasjonRessursTest {
 
     @Test
     public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersonerLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(null, null));
 
         final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
@@ -86,7 +65,7 @@ public class BosituasjonRessursTest {
 
     @Test
     public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersoner(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.EIER, 2));
 
         final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
@@ -97,9 +76,9 @@ public class BosituasjonRessursTest {
 
     @Test
     public void putBosituasjonSkalSetteBosituasjon(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.LEIER, 2)));
+                createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.LEIER, 2));
 
         final BosituasjonFrontend bosituasjonFrontend = new BosituasjonFrontend()
                 .withBotype(JsonBosituasjon.Botype.ANNET)
@@ -115,9 +94,9 @@ public class BosituasjonRessursTest {
 
     @Test
     public void putBosituasjonSkalSetteAntallPersonerLikNull(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithBosituasjon(null, 2)));
+                createJsonInternalSoknadWithBosituasjon(null, 2));
 
         final BosituasjonFrontend bosituasjonFrontend = new BosituasjonFrontend();
         bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend);
@@ -135,25 +114,12 @@ public class BosituasjonRessursTest {
         return argument.getValue();
     }
 
-    private void ignoreTilgangskontrollAndLegacyUpdate() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
-        when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
-        when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
-    }
-
     private SoknadUnderArbeid createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype botype, Integer antallPersoner) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withBosituasjon(new JsonBosituasjon()
-                                                .withKilde(JsonKildeBruker.BRUKER)
-                                                .withBotype(botype)
-                                                .withAntallPersoner(antallPersoner)
-                                        )
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBosituasjon()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withBotype(botype)
+                .withAntallPersoner(antallPersoner);
+        return soknadUnderArbeid;
     }
 }

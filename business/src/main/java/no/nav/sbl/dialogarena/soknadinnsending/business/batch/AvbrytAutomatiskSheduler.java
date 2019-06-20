@@ -3,9 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
@@ -32,14 +32,17 @@ public class AvbrytAutomatiskSheduler {
     private int vellykket;
 
     @Inject
-    private FillagerService fillagerService;
-    @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
     public void avbrytGamleSoknader() throws InterruptedException {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         batchStartTime = LocalDateTime.now();
         vellykket = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
@@ -64,7 +67,7 @@ public class AvbrytAutomatiskSheduler {
         }
     }
 
-    private void avbryt() throws InterruptedException {
+    private void avbryt() {
         Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
 
         while (soknad.isPresent()) {
@@ -76,9 +79,7 @@ public class AvbrytAutomatiskSheduler {
             final String behandlingsId = soknadMetadata.behandlingsId;
             final String eier = soknadMetadata.fnr;
 
-            fillagerService.slettAlle(behandlingsId);
-
-            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
             soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
 
             soknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);

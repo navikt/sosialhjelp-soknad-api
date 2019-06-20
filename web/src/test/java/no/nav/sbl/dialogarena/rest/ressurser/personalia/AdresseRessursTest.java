@@ -1,15 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -27,10 +21,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -68,9 +61,6 @@ public class AdresseRessursTest {
     private static final String EIER = "123456789101";
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
@@ -78,15 +68,6 @@ public class AdresseRessursTest {
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
-
-    @Mock
-    private SoknadsmottakerRessurs soknadsmottakerRessurs;
 
     @InjectMocks
     private AdresseRessurs adresseRessurs;
@@ -98,7 +79,6 @@ public class AdresseRessursTest {
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
-        when(navEnhetRessurs.mapFromLegacyNavEnhetFrontend(any(SoknadsmottakerRessurs.LegacyNavEnhetFrontend.class), anyString())).thenCallRealMethod();
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
     }
 
@@ -112,7 +92,7 @@ public class AdresseRessursTest {
     public void getAdresserSkalReturnereAdresserRiktigKonvertert(){
         SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(soknadUnderArbeid);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
         final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
@@ -124,7 +104,7 @@ public class AdresseRessursTest {
     public void getAdresserSkalReturnereOppholdsAdresseLikFolkeregistrertAdresse(){
         SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(soknadUnderArbeid);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
         final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
@@ -136,7 +116,7 @@ public class AdresseRessursTest {
     public void getAdresserSkalReturnereOppholdsAdresseLikMidlertidigAdresse(){
         SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.MIDLERTIDIG);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(soknadUnderArbeid);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
 
         final AdresserFrontend adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID);
@@ -146,7 +126,7 @@ public class AdresseRessursTest {
 
     @Test
     public void getAdresserSkalReturnereAdresserLikNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(null));
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(null);
 
@@ -157,11 +137,11 @@ public class AdresseRessursTest {
 
     @Test
     public void putAdresseSkalSetteOppholdsAdresseLikFolkeregistrertAdresseOgReturnereTilhorendeNavenhet(){
-        Optional<SoknadUnderArbeid> optionalSoknadUnderArbeid = Optional.of(createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD));
-        optionalSoknadUnderArbeid.get().getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(optionalSoknadUnderArbeid);
+        SoknadUnderArbeid soknadUnderArbeidIRepo = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD);
+        soknadUnderArbeidIRepo.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeidIRepo);
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         AdresserFrontend adresserFrontend = new AdresserFrontend();
         adresserFrontend.withValg(JsonAdresseValg.FOLKEREGISTRERT);
@@ -179,9 +159,9 @@ public class AdresseRessursTest {
     public void putAdresseSkalSetteOppholdsAdresseLikMidlertidigAdresseOgReturnereTilhorendeNavenhet(){
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)));
+                createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD));
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         AdresserFrontend adresserFrontend = new AdresserFrontend();
         adresserFrontend.withValg(JsonAdresseValg.MIDLERTIDIG);
@@ -199,9 +179,9 @@ public class AdresseRessursTest {
     @Test
     public void putAdresseSkalSetteOppholdsAdresseLikSoknadsadresseOgReturnereTilhorendeNavenhet(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)));
+                createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT));
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         AdresserFrontend adresserFrontend = new AdresserFrontend().withSoknad(new AdresseFrontend());
         adresserFrontend.withValg(JsonAdresseValg.SOKNAD);
@@ -219,12 +199,12 @@ public class AdresseRessursTest {
     }
 
     private void legacyReturnerNavEnhetTilhorendeValgtAdresse() {
-        when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "folkeregistrert")).thenReturn(
-                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet").withSosialOrgnr("1")));
-        when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "midlertidig")).thenReturn(
-                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withSosialOrgnr("2")));
-        when(soknadsmottakerRessurs.findSoknadsmottaker(BEHANDLINGSID, "soknad")).thenReturn(
-                Collections.singletonList(new SoknadsmottakerRessurs.LegacyNavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withSosialOrgnr("3")));
+        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("folkeregistrert"), anyString())).thenReturn(
+                Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet").withOrgnr("1")));
+        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("midlertidig"), anyString())).thenReturn(
+                Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withOrgnr("2")));
+        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("soknad"), anyString())).thenReturn(
+                Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withOrgnr("3")));
     }
 
     private void assertThatAdresserAreCorrectlyConverted(AdresserFrontend adresserFrontend, JsonAdresse folkeregAdresse, JsonAdresse midlertidigAdresse, JsonAdresse valgtAdresse){
@@ -289,13 +269,6 @@ public class AdresseRessursTest {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
         return argument.getValue();
-    }
-
-    private void ignoreTilgangskontrollAndLegacyUpdate() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
-        when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
-        when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithOppholdsadresse(final JsonAdresseValg valg) {

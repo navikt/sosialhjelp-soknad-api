@@ -2,10 +2,13 @@ package no.nav.sbl.dialogarena.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import no.nav.sbl.dialogarena.oidc.OidcResourceFilteringFeature;
+import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 
 /**
  * Jersey 2 config
@@ -21,7 +24,12 @@ public class SoknadApplication extends ResourceConfig {
         packages("no.nav.sbl.dialogarena.rest");
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
-        register(OidcResourceFilteringFeature.class);
+
+        if (isTillatMockRessurs()) {
+            register(TjenesteMockRessurs.class);
+        } else {
+            register(OidcResourceFilteringFeature.class);
+        }
 
         logger.info("Starter Jersey");
     }
