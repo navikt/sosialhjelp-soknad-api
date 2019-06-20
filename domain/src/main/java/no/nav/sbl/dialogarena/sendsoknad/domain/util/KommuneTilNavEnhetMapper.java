@@ -120,7 +120,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0632", "964963282")    // Rollag, Flesberg, Nore og Uvdal
             .put("0604", "974572486")    // Kongsberg
             .put("0826", "874548472")    // Tinn
-            .put("0427", "952857991")    // Elverum
+            .put("0427", "976640322")    // Elverum
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
