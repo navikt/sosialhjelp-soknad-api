@@ -197,7 +197,7 @@ public class NavEnhetRessursTest {
 
     private SoknadUnderArbeid createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg valg, JsonSoknadsmottaker soknadsmottaker) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        soknadUnderArbeid.getJsonInternalSoknad().withMottaker(soknadsmottaker).getSoknad().getData().getPersonalia()
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(soknadsmottaker).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(valg));
         return soknadUnderArbeid;
     }

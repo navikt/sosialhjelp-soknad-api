@@ -119,9 +119,12 @@ public class InnsendingService {
 
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
+        if (mottaker == null && soknadUnderArbeid.erEttersendelse()) {
+            throw new IllegalStateException("Søknadsmottaker mangler.");
+        }
         mottaker = mottaker != null ? mottaker : soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
         if (mottaker == null) {
-            throw new IllegalStateException("Søknadsmottaker mangler. internalSoknad eller mottaker er null");
+            throw new IllegalStateException("Søknadsmottaker mangler.");
         }
 
         String orgnummer = mottaker.getOrganisasjonsnummer();
