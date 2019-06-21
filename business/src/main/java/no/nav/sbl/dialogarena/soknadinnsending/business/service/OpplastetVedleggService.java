@@ -47,42 +47,38 @@ public class OpplastetVedleggService {
         MIME_TIL_EXT.put("image/jpeg", ".jpg");
     }
 
-    public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn, boolean convertedFromFaktum) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final Long soknadId = soknadUnderArbeid.getSoknadId();
-        final String sha512 = ServiceUtils.getSha512FromByteArray(data);
-        final String contentType = Detect.CONTENT_TYPE.transform(data);
+    public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        Long soknadId = soknadUnderArbeid.getSoknadId();
+        String sha512 = ServiceUtils.getSha512FromByteArray(data);
+        String contentType = Detect.CONTENT_TYPE.transform(data);
 
         validerFil(data);
 
-        final OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
+        OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
                 .withEier(eier)
                 .withVedleggType(new VedleggType(vedleggstype))
                 .withData(data)
                 .withSoknadId(soknadId)
                 .withSha512(sha512);
 
-        if (!convertedFromFaktum){
-            filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
-        }
+        filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
         opplastetVedlegg.withFilnavn(filnavn);
 
-        final String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
+        String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
         opplastetVedlegg.withUuid(uuid);
 
-        if (!convertedFromFaktum){
-            final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
-                    .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
-                    .findFirst().get();
+        JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
+                .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
+                .findFirst().get();
 
-            if (jsonVedlegg.getFiler() == null){
-                jsonVedlegg.setFiler(new ArrayList<>());
-            }
-            jsonVedlegg.withStatus(LastetOpp.toString()).getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
-
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+        if (jsonVedlegg.getFiler() == null){
+            jsonVedlegg.setFiler(new ArrayList<>());
         }
+        jsonVedlegg.withStatus(LastetOpp.toString()).getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
         return opplastetVedlegg;
     }
