@@ -60,13 +60,13 @@ function publish() {
 
 function build_and_deploy_docker() {
     (
-        docker build . -t docker.adeo.no:5000/sosialhjelp-soknad-api:${versjon}
-        docker push docker.adeo.no:5000/sosialhjelp-soknad-api:${versjon}
+        docker build . -t docker.adeo.no:5000/sosialhjelp-soknad-api-temp:${versjon}
+        docker push docker.adeo.no:5000/sosialhjelp-soknad-api-temp:${versjon}
     )
 } 
 
 function update_nais_settings() {
-    curl -v -s -S --user "${nexusUploader}" --upload-file web/nais.yaml "https://repo.adeo.no/repository/raw/nais/sosialhjelp-soknad-api/${versjon}/nais.yaml"
+    curl -v -s -S --user "${nexusUploader}" --upload-file web/nais.yaml "https://repo.adeo.no/repository/raw/nais/sosialhjelp-soknad-api-temp/${versjon}/nais.yaml"
 }
 
 function determine_deploy() {
@@ -237,7 +237,7 @@ function deploy_if_requested_by_committer() {
     determine_deploy
     if [[ "${nais_deploy_environment}" != "" ]]
     then
-        deploy "sosialhjelp-soknad-api" "${nais_deploy_environment}" "${versjon}"
+        deploy "sosialhjelp-soknad-api-temp" "${nais_deploy_environment}" "${versjon}"
     fi
 }
 
