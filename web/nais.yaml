@@ -4,13 +4,13 @@ prometheus:
   path: /prometheus
 healthcheck:
   liveness:
-    path: /sosialhjelp/soknad-api/internal/isAlive
+    path: /soknadsosialhjelp/soknad-api/internal/isAlive
     initialDelay: 60
     timeout: 1
     periodSeconds: 10
     failureThreshold: 10
   readiness:
-    path: /sosialhjelp/soknad-api/internal/isAlive
+    path: /soknadsosialhjelp/soknad-api/internal/isAlive
     initialDelay: 60
     timeout: 1
 resources:
