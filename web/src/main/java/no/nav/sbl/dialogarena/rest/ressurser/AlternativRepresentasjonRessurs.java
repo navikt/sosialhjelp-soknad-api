@@ -34,7 +34,7 @@ public class AlternativRepresentasjonRessurs {
     public byte[] jsonRepresentasjon(@PathParam("behandlingsId") String behandlingsId) {
         erRessursAktiv("jsonRepresentasjon");
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         return  soknadUnderArbeidService.mapJsonSoknadTilFil(soknadUnderArbeid.getJsonInternalSoknad().getSoknad());
     }
 

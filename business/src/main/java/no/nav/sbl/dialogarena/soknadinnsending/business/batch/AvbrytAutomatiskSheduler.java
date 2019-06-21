@@ -79,7 +79,7 @@ public class AvbrytAutomatiskSheduler {
             final String behandlingsId = soknadMetadata.behandlingsId;
             final String eier = soknadMetadata.fnr;
 
-            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
             soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
 
             soknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);

@@ -60,10 +60,10 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, OidcFeatureToggleUtils.getUserId());
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, OidcFeatureToggleUtils.getUserId());
         String aktoerId;
-        if (soknadUnderArbeid.isPresent()) {
-            aktoerId = soknadUnderArbeid.get().getEier();
+        if (soknadUnderArbeidOptional.isPresent()) {
+            aktoerId = soknadUnderArbeidOptional.get().getEier();
         } else {
             throw new AuthorizationException("Bruker har ikke tilgang til søknaden.");
         }

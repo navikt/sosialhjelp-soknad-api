@@ -18,8 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
-
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
@@ -61,8 +59,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningUtenErStudentOgStudentgrad(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithUtdanning(null, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtdanning(null, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -72,8 +70,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErIkkeStudent(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithUtdanning(Boolean.FALSE, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtdanning(Boolean.FALSE, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -83,8 +81,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudent(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, null)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, null));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -94,8 +92,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradHeltid(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.HELTID)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.HELTID));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -105,8 +103,8 @@ public class UtdanningRessursTest {
 
     @Test
     public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradDeltid(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
-                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.DELTID)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.DELTID));
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
@@ -118,7 +116,7 @@ public class UtdanningRessursTest {
     public void putUtdanningSkalSetteUtdanningMedErStudent(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
+                createJsonInternalSoknadWithUtdanning(null, null));
 
         final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
                 .withErStudent(Boolean.TRUE);
@@ -135,7 +133,7 @@ public class UtdanningRessursTest {
     public void putUtdanningSkalSetteUtdanningMedErStudentOgStudentgrad(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithUtdanning(null, null)));
+                createJsonInternalSoknadWithUtdanning(null, null));
 
         final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
                 .withErStudent(Boolean.TRUE)
@@ -153,7 +151,7 @@ public class UtdanningRessursTest {
     public void putUtdanningSkalSetteUtdanningMedErIkkeStudentOgSletteStudentgrad(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithUtdanning(true, JsonUtdanning.Studentgrad.DELTID)));
+                createJsonInternalSoknadWithUtdanning(true, JsonUtdanning.Studentgrad.DELTID));
 
         final UtdanningFrontend utdanningFrontend = new UtdanningFrontend()
                 .withErStudent(Boolean.FALSE)

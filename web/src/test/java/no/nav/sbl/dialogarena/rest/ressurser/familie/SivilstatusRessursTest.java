@@ -22,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.text.ParseException;
-import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
@@ -74,9 +73,9 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereNull(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(null, null, null,
-                        null, null, null)));
+                        null, null, null));
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
@@ -85,9 +84,9 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereKunBrukerdefinertStatus(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, null,
-                        null, null, null)));
+                        null, null, null));
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
@@ -100,9 +99,9 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereBrukerdefinertEktefelleRiktigKonvertert(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
-                        null, null, true)));
+                        null, null, true));
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
@@ -116,9 +115,9 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereSystemdefinertEktefelleRiktigKonvertert(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
-                        false, true, null)));
+                        false, true, null));
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
@@ -132,9 +131,9 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereSystemdefinertEktefelleMedDiskresjonskode(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.of(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
-                        true, null, null)));
+                        true, null, null));
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
@@ -149,8 +148,8 @@ public class SivilstatusRessursTest {
     public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() throws ParseException {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithSivilstatus(null, null, null,
-                        null, null, null)));
+                createJsonInternalSoknadWithSivilstatus(null, null, null,
+                        null, null, null));
 
         assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.GIFT);
         assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.ENKE);
@@ -164,8 +163,8 @@ public class SivilstatusRessursTest {
     public void putSivilstatusSkalSetteStatusGiftOgEktefelle() throws ParseException {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithSivilstatus(null, null, null,
-                        null, null, null)));
+                createJsonInternalSoknadWithSivilstatus(null, null, null,
+                        null, null, null));
 
         final SivilstatusFrontend sivilstatusFrontend = new SivilstatusFrontend()
                 .withKildeErSystem(false).withSivilstatus(JsonSivilstatus.Status.GIFT)

@@ -74,13 +74,13 @@ public class OpplastetVedleggServiceTest {
     @Test
     public void oppdatererVedleggStatusVedOpplastingAvVedlegg() throws IOException {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
+                new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
                                 new JsonVedlegg()
                                         .withType(new VedleggType(TYPE).getType())
                                         .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
                                         .withStatus("VedleggKreves")
-                        ))))));
+                        )))));
         when(opplastetVedleggRepository.opprettVedlegg(any(OpplastetVedlegg.class), anyString())).thenReturn("321");
 
         final byte[] imageFile = createByteArrayFromJpeg();
@@ -98,14 +98,14 @@ public class OpplastetVedleggServiceTest {
     @Test
     public void sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
+                new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
                                 new JsonVedlegg()
                                         .withType(new VedleggType(TYPE).getType())
                                         .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
                                         .withFiler(new ArrayList<>(Collections.singletonList(new JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512))))
                                         .withStatus("LastetOpp")
-                        ))))));
+                        )))));
         when(opplastetVedleggRepository.hentVedlegg(anyString(), anyString())).thenReturn(
                 Optional.of(new OpplastetVedlegg().withVedleggType(new VedleggType(TYPE)).withFilnavn(FILNAVN2).withSha512(SHA512)));
 

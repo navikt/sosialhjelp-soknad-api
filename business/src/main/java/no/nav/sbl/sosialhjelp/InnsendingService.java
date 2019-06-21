@@ -58,7 +58,7 @@ public class InnsendingService {
 
     public void finnOgSlettSoknadUnderArbeidVedSendingTilFiks(String behandlingsId, String eier) {
         logger.debug("Henter søknad under arbeid for behandlingsid {} og eier {}", behandlingsId, eier);
-        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
         soknadUnderArbeid.ifPresent(soknadUnderArbeidFraDb -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidFraDb, eier));
     }
 
@@ -76,7 +76,7 @@ public class InnsendingService {
     }
 
     public SoknadUnderArbeid hentSoknadUnderArbeid(String behandlingsId, String eier) {
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
         if (!soknadUnderArbeidOptional.isPresent()) {
             throw new RuntimeException("Finner ikke sendt søknad med behandlingsId " + behandlingsId);
         }
