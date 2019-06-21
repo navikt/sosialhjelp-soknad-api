@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -55,6 +56,7 @@ public class NavEnhetRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonInternalSoknad internalSoknad = soknad.getJsonInternalSoknad();
         String valgtOrgnr = internalSoknad.getMottaker() == null ? null : internalSoknad.getMottaker().getOrganisasjonsnummer();
+        valgtOrgnr = valgtOrgnr != null ? valgtOrgnr : internalSoknad.getSoknad().getMottaker().getOrganisasjonsnummer();
 
         final JsonAdresse oppholdsadresse = internalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
         final String adresseValg = oppholdsadresse == null ? null :
@@ -67,11 +69,11 @@ public class NavEnhetRessurs {
     @PUT
     public void updateNavEnhet(@PathParam("behandlingsId") String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonInternalSoknad jsonInternalSoknad = soknad.getJsonInternalSoknad();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonSoknad jsonSoknad = soknad.getJsonInternalSoknad().getSoknad();
 
-        jsonInternalSoknad.setMottaker(new JsonSoknadsmottaker()
+        jsonSoknad.setMottaker(new JsonSoknadsmottaker()
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);

@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -117,13 +118,14 @@ public class InnsendingService {
     }
 
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
-        JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
-        if (internalSoknad == null || internalSoknad.getMottaker() == null) {
+        JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
+        mottaker = mottaker != null ? mottaker : soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
+        if (mottaker == null) {
             throw new IllegalStateException("Søknadsmottaker mangler. internalSoknad eller mottaker er null");
         }
 
-        String orgnummer = internalSoknad.getMottaker().getOrganisasjonsnummer();
-        String navEnhetsnavn = internalSoknad.getMottaker().getNavEnhetsnavn();
+        String orgnummer = mottaker.getOrganisasjonsnummer();
+        String navEnhetsnavn = mottaker.getNavEnhetsnavn();
         if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
             throw new IllegalStateException("Søknadsmottaker mangler. orgnummer: " + orgnummer + ", navEnhetsnavn: " + navEnhetsnavn);
         }

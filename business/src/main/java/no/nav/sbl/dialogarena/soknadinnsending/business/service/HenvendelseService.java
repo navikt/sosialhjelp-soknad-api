@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -95,8 +96,10 @@ public class HenvendelseService {
         meta.vedlegg = vedlegg;
 
         if (meta.type != SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            meta.orgnr = soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getOrganisasjonsnummer();
-            meta.navEnhet = soknadUnderArbeid.getJsonInternalSoknad().getMottaker().getNavEnhetsnavn();
+            JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
+            mottaker = mottaker != null ? mottaker : soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
+            meta.orgnr = mottaker.getOrganisasjonsnummer();
+            meta.navEnhet = mottaker.getNavEnhetsnavn();
         }
 
         meta.sistEndretDato = LocalDateTime.now(clock);

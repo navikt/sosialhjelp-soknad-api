@@ -46,7 +46,9 @@ public final class HandlebarContext {
     }
     
     public JsonSoknadsmottaker getMottaker() {
-        return internalSoknad.getMottaker();
+        JsonSoknadsmottaker mottaker = internalSoknad.getMottaker();
+        mottaker = mottaker != null ? mottaker : internalSoknad.getSoknad().getMottaker();
+        return mottaker;
     }
 
     public boolean getUtvidetSoknad() {

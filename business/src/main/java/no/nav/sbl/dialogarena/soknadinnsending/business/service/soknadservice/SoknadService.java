@@ -19,6 +19,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -39,6 +40,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -193,6 +196,9 @@ public class SoknadService {
                                 )
                         )
                 )
+                .withMottaker(new JsonSoknadsmottaker()
+                        .withNavEnhetsnavn("")
+                        .withOrganisasjonsnummer(""))
                 .withDriftsinformasjon("")
                 .withKompatibilitet(new ArrayList<>())
         ).withVedlegg(new JsonVedleggSpesifikasjon());
