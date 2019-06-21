@@ -32,7 +32,7 @@ public class SoknadsosialhjelpServer {
 
 
     public SoknadsosialhjelpServer() throws Exception {
-        this(PORT, null, "/soknadsosialhjelp/soknad-api", null);
+        this(PORT, null, "/sosialhjelp/soknad-api", null);
     }
 
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
