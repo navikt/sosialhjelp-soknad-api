@@ -1,7 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +14,6 @@ public class PDFService {
 
     @Inject
     private HtmlGenerator pdfTemplate;
-
-    @Inject
-    private AdresseSystemdata adresseSystemdata;
 
     public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending, String eier) {
         try {
@@ -47,8 +43,7 @@ public class PDFService {
     
     private byte[] genererOppsummeringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean fullSoknad) {
         try {
-            String eier = internalSoknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, adresseSystemdata.innhentMidlertidigAdresse(eier), fullSoknad);
+            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, null, fullSoknad);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage PDF for saksbehandler/juridisk. Fullsoknad: " + fullSoknad, e);
