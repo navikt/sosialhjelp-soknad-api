@@ -71,9 +71,9 @@ public class NavEnhetRessurs {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        JsonSoknad jsonSoknad = soknad.getJsonInternalSoknad().getSoknad();
+        soknad.getJsonInternalSoknad().setMottaker(null);
 
-        jsonSoknad.setMottaker(new JsonSoknadsmottaker()
+        soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
