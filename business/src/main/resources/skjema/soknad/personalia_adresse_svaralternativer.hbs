@@ -3,17 +3,27 @@
     <ul class="svar-liste">
         <li>
             <ul class="svar-liste">
-                <li>
-                    <span class="verdi verdi--radio">
-                        {{hentTekst "kontakt.system.oppholdsadresse.folkeregistrertAdresse"}}
-                    </span>
-                </li>
-                Eventuelt midlertidig adresse registrert på Ditt NAV:
-                <li>
-                    <span class="verdi verdi--radio">
+                {{#if folkeregistrertAdresse}}
+                    <li>
+                        <span class="verdi verdi--radio">
+                            {{hentTekst "kontakt.system.oppholdsadresse.folkeregistrertAdresse"}}
+                        </span>
+                    </li>
+                {{/if}}
+                {{#if @root.midlertidigAdresse}}
+                    <li>
                         {{hentTekst "kontakt.system.oppholdsadresse.midlertidigAdresse"}}
-                    </span>
-                </li>
+                        {{#hvisLik oppholdsadresse.adresseValg "midlertidig"}}
+                            {{#with oppholdsadresse}}
+                                {{> skjema/soknad/adresse}}
+                            {{/with}}
+                        {{else}}
+                            {{#with @root.midlertidigAdresse}}
+                                {{> skjema/soknad/adresse}}
+                            {{/with}}
+                        {{/hvisLik}}
+                    </li>
+                {{/if}}
                 <li>
                     <span class="verdi verdi--radio">
                         {{hentTekst "kontakt.system.oppholdsadresse.valg.soknad"}}
