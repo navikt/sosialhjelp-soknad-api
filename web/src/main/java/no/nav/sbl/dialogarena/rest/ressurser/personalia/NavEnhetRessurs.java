@@ -56,7 +56,9 @@ public class NavEnhetRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonInternalSoknad internalSoknad = soknad.getJsonInternalSoknad();
         String valgtOrgnr = internalSoknad.getMottaker() == null ? null : internalSoknad.getMottaker().getOrganisasjonsnummer();
-        valgtOrgnr = valgtOrgnr != null ? valgtOrgnr : internalSoknad.getSoknad().getMottaker().getOrganisasjonsnummer();
+        if (valgtOrgnr == null && internalSoknad.getSoknad().getMottaker() != null) {
+            valgtOrgnr = internalSoknad.getSoknad().getMottaker().getOrganisasjonsnummer();
+        }
 
         final JsonAdresse oppholdsadresse = internalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
         final String adresseValg = oppholdsadresse == null ? null :
