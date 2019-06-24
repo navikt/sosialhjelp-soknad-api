@@ -39,7 +39,7 @@ public class ContentConfig {
     @Scheduled(fixedRate = FEM_MINUTTER)
     private void slettCache() {
         if (ServiceUtils.isScheduledTasksDisabled()) {
-            logger.warn("Scheduler is disabled");
+            logger.info("Scheduler is disabled");
             return;
         }
 

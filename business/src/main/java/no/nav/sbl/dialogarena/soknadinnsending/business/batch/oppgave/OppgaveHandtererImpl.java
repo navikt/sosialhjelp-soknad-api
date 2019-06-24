@@ -46,7 +46,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     @Scheduled(fixedDelay = PROSESS_RATE)
     public void prosesserOppgaver() {
         if (ServiceUtils.isScheduledTasksDisabled()) {
-            logger.warn("Scheduler is disabled");
+            logger.info("Scheduler is disabled");
             return;
         }
 
@@ -83,7 +83,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     @Scheduled(fixedDelay = RETRY_STUCK_RATE)
     public void retryStuckUnderArbeid() {
         if (ServiceUtils.isScheduledTasksDisabled()) {
-            logger.warn("Scheduler is disabled");
+            logger.info("Scheduler is disabled");
             return;
         }
 
@@ -101,7 +101,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     @Scheduled(fixedRate = RAPPORTER_RATE)
     public void rapporterFeilede() {
         if (ServiceUtils.isScheduledTasksDisabled()) {
-            logger.warn("Scheduler is disabled");
+            logger.info("Scheduler is disabled");
             return;
         }
 
