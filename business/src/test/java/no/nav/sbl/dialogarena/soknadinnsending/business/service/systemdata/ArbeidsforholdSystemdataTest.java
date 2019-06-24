@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -84,6 +85,7 @@ public class ArbeidsforholdSystemdataTest {
     @Test
     public void skalLeggeTilInntektForLonnslipp() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente skattbar inntekt fra Skatteetaten");
         List<Arbeidsforhold> arbeidsforholdList = Collections.singletonList(ARBEIDSFORHOLD_LONNSLIPP);
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
@@ -102,6 +104,7 @@ public class ArbeidsforholdSystemdataTest {
     @Test
     public void skalLeggeTilUtbetalingForSluttoppgjor() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente skattbar inntekt fra Skatteetaten");
         List<Arbeidsforhold> arbeidsforholdList = Collections.singletonList(ARBEIDSFORHOLD_SLUTTOPPGJOR);
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         String tittel = "tittel";

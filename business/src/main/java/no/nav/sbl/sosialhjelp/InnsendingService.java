@@ -119,10 +119,9 @@ public class InnsendingService {
 
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
-        if (mottaker == null && soknadUnderArbeid.erEttersendelse()) {
-            throw new IllegalStateException("Søknadsmottaker mangler.");
+        if (mottaker == null && !soknadUnderArbeid.erEttersendelse()) {
+            mottaker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
         }
-        mottaker = mottaker != null ? mottaker : soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
         if (mottaker == null) {
             throw new IllegalStateException("Søknadsmottaker mangler.");
         }
