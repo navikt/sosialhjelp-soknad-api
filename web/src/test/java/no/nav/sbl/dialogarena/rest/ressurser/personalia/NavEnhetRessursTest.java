@@ -124,14 +124,16 @@ public class NavEnhetRessursTest {
 
     @Test
     public void getNavEnheterSkalReturnereEnheterRiktigKonvertert(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg.FOLKEREGISTRERT, SOKNADSMOTTAKER));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert"))).thenReturn(
                 Arrays.asList(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2));
         when(norgService.finnEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
         when(norgService.finnEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
 
-        final List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+        List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
         assertThatEnheterAreCorrectlyConverted(navEnhetFrontends, Arrays.asList(SOKNADSMOTTAKER, SOKNADSMOTTAKER_2));
         assertThat(navEnhetFrontends.get(0).valgt, is(true));
@@ -140,31 +142,35 @@ public class NavEnhetRessursTest {
 
     @Test
     public void getNavEnheterSkalReturnereTomListeNaarOppholdsadresseIkkeErValgt(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(null, null));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq(null))).thenReturn(new ArrayList<>());
         when(norgService.finnEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
         when(norgService.finnEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
 
-        final List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+        List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
         assertTrue(navEnhetFrontends.isEmpty());
     }
 
     @Test
     public void putNavEnhetSkalSetteNavenhet(){
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg.FOLKEREGISTRERT, SOKNADSMOTTAKER));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        final NavEnhetFrontend navEnhetFrontend = new NavEnhetFrontend()
+        NavEnhetFrontend navEnhetFrontend = new NavEnhetFrontend()
                 .withEnhetsnavn(ENHETSNAVN_2)
                 .withKommunenavn(KOMMUNENAVN_2)
                 .withOrgnr(ORGNR_2);
 
         navEnhetRessurs.updateNavEnhet(BEHANDLINGSID, navEnhetFrontend);
 
-        final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        final JsonSoknadsmottaker jsonSoknadsmottaker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
+        SoknadUnderArbeid updatedSoknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonSoknadsmottaker jsonSoknadsmottaker = updatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
         assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, jsonSoknadsmottaker);
     }
 
@@ -180,9 +186,9 @@ public class NavEnhetRessursTest {
             return;
         }
 
-        final String kombinertnavn = soknadsmottaker.getNavEnhetsnavn();
-        final String enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','));
-        final String kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2);
+        String kombinertnavn = soknadsmottaker.getNavEnhetsnavn();
+        String enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','));
+        String kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2);
 
         assertThat("Enhetsnavn", navEnhetFrontend.enhetsnavn, is(enhetsnavn));
         assertThat("kommunenavn", navEnhetFrontend.kommunenavn, is(kommunenavn));
@@ -193,12 +199,5 @@ public class NavEnhetRessursTest {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
         return argument.getValue();
-    }
-
-    private SoknadUnderArbeid createJsonInternalSoknadWithAdresseValgAndSoknadsmottaker(JsonAdresseValg valg, JsonSoknadsmottaker soknadsmottaker) {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(soknadsmottaker).getData().getPersonalia()
-                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(valg));
-        return soknadUnderArbeid;
     }
 }
