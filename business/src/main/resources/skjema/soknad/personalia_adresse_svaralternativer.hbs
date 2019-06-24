@@ -10,7 +10,7 @@
                         </span>
                     </li>
                 {{/if}}
-                {{#if @root.midlertidigAdresse}}
+                {{#if @root.soknad.midlertidigAdresse}}
                     <li>
                         {{hentTekst "kontakt.system.oppholdsadresse.midlertidigAdresse"}}
                         {{#hvisLik oppholdsadresse.adresseValg "midlertidig"}}
@@ -18,7 +18,7 @@
                                 {{> skjema/soknad/adresse}}
                             {{/with}}
                         {{else}}
-                            {{#with @root.midlertidigAdresse}}
+                            {{#with @root.soknad.midlertidigAdresse}}
                                 {{> skjema/soknad/adresse}}
                             {{/with}}
                         {{/hvisLik}}
