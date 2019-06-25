@@ -4,7 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
@@ -120,7 +120,8 @@ public class InnsendingService {
 
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         JsonSoknadsmottaker internalMottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
-        no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
+        JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
+        no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker mottaker = soknad == null ? null : soknad.getMottaker();
         if (internalMottaker == null && mottaker == null) {
             throw new IllegalStateException("Søknadsmottaker mangler.");
         }
