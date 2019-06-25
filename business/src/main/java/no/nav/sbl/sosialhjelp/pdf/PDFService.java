@@ -43,7 +43,7 @@ public class PDFService {
     
     private byte[] genererOppsummeringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean fullSoknad) {
         try {
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, fullSoknad);
+            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, null, fullSoknad);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage PDF for saksbehandler/juridisk. Fullsoknad: " + fullSoknad, e);

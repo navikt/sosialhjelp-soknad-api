@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
@@ -31,6 +32,8 @@ public class FullOppsummeringRessurs {
     private PDFService pdfService;
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    @Inject
+    private AdresseSystemdata adresseSystemdata;
     private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
 
     @GET
@@ -41,7 +44,7 @@ public class FullOppsummeringRessurs {
 
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), adresseSystemdata.innhentMidlertidigAdresse(eier));
     }
 
     @GET

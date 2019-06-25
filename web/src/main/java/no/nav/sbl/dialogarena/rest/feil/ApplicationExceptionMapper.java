@@ -44,7 +44,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             logger.warn("Fant ikke ressurs", e);
         } else if (e instanceof EttersendelseSendtForSentException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
-            logger.warn("REST-kall feilet: " + e.getMessage(), e);
+            logger.info("REST-kall feilet: " + e.getMessage(), e);
         } else if (e instanceof TjenesteUtilgjengeligException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig");
