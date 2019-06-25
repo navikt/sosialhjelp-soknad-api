@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.SoknadLaastException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -129,7 +129,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         final Long oppdatertVersjon = opprinneligVersjon + 1;
         final LocalDateTime sistEndretDato = now();
         if (!soknadUnderArbeid.erEttersendelse() && soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker() == null) {
-            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker().withOrganisasjonsnummer("").withNavEnhetsnavn(""));
+            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker().withEnhetsnummer("").withNavEnhetsnavn(""));
         }
         byte[] data = mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad());
 

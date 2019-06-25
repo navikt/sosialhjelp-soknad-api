@@ -4,9 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -158,6 +157,19 @@ public class KommuneTilNavEnhetMapper {
 
     public static String getOrganisasjonsnummer(String enhetNr) {
         return isProduction() ? PROD_ORGANISASJONSNUMMER.get(enhetNr) : TEST_ORGANISASJONSNUMMER.get(enhetNr);
+    }
+
+    public static String getEnhetsnummer(String orgNr) {
+        return isProduction() ? getKeyByValue(PROD_ORGANISASJONSNUMMER, orgNr) : getKeyByValue(TEST_ORGANISASJONSNUMMER, orgNr);
+    }
+
+    private static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+        for (Map.Entry<T, E> entry : map.entrySet()) {
+            if (Objects.equals(value, entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(

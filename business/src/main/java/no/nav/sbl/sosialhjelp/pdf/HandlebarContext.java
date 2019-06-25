@@ -45,10 +45,13 @@ public final class HandlebarContext {
         return internalSoknad.getVedlegg();
     }
     
-    public JsonSoknadsmottaker getMottaker() {
+    public String getNavEnhetsnavn() {
         JsonSoknadsmottaker mottaker = internalSoknad.getMottaker();
-        mottaker = mottaker != null ? mottaker : internalSoknad.getSoknad().getMottaker();
-        return mottaker;
+        if (mottaker != null) {
+            return mottaker.getNavEnhetsnavn();
+        } else {
+            return internalSoknad.getSoknad().getMottaker().getNavEnhetsnavn();
+        }
     }
 
     public boolean getUtvidetSoknad() {

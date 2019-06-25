@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -118,16 +119,21 @@ public class InnsendingService {
     }
 
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
-        JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
-        if (mottaker == null && !soknadUnderArbeid.erEttersendelse()) {
-            mottaker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
-        }
-        if (mottaker == null) {
+        JsonSoknadsmottaker internalMottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
+        no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
+        if (internalMottaker == null && mottaker == null) {
             throw new IllegalStateException("Søknadsmottaker mangler.");
         }
+        String orgnummer;
+        String navEnhetsnavn;
+        if (internalMottaker != null) {
+            orgnummer = internalMottaker.getOrganisasjonsnummer();
+            navEnhetsnavn = internalMottaker.getNavEnhetsnavn();
+        } else {
+            orgnummer = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(mottaker.getEnhetsnummer());
+            navEnhetsnavn = mottaker.getNavEnhetsnavn();
+        }
 
-        String orgnummer = mottaker.getOrganisasjonsnummer();
-        String navEnhetsnavn = mottaker.getNavEnhetsnavn();
         if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
             throw new IllegalStateException("Søknadsmottaker mangler. orgnummer: " + orgnummer + ", navEnhetsnavn: " + navEnhetsnavn);
         }

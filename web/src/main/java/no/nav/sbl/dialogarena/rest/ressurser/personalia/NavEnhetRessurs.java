@@ -9,9 +9,8 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -56,8 +55,9 @@ public class NavEnhetRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonInternalSoknad internalSoknad = soknad.getJsonInternalSoknad();
         String valgtOrgnr = internalSoknad.getMottaker() == null ? null : internalSoknad.getMottaker().getOrganisasjonsnummer();
+        String valgtEnhetNr = null;
         if (valgtOrgnr == null && internalSoknad.getSoknad().getMottaker() != null) {
-            valgtOrgnr = internalSoknad.getSoknad().getMottaker().getOrganisasjonsnummer();
+            valgtEnhetNr = internalSoknad.getSoknad().getMottaker().getEnhetsnummer();
         }
 
         final JsonAdresse oppholdsadresse = internalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -65,7 +65,7 @@ public class NavEnhetRessurs {
                 oppholdsadresse.getAdresseValg() == null ? null :
                         oppholdsadresse.getAdresseValg().toString();
 
-        return findSoknadsmottaker(soknad, adresseValg, valgtOrgnr);
+        return findSoknadsmottaker(soknad, adresseValg, valgtOrgnr, valgtEnhetNr);
     }
 
     @PUT
@@ -75,13 +75,14 @@ public class NavEnhetRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         soknad.getJsonInternalSoknad().setMottaker(null);
 
+        String enhetNr = KommuneTilNavEnhetMapper.getEnhetsnummer(navEnhetFrontend.orgnr);
         soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
-                .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
+                .withEnhetsnummer(enhetNr));
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(SoknadUnderArbeid soknad, String valg, String valgtOrgnr) {
+    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(SoknadUnderArbeid soknad, String valg, String valgtOrgnr, String valgtEnhetNr) {
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
@@ -92,11 +93,11 @@ public class NavEnhetRessurs {
          */
         return adresseForslagene.stream().map((adresseForslag) -> {
             final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtOrgnr);
+            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtOrgnr, valgtEnhetNr);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
 
-    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtOrgnr) {
+    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtOrgnr, String valgtEnhetNr) {
         if (navEnhet == null) {
             logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
@@ -106,13 +107,19 @@ public class NavEnhetRessurs {
             return null;
         }
 
-        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
+        boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         String sosialOrgnr = digisosKommune ? navEnhet.sosialOrgnr : null;
+        boolean valgt;
+        if (valgtEnhetNr != null) {
+            valgt = digisosKommune && navEnhet.enhetNr.equals(valgtEnhetNr);
+        } else {
+            valgt = digisosKommune && navEnhet.sosialOrgnr.equals(valgtOrgnr);
+        }
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
                 .withKommunenavn(adresseForslag.kommunenavn)
                 .withOrgnr(sosialOrgnr)
-                .withValgt(sosialOrgnr != null && sosialOrgnr.equals(valgtOrgnr));
+                .withValgt(valgt);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

@@ -19,7 +19,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -196,7 +196,7 @@ public class SoknadService {
                 )
                 .withMottaker(new JsonSoknadsmottaker()
                         .withNavEnhetsnavn("")
-                        .withOrganisasjonsnummer(""))
+                        .withEnhetsnummer(""))
                 .withDriftsinformasjon("")
                 .withKompatibilitet(new ArrayList<>())
         ).withVedlegg(new JsonVedleggSpesifikasjon());

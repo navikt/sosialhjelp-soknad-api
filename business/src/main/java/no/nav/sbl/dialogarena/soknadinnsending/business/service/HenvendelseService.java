@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
@@ -96,10 +97,15 @@ public class HenvendelseService {
         meta.vedlegg = vedlegg;
 
         if (meta.type != SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
-            mottaker = mottaker != null ? mottaker : soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
-            meta.orgnr = mottaker.getOrganisasjonsnummer();
-            meta.navEnhet = mottaker.getNavEnhetsnavn();
+            JsonSoknadsmottaker internalMottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
+            if (internalMottaker != null) {
+                meta.orgnr = internalMottaker.getOrganisasjonsnummer();
+                meta.navEnhet = internalMottaker.getNavEnhetsnavn();
+            } else {
+                no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker mottaker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
+                meta.orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(mottaker.getEnhetsnummer());
+                meta.navEnhet = mottaker.getNavEnhetsnavn();
+            }
         }
 
         meta.sistEndretDato = LocalDateTime.now(clock);
