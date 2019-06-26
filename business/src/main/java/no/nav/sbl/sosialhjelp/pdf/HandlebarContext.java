@@ -2,6 +2,7 @@ package no.nav.sbl.sosialhjelp.pdf;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
@@ -45,6 +46,10 @@ public final class HandlebarContext {
         } else {
             return internalSoknad.getSoknad().getMottaker().getNavEnhetsnavn();
         }
+    }
+
+    public JsonAdresse getMidlertidigAdresse() {
+        return internalSoknad.getMidlertidigAdresse();
     }
 
     public boolean getUtvidetSoknad() {
