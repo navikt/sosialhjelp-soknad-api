@@ -73,12 +73,15 @@ public class NavEnhetRessurs {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        soknad.getJsonInternalSoknad().setMottaker(null);
 
-        String enhetNr = KommuneTilNavEnhetMapper.getEnhetsnummer(navEnhetFrontend.orgnr);
-        soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
+        soknad.getJsonInternalSoknad().setMottaker(new no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
-                .withEnhetsnummer(enhetNr));
+                .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
+        if (navEnhetFrontend.enhetsnr != null) {
+            soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
+                    .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
+                    .withEnhetsnummer(navEnhetFrontend.enhetsnr));
+        }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
@@ -109,28 +112,36 @@ public class NavEnhetRessurs {
 
         boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         String sosialOrgnr = digisosKommune ? navEnhet.sosialOrgnr : null;
+        String enhetNr = digisosKommune ? navEnhet.enhetNr : null;
         boolean valgt;
         if (valgtEnhetNr != null) {
-            valgt = digisosKommune && navEnhet.enhetNr.equals(valgtEnhetNr);
+            valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
         } else {
-            valgt = digisosKommune && navEnhet.sosialOrgnr.equals(valgtOrgnr);
+            valgt = sosialOrgnr != null && sosialOrgnr.equals(valgtOrgnr);
         }
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
                 .withKommunenavn(adresseForslag.kommunenavn)
                 .withOrgnr(sosialOrgnr)
+                .withEnhetsnr(enhetNr)
                 .withValgt(valgt);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class NavEnhetFrontend {
         public String orgnr;
+        public String enhetsnr;
         public String enhetsnavn;
         public String kommunenavn;
         public boolean valgt;
 
         public NavEnhetFrontend withOrgnr(String orgnr) {
             this.orgnr = orgnr;
+            return this;
+        }
+
+        public NavEnhetFrontend withEnhetsnr(String enhetsnr) {
+            this.enhetsnr = enhetsnr;
             return this;
         }
 

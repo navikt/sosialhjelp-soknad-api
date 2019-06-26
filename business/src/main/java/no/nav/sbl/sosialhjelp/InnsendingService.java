@@ -1,11 +1,9 @@
 package no.nav.sbl.sosialhjelp;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -119,22 +117,13 @@ public class InnsendingService {
     }
 
     SendtSoknad mapSoknadUnderArbeidTilSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
-        JsonSoknadsmottaker internalMottaker = soknadUnderArbeid.getJsonInternalSoknad().getMottaker();
-        JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
-        no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker mottaker = soknad == null ? null : soknad.getMottaker();
-        if (internalMottaker == null && mottaker == null) {
-            throw new IllegalStateException("Søknadsmottaker mangler.");
-        }
-        String orgnummer;
-        String navEnhetsnavn;
-        if (internalMottaker != null) {
-            orgnummer = internalMottaker.getOrganisasjonsnummer();
-            navEnhetsnavn = internalMottaker.getNavEnhetsnavn();
-        } else {
-            orgnummer = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(mottaker.getEnhetsnummer());
-            navEnhetsnavn = mottaker.getNavEnhetsnavn();
+        JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
+        if (internalSoknad == null || internalSoknad.getMottaker() == null) {
+            throw new IllegalStateException("Søknadsmottaker mangler. internalSoknad eller mottaker er null");
         }
 
+        String orgnummer = internalSoknad.getMottaker().getOrganisasjonsnummer();
+        String navEnhetsnavn = internalSoknad.getMottaker().getNavEnhetsnavn();
         if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
             throw new IllegalStateException("Søknadsmottaker mangler. orgnummer: " + orgnummer + ", navEnhetsnavn: " + navEnhetsnavn);
         }

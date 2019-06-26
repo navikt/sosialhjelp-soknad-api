@@ -159,19 +159,6 @@ public class KommuneTilNavEnhetMapper {
         return isProduction() ? PROD_ORGANISASJONSNUMMER.get(enhetNr) : TEST_ORGANISASJONSNUMMER.get(enhetNr);
     }
 
-    public static String getEnhetsnummer(String orgNr) {
-        return isProduction() ? getKeyByValue(PROD_ORGANISASJONSNUMMER, orgNr) : getKeyByValue(TEST_ORGANISASJONSNUMMER, orgNr);
-    }
-
-    private static <T, E> T getKeyByValue(Map<T, E> map, E value) {
-        for (Map.Entry<T, E> entry : map.entrySet()) {
-            if (Objects.equals(value, entry.getValue())) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
-
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(
             asList(
                     "0701",

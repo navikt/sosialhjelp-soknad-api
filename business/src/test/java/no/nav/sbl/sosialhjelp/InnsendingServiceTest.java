@@ -3,7 +3,6 @@ package no.nav.sbl.sosialhjelp;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
@@ -105,7 +104,7 @@ public class InnsendingServiceTest {
     @Test(expected = IllegalStateException.class)
     public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
         innsendingService.mapSoknadUnderArbeidTilSendtSoknad(createSoknadUnderArbeidUtenTilknyttetBehandlingsid()
-                .withJsonInternalSoknad(new JsonInternalSoknad().withSoknad(new JsonSoknad().withMottaker(null))));
+                .withJsonInternalSoknad(new JsonInternalSoknad().withMottaker(null)));
     }
 
     @Test
