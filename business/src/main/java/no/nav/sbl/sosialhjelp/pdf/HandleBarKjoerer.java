@@ -9,6 +9,7 @@ import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,13 +19,13 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     private Map<String, Helper> helpers = new HashMap<>();
 
-    public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad) throws IOException {
-        return fyllHtmlMalMedInnhold(jsonInternalSoknad, false);
+    public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, JsonAdresse midlertidigAdresse) throws IOException {
+        return fyllHtmlMalMedInnhold(jsonInternalSoknad, midlertidigAdresse, false);
     }
 
     @Override
-    public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) throws IOException {
-        final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false);
+    public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, JsonAdresse midlertidigAdresse, boolean utvidetSoknad) throws IOException {
+        final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, midlertidigAdresse, utvidetSoknad, false, "");
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/soknad")
@@ -40,7 +41,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     @Override
     public String fyllHtmlMalMedInnhold(JsonInternalSoknad internalSoknad, String file, boolean erEttersending, String eier) throws IOException {
-        final HandlebarContext context = new HandlebarContext(internalSoknad, false, erEttersending, eier);
+        final HandlebarContext context = new HandlebarContext(internalSoknad, null, false, erEttersending, eier);
 
         return getHandlebars()
                 .compile(file)

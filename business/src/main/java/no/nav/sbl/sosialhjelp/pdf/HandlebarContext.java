@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.sosialhjelp.pdf.context.InntektEllerUtgiftType;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -19,19 +20,14 @@ public final class HandlebarContext {
     
     public static final Locale SPRAK = new Locale("nb", "NO");
     private final JsonInternalSoknad internalSoknad;
+    private final JsonAdresse midlertidigAdresse;
     private final boolean utvidetSoknad;
     private final boolean erEttersending;
     private final String eier;
 
-    public HandlebarContext(JsonInternalSoknad internalSoknad, boolean utvidetSoknad, boolean erEttersending) {
+    public HandlebarContext(JsonInternalSoknad internalSoknad, JsonAdresse midlertidigAdresse, boolean utvidetSoknad, boolean erEttersending, String eier) {
         this.internalSoknad = internalSoknad;
-        this.utvidetSoknad = utvidetSoknad;
-        this.erEttersending = erEttersending;
-        this.eier = "";
-    }
-
-    public HandlebarContext(JsonInternalSoknad internalSoknad, boolean utvidetSoknad, boolean erEttersending, String eier) {
-        this.internalSoknad = internalSoknad;
+        this.midlertidigAdresse = midlertidigAdresse;
         this.utvidetSoknad = utvidetSoknad;
         this.erEttersending = erEttersending;
         this.eier = eier;
@@ -40,7 +36,11 @@ public final class HandlebarContext {
     public JsonSoknad getSoknad() {
         return internalSoknad.getSoknad();
     }
-    
+
+    public JsonAdresse getMidlertidigAdresse() {
+        return midlertidigAdresse;
+    }
+
     public JsonVedleggSpesifikasjon getJsonVedleggSpesifikasjon() {
         return internalSoknad.getVedlegg();
     }
