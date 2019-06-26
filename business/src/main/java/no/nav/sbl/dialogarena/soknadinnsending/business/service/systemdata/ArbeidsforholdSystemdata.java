@@ -50,7 +50,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     private void updateVedleggForventninger(JsonInternalSoknad jsonInternalSoknad) {
         final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         final List<JsonOkonomioversiktInntekt> inntekter = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt();
-        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(jsonInternalSoknad.getSoknad().getData().getArbeid());
+        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(jsonInternalSoknad);
 
         String soknadstype = "sluttoppgjoer";
         if (typeIsInList(jsonVedleggs, "sluttoppgjor")){

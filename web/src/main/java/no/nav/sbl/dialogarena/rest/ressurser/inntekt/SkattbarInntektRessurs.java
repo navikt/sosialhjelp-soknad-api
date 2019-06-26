@@ -2,8 +2,6 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
@@ -31,8 +29,6 @@ public class SkattbarInntektRessurs {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Inject
-    private LegacyHelper legacyHelper;
 
     List<JsonOkonomiOpplysningUtbetaling> mockUtbetalinger;
 
@@ -43,7 +39,7 @@ public class SkattbarInntektRessurs {
         if (mockUtbetalinger != null && Boolean.valueOf(System.getProperty("tillatmock"))) {
             utbetalinger = mockUtbetalinger;
         } else {
-            JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, true).getJsonInternalSoknad();
+            JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).orElseThrow(IllegalStateException::new).getJsonInternalSoknad();
             utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         }
 
@@ -51,7 +47,7 @@ public class SkattbarInntektRessurs {
         List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger =
                 utbetalinger.stream()
                         .filter(jsonOkonomiOpplysningUtbetaling -> jsonOkonomiOpplysningUtbetaling.getType() != null &&
-                                jsonOkonomiOpplysningUtbetaling.getType().equals(UtbetalingBolk.SKATTEETATEN)).collect(Collectors.toList());
+                                jsonOkonomiOpplysningUtbetaling.getType().equals("sdasdada")).collect(Collectors.toList());
 
         return organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger);
     }
@@ -62,8 +58,6 @@ public class SkattbarInntektRessurs {
         for (List<JsonOkonomiOpplysningUtbetaling> utbetalingerPerManed : new TreeMap<>(skatteopplysninger
                 .stream()
                 .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getPeriodeFom))).values()) {
-            Double samletSkattbarInntekt = utbetalingerPerManed.stream().map(JsonOkonomiOpplysningUtbetaling::getBrutto).reduce(Double::sum).orElse(0.0);
-            Double samletTrekk = utbetalingerPerManed.stream().map(JsonOkonomiOpplysningUtbetaling::getSkattetrekk).reduce(Double::sum).orElse(0.0);
 
             Map<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> utbetalingPerOrganisasjon = utbetalingerPerManed
                     .stream()
