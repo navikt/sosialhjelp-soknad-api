@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -22,8 +22,8 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService.Sokeperiode;
 
 @Component
@@ -39,22 +39,21 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        final String eier = soknadUnderArbeid.getEier();
-        JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
-        JsonData jsonData = jsonInternalSoknad.getSoknad().getData();
-        jsonData.getArbeid().setForhold(innhentSystemArbeidsforhold(eier));
+        String eier = soknadUnderArbeid.getEier();
+        JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
+        internalSoknad.getSoknad().getData().getArbeid().setForhold(innhentSystemArbeidsforhold(eier));
 
-        updateVedleggForventninger(jsonInternalSoknad);
+        updateVedleggForventninger(internalSoknad);
     }
 
-    private void updateVedleggForventninger(JsonInternalSoknad jsonInternalSoknad) {
-        final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
-        final List<JsonOkonomioversiktInntekt> inntekter = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt();
-        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(jsonInternalSoknad);
+    private void updateVedleggForventninger(JsonInternalSoknad internalSoknad) {
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
+        List<JsonOkonomioversiktInntekt> inntekter = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt();
+        List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad);
 
         String soknadstype = "sluttoppgjoer";
         if (typeIsInList(jsonVedleggs, "sluttoppgjor")){
-            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, soknadstype, tittel);
         } else {
             removeUtbetalingIfPresentInOpplysninger(utbetalinger, soknadstype);
@@ -62,7 +61,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
         soknadstype = "jobb";
         if (typeIsInList(jsonVedleggs, "lonnslipp")){
-            final String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
             addInntektIfNotPresentInOversikt(inntekter, soknadstype, tittel);
         } else {
             removeInntektIfPresentInOversikt(inntekter, soknadstype);
