@@ -170,7 +170,7 @@ public class NavEnhetRessursTest {
         navEnhetRessurs.updateNavEnhet(BEHANDLINGSID, navEnhetFrontend);
 
         SoknadUnderArbeid updatedSoknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker jsonSoknadsmottaker = updatedSoknadUnderArbeid.getJsonInternalSoknad().getMottaker();
+        JsonSoknadsmottaker jsonSoknadsmottaker = updatedSoknadUnderArbeid.getJsonInternalSoknad().getMottaker();
         assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, jsonSoknadsmottaker);
     }
 
