@@ -69,11 +69,11 @@
             <ul class="fakta-liste">
                 <li>
                     <ul class="svar-liste">
-                        <li>{{{hentTekstMedParametere "soknasosialhjelp.oppsummering.hvorsendes" "navkontor" @root.mottaker.navEnhetsnavn}}}</li>
+                        <li>{{{hentTekstMedParametere "soknasosialhjelp.oppsummering.hvorsendes" "navkontor" @root.navEnhetsnavn}}}</li>
                         <li>{{{hentTekstMedParametere "soknadsosialhjelp.forstesiden.bekreftInfoModal.body"
-                        "navkontor" @root.mottaker.navEnhetsnavn
-                        "navkontor:NAV-kontoret ditt" @root.mottaker.navEnhetsnavn
-                        "navkontor:oppholdskommunen" @root.mottaker.navEnhetsnavn}}}</li>
+                        "navkontor" @root.navEnhetsnavn
+                        "navkontor:NAV-kontoret ditt" @root.navEnhetsnavn
+                        "navkontor:oppholdskommunen" @root.navEnhetsnavn}}}</li>
     
                         <h3>Bekreftet av bruker med følgende informasjonstekst</h3>
                         <li>{{{ hentTekst "soknadsosialhjelp.oppsummering.bekreftOpplysninger" }}}</li>
@@ -90,7 +90,7 @@
     </div>
     {{#unless @root.utvidetSoknad}}
         <div>
-            Sendt til: {{@root.mottaker.navEnhetsnavn}}
+            Sendt til: {{@root.navEnhetsnavn}}
         </div>
     {{/unless}}
 </div>

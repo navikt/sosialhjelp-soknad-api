@@ -11,7 +11,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
@@ -35,7 +34,6 @@ import java.util.EnumSet;
 import static com.flipkart.zjsonpatch.DiffFlags.OMIT_COPY_OPERATION;
 import static com.flipkart.zjsonpatch.DiffFlags.OMIT_MOVE_OPERATION;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
@@ -53,19 +51,6 @@ public class SoknadUnderArbeidService {
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    public void settOrgnummerOgNavEnhetsnavnPaSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn, String eier) {
-        if (soknadUnderArbeid == null) {
-            throw new RuntimeException("Søknad under arbeid mangler");
-        }
-
-        if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
-            throw new RuntimeException("Informasjon om orgnummer og NAV-enhet mangler");
-        } else {
-            SoknadUnderArbeid oppdatertSoknadUnderArbeid = oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(soknadUnderArbeid, orgnummer, navEnhetsnavn);
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(oppdatertSoknadUnderArbeid, eier);
-        }
-    }
     
     public void settInnsendingstidspunktPaSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         if (soknadUnderArbeid == null) {
@@ -84,13 +69,6 @@ public class SoknadUnderArbeidService {
             return now.plusNanos(1_000_000).toString();
         }
         return now.toString();
-    }
-
-    SoknadUnderArbeid oppdaterOrgnummerOgNavEnhetsnavnPaInternalSoknad(SoknadUnderArbeid soknadUnderArbeid, String orgnummer, String navEnhetsnavn) {
-        soknadUnderArbeid.getJsonInternalSoknad().setMottaker(new JsonSoknadsmottaker()
-                .withOrganisasjonsnummer(orgnummer)
-                .withNavEnhetsnavn(navEnhetsnavn));
-        return soknadUnderArbeid;
     }
 
     public void logDifferences(SoknadUnderArbeid soknadUnderArbeid, SoknadUnderArbeid soknadUnderArbeid_2, String melding) {

@@ -75,7 +75,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.9.8</jackson.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <filformat.version>1.2019.05.20-12.32-5e1e34047f54</filformat.version>
+        <filformat.version>1.2019.06.25-15.05-3ae88a2966e3</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>

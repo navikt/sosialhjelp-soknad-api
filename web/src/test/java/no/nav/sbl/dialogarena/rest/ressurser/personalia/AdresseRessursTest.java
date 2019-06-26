@@ -199,11 +199,11 @@ public class AdresseRessursTest {
     }
 
     private void legacyReturnerNavEnhetTilhorendeValgtAdresse() {
-        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("folkeregistrert"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("folkeregistrert"), anyString(), anyString())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet").withOrgnr("1")));
-        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("midlertidig"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("midlertidig"), anyString(), anyString())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withOrgnr("2")));
-        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("soknad"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("soknad"), anyString(), anyString())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withOrgnr("3")));
     }
 
