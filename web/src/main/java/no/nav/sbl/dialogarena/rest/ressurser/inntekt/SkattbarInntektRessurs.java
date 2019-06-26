@@ -39,7 +39,7 @@ public class SkattbarInntektRessurs {
         if (mockUtbetalinger != null && Boolean.valueOf(System.getProperty("tillatmock"))) {
             utbetalinger = mockUtbetalinger;
         } else {
-            JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).orElseThrow(IllegalStateException::new).getJsonInternalSoknad();
+            JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
             utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         }
 

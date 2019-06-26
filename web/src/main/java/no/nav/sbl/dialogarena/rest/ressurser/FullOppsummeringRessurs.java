@@ -32,6 +32,8 @@ public class FullOppsummeringRessurs {
     private PDFService pdfService;
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    @Inject
+    private AdresseSystemdata adresseSystemdata;
     private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
 
     @GET
@@ -41,8 +43,8 @@ public class FullOppsummeringRessurs {
         sjekkOmFullOppsummeringErAktivert("hentOppsummeringNew");
 
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), adresseSystemdata.innhentMidlertidigAdresse(eier));
     }
 
     @GET
@@ -52,7 +54,7 @@ public class FullOppsummeringRessurs {
         sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
 
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         return pdfService.genererJuridiskPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
     }
 
