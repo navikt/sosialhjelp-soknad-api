@@ -44,14 +44,15 @@ public class AdresseRessurs {
     @GET
     public AdresserFrontend hentAdresser(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
-        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        String personIdentifikator = soknad.getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
-        JsonAdresse jsonOppholdsadresse = soknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        String personIdentifikator = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
+        JsonAdresse jsonOppholdsadresse = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
 
-        JsonAdresse sysFolkeregistrertAdresse = soknad.getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
+        JsonAdresse sysFolkeregistrertAdresse = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
         JsonAdresse sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator);
 
-        soknad.setMidlertidigAdresse(sysMidlertidigAdresse);
+        soknad.getJsonInternalSoknad().setMidlertidigAdresse(sysMidlertidigAdresse);
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
 
         return AdresseMapper.mapToAdresserFrontend(sysFolkeregistrertAdresse, sysMidlertidigAdresse, jsonOppholdsadresse);
     }
