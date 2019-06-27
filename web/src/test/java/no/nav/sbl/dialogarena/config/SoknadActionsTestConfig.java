@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
@@ -45,11 +44,6 @@ public class SoknadActionsTestConfig {
 
     @Bean
     public SystemdataUpdater systemdataUpdater() {
-        return null;
-    }
-
-    @Bean
-    public AdresseSystemdata adresseSystemdata() {
         return null;
     }
 
