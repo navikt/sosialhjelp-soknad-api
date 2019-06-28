@@ -1,34 +1,9 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-import static java.util.Collections.sort;
-import static java.util.Comparator.comparing;
-import static java.util.Optional.empty;
-import static java.util.stream.Collectors.toList;
-import static javax.xml.bind.JAXBContext.newInstance;
-import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.LANDKODE;
-import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.POSTNUMMER;
-import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.KOMMUNE;
-import static org.joda.time.DateTime.now;
-import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.text.Collator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SystemException;
+import no.nav.sbl.dialogarena.mdc.MDCOperations;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -40,6 +15,26 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
+
+import javax.annotation.PostConstruct;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.text.Collator;
+import java.util.*;
+
+import static java.util.Comparator.comparing;
+import static java.util.Optional.empty;
+import static java.util.stream.Collectors.toList;
+import static javax.xml.bind.JAXBContext.newInstance;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
+import static org.joda.time.DateTime.now;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Tilbyr kodeverkoppslag. Implementasjonen laster hele kodeverk fra webservice on-demand,
@@ -98,8 +93,7 @@ public class StandardKodeverk implements Kodeverk {
         }
         String formaterMedSpace = setUpperCaseBeforeRegex(land.toLowerCase(), " ");
         String formaterMedDash = setUpperCaseBeforeRegex(formaterMedSpace, "-");
-        String formaterMedSlash = setUpperCaseBeforeRegex(formaterMedDash, "/");
-        return formaterMedSlash;
+        return setUpperCaseBeforeRegex(formaterMedDash, "/");
     }
 
     private String setUpperCaseBeforeRegex(String s, String regex) {
@@ -132,6 +126,11 @@ public class StandardKodeverk implements Kodeverk {
     @Override
     @Scheduled(cron = "0 0 0 * * *")
     public void lastInnNyeKodeverk() {
+        if (ServiceUtils.isScheduledTasksDisabled()) {
+            logger.warn("Scheduler is disabled");
+            return;
+        }
+
         MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
         for (String kodeverksnavn : ALLE_KODEVERK) {
@@ -165,21 +164,6 @@ public class StandardKodeverk implements Kodeverk {
         }
         kodeverk.put(kodeverknavn, initKodeverkMedNavn(kodeverknavn));
         return kodeverk.get(kodeverknavn);
-    }
-
-    public List<String> hentAlleKodenavnFraKodeverk(EksponertKodeverk kodeverknavn) {
-        return kodeverkMedNavn(kodeverknavn.toString()).getKode().stream()
-                .map(xmlKode->xmlKode.getNavn())
-                .collect(toList());
-    }
-
-    public Map<String, String> hentAlleKodenavnMedForsteTerm(EksponertKodeverk kodeverknavn) {
-        List<String> kodenavn = hentAlleKodenavnFraKodeverk(kodeverknavn);
-        HashMap<String, String> koderTilKodenavnMap = new HashMap<>();
-        for(String kode : kodenavn) {
-            koderTilKodenavnMap.put(kode, hentFoersteTermnavnFraKodeIKodeverk(kode, kodeverknavn.toString()));
-        }
-        return koderTilKodenavnMap;
     }
 
     private String hentFoersteTermnavnFraKodeIKodeverk(String kodenavn, String kodeverknavn) {
@@ -220,7 +204,11 @@ public class StandardKodeverk implements Kodeverk {
             }
             logger.warn("Kodeverktjeneste feilet ({})! Forsøker fallback", kodeverkfeil.getMessage());
             try {
-                kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
+                if (MockUtils.isTillatMockRessurs()) {
+                    kodeverket = new XMLEnkeltKodeverk();
+                } else {
+                    kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
+                }
             } catch (RuntimeException dumpException) {
                 logger.warn("Fallback feilet ({}), avbryter.", dumpException.getMessage());
                 kodeverkfeil.addSuppressed(dumpException);
@@ -230,7 +218,7 @@ public class StandardKodeverk implements Kodeverk {
             dumpIfPossible(navn, kodeverket);
         }
         if (!POSTNUMMER.toString().equals(navn)) {
-            sort(kodeverket.getKode(), comparing(o -> o.getTerm().get(0).getNavn(), Collator.getInstance(Locale.forLanguageTag("NO"))));
+            kodeverket.getKode().sort(comparing(o -> o.getTerm().get(0).getNavn(), Collator.getInstance(Locale.forLanguageTag("NO"))));
         }
         return kodeverket;
     }

@@ -1,19 +1,20 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import no.nav.sbl.sosialhjelp.pdf.context.InntektEllerUtgiftType;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.pdf.context.InntektEllerUtgiftType;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public final class HandlebarContext {
     
@@ -22,13 +23,6 @@ public final class HandlebarContext {
     private final boolean utvidetSoknad;
     private final boolean erEttersending;
     private final String eier;
-
-    public HandlebarContext(JsonInternalSoknad internalSoknad, boolean utvidetSoknad, boolean erEttersending) {
-        this.internalSoknad = internalSoknad;
-        this.utvidetSoknad = utvidetSoknad;
-        this.erEttersending = erEttersending;
-        this.eier = "";
-    }
 
     public HandlebarContext(JsonInternalSoknad internalSoknad, boolean utvidetSoknad, boolean erEttersending, String eier) {
         this.internalSoknad = internalSoknad;
@@ -40,13 +34,22 @@ public final class HandlebarContext {
     public JsonSoknad getSoknad() {
         return internalSoknad.getSoknad();
     }
-    
+
     public JsonVedleggSpesifikasjon getJsonVedleggSpesifikasjon() {
         return internalSoknad.getVedlegg();
     }
     
-    public JsonSoknadsmottaker getMottaker() {
-        return internalSoknad.getMottaker();
+    public String getNavEnhetsnavn() {
+        JsonSoknadsmottaker mottaker = internalSoknad.getMottaker();
+        if (mottaker != null) {
+            return mottaker.getNavEnhetsnavn();
+        } else {
+            return internalSoknad.getSoknad().getMottaker().getNavEnhetsnavn();
+        }
+    }
+
+    public JsonAdresse getMidlertidigAdresse() {
+        return internalSoknad.getMidlertidigAdresse();
     }
 
     public boolean getUtvidetSoknad() {
@@ -63,7 +66,6 @@ public final class HandlebarContext {
         final List<JsonOkonomioversiktFormue> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getFormue();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
-            .distinct()
             .collect(Collectors.toSet());
     }
     
@@ -71,7 +73,6 @@ public final class HandlebarContext {
         final List<JsonOkonomiOpplysningUtbetaling> formue = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
-            .distinct()
             .collect(Collectors.toSet());
     }
     
@@ -79,7 +80,6 @@ public final class HandlebarContext {
         final List<JsonOkonomiOpplysningUtgift> formue = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtgift();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
-            .distinct()
             .collect(Collectors.toSet());
     }
     
@@ -87,7 +87,6 @@ public final class HandlebarContext {
         final List<JsonOkonomioversiktUtgift> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getUtgift();
         return formue.stream()
             .map((f) -> new InntektEllerUtgiftType(f.getType(), f.getTittel()))
-            .distinct()
             .collect(Collectors.toSet());
     }
     

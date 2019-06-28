@@ -1,6 +1,10 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
@@ -37,11 +41,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
         } else if (e instanceof IkkeFunnetException) {
             response = status(NOT_FOUND);
             logger.warn("Fant ikke ressurs", e);
-        } else if (e instanceof AlleredeHandtertException) {
-            response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
         } else if (e instanceof EttersendelseSendtForSentException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
-            logger.warn("REST-kall feilet: " + e.getMessage(), e);
+            logger.info("REST-kall feilet: " + e.getMessage(), e);
         } else if (e instanceof TjenesteUtilgjengeligException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig");

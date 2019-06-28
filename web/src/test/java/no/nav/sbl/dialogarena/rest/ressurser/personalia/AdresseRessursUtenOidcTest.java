@@ -1,11 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
+import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -26,9 +22,6 @@ import static org.mockito.Mockito.*;
 public class AdresseRessursUtenOidcTest {
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
@@ -36,15 +29,6 @@ public class AdresseRessursUtenOidcTest {
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
-
-    @Mock
-    private SoknadsmottakerRessurs soknadsmottakerRessurs;
 
     @Mock
     private NavEnhetRessurs navEnhetRessurs;
@@ -59,7 +43,6 @@ public class AdresseRessursUtenOidcTest {
     @Before
     public void setUp() {
         System.setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
-        when(navEnhetRessurs.mapFromLegacyNavEnhetFrontend(any(SoknadsmottakerRessurs.LegacyNavEnhetFrontend.class), anyString())).thenCallRealMethod();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
     }

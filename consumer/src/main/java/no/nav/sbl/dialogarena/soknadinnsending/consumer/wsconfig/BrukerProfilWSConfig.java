@@ -32,7 +32,7 @@ public class BrukerProfilWSConfig {
 
     @Bean
     public BrukerprofilPortType brukerProfilEndpoint() {
-        BrukerprofilPortType mock = BrukerprofilMock.getInstance().getBrukerprofilPortTypeMock();
+        BrukerprofilPortType mock = new BrukerprofilMock().brukerProfilMock();
         BrukerprofilPortType prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Brukerprofil", prod, mock, BRUKERPROFIL_KEY, BrukerprofilPortType.class);
     }

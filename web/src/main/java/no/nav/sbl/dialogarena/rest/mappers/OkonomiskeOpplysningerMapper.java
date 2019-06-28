@@ -13,11 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToTittelDelNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOpplysninger;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -99,13 +97,11 @@ public class OkonomiskeOpplysningerMapper {
             }
         }
 
-        // Dersom det ikke er en eksisterende utgift er det ikke mulig for bruker å fylle ut informasjon på vedlegget.
         if (eksisterendeOpplysningUtgift.isPresent()) {
             final List<JsonOkonomiOpplysningUtgift> utgifter = jsonOkonomi.getOpplysninger().getUtgift().stream()
                     .filter(utgift -> !utgift.getType().equals(soknadType))
                     .collect(Collectors.toList());
 
-            // Frontend må ikke sende med rader = null eller tom liste. Må heller sende med en rad med null verdier
             utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, eksisterendeOpplysningUtgift.get()));
             jsonOkonomi.getOpplysninger().setUtgift(utgifter);
         } else {
@@ -149,13 +145,6 @@ public class OkonomiskeOpplysningerMapper {
             utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, eksisterendeRenter.get()));
         } else {
             logger.error("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
-        }
-    }
-
-    public static void putBeskrivelseOnRelevantTypes(String soknadPath, String soknadType, VedleggRadFrontend vedleggRad, Map<String, String> properties) {
-        if (soknadType.equals("annenBoutgift") || soknadType.equals("barnFritidsaktiviteter") || soknadType.equals("annenBarneutgift") ||
-                (soknadType.equals("annen") && soknadPath.equals("opplysningerUtgift"))){
-            properties.put(soknadTypeToTittelDelNavn.get(soknadType), vedleggRad.beskrivelse);
         }
     }
 

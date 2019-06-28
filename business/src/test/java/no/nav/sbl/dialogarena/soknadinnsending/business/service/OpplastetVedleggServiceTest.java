@@ -58,7 +58,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void lagerFilnavn() throws IOException {
+    public void lagerFilnavn() {
         String filnavn = opplastetVedleggService.lagFilnavn("minfil.jpg", "image/jpeg", "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertEquals("minfil-5c2a1cea.jpg", filnavn);
 
@@ -74,17 +74,17 @@ public class OpplastetVedleggServiceTest {
     @Test
     public void oppdatererVedleggStatusVedOpplastingAvVedlegg() throws IOException {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
+                new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
                                 new JsonVedlegg()
                                         .withType(new VedleggType(TYPE).getType())
                                         .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
                                         .withStatus("VedleggKreves")
-                        ))))));
+                        )))));
         when(opplastetVedleggRepository.opprettVedlegg(any(OpplastetVedlegg.class), anyString())).thenReturn("321");
 
         final byte[] imageFile = createByteArrayFromJpeg();
-        final OpplastetVedlegg opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1, false);
+        final OpplastetVedlegg opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().get(0);
@@ -98,14 +98,14 @@ public class OpplastetVedleggServiceTest {
     @Test
     public void sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
+                new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
                                 new JsonVedlegg()
                                         .withType(new VedleggType(TYPE).getType())
                                         .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
                                         .withFiler(new ArrayList<>(Collections.singletonList(new JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512))))
                                         .withStatus("LastetOpp")
-                        ))))));
+                        )))));
         when(opplastetVedleggRepository.hentVedlegg(anyString(), anyString())).thenReturn(
                 Optional.of(new OpplastetVedlegg().withVedleggType(new VedleggType(TYPE)).withFilnavn(FILNAVN2).withSha512(SHA512)));
 

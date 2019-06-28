@@ -1,17 +1,12 @@
 package no.nav.sbl.dialogarena.rest.ressurser.familie;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.familie.ForsorgerpliktRessurs.AnsvarFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.familie.ForsorgerpliktRessurs.BarnFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.familie.ForsorgerpliktRessurs.ForsorgerpliktFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -21,7 +16,6 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -32,15 +26,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -66,28 +59,11 @@ public class ForsorgerpliktRessursTest {
             .withFodselsdato("1770-12-16")
             .withPersonIdentifikator("16127054321");
 
-    private static final JsonBarn JSON_BARN_MED_DISKRESJONSKODE = new JsonBarn()
-            .withKilde(JsonKilde.SYSTEM)
-            .withNavn(new JsonNavn()
-                    .withFornavn("")
-                    .withMellomnavn("")
-                    .withEtternavn(""))
-            .withHarDiskresjonskode(true);
-
-    @Mock
-    private LegacyHelper legacyHelper;
-
     @InjectMocks
     private ForsorgerpliktRessurs forsorgerpliktRessurs;
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @Mock
     private TextService textService;
@@ -110,7 +86,7 @@ public class ForsorgerpliktRessursTest {
 
     @Test
     public void getForsorgerpliktSkalReturnereTomForsorgerplikt(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(null, null, null));
 
         final ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
@@ -125,7 +101,7 @@ public class ForsorgerpliktRessursTest {
         final JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN)
                 .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(true))
                 .withHarDeltBosted(new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(true));
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(true, null, Collections.singletonList(jsonAnsvar)));
 
         final ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
@@ -141,7 +117,7 @@ public class ForsorgerpliktRessursTest {
         final JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN)
                 .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(false))
                 .withSamvarsgrad(new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(30));
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(true, null, Collections.singletonList(jsonAnsvar)));
 
         final ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
@@ -156,7 +132,7 @@ public class ForsorgerpliktRessursTest {
     public void getForsorgerpliktSkalReturnereToBarn(){
         final JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN);
         final JsonAnsvar jsonAnsvar_2 = new JsonAnsvar().withBarn(JSON_BARN_2);
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(true, null, Arrays.asList(jsonAnsvar, jsonAnsvar_2)));
 
         final ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
@@ -171,7 +147,7 @@ public class ForsorgerpliktRessursTest {
     @Test
     public void getForsorgerpliktSkalReturnereEtBarnOgBarnebidrag(){
         final JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN);
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(true, JsonBarnebidrag.Verdi.BEGGE, Collections.singletonList(jsonAnsvar)));
 
         final ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
@@ -182,26 +158,11 @@ public class ForsorgerpliktRessursTest {
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
-    @Ignore
-    @Test
-    public void getForsorgerpliktSkalReturnereEtBarnMedDiskresjonskode(){
-        final JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN_MED_DISKRESJONSKODE);
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
-                createJsonInternalSoknadWithForsorgerplikt(true, null, Collections.singletonList(jsonAnsvar)));
-
-        final ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
-
-        assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
-        assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
-    }
-
     @Test
     public void putForsorgerpliktSkalSetteBarnebidrag(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithForsorgerplikt(null, null, null)));
+                createJsonInternalSoknadWithForsorgerplikt(null, null, null));
 
         final ForsorgerpliktFrontend forsorgerpliktFrontend = new ForsorgerpliktFrontend()
                 .withBarnebidrag(JsonBarnebidrag.Verdi.BETALER);
@@ -215,34 +176,13 @@ public class ForsorgerpliktRessursTest {
         assertThat(forsorgerplikt.getAnsvar(), nullValue());
     }
 
-    @Ignore
-    @Test
-    public void putForsorgerpliktSkalKunneSetteBarnebidragForBarnMedDiskresjonskode(){
-        ignoreTilgangskontrollAndLegacyUpdate();
-        JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN_MED_DISKRESJONSKODE);
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithForsorgerplikt(true, null, Collections.singletonList(jsonAnsvar))));
-
-        ForsorgerpliktFrontend forsorgerpliktFrontend = new ForsorgerpliktFrontend()
-                .withBarnebidrag(JsonBarnebidrag.Verdi.BETALER)
-                .withAnsvar(Collections.singletonList(createBarnMedDiskresjonskode()));
-
-        forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend);
-
-        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getBarnebidrag().getVerdi(), is(JsonBarnebidrag.Verdi.BETALER));
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
-        assertThat(forsorgerplikt.getAnsvar().size(), is(1));
-    }
-
     @Test
     public void putForsorgerpliktSkalSetteHarDeltBostedOgSamvarsgradPaaToBarn(){
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         final JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN);
         final JsonAnsvar jsonAnsvar_2 = new JsonAnsvar().withBarn(JSON_BARN_2);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithForsorgerplikt(true, null, Arrays.asList(jsonAnsvar, jsonAnsvar_2))));
+                createJsonInternalSoknadWithForsorgerplikt(true, null, Arrays.asList(jsonAnsvar, jsonAnsvar_2)));
 
         final ForsorgerpliktFrontend forsorgerpliktFrontend = new ForsorgerpliktFrontend()
                 .withAnsvar(Arrays.asList(createBarnMedDeltBosted(), createBarnMedSamvarsgrad()));
@@ -273,12 +213,6 @@ public class ForsorgerpliktRessursTest {
                     .withHarDeltBosted(true);
     }
 
-    private AnsvarFrontend createBarnMedDiskresjonskode() {
-        return new AnsvarFrontend()
-                .withBarn(new BarnFrontend())
-                .withHarDiskresjonskode(true);
-    }
-
     private void assertThatAnsvarIsCorrectlyConverted(AnsvarFrontend ansvarFrontend, JsonAnsvar jsonAnsvar) {
         final BarnFrontend barnFrontend = ansvarFrontend.barn;
         final JsonBarn jsonBarn = jsonAnsvar.getBarn();
@@ -303,13 +237,6 @@ public class ForsorgerpliktRessursTest {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository, atLeastOnce()).oppdaterSoknadsdata(argument.capture(), anyString());
         return argument.getValue();
-    }
-
-    private void ignoreTilgangskontrollAndLegacyUpdate() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
-        when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
-        when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithForsorgerplikt(Boolean harForsorgerplikt, JsonBarnebidrag.Verdi barnebidrag, List<JsonAnsvar> ansvars) {

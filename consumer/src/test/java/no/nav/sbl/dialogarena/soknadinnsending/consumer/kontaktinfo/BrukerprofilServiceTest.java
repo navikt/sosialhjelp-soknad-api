@@ -99,7 +99,7 @@ public class BrukerprofilServiceTest {
         assertThat(adresserOgKontonummer.getKontonummer(), is(BANKKONTONUMMER));
         assertThat(adresserOgKontonummer.getUtenlandskKontoBanknavn(), isEmptyString());
         assertThat(adresserOgKontonummer.getUtenlandskKontoLand(), isEmptyString());
-        assertThat(adresserOgKontonummer.erUtenlandskBankkonto(), is(false));
+        assertThat(adresserOgKontonummer.isUtenlandskBankkonto(), is(false));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class BrukerprofilServiceTest {
         assertThat(adresserOgKontonummer.getKontonummer(), is(BANKKONTONUMMER));
         assertThat(adresserOgKontonummer.getUtenlandskKontoBanknavn(), is(BANKNAVN));
         assertThat(adresserOgKontonummer.getUtenlandskKontoLand(), is(ET_LAND));
-        assertThat(adresserOgKontonummer.erUtenlandskBankkonto(), is(true));
+        assertThat(adresserOgKontonummer.isUtenlandskBankkonto(), is(true));
     }
 
     @Test

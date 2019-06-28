@@ -142,7 +142,7 @@ public class PersonMapper {
 
     static boolean erDoed(Person xmlPerson) {
         String personstatus = finnPersonstatus(xmlPerson);
-        return xmlPerson.getDoedsdato() != null || (personstatus != null && DOED.equals(personstatus));
+        return xmlPerson.getDoedsdato() != null || DOED.equals(personstatus);
     }
 
     private static String finnPersonstatus(Person xmlPerson) {

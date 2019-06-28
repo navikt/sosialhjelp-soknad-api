@@ -1,10 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.bosituasjon;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -22,19 +19,10 @@ import static org.mockito.Mockito.*;
 public class BosituasjonRessursUtenOidcTest {
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @InjectMocks
     private BosituasjonRessurs bosituasjonRessurs = spy(new BosituasjonRessurs());

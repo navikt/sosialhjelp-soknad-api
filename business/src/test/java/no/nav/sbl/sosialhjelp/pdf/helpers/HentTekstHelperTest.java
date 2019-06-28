@@ -1,9 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,6 +14,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.Locale;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
@@ -34,16 +33,8 @@ public class HentTekstHelperTest {
     @Mock
     CmsTekst cmsTekst;
 
-    @Mock
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-
     @Before
     public void setup() {
-        KravdialogInformasjon kravdialogInformasjon = mock(KravdialogInformasjon.class);
-        when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(kravdialogInformasjon);
-        when(kravdialogInformasjon.getBundleName()).thenReturn("bundlename");
-        when(kravdialogInformasjon.getSoknadTypePrefix()).thenReturn("mittprefix");
-
         handlebars = new Handlebars();
         handlebars.registerHelper(hentTekstHelper.getNavn(), hentTekstHelper);
         when(cmsTekst.getCmsTekst(anyString(), any(Object[].class), anyString(), anyString(), any(Locale.class))).then(AdditionalAnswers.returnsFirstArg());
@@ -51,19 +42,16 @@ public class HentTekstHelperTest {
 
     @Test
     public void henterTekstFraCmsTekst() throws IOException {
-        WebSoknad webSoknad = new WebSoknad().medSoknadPrefix("mittprefix");
-        String compiled = handlebars.compileInline("{{hentTekst \"test\"}}").apply(webSoknad);
+        String compiled = handlebars.compileInline("{{hentTekst \"test\"}}").apply(new Object());
 
         Assert.assertThat(compiled, is("test"));
     }
 
     @Test
     public void senderParametereTilCmsTekst() throws IOException {
-        WebSoknad webSoknad = new WebSoknad().medSoknadPrefix("mittprefix");
+        handlebars.compileInline("{{hentTekst \"test\" \"param1\" \"param2\"}}").apply(new Object());
 
-        handlebars.compileInline("{{hentTekst \"test\" \"param1\" \"param2\"}}").apply(webSoknad);
-
-        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix", "bundlename", toLocale("nb_NO"));
+        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, SOKNAD_TYPE_PREFIX, BUNDLE_NAME, toLocale("nb_NO"));
     }
 
 

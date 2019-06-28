@@ -38,7 +38,7 @@ public class KontonummerRessurs {
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
         String systemverdi;
         if (kontonummer.getKilde().equals(JsonKilde.SYSTEM)) {
@@ -57,13 +57,8 @@ public class KontonummerRessurs {
     @PUT
     public void updateKontonummer(@PathParam("behandlingsId") String behandlingsId, KontonummerFrontend kontonummerFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, kontonummerFrontend);
-    }
-
-
-    private void update(String behandlingsId, KontonummerFrontend kontonummerFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final JsonKontonummer kontonummer = personalia.getKontonummer();
         if (kontonummerFrontend.brukerdefinert) {

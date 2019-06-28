@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.sikkerhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -20,8 +19,6 @@ import static org.mockito.Mockito.spy;
 @RunWith(MockitoJUnitRunner.class)
 public class TilgangskontrollUtenOidcTest {
 
-    @Mock
-    private SoknadService soknadService;
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
     @Mock

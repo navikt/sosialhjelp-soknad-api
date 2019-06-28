@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.ks.svarut.servicesv9.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -12,6 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -24,10 +24,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.domain.VedleggType;
+import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import org.junit.After;
 import org.junit.Before;
@@ -207,7 +204,7 @@ public class FiksSenderTest {
         jsonFiler.add(new JsonFiler().withFilnavn(FILNAVN).withSha512("sha512"));
         List<JsonVedlegg> jsonVedlegg = new ArrayList<>();
         jsonVedlegg.add(new JsonVedlegg()
-                .withStatus(Vedlegg.Status.LastetOpp.name())
+                .withStatus(Vedleggstatus.LastetOpp.name())
                 .withType("type")
                 .withTilleggsinfo("tilleggsinfo")
                 .withFiler(jsonFiler));
@@ -235,6 +232,9 @@ public class FiksSenderTest {
                         .withVersion("1.0.0")
                         .withKompatibilitet(emptyList())
                         .withDriftsinformasjon("")
+                        .withMottaker(new JsonSoknadsmottaker()
+                                .withNavEnhetsnavn("")
+                                .withEnhetsnummer(""))
                         .withData(new JsonData()
                                 .withArbeid(new JsonArbeid())
                                 .withBegrunnelse(new JsonBegrunnelse()

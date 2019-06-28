@@ -36,10 +36,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.LoggingTestUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 
 public class AdresseSokConsumerImplTest {
-    
+
     private static String oldSubjectHandlerImplementationClass;
-    
-    
+
+
     @BeforeClass
     public static void oppsettForInnloggetBruker() {
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
@@ -54,8 +54,8 @@ public class AdresseSokConsumerImplTest {
             System.setProperty(SamlSubjectHandler.SUBJECTHANDLER_KEY, oldSubjectHandlerImplementationClass);
         }
     }
-    
-    
+
+
     @Test
     public void simpleRestCallWith404() {
         final ClientMock mock = mockClient();
@@ -280,7 +280,7 @@ public class AdresseSokConsumerImplTest {
             return null;
         }
     }
-    
+
     private static final class ClientMock {
         Client client;
         @SuppressWarnings("unused")

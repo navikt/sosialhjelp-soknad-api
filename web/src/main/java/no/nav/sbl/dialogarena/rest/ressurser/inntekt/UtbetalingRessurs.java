@@ -2,18 +2,12 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -26,11 +20,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -38,9 +32,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMa
 @Timed
 @Produces(APPLICATION_JSON)
 public class UtbetalingRessurs {
-
-    @Inject
-    private LegacyHelper legacyHelper;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -51,16 +42,10 @@ public class UtbetalingRessurs {
     @Inject
     private TextService textService;
 
-    @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
-
     @GET
     public UtbetalingerFrontend hentUtbetalinger(@PathParam("behandlingsId") String behandlingsId){
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
         final UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
 
@@ -81,13 +66,8 @@ public class UtbetalingRessurs {
     @PUT
     public void updateUtbetalinger(@PathParam("behandlingsId") String behandlingsId, UtbetalingerFrontend utbetalingerFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, utbetalingerFrontend);
-        legacyUpdate(behandlingsId, utbetalingerFrontend);
-    }
-
-    private void update(String behandlingsId, UtbetalingerFrontend utbetalingerFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 
         if (opplysninger.getBekreftelse() == null){
@@ -101,47 +81,19 @@ public class UtbetalingRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    private void legacyUpdate(String behandlingsId, UtbetalingerFrontend utbetalingerFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter");
-        bekreftelse.setValue(utbetalingerFrontend.bekreftelse.toString());
-        faktaService.lagreBrukerFaktum(bekreftelse);
-
-        final Faktum utbytte = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.utbytte");
-        utbytte.setValue(String.valueOf(utbetalingerFrontend.utbytte));
-        faktaService.lagreBrukerFaktum(utbytte);
-
-        final Faktum salg = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.salg");
-        salg.setValue(String.valueOf(utbetalingerFrontend.salg));
-        faktaService.lagreBrukerFaktum(salg);
-
-        final Faktum forsikringsutbetalinger = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.forsikringsutbetalinger");
-        forsikringsutbetalinger.setValue(String.valueOf(utbetalingerFrontend.forsikring));
-        faktaService.lagreBrukerFaktum(forsikringsutbetalinger);
-
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet");
-        annet.setValue(String.valueOf(utbetalingerFrontend.annet));
-        faktaService.lagreBrukerFaktum(annet);
-
-        final Faktum beskrivelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "inntekt.inntekter.true.type.annet.true.beskrivelse");
-        beskrivelse.setValue(utbetalingerFrontend.beskrivelseAvAnnet != null ? utbetalingerFrontend.beskrivelseAvAnnet : "");
-        faktaService.lagreBrukerFaktum(beskrivelse);
-    }
-
     private void setUtbetalinger(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = opplysninger.getUtbetaling();
 
         String type = "utbytte";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.utbytte);
 
         type = "salg";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.salg);
 
         type = "forsikring";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.forsikring);
 
         type = "annen";
@@ -163,11 +115,9 @@ public class UtbetalingRessurs {
     }
 
     private void setBekreftelseOnUtbetalingerFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
-        final Optional<JsonOkonomibekreftelse> utbetalingBekreftelse = opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("utbetaling")).findFirst();
-        if (utbetalingBekreftelse.isPresent()){
-            utbetalingerFrontend.setBekreftelse(utbetalingBekreftelse.get().getVerdi());
-        }
+        opplysninger.getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals("utbetaling")).findFirst()
+                .ifPresent(jsonOkonomibekreftelse -> utbetalingerFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
     private void setUtbetalingstyperOnUtbetalingerFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {

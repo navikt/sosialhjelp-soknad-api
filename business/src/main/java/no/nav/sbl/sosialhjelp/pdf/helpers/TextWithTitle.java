@@ -1,15 +1,14 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import no.nav.sbl.sosialhjelp.pdf.UrlUtils;
 
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 public interface TextWithTitle {
-    static String getText(String key, Options options, KravdialogInformasjon konfigurasjon, String bundleName, CmsTekst cmsTekst) {
-        String text = cmsTekst.getCmsTekst(key, options.params, konfigurasjon.getSoknadTypePrefix(), bundleName, SPRAK);
+    static String getText(String key, Options options, String soknadTypePrefix, String bundleName, CmsTekst cmsTekst) {
+        String text = cmsTekst.getCmsTekst(key, options.params, soknadTypePrefix, bundleName, SPRAK);
 
         String newText = UrlUtils.endreHyperLenkerTilTekst(text);
 

@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
@@ -11,13 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class PersonWSConfig {
 
     public static final String PERSON_KEY = "start.person.withmock";
-    private PersonMock personMock = PersonMock.getInstance();
 
     @Value("${soknad.webservice.person.personservice.url}")
     private String personEndpoint;
@@ -34,7 +33,7 @@ public class PersonWSConfig {
 
     @Bean
     public PersonPortType personEndpoint() {
-        PersonPortTypeMock mock = personMock.getPersonPortTypeMock();
+        PersonPortType mock = new PersonMock().personMock();
         PersonPortType prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Person", prod, mock, PERSON_KEY, PersonPortType.class);
     }

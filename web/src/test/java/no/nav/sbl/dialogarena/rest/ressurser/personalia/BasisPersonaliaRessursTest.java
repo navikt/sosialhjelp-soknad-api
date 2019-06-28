@@ -1,17 +1,13 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,9 +18,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static no.nav.sbl.dialogarena.rest.ressurser.personalia.BasisPersonaliaRessurs.BasisPersonaliaFrontend;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -65,16 +61,13 @@ public class BasisPersonaliaRessursTest {
                     .withEtternavn(ETTERNAVN));
 
     @Mock
-    private LegacyHelper legacyHelper;
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
 
     @Mock
     private Adressekodeverk adressekodeverk;
-
-    @Mock
-    private VedleggOriginalFilerService vedleggOriginalFilerService;
 
     @InjectMocks
     private BasisPersonaliaRessurs basisPersonaliaRessurs;
@@ -83,7 +76,6 @@ public class BasisPersonaliaRessursTest {
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
-        when(vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(anyString())).thenReturn(null);
     }
 
     @After
@@ -94,7 +86,7 @@ public class BasisPersonaliaRessursTest {
 
     @Test
     public void getBasisPersonaliaSkalReturnereSystemBasisPersonalia(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(true, true, true));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
         when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
@@ -106,7 +98,7 @@ public class BasisPersonaliaRessursTest {
 
     @Test
     public void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(false, false, true));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA_UTEN_STAT_OG_NORDISK);
 
@@ -130,32 +122,21 @@ public class BasisPersonaliaRessursTest {
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithBasisPersonalia(boolean withStatsborgerskap, boolean withNordiskBorger, boolean erNordisk) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withPersonalia(new JsonPersonalia()
-                                                .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                        .withVerdi(EIER)
-                                                )
-                                                .withNavn(new JsonSokernavn()
-                                                        .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                                                        .withFornavn(FORNAVN)
-                                                        .withMellomnavn(MELLOMNAVN)
-                                                        .withEtternavn(ETTERNAVN)
-                                                )
-                                                .withStatsborgerskap(!withStatsborgerskap ? null : new JsonStatsborgerskap()
-                                                        .withKilde(JsonKilde.SYSTEM)
-                                                        .withVerdi(erNordisk ? NORDISK_STATSBORGERSKAP : IKKE_NORDISK_STATSBORGERSKAP)
-                                                )
-                                                .withNordiskBorger(!withNordiskBorger ? null : new JsonNordiskBorger()
-                                                        .withKilde(JsonKilde.SYSTEM)
-                                                        .withVerdi(erNordisk)
-                                                )
-                                        )
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
+                .withNavn(new JsonSokernavn()
+                        .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                        .withFornavn(FORNAVN)
+                        .withMellomnavn(MELLOMNAVN)
+                        .withEtternavn(ETTERNAVN)
+                )
+                .withStatsborgerskap(!withStatsborgerskap ? null : new JsonStatsborgerskap()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(erNordisk ? NORDISK_STATSBORGERSKAP : IKKE_NORDISK_STATSBORGERSKAP)
+                )
+                .withNordiskBorger(!withNordiskBorger ? null : new JsonNordiskBorger()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(erNordisk));
+        return soknadUnderArbeid;
     }
 }

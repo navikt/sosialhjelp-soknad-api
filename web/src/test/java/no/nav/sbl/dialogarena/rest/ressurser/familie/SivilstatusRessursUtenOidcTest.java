@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.rest.ressurser.familie;
 import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -24,16 +22,7 @@ import static org.mockito.Mockito.*;
 public class SivilstatusRessursUtenOidcTest {
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -81,12 +70,12 @@ public class SivilstatusRessursUtenOidcTest {
     }
 
     @Test
-    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() throws ParseException {
+    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() {
         sivilstatusRessursTest.getSivilstatusSkalReturnereNull();
     }
 
     @Test
-    public void putSivilstatusSkalSetteStatusGiftOgEktefelle() throws ParseException {
+    public void putSivilstatusSkalSetteStatusGiftOgEktefelle() {
         sivilstatusRessursTest.getSivilstatusSkalReturnereNull();
     }
 }

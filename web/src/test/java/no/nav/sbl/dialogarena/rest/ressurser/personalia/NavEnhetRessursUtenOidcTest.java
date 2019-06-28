@@ -1,11 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.rest.ressurser.SoknadsmottakerRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -17,13 +15,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NavEnhetRessursUtenOidcTest {
-
-    @Mock
-    private LegacyHelper legacyHelper;
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -32,13 +27,10 @@ public class NavEnhetRessursUtenOidcTest {
     private Tilgangskontroll tilgangskontroll;
 
     @Mock
-    private SoknadService soknadService;
+    private SoknadsmottakerService soknadsmottakerService;
 
     @Mock
-    private FaktaService faktaService;
-
-    @Mock
-    private SoknadsmottakerRessurs soknadsmottakerRessurs;
+    private NorgService norgService;
 
     @InjectMocks
     private NavEnhetRessurs navEnhetRessurs = spy(new NavEnhetRessurs());

@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -19,8 +19,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
 
-import static org.mockito.Matchers.anyString;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,8 +29,6 @@ public class TilgangskontrollTest {
 
     @InjectMocks
     private Tilgangskontroll tilgangskontroll;
-    @Mock
-    private SoknadService soknadService;
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
     @Mock
@@ -49,22 +48,22 @@ public class TilgangskontrollTest {
 
     @Test
     public void skalGiTilgangForBruker() {
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.empty());
-        when(soknadService.hentSoknad("123", false, false)).thenReturn(new WebSoknad().medAktorId(OidcFeatureToggleUtils.getUserId()));
+        String userId = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
+        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
     }
 
     @Test(expected = AuthorizationException.class)
     public void skalFeileForAndre() {
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.empty());
-        when(soknadService.hentSoknad("XXX", false, false)).thenReturn(new WebSoknad().medAktorId("other_user"));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("other_user"));
+        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX");
     }
 
     @Test(expected = AuthorizationException.class)
     public void skalFeileOmSoknadenIkkeFinnes() {
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(Optional.empty());
-        when(soknadService.hentSoknad("123", false, false)).thenReturn(null);
+        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.empty());
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
     }
 

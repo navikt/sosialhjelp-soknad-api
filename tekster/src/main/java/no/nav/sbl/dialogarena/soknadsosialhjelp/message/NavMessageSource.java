@@ -1,17 +1,11 @@
 package no.nav.sbl.dialogarena.soknadsosialhjelp.message;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+
+import java.util.*;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     private Map<String, String> basenames = new HashMap<>();
@@ -73,9 +67,8 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         List<String> basenameStrings = new ArrayList<>();
 
         basenameStrings.add(fellesBasename);
-        List<Bundle> bundlesList = Arrays.asList(soknadBundles);
 
-        for (Bundle bundle : bundlesList) {
+        for (Bundle bundle : soknadBundles) {
             basenames.put(bundle.type, bundle.propertiesFile);
             basenameStrings.add(bundle.propertiesFile);
         }

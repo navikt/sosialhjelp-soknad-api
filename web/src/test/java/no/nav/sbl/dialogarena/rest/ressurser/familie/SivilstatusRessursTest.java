@@ -1,23 +1,14 @@
 package no.nav.sbl.dialogarena.rest.ressurser.familie;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.familie.SivilstatusRessurs.EktefelleFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.familie.SivilstatusRessurs.SivilstatusFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -31,20 +22,21 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.text.ParseException;
-import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SivilstatusRessursTest {
 
     private static final String BEHANDLINGSID = "123";
+    private static final String EIER = "123456789101";
     private static final JsonEktefelle JSON_EKTEFELLE = new JsonEktefelle()
             .withNavn(new JsonNavn()
                     .withFornavn("Alfred")
@@ -58,20 +50,11 @@ public class SivilstatusRessursTest {
             .withFodselsdato("1940-01-01")
             .withPersonnummer("12345");
 
-    @Mock
-    private LegacyHelper legacyHelper;
-
     @InjectMocks
     private SivilstatusRessurs sivilstatusRessurs;
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -90,7 +73,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereNull(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(null, null, null,
                         null, null, null));
 
@@ -101,7 +84,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereKunBrukerdefinertStatus(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, null,
                         null, null, null));
 
@@ -116,7 +99,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereBrukerdefinertEktefelleRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         null, null, true));
 
@@ -132,7 +115,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereSystemdefinertEktefelleRiktigKonvertert(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         false, true, null));
 
@@ -148,7 +131,7 @@ public class SivilstatusRessursTest {
 
     @Test
     public void getSivilstatusSkalReturnereSystemdefinertEktefelleMedDiskresjonskode(){
-        when(legacyHelper.hentSoknad(anyString(), anyString(), anyBoolean())).thenReturn(
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         true, null, null));
 
@@ -163,10 +146,10 @@ public class SivilstatusRessursTest {
 
     @Test
     public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() throws ParseException {
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithSivilstatus(null, null, null,
-                        null, null, null)));
+                createJsonInternalSoknadWithSivilstatus(null, null, null,
+                        null, null, null));
 
         assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.GIFT);
         assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.ENKE);
@@ -178,10 +161,10 @@ public class SivilstatusRessursTest {
 
     @Test
     public void putSivilstatusSkalSetteStatusGiftOgEktefelle() throws ParseException {
-        ignoreTilgangskontrollAndLegacyUpdate();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                Optional.of(createJsonInternalSoknadWithSivilstatus(null, null, null,
-                        null, null, null)));
+                createJsonInternalSoknadWithSivilstatus(null, null, null,
+                        null, null, null));
 
         final SivilstatusFrontend sivilstatusFrontend = new SivilstatusFrontend()
                 .withKildeErSystem(false).withSivilstatus(JsonSivilstatus.Status.GIFT)
@@ -222,34 +205,20 @@ public class SivilstatusRessursTest {
         return argument.getValue();
     }
 
-    private void ignoreTilgangskontrollAndLegacyUpdate() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
-        when(faktaService.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum());
-        when(faktaService.lagreBrukerFaktum(any(Faktum.class))).thenReturn(new Faktum());
-    }
-
     private SoknadUnderArbeid createJsonInternalSoknadWithSivilstatus(Boolean brukerutfylt, JsonSivilstatus.Status status,
                                                                       JsonEktefelle ektefelle, Boolean harDiskresjonskode,
                                                                       Boolean folkeregistrertMed, Boolean borSammen) {
-        return new SoknadUnderArbeid()
-                .withJsonInternalSoknad(new JsonInternalSoknad()
-                        .withSoknad(new JsonSoknad()
-                                .withData(new JsonData()
-                                        .withFamilie(new JsonFamilie()
-                                                .withSivilstatus(brukerutfylt == null ? null :
-                                                        new JsonSivilstatus()
-                                                                .withKilde(brukerutfylt ? JsonKilde.BRUKER : JsonKilde.SYSTEM)
-                                                                .withStatus(status)
-                                                                .withEktefelle(ektefelle)
-                                                                .withEktefelleHarDiskresjonskode(harDiskresjonskode)
-                                                                .withFolkeregistrertMedEktefelle(folkeregistrertMed)
-                                                                .withBorSammenMed(borSammen)
-                                                )
-                                        )
-                                )
-                        )
-                );
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie()
+                .withSivilstatus(brukerutfylt == null ? null :
+                        new JsonSivilstatus()
+                                .withKilde(brukerutfylt ? JsonKilde.BRUKER : JsonKilde.SYSTEM)
+                                .withStatus(status)
+                                .withEktefelle(ektefelle)
+                                .withEktefelleHarDiskresjonskode(harDiskresjonskode)
+                                .withFolkeregistrertMedEktefelle(folkeregistrertMed)
+                                .withBorSammenMed(borSammen));
+        return soknadUnderArbeid;
     }
 
 }

@@ -19,8 +19,8 @@ import java.util.Locale;
 import java.util.Properties;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -47,7 +47,7 @@ public class SaksoversiktMetadataService {
 
         List<SoknadMetadata> soknader = soknadMetadataRepository.hentInnsendteSoknaderForBruker(fnr);
 
-        List<InnsendtSoknad> innsendte = soknader.stream().map(soknad ->
+        return soknader.stream().map(soknad ->
                 new InnsendtSoknad()
                         .withAvsender(new Part()
                                 .withType(Part.Type.BRUKER)
@@ -64,8 +64,6 @@ public class SaksoversiktMetadataService {
                         .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
                         .withLenke(lagEttersendelseLenke(soknad.behandlingsId)))
                 .collect(toList());
-
-        return innsendte;
     }
 
     public List<PabegyntSoknad> hentPabegynteSoknaderForBruker(String fnr) {

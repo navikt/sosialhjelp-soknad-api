@@ -9,14 +9,11 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
-import no.nav.sbl.sosialhjelp.midlertidig.VedleggConverter;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -26,11 +23,13 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.LastetOpp;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.Status.VedleggKreves;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 
 @Component
 public class OpplastetVedleggService {
@@ -40,18 +39,6 @@ public class OpplastetVedleggService {
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private VedleggConverter vedleggConverter;
-
-    @Inject
-    private VedleggService vedleggService;
-
-    @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
 
     private static Map<String, String> MIME_TIL_EXT;
 
@@ -63,42 +50,38 @@ public class OpplastetVedleggService {
         MIME_TIL_EXT.put("image/jpeg", ".jpg");
     }
 
-    public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn, boolean convertedFromFaktum) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
-        final Long soknadId = soknadUnderArbeid.getSoknadId();
-        final String sha512 = ServiceUtils.getSha512FromByteArray(data);
-        final String contentType = Detect.CONTENT_TYPE.transform(data);
+    public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        Long soknadId = soknadUnderArbeid.getSoknadId();
+        String sha512 = ServiceUtils.getSha512FromByteArray(data);
+        String contentType = Detect.CONTENT_TYPE.transform(data);
 
         validerFil(data);
 
-        final OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
+        OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
                 .withEier(eier)
                 .withVedleggType(new VedleggType(vedleggstype))
                 .withData(data)
                 .withSoknadId(soknadId)
                 .withSha512(sha512);
 
-        if (!convertedFromFaktum){
-            filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
-        }
+        filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
         opplastetVedlegg.withFilnavn(filnavn);
 
-        final String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
+        String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
         opplastetVedlegg.withUuid(uuid);
 
-        if (!convertedFromFaktum){
-            final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
-                    .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
-                    .findFirst().get();
+        JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
+                .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
+                .findFirst().get();
 
-            if (jsonVedlegg.getFiler() == null){
-                jsonVedlegg.setFiler(new ArrayList<>());
-            }
-            jsonVedlegg.withStatus(LastetOpp.toString()).getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
-
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+        if (jsonVedlegg.getFiler() == null){
+            jsonVedlegg.setFiler(new ArrayList<>());
         }
+        jsonVedlegg.withStatus(LastetOpp.toString()).getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
         return opplastetVedlegg;
     }
@@ -113,7 +96,7 @@ public class OpplastetVedleggService {
 
         final String vedleggstype = opplastetVedlegg.getVedleggType().getSammensattType();
 
-        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
                 .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
@@ -130,46 +113,6 @@ public class OpplastetVedleggService {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
         opplastetVedleggRepository.slettVedlegg(vedleggId, eier);
-    }
-
-    public void legacyConvertVedleggToOpplastetVedleggAndUploadToRepositoryAndSetVedleggstatus(String behandlingsId, String eier, Long soknadId) {
-        final List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadId, eier);
-
-        if (opplastedeVedlegg == null || opplastedeVedlegg.isEmpty()) {
-            final List<OpplastetVedlegg> konvertertOpplastedeVedlegg = legacyMapVedleggToOpplastetVedlegg(behandlingsId, eier, soknadId);
-            if (konvertertOpplastedeVedlegg != null && !konvertertOpplastedeVedlegg.isEmpty()) {
-                for (OpplastetVedlegg opplastetVedlegg : konvertertOpplastedeVedlegg) {
-                    saveVedleggAndUpdateVedleggstatus(behandlingsId, opplastetVedlegg.getVedleggType().getSammensattType(),
-                            opplastetVedlegg.getData(), opplastetVedlegg.getFilnavn(), true);
-                }
-            }
-        }
-    }
-
-    public List<OpplastetVedlegg> legacyMapVedleggToOpplastetVedlegg(String behandlingsId, String eier, Long soknadId) {
-        final WebSoknad webSoknad = legacyHentWebSoknad(behandlingsId, eier);
-        final List<Vedlegg> vedleggListe = vedleggService.hentVedleggOgKvittering(webSoknad);
-        return vedleggConverter.mapVedleggListeTilOpplastetVedleggListe(soknadId, eier, vedleggListe);
-    }
-
-    public WebSoknad legacyHentWebSoknad(String behandlingsId, String eier) {
-        if (Objects.isNull(eier)) {
-            throw new AuthorizationException("");
-        }
-
-        /* Dette burde egentlig være unødvendig, men sjekker i tilfelle lesing av WebSoknad kan ha sideeffekter: */
-        if (eier == null || !eier.equals(OidcFeatureToggleUtils.getUserId())) {
-            throw new IllegalStateException("Har spurt på en annen bruker enn den som er pålogget. Dette er ikke støttet/tillatt.");
-        }
-
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
-        if (!eier.equals(webSoknad.getAktoerId())) {
-            throw new AuthorizationException("Ingen tilgang til angitt søknad for angitt bruker");
-        }
-        webSoknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(webSoknadConfig.hentStruktur(webSoknad.getskjemaNummer()));
-        vedleggService.leggTilKodeverkFelter(webSoknad.hentPaakrevdeVedlegg());
-
-        return webSoknad;
     }
 
     String lagFilnavn(String opplastetNavn, String mimetype, String uuid) {

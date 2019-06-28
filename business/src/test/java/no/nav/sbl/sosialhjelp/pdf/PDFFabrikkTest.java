@@ -1,18 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.soknadsosialhjelp.soknad.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
-import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
-import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
-import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.sosialhjelp.pdf.helpers.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,18 +13,15 @@ import org.springframework.context.MessageSource;
 import java.io.IOException;
 import java.util.Locale;
 
-import static java.util.Collections.emptyList;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PDFFabrikkTest {
-    @Mock
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Mock
     private CmsTekst cmsTekst;
     @InjectMocks
@@ -59,12 +44,10 @@ public class PDFFabrikkTest {
 
     @Mock
     private Kodeverk kodeverk;
+    private String FNR = "12345678910";
 
     @Before
     public void setup() {
-        KravdialogInformasjon kravdialogInformasjon = mock(KravdialogInformasjon.class);
-        when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(kravdialogInformasjon);
-        when(kravdialogInformasjon.getBundleName()).thenReturn("bundlename");
         when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("mock");
         handleBarKjoerer.registrerHelper("hentTekst", hentTekstHelper);
         handleBarKjoerer.registrerHelper("hentTekstMedParametere", hentTekstMedParametereHelper);
@@ -88,42 +71,10 @@ public class PDFFabrikkTest {
 
     @Test
     public void skalKunneLagePDF() throws IOException {
-        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(lagGyldigJsonInternalSoknad());
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad(FNR));
         String skjemaPath = "file://" + PDFFabrikk.class.getResource("/").getPath();
         byte[] pdfFil = PDFFabrikk.lagPdfFil(html, skjemaPath);
 
         assertThat(pdfFil.length > 0, is(true));
-    }
-
-    private JsonInternalSoknad lagGyldigJsonInternalSoknad() {
-        return new JsonInternalSoknad()
-                .withSoknad(new JsonSoknad()
-                        .withVersion("1.0.0")
-                        .withKompatibilitet(emptyList())
-                        .withDriftsinformasjon("")
-                        .withData(new JsonData()
-                                .withArbeid(new JsonArbeid())
-                                .withBegrunnelse(new JsonBegrunnelse()
-                                        .withHvaSokesOm("")
-                                        .withHvorforSoke(""))
-                                .withBosituasjon(new JsonBosituasjon())
-                                .withFamilie(new JsonFamilie()
-                                        .withForsorgerplikt(new JsonForsorgerplikt()))
-                                .withOkonomi(new JsonOkonomi()
-                                        .withOpplysninger(new JsonOkonomiopplysninger())
-                                        .withOversikt(new JsonOkonomioversikt()))
-                                .withPersonalia(new JsonPersonalia()
-                                        .withKontonummer(new JsonKontonummer()
-                                                .withKilde(JsonKilde.BRUKER))
-                                        .withNavn(new JsonSokernavn()
-                                                .withFornavn("Fornavn")
-                                                .withMellomnavn("")
-                                                .withEtternavn("Etternavn")
-                                                .withKilde(JsonSokernavn.Kilde.SYSTEM))
-                                        .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                .withVerdi("12345678910")
-                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)))
-                                .withUtdanning(new JsonUtdanning()
-                                        .withKilde(JsonKilde.BRUKER))));
     }
 }

@@ -2,18 +2,12 @@ package no.nav.sbl.dialogarena.rest.ressurser.utgifter;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -26,10 +20,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.FaktumNoklerOgBelopNavnMapper.soknadTypeToFaktumKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 
 @Controller
@@ -40,19 +33,10 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMa
 public class BoutgiftRessurs {
 
     @Inject
-    private LegacyHelper legacyHelper;
-
-    @Inject
     private Tilgangskontroll tilgangskontroll;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SoknadService soknadService;
-
-    @Inject
-    private FaktaService faktaService;
 
     @Inject
     private TextService textService;
@@ -60,7 +44,7 @@ public class BoutgiftRessurs {
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = legacyHelper.hentSoknad(behandlingsId, eier, false).getJsonInternalSoknad();
+        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         final BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
 
@@ -77,13 +61,8 @@ public class BoutgiftRessurs {
     @PUT
     public void updateBoutgifter(@PathParam("behandlingsId") String behandlingsId, BoutgifterFrontend boutgifterFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        update(behandlingsId, boutgifterFrontend);
-        legacyUpdate(behandlingsId, boutgifterFrontend);
-    }
-
-    private void update(String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
         final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).get();
+        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
@@ -96,77 +75,43 @@ public class BoutgiftRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    private void legacyUpdate(String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
-        final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        final Faktum bekreftelse = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift");
-        bekreftelse.setValue(boutgifterFrontend.bekreftelse.toString());
-        faktaService.lagreBrukerFaktum(bekreftelse);
-
-        final Faktum husleie = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.husleie");
-        husleie.setValue(String.valueOf(boutgifterFrontend.husleie));
-        faktaService.lagreBrukerFaktum(husleie);
-
-        final Faktum strom = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.strom");
-        strom.setValue(String.valueOf(boutgifterFrontend.strom));
-        faktaService.lagreBrukerFaktum(strom);
-
-        final Faktum kommunaleavgifter = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.kommunaleavgifter");
-        kommunaleavgifter.setValue(String.valueOf(boutgifterFrontend.kommunalAvgift));
-        faktaService.lagreBrukerFaktum(kommunaleavgifter);
-
-        final Faktum oppvarming = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.oppvarming");
-        oppvarming.setValue(String.valueOf(boutgifterFrontend.oppvarming));
-        faktaService.lagreBrukerFaktum(oppvarming);
-
-        final Faktum avdraglaan = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.avdraglaan");
-        avdraglaan.setValue(String.valueOf(boutgifterFrontend.boliglan));
-        faktaService.lagreBrukerFaktum(avdraglaan);
-
-        final Faktum annet = faktaService.hentFaktumMedKey(webSoknad.getSoknadId(), "utgifter.boutgift.true.type.andreutgifter");
-        annet.setValue(String.valueOf(boutgifterFrontend.annet));
-        faktaService.lagreBrukerFaktum(annet);
-    }
-
     private void setBoutgifter(JsonOkonomi okonomi, BoutgifterFrontend boutgifterFrontend) {
         List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = okonomi.getOpplysninger().getUtgift();
         List<JsonOkonomioversiktUtgift> oversiktBoutgifter = okonomi.getOversikt().getUtgift();
 
         String type = "husleie";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.husleie);
 
         type = "strom";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.strom);
 
         type = "kommunalAvgift";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.kommunalAvgift);
 
         type = "oppvarming";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.oppvarming);
 
         type = "boliglanAvdrag";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type) + "." + type);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type) + "." + type);
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
 
         type = "boliglanRenter";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type) + "." + type);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type) + "." + type);
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
 
         type = "annenBoutgift";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToFaktumKey.get(type));
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.annet);
     }
 
     private void setBekreftelseOnBoutgifterFrontend(JsonOkonomiopplysninger opplysninger, BoutgifterFrontend boutgifterFrontend) {
-        final Optional<JsonOkonomibekreftelse> boutgiftBekreftelse = opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("boutgifter")).findFirst();
-        if (boutgiftBekreftelse.isPresent()){
-            boutgifterFrontend.setBekreftelse(boutgiftBekreftelse.get().getVerdi());
-        }
+        opplysninger.getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals("boutgifter")).findFirst()
+                .ifPresent(jsonOkonomibekreftelse -> boutgifterFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
     private void setUtgiftstyperOnBoutgifterFrontend(JsonOkonomi okonomi, BoutgifterFrontend boutgifterFrontend) {

@@ -37,23 +37,18 @@ public class NAVOidcSTSClient extends STSClient {
     @Override
     public SecurityToken requestSecurityToken(String appliesTo, String action, String requestType, String binaryExchange) throws Exception {
         ensureTokenStoreExists();
-
-        final String userId = getUserId();
         final String key = getTokenStoreKey();
 
         SecurityToken token = tokenStore.getToken(key);
         if (token == null) {
-            logger.debug("Missing token for user {}, fetching it from STS", userId);
             token = super.requestSecurityToken(appliesTo, action, requestType, binaryExchange);
             tokenStore.add(key, token);
-        } else {
-            logger.debug("Retrived token for user {} from tokenStore", userId);
         }
         return token;
     }
 
     private String getTokenStoreKey() {
-        return stsType.name() + "-" + getUserKey();
+        return String.format("%s-%s", stsType.name(), getUserKey());
     }
 
     private String getUserKey() {
@@ -66,10 +61,6 @@ public class NAVOidcSTSClient extends STSClient {
             }
             return token;
         }
-    }
-
-    private String getUserId() {
-        return stsType == SYSTEM_USER_IN_FSS ? toString(getProperty(SecurityConstants.USERNAME)) : SubjectHandler.getUserIdFromToken();
     }
 
     public static String toString(Object o) {

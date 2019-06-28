@@ -9,6 +9,38 @@ Husk å kjøre mvn clean install (evt process-resources) før du kjører lokalt 
 For å se json-representasjon av søknaden: 
 `http://localhost:8181/soknadsosialhjelp-server/representasjon/json/110000001`
 
+ ### Deploy til testmiljø på Heroku
+
+ Forutsetter at [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) er installert og at man har opprettet
+ og autentisert mot egen Heroku-konto:
+
+ ```bash
+ heroku auth:login
+ heroku container:login
+```
+
+ For å opprette applikasjon og deploye til Heroku:
+
+ ```bash
+ heroku create en-kul-ny-feature-server
+ ./heroku-build.sh
+ ```
+  
+ Hvis applikasjonen allerede eksisterer i Heroku, kan app name angis ved deploy:
+ 
+ ```bash
+ ./heroku-build.sh --app-name=en-kul-ny-feature-server
+ ``` 
+ 
+ Eventuelt kan applikasjonen settes som en git remote:
+ 
+ ```bash
+ git remote add heroku https://git.heroku.com/en-kul-ny-feature-server.git
+ ```
+ 
+ Etter deploy vil backenden være tilgjengelig på `https://www.digisos-test.com/en-kul-ny-feature/soknadsosialhjelp-server/`.
+ (Altså **ikke** `https://www.digisos-test.com/en-kul-ny-feature-server/soknadsosialhjelp-server/`)
+
 ### Tekster
 
 Sjekk ut det aktuelle tekstprosjektet og se README der. 

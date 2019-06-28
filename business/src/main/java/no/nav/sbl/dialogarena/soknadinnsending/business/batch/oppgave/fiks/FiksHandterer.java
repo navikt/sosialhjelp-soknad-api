@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import org.slf4j.Logger;
@@ -22,9 +21,6 @@ public class FiksHandterer {
 
     @Inject
     private FiksSender fiksSender;
-
-    @Inject
-    private FillagerService fillagerService;
 
     @Inject
     private InnsendingService innsendingService;
@@ -67,7 +63,6 @@ public class FiksHandterer {
 
     private void slettSoknadOgFiler(String behandlingsId, String eier) {
         innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId, eier);
-        fillagerService.slettAlle(behandlingsId);
     }
 
     private void lagreResultat(String behandlingsId, FiksResultat resultat, String eier) {

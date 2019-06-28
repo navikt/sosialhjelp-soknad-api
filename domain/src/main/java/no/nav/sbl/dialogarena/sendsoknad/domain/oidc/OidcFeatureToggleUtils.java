@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler;
 
 public class OidcFeatureToggleUtils {
@@ -11,14 +12,14 @@ public class OidcFeatureToggleUtils {
     }
 
     public static String getUserId() {
-        if (isRunningWithOidc()) {
+        if (isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
             return SubjectHandler.getUserIdFromToken();
         }
         return SamlSubjectHandler.getSubjectHandler().getUid();
     }
 
     public static String getToken() {
-        if (isRunningWithOidc()) {
+        if (isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
             return SubjectHandler.getToken();
         }
         return SamlSubjectHandler.getSubjectHandler().getEksternSsoToken();
@@ -26,11 +27,11 @@ public class OidcFeatureToggleUtils {
 
     public static String getConsumerId() {
         String consumerId;
-        if (isRunningWithOidc()) {
+        if (isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
             consumerId = SubjectHandler.getConsumerId();
         } else {
             consumerId = SamlSubjectHandler.getSubjectHandler().getConsumerId();
         }
-        return consumerId != null? consumerId : "srvsoknadsosialhje";
+        return consumerId != null ? consumerId : "srvsoknadsosialhje";
     }
 }

@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.SoknadLaastException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -29,6 +30,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
@@ -89,7 +92,18 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public Optional<SoknadUnderArbeid> hentSoknad(String behandlingsId, String eier) {
+    public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
+                new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
+        if (soknadUnderArbeidOptional.isPresent()) {
+            return soknadUnderArbeidOptional.get();
+        } else {
+            throw new NoSuchElementException("Ingen SoknadUnderArbeid funnet på behandlingsId: " + behandlingsId);
+        }
+    }
+
+    @Override
+    public Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier) {
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
                 new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
     }
@@ -101,12 +115,22 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
+    public List<SoknadUnderArbeid> hentForeldedeEttersendelser() {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) " +
+                        "and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
+                new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
+    }
+
+    @Override
     public void oppdaterSoknadsdata(SoknadUnderArbeid soknadUnderArbeid, String eier) throws SamtidigOppdateringException {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
         sjekkOmSoknadErLaast(soknadUnderArbeid);
         final Long opprinneligVersjon = soknadUnderArbeid.getVersjon();
         final Long oppdatertVersjon = opprinneligVersjon + 1;
         final LocalDateTime sistEndretDato = now();
+        if (!soknadUnderArbeid.erEttersendelse() && soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker() == null) {
+            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker().withEnhetsnummer("").withNavEnhetsnavn(""));
+        }
         byte[] data = mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad());
 
         final int antallOppdaterteRader = getJdbcTemplate()

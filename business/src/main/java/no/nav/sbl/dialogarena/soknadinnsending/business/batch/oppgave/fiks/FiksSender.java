@@ -54,7 +54,7 @@ public class FiksSender {
         return forsendelsesService.sendForsendelse(forsendelse);
     }
 
-    Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
+    public Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
         final SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
         return new Forsendelse()
                 .withMottaker(new Adresse()
@@ -119,7 +119,7 @@ public class FiksSender {
                 antallBrukerOpplastedeVedlegg += vedlegg.getFiler().size();
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse);
+                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse, soknadUnderArbeid.erEttersendelse());
             }
         } catch (RuntimeException e) {
             log.debug("Ignored exception");

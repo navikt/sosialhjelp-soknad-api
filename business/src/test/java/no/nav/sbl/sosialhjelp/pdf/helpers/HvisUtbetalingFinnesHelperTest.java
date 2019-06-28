@@ -67,10 +67,9 @@ public class HvisUtbetalingFinnesHelperTest {
         final List<JsonOkonomiOpplysningUtbetaling> utbetalinger = new ArrayList<JsonOkonomiOpplysningUtbetaling>();
         utbetalinger.add(navUtbetaling);
         utbetalinger.add(annenUtbetaling);
-        
-        final JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger()
+
+        return new JsonOkonomiopplysninger()
                 .withUtbetaling(utbetalinger);
-        return opplysninger;
     }
     
 }

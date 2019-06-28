@@ -1,11 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser.familie;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -14,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler.SUBJECTHANDLER_KEY;
 import static org.mockito.Mockito.*;
@@ -22,16 +21,7 @@ import static org.mockito.Mockito.*;
 public class ForsorgerpliktRessursUtenOidcTest {
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -82,18 +72,8 @@ public class ForsorgerpliktRessursUtenOidcTest {
     }
 
     @Test
-    public void getForsorgerpliktSkalReturnereEtBarnMedDiskresjonskode(){
-        forsorgerpliktRessursTest.getForsorgerpliktSkalReturnereEtBarnMedDiskresjonskode();
-    }
-
-    @Test
     public void putForsorgerpliktSkalSetteBarnebidrag(){
         forsorgerpliktRessursTest.putForsorgerpliktSkalSetteBarnebidrag();
-    }
-
-    @Test
-    public void putForsorgerpliktSkalKunneSetteBarnebidragForBarnMedDiskresjonskode(){
-        forsorgerpliktRessursTest.putForsorgerpliktSkalKunneSetteBarnebidragForBarnMedDiskresjonskode();
     }
 
     @Test

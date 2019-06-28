@@ -1,11 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser.utdanning;
 
-import no.nav.sbl.dialogarena.rest.ressurser.LegacyHelper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -25,19 +22,10 @@ public class UtdanningRessursUtenOidcTest {
     private static final String BEHANDLINGSID = "123";
 
     @Mock
-    private LegacyHelper legacyHelper;
-
-    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
-    @Mock
-    private SoknadService soknadService;
-
-    @Mock
-    private FaktaService faktaService;
 
     @Mock
     private TextService textService;

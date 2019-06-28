@@ -37,7 +37,7 @@ public class InternalRessurs {
     @Inject
     private NavMessageSource messageSource;
 
-    private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
+    private PersonPortTypeMock personPortTypeMock = new PersonMock().personPortTypeMock();
 
     private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
 
@@ -45,7 +45,7 @@ public class InternalRessurs {
     @Path(value = "/lagre")
     public void kjorLagring() throws InterruptedException {
         logAccess("kjorLagring");
-        lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
+        lagringsScheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase();
     }
 
 

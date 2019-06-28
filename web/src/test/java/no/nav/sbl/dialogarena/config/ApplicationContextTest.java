@@ -29,7 +29,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMO
 public class ApplicationContextTest {
 
     @BeforeClass
-    public static void beforeClass() throws IOException, NamingException {
+    public static void beforeClass() throws NamingException {
         load("/environment-test.properties");
         System.setProperty(StsSecurityConstants.STS_URL_KEY, "dummyvalue");
         System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, "dummyvalue");

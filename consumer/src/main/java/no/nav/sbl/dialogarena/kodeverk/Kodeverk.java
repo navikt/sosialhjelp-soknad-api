@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
@@ -29,9 +28,5 @@ public interface Kodeverk extends Adressekodeverk {
     void lastInnNyeKodeverk();
 
     public String gjettKommunenummer(String kommunenavn);
-    
-    public List<String> hentAlleKodenavnFraKodeverk(EksponertKodeverk kodeverknavn);
-
-    public Map<String, String> hentAlleKodenavnMedForsteTerm(EksponertKodeverk kodeverknavn);
 }
     

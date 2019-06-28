@@ -1,19 +1,18 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import com.github.jknack.handlebars.*;
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache;
-import com.github.jknack.handlebars.context.*;
-import no.bekk.bekkopen.person.Fodselsnummer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import com.github.jknack.handlebars.context.FieldValueResolver;
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.context.MethodValueResolver;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 
 import java.io.IOException;
-import java.util.*;
-
-import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
-import static org.apache.commons.lang3.ArrayUtils.reverse;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.split;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
@@ -25,7 +24,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     @Override
     public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) throws IOException {
-        final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false);
+        final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false, "");
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/soknad")
