@@ -275,7 +275,6 @@
 
         <!-- Avhengigheter med scope test -->
 
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-domain</artifactId>

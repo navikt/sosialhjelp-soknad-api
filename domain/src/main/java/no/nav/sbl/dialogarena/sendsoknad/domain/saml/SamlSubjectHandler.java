@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.Subject;
 import java.util.Set;
 
-public abstract class SamlSubjectHandler {
+public abstract class SamlSubjectHandler{
     public static final String SUBJECTHANDLER_KEY = "no.nav.modig.core.context.subjectHandlerImplementationClass";
     private static final Logger logger = LoggerFactory.getLogger(SamlSubjectHandler.class);
     public static final String WLS_PROPERTY_KEY = "wls.home";
