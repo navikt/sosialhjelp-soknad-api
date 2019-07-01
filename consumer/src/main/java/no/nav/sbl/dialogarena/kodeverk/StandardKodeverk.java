@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.kodeverk;
 
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SystemException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.joda.time.DateTime;

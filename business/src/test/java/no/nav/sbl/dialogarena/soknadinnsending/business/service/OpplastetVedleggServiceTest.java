@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlSubjectHandler.SUBJECTHANDLER_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -53,7 +54,7 @@ public class OpplastetVedleggServiceTest {
 
     @Before
     public void setUp() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", SamlStaticSubjectHandler.class.getName());
+        System.setProperty(SUBJECTHANDLER_KEY, SamlStaticSubjectHandler.class.getName());
         opplastetVedleggService.setUp();
     }
 

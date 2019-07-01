@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.saml.SamlStaticSubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
