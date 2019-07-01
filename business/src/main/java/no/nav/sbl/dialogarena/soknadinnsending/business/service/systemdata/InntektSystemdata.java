@@ -2,12 +2,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +32,8 @@ public class InntektSystemdata implements Systemdata {
 
     @Inject
     SkattbarInntektService skattbarInntektService;
+    @Inject
+    ArbeidsforholdTransformer arbeidsforholdTransformer;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
@@ -84,6 +88,7 @@ public class InntektSystemdata implements Systemdata {
                 .withNetto(utbetaling.netto)
                 .withBrutto(utbetaling.brutto)
                 .withSkattetrekk(utbetaling.skattetrekk)
+                .withOrganisasjon(new JsonOrganisasjon().withNavn(arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer)).withOrganisasjonsnummer(utbetaling.orgnummer))
                 .withAndreTrekk(utbetaling.andreTrekk)
                 .withPeriodeFom(utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .withPeriodeTom(utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
