@@ -58,9 +58,6 @@ public class SoknadRessurs {
     @Inject
     private HenvendelseService henvendelseService;
 
-    @Inject
-    private AdresseSystemdata adresseSystemdata;
-
     @GET
     @Path("/{behandlingsId}/xsrfCookie")
     public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
@@ -77,7 +74,7 @@ public class SoknadRessurs {
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), adresseSystemdata.innhentMidlertidigAdresse(eier));
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad());
     }
 
     @GET
