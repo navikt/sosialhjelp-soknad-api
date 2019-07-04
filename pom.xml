@@ -58,10 +58,9 @@
         <nimbus-jose-jwt.version>6.5</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <jcip-annotations.version>1.0-1</jcip-annotations.version>
-        <cxf.version>3.2.1</cxf.version>
-        <cxf-rt-transports-http.version>3.2.1</cxf-rt-transports-http.version>
+        <cxf.version>3.3.2</cxf.version>
         <modig-security.version>3.0.6</modig-security.version>
-        <wss4j.version>2.2.0</wss4j.version>
+        <wss4j.version>2.2.3</wss4j.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
         <behandlingsinformasjon.tjenestespec.version>1.4.0</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
@@ -81,6 +80,7 @@
         <bouncycastle.version>1.60</bouncycastle.version>
         <httpclient.version>4.5.7</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
+        <stax2-api.version>4.2</stax2-api.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -520,6 +520,16 @@
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-core</artifactId>
                 <version>${cxf.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>jakarta.xml.bind</groupId>
+                        <artifactId>jakarta.xml.bind-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>jakarta.activation</groupId>
+                        <artifactId>jakarta.activation-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -570,7 +580,7 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
-                <version>${cxf-rt-transports-http.version}</version>
+                <version>${cxf.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.geronimo.specs</groupId>
@@ -802,6 +812,12 @@
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-suspend</artifactId>
                 <version>1.0.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.woodstox</groupId>
+                <artifactId>stax2-api</artifactId>
+                <version>${stax2-api.version}</version>
+                <scope>runtime</scope>
             </dependency>
 
 
