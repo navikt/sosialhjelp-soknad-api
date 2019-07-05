@@ -88,7 +88,10 @@ public class InntektSystemdata implements Systemdata {
                 .withNetto(utbetaling.netto)
                 .withBrutto(utbetaling.brutto)
                 .withSkattetrekk(utbetaling.skattetrekk)
-                .withOrganisasjon(new JsonOrganisasjon().withNavn(arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer)).withOrganisasjonsnummer(utbetaling.orgnummer))
+                .withOrganisasjon(utbetaling.orgnummer == null ? null :
+                        new JsonOrganisasjon()
+                                .withNavn(arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer))
+                                .withOrganisasjonsnummer(utbetaling.orgnummer))
                 .withAndreTrekk(utbetaling.andreTrekk)
                 .withPeriodeFom(utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .withPeriodeTom(utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)

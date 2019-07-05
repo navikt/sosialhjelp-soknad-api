@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -79,6 +80,9 @@ public class InntektSystemdataTest {
 
     @Mock
     private UtbetalingService utbetalingService;
+
+    @Mock
+    ArbeidsforholdTransformer arbeidsforholdTransformer;
 
     @InjectMocks
     private InntektSystemdata inntektSystemdata;
