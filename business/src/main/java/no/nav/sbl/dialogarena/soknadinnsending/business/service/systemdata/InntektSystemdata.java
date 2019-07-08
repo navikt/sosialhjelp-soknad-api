@@ -44,6 +44,7 @@ public class InntektSystemdata implements Systemdata {
         List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
 
         okonomiOpplysningUtbetalinger.removeIf(utbetaling -> utbetaling.getKilde().equals(JsonKilde.SYSTEM));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("");
         if (systemUtbetalingerNav == null) {
             soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente utbetalinger fra NAV");
         } else {

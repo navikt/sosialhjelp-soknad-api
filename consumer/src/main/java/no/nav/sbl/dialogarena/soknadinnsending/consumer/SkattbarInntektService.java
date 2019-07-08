@@ -219,7 +219,7 @@ public class SkattbarInntektService {
                 return new SkattbarInntekt();
             } else {
                 String melding = response.readEntity(String.class);
-                log.warn(String.format("Klarer ikke hente skatteopplysninger %s status %s ", melding, response.getStatus()));
+                log.error(  String.format("Klarer ikke hente skatteopplysninger %s status %s ", melding, response.getStatus()));
 
                 return new SkattbarInntekt();
             }

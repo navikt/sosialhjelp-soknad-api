@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Sy
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;

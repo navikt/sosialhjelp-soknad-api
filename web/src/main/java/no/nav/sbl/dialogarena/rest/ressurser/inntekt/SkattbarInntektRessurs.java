@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
@@ -34,7 +34,7 @@ public class SkattbarInntektRessurs {
 
     @GET
     public List<SkattbarInntektOgForskuddstrekk> hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = SubjectHandler.getSubjectHandler().getUid();
+        String eier =  OidcFeatureToggleUtils.getUserId();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
         if (mockUtbetalinger != null && Boolean.valueOf(System.getProperty("tillatmock"))) {
             utbetalinger = mockUtbetalinger;
