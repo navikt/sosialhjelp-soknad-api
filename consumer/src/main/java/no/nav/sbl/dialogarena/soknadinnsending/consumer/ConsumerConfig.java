@@ -25,7 +25,8 @@ import static java.lang.System.setProperty;
         DokumentKrypterer.class,
         AdresseSokService.class,
         NorgService.class,
-        UtbetalingService.class
+        UtbetalingService.class,
+        SkattbarInntektService.class
 })
 
 public class ConsumerConfig {

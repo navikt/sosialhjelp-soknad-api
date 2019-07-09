@@ -3,6 +3,92 @@
         <h2 class="bolk__tittel">{{ hentTekst "inntektbolk.tittel" }}</h2>
         <ul class="fakta-liste">
             {{#with opplysninger}}
+
+                <h3>{{hentTekst "utbetalinger.inntekt.skattbar.tittel"}}</h3>
+                {{#if @root.utvidetSoknad}}
+                    {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
+                {{/if}}
+
+                {{#hvisLik @root.soknad.driftsinformasjon "Kunne ikke hente utbetalinger fra Skatteetaten"}}
+                    <ul class="svar-liste">
+                        <li>
+                            <span class="verdi verdi--tekst">
+                                {{@root.soknad.driftsinformasjon}}
+                            </span>
+                        </li>
+                    </ul>
+                {{else}}
+                    {{#hvisUtbetalingFinnes "skatteetaten"}}
+                        <h3>{{hentTekst "utbetalinger.skatt"}}</h3>
+                        {{#each utbetaling}}
+                            {{#hvisLik type "skatteetaten"}}
+                                <ul class="svar-liste">
+                                    <li>
+                                        <ul class="fakta-liste">
+                                            <li>
+                                                <span class="label">{{hentTekst "utbetalinger.utbetaling.type.label"}}</span>
+                                                <ul class="svar-liste">
+                                                    <li>
+                                                        <span class="verdi verdi--tekst">
+                                                            {{tittel}}
+                                                        </span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            {{#if brutto}}
+                                                <li>
+                                                    <span class="label">{{hentTekst "utbetalinger.utbetaling.brutto.label"}}</span>
+                                                    <ul class="svar-liste">
+                                                        <li>
+                                                            <span class="verdi verdi--tekst">
+                                                                {{brutto}}
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            {{/if}}
+
+                                            {{#if skattetrekk}}
+                                                <li>
+                                                    <span class="label">{{hentTekst "utbetalinger.utbetaling.skattetrekk.label"}}</span>
+                                                    <ul class="svar-liste">
+                                                        <li>
+                                                            <span class="verdi verdi--tekst">
+                                                                {{skattetrekk}}
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            {{/if}}
+                                            {{#if utbetalingsdato}}
+                                                <li>
+                                                    <span class="label">{{hentTekst "utbetalinger.utbetaling.erutbetalt.label"}}</span>
+                                                    <ul class="svar-liste">
+                                                        <li>
+                                                            <span class="verdi verdi--tekst">
+                                                                {{utbetalingsdato}}
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            {{/if}}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            {{/hvisLik}}
+                        {{/each}}
+                        {{#if @root.utvidetSoknad}}
+                            {{{ settInnInfotekst "utbetalinger.infotekst.tekst" }}}
+                        {{/if}}
+                    {{else}}
+                        <li>
+                            <span>
+                                {{ hentTekst 'utbetalinger.ingen.true' }}
+                            </span>
+                        </li>
+                    {{/hvisUtbetalingFinnes}}
+                {{/hvisLik}}
+
                 <h3>{{hentTekst "navytelser.sporsmal"}}</h3>
                 {{#if @root.utvidetSoknad}}
                     {{{ settInnInfotekst "navytelser.infotekst.tekst" }}}
@@ -87,7 +173,7 @@
                         </li>
                     {{/hvisUtbetalingFinnes}}
                 {{/hvisLik}}
-            
+
                 <h3>{{hentTekst "inntekt.bostotte.sporsmal"}}</h3>
                 {{#hentOkonomiBekreftelse "bostotte"}}
                     <li>

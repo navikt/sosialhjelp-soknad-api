@@ -4,13 +4,15 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.pdf.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -20,9 +22,11 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
+import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 
@@ -95,6 +99,23 @@ public class InternalRessurs {
             return "CACHE RESET OK";
         }
         return "OK";
+    }
+
+    @GET
+    @Path(value = "/version")
+    @Produces({ MediaType.TEXT_PLAIN })
+    public String version() throws IOException {
+        logAccess("version");
+        StringBuilder ret = new StringBuilder();
+        ret.append( IOUtils.toString(this.getClass().getResourceAsStream("/version.txt"))).append("\n");
+        ret.append("java.version").append("=");
+        ret.append(System.getProperty("java.version")).append("-");
+        ret.append(System.getProperty("java.vendor")).append("\n\n");
+        for (String s1 : System.getProperties().stringPropertyNames().stream().filter(s -> s.contains("withmock")).collect(Collectors.toList())) {
+            ret.append(s1).append("=").append(System.getProperty(s1)).append("\n");
+        }
+
+        return ret.toString();
     }
 
     private void logAccess(String metode) {
