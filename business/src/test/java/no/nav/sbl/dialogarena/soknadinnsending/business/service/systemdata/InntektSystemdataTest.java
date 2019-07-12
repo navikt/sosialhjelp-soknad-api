@@ -45,7 +45,7 @@ public class InntektSystemdataTest {
     private static final LocalDate PERIODE_FOM = LocalDate.now().minusDays(40);
     private static final LocalDate PERIODE_TOM = LocalDate.now().minusDays(10);
 
-    private static final String YTELSESTYPE = "Onkel Skrue penger";
+    private static final String TITTEL = "Onkel Skrue penger";
     private static final double NETTO = 60000.0;
     private static final double BRUTTO = 3880.0;
     private static final double SKATT = -1337.0;
@@ -56,26 +56,56 @@ public class InntektSystemdataTest {
     private static final double SATSBELOP = 5000.0;
     private static final double SATSANTALL = 10.0;
 
-    private static final Utbetaling UTBETALING = new Utbetaling();
-    private static final Utbetaling.Komponent KOMPONENT = new Utbetaling.Komponent();
+    private static final String TITTEL_2 = "Lønnsinntekt";
+    private static final double NETTO_2 = 10000.0;
+    private static final double BRUTTO_2 = 12500.0;
+    private static final double SKATT_2 = -2500.0;
+    private static final double TREKK_2 = 0.0;
+    private static final String KOMPONENTTYPE_2 = "Månedslønn";
+    private static final double KOMPONENTBELOP_2 = 10000.0;
+    private static final String SATSTYPE_2 = "Årslønn";
+    private static final double SATSBELOP_2 = 120000.0;
+    private static final double SATSANTALL_2 = 12.0;
+
+    private static final Utbetaling NAV_UTBETALING = new Utbetaling();
+    private static final Utbetaling.Komponent NAV_KOMPONENT = new Utbetaling.Komponent();
+    private static final Utbetaling SKATTBAR_UTBETALING = new Utbetaling();
+    private static final Utbetaling.Komponent SKATTBAR_KOMPONENT = new Utbetaling.Komponent();
 
     static {
-        UTBETALING.type = YTELSESTYPE;
-        UTBETALING.netto = NETTO;
-        UTBETALING.brutto = BRUTTO;
-        UTBETALING.skattetrekk = SKATT;
-        UTBETALING.andreTrekk = TREKK;
-        UTBETALING.utbetalingsdato = UTBETALINGSDATO;
-        UTBETALING.periodeFom = PERIODE_FOM;
-        UTBETALING.periodeTom = PERIODE_TOM;
+        NAV_UTBETALING.tittel = TITTEL;
+        NAV_UTBETALING.netto = NETTO;
+        NAV_UTBETALING.brutto = BRUTTO;
+        NAV_UTBETALING.skattetrekk = SKATT;
+        NAV_UTBETALING.andreTrekk = TREKK;
+        NAV_UTBETALING.utbetalingsdato = UTBETALINGSDATO;
+        NAV_UTBETALING.periodeFom = PERIODE_FOM;
+        NAV_UTBETALING.periodeTom = PERIODE_TOM;
 
-        KOMPONENT.type = KOMPONENTTYPE;
-        KOMPONENT.belop = KOMPONENTBELOP;
-        KOMPONENT.satsType = SATSTYPE;
-        KOMPONENT.satsBelop = SATSBELOP;
-        KOMPONENT.satsAntall = SATSANTALL;
+        NAV_KOMPONENT.type = KOMPONENTTYPE;
+        NAV_KOMPONENT.belop = KOMPONENTBELOP;
+        NAV_KOMPONENT.satsType = SATSTYPE;
+        NAV_KOMPONENT.satsBelop = SATSBELOP;
+        NAV_KOMPONENT.satsAntall = SATSANTALL;
 
-        UTBETALING.komponenter = Collections.singletonList(KOMPONENT);
+        NAV_UTBETALING.komponenter = Collections.singletonList(NAV_KOMPONENT);
+
+        SKATTBAR_UTBETALING.tittel = TITTEL_2;
+        SKATTBAR_UTBETALING.netto = NETTO_2;
+        SKATTBAR_UTBETALING.brutto = BRUTTO_2;
+        SKATTBAR_UTBETALING.skattetrekk = SKATT_2;
+        SKATTBAR_UTBETALING.andreTrekk = TREKK_2;
+        SKATTBAR_UTBETALING.utbetalingsdato = UTBETALINGSDATO;
+        SKATTBAR_UTBETALING.periodeFom = PERIODE_FOM;
+        SKATTBAR_UTBETALING.periodeTom = PERIODE_TOM;
+
+        SKATTBAR_KOMPONENT.type = KOMPONENTTYPE_2;
+        SKATTBAR_KOMPONENT.belop = KOMPONENTBELOP_2;
+        SKATTBAR_KOMPONENT.satsType = SATSTYPE_2;
+        SKATTBAR_KOMPONENT.satsBelop = SATSBELOP_2;
+        SKATTBAR_KOMPONENT.satsAntall = SATSANTALL_2;
+
+        SKATTBAR_UTBETALING.komponenter = Collections.singletonList(SKATTBAR_KOMPONENT);
     }
 
     @Mock
@@ -87,7 +117,7 @@ public class InntektSystemdataTest {
     @InjectMocks
     private InntektSystemdata inntektSystemdata;
 
-    @Spy
+    @Mock
     SkattbarInntektService skattbarInntektService;
 
     @Before
@@ -103,22 +133,26 @@ public class InntektSystemdataTest {
     @Test
     public void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        List<Utbetaling> utbetalinger = Collections.singletonList(UTBETALING);
-        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(utbetalinger);
+        List<Utbetaling> nav_utbetalinger = Collections.singletonList(NAV_UTBETALING);
+        List<Utbetaling> skattbare_utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING);
+        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(nav_utbetalinger);
+        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(skattbare_utbetalinger);
 
         inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
+        JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
 
         assertThat(utbetaling.getKilde(), is(JsonKilde.SYSTEM));
-        assertThatUtbetalingIsCorrectlyConverted(UTBETALING, utbetaling);
+        assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING, utbetaling, "navytelse");
+        assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING, utbetaling_1, "skatteetaten");
     }
 
     @Test
     public void skalOppdatereUtbetalingerUtenAAOverskriveBrukerUtfylteUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
-        List<Utbetaling> utbetalinger = Collections.singletonList(UTBETALING);
+        List<Utbetaling> utbetalinger = Collections.singletonList(NAV_UTBETALING);
         when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(utbetalinger);
 
         inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
@@ -130,7 +164,7 @@ public class InntektSystemdataTest {
         assertThat(utbetaling.getKilde(), is(JsonKilde.BRUKER));
         assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
         assertThat(utbetaling_1.getKilde(), is(JsonKilde.SYSTEM));
-        assertThatUtbetalingIsCorrectlyConverted(UTBETALING, utbetaling_1);
+        assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING, utbetaling_1, "navytelse");
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithUtbetalinger() {
@@ -141,9 +175,9 @@ public class InntektSystemdataTest {
         return jsonInternalSoknad;
     }
 
-    private void assertThatUtbetalingIsCorrectlyConverted(Utbetaling utbetaling, JsonOkonomiOpplysningUtbetaling jsonUtbetaling) {
-        assertThat("type", jsonUtbetaling.getType(), is("navytelse"));
-        assertThat("tittel", jsonUtbetaling.getTittel(), is(utbetaling.type));
+    private void assertThatUtbetalingIsCorrectlyConverted(Utbetaling utbetaling, JsonOkonomiOpplysningUtbetaling jsonUtbetaling, String type) {
+        assertThat("type", jsonUtbetaling.getType(), is(type));
+        assertThat("tittel", jsonUtbetaling.getTittel(), is(utbetaling.tittel));
         assertThat("belop", jsonUtbetaling.getBelop(), is(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto))));
         assertThat("brutto", jsonUtbetaling.getBrutto(), is(utbetaling.brutto));
         assertThat("netto", jsonUtbetaling.getNetto(), is(utbetaling.netto));

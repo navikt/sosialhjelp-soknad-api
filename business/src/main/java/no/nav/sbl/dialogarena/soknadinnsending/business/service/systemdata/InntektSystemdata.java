@@ -68,7 +68,7 @@ public class InntektSystemdata implements Systemdata {
         if (utbetalinger == null) {
             return null;
         }
-        return utbetalinger.stream().map(utbetaling -> mapToJsonUtbetaling(utbetaling, "navytelse")).collect(Collectors.toList());
+        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, "navytelse")).collect(Collectors.toList());
     }
 
     public List<JsonOkonomiOpplysningUtbetaling> innhentSkattbarSystemregistrertInntekt(String personIdentifikator) {
@@ -77,14 +77,14 @@ public class InntektSystemdata implements Systemdata {
         if (utbetalinger == null) {
             return null;
         }
-        return utbetalinger.stream().map(utbetaling -> mapToJsonUtbetaling(utbetaling, "skatteetaten")).collect(Collectors.toList());
+        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, "skatteetaten")).collect(Collectors.toList());
     }
 
-    private JsonOkonomiOpplysningUtbetaling mapToJsonUtbetaling(Utbetaling utbetaling, String type) {
+    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(Utbetaling utbetaling, String type) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
                 .withType(type)
-                .withTittel(utbetaling.type)
+                .withTittel(utbetaling.tittel)
                 .withBelop(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto)))
                 .withNetto(utbetaling.netto)
                 .withBrutto(utbetaling.brutto)
