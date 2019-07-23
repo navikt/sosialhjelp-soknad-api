@@ -73,7 +73,7 @@
         <ojdbc.version>12.2.0.1</ojdbc.version>
         <flying.saucer.version>9.0.4</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.9.9</jackson.version>
         <jackson-databind.version>2.9.9.1</jackson-databind.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
         <filformat.version>1.2019.07.15-00.31-8a75977358ee</filformat.version>
