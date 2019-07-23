@@ -83,6 +83,7 @@
         <bouncycastle.version>1.60</bouncycastle.version>
         <httpclient.version>4.5.7</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
+        <hibernate.version>5.2.5.Final</hibernate.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -215,6 +216,12 @@
                         <artifactId>javax.inject</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.version}</version>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
