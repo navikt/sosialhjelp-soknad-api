@@ -352,37 +352,37 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jaas</artifactId>
             <scope>compile</scope>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-security</artifactId>
             <scope>compile</scope>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-http</artifactId>
             <scope>compile</scope>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <scope>compile</scope>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <scope>compile</scope>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <scope>compile</scope>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
@@ -396,7 +396,7 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
             <scope>compile</scope>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
