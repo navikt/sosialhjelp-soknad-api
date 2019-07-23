@@ -72,7 +72,7 @@
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <utbetaling.tjenestespesifikasjon.version>1.0.18</utbetaling.tjenestespesifikasjon.version>
         <ojdbc.version>12.2.0.1</ojdbc.version>
-        <flying.saucer.version>9.0.4</flying.saucer.version>
+        <flying.saucer.version>9.0.8</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.9.9</jackson.version>
         <jackson-databind.version>2.9.9.1</jackson-databind.version>
