@@ -56,6 +56,30 @@ public class FiksSender {
 
     public Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
         final SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
+
+        //  midlertidig fix for behandlingsId 110007REN
+        if ("110007REN".equals(sendtSoknad.getBehandlingsId())) {
+            return new Forsendelse()
+                    .withMottaker(new Adresse()
+                            .withDigitalAdresse(
+                                    new OrganisasjonDigitalAdresse().withOrgnr(sendtSoknad.getOrgnummer()))
+                            .withPostAdresse(fakeAdresse))
+                    .withAvgivendeSystem("digisos_avsender")
+                    .withForsendelseType("nav.digisos")
+                    .withEksternref(environmentNameIfTest() + sendtSoknad.getBehandlingsId())
+                    .withTittel(sendtSoknad.erEttersendelse() ? ETTERSENDELSE_TIL_NAV : SOKNAD_TIL_NAV)
+                    .withKunDigitalLevering(true)
+                    .withPrintkonfigurasjon(fakePrintConfig)
+                    .withKryptert(SKAL_KRYPTERE)
+                    .withKrevNiva4Innlogging(SKAL_KRYPTERE)
+                    .withSvarPaForsendelse(sendtSoknad.erEttersendelse() ?
+                            innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).getFiksforsendelseId() : null)
+                    .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid))
+                    .withMetadataFraAvleverendeSystem(
+                            new NoarkMetadataFraAvleverendeSakssystem()
+                                    .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
+                    );
+        }
         return new Forsendelse()
                 .withMottaker(new Adresse()
                         .withDigitalAdresse(
