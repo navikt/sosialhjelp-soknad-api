@@ -4,15 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import org.apache.pdfbox.PDFBox;
-
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfWriter;
 
 import no.nav.modig.core.exception.ApplicationException;
 
@@ -31,7 +30,7 @@ public class PDFFabrikk {
             renderer.setListener(new DefaultPDFCreationListener() {
                 @Override
                 public void preOpen(ITextRenderer iTextRenderer) {
-                    iTextRenderer.getWriter().setPDFXConformance(PdfWriter.PDFA1A);
+                    iTextRenderer.getWriter().setPDFXConformance(PdfWriter.PDFX32002); // todo: PdfWriter.PDFA1A er fjernet. Teste om dette gir samme resultater
                     iTextRenderer.getWriter().createXmpMetadata();
 
                     super.preOpen(iTextRenderer);
@@ -61,7 +60,7 @@ public class PDFFabrikk {
                     "AdobeRGB1998",
                     byteArray);
             renderer.finishPDF();
-        } catch (DocumentException|IOException e) {
+        } catch (DocumentException |IOException e) {
             throw new ApplicationException("Kunne ikke lagre oppsummering som PDF", e);
         }
         return os.toByteArray();

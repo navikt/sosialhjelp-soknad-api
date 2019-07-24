@@ -71,7 +71,7 @@
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <utbetaling.tjenestespesifikasjon.version>1.0.18</utbetaling.tjenestespesifikasjon.version>
         <ojdbc.version>12.2.0.1</ojdbc.version>
-        <flying.saucer.version>9.0.4</flying.saucer.version>
+        <flying.saucer.version>9.1.18</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.9.8</jackson.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
@@ -81,6 +81,8 @@
         <bouncycastle.version>1.60</bouncycastle.version>
         <httpclient.version>4.5.7</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
+        <itext.version>5.5.13</itext.version>
+<!--        <lowagie.itext.version>2.1.7</lowagie.itext.version>-->
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -353,7 +355,7 @@
             </dependency>
             <dependency>
                 <groupId>org.xhtmlrenderer</groupId>
-                <artifactId>flying-saucer-pdf</artifactId>
+                <artifactId>flying-saucer-pdf-itext5</artifactId>
                 <version>${flying.saucer.version}</version>
             </dependency>
             <dependency>
@@ -362,24 +364,20 @@
                 <version>${handlebars.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.lowagie</groupId>
-                <artifactId>itext</artifactId>
-                <version>2.1.7</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcmail-jdk14</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcprov-jdk14</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bctsp-jdk14</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itextpdf</artifactId>
+                <version>${itext.version}</version>
             </dependency>
+<!--            <dependency>-->
+<!--                <groupId>com.itextpdf</groupId>-->
+<!--                <artifactId>itext-pdfa</artifactId>-->
+<!--                <version>${itext.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.lowagie</groupId>-->
+<!--                <artifactId>itext</artifactId>-->
+<!--                <version>${lowagie.itext.version}</version>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
