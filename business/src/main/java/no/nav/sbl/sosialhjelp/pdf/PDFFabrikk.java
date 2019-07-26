@@ -30,7 +30,7 @@ public class PDFFabrikk {
             renderer.setListener(new DefaultPDFCreationListener() {
                 @Override
                 public void preOpen(ITextRenderer iTextRenderer) {
-                    iTextRenderer.getWriter().setPDFXConformance(PdfWriter.PDFX32002); // todo: PdfWriter.PDFA1A er fjernet. Teste om dette gir samme resultater
+                    iTextRenderer.getWriter().setPDFXConformance(PdfWriter.PDFX32002); // todo: PdfWriter.PDFA1A er fjernet. Er dette en mulig løsning eller må man endre noe annet?
                     iTextRenderer.getWriter().createXmpMetadata();
 
                     super.preOpen(iTextRenderer);

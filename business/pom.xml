@@ -45,14 +45,6 @@
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.itextpdf</groupId>-->
-<!--            <artifactId>itext-pdfa</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.lowagie</groupId>-->
-<!--            <artifactId>itext</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-pdf</artifactId>
