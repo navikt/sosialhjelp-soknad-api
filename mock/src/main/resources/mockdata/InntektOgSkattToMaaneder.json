@@ -1,0 +1,85 @@
+{
+	"oppgaveInntektsmottaker": [
+		{
+			"opplysningspliktigId": "811223522",
+			"virksomhetId": "Arbeidsgiver1",
+			"kalendermaaned": "2019-04",
+			"inntektsmottaker": {
+				"personidentifikator": "01029413157"
+			},
+			"inntekt": [
+				{
+					"fordel": "kontantytelse",
+					"utloeserArbeidsgiveravgift": true,
+					"inngaarIGrunnlagForTrekk": true,
+					"beloep": 366,
+					"loennsinntekt": {
+						"beskrivelse": "fastloenn"
+					}
+				}
+			],
+			"forskuddstrekk": [
+				{
+					"beskrivelse": "",
+					"beloep": "-200",
+					"avvik": null
+				}
+			]
+		},
+		{
+			"opplysningspliktigId": "911270374",
+			"virksomhetId": "Arbeidsgiver1",
+			"kalendermaaned": "2019-03",
+			"inntektsmottaker": {
+				"personidentifikator": "01029413157"
+			},
+			"inntekt": [
+				{
+					"fordel": "kontantytelse",
+					"utloeserArbeidsgiveravgift": true,
+					"inngaarIGrunnlagForTrekk": true,
+					"beloep": 200,
+					"loennsinntekt": {
+						"beskrivelse": "fastloenn"
+					}
+				},
+				{
+					"fordel": "naturalytelse",
+					"utloeserArbeidsgiveravgift": true,
+					"inngaarIGrunnlagForTrekk": true,
+					"beloep": 300,
+					"loennsinntekt": {
+						"beskrivelse": "skattepliktigPersonalrabatt"
+					}
+				},
+				{
+					"fordel": "kontantytelse",
+					"utloeserArbeidsgiveravgift": true,
+					"inngaarIGrunnlagForTrekk": true,
+					"beloep": 300,
+					"loennsinntekt": {
+						"beskrivelse": "honorarAkkordProsentProvisjon",
+						"tilleggsinformasjon": {
+							"inntjeningsforhold": "loennOgAnnenGodtgjoerelseSomIkkeErSkattepliktig"
+						},
+						"spesifikasjon": {
+							"skattemessigBosattILand": "DK"
+						}
+					}
+				}
+			],
+			"forskuddstrekk": [
+				{
+					"beskrivelse": "",
+					"beloep": "-200",
+					"avvik": null
+				},
+				{
+					"beskrivelse": "",
+					"beloep": "-200",
+					"avvik": null
+				}
+			]
+		}
+	]
+}

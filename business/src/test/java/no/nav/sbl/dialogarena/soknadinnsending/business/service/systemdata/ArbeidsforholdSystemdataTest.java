@@ -1,8 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
+import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -14,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
@@ -22,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
@@ -60,8 +65,17 @@ public class ArbeidsforholdSystemdataTest {
     @Mock
     private TextService textService;
 
+    @Mock
+    private UtbetalingService utbetalingService;
+
+    @Spy
+    private SkattbarInntektService skattbarInntektService;
+
     @InjectMocks
     private ArbeidsforholdSystemdata arbeidsforholdSystemdata;
+
+    @InjectMocks
+    private InntektSystemdata inntektSystemdata;
 
     @Test
     public void skalOppdatereArbeidsforhold() {
@@ -90,7 +104,10 @@ public class ArbeidsforholdSystemdataTest {
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
-
+        System.setProperty("tillatmock", "true");
+        skattbarInntektService.mockFil = "TULL";
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        System.setProperty("tillatmock", "false");
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonOkonomioversiktInntekt inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt().get(0);
@@ -109,7 +126,11 @@ public class ArbeidsforholdSystemdataTest {
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
+        System.setProperty("tillatmock", "true");
+        skattbarInntektService.mockFil = "TULL";
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
+        System.setProperty("tillatmock", "false");
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonOkonomiOpplysningUtbetaling utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().get(0);
@@ -152,7 +173,7 @@ public class ArbeidsforholdSystemdataTest {
         assertThat("fom", jsonArbeidsforhold.getFom(), is(arbeidsforhold.fom));
         assertThat("tom", jsonArbeidsforhold.getTom(), is(arbeidsforhold.tom));
         assertThat("stillingsprosent", new Long(jsonArbeidsforhold.getStillingsprosent()), is(arbeidsforhold.fastStillingsprosent));
-        if (arbeidsforhold.harFastStilling){
+        if (arbeidsforhold.harFastStilling) {
             assertThat("harFastStilling", jsonArbeidsforhold.getStillingstype(), is(JsonArbeidsforhold.Stillingstype.FAST));
         } else {
             assertThat("harFastStilling", jsonArbeidsforhold.getStillingstype(), is(JsonArbeidsforhold.Stillingstype.VARIABEL));
