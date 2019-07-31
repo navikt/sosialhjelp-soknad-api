@@ -82,7 +82,7 @@
         <bouncycastle.version>1.60</bouncycastle.version>
         <httpclient.version>4.5.7</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
-        <stax2-api.version>4.2</stax2-api.version>
+        <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
