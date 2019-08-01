@@ -11,6 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -23,9 +24,11 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class InntektSystemdata implements Systemdata {
+    public static final Logger log = getLogger(InntektSystemdata.class);
 
     @Inject
     UtbetalingService utbetalingService;
@@ -80,6 +83,22 @@ public class InntektSystemdata implements Systemdata {
         return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, "skatteetaten")).collect(Collectors.toList());
     }
 
+    static boolean isOrganisasjonsnummer(String organisasjonsnummer) {
+        if (organisasjonsnummer == null) return false;
+
+        if (organisasjonsnummer.matches("\\d{9}")) {
+            return true;
+        }
+
+        if (organisasjonsnummer.matches("\\d{11}")) {
+            log.info("Utbetalingens virksomhetsId er et personnummer. Dette blir ikke inkludert i soknad.json");
+        } else {
+            log.error(String.format("Utbetalingens virksomhetsId er verken et organisasjonsnummer eller personnummer: %s. Kontakt skatteetaten.", organisasjonsnummer));
+        }
+
+        return false;
+    }
+
     private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(Utbetaling utbetaling, String type) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
@@ -89,10 +108,11 @@ public class InntektSystemdata implements Systemdata {
                 .withNetto(utbetaling.netto)
                 .withBrutto(utbetaling.brutto)
                 .withSkattetrekk(utbetaling.skattetrekk)
-                .withOrganisasjon(utbetaling.orgnummer == null ? null :
+                .withOrganisasjon(isOrganisasjonsnummer(utbetaling.orgnummer) ?
                         new JsonOrganisasjon()
                                 .withNavn(arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer))
-                                .withOrganisasjonsnummer(utbetaling.orgnummer))
+                                .withOrganisasjonsnummer(utbetaling.orgnummer)
+                        : null)
                 .withAndreTrekk(utbetaling.andreTrekk)
                 .withPeriodeFom(utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .withPeriodeTom(utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
