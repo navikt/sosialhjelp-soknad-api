@@ -133,6 +133,13 @@ public class DatabaseTestContext {
             st.execute("drop table OPPLASTET_VEDLEGG if exists");
             st.execute("CREATE TABLE OPPLASTET_VEDLEGG(UUID VARCHAR(255) NOT NULL, EIER VARCHAR(255) NOT NULL, TYPE VARCHAR(255) NOT NULL, DATA blob NOT NULL, SOKNAD_UNDER_ARBEID_ID bigint NOT NULL," +
                     " FILNAVN VARCHAR(255) NOT NULL, SHA512 VARCHAR(255) NOT NULL, CONSTRAINT UNIK_OPPLASTET_VEDLEGG_UUID UNIQUE (UUID))");
+           st.execute("drop table FAMKTUMEGENSKAP if exists");
+           st.execute("drop table FILLAGER if exists");
+           st.execute("drop table HENDELSE if exists");
+           st.execute("drop table SOKNAD if exists");
+           st.execute("drop table SOKNADBRUKERDATA if exists");
+           st.execute("drop table VEDLEGG if exists");
+           st.execute("drop table VEDLEGGSTATUS if exists");
         } catch (SQLException e) {
             throw new RuntimeException("Feil ved oppretting av databasen", e);
         }
