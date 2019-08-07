@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -22,9 +21,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 @Component
 @Transactional
 public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implements OppgaveRepository {
-
-    @Inject
-    private TransactionTemplate transactionTemplate;
 
     private RowMapper<Oppgave> oppgaveRowMapper = (rs, rowNum) -> {
         Oppgave oppgave = new Oppgave();
