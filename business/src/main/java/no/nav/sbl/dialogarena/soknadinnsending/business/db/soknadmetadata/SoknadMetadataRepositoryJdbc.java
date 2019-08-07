@@ -159,4 +159,9 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidsgrense));
     }
 
+    @Override
+    public void slettSoknadMetaData(String behandlingsId, String eier) {
+        getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE fnr = ? AND behandlingsid = ?", eier, behandlingsId);
+    }
+
 }

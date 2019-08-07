@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -21,6 +22,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 @Component
 @Transactional
 public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implements OppgaveRepository {
+
+    @Inject
+    private TransactionTemplate transactionTemplate;
 
     private RowMapper<Oppgave> oppgaveRowMapper = (rs, rowNum) -> {
         Oppgave oppgave = new Oppgave();
@@ -77,6 +81,12 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     }
 
     @Override
+    public Optional<Oppgave> hentOppgave(String behandlingsId, String eier) {
+        return getJdbcTemplate().query("SELECT * FROM oppgave WHERE eier = ? AND behandlingsid = ?",
+                oppgaveRowMapper, eier, behandlingsId).stream().findFirst();
+    }
+
+    @Override
     public Optional<Oppgave> hentNeste() {
         String select = "SELECT * FROM oppgave WHERE status = ? and (nesteforsok is null OR nesteforsok < ?) " + limit(1);
 
@@ -111,5 +121,10 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
                 Integer.class, UNDER_ARBEID.name(), tidTilTimestamp(LocalDateTime.now().minusMinutes(10))));
 
         return statuser;
+    }
+
+    @Override
+    public void slettOppgave(String behandlingsId, String eier) {
+        getJdbcTemplate().update("DELETE FROM oppgave WHERE eier = ? AND behandlingsid = ?", eier, behandlingsId);
     }
 }
