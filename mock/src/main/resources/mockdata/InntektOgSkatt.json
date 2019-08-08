@@ -3,7 +3,7 @@
     {
       "opplysningspliktigId": "811223522",
       "virksomhetId": "910229567",
-      "kalendermaaned": "2019-04",
+      "kalendermaaned": "2019-07",
       "inntektsmottaker": {
         "personidentifikator": "01029413157"
       },
@@ -25,11 +25,36 @@
           "avvik": null
         }
       ]
+    },{
+      "opplysningspliktigId": "11110011111",
+      "virksomhetId": "910229567",
+      "kalendermaaned": "2019-07",
+      "inntektsmottaker": {
+        "personidentifikator": "01029413157"
+      },
+      "inntekt": [
+        {
+          "fordel": "kontantytelse",
+          "utloeserArbeidsgiveravgift": true,
+          "inngaarIGrunnlagForTrekk": true,
+          "beloep": 120,
+          "loennsinntekt": {
+            "beskrivelse": "fastloenn"
+          }
+        }
+      ],
+      "forskuddstrekk": [
+        {
+          "beskrivelse": "",
+          "beloep": "-200",
+          "avvik": null
+        }
+      ]
     },
     {
       "opplysningspliktigId": "911270374",
       "virksomhetId": "910229567",
-      "kalendermaaned": "2019-04",
+      "kalendermaaned": "2019-06",
       "inntektsmottaker": {
         "personidentifikator": "01029413157"
       },
@@ -72,7 +97,7 @@
     {
       "opplysningspliktigId": "811224472",
       "virksomhetId": "910229563",
-      "kalendermaaned": "2019-04",
+      "kalendermaaned": "2019-06",
       "inntektsmottaker": {
         "personidentifikator": "01029413157"
       },
@@ -92,7 +117,7 @@
     {
       "opplysningspliktigId": "810950695",
       "virksomhetId": "910229569",
-      "kalendermaaned": "2019-04",
+      "kalendermaaned": "2019-06",
       "inntektsmottaker": {
         "personidentifikator": "05014300122"
       },
@@ -110,7 +135,7 @@
     }, {
       "opplysningspliktigId": "911014033",
       "virksomhetId": "910229567",
-      "kalendermaaned": "2019-01",
+      "kalendermaaned": "2019-07",
       "inntektsmottaker": {
         "personidentifikator": "05059000251"
       },
