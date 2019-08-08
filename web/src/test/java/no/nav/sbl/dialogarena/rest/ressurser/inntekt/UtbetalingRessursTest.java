@@ -1,0 +1,262 @@
+package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
+
+import no.nav.sbl.dialogarena.rest.ressurser.inntekt.UtbetalingRessurs.UtbetalingerFrontend;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
+public class UtbetalingRessursTest {
+
+    private static final String BEHANDLINGSID = "123";
+    private static final String EIER = "123456789101";
+    private static final String BEKREFTELSE_TYPE = "utbetaling";
+    private static final String UTBYTTE_TYPE = "utbytte";
+    private static final String SALG_TYPE = "salg";
+    private static final String FORSIKRING_TYPE = "forsikring";
+    private static final String ANNET_TYPE = "annen";
+
+    @Mock
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
+
+    @Mock
+    private TextService textService;
+
+    @InjectMocks
+    private UtbetalingRessurs utbetalingRessurs;
+
+    @Before
+    public void setUp() {
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
+    }
+
+    @After
+    public void tearDown() {
+        SubjectHandler.resetOidcSubjectHandlerService();
+        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
+    }
+
+    @Test
+    public void getUtbetalingerSkalReturnereBekreftelseLikNullOgAltFalse(){
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+
+        UtbetalingerFrontend utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID);
+
+        assertThat(utbetalingerFrontend.bekreftelse, nullValue());
+        assertFalse(utbetalingerFrontend.forsikring);
+        assertFalse(utbetalingerFrontend.salg);
+        assertFalse(utbetalingerFrontend.utbytte);
+        assertFalse(utbetalingerFrontend.annet);
+        assertThat(utbetalingerFrontend.beskrivelseAvAnnet, nullValue());
+    }
+
+    @Test
+    public void getUtbetalingerSkalReturnereBekreftelserLikTrue(){
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtbetalinger(true, asList(UTBYTTE_TYPE, SALG_TYPE, FORSIKRING_TYPE,
+                        ANNET_TYPE), null));
+
+        UtbetalingerFrontend utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID);
+
+        assertTrue(utbetalingerFrontend.bekreftelse);
+        assertTrue(utbetalingerFrontend.utbytte);
+        assertTrue(utbetalingerFrontend.salg);
+        assertTrue(utbetalingerFrontend.forsikring);
+        assertTrue(utbetalingerFrontend.annet);
+        assertThat(utbetalingerFrontend.beskrivelseAvAnnet, nullValue());
+    }
+
+    @Test
+    public void getUtbetalingerSkalReturnereBeskrivelseAvAnnet(){
+        String beskrivelse = "Lottogevinst";
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtbetalinger(true, asList(ANNET_TYPE), beskrivelse));
+
+        UtbetalingerFrontend utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID);
+
+        assertTrue(utbetalingerFrontend.bekreftelse);
+        assertTrue(utbetalingerFrontend.annet);
+        assertThat(utbetalingerFrontend.beskrivelseAvAnnet, is(beskrivelse));
+    }
+
+    @Test
+    public void putUtbetalingerSkalSetteAltFalseDersomManVelgerHarIkkeUtbetalinger(){
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtbetalinger(true, asList(UTBYTTE_TYPE, SALG_TYPE, FORSIKRING_TYPE,
+                        ANNET_TYPE), "Lottogevinst"));
+
+        UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+        utbetalingerFrontend.setBekreftelse(false);
+        utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend);
+
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getBekreftelse();
+        JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getUtbetaling();
+        assertFalse(utbetalingBekreftelse.getVerdi());
+        assertTrue(utbetalinger.isEmpty());
+    }
+
+    @Test
+    public void putUtbetalingerSkalSetteAlleBekreftelserLikFalse(){
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtbetalinger(true, asList(UTBYTTE_TYPE, SALG_TYPE,
+                        FORSIKRING_TYPE, ANNET_TYPE), "Lottogevinst"));
+
+        UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+        utbetalingerFrontend.setBekreftelse(false);
+        utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend);
+
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getBekreftelse();
+        JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getUtbetaling();
+        String beskrivelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling();
+        assertFalse(utbetalingBekreftelse.getVerdi());
+        assertTrue(utbetalinger.isEmpty());
+        assertThat(beskrivelse, is(""));
+    }
+
+    @Test
+    public void putUtbetalingerSkalSetteNoenBekreftelser(){
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+
+        UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+        utbetalingerFrontend.setBekreftelse(true);
+        utbetalingerFrontend.setForsikring(true);
+        utbetalingerFrontend.setSalg(true);
+        utbetalingerFrontend.setUtbytte(false);
+        utbetalingerFrontend.setAnnet(false);
+        utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend);
+
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getBekreftelse();
+        JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getUtbetaling();
+        assertThat(utbetalingBekreftelse.getKilde(), is(JsonKilde.BRUKER));
+        assertThat(utbetalingBekreftelse.getType(), is(BEKREFTELSE_TYPE));
+        assertTrue(utbetalingBekreftelse.getVerdi());
+        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(FORSIKRING_TYPE)));
+        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(SALG_TYPE)));
+        assertFalse(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBYTTE_TYPE)));
+        assertFalse(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(ANNET_TYPE)));
+    }
+
+    @Test
+    public void putUtbetalingerSkalSetteAlleBekreftelser(){
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+
+        UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+        utbetalingerFrontend.setBekreftelse(true);
+        utbetalingerFrontend.setForsikring(true);
+        utbetalingerFrontend.setSalg(true);
+        utbetalingerFrontend.setUtbytte(true);
+        utbetalingerFrontend.setAnnet(true);
+        utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend);
+
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getBekreftelse();
+        JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getUtbetaling();
+        assertThat(utbetalingBekreftelse.getKilde(), is(JsonKilde.BRUKER));
+        assertThat(utbetalingBekreftelse.getType(), is(BEKREFTELSE_TYPE));
+        assertTrue(utbetalingBekreftelse.getVerdi());
+        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(FORSIKRING_TYPE)));
+        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(SALG_TYPE)));
+        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBYTTE_TYPE)));
+        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(ANNET_TYPE)));
+    }
+
+    @Test
+    public void putUtbetalingerSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithUtbetalinger(true, asList(ANNET_TYPE), "Lottogevinst"));
+
+        UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+        utbetalingerFrontend.setBekreftelse(false);
+        utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend);
+
+        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getBekreftelse();
+        JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
+        String beskrivelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling();
+        assertFalse(utbetalingBekreftelse.getVerdi());
+        assertThat(beskrivelse, is(""));
+    }
+
+    private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
+        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
+        return argument.getValue();
+    }
+
+    private SoknadUnderArbeid createJsonInternalSoknadWithUtbetalinger(Boolean harUtbetalinger, List<String> utbetalingTyper, String beskrivelseAvAnnet) {
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = new ArrayList<>();
+        for (String utbetaling: utbetalingTyper) {
+            utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(utbetaling)
+                    .withTittel("tittel"));
+        }
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBekreftelse(asList(new JsonOkonomibekreftelse()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(BEKREFTELSE_TYPE)
+                .withVerdi(harUtbetalinger)));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setUtbetaling(utbetalinger);
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBeskrivelseAvAnnet(
+                new JsonOkonomibeskrivelserAvAnnet().withUtbetaling(beskrivelseAvAnnet));
+        return soknadUnderArbeid;
+    }
+}
