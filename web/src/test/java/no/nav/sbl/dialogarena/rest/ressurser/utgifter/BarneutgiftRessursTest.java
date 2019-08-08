@@ -125,30 +125,6 @@ public class BarneutgiftRessursTest {
     public void putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithBarneutgifter(true, true, asList(BARNEHAGE_TYPE, SFO_TYPE, FRITIDSAKTIVITETER_TYPE,
-                        ANNET_TYPE)));
-
-        BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
-        barneutgifterFrontend.setBekreftelse(false);
-        barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend);
-
-        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
-                .getOkonomi().getOpplysninger().getBekreftelse();
-        JsonOkonomibekreftelse barneutgiftBekreftelse = bekreftelser.get(0);
-        List<JsonOkonomioversiktUtgift> oversiktBarneutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
-                .getOkonomi().getOversikt().getUtgift();
-        List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
-                .getOkonomi().getOpplysninger().getUtgift();
-        assertFalse(barneutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBarneutgifter.isEmpty());
-        assertTrue(opplysningerBarneutgifter.isEmpty());
-    }
-
-    @Test
-    public void putBarneutgifterSkalSetteAlleBekreftelserLikFalse(){
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(true, true, asList(BARNEHAGE_TYPE, SFO_TYPE,
                         FRITIDSAKTIVITETER_TYPE, ANNET_TYPE)));
 

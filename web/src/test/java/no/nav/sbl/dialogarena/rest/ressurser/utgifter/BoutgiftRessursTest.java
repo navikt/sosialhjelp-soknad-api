@@ -108,30 +108,6 @@ public class BoutgiftRessursTest {
     public void putBoutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBoutgifter(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithBoutgifter(true, asList(HUSLEIE_TYPE, STROM_TYPE, KOMMUNALAVGIFT_TYPE,
-                        ANNET_TYPE)));
-
-        BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
-        boutgifterFrontend.setBekreftelse(false);
-        boutgiftRessurs.updateBoutgifter(BEHANDLINGSID, boutgifterFrontend);
-
-        SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
-                .getOkonomi().getOpplysninger().getBekreftelse();
-        JsonOkonomibekreftelse boutgiftBekreftelse = bekreftelser.get(0);
-        List<JsonOkonomioversiktUtgift> oversiktBoutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
-                .getOkonomi().getOversikt().getUtgift();
-        List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
-                .getOkonomi().getOpplysninger().getUtgift();
-        assertFalse(boutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBoutgifter.isEmpty());
-        assertTrue(opplysningerBoutgifter.isEmpty());
-    }
-
-    @Test
-    public void putBoutgifterSkalSetteAlleBekreftelserLikFalse(){
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBoutgifter(true, asList(HUSLEIE_TYPE, STROM_TYPE,
                         KOMMUNALAVGIFT_TYPE, ANNET_TYPE)));
 
