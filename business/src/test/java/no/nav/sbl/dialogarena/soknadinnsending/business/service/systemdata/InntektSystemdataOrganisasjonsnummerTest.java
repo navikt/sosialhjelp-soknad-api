@@ -1,40 +1,66 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InntektSystemdataOrganisasjonsnummerTest {
 
+    @Mock
+    private UtbetalingService utbetalingService;
+
+    @Mock
+    ArbeidsforholdTransformer arbeidsforholdTransformer;
+
+    @Mock
+    SkattbarInntektService skattbarInntektService;
+
+    @InjectMocks
+    private InntektSystemdata inntektSystemdata;
+
+
     @Test
-    public void skalReturnereTrueOmGyldigOrganisasjonsnummer() {
+    public void skalReturnereOrganisasjonOmGyldigOrganisasjonsnummer() {
         String organisasjonsnummer = "089640782";
-        boolean result = InntektSystemdata.isOrganisasjonsnummer(organisasjonsnummer);
-        assertTrue(result);
+        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(organisasjonsnummer);
+        assertNotNull(result);
+        assertEquals(organisasjonsnummer, result.getOrganisasjonsnummer());
     }
 
     @Test
-    public void skalReturnereFalseOmOrganisasjonsnummerInneholderTekst() {
+    public void skalReturnereNullOmOrganisasjonsnummerInneholderTekst() {
         String organisasjonsnummer = "o89640782";
-        boolean result = InntektSystemdata.isOrganisasjonsnummer(organisasjonsnummer);
-        assertFalse(result);
+        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(organisasjonsnummer);
+        assertNull(result);
     }
 
     @Test
-    public void skalReturnereFalseOmForKortOrganisasjonsnummer() {
+    public void skalReturnereNullOmForKortOrganisasjonsnummer() {
         String nummer = "12345678";
-        boolean result = InntektSystemdata.isOrganisasjonsnummer(nummer);
-        assertFalse(result);
+        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(nummer);
+        assertNull(result);
     }
 
     @Test
-    public void skalReturnereFalseOmForLangtOrganisasjonsnummer() {
-        String nummer = "12346";
-        boolean result = InntektSystemdata.isOrganisasjonsnummer(nummer);
-        assertFalse(result);
+    public void skalReturnereNullOmForLangtOrganisasjonsnummer() {
+        String nummer = "1234567890";
+        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(nummer);
+        assertNull(result);
+    }
 
+    @Test
+    public void skalReturnereOrganisasjonUtenNummerVedPersonnummer() {
         String personnummer = "01010011111";
-        result = InntektSystemdata.isOrganisasjonsnummer(personnummer);
-        assertFalse(result);
+        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(personnummer);
+        assertNull(result);
     }
 }

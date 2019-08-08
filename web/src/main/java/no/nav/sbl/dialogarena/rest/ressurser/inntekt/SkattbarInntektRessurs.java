@@ -16,8 +16,8 @@ import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.*;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
@@ -43,11 +43,11 @@ public class SkattbarInntektRessurs {
             utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         }
 
-        utbetalinger = utbetalinger.stream().filter(u -> u.getTittel() != null).collect(Collectors.toList());
+        utbetalinger = utbetalinger.stream().filter(u -> u.getTittel() != null).collect(toList());
         List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger =
                 utbetalinger.stream()
                         .filter(jsonOkonomiOpplysningUtbetaling -> jsonOkonomiOpplysningUtbetaling.getType() != null &&
-                                jsonOkonomiOpplysningUtbetaling.getType().equals("skatteetaten")).collect(Collectors.toList());
+                                jsonOkonomiOpplysningUtbetaling.getType().equals("skatteetaten")).collect(toList());
 
         return organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger);
     }
@@ -57,17 +57,16 @@ public class SkattbarInntektRessurs {
         List<SkattbarInntektOgForskuddstrekk> skattbarInntektOgForskuddstrekkListe = new ArrayList<>();
         for (List<JsonOkonomiOpplysningUtbetaling> utbetalingerPerManed : new TreeMap<>(skatteopplysninger
                 .stream()
-                .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getPeriodeFom))).values()) {
+                .collect(groupingBy(JsonOkonomiOpplysningUtbetaling::getPeriodeFom))).values()) {
 
-            Map<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> utbetalingPerOrganisasjon = utbetalingerPerManed
+            Map<Optional<JsonOrganisasjon>, List<JsonOkonomiOpplysningUtbetaling>> utbetalingPerOrganisasjon = utbetalingerPerManed
                     .stream()
-                    .collect(Collectors.groupingBy(JsonOkonomiOpplysningUtbetaling::getOrganisasjon));
+                    .collect(groupingBy(utbetaling -> Optional.ofNullable(utbetaling.getOrganisasjon())));
 
             List<Organisasjon> organisasjoner = new ArrayList<>();
-            for (Map.Entry<JsonOrganisasjon, List<JsonOkonomiOpplysningUtbetaling>> jsonOrganisasjonListEntry : utbetalingPerOrganisasjon.entrySet()) {
+            for (Map.Entry<Optional<JsonOrganisasjon>, List<JsonOkonomiOpplysningUtbetaling>> jsonOrganisasjonListEntry : utbetalingPerOrganisasjon.entrySet()) {
                 List<Utbetaling> utbetalingListe = new ArrayList<>();
 
-                JsonOrganisasjon jsonOrganisasjon = jsonOrganisasjonListEntry.getKey();
                 for (JsonOkonomiOpplysningUtbetaling jsonOkonomiOpplysningUtbetaling : jsonOrganisasjonListEntry.getValue()) {
                     Utbetaling utbetaling = new Utbetaling()
                             .withTittel(jsonOkonomiOpplysningUtbetaling.getTittel())
@@ -77,7 +76,14 @@ public class SkattbarInntektRessurs {
                 }
                 Optional<JsonOkonomiOpplysningUtbetaling> first = utbetalingerPerManed.stream().findFirst();
 
+                JsonOrganisasjon jsonOrganisasjon;
+                if (jsonOrganisasjonListEntry.getKey().isPresent()) {
+                    jsonOrganisasjon = jsonOrganisasjonListEntry.getKey().get();
+                } else {
+                    jsonOrganisasjon = new JsonOrganisasjon().withNavn("Uten organisasjonsnummer");
+                }
                 organisasjoner.add(mapTilOrganisasjon(utbetalingListe, jsonOrganisasjon, first));
+
             }
             SkattbarInntektOgForskuddstrekk skattbarInntektOgForskuddstrekk = new SkattbarInntektOgForskuddstrekk()
                    .withOrganisasjoner(organisasjoner);

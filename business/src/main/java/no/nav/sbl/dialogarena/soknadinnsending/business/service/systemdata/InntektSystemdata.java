@@ -35,6 +35,7 @@ public class InntektSystemdata implements Systemdata {
 
     @Inject
     SkattbarInntektService skattbarInntektService;
+
     @Inject
     ArbeidsforholdTransformer arbeidsforholdTransformer;
 
@@ -83,20 +84,22 @@ public class InntektSystemdata implements Systemdata {
         return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, "skatteetaten")).collect(Collectors.toList());
     }
 
-    static boolean isOrganisasjonsnummer(String organisasjonsnummer) {
-        if (organisasjonsnummer == null) return false;
+    JsonOrganisasjon mapToJsonOrganisasjon(String orgnummer) {
+        if (orgnummer == null) return null;
 
-        if (organisasjonsnummer.matches("\\d{9}")) {
-            return true;
+        if (orgnummer.matches("\\d{9}")) {
+            return new JsonOrganisasjon()
+                    .withNavn(arbeidsforholdTransformer.hentOrgNavn(orgnummer))
+                    .withOrganisasjonsnummer(orgnummer);
         }
 
-        if (organisasjonsnummer.matches("\\d{11}")) {
-            log.info("Utbetalingens virksomhetsId er et personnummer. Dette blir ikke inkludert i soknad.json");
+        if (orgnummer.matches("\\d{11}")) {
+            log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json");
         } else {
-            log.error(String.format("Utbetalingens virksomhetsId er verken et organisasjonsnummer eller personnummer: %s. Kontakt skatteetaten.", organisasjonsnummer));
+            log.error(String.format("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: %s. Kontakt skatteetaten.", orgnummer));
         }
 
-        return false;
+        return null;
     }
 
     private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(Utbetaling utbetaling, String type) {
@@ -108,11 +111,7 @@ public class InntektSystemdata implements Systemdata {
                 .withNetto(utbetaling.netto)
                 .withBrutto(utbetaling.brutto)
                 .withSkattetrekk(utbetaling.skattetrekk)
-                .withOrganisasjon(isOrganisasjonsnummer(utbetaling.orgnummer) ?
-                        new JsonOrganisasjon()
-                                .withNavn(arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer))
-                                .withOrganisasjonsnummer(utbetaling.orgnummer)
-                        : null)
+                .withOrganisasjon(mapToJsonOrganisasjon(utbetaling.orgnummer))
                 .withAndreTrekk(utbetaling.andreTrekk)
                 .withPeriodeFom(utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .withPeriodeTom(utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
