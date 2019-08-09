@@ -87,7 +87,6 @@ public class SlettLoggScheduler {
 
             soknadMetadataRepository.slettSoknadMetaData(behandlingsId, eier);
 
-            soknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);
             vellykket++;
 
             if (harGaattForLangTid()) {
