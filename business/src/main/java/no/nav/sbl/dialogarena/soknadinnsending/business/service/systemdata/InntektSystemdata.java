@@ -96,7 +96,7 @@ public class InntektSystemdata implements Systemdata {
         if (orgnummer.matches("\\d{11}")) {
             log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json");
         } else {
-            log.error(String.format("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: %s. Kontakt skatteetaten.", orgnummer));
+            log.error("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: {}. Kontakt skatteetaten.", orgnummer);
         }
 
         return null;
