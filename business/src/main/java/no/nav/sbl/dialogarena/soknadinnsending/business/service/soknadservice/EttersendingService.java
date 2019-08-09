@@ -82,6 +82,9 @@ public class EttersendingService {
 
     protected SoknadMetadata hentOgVerifiserSoknad(String behandlingsId) {
         SoknadMetadata soknad = henvendelseService.hentSoknad(behandlingsId);
+        if (soknad == null) {
+            throw new IllegalStateException(String.format("SoknadMetadata til behandlingsid %s finnes ikke", behandlingsId));
+        }
         if (soknad.type == SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
             soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId);
         }
