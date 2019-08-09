@@ -15,18 +15,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.InntektSystemdata.tilIntegerMedAvrunding;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -66,10 +66,13 @@ public class InntektSystemdataTest {
     private static final String SATSTYPE_2 = "Årslønn";
     private static final double SATSBELOP_2 = 120000.0;
     private static final double SATSANTALL_2 = 12.0;
+    private static final String ORGANISASJONSNR = "012345678";
+    private static final String PERSONNR = "01010011111";
 
     private static final Utbetaling NAV_UTBETALING = new Utbetaling();
     private static final Utbetaling.Komponent NAV_KOMPONENT = new Utbetaling.Komponent();
     private static final Utbetaling SKATTBAR_UTBETALING = new Utbetaling();
+    private static final Utbetaling SKATTBAR_UTBETALING_FRA_PRIVATPERSON = new Utbetaling();
     private static final Utbetaling.Komponent SKATTBAR_KOMPONENT = new Utbetaling.Komponent();
 
     static {
@@ -98,6 +101,17 @@ public class InntektSystemdataTest {
         SKATTBAR_UTBETALING.utbetalingsdato = UTBETALINGSDATO;
         SKATTBAR_UTBETALING.periodeFom = PERIODE_FOM;
         SKATTBAR_UTBETALING.periodeTom = PERIODE_TOM;
+        SKATTBAR_UTBETALING.orgnummer = ORGANISASJONSNR;
+
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.tittel = TITTEL_2;
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.netto = NETTO_2;
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.brutto = BRUTTO_2;
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.skattetrekk = SKATT_2;
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.andreTrekk = TREKK_2;
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.utbetalingsdato = UTBETALINGSDATO;
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.periodeFom = PERIODE_FOM;
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.periodeTom = PERIODE_TOM;
+        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.orgnummer = PERSONNR;
 
         SKATTBAR_KOMPONENT.type = KOMPONENTTYPE_2;
         SKATTBAR_KOMPONENT.belop = KOMPONENTBELOP_2;
@@ -121,12 +135,12 @@ public class InntektSystemdataTest {
     SkattbarInntektService skattbarInntektService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         System.setProperty("tillatmock", "true");
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         System.setProperty("tillatmock", "false");
     }
 
@@ -147,6 +161,27 @@ public class InntektSystemdataTest {
         assertThat(utbetaling.getKilde(), is(JsonKilde.SYSTEM));
         assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING, utbetaling, "navytelse");
         assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING, utbetaling_1, "skatteetaten");
+    }
+
+    @Test
+    public void skalKunInkludereGyldigeOrganisasjonsnummer() {
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        List<Utbetaling> nav_utbetalinger = Collections.singletonList(NAV_UTBETALING);
+        List<Utbetaling> skattbare_utbetalinger = Arrays.asList(SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_FRA_PRIVATPERSON);
+        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(nav_utbetalinger);
+        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(skattbare_utbetalinger);
+
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+
+        List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
+        JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
+        JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
+        JsonOkonomiOpplysningUtbetaling utbetaling_2 = jsonUtbetalinger.get(2);
+
+        assertEquals(3, jsonUtbetalinger.size());
+        assertNull(utbetaling.getOrganisasjon());
+        assertEquals(ORGANISASJONSNR, utbetaling_1.getOrganisasjon().getOrganisasjonsnummer());
+        assertNull(utbetaling_2.getOrganisasjon());
     }
 
     @Test
