@@ -136,8 +136,8 @@ public class DatabaseTestContext {
            st.execute("drop table FAMKTUMEGENSKAP if exists");
            st.execute("drop table FILLAGER if exists");
            st.execute("drop table HENDELSE if exists");
-           st.execute("drop table SOKNAD if exists");
            st.execute("drop table SOKNADBRUKERDATA if exists");
+           st.execute("drop table SOKNAD if exists");
            st.execute("drop table VEDLEGG if exists");
            st.execute("drop table VEDLEGGSTATUS if exists");
         } catch (SQLException e) {
