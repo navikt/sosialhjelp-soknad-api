@@ -1,13 +1,16 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.SoknadLaastException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -231,6 +234,20 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
             return null;
         }
         try {
+            JsonNode node = mapper.readTree(data);
+            String fieldName = "driftsinformasjon";
+            JsonNode driftNode = node.findValue(fieldName);
+            if (driftNode instanceof TextNode) {
+                String value = ((TextNode) driftNode).textValue();
+                JsonNode soknadNode = node.findValue("soknad");
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("utbetalingerFraNavFeilet",
+                        value.equals("Kunne ikke hente utbetalinger fra NAV") ? Boolean.TRUE : Boolean.FALSE);
+                objectNode.put("inntektFraSkatteetatenFeilet",
+                        value.equals("Kunne ikke hente skattbar inntekt fra Skatteetaten") ? Boolean.TRUE : Boolean.FALSE);
+                objectNode.put("stotteFraHusbankenFeilet", Boolean.FALSE);
+                ((ObjectNode) soknadNode).put(fieldName, objectNode);
+            }
             return mapper.readValue(data, JsonInternalSoknad.class);
         } catch (IOException e) {
             logger.error("Kunne ikke finne søknad", e);
