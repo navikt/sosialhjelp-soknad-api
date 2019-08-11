@@ -248,7 +248,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                 objectNode.put("stotteFraHusbankenFeilet", Boolean.FALSE);
                 ((ObjectNode) soknadNode).put(fieldName, objectNode);
             }
-            return mapper.readValue(data, JsonInternalSoknad.class);
+            return mapper.treeToValue(node, JsonInternalSoknad.class);
         } catch (IOException e) {
             logger.error("Kunne ikke finne søknad", e);
             throw new RuntimeException(e);
