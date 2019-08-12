@@ -11,7 +11,7 @@ public interface OppgaveRepository {
 
     Optional<Oppgave> hentNeste();
 
-    Optional<Oppgave> hentOppgave(String behandlingsId, String eier);
+    Optional<Oppgave> hentOppgave(String behandlingsId);
 
     void oppdater(Oppgave oppgave);
 
@@ -19,5 +19,5 @@ public interface OppgaveRepository {
 
     int retryOppgaveStuckUnderArbeid();
 
-    void slettOppgave(String behandlingsId, String eier);
+    void slettOppgave(String behandlingsId);
 }

@@ -25,7 +25,7 @@ public class SlettLoggScheduler {
 
     private static final Logger logger = getLogger(SlettLoggScheduler.class);
 
-    private static final String KLOKKEN_FEM_OM_NATTEN = "0 35 14 * * *";
+    private static final String KLOKKEN_FEM_OM_NATTEN = "0 55 14 * * *";
     private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
     private static final int DAGER_GAMMELT = 365; // Ett år
 
@@ -82,8 +82,8 @@ public class SlettLoggScheduler {
             Optional<SendtSoknad> sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(behandlingsId, eier);
             sendtSoknadOptional.ifPresent(sendtSoknad -> sendtSoknadRepository.slettSendtSoknad(sendtSoknad, eier));
 
-            Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentOppgave(behandlingsId, eier);
-            oppgaveOptional.ifPresent(oppgave -> oppgaveRepository.slettOppgave(behandlingsId, eier));
+            Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentOppgave(behandlingsId);
+            oppgaveOptional.ifPresent(oppgave -> oppgaveRepository.slettOppgave(behandlingsId));
 
             soknadMetadataRepository.slettSoknadMetaData(behandlingsId, eier);
 

@@ -77,9 +77,9 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     }
 
     @Override
-    public Optional<Oppgave> hentOppgave(String behandlingsId, String eier) {
-        return getJdbcTemplate().query("SELECT * FROM oppgave WHERE eier = ? AND behandlingsid = ?",
-                oppgaveRowMapper, eier, behandlingsId).stream().findFirst();
+    public Optional<Oppgave> hentOppgave(String behandlingsId) {
+        return getJdbcTemplate().query("SELECT * FROM oppgave WHERE behandlingsid = ?",
+                oppgaveRowMapper, behandlingsId).stream().findFirst();
     }
 
     @Override
@@ -120,7 +120,7 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     }
 
     @Override
-    public void slettOppgave(String behandlingsId, String eier) {
-        getJdbcTemplate().update("DELETE FROM oppgave WHERE eier = ? AND behandlingsid = ?", eier, behandlingsId);
+    public void slettOppgave(String behandlingsId) {
+        getJdbcTemplate().update("DELETE FROM oppgave WHERE behandlingsid = ?", behandlingsId);
     }
 }
