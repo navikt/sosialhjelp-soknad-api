@@ -38,7 +38,7 @@ public class SkattbarInntektService {
     public Function<Sokedata, RestCallContext> restCallContextSelector;
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
     public String mockFil = "/mockdata/InntektOgSkatt.json";
-    ;
+
 
     public SkattbarInntektService() {
         restCallContextSelector = (sokedata -> new RestCallContext.Builder()
@@ -136,7 +136,7 @@ public class SkattbarInntektService {
                 utbetaling.periodeFom = fom;
                 utbetaling.periodeTom = tom;
                 utbetaling.type = "skatteopplysninger";
-                utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
+                utbetaling.orgnummer = oppgaveInntektsmottaker.opplysningspliktigId;
                 forskuddstrekk.add(utbetaling);
             }
         }
@@ -199,7 +199,7 @@ public class SkattbarInntektService {
         utbetaling.periodeFom = fom;
         utbetaling.periodeTom = tom;
         utbetaling.type = "skatteopplysninger";
-        utbetaling.orgnummer = oppgaveInntektsmottaker.virksomhetId;
+        utbetaling.orgnummer = oppgaveInntektsmottaker.opplysningspliktigId;
         return utbetaling;
     }
 

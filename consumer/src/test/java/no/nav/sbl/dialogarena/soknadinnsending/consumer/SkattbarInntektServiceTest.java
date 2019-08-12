@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class SkattbarInntektServiceTest {
     public void hentSkattbarInntektForToMaanederIgnorererDaArbeidsgiver1IForrigeMaaned() {
         skattbarInntektService.mockFil = "/mockdata/InntektOgSkattToMaaneder.json";
         List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt("01234567");
-        assertThat(utbetalinger).hasSize(1);
+        assertThat(utbetalinger).hasSize(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2);
     }
 
     @Test
