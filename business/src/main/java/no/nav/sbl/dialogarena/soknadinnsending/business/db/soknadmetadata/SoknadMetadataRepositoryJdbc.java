@@ -130,6 +130,25 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
 
     @Override
+    public Optional<SoknadMetadata> hentAlleEldreEnn(int antallDagerGammel) {
+        LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
+
+        while (true) {
+            String select = "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + limit(1);
+            Optional<SoknadMetadata> resultat = getJdbcTemplate().query(select, soknadMetadataRowMapper, tidTilTimestamp(frist))
+                    .stream().findFirst();
+            if (!resultat.isPresent()) {
+                return Optional.empty();
+            }
+            String update = "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'";
+            int rowsAffected = getJdbcTemplate().update(update, resultat.get().id);
+            if (rowsAffected == 1) {
+                return resultat;
+            }
+        }
+    }
+
+    @Override
     public void leggTilbakeBatch(Long id) {
         String update = "UPDATE soknadmetadata set batchstatus = 'LEDIG' WHERE id = ?";
         getJdbcTemplate().update(update, id);

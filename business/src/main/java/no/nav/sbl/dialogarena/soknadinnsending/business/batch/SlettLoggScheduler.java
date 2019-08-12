@@ -71,7 +71,7 @@ public class SlettLoggScheduler {
     }
 
     private void slettForeldetLogg() {
-        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
+        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentAlleEldreEnn(DAGER_GAMMELT);
 
         while (soknad.isPresent()) {
             SoknadMetadata soknadMetadata = soknad.get();

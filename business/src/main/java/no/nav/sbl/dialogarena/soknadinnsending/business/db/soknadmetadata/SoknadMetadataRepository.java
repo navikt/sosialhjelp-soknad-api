@@ -18,6 +18,8 @@ public interface SoknadMetadataRepository {
 
     Optional<SoknadMetadata> hentForBatch(int antallDagerGammel);
 
+    Optional<SoknadMetadata> hentAlleEldreEnn(int antallDagerGammel);
+
     void leggTilbakeBatch(Long id);
 
     List<SoknadMetadata> hentBehandlingskjede(String behandlingsId);
