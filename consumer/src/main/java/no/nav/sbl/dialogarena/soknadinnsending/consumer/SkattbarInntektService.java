@@ -38,7 +38,7 @@ public class SkattbarInntektService {
     public Function<Sokedata, RestCallContext> restCallContextSelector;
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
     public String mockFil = "/mockdata/InntektOgSkatt.json";
-    ;
+
 
     public SkattbarInntektService() {
         restCallContextSelector = (sokedata -> new RestCallContext.Builder()

@@ -11,6 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -23,15 +24,18 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class InntektSystemdata implements Systemdata {
+    public static final Logger log = getLogger(InntektSystemdata.class);
 
     @Inject
     UtbetalingService utbetalingService;
 
     @Inject
     SkattbarInntektService skattbarInntektService;
+
     @Inject
     ArbeidsforholdTransformer arbeidsforholdTransformer;
 
@@ -80,6 +84,24 @@ public class InntektSystemdata implements Systemdata {
         return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, "skatteetaten")).collect(Collectors.toList());
     }
 
+    JsonOrganisasjon mapToJsonOrganisasjon(String orgnummer) {
+        if (orgnummer == null) return null;
+
+        if (orgnummer.matches("\\d{9}")) {
+            return new JsonOrganisasjon()
+                    .withNavn(arbeidsforholdTransformer.hentOrgNavn(orgnummer))
+                    .withOrganisasjonsnummer(orgnummer);
+        }
+
+        if (orgnummer.matches("\\d{11}")) {
+            log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json");
+        } else {
+            log.error("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: {}. Kontakt skatteetaten.", orgnummer);
+        }
+
+        return null;
+    }
+
     private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(Utbetaling utbetaling, String type) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
@@ -89,10 +111,7 @@ public class InntektSystemdata implements Systemdata {
                 .withNetto(utbetaling.netto)
                 .withBrutto(utbetaling.brutto)
                 .withSkattetrekk(utbetaling.skattetrekk)
-                .withOrganisasjon(utbetaling.orgnummer == null ? null :
-                        new JsonOrganisasjon()
-                                .withNavn(arbeidsforholdTransformer.hentOrgNavn(utbetaling.orgnummer))
-                                .withOrganisasjonsnummer(utbetaling.orgnummer))
+                .withOrganisasjon(mapToJsonOrganisasjon(utbetaling.orgnummer))
                 .withAndreTrekk(utbetaling.andreTrekk)
                 .withPeriodeFom(utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .withPeriodeTom(utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
