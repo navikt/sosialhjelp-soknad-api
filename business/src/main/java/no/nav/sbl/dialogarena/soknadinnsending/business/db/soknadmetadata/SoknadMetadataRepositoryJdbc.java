@@ -130,7 +130,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
 
     @Override
-    public Optional<SoknadMetadata> hentAlleEldreEnn(int antallDagerGammel) {
+    public Optional<SoknadMetadata> hentEldreEnn(int antallDagerGammel) {
         LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
 
         while (true) {

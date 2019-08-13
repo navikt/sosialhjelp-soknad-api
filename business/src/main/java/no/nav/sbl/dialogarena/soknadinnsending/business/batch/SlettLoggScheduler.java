@@ -71,7 +71,7 @@ public class SlettLoggScheduler {
     }
 
     private void slettForeldetLogg() {
-        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentAlleEldreEnn(DAGER_GAMMELT);
+        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);
 
         while (soknad.isPresent()) {
             SoknadMetadata soknadMetadata = soknad.get();
@@ -97,7 +97,7 @@ public class SlettLoggScheduler {
                 logger.warn("Avbryter jobben da appen skal suspendes");
                 return;
             }
-            soknad = soknadMetadataRepository.hentAlleEldreEnn(DAGER_GAMMELT);
+            soknad = soknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);
         }
 
     }
