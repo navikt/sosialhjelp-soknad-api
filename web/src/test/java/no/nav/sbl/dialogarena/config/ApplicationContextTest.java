@@ -31,9 +31,6 @@ public class ApplicationContextTest {
     @BeforeClass
     public static void beforeClass() throws NamingException {
         load("/environment-test.properties");
-        System.setProperty(StsSecurityConstants.STS_URL_KEY, "dummyvalue");
-        System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, "dummyvalue");
-        System.setProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD, "");
         getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 
         SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();

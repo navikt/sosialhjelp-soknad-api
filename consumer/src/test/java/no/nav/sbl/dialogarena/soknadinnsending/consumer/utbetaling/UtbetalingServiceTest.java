@@ -22,7 +22,8 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UtbetalingServiceTest {
-    private static final String YTELSESTYPE = "Onkel Skrue penger";
+    private static final String YTELSESTYPE = "navytelse";
+    private static final String TITTEL = "navytelse";
     private static final double NETTO = 60000.0;
     private static final double BRUTTO = 3880.0;
     private static final double SKATT = -1337.0;
@@ -76,6 +77,7 @@ public class UtbetalingServiceTest {
         Utbetaling.Komponent komponent = utbetaling.komponenter.get(1);
 
         assertThat(utbetaling.type, is(YTELSESTYPE));
+        assertThat(utbetaling.tittel, is(TITTEL));
         assertThat(utbetaling.netto, is(NETTO));
         assertThat(utbetaling.brutto, is(BRUTTO));
         assertThat(utbetaling.skattetrekk, is(SKATT));

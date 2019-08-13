@@ -7,6 +7,7 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -71,17 +72,22 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     }
 
 
-    private String hentOrgNavn(String orgnr) {
+    public String hentOrgNavn(String orgnr) {
         if (orgnr != null) {
             HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
             try {
                 //Kan bare være ustrukturert navn.
-                List<String> orgNavn = ((UstrukturertNavn) organisasjonWebService.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon().getNavn()).getNavnelinje();
+                no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon organisasjon = organisasjonWebService.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon();
+                if (organisasjon == null) {
+                    LOGGER.warn("Kunne ikke hente orgnr: " + orgnr);
+                    return orgnr;
+                }
+                List<String> orgNavn = ((UstrukturertNavn) organisasjon.getNavn()).getNavnelinje();
                 orgNavn.removeAll(Arrays.asList("", null));
                 return Joiner.on(", ").join(orgNavn);
             } catch (Exception ex) {
                 LOGGER.warn("Kunne ikke hente orgnr: " + orgnr, ex);
-                return "";
+                return orgnr;
             }
         } else {
             return "";

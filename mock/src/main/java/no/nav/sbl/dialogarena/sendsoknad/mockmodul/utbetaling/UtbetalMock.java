@@ -95,6 +95,8 @@ public class UtbetalMock {
                 .withNavn("Dummy");
         WSOrganisasjon dummyOrg = new WSOrganisasjon()
                 .withAktoerId("000000000");
+        WSOrganisasjon dummyPerson = new WSOrganisasjon()
+                .withAktoerId("01010011111");
         WSBankkonto bankkonto = new WSBankkonto()
                 .withKontotype("Norsk bankkonto")
                 .withKontonummer("32902095534");
@@ -143,7 +145,29 @@ public class UtbetalMock {
                                                 .withYtelseNettobeloep(60000.0)
                                                 .withBilagsnummer("568269566")
                                                 .withRettighetshaver(person)
-                                                .withRefundertForOrg(dummyOrg)
+                                                .withRefundertForOrg(dummyOrg),
+                                        new WSYtelse()
+                                                .withYtelsestype(new WSYtelsestyper().withValue("Onkel Skrues private penger"))
+                                                .withYtelsesperiode(new WSPeriode()
+                                                        .withFom(dato(2018, 2, 1))
+                                                        .withTom(dato(2018, 2, 28)))
+                                                .withYtelseskomponentListe(new WSYtelseskomponent()
+                                                                .withYtelseskomponenttype("Sjekk")
+                                                                .withSatsbeloep(0.0)
+                                                                .withYtelseskomponentbeloep(10000.37),
+                                                        new WSYtelseskomponent()
+                                                                .withYtelseskomponenttype("Pengesekk")
+                                                                .withSatstype("Dag")
+                                                                .withSatsbeloep(5000.0)
+                                                                .withSatsantall(10.0)
+                                                                .withYtelseskomponentbeloep(50000.0))
+                                                .withYtelseskomponentersum(3880.0)
+                                                .withTrekksum(-500.0)
+                                                .withSkattsum(-1337.0)
+                                                .withYtelseNettobeloep(60000.0)
+                                                .withBilagsnummer("568269566")
+                                                .withRettighetshaver(person)
+                                                .withRefundertForOrg(dummyPerson)
                                 )
                                 .withUtbetalingsdato(dato(UTBETALINGSDATO_INNENFOR_PERIODE))
                                 .withForfallsdato(dato(FORFALLSDATO))

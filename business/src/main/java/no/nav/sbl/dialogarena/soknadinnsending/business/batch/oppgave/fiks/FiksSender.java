@@ -56,6 +56,11 @@ public class FiksSender {
 
     public Forsendelse opprettForsendelse(SendtSoknad sendtSoknad, PostAdresse fakeAdresse) {
         final SoknadUnderArbeid soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(sendtSoknad.getBehandlingsId(), sendtSoknad.getEier());
+        final String svarPaForsendelseId = sendtSoknad.erEttersendelse() ?
+                innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).getFiksforsendelseId() : null;
+
+        validerAtEttersendelseSinSoknadHarForsendelseId(sendtSoknad, svarPaForsendelseId);
+
         return new Forsendelse()
                 .withMottaker(new Adresse()
                         .withDigitalAdresse(
@@ -69,13 +74,20 @@ public class FiksSender {
                 .withPrintkonfigurasjon(fakePrintConfig)
                 .withKryptert(SKAL_KRYPTERE)
                 .withKrevNiva4Innlogging(SKAL_KRYPTERE)
-                .withSvarPaForsendelse(sendtSoknad.erEttersendelse() ?
-                        innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).getFiksforsendelseId() : null)
+                .withSvarPaForsendelse(svarPaForsendelseId)
                 .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid))
                 .withMetadataFraAvleverendeSystem(
                         new NoarkMetadataFraAvleverendeSakssystem()
                                 .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
                 );
+    }
+
+    private void validerAtEttersendelseSinSoknadHarForsendelseId(SendtSoknad sendtSoknad, String svarPaForsendelseId) {
+        if (sendtSoknad.erEttersendelse() && (svarPaForsendelseId == null || svarPaForsendelseId.isEmpty())) {
+            throw new IllegalStateException("Ettersendelse med behandlingsId " + sendtSoknad.getBehandlingsId() +
+                    " er knyttet til en søknad med behandlingsId " + sendtSoknad.getTilknyttetBehandlingsId() +
+                    " som ikke har mottat fiksForsendelseId. Innsending til SvarUt vil feile nå og bli forsøkt på nytt senere.");
+        }
     }
 
     List<Dokument> hentDokumenterFraSoknad(SoknadUnderArbeid soknadUnderArbeid) {

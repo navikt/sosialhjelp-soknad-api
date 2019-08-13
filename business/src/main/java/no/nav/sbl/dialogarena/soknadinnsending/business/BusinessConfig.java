@@ -29,11 +29,11 @@ import org.springframework.context.annotation.Import;
         SystemdataUpdater.class,
         KontonummerSystemdata.class,
         TelefonnummerSystemdata.class,
+        InntektSystemdata.class,
         ArbeidsforholdSystemdata.class,
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,
-        FamilieSystemdata.class,
-        InntektSystemdata.class
+        FamilieSystemdata.class
 })
 public class BusinessConfig {
 

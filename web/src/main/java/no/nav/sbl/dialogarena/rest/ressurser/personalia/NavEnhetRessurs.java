@@ -9,8 +9,8 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -55,29 +55,37 @@ public class NavEnhetRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonInternalSoknad internalSoknad = soknad.getJsonInternalSoknad();
         String valgtOrgnr = internalSoknad.getMottaker() == null ? null : internalSoknad.getMottaker().getOrganisasjonsnummer();
+        String valgtEnhetNr = null;
+        if (valgtOrgnr == null && internalSoknad.getSoknad().getMottaker() != null) {
+            valgtEnhetNr = internalSoknad.getSoknad().getMottaker().getEnhetsnummer();
+        }
 
         final JsonAdresse oppholdsadresse = internalSoknad.getSoknad().getData().getPersonalia().getOppholdsadresse();
         final String adresseValg = oppholdsadresse == null ? null :
                 oppholdsadresse.getAdresseValg() == null ? null :
                         oppholdsadresse.getAdresseValg().toString();
 
-        return findSoknadsmottaker(soknad, adresseValg, valgtOrgnr);
+        return findSoknadsmottaker(soknad, adresseValg, valgtOrgnr, valgtEnhetNr);
     }
 
     @PUT
     public void updateNavEnhet(@PathParam("behandlingsId") String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonInternalSoknad jsonInternalSoknad = soknad.getJsonInternalSoknad();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
-        jsonInternalSoknad.setMottaker(new JsonSoknadsmottaker()
+        soknad.getJsonInternalSoknad().setMottaker(new no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
+        if (navEnhetFrontend.enhetsnr != null) {
+            soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
+                    .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
+                    .withEnhetsnummer(navEnhetFrontend.enhetsnr));
+        }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(SoknadUnderArbeid soknad, String valg, String valgtOrgnr) {
+    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(SoknadUnderArbeid soknad, String valg, String valgtOrgnr, String valgtEnhetNr) {
         final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         final List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
@@ -88,11 +96,11 @@ public class NavEnhetRessurs {
          */
         return adresseForslagene.stream().map((adresseForslag) -> {
             final NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtOrgnr);
+            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtOrgnr, valgtEnhetNr);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
 
-    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtOrgnr) {
+    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtOrgnr, String valgtEnhetNr) {
         if (navEnhet == null) {
             logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
@@ -102,24 +110,38 @@ public class NavEnhetRessurs {
             return null;
         }
 
-        final boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
+        boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         String sosialOrgnr = digisosKommune ? navEnhet.sosialOrgnr : null;
+        String enhetNr = digisosKommune ? navEnhet.enhetNr : null;
+        boolean valgt;
+        if (valgtEnhetNr != null) {
+            valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
+        } else {
+            valgt = sosialOrgnr != null && sosialOrgnr.equals(valgtOrgnr);
+        }
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
                 .withKommunenavn(adresseForslag.kommunenavn)
                 .withOrgnr(sosialOrgnr)
-                .withValgt(sosialOrgnr != null && sosialOrgnr.equals(valgtOrgnr));
+                .withEnhetsnr(enhetNr)
+                .withValgt(valgt);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class NavEnhetFrontend {
         public String orgnr;
+        public String enhetsnr;
         public String enhetsnavn;
         public String kommunenavn;
         public boolean valgt;
 
         public NavEnhetFrontend withOrgnr(String orgnr) {
             this.orgnr = orgnr;
+            return this;
+        }
+
+        public NavEnhetFrontend withEnhetsnr(String enhetsnr) {
+            this.enhetsnr = enhetsnr;
             return this;
         }
 

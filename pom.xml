@@ -53,15 +53,15 @@
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>3.2.18.RELEASE</spring.version>
+        <jetty.version>9.4.17.v20190418</jetty.version>
         <jersey.version>2.25.1</jersey.version>
         <oidc-support.version>0.2.10</oidc-support.version>
         <nimbus-jose-jwt.version>6.5</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <jcip-annotations.version>1.0-1</jcip-annotations.version>
-        <cxf.version>3.2.1</cxf.version>
-        <cxf-rt-transports-http.version>3.2.1</cxf-rt-transports-http.version>
+        <cxf.version>3.3.2</cxf.version>
         <modig-security.version>3.0.6</modig-security.version>
-        <wss4j.version>2.2.0</wss4j.version>
+        <wss4j.version>2.2.3</wss4j.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
         <behandlingsinformasjon.tjenestespec.version>1.4.0</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
@@ -71,16 +71,19 @@
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <utbetaling.tjenestespesifikasjon.version>1.0.18</utbetaling.tjenestespesifikasjon.version>
         <ojdbc.version>12.2.0.1</ojdbc.version>
-        <flying.saucer.version>9.0.4</flying.saucer.version>
+        <flying.saucer.version>9.0.8</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.9.9</jackson.version>
+        <jackson-databind.version>2.9.9.3</jackson-databind.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <filformat.version>1.2019.05.20-12.32-5e1e34047f54</filformat.version>
+        <filformat.version>1.2019.07.15-00.31-8a75977358ee</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
         <httpclient.version>4.5.7</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
+        <stax2-api.version>3.1.4</stax2-api.version>
+        <hibernate.version>5.2.5.Final</hibernate.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -215,6 +218,12 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-server</artifactId>
                 <version>${jersey.version}</version>
@@ -248,7 +257,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -520,6 +529,16 @@
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-core</artifactId>
                 <version>${cxf.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>jakarta.xml.bind</groupId>
+                        <artifactId>jakarta.xml.bind-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>jakarta.activation</groupId>
+                        <artifactId>jakarta.activation-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -570,7 +589,7 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
-                <version>${cxf-rt-transports-http.version}</version>
+                <version>${cxf.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.geronimo.specs</groupId>
@@ -803,6 +822,12 @@
                 <artifactId>common-suspend</artifactId>
                 <version>1.0.6</version>
             </dependency>
+            <dependency>
+                <groupId>org.codehaus.woodstox</groupId>
+                <artifactId>stax2-api</artifactId>
+                <version>${stax2-api.version}</version>
+                <scope>runtime</scope>
+            </dependency>
 
 
             <!-- Avhengigheter med provided scope -->
@@ -955,7 +980,7 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jaas</artifactId>
                 <scope>test</scope>
-                <version>9.4.14.v20181114</version>
+                <version>${jetty.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>

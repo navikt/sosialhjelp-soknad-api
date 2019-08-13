@@ -11,8 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandtererImpl.FORSTE_STEG_NY_INNSENDING;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -74,6 +73,43 @@ public class FiksHandtererTest {
         assertThat(oppgave.oppgaveResultat.feilmelding, is("feilmelding123"));
     }
 
+    @Test
+    public void kjorerKjedeSelvOmFeilerForsteGang() {
+        //Feks. dersom en ettersendelse sin svarPaForsendelseId er null
+        when(innsendingService.hentSendtSoknad(eq(BEHANDLINGSID), eq(AVSENDER))).thenReturn(lagSendtEttersendelse());
+        when(fiksSender.sendTilFiks(any(SendtSoknad.class)))
+                .thenThrow(new IllegalStateException("Ettersendelse har svarPaForsendelseId null"))
+                .thenReturn(FIKSFORSENDELSEID);
+
+        Oppgave oppgave = opprettOppgave();
+
+        try {
+            fiksHandterer.eksekver(oppgave);
+        } catch (IllegalStateException ignored) { }
+        assertThat(oppgave.oppgaveResultat.feilmelding, is("Ettersendelse har svarPaForsendelseId null"));
+        verify(fiksSender, times(1)).sendTilFiks(any(SendtSoknad.class));
+        verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
+        verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
+        assertThat(oppgave.steg, is(21));
+
+        fiksHandterer.eksekver(oppgave);
+        verify(fiksSender, times(2)).sendTilFiks(any(SendtSoknad.class));
+        verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
+        verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
+        assertThat(oppgave.steg, is(22));
+
+        fiksHandterer.eksekver(oppgave);
+        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(eq(BEHANDLINGSID),
+                eq(AVSENDER));
+        verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
+        assertThat(oppgave.steg, is(23));
+
+        fiksHandterer.eksekver(oppgave);
+        verify(innsendingService, times(1))
+                .oppdaterSendtSoknadVedSendingTilFiks(anyString(), eq(BEHANDLINGSID), eq(AVSENDER));
+        assertThat(oppgave.status, is(Oppgave.Status.FERDIG));
+    }
+
     private Oppgave opprettOppgave() {
         Oppgave oppgave = new Oppgave();
         oppgave.behandlingsId = BEHANDLINGSID;
@@ -89,5 +125,9 @@ public class FiksHandtererTest {
                 .withEier(AVSENDER)
                 .withBehandlingsId(BEHANDLINGSID)
                 .withNavEnhetsnavn(NAVENHETSNAVN);
+    }
+
+    private SendtSoknad lagSendtEttersendelse() {
+        return lagSendtSoknad().withTilknyttetBehandlingsId("soknadId");
     }
 }

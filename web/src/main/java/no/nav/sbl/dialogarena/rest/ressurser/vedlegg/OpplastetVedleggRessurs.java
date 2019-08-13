@@ -77,7 +77,7 @@ public class OpplastetVedleggRessurs {
         final String filnavn = fil.getContentDisposition().getFileName();
         final byte[] data = getByteArray(fil);
 
-        final OpplastetVedlegg opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn, false);
+        final OpplastetVedlegg opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn);
         return new FilFrontend().withFilNavn(opplastetVedlegg.getFilnavn()).withUuid(opplastetVedlegg.getUuid());
     }
 

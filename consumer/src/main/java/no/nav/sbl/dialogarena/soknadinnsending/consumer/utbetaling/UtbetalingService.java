@@ -14,7 +14,9 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -54,6 +56,7 @@ public class UtbetalingService {
     }
 
     List<Utbetaling> mapTilUtbetalinger(WSHentUtbetalingsinformasjonResponse wsUtbetalinger) {
+
         if (wsUtbetalinger == null || wsUtbetalinger.getUtbetalingListe() == null) {
             return new ArrayList<>();
         }
@@ -64,8 +67,22 @@ public class UtbetalingService {
                 .flatMap(wsUtbetaling ->
                         wsUtbetaling.getYtelseListe()
                                 .stream()
+                                .filter(utbetaltTilBruker(wsUtbetaling))
                                 .map(ytelse -> ytelseTilUtbetaling(wsUtbetaling, ytelse)))
                 .collect(toList());
+    }
+
+    private Predicate<WSYtelse> utbetaltTilBruker(WSUtbetaling wsUtbetaling) {
+        return ytelse -> {
+            String utbetaltTil = wsUtbetaling.getUtbetaltTil().getNavn();
+            WSAktoer rettighetshaver = ytelse.getRettighetshaver();
+            if (isNull(utbetaltTil) || isNull(rettighetshaver)) return false;
+
+            String navn = rettighetshaver.getNavn();
+            if (isNull(navn)) return false;
+
+            return utbetaltTil.trim().equalsIgnoreCase(navn.trim());
+        };
     }
 
     boolean utbetaltSisteFortiDager(WSUtbetaling wsUtbetaling) {
@@ -75,7 +92,10 @@ public class UtbetalingService {
     Utbetaling ytelseTilUtbetaling(WSUtbetaling wsUtbetaling, WSYtelse ytelse) {
         Utbetaling utbetaling = new Utbetaling();
 
-        utbetaling.type = ytelse.getYtelsestype() != null ? ytelse.getYtelsestype().getValue() : "";
+        utbetaling.type = "navytelse";
+        utbetaling.tittel = ytelse.getYtelsestype() != null ? ytelse.getYtelsestype().getValue() : "";
+        utbetaling.orgnummer = "889640782";
+
         utbetaling.netto = ytelse.getYtelseNettobeloep();
         utbetaling.brutto = ytelse.getYtelseskomponentersum();
         utbetaling.skattetrekk = ytelse.getSkattsum();

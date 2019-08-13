@@ -24,7 +24,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     @Override
     public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) throws IOException {
-        final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false);
+        final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false, "");
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/soknad")
