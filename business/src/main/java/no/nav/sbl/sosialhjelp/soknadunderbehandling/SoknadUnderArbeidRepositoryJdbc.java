@@ -233,7 +233,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         if (data == null){
             return null;
         }
-        try {
+        try { // try-blokken kan erstattes med "return mapper.readValue(data, JsonInternalSoknad.class);" to uker etter prodsetting av filformat versjon 1.0.8
             JsonNode node = mapper.readTree(data);
             String fieldName = "driftsinformasjon";
             JsonNode driftNode = node.findValue(fieldName);
