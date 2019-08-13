@@ -1,99 +1,132 @@
-image: docker.adeo.no:5000/sosialhjelp-soknad-api
-prometheus:
-  enabled: true
-  path: /prometheus
-healthcheck:
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: sosialhjelp-soknad-api
+  namespace: {{namespace}}
+  labels:
+    team: digisos
+spec:
+  image: docker.pkg.github.com/navikt/sosialhjelp-innsyn-api/sosialhjelp-soknad-api:{{version}}
+  port: 8080
   liveness:
     path: /sosialhjelp/soknad-api/internal/isAlive
-    initialDelay: 60
-    timeout: 1
-    periodSeconds: 10
-    failureThreshold: 10
+      initialDelay: 60
+      timeout: 1
+      periodSeconds: 10
+      failureThreshold: 10
   readiness:
     path: /sosialhjelp/soknad-api/internal/isAlive
-    initialDelay: 60
-    timeout: 1
-resources:
-  limits:
-    cpu: 3
-    memory: 2Gi
-  requests:
-    memory: 2Gi
-fasitResources:
-  used:
-  - alias: srvsoknadsosialhjelp-server
-    resourceType: credential
-    propertyMap:
-      username: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_USERNAME
-      password: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_PASSWORD
-  - alias: srvsoknadsosialhjelp-server
-    resourceType: certificate
-  - alias: soknadsosialhjelpDataSource
-    resourceType: datasource
-  - alias: virksomhet:Brukerprofil_v1
-    resourceType: webserviceendpoint
-  - alias: virksomhet:DigitalKontakinformasjon_v1
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Person_v1
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Arbeidsforhold_v3
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Organisasjon_v4
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Kodeverk_v2
-    resourceType: webserviceendpoint
-  - alias: saksoversikt.link
-    resourceType: baseurl
-  - alias: dittnav.link
-    resourceType: baseurl
-  - alias: appres.cms
-    resourceType: baseurl
-  - alias: dialogarena.navnolink
-    resourceType: baseurl
-  - alias: soknadinnsending.link
-    resourceType: baseurl
-  - alias: soknad.brukerprofil
-    resourceType: baseurl
-  - alias: arbeid.rest
-    resourceType: baseurl
-  - alias: ekstern:ks_svarut_v1
-    resourceType: webserviceendpoint
-  - alias: dineutbetalinger.link
-    resourceType: baseurl
-  - alias: securityTokenService
-    resourceType: baseurl
-  - alias: Utbetaling_v1
-    resourceType: webserviceendpoint
-  - alias: dokumentinnsending.smtpServer
-    resourceType: smtpserver
-  - alias: arbeidservice
-    resourceType: credential
-  - alias: servicegateway
-    resourceType: webservicegateway
-  - alias: soknadsosialhjelp.featuretoggles
-    resourceType: applicationProperties
-  - alias: soknadsosialhjelp.properties
-    resourceType: applicationProperties
-  - alias: openam
-    resourceType: openam
-  - alias: tpsws.api.v1
-    resourceType: restservice
-  - alias: soknadsosialhjelp-server-tpsws.api.v1-apiKey
-    resourceType: credential
-  - alias: norg2.api.v1
-    resourceType: restservice
-  - alias: soknadsosialhjelp-server-norg2.api.v1-apiKey
-    resourceType: credential
-  - alias: "loginservice_oidc"
-    resourceType: azureoidc
-  - alias: soknadsosialhjelp-server-eksternapp.skatt.datasamarbeid.api.inntektsmottaker-apiKey
-    resourceType: credential
-    propertyMap:
-      username: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_USERNAME
-      password: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD
-  - alias: eksternapp.skatt.datasamarbeid.api.inntektsmottaker
-    resourceType: restservice
-  - alias: loginservice
-    resourceType: restservice
-  - alias: loadbalancer:sosialhjelp-soknad-api
-    resourceType: LoadBalancerConfig
+      initialDelay: 60
+      timeout: 1
+  prometheus:
+    enabled: true
+    path: /prometheus
+  replicas:
+    min: 2
+    max: 2
+  webproxy: true
+  vault:
+    enabled: true
+  ingresses: {{ingresses}}
+  resources:
+    limits:
+      cpu: 3
+      memory: 2Gi
+    requests:
+      memory: 2Gi
+  env:
+    # FIXME: Legg til sensitiv config i Vault
+    - name: VIRKSOMHET_BRUKERPROFIL_V1_SECURITYTOKEN
+      value: {{VIRKSOMHET_BRUKERPROFIL_V1_SECURITYTOKEN}}
+    - name: VIRKSOMHET_BRUKERPROFIL_V1_ENDPOINTURL
+      value: {{VIRKSOMHET_BRUKERPROFIL_V1_ENDPOINTURL}}
+    - name: VIRKSOMHET_BRUKERPROFIL_V1_WSDLURL
+      value: {{VIRKSOMHET_BRUKERPROFIL_V1_WSDLURL}}
+    - name: VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_ENDPOINTURL
+      value: {{VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_ENDPOINTURL}}
+    - name: VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_WSDLURL
+      value: {{VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_WSDLURL}}
+    - name: VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_SECURITYTOKEN
+      value: {{VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_SECURITYTOKEN}}
+    - name: VIRKSOMHET_PERSON_V1_SECURITYTOKEN
+      value: {{VIRKSOMHET_PERSON_V1_SECURITYTOKEN}}
+    - name: VIRKSOMHET_PERSON_V1_ENDPOINTURL
+      value: {{VIRKSOMHET_PERSON_V1_ENDPOINTURL}}
+    - name: VIRKSOMHET_PERSON_V1_WSDLURL
+      value: {{VIRKSOMHET_PERSON_V1_WSDLURL}}
+    - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_SECURITYTOKEN
+      value: {{VIRKSOMHET_ARBEIDSFORHOLD_V3_SECURITYTOKEN}}
+    - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
+      value: {{VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}}
+    - name: VIRKSOMHET_ARBEIDSFORHOLD_V3_WSDLURL
+      value: {{VIRKSOMHET_ARBEIDSFORHOLD_V3_WSDLURL}}
+    - name: VIRKSOMHET_ORGANISASJON_V4_SECURITYTOKEN
+      value: {{VIRKSOMHET_ORGANISASJON_V4_SECURITYTOKEN}}
+    - name: VIRKSOMHET_ORGANISASJON_V4_ENDPOINTURL
+      value: {{VIRKSOMHET_ORGANISASJON_V4_ENDPOINTURL}}
+    - name: VIRKSOMHET_ORGANISASJON_V4_WSDLURL
+      value: {{VIRKSOMHET_ORGANISASJON_V4_WSDLURL}}
+    - name: VIRKSOMHET_KODEVERK_V2_SECURITYTOKEN
+      value: {{VIRKSOMHET_KODEVERK_V2_SECURITYTOKEN}}
+    - name: VIRKSOMHET_KODEVERK_V2_ENDPOINTURL
+      value: {{VIRKSOMHET_KODEVERK_V2_ENDPOINTURL}}
+    - name: VIRKSOMHET_KODEVERK_V2_WSDLURL
+      value: {{VIRKSOMHET_KODEVERK_V2_WSDLURL}}
+    - name: SAKSOVERSIKT_LINK_URL
+      value: {{SAKSOVERSIKT_LINK_URL}}
+    - name: DITTNAV_LINK_URL
+      value: {{DITTNAV_LINK_URL}}
+    - name: APPRES_CMS_URL
+      value: {{APPRES_CMS_URL}}
+    - name: DIALOGARENA_NAVNOLINK_URL
+      value: {{DIALOGARENA_NAVNOLINK_URL}}
+    - name: SOKNADINNSENDING_LINK_URL
+      value: {{SOKNADINNSENDING_LINK_URL}}
+    - name: SOKNAD_BRUKERPROFIL_URL
+      value: {{SOKNAD_BRUKERPROFIL_URL}}
+    - name: ARBEID_REST_URL
+      value: {{ARBEID_REST_URL}}
+    - name: EKSTERN_KS_SVARUT_V1_SECURITYTOKEN
+      value: {{EKSTERN_KS_SVARUT_V1_SECURITYTOKEN}}
+    - name: EKSTERN_KS_SVARUT_V1_ENDPOINTURL
+      value: {{EKSTERN_KS_SVARUT_V1_ENDPOINTURL}}
+    - name: EKSTERN_KS_SVARUT_V1_WSDLURL
+      value: {{EKSTERN_KS_SVARUT_V1_WSDLURL}}
+    - name: DINEUTBETALINGER_LINK_URL
+      value: {{DINEUTBETALINGER_LINK_URL}}
+    - name: SECURITYTOKENSERVICE_URL
+      value: {{SECURITYTOKENSERVICE_URL}}
+    - name: UTBETALING_V1_SECURITYTOKEN
+      value: {{UTBETALING_V1_SECURITYTOKEN}}
+    - name: UTBETALING_V1_ENDPOINTURL
+      value: {{UTBETALING_V1_ENDPOINTURL}}
+    - name: UTBETALING_V1_DESCRIPTION
+      value: {{UTBETALING_V1_DESCRIPTION}}
+    - name: UTBETALING_V1_WSDLURL
+      value: {{UTBETALING_V1_WSDLURL}}
+    - name: DOKUMENTINNSENDING_SMTPSERVER_PORT
+      value: {{DOKUMENTINNSENDING_SMTPSERVER_PORT}}
+    - name: DOKUMENTINNSENDING_SMTPSERVER_HOST
+      value: {{DOKUMENTINNSENDING_SMTPSERVER_HOST}}
+    - name: SERVICEGATEWAY_URL
+      value: {{SERVICEGATEWAY_URL}}
+    - name: SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED
+      value: {{SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED}}
+    - name: SCHEDULER_DISABLE
+      value: {{SCHEDULER_DISABLE}}
+    - name: AUTHENTICATION_ISRUNNINGWITHOIDC
+      value: {{AUTHENTICATION_ISRUNNINGWITHOIDC}}
+    - name: SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED
+      value: {{SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED}}
+    - name: SOKNAD_ETTERSENDING_ANTALLDAGER
+      value: {{SOKNAD_ETTERSENDING_ANTALLDAGER}}
+    - name: FIKS_NOKKELFIL
+      value: {{FIKS_NOKKELFIL}}
+    - name: TPSWS_API_V1_DESCRIPTION
+      value: {{TPSWS_API_V1_DESCRIPTION}}
+    - name: TPSWS_API_V1_URL
+      value: {{TPSWS_API_V1_URL}}
+    - name: NORG2_API_V1_DESCRIPTION
+      value: {{NORG2_API_V1_DESCRIPTION}}
+    - name: NORG2_API_V1_URL
+      value: {{NORG2_API_V1_URL}}
