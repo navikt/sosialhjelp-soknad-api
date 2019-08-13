@@ -30,8 +30,8 @@ import static org.mockito.Mockito.*;
 public class SlettLoggSchedulerTest {
 
     private static final String EIER = "21036612271";
-    private final int dagerGammelSoknad = 365;
-    private final String behandlingsId = "1100AAAAA";
+    private static final int DAGER_GAMMEL_SOKNAD = 365;
+    private static final String BEHANDLINGS_ID = "1100AAAAA";
 
     @InjectMocks
     private SlettLoggScheduler scheduler = new SlettLoggScheduler();
@@ -49,43 +49,43 @@ public class SlettLoggSchedulerTest {
 
     @Test
     public void skalSletteForeldetLoggFraDatabase() {
-        Oppgave oppgave = oppgave(behandlingsId, dagerGammelSoknad + 1);
-        SendtSoknad sendtSoknad = sendtSoknad(behandlingsId, EIER, dagerGammelSoknad + 1);
-        SoknadMetadata soknadMetadata = soknadMetadata(behandlingsId, SoknadInnsendingStatus.UNDER_ARBEID, dagerGammelSoknad + 1);
-        when(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
-        when(oppgaveRepository.hentOppgave(behandlingsId)).thenReturn(Optional.of(oppgave));
-        when(sendtSoknadRepository.hentSendtSoknad(behandlingsId, EIER)).thenReturn(Optional.of(sendtSoknad));
+        Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1);
+        SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1);
+        SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
+        when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
+        when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
+        when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(sendtSoknad));
 
         scheduler.slettLogger();
 
-        verify(oppgaveRepository).slettOppgave(behandlingsId);
+        verify(oppgaveRepository).slettOppgave(BEHANDLINGS_ID);
         verify(sendtSoknadRepository).slettSendtSoknad(sendtSoknad, EIER);
-        verify(soknadMetadataRepository).slettSoknadMetaData(behandlingsId, EIER);
+        verify(soknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID, EIER);
     }
 
     @Test
     public void skalSletteForeldetLoggFraDatabaseSelvOmIkkeAlleTabelleneInneholderBehandlingsIdeen() {
-        Oppgave oppgave = oppgave(behandlingsId, dagerGammelSoknad + 1);
-        SendtSoknad sendtSoknad = sendtSoknad(behandlingsId, EIER, dagerGammelSoknad + 1);
-        SoknadMetadata soknadMetadata = soknadMetadata(behandlingsId, SoknadInnsendingStatus.UNDER_ARBEID, dagerGammelSoknad + 1);
-        when(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
-        when(oppgaveRepository.hentOppgave(behandlingsId)).thenReturn(Optional.of(oppgave));
-        when(sendtSoknadRepository.hentSendtSoknad(behandlingsId, EIER)).thenReturn(Optional.empty());
+        Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1);
+        SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1);
+        SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
+        when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
+        when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
+        when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.empty());
 
         scheduler.slettLogger();
 
-        verify(oppgaveRepository).slettOppgave(behandlingsId);
+        verify(oppgaveRepository).slettOppgave(BEHANDLINGS_ID);
         verify(sendtSoknadRepository, never()).slettSendtSoknad(sendtSoknad, EIER);
-        verify(soknadMetadataRepository).slettSoknadMetaData(behandlingsId, EIER);
+        verify(soknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID, EIER);
     }
 
     @Test
     public void skalIkkeSletteLoggSomErUnderEttAarGammelt() {
-        Oppgave oppgave = oppgave(behandlingsId, dagerGammelSoknad - 1);
-        SendtSoknad sendtSoknad = sendtSoknad(behandlingsId, EIER, dagerGammelSoknad - 1);
-        when(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad)).thenReturn(Optional.empty());
-        when(oppgaveRepository.hentOppgave(behandlingsId)).thenReturn(Optional.of(oppgave));
-        when(sendtSoknadRepository.hentSendtSoknad(behandlingsId, EIER)).thenReturn(Optional.of(sendtSoknad));
+        Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD - 1);
+        SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD - 1);
+        when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.empty());
+        when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
+        when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(sendtSoknad));
 
         scheduler.slettLogger();
 
