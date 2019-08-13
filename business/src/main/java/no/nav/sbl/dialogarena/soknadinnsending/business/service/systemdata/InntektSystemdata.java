@@ -50,7 +50,6 @@ public class InntektSystemdata implements Systemdata {
         okonomiOpplysningUtbetalinger.removeIf(utbetaling -> utbetaling.getKilde().equals(JsonKilde.SYSTEM));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setUtbetalingerFraNavFeilet(false);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
         if (systemUtbetalingerNav == null) {
             soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setUtbetalingerFraNavFeilet(true);
         } else {
