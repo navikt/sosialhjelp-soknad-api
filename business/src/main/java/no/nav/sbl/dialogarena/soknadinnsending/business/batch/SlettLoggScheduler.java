@@ -25,7 +25,7 @@ public class SlettLoggScheduler {
 
     private static final Logger logger = getLogger(SlettLoggScheduler.class);
 
-    private static final String KLOKKEN_FEM_OM_NATTEN = "0 10 15 * * *";
+    private static final String KLOKKEN_FEM_OM_NATTEN = "0 5 13 * * *";
     private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
     private static final int DAGER_GAMMELT = 365; // Ett år
 
