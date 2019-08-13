@@ -76,7 +76,7 @@
         <jackson.version>2.9.9</jackson.version>
         <jackson-databind.version>2.9.9.3</jackson-databind.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <filformat.version>1.2019.08.09-15.29-da4b2ceb57b4</filformat.version>
+        <filformat.version>1.2019.08.12-14.54-399114b9e531</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
