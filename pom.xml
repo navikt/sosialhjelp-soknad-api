@@ -76,6 +76,7 @@
         <jackson.version>2.9.9</jackson.version>
         <jackson-databind.version>2.9.9.3</jackson-databind.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
+        <nav-sbl-rest.version>2018.05.15.11.54</nav-sbl-rest.version>
         <filformat.version>1.2019.07.15-00.31-8a75977358ee</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
@@ -88,6 +89,17 @@
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
+
+        <!-- Versjoner identifisert av maven-enforcer-plugin -->
+        <jaxb2-basics-runtime.version>0.6.5</jaxb2-basics-runtime.version>
+        <asm.version>7.0</asm.version>
+        <neethi.version>3.1.1</neethi.version>
+        <xmlsec.version>2.1.3</xmlsec.version>
+        <nav-sbl-util.version>2018.05.15.11.54</nav-sbl-util.version>
+        <rhino.version>1.7.7.2</rhino.version>
+        <opensaml.version>3.3.0</opensaml.version>
+        <validation-api.version>2.0.1.Final</validation-api.version>
+        <jersey-client.version>2.25.1</jersey-client.version>
     </properties>
 
     <dependencyManagement>
@@ -633,7 +645,7 @@
             <dependency>
                 <groupId>no.nav.sbl</groupId>
                 <artifactId>rest</artifactId>
-                <version>2018.05.15.11.54</version>
+                <version>${nav-sbl-rest.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
@@ -1032,6 +1044,59 @@
                 <version>${pdfbox.version}</version>
                 <scope>provided</scope>
             </dependency>
+
+            <!-- Dependencies identifisert av maven-enforcer-plugin -->
+            <dependency>
+                <groupId>org.jvnet.jaxb2_commons</groupId>
+                <artifactId>jaxb2-basics-runtime</artifactId>
+                <version>${jaxb2-basics-runtime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.santuario</groupId>
+                <artifactId>xmlsec</artifactId>
+                <version>${xmlsec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>${asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.neethi</groupId>
+                <artifactId>neethi</artifactId>
+                <version>${neethi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>util</artifactId>
+                <version>${nav-sbl-util.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mozilla</groupId>
+                <artifactId>rhino</artifactId>
+                <version>${rhino.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-saml-api</artifactId>
+                <version>${opensaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-core</artifactId>
+                <version>${opensaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey-client.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <build>
@@ -1102,6 +1167,25 @@
             </plugins>
         </pluginManagement>
 
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <dependencyConvergence/>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
