@@ -95,3 +95,5 @@ fasitResources:
     resourceType: restservice
   - alias: loginservice
     resourceType: restservice
+  - alias: loadbalancer:sosialhjelp-soknad-api
+    resourceType: LoadBalancerConfig
