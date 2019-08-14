@@ -29,3 +29,25 @@ jobs:
           command: |
             echo $DOCKER_TAG
             docker push $DOCKER_TAG
+
+  deploy_miljo:
+    docker:
+      - image: navikt/deployment-cli:v0.2.0
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Deploy versjon=${VERSION} til miljø=${MILJO} i dev-sbs
+          command: |
+            deployment-cli deploy create --cluster=dev-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${VERSION} --vars=web/nais/dev/${MILJO}.json
+
+  deploy_prod:
+    docker:
+      - image: navikt/deployment-cli:v0.2.0
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Deploy versjon=${VERSION} til prod
+          command: |
+            deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${VERSION} --vars=web/nais/prod/default.json
