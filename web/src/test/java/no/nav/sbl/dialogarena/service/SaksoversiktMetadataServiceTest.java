@@ -1,14 +1,16 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +40,14 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SaksoversiktMetadataServiceTest {
 
+    private static final String EIER = "12345";
+    private static final String BEHANDLINGS_ID = "beh123";
+
     @Mock
     SoknadMetadataRepository soknadMetadataRepository;
+
+    @Mock
+    SendtSoknadRepository sendtSoknadRepository;
 
     @Mock
     EttersendingService ettersendingService;
@@ -55,6 +63,7 @@ public class SaksoversiktMetadataServiceTest {
 
 
     SoknadMetadata soknadMetadata;
+    SendtSoknad sendtSoknad;
 
     @Before
     public void setUp() {
@@ -64,11 +73,15 @@ public class SaksoversiktMetadataServiceTest {
         saksoversiktMetadataService.clock = Clock.fixed(LocalDateTime.of(2018, 5, 31, 13, 33, 37).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
         when(navMessageSource.getBundleFor(anyString(), any())).thenReturn(props);
 
+        sendtSoknad = new SendtSoknad()
+                .withEier(EIER)
+                .withBehandlingsId(BEHANDLINGS_ID)
+                .withSendtDato(LocalDateTime.of(2018, 4, 11, 13, 30, 0));
+
         soknadMetadata = new SoknadMetadata();
-        soknadMetadata.fnr = "12345";
-        soknadMetadata.behandlingsId = "beh123";
+        soknadMetadata.fnr = EIER;
+        soknadMetadata.behandlingsId = BEHANDLINGS_ID;
         soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
-        soknadMetadata.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0);
 
         VedleggMetadata v = new VedleggMetadata();
         v.skjema = "skjema1";
@@ -96,10 +109,10 @@ public class SaksoversiktMetadataServiceTest {
 
     @Test
     public void henterInnsendteForBruker() throws ParseException {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBruker("12345"))
-                .thenReturn(asList(soknadMetadata));
+        when(soknadMetadataRepository.hent(BEHANDLINGS_ID)).thenReturn(soknadMetadata);
+        when(sendtSoknadRepository.hentAlleSendteSoknader(EIER)).thenReturn(asList(sendtSoknad));
 
-        List<InnsendtSoknad> resultat = saksoversiktMetadataService.hentInnsendteSoknaderForFnr("12345");
+        List<InnsendtSoknad> resultat = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(EIER);
 
         assertEquals(1, resultat.size());
         InnsendtSoknad soknad = resultat.get(0);
@@ -112,8 +125,8 @@ public class SaksoversiktMetadataServiceTest {
 
     @Test
     public void hentForEttersendelse() {
-        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), any())).thenReturn(asList(soknadMetadata));
-        when(ettersendingService.hentNyesteSoknadIKjede(any())).thenReturn(soknadMetadata);
+        when(sendtSoknadRepository.hentSoknaderForEttersending(anyString(), any())).thenReturn(asList(sendtSoknad));
+        when(ettersendingService.hentVedleggForNyesteSoknadIKjede(any())).thenReturn(soknadMetadata.vedlegg.vedleggListe);
 
         List<EttersendingsSoknad> resultat = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
 
@@ -126,8 +139,8 @@ public class SaksoversiktMetadataServiceTest {
 
     @Test
     public void hentForEttersendelseHarRiktigInterval() {
-        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), timeCaptor.capture())).thenReturn(asList(soknadMetadata));
-        when(ettersendingService.hentNyesteSoknadIKjede(any())).thenReturn(soknadMetadata);
+        when(sendtSoknadRepository.hentSoknaderForEttersending(anyString(), timeCaptor.capture())).thenReturn(asList(sendtSoknad));
+        when(ettersendingService.hentVedleggForNyesteSoknadIKjede(any())).thenReturn(soknadMetadata.vedlegg.vedleggListe);
 
         saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
 

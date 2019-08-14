@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
@@ -10,8 +10,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +22,11 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
 
 @Component
 public class EttersendingService {
@@ -35,18 +36,24 @@ public class EttersendingService {
     HenvendelseService henvendelseService;
 
     @Inject
+    SoknadMetadataRepository soknadMetadataRepository;
+
+    @Inject
+    SendtSoknadRepository sendtSoknadRepository;
+
+    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
     Clock clock;
 
-    public String start(String behandlingsIdDetEttersendesPaa) {
-        SoknadMetadata originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa);
-        SoknadMetadata nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad);
+    public String start(String behandlingsIdDetEttersendesPaa, String eier) {
+        SendtSoknad originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa, eier);
 
         String nyBehandlingsId = henvendelseService.startEttersending(originalSoknad);
 
-        List<VedleggMetadata> manglendeVedlegg = lagListeOverVedlegg(nyesteSoknad);
+        List<VedleggMetadata> vedlegg = hentVedleggForNyesteSoknadIKjede(originalSoknad);
+        List<VedleggMetadata> manglendeVedlegg = lagListeOverVedleggKreves(vedlegg);
         List<JsonVedlegg> manglendeJsonVedlegg = convertVedleggMetadataToJsonVedlegg(manglendeVedlegg);
 
         lagreSoknadILokalDb(originalSoknad, nyBehandlingsId, manglendeJsonVedlegg);
@@ -54,21 +61,21 @@ public class EttersendingService {
         return nyBehandlingsId;
     }
 
-    private void lagreSoknadILokalDb(SoknadMetadata originalSoknad, String nyBehandlingsId, List<JsonVedlegg> manglendeJsonVedlegg) {
+    private void lagreSoknadILokalDb(SendtSoknad originalSoknad, String nyBehandlingsId, List<JsonVedlegg> manglendeJsonVedlegg) {
         SoknadUnderArbeid ettersendingSoknad = new SoknadUnderArbeid().withBehandlingsId(nyBehandlingsId)
                 .withVersjon(1L)
-                .withEier(originalSoknad.fnr)
+                .withEier(originalSoknad.getEier())
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
-                .withTilknyttetBehandlingsId(originalSoknad.behandlingsId)
+                .withTilknyttetBehandlingsId(originalSoknad.getTilknyttetBehandlingsId())
                 .withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(manglendeJsonVedlegg))
                         .withMottaker(new JsonSoknadsmottaker()
-                                .withOrganisasjonsnummer(originalSoknad.orgnr)
-                                .withNavEnhetsnavn(originalSoknad.navEnhet)))
+                                .withOrganisasjonsnummer(originalSoknad.getOrgnummer())
+                                .withNavEnhetsnavn(originalSoknad.getNavEnhetsnavn())))
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
 
-        soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.fnr);
+        soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.getEier());
     }
 
     private List<JsonVedlegg> convertVedleggMetadataToJsonVedlegg(List<VedleggMetadata> manglendeVedlegg) {
@@ -80,34 +87,32 @@ public class EttersendingService {
                 .collect(Collectors.toList());
     }
 
-    protected SoknadMetadata hentOgVerifiserSoknad(String behandlingsId) {
-        SoknadMetadata soknad = henvendelseService.hentSoknad(behandlingsId);
-        if (soknad == null) {
-            throw new IllegalStateException(String.format("SoknadMetadata til behandlingsid %s finnes ikke", behandlingsId));
+    protected SendtSoknad hentOgVerifiserSoknad(String behandlingsId, String eier) {
+        Optional<SendtSoknad> soknadOptional = sendtSoknadRepository.hentSendtSoknad(behandlingsId, eier);
+        if (!soknadOptional.isPresent()) {
+            throw new IllegalStateException(String.format("SendtSoknad til behandlingsid %s finnes ikke", behandlingsId));
         }
-        if (soknad.type == SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId);
+        SendtSoknad soknad = soknadOptional.get();
+        if (soknad.erEttersendelse()) {
+            soknad = sendtSoknadRepository.hentSendtSoknad(soknad.getTilknyttetBehandlingsId(), eier).get();
         }
 
-        if (soknad.status != FERDIG) {
-            throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er innsendt");
-        } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER))) {
-            long dagerEtterFrist = DAYS.between(soknad.innsendtDato, LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER));
+        if (soknad.getSendtDato().isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER))) {
+            long dagerEtterFrist = DAYS.between(soknad.getSendtDato(), LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER));
             throw new EttersendelseSendtForSentException(String.format("Kan ikke starte ettersendelse %d dager etter frist", dagerEtterFrist));
         }
         return soknad;
     }
 
-    public SoknadMetadata hentNyesteSoknadIKjede(SoknadMetadata originalSoknad) {
-        return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId).stream()
-                .filter(e -> e.status == FERDIG)
-                .sorted(Comparator.comparing((SoknadMetadata o) -> o.innsendtDato).reversed())
-                .findFirst()
-                .orElse(originalSoknad);
+    public List<VedleggMetadata> hentVedleggForNyesteSoknadIKjede(SendtSoknad originalSoknad) {
+        SendtSoknad nyesteSoknadIKjede = sendtSoknadRepository.hentBehandlingskjede(originalSoknad.getBehandlingsId()).stream()
+                .max(Comparator.comparing(SendtSoknad::getSendtDato)).orElse(originalSoknad);
+        SoknadMetadata nyesteSoknadMetadata = soknadMetadataRepository.hent(nyesteSoknadIKjede.getBehandlingsId());
+        return nyesteSoknadMetadata.vedlegg.vedleggListe;
     }
 
-    protected List<VedleggMetadata> lagListeOverVedlegg(SoknadMetadata nyesteSoknad) {
-        List<VedleggMetadata> manglendeVedlegg = nyesteSoknad.vedlegg.vedleggListe.stream()
+    protected List<VedleggMetadata> lagListeOverVedleggKreves(List<VedleggMetadata> vedleggMetadata) {
+        List<VedleggMetadata> manglendeVedlegg = vedleggMetadata.stream()
                 .filter(v -> v.status == Vedleggstatus.VedleggKreves)
                 .collect(toList());
 

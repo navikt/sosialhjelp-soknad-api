@@ -52,7 +52,8 @@ public class EttersendingRessurs {
     @Path("/innsendte/{behandlingsId}")
     public BehandlingsKjede hentBehandlingskjede(@PathParam("behandlingsId") String behandlingsId) {
         tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(behandlingsId);
-        return innsendtSoknadService.hentBehandlingskjede(behandlingsId);
+        String eier = OidcFeatureToggleUtils.getUserId();
+        return innsendtSoknadService.hentBehandlingskjede(behandlingsId, eier);
     }
 
     @GET

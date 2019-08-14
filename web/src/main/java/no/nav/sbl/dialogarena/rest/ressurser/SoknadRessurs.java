@@ -63,7 +63,6 @@ public class SoknadRessurs {
     public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         response.addCookie(xsrfCookie(behandlingsId));
-        henvendelseService.oppdaterSistEndretDatoPaaMetadata(behandlingsId);
         return true;
     }
 
@@ -110,12 +109,12 @@ public class SoknadRessurs {
         if (behandlingsId == null) {
             opprettetBehandlingsId = soknadService.startSoknad();
         } else {
-            final String eier = OidcFeatureToggleUtils.getUserId();
+            String eier = OidcFeatureToggleUtils.getUserId();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
             if (soknadUnderArbeid.isPresent()) {
                 opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();
             } else {
-                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
+                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId, eier);
             }
         }
         result.put("brukerBehandlingId", opprettetBehandlingsId);

@@ -90,7 +90,7 @@ public class SoknadRessursTest {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(anyString(), anyString())).thenReturn(Optional.empty());
         ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class));
-        verify(soknadService).startEttersending(eq(BEHANDLINGSID));
+        verify(soknadService).startEttersending(eq(BEHANDLINGSID), anyString());
     }
 
     @Test
@@ -99,6 +99,6 @@ public class SoknadRessursTest {
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(eq(BEHANDLINGSID), anyString())).thenReturn(
                 Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
         ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class));
-        verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID));
+        verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID), anyString());
     }
 }

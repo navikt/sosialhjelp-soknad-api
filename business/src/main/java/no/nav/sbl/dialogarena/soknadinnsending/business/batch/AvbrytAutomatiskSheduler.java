@@ -73,7 +73,6 @@ public class AvbrytAutomatiskSheduler {
         while (soknad.isPresent()) {
             SoknadMetadata soknadMetadata = soknad.get();
             soknadMetadata.status = AVBRUTT_AUTOMATISK;
-            soknadMetadata.sistEndretDato = LocalDateTime.now();
             soknadMetadataRepository.oppdater(soknadMetadata);
 
             final String behandlingsId = soknadMetadata.behandlingsId;

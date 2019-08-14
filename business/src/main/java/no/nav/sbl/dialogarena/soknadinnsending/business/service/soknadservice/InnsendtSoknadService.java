@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede.InnsendtSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -15,7 +15,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
 
 @Component
 public class InnsendtSoknadService {
@@ -23,7 +22,9 @@ public class InnsendtSoknadService {
     public static final String SKJEMANUMMER_KVITTERING = "L7";
 
     @Inject
-    private HenvendelseService henvendelseService;
+    private SendtSoknadRepository sendtSoknadRepository;
+    @Inject
+    private SoknadMetadataRepository soknadMetadataRepository;
 
     private Predicate<VedleggMetadata> ikkeKvittering = v -> !SKJEMANUMMER_KVITTERING.equals(v.skjema);
     private Predicate<VedleggMetadata> lastetOpp = v -> v.status.er(Vedleggstatus.LastetOpp);
@@ -32,9 +33,9 @@ public class InnsendtSoknadService {
     private DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private DateTimeFormatter tidFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    public BehandlingsKjede hentBehandlingskjede(String behandlingsId) {
-        SoknadMetadata originalSoknad = hentOriginalSoknad(behandlingsId);
-        List<SoknadMetadata> ettersendelser = hentEttersendelser(originalSoknad.behandlingsId);
+    public BehandlingsKjede hentBehandlingskjede(String behandlingsId, String eier) {
+        SendtSoknad originalSoknad = hentOriginalSoknad(behandlingsId, eier);
+        List<SendtSoknad> ettersendelser = hentEttersendelser(originalSoknad.getBehandlingsId());
 
         return new BehandlingsKjede()
                 .medOriginalSoknad(konverter(originalSoknad))
@@ -44,30 +45,30 @@ public class InnsendtSoknadService {
                 );
     }
 
-    private SoknadMetadata hentOriginalSoknad(String behandlingsId) {
-        SoknadMetadata soknad = henvendelseService.hentSoknad(behandlingsId);
-        if (soknad.type == SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId);
+    private SendtSoknad hentOriginalSoknad(String behandlingsId, String eier) {
+        SendtSoknad soknad = sendtSoknadRepository.hentSendtSoknad(behandlingsId, eier).orElseThrow(IllegalStateException::new);
+        if (soknad.erEttersendelse()) {
+            soknad = sendtSoknadRepository.hentSendtSoknad(soknad.getTilknyttetBehandlingsId(), eier).orElseThrow(IllegalStateException::new);
         }
         return soknad;
     }
 
-    private List<SoknadMetadata> hentEttersendelser(String behandlingsId) {
-        return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
-                .filter(soknad -> soknad.status.equals(SoknadInnsendingStatus.FERDIG))
-                .sorted(Comparator.comparing(o -> o.innsendtDato))
+    private List<SendtSoknad> hentEttersendelser(String behandlingsId) {
+        return sendtSoknadRepository.hentBehandlingskjede(behandlingsId).stream()
+                .sorted(Comparator.comparing(SendtSoknad::getSendtDato))
                 .collect(toList());
     }
 
-    private InnsendtSoknad konverter(SoknadMetadata metadata) {
+    private InnsendtSoknad konverter(SendtSoknad sendtSoknad) {
+        List<VedleggMetadata> vedleggListe = soknadMetadataRepository.hent(sendtSoknad.getBehandlingsId()).vedlegg.vedleggListe;
         return new InnsendtSoknad()
-                .medBehandlingId(metadata.behandlingsId)
-                .medInnsendtDato(metadata.innsendtDato.format(datoFormatter))
-                .medInnsendtTidspunkt(metadata.innsendtDato.format(tidFormatter))
-                .medNavenhet(metadata.navEnhet)
-                .medOrgnummer(metadata.orgnr)
-                .medInnsendteVedlegg(tilVedlegg(metadata.vedlegg.vedleggListe, lastetOpp))
-                .medIkkeInnsendteVedlegg(tilVedlegg(metadata.vedlegg.vedleggListe, ikkeLastetOpp));
+                .medBehandlingId(sendtSoknad.getBehandlingsId())
+                .medInnsendtDato(sendtSoknad.getSendtDato().format(datoFormatter))
+                .medInnsendtTidspunkt(sendtSoknad.getSendtDato().format(tidFormatter))
+                .medNavenhet(sendtSoknad.getNavEnhetsnavn())
+                .medOrgnummer(sendtSoknad.getOrgnummer())
+                .medInnsendteVedlegg(tilVedlegg(vedleggListe, lastetOpp))
+                .medIkkeInnsendteVedlegg(tilVedlegg(vedleggListe, ikkeLastetOpp));
     }
 
     private List<InnsendtSoknad.Vedlegg> tilVedlegg(List<VedleggMetadata> vedlegg, Predicate<VedleggMetadata> status) {

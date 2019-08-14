@@ -20,12 +20,4 @@ public interface SoknadMetadataRepository {
 
     void leggTilbakeBatch(Long id);
 
-    List<SoknadMetadata> hentBehandlingskjede(String behandlingsId);
-
-    List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr);
-
-    List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr);
-
-    List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime after);
-
 }

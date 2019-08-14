@@ -14,12 +14,14 @@ import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.tidTilTimestamp;
 
 @Named("SendtSoknadRepository")
 @Component
@@ -74,6 +76,18 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                         Date.from(now().atZone(ZoneId.systemDefault()).toInstant()),
                         behandlingsId,
                         eier);
+    }
+
+    @Override
+    public List<SendtSoknad> hentBehandlingskjede(String behandlingsId) {
+        return getJdbcTemplate().query("SELECT * FROM SENDT_SOKNAD WHERE TILKNYTTETBEHANDLINGSID = ?",
+                new SendtSoknadRowMapper(), behandlingsId);
+    }
+
+    @Override
+    public List<SendtSoknad> hentSoknaderForEttersending(String fnr, LocalDateTime tidsgrense) {
+        return getJdbcTemplate().query("select * from SENDT_SOKNAD where EIER = ? and SENDTDATO > ?",
+                new SendtSoknadRowMapper(), fnr, tidTilTimestamp(tidsgrense));
     }
 
     @Override

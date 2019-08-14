@@ -111,10 +111,8 @@ public class SoknadServiceTest {
 
         VedleggMetadataListe capturedVedlegg = vedleggCaptor.getValue();
         assertThat(capturedVedlegg.vedleggListe).hasSize(2);
-        assertThat(capturedVedlegg.vedleggListe.get(0).filnavn).isEqualTo(testType);
         assertThat(capturedVedlegg.vedleggListe.get(0).skjema).isEqualTo(testType);
         assertThat(capturedVedlegg.vedleggListe.get(0).tillegg).isEqualTo(testTilleggsinfo);
-        assertThat(capturedVedlegg.vedleggListe.get(1).filnavn).isEqualTo(testType2);
         assertThat(capturedVedlegg.vedleggListe.get(1).skjema).isEqualTo(testType2);
         assertThat(capturedVedlegg.vedleggListe.get(1).tillegg).isEqualTo(testTilleggsinfo2);
     }
