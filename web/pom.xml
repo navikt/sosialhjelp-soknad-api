@@ -277,10 +277,15 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-web</artifactId>
-        </dependency>
+        <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
+<!--        <dependency>-->
+<!--            <groupId>no.nav.common</groupId>-->
+<!--            <artifactId>web</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>no.nav.common</groupId>-->
+<!--            <artifactId>selftest</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>types</artifactId>
