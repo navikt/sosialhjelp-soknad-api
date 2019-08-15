@@ -160,10 +160,9 @@
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.tjenester.fim</groupId>
+                <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-                <version>1.1.1</version>
-                <classifier>jaxws</classifier>
+                <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenester.fim</groupId>
