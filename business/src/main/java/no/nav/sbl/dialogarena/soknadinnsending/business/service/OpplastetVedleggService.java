@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
@@ -37,6 +38,9 @@ public class OpplastetVedleggService {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Inject
+    private VirusScanner virusScanner;
+
     private static Map<String, String> MIME_TIL_EXT;
 
     @PostConstruct
@@ -55,6 +59,8 @@ public class OpplastetVedleggService {
         String contentType = Detect.CONTENT_TYPE.transform(data);
 
         validerFil(data);
+        // TODO: Kast exception hvis virus
+        virusScanner.scan(filnavn, data);
 
         OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
                 .withEier(eier)
