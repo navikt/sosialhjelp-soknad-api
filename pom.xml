@@ -189,9 +189,9 @@
                 <version>9.0.0</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
+                <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
-                <version>${utbetaling.tjenestespesifikasjon.version}</version>
+                <version>${tjenestespesifikasjon.version}</version>
             </dependency>
 
             <dependency>
