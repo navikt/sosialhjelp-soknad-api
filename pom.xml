@@ -65,13 +65,7 @@
         <cxf.version>3.3.2</cxf.version>
         <modig-security.version>3.0.6</modig-security.version>
         <wss4j.version>2.2.3</wss4j.version>
-        <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
-        <behandlingsinformasjon.tjenestespec.version>1.4.0</behandlingsinformasjon.tjenestespec.version>
-        <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <lokalt.kodeverk>1.12.28</lokalt.kodeverk>
-        <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
-        <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
-        <utbetaling.tjenestespesifikasjon.version>1.0.18</utbetaling.tjenestespesifikasjon.version>
         <ojdbc.version>12.2.0.1</ojdbc.version>
         <flying.saucer.version>9.0.8</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
