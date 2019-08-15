@@ -499,7 +499,7 @@
             <version>${jersey.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>dkif-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
