@@ -51,6 +51,9 @@
         <sonar.language>java</sonar.language>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <!-- Tjenestespesifikasjoner -->
+        <tjenestespesifikasjon.version>1.2019.08.12-12.12-4258f3dded02</tjenestespesifikasjon.version>
+
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>3.2.18.RELEASE</spring.version>
         <jetty.version>9.4.17.v20190418</jetty.version>
@@ -84,6 +87,7 @@
         <guava.version>27.0.1-jre</guava.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
+        <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -146,9 +150,9 @@
 
             <!-- Tjenestespesifikasjoner -->
             <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
+                <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
-                <version>1.8</version>
+                <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenester.fim</groupId>
@@ -1032,6 +1036,13 @@
                 <version>${pdfbox.version}</version>
                 <scope>provided</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.jvnet.jaxb2_commons</groupId>
+                <artifactId>jaxb2-basics-runtime</artifactId>
+                <version>${jaxb2-basics-runtime.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <build>
