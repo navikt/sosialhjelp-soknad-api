@@ -165,10 +165,9 @@
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.tjenester.fim</groupId>
+                <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
-                <version>1.0.0</version>
-                <classifier>jaxws</classifier>
+                <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
