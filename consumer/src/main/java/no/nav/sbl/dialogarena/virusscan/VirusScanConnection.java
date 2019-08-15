@@ -9,13 +9,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
-
-@Component
 class VirusScanConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(VirusScanConnection.class);
@@ -25,10 +20,9 @@ class VirusScanConnection {
     private final VirusScanConfig config;
     private final RestOperations operations;
 
-    @Inject
-    public VirusScanConnection(VirusScanConfig config) {
+    public VirusScanConnection(VirusScanConfig config, RestOperations operations) {
         this.config = config;
-        this.operations = new RestTemplate();
+        this.operations = operations;
     }
 
     public boolean isEnabled() {
@@ -41,7 +35,7 @@ class VirusScanConnection {
                 return false;
             }
             LOG.info("Scanner {} bytes", data.length);
-            ScanResult[] scanResults = putForObject(config.getUri(), data, ScanResult[].class);
+            ScanResult[] scanResults = putForObject(config.getUri(), data);
             if (scanResults.length != 1) {
                 LOG.warn("Uventet respons med lengde {}, forventet lengde er 1", scanResults.length);
                 return true;
@@ -62,7 +56,7 @@ class VirusScanConnection {
         }
     }
 
-    private <T> T putForObject(URI uri, Object payload, Class<T> responseType) {
-        return operations.exchange(RequestEntity.put(uri).body(payload), responseType).getBody();
+    private ScanResult[] putForObject(URI uri, Object payload) {
+        return operations.exchange(RequestEntity.put(uri).body(payload), ScanResult[].class).getBody();
     }
 }

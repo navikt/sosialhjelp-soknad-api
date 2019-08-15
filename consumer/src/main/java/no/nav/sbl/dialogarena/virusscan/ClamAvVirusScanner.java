@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.virusscan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
 
@@ -13,8 +14,8 @@ public class ClamAvVirusScanner implements VirusScanner {
     private final VirusScanConnection connection;
 
     @Inject
-    public ClamAvVirusScanner(VirusScanConnection connection) {
-        this.connection = connection;
+    public ClamAvVirusScanner(VirusScanConfig config) {
+        this.connection = new VirusScanConnection(config, new RestTemplate());
     }
 
     @Override
