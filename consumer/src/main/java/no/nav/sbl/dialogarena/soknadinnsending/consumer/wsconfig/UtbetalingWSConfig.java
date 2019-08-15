@@ -26,7 +26,7 @@ public class UtbetalingWSConfig {
         return new ServiceBuilder<>(UtbetalingV1.class)
                 .asStandardService()
                 .withAddress(utbetalingEndpoint)
-                .withWsdl("classpath:/utbetaling/no/nav/tjeneste/virksomhet/utbetaling/v1/Binding.wsdl")
+                .withWsdl("classpath:/wsdl/utbetaling/no/nav/tjeneste/virksomhet/utbetaling/v1/Binding.wsdl")
                 .withServiceName(new QName("http://nav.no/tjeneste/virksomhet/utbetaling/v1/Binding", "Utbetaling_v1"))
                 .withEndpointName(new QName("http://nav.no/tjeneste/virksomhet/utbetaling/v1/Binding", "Utbetaling_v1Port"))
                 .build()
