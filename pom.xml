@@ -155,10 +155,9 @@
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.tjenester.fim</groupId>
+                <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
-                <version>1.0.4</version>
-                <classifier>jaxws</classifier>
+                <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenester.fim</groupId>
