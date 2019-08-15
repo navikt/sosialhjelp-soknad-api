@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
+import no.ks.svarut.servicesv9.ForsendelsesServiceV9_Service;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.fiks.ForsendelseServiceMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
@@ -29,6 +30,7 @@ public class FiksWSConfig {
                 .withTimeout(receiveTimeout, connectionTimeout)
                 .withAddress(fiksEndpoint)
                 .withWsdl("classpath:/tjenestespesifikasjon/svarUt.wsdl")
+//                .withWsdl("classpath:/wsdl/svarUt.wsdl") // endre når PR til tjenestespesifikasjoner er godkjent og ny versjon er ute
                 .build()
                 .withHttpsMock();
     }
