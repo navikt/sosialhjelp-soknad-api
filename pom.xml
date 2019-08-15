@@ -53,6 +53,10 @@
 
         <!-- Tjenestespesifikasjoner -->
         <tjenestespesifikasjon.version>1.2019.08.12-12.12-4258f3dded02</tjenestespesifikasjon.version>
+        <!-- TODO - oppgradere svarut-ks-forsendelsesservice:
+              Endre når https://github.com/navikt/tjenestespesifikasjoner/pull/42 er godkjent og ny versjon er ute
+              se: denne pom-en, business-pom, consumer-pom, mock-pom, web-pom og FiksWSConfig
+              -->
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>3.2.18.RELEASE</spring.version>
@@ -181,6 +185,9 @@
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>svarut-ks-forsendelsesservice</artifactId>
                 <version>9.0.0</version>
+<!--                <groupId>no.nav.tjenestespesifikasjoner</groupId>-->
+<!--                <artifactId>svarut-ks-forsendelsesservice</artifactId>-->
+<!--                <version>${tjenestespesifikasjon.version}</version>-->
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
