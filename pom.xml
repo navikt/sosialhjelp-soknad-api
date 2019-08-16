@@ -88,6 +88,9 @@
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.3.2</hsqldb.version>
         <hikaricp.version>2.7.8</hikaricp.version>
+        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+        <ehcache.version>2.10.4</ehcache.version>
+        <woodstox-core-asl.version>4.4.0</woodstox-core-asl.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -867,7 +870,7 @@
             </dependency>
 
 
-            <!-- Avhengigheter med scope runtime -->
+            <!-- Avhengigheter med runtime scope -->
 
             <dependency>
                 <groupId>no.nav.modig</groupId>
@@ -878,13 +881,13 @@
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
-                <version>2.10.4</version>
+                <version>${ehcache.version}</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>woodstox-core-asl</artifactId>
-                <version>4.4.0</version>
+                <version>${woodstox-core-asl.version}</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
@@ -905,7 +908,7 @@
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>3.1.0</version>
+                <version>${javax.servlet-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
@@ -916,7 +919,7 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- Avhengigheter med scope test -->
+            <!-- Avhengigheter med test scope -->
 
             <dependency>
                 <groupId>no.nav.security</groupId>
