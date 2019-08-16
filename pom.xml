@@ -122,7 +122,6 @@
         <assertj.version>1.7.1</assertj.version>
         <reflections.version>0.9.10</reflections.version>
         <webbit.version>0.4.15</webbit.version>
-        <plexus-utils.version>3.0.15</plexus-utils.version>
         <modig-core-test.version>1.0.0</modig-core-test.version>
         <modig-testcertificates.version>1.2.5</modig-testcertificates.version>
         <digipost.digg.version>0.13</digipost.digg.version>
@@ -1054,12 +1053,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${spring.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-utils</artifactId>
-                <version>${plexus-utils.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
