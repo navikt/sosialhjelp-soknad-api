@@ -84,16 +84,28 @@
         <guava.version>27.0.1-jre</guava.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
+        <verapdf.version>1.12.1</verapdf.version>
+        <logback.version>1.2.3</logback.version>
+        <hsqldb.version>2.3.2</hsqldb.version>
+        <hikaricp.version>2.7.8</hikaricp.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
 
-        <!-- Test dependency versjoner -->
+        <!-- Versjoner for test dependencies -->
         <hamcrest.version>1.3</hamcrest.version>
         <junit.version>4.12</junit.version>
+        <mockito.version>1.10.8</mockito.version>
         <assertj.version>1.7.1</assertj.version>
         <json-path.version>0.9.0</json-path.version>
+        <reflections.version>0.9.10</reflections.version>
+        <webbit.version>0.4.15</webbit.version>
+        <args4j.version>2.0.25</args4j.version>
+        <plexus-utils.version>3.0.15</plexus-utils.version>
+        <modig-core-test.version>1.0.0</modig-core-test.version>
+        <modig-testcertificates.version>1.2.5</modig-testcertificates.version>
+        <digipost.digg.version>0.13</digipost.digg.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <jaxb2-basics-runtime.version>0.6.5</jaxb2-basics-runtime.version>
@@ -725,6 +737,21 @@
                 <version>1.0.1</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.modig</groupId>
+                <artifactId>modig-content</artifactId>
+                <version>2.0.9</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>net.sf.ehcache</groupId>
+                        <artifactId>ehcache-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>mail</artifactId>
                 <version>1.4.7</version>
@@ -743,17 +770,17 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.3</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>1.2.3</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
-                <version>2.3.2</version>
+                <version>${hsqldb.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.oracle</groupId>
@@ -816,6 +843,29 @@
                 <artifactId>jcip-annotations</artifactId>
                 <version>${jcip-annotations.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.verapdf</groupId>
+                <artifactId>validation-model</artifactId>
+                <version>${verapdf.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.cxf</groupId>
+                        <artifactId>cxf-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.verapdf</groupId>
+                <artifactId>core</artifactId>
+                <version>${verapdf.version}</version>
+            </dependency>
+
 
             <!-- Avhengigheter med scope runtime -->
 
@@ -858,6 +908,13 @@
                 <version>3.1.0</version>
                 <scope>provided</scope>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>preflight</artifactId>
+                <version>${pdfbox.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
             <!-- Avhengigheter med scope test -->
 
@@ -880,7 +937,7 @@
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
-                <version>0.9.10</version>
+                <version>${reflections.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -915,7 +972,7 @@
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-core-test</artifactId>
                 <scope>test</scope>
-                <version>1.0.0</version>
+                <version>${modig-core-test.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
@@ -934,13 +991,13 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-testcertificates</artifactId>
-                <version>1.2.5</version>
+                <version>${modig-testcertificates.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>no.digipost</groupId>
                 <artifactId>digg</artifactId>
-                <version>0.13</version>
+                <version>${digipost.digg.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -964,7 +1021,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>1.10.8</version>
+                <version>${mockito.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -981,19 +1038,19 @@
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
-                <version>3.0.15</version>
+                <version>${plexus-utils.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>args4j</groupId>
                 <artifactId>args4j</artifactId>
-                <version>2.0.25</version>
+                <version>${args4j.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.webbitserver</groupId>
                 <artifactId>webbit</artifactId>
-                <version>0.4.15</version>
+                <version>${webbit.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -1009,54 +1066,10 @@
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-content</artifactId>
-                <version>2.0.9</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.sf.ehcache</groupId>
-                        <artifactId>ehcache-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>2.7.8</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.verapdf</groupId>
-                <artifactId>validation-model</artifactId>
-                <version>1.12.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.verapdf</groupId>
-                <artifactId>core</artifactId>
-                <version>1.12.1</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>preflight</artifactId>
-                <version>${pdfbox.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Dependencies identifisert av maven-enforcer-plugin -->
