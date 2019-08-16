@@ -143,12 +143,14 @@ public class InformasjonRessurs {
         }
     }
 
+    @Unprotected
     @GET
     @Path("/tilgjengelige_kommuner")
     public List<String> hentTilgjengeligeKommuner() {
         return KommuneTilNavEnhetMapper.getDigisoskommuner();
     }
 
+    @Unprotected
     @GET
     @Path("/kommunesok")
     public List<NavEnhetRessurs.NavEnhetFrontend> sokEtterNavEnheter(@QueryParam("kommunenr") String kommunenr) {
