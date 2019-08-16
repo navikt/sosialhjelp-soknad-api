@@ -96,7 +96,6 @@
         <slf4j.version>1.7.25</slf4j.version>
         <gson.version>2.3.1</gson.version>
         <commons-codec.version>1.10</commons-codec.version>
-        <commons-collections.version>3.2.1</commons-collections.version>
         <commons-io.version>2.4</commons-io.version>
         <commons-lang.version>2.4</commons-lang.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
@@ -345,11 +344,6 @@
                 <groupId>no.bekk.bekkopen</groupId>
                 <artifactId>nocommons</artifactId>
                 <version>0.5</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${commons-collections.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
