@@ -27,6 +27,11 @@ spec:
   webproxy: true
   vault:
     enabled: true
+    paths:
+      # mounter inn /var/run/secrets/datasource/url, /var/run/secrets/datasource/username
+      # og /var/run/secrets/datasource/password
+      - mountPath: /var/run/secrets/datasource
+        kvPath: {{datasourceKvPath}}
   ingresses: {{ingresses}}
   resources:
     limits:
