@@ -38,36 +38,36 @@ public class VirusScanConnectionTest {
     }
 
     @Test
-    public void scanFil_filnavnErVirustest_returnererFalse() {
-        assertThat(connection.scan("virustest", data)).isFalse();
+    public void scanFile_filenameIsVirustest_isInfected() {
+        assertThat(connection.isInfected("virustest", data)).isTrue();
         verify(operations, times(0)).exchange(any(RequestEntity.class), any(Class.class));
     }
 
     @Test
-    public void scanFil_resultatHarFeilLengde_returnererTrue() {
+    public void scanFile_resultatHasWrongLength_isNotInfected() {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(new ScanResult[]{
             new ScanResult("test", Result.FOUND),
             new ScanResult("test", Result.FOUND),
         }));
-        assertThat(connection.scan(filnavn, data)).isTrue();
+        assertThat(connection.isInfected(filnavn, data)).isFalse();
         verify(operations, times(1)).exchange(any(RequestEntity.class), any(Class.class));
     }
 
     @Test
-    public void scanFil_resultatErOK_returnererTrue() {
+    public void scanFile_resultatIsOK_isNotInfected() {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(new ScanResult[]{
             new ScanResult("test", Result.OK),
         }));
-        assertThat(connection.scan(filnavn, data)).isTrue();
+        assertThat(connection.isInfected(filnavn, data)).isFalse();
         verify(operations, times(1)).exchange(any(RequestEntity.class), any(Class.class));
     }
 
     @Test
-    public void scanFil_resultatErIkkeOK_returnererFalse() {
+    public void scanFile_resultatIsNotOK_isInfected() {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(new ScanResult[]{
             new ScanResult("test", Result.FOUND),
         }));
-        assertThat(connection.scan(filnavn, data)).isFalse();
+        assertThat(connection.isInfected(filnavn, data)).isTrue();
         verify(operations, times(1)).exchange(any(RequestEntity.class), any(Class.class));
     }
 }

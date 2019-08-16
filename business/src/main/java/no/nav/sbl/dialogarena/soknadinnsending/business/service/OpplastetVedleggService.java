@@ -59,7 +59,6 @@ public class OpplastetVedleggService {
         String contentType = Detect.CONTENT_TYPE.transform(data);
 
         validerFil(data);
-        // TODO: Kast exception hvis virus
         virusScanner.scan(filnavn, data);
 
         OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()

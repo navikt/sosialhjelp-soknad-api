@@ -11,7 +11,7 @@ class ScanResult {
     private final Result result;
 
     @JsonCreator
-    public ScanResult(@JsonProperty("filename") String filename, @JsonProperty("result") Result result) {
+    ScanResult(@JsonProperty("filename") String filename, @JsonProperty("result") Result result) {
         this.filename = filename;
         this.result = result;
     }
