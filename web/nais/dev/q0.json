@@ -4,6 +4,7 @@
     "https://soknadsosialhjelp-server-q0.nais.oera-q.local/soknadsosialhjelp-server",
     "https://tjenester-q0.nav.no/soknadsosialhjelp-server"
   ],
+  "datasourceKvPath": "oracle/data/dev/creds/soknadsosialhjelp_q0-user",
   "APPRES_CMS_URL": "https://appres-q0.nav.no",
   "ARBEID_REST_URL": "https://itjenester-q0.oera.no/sbl/tjenester/system/",
   "AUTHENTICATION_ISRUNNINGWITHOIDC": "false",
