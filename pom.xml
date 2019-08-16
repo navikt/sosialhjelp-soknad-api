@@ -268,12 +268,12 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate.version}</version>
-                <scope>runtime</scope>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.hibernate</groupId>-->
+<!--                <artifactId>hibernate-validator</artifactId>-->
+<!--                <version>${hibernate.version}</version>-->
+<!--                <scope>runtime</scope>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-server</artifactId>
@@ -1301,18 +1301,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <systemPropertyVariables>
-                            <java.awt.headless>true</java.awt.headless>
-                        </systemPropertyVariables>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.9</version>
                     <configuration>
                         <systemPropertyVariables>
+                            <java.awt.headless>true</java.awt.headless>
                             <user.language>nb</user.language>
                             <user.region>NO</user.region>
                         </systemPropertyVariables>
