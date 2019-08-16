@@ -312,11 +312,6 @@
             </dependency>
 
             <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>dialogarena-fillager</artifactId>
-                <version>0.0.1</version>
-            </dependency>
-            <dependency>
                 <groupId>no.nav.common</groupId>
                 <artifactId>cxf</artifactId>
                 <version>${nav-common.version}</version>
