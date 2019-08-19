@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import static java.util.stream.Collectors.*;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/soknader/{behandlingsId}/inntekt/skattbarinntektogforskuddstrekk")
 @Timed
 @Produces(APPLICATION_JSON)
