@@ -18,7 +18,7 @@
   "EKSTERN_KS_SVARUT_V1_SECURITYTOKEN": "SAML",
   "EKSTERN_KS_SVARUT_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/ekstern-ks-svarUt-tjenestespesifikasjon/1.0.1/ekstern-ks-svarUt-tjenestespesifikasjon-1.0.1.zip",
   "FIKS_NOKKELFIL": "svarut_public_test.pem",
-  "LOGINSERVICE_URL": "https://loginservice-q.nav.no/login"
+  "LOGINSERVICE_URL": "https://loginservice-q.nav.no/login",
   "NORG2_API_V1_URL": "https://api-gw-q1.oera.no/norg2/api/v1/",
   "SAKSOVERSIKT_LINK_URL": "https://tjenester-q1.nav.no/saksoversikt",
   "SCHEDULER_DISABLE": "false",
