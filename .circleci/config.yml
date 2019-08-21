@@ -16,7 +16,8 @@ jobs:
           command: |
             export GIT_COMMIT_HASH=$(git log -n 1 --pretty=format:'%h')
             export GIT_COMMIT_DATE=$(git log -1 --pretty='%ad' --date=format:'%Y%m%d.%H%M')
-            export VERSION=1.0_${GIT_COMMIT_DATE}_${GIT_COMMIT_HASH}
+            #export VERSION=1.0_${GIT_COMMIT_DATE}_${GIT_COMMIT_HASH}
+            export VERSION=${GIT_COMMIT_HASH}
             echo $VERSION > ./VERSION.txt
 
             echo "export DOCKER_TAG=\"docker.pkg.github.com/navikt/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
