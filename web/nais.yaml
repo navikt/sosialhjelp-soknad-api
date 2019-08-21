@@ -107,8 +107,6 @@ spec:
       value: "{{UTBETALING_V1_SECURITYTOKEN}}"
     - name: UTBETALING_V1_ENDPOINTURL
       value: "{{UTBETALING_V1_ENDPOINTURL}}"
-    - name: UTBETALING_V1_DESCRIPTION
-      value: "{{UTBETALING_V1_DESCRIPTION}}"
     - name: UTBETALING_V1_WSDLURL
       value: "{{UTBETALING_V1_WSDLURL}}"
     - name: DOKUMENTINNSENDING_SMTPSERVER_PORT
@@ -129,11 +127,7 @@ spec:
       value: "{{SOKNAD_ETTERSENDING_ANTALLDAGER}}"
     - name: FIKS_NOKKELFIL
       value: "{{FIKS_NOKKELFIL}}"
-    - name: TPSWS_API_V1_DESCRIPTION
-      value: "{{TPSWS_API_V1_DESCRIPTION}}"
     - name: TPSWS_API_V1_URL
       value: "{{TPSWS_API_V1_URL}}"
-    - name: NORG2_API_V1_DESCRIPTION
-      value: "{{NORG2_API_V1_DESCRIPTION}}"
     - name: NORG2_API_V1_URL
       value: "{{NORG2_API_V1_URL}}"
