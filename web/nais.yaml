@@ -10,14 +10,14 @@ spec:
   port: 8080
   liveness:
     path: /soknadsosialhjelp-server/internal/isAlive
-      initialDelay: 60
-      timeout: 1
-      periodSeconds: 10
-      failureThreshold: 10
+    initialDelay: 60
+    timeout: 1
+    periodSeconds: 10
+    failureThreshold: 10
   readiness:
     path: /soknadsosialhjelp-server/internal/isAlive
-      initialDelay: 60
-      timeout: 1
+    initialDelay: 60
+    timeout: 1
   prometheus:
     enabled: true
     path: /prometheus
@@ -36,7 +36,7 @@ spec:
     {{/each}}
   resources:
     limits:
-      cpu: 3
+      cpu: 500m
       memory: 2Gi
     requests:
       memory: 2Gi
