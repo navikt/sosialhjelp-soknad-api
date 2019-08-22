@@ -36,9 +36,10 @@ spec:
 {{/each}}
   resources:
     limits:
-      cpu: 500m
+      cpu: 750m
       memory: 2Gi
     requests:
+      cpu: 750m
       memory: 2Gi
   env:
     - name: FASIT_ENVIRONMENT_NAME
