@@ -1,8 +1,7 @@
 {
   "namespace": "q1",
   "ingresses": [
-    "https://soknadsosialhjelp-server-q1.nais.oera-q.local/soknadsosialhjelp-server",
-    "https://tjenester-q1.nav.no/soknadsosialhjelp-server"
+    "https://sosialhjelp-soknad-api-temp-q1.nais.oera-q.local/soknadsosialhjelp-server"
   ],
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q1",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
