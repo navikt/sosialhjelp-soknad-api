@@ -28,6 +28,8 @@ spec:
   vault:
     enabled: true
     paths:
+      - mountPath: /var/run/secrets/nais.io/vault
+        kvPath: {{vaultKvPath}}
       - mountPath: /var/run/secrets/datasource
         kvPath: {{datasourceKvPath}}
   ingresses:
@@ -44,6 +46,10 @@ spec:
   env:
     - name: FASIT_ENVIRONMENT_NAME
       value: {{namespace}}
+    - name: TILLATMOCK
+      value: "false"
+    - name: START_NORG_WITHMOCK
+      value: "false"
 {{#each env}}
     - name: {{@key}}
       value: "{{this}}"
