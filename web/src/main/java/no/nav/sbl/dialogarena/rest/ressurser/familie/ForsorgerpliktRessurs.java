@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -20,11 +21,13 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.mapToJsonNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt;
 
@@ -46,9 +49,9 @@ public class ForsorgerpliktRessurs {
 
     @GET
     public ForsorgerpliktFrontend hentForsorgerplikt(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
 
         return mapToForsorgerpliktFrontend(jsonForsorgerplikt);
     }
@@ -56,9 +59,9 @@ public class ForsorgerpliktRessurs {
     @PUT
     public void updateForsorgerplikt(@PathParam("behandlingsId") String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonForsorgerplikt forsorgerplikt = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonForsorgerplikt forsorgerplikt = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
 
         if(forsorgerpliktFrontend.barnebidrag != null) {
             if (forsorgerplikt.getBarnebidrag() == null) {
@@ -92,12 +95,11 @@ public class ForsorgerpliktRessurs {
             }
         }
 
-        if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
+        List<JsonAnsvar> systemAnsvar = forsorgerplikt.getAnsvar() == null? new ArrayList<>() : forsorgerplikt.getAnsvar().stream()
+                .filter(jsonAnsvar -> jsonAnsvar.getBarn().getKilde().equals(JsonKilde.SYSTEM)).collect(Collectors.toList());
+        if (forsorgerpliktFrontend.ansvar != null){
             for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar){
-                if (ansvarFrontend.harDiskresjonskode != null && ansvarFrontend.harDiskresjonskode){
-                    continue;
-                }
-                for (JsonAnsvar ansvar : forsorgerplikt.getAnsvar()){
+                for (JsonAnsvar ansvar : systemAnsvar){
                     if (ansvar.getBarn().getHarDiskresjonskode() != null && ansvar.getBarn().getHarDiskresjonskode()){
                         continue;
                     }
@@ -113,19 +115,41 @@ public class ForsorgerpliktRessurs {
             }
         }
 
+        List<JsonAnsvar> brukerregistrertAnsvar = new ArrayList<>();
+        if (forsorgerpliktFrontend.brukerregistrertAnsvar != null && !forsorgerpliktFrontend.brukerregistrertAnsvar.isEmpty()){
+            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.brukerregistrertAnsvar){
+                JsonAnsvar jsonAnsvar = new JsonAnsvar()
+                        .withBorSammenMed(ansvarFrontend.borSammenMed == null ? null :
+                                new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed))
+                        .withSamvarsgrad(ansvarFrontend.samvarsgrad == null ? null :
+                                new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad))
+                        .withBarn(new JsonBarn().withKilde(JsonKilde.BRUKER)
+                                .withNavn(mapToJsonNavn(ansvarFrontend.barn.navn))
+                                .withFodselsdato(ansvarFrontend.barn.fodselsdato));
+                brukerregistrertAnsvar.add(jsonAnsvar);
+            }
+        }
+
+        systemAnsvar.addAll(brukerregistrertAnsvar);
+        forsorgerplikt.setAnsvar(systemAnsvar.isEmpty()? null : systemAnsvar);
+
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
     private ForsorgerpliktFrontend mapToForsorgerpliktFrontend(JsonForsorgerplikt jsonForsorgerplikt) {
-        final List<AnsvarFrontend> ansvar = jsonForsorgerplikt.getAnsvar() == null ? null :
-                jsonForsorgerplikt.getAnsvar().stream().map(this::mapToAnsvarFrontend)
+        List<AnsvarFrontend> ansvar = jsonForsorgerplikt.getAnsvar() == null ? null :
+                jsonForsorgerplikt.getAnsvar().stream().filter(jsonAnsvar -> jsonAnsvar.getBarn().getKilde().equals(JsonKilde.SYSTEM)).map(this::mapToAnsvarFrontend)
+                        .collect(Collectors.toList());
+        List<AnsvarFrontend> brukerregistrertAnsvar = jsonForsorgerplikt.getAnsvar() == null ? null :
+                jsonForsorgerplikt.getAnsvar().stream().filter(jsonAnsvar -> jsonAnsvar.getBarn().getKilde().equals(JsonKilde.BRUKER)).map(this::mapToAnsvarFrontend)
                         .collect(Collectors.toList());
         return new ForsorgerpliktFrontend()
                 .withHarForsorgerplikt(jsonForsorgerplikt.getHarForsorgerplikt() == null ? null :
                         jsonForsorgerplikt.getHarForsorgerplikt().getVerdi())
                 .withBarnebidrag(jsonForsorgerplikt.getBarnebidrag() == null ? null :
                         jsonForsorgerplikt.getBarnebidrag().getVerdi())
-                .withAnsvar(ansvar);
+                .withAnsvar(ansvar)
+                .withBrukerregistrertAnsvar(brukerregistrertAnsvar);
     }
 
     private AnsvarFrontend mapToAnsvarFrontend(JsonAnsvar jsonAnsvar) {
@@ -134,7 +158,6 @@ public class ForsorgerpliktRessurs {
         }
 
         return new AnsvarFrontend().withBarn(mapToBarnFrontend(jsonAnsvar.getBarn()))
-                .withHarDiskresjonskode(jsonAnsvar.getBarn() != null ? jsonAnsvar.getBarn().getHarDiskresjonskode() : null)
                 .withErFolkeregistrertSammen(jsonAnsvar.getErFolkeregistrertSammen() == null ? null :
                         jsonAnsvar.getErFolkeregistrertSammen().getVerdi())
                 .withBorSammenMed(jsonAnsvar.getBorSammenMed() == null ? null : jsonAnsvar.getBorSammenMed().getVerdi())
@@ -159,6 +182,7 @@ public class ForsorgerpliktRessurs {
         public Boolean harForsorgerplikt;
         public JsonBarnebidrag.Verdi barnebidrag;
         public List<AnsvarFrontend> ansvar;
+        public List<AnsvarFrontend> brukerregistrertAnsvar;
 
         public ForsorgerpliktFrontend withHarForsorgerplikt(Boolean harForsorgerplikt) {
             this.harForsorgerplikt = harForsorgerplikt;
@@ -174,12 +198,16 @@ public class ForsorgerpliktRessurs {
             this.ansvar = ansvar;
             return this;
         }
+
+        public ForsorgerpliktFrontend withBrukerregistrertAnsvar(List<AnsvarFrontend> brukerregistrertAnsvar) {
+            this.brukerregistrertAnsvar = brukerregistrertAnsvar;
+            return this;
+        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class AnsvarFrontend {
         public BarnFrontend barn;
-        public Boolean harDiskresjonskode;
         public Boolean borSammenMed;
         public Boolean erFolkeregistrertSammen;
         public Boolean harDeltBosted;
@@ -187,11 +215,6 @@ public class ForsorgerpliktRessurs {
 
         public AnsvarFrontend withBarn(BarnFrontend barn) {
             this.barn = barn;
-            return this;
-        }
-
-        public AnsvarFrontend withHarDiskresjonskode(Boolean harDiskresjonskode) {
-            this.harDiskresjonskode = harDiskresjonskode;
             return this;
         }
 
