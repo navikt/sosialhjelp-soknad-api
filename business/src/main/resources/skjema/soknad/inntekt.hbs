@@ -174,6 +174,51 @@
                     {{/hvisUtbetalingFinnes}}
                 {{/hvisLik}}
 
+                {{#if @root.soknad.data.utdanning.erStudent}}
+                    <h3>{{hentTekst "inntekt.studielan.sporsmal"}}</h3>
+                    {{#hentOkonomiBekreftelse "studielanOgStipend"}}
+                        <li>
+                            <ul class="svar-liste">
+                                <li>
+                                    <span class="verdi verdi--radio">
+                                        {{ hentTekst (concat 'inntekt.studielan.' verdi) }}
+                                    </span>
+                                </li>
+                            </ul>
+                            {{#if @root.utvidetSoknad}}
+                                {{#if verdi}}
+                                {{else}}
+                                    <ul class="svar-liste">
+                                        <li>
+                                            <h4>{{hentTekst "infotekst.oppsummering.tittel"}}</h4>
+                                        </li>
+                                        <li>
+                                            <h3>{{hentTekst "informasjon.student.studielan.tittel"}}</h3>
+                                        </li>
+                                        <li>
+                                            <span>{{hentTekst "informasjon.student.studielan.1"}}</span>
+                                        </li>
+                                        <li>
+                                            <span>{{hentTekst "informasjon.student.studielan.2"}}</span>
+                                        </li>
+                                    </ul>
+                                {{/if}}
+                            {{/if}}
+                        </li>
+                    {{else}}
+                        <li>
+                            <span class="verdi verdi--ikkeUtfylt">
+                                <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                            </span>
+                        </li>
+                    {{/hentOkonomiBekreftelse}}
+                    <li>
+                        {{#if @root.utvidetSoknad}}
+                            {{{hentSvaralternativer "inntekt.studielan"}}}
+                        {{/if}}
+                    </li>
+                {{/if}}
+
                 <h3>{{hentTekst "inntekt.bostotte.sporsmal"}}</h3>
                 {{#hentOkonomiBekreftelse "bostotte"}}
                     <li>

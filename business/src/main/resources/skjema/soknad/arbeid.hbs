@@ -120,6 +120,20 @@
                         </li>
                         {{#if @root.utvidetSoknad}}
                             {{{hentSvaralternativer "dinsituasjon.studerer.true.grad"}}}
+                            <ul class="svar-liste">
+                                <li>
+                                    <h4>{{hentTekst "infotekst.oppsummering.tittel"}}</h4>
+                                </li>
+                                <li>
+                                    <h3>{{hentTekst "informasjon.student.studielan.tittel"}}</h3>
+                                </li>
+                                <li>
+                                    <span>{{hentTekst "informasjon.student.studielan.1"}}</span>
+                                </li>
+                                <li>
+                                    <span>{{hentTekst "informasjon.student.studielan.2"}}</span>
+                                </li>
+                            </ul>
                         {{/if}}
                     </ul>
                 </li>
