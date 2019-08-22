@@ -3,7 +3,7 @@
   "ingresses": [
     "https://sosialhjelp-soknad-api-temp-q1.nais.oera-q.local/soknadsosialhjelp-server"
   ],
-  "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q1",
+  "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api-temp/q1",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
   "env": {
     "APPRES_CMS_URL": "https://appres-q1.nav.no",
