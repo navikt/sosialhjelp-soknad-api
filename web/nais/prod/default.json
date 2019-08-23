@@ -1,15 +1,16 @@
 {
   "namespace": "default",
   "ingresses": [
-    "https://soknadsosialhjelp-server.nais.oera.no/soknadsosialhjelp-server",
-    "https://tjenester.nav.no/soknadsosialhjelp-server"
+    "https://sosialhjelp-soknad-api.nais.oera.no/sosialhjelp/soknad-api",
+    "https://tjenester.nav.no/sosialhjelp/soknad-api",
+    "https://www.nav.no/sosialhjelp/soknad-api",
   ],
   "vaultKvPath": " /kv/prod/sbs/sosialhjelp-soknad-api/default",
   "datasourceKvPath": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
   "env": {
     "APPRES_CMS_URL": "https://appres.nav.no",
     "ARBEID_REST_URL": "https://itjenester.oera.no/sbl/tjenester/system/",
-    "AUTHENTICATION_ISRUNNINGWITHOIDC": "false",
+    "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DIALOGARENA_NAVNOLINK_URL": "https://www.nav.no",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
     "DITTNAV_LINK_URL": "https://tjenester.nav.no/dittnav/",
