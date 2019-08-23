@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: sosialhjelp-soknad-api-temp
+  name: sosialhjelp-soknad-api
   namespace: {{namespace}}
   labels:
     team: digisos
