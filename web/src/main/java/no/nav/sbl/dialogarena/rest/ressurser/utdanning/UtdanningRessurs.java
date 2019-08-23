@@ -70,12 +70,8 @@ public class UtdanningRessurs {
             JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
             if (opplysninger.getBekreftelse() != null) {
                 opplysninger.getBekreftelse().removeIf(bekreftelse -> bekreftelse.getType().equals(soknadstype));
+                inntekter.removeIf(inntekt -> inntekt.getType().equals(soknadstype));
             }
-        }
-
-        if (utdanning.getErStudent() != null){
-            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
-            addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel, utdanning.getErStudent());
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
