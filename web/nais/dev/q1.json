@@ -1,14 +1,16 @@
 {
   "namespace": "q1",
   "ingresses": [
-    "https://sosialhjelp-soknad-api-temp-q1.nais.oera-q.local/soknadsosialhjelp-server"
+    "https://sosialhjelp-soknad-api-q1.nais.oera-q.local/",
+    "https://tjenester-q1.nav.no/sosialhjelp-soknad-api",
+    "https://www-q1.nav.no/sosialhjelp/soknad-api"
   ],
-  "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api-temp/q1",
+  "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q1",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
   "env": {
     "APPRES_CMS_URL": "https://appres-q1.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q1.oera.no/sbl/tjenester/system/",
-    "AUTHENTICATION_ISRUNNINGWITHOIDC": "false",
+    "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DIALOGARENA_NAVNOLINK_URL": "https://www-q1.nav.no",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
     "DITTNAV_LINK_URL": "https://tjenester-q1.nav.no/dittnav/",
