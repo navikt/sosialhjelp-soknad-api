@@ -143,7 +143,7 @@ public class SaksoversiktMetadataService {
             tjenesterPostfix = "-" + miljo;
         }
 
-        return "https://tjenester" + tjenesterPostfix + ".nav.no/soknadsosialhjelp/";
+        return "https://www" + tjenesterPostfix + ".nav.no/sosialhjelp/soknad/";
     }
 
 }
