@@ -124,6 +124,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0239", "939780777")    // Hurdal
             .put("1029", "974240270")    // Lindesnes
             .put("0423", "964948143")    // Grue
+            .put("1021", "993264059")    // Marnardal
         
             .build();
 
@@ -270,7 +271,8 @@ public class KommuneTilNavEnhetMapper {
                     "0237",
                     "0239",
                     "1029",
-                    "0423"
+                    "0423",
+                    "1021"
                 
             ));
 
