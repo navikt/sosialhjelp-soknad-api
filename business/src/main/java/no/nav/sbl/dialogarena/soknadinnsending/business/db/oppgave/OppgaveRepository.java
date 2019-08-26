@@ -11,11 +11,13 @@ public interface OppgaveRepository {
 
     Optional<Oppgave> hentNeste();
 
+    Optional<Oppgave> hentOppgave(String behandlingsId);
+
     void oppdater(Oppgave oppgave);
 
     Map<String, Integer> hentStatus();
 
     int retryOppgaveStuckUnderArbeid();
 
-
+    void slettOppgave(String behandlingsId);
 }
