@@ -1,6 +1,4 @@
-{{#if @root.utvidetSoknad}}
-    {{{hentTekstMedParametere "familierelasjon.ingress" "antallBarn" forsorgerplikt.ansvar.size}}}
-{{/if}}
+<h3>{{hentTekst "familierelasjon.faktum.leggtil.sporsmal"}}</h3>
 {{#each forsorgerplikt.ansvar}}
     {{#hvisLik barn.kilde "bruker"}}
         <h3>{{ hentTekst "familie.barn.true.listetittel" }}</h3>
@@ -39,8 +37,8 @@
             <ul class="svar-liste">
                 <li>
                     {{#hvisIkkeTom borSammenMed.verdi}}
-                        <span class="verdi verdi--radio">
-                            {{ hentTekst (concat "familie.barn.true.barn.borsammen." verdi) }}
+                        <span class="verdi verdi--tekst">
+                            {{ hentTekst (concat "familie.barn.true.barn.borsammen." borSammenMed.verdi) }}
                         </span>
                     {{else}}
                         <span class="verdi verdi--ikkeUtfylt">
@@ -54,6 +52,7 @@
             </ul>
         </li>
         {{#if borSammenMed.verdi}}
+        {{else}}
             <li>
                 <span class="label">{{ hentTekst "familie.barn.true.barn.grad.sporsmal" }}</span>
                 <ul class="svar-liste">

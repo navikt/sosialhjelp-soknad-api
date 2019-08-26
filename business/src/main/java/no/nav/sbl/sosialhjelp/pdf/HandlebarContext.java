@@ -3,6 +3,8 @@ package no.nav.sbl.sosialhjelp.pdf;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
@@ -14,6 +16,7 @@ import no.nav.sbl.sosialhjelp.pdf.context.InntektEllerUtgiftType;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class HandlebarContext {
@@ -60,7 +63,12 @@ public final class HandlebarContext {
         return erEttersending;
     }
 
-    public String getEier() { return eier; }
+    public boolean getHarBrukerregistrerteBarn() {
+        Optional<JsonAnsvar> brukerregistrertBarn = internalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt().getAnsvar().stream()
+                .filter(ansvar -> ansvar.getBarn().getKilde().equals(JsonKilde.BRUKER))
+                .findFirst();
+        return brukerregistrertBarn.isPresent();
+    }
 
     public Collection<InntektEllerUtgiftType> getFormuetyper() {
         final List<JsonOkonomioversiktFormue> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getFormue();

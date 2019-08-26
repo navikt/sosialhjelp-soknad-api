@@ -25,9 +25,9 @@
                     {{{hentTekst "familierelasjon.ingen_registrerte_barn"}}}
                 {{/if}}
             {{/if}}
-            {{#brukerregistrerteBarnFinnes}}
+            {{#if @root.harBrukerregistrerteBarn}}
                 {{> skjema/soknad/familie_har_brukerregistrerte_barn}}
-            {{/brukerregistrerteBarnFinnes}}
+            {{/if}}
             {{#if forsorgerplikt.harForsorgerplikt.verdi}}
                 {{> skjema/soknad/familie_barnebidrag}}
             {{/if}}
