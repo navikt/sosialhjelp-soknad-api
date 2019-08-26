@@ -11,7 +11,7 @@ import javax.inject.Inject;
 @Service
 public class ClamAvVirusScanner implements VirusScanner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClamAvVirusScanner.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClamAvVirusScanner.class);
     private final VirusScanConnection connection;
 
     @Inject
@@ -20,12 +20,11 @@ public class ClamAvVirusScanner implements VirusScanner {
     }
 
     @Override
-    public boolean scan(String filnavn, byte[] data) throws OpplastingException {
+    public void scan(String filnavn, byte[] data) throws OpplastingException {
         if (connection.isEnabled() && connection.isInfected(filnavn, data)) {
             throw new OpplastingException("Fant virus i " + filnavn, null, "vedlegg.opplasting.feil.muligVirus");
         } else if (!connection.isEnabled()) {
-            LOG.info("Virusscanning er ikke aktivert");
+            logger.info("Virusscanning er ikke aktivert");
         }
-        return true;
     }
 }

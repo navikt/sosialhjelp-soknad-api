@@ -31,8 +31,10 @@ public class ClamAvVirusScannerTest {
     }
 
     @Test
-    public void scanFile_scanningIsNotEnabled_returnsTrue() {
+    public void scanFile_scanningIsNotEnabled_doesNotThrowException() {
         when(config.isEnabled()).thenReturn(false);
-        assertThat(virusScanner.scan(filnavn, data)).isTrue();
+        assertThatCode(
+            () -> virusScanner.scan(filnavn, data)
+        ).doesNotThrowAnyException();
     }
 }
