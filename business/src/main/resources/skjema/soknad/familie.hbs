@@ -19,11 +19,17 @@
                 <h3>{{ hentTekst "familierelasjon.faktum.sporsmal" }}</h3>
             {{/if}}
             {{#if forsorgerplikt.harForsorgerplikt.verdi}}
-                {{> skjema/soknad/familie_har_barn}}
+                {{> skjema/soknad/familie_har_systemregistrerte_barn}}
             {{else}}
                 {{#if @root.utvidetSoknad}}
                     {{{hentTekst "familierelasjon.ingen_registrerte_barn"}}}
                 {{/if}}
+            {{/if}}
+            {{#brukerregistrerteBarnFinnes}}
+                {{> skjema/soknad/familie_har_brukerregistrerte_barn}}
+            {{/brukerregistrerteBarnFinnes}}
+            {{#if forsorgerplikt.harForsorgerplikt.verdi}}
+                {{> skjema/soknad/familie_barnebidrag}}
             {{/if}}
         </ul>
     {{/with}}
