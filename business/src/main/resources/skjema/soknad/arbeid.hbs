@@ -118,6 +118,9 @@
                                 </span>
                             {{/hvisIkkeTom}}
                         </li>
+                        {{#if @root.utvidetSoknad}}
+                            {{{hentSvaralternativer "dinsituasjon.studerer.true.grad"}}}
+                        {{/if}}
                     </ul>
                 </li>
             {{/if}}
