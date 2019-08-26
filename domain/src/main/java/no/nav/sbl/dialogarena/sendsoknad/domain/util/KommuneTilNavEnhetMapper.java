@@ -122,6 +122,9 @@ public class KommuneTilNavEnhetMapper {
             .put("0427", "976640322")    // Elverum
             .put("0237", "974604442")    // Eidsvoll
             .put("0239", "939780777")    // Hurdal
+            .put("1029", "974240270")    // Lindesnes
+            .put("0423", "964948143")    // Grue
+        
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -265,7 +268,9 @@ public class KommuneTilNavEnhetMapper {
                     "0632",
                     "0427",
                     "0237",
-                    "0239"
+                    "0239",
+                    "1029",
+                    "0423"
                 
             ));
 
