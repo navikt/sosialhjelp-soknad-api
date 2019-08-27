@@ -125,8 +125,8 @@ public class KommuneTilNavEnhetMapper {
             .put("1029", "974240270")    // Lindesnes
             .put("0423", "964948143")    // Grue
             .put("1021", "993264059")    // Marnardal
-            .put("1548", "993267341")    // Fræna
-            .put("1551", "993267341")    // Eide
+            .put("1548", "993267341")    // Fræna, Eide
+            
         
             .build();
 
