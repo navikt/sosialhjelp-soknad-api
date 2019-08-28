@@ -4,10 +4,12 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,17 +18,16 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-public class AvbrytAutomatiskSheduler {
+public class SlettLoggScheduler {
 
-    private static final Logger logger = getLogger(AvbrytAutomatiskSheduler.class);
+    private static final Logger logger = getLogger(SlettLoggScheduler.class);
 
-    private static final String KLOKKEN_FIRE_OM_NATTEN = "0 0 4 * * *";
+    private static final String KLOKKEN_FEM_OM_NATTEN = "0 0 5 * * *";
     private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
-    private static final int DAGER_GAMMELT = 7 * 2;
+    private static final int DAGER_GAMMELT = 365; // Ett år
 
     private LocalDateTime batchStartTime;
     private int vellykket;
@@ -34,10 +35,12 @@ public class AvbrytAutomatiskSheduler {
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
     @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private SendtSoknadRepository sendtSoknadRepository;
+    @Inject
+    private OppgaveRepository oppgaveRepository;
 
-    @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
-    public void avbrytGamleSoknader() {
+    @Scheduled(cron = KLOKKEN_FEM_OM_NATTEN)
+    public void slettLogger() {
         if (ServiceUtils.isScheduledTasksDisabled()) {
             logger.warn("Scheduler is disabled");
             return;
@@ -46,20 +49,20 @@ public class AvbrytAutomatiskSheduler {
         batchStartTime = LocalDateTime.now();
         vellykket = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
-            logger.info("Starter avbryting av gamle søknader");
-            Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt");
+            logger.info("Starter sletting av logger for ett år gamle søknader");
+            Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettLogg");
             batchTimer.start();
 
             try {
-                avbryt();
+                slettForeldetLogg();
             } catch (RuntimeException e) {
-                logger.error("Batchjobb feilet", e);
+                logger.error("Batchjobb feilet for sletting av logg", e);
                 batchTimer.setFailed();
             } finally {
                 batchTimer.stop();
                 batchTimer.addFieldToReport("vellykket", vellykket);
                 batchTimer.report();
-                logger.info("Jobb fullført: {} vellykket", vellykket);
+                logger.info("Jobb fullført for sletting av logg: {} vellykket", vellykket);
             }
 
         } else {
@@ -67,22 +70,23 @@ public class AvbrytAutomatiskSheduler {
         }
     }
 
-    private void avbryt() {
-        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
+    private void slettForeldetLogg() {
+        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);
 
         while (soknad.isPresent()) {
             SoknadMetadata soknadMetadata = soknad.get();
-            soknadMetadata.status = AVBRUTT_AUTOMATISK;
-            soknadMetadata.sistEndretDato = LocalDateTime.now();
-            soknadMetadataRepository.oppdater(soknadMetadata);
 
-            final String behandlingsId = soknadMetadata.behandlingsId;
-            final String eier = soknadMetadata.fnr;
+            String behandlingsId = soknadMetadata.behandlingsId;
+            String eier = soknadMetadata.fnr;
 
-            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
-            soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
+            Optional<SendtSoknad> sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(behandlingsId, eier);
+            sendtSoknadOptional.ifPresent(sendtSoknad -> sendtSoknadRepository.slettSendtSoknad(sendtSoknad, eier));
 
-            soknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);
+            Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentOppgave(behandlingsId);
+            oppgaveOptional.ifPresent(oppgave -> oppgaveRepository.slettOppgave(behandlingsId));
+
+            soknadMetadataRepository.slettSoknadMetaData(behandlingsId, eier);
+
             vellykket++;
 
             if (harGaattForLangTid()) {
@@ -93,7 +97,7 @@ public class AvbrytAutomatiskSheduler {
                 logger.warn("Avbryter jobben da appen skal suspendes");
                 return;
             }
-            soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
+            soknad = soknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);
         }
 
     }

@@ -130,6 +130,25 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
 
     @Override
+    public Optional<SoknadMetadata> hentEldreEnn(int antallDagerGammel) {
+        LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
+
+        while (true) {
+            String select = "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + limit(1);
+            Optional<SoknadMetadata> resultat = getJdbcTemplate().query(select, soknadMetadataRowMapper, tidTilTimestamp(frist))
+                    .stream().findFirst();
+            if (!resultat.isPresent()) {
+                return Optional.empty();
+            }
+            String update = "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'";
+            int rowsAffected = getJdbcTemplate().update(update, resultat.get().id);
+            if (rowsAffected == 1) {
+                return resultat;
+            }
+        }
+    }
+
+    @Override
     public void leggTilbakeBatch(Long id) {
         String update = "UPDATE soknadmetadata set batchstatus = 'LEDIG' WHERE id = ?";
         getJdbcTemplate().update(update, id);
@@ -157,6 +176,11 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
                 fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidsgrense));
+    }
+
+    @Override
+    public void slettSoknadMetaData(String behandlingsId, String eier) {
+        getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE fnr = ? AND behandlingsid = ?", eier, behandlingsId);
     }
 
 }

@@ -1,16 +1,16 @@
-image: docker.adeo.no:5000/soknadsosialhjelp-server
+image: docker.adeo.no:5000/sosialhjelp-soknad-api
 prometheus:
   enabled: true
   path: /prometheus
 healthcheck:
   liveness:
-    path: /soknadsosialhjelp-server/internal/isAlive
+    path: /sosialhjelp/soknad-api/internal/isAlive
     initialDelay: 60
     timeout: 1
     periodSeconds: 10
     failureThreshold: 10
   readiness:
-    path: /soknadsosialhjelp-server/internal/isAlive
+    path: /sosialhjelp/soknad-api/internal/isAlive
     initialDelay: 60
     timeout: 1
 resources:
@@ -20,10 +20,6 @@ resources:
   requests:
     memory: 2Gi
 fasitResources:
-  exposed:
-  - alias: soknadsosialhjelpSaksoversikt
-    resourceType: restservice
-    path: /soknadsosialhjelp-server/metadata
   used:
   - alias: srvsoknadsosialhjelp-server
     resourceType: credential
@@ -99,3 +95,5 @@ fasitResources:
     resourceType: restservice
   - alias: loginservice
     resourceType: restservice
+  - alias: loadbalancer:sosialhjelp-soknad-api
+    resourceType: LoadBalancerConfig
