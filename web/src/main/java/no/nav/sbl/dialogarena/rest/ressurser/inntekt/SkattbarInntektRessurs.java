@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/inntekt/skattbarinntektogforskuddstrekk")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -32,19 +32,13 @@ public class SkattbarInntektRessurs {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-
-    List<JsonOkonomiOpplysningUtbetaling> mockUtbetalinger;
-
     @GET
     public List<SkattbarInntektOgForskuddstrekk> hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
-        String eier =  OidcFeatureToggleUtils.getUserId();
+        String eier = OidcFeatureToggleUtils.getUserId();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
-        if (mockUtbetalinger != null && Boolean.valueOf(System.getProperty("tillatmock"))) {
-            utbetalinger = mockUtbetalinger;
-        } else {
-            JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-            utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
-        }
+
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
 
         List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger =
                 utbetalinger.stream()
