@@ -66,7 +66,7 @@ public class SkattbarInntektRessurs {
         for (Map<Optional<JsonOrganisasjon>, List<JsonOkonomiOpplysningUtbetaling>> utbetalingerInnenforSammeManed : utbetalingerPerManedPerOrganisasjon.values()) {
             List<Organisasjon> organisasjoner = new ArrayList<>();
             utbetalingerInnenforSammeManed.forEach((organisasjon, utbetalinger) -> {
-                List<Utbetaling> utbetalingListe = utbetalinger.stream().map(this::mapToUtbetaling).collect(toList());
+                List<Utbetaling> utbetalingListe = utbetalinger.stream().map(this::mapTilUtbetaling).collect(toList());
 
                 JsonOrganisasjon jsonOrganisasjon = organisasjon.orElse(new JsonOrganisasjon().withNavn("Uten organisasjonsnummer"));
 
@@ -80,11 +80,11 @@ public class SkattbarInntektRessurs {
         return skattbarInntektOgForskuddstrekkListe;
     }
 
-    private Utbetaling mapToUtbetaling(JsonOkonomiOpplysningUtbetaling jsonOkonomiOpplysningUtbetaling) {
+    private Utbetaling mapTilUtbetaling(JsonOkonomiOpplysningUtbetaling jsonOkonomiOpplysningUtbetaling) {
         return new Utbetaling()
-                                .withTittel(jsonOkonomiOpplysningUtbetaling.getTittel())
-                                .withBrutto(jsonOkonomiOpplysningUtbetaling.getBrutto())
-                                .withForskuddstrekk(jsonOkonomiOpplysningUtbetaling.getSkattetrekk());
+                .withTittel(jsonOkonomiOpplysningUtbetaling.getTittel())
+                .withBrutto(jsonOkonomiOpplysningUtbetaling.getBrutto())
+                .withForskuddstrekk(jsonOkonomiOpplysningUtbetaling.getSkattetrekk());
     }
 
     private Organisasjon mapTilOrganisasjon(List<Utbetaling> utbetalingListe, JsonOrganisasjon jsonOrganisasjon, JsonOkonomiOpplysningUtbetaling utbetaling) {
