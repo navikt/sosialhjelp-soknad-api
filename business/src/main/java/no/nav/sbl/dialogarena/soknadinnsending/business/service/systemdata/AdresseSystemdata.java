@@ -24,17 +24,28 @@ public class AdresseSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
-        final JsonAdresse folkeregistrertAdresse = innhentFolkeregistrertAdresse(personIdentifikator);
-        final JsonAdresse midlertidigAdresse = innhentMidlertidigAdresse(personIdentifikator);
+        JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+        JsonAdresse folkeregistrertAdresse = innhentFolkeregistrertAdresse(personIdentifikator);
+        JsonAdresse midlertidigAdresse = innhentMidlertidigAdresse(personIdentifikator);
+        if (valgtAdresseLikNull(personalia, folkeregistrertAdresse, midlertidigAdresse)) {
+            personalia.getOppholdsadresse().setAdresseValg(null);
+            personalia.getPostadresse().setAdresseValg(null);
+        }
         personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
         updateOppholdsadresse(personalia, folkeregistrertAdresse, midlertidigAdresse);
         updatePostadresse(personalia, folkeregistrertAdresse, midlertidigAdresse);
     }
 
+    private boolean valgtAdresseLikNull(JsonPersonalia personalia, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
+        return folkeregistrertAdresse == null && personalia.getOppholdsadresse() != null &&
+                JsonAdresseValg.FOLKEREGISTRERT.equals(personalia.getOppholdsadresse().getAdresseValg())
+                || midlertidigAdresse == null && personalia.getOppholdsadresse() != null &&
+                JsonAdresseValg.MIDLERTIDIG.equals(personalia.getOppholdsadresse().getAdresseValg());
+    }
+
     private void updatePostadresse(JsonPersonalia personalia, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
-        final JsonAdresse postadresse = personalia.getPostadresse();
+        JsonAdresse postadresse = personalia.getPostadresse();
         if (postadresse == null){
             return;
         }
@@ -48,7 +59,7 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     private void updateOppholdsadresse(JsonPersonalia personalia, JsonAdresse folkeregistrertAdresse, JsonAdresse midlertidigAdresse) {
-        final JsonAdresse oppholdsadresse = personalia.getOppholdsadresse();
+        JsonAdresse oppholdsadresse = personalia.getOppholdsadresse();
         if (oppholdsadresse == null){
             return;
         }
@@ -61,12 +72,12 @@ public class AdresseSystemdata implements Systemdata {
         }
     }
 
-    public JsonAdresse innhentFolkeregistrertAdresse(final String personIdentifikator) {
+    public JsonAdresse innhentFolkeregistrertAdresse(String personIdentifikator) {
         AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(personIdentifikator);
         return mapToJsonAdresse(adresserOgKontonummer.getFolkeregistrertAdresse());
     }
 
-    public JsonAdresse innhentMidlertidigAdresse(final String personIdentifikator) {
+    public JsonAdresse innhentMidlertidigAdresse(String personIdentifikator) {
         AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(personIdentifikator);
         return mapToJsonAdresse(adresserOgKontonummer.getMidlertidigAdresse());
     }
@@ -76,14 +87,14 @@ public class AdresseSystemdata implements Systemdata {
             return null;
         }
 
-        final Adresse.StrukturertAdresse strukturertAdresse = adresse.getStrukturertAdresse();
+        Adresse.StrukturertAdresse strukturertAdresse = adresse.getStrukturertAdresse();
 
         if (strukturertAdresse == null) {
             // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
             return null;
         }
 
-        final String type = adresse.getAdressetype();
+        String type = adresse.getAdressetype();
         if (type == null) {
             throw new IllegalStateException("Adresse mangler type");
         }
@@ -106,14 +117,14 @@ public class AdresseSystemdata implements Systemdata {
         return jsonAdresse;
     }
 
-    private static JsonAdresse tilGateAdresse(final Adresse adresse) {
+    private static JsonAdresse tilGateAdresse(Adresse adresse) {
         if (adresse.getStrukturertAdresse() == null) {
             // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
             throw new IllegalStateException("Adresse er ikke strukturert");
         }
 
-        final Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) adresse.getStrukturertAdresse();
-        final JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
+        Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) adresse.getStrukturertAdresse();
+        JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
         jsonGateAdresse.setType(JsonAdresse.Type.GATEADRESSE);
         jsonGateAdresse.setLandkode(defaultIfBlank(adresse.getLandkode(), "NOR"));
         jsonGateAdresse.setKommunenummer(defaultIfBlank(gateadresse.kommunenummer, null));
@@ -126,14 +137,14 @@ public class AdresseSystemdata implements Systemdata {
         return jsonGateAdresse;
     }
 
-    private static JsonAdresse tilMatrikkelAdresse(final Adresse adresse) {
+    private static JsonAdresse tilMatrikkelAdresse(Adresse adresse) {
         if (adresse.getStrukturertAdresse() == null) {
             // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
             throw new IllegalStateException("Adresse er ikke strukturert");
         }
 
-        final Adresse.MatrikkelAdresse matrikkelAdresse = (Adresse.MatrikkelAdresse) adresse.getStrukturertAdresse();
-        final JsonMatrikkelAdresse jsonMatrikkelAdresse = new JsonMatrikkelAdresse();
+        Adresse.MatrikkelAdresse matrikkelAdresse = (Adresse.MatrikkelAdresse) adresse.getStrukturertAdresse();
+        JsonMatrikkelAdresse jsonMatrikkelAdresse = new JsonMatrikkelAdresse();
         jsonMatrikkelAdresse.setType(JsonAdresse.Type.MATRIKKELADRESSE);
         jsonMatrikkelAdresse.setKommunenummer(defaultIfBlank(matrikkelAdresse.kommunenummer, null));
         jsonMatrikkelAdresse.setGaardsnummer(defaultIfBlank(matrikkelAdresse.gaardsnummer, null));
@@ -149,7 +160,7 @@ public class AdresseSystemdata implements Systemdata {
             return null;
         }
 
-        final JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
+        JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
         ustrukturertAdresse.setType(JsonAdresse.Type.USTRUKTURERT);
 
         ustrukturertAdresse.setAdresse(Arrays.stream(adresse.getAdresse().split(","))
@@ -204,7 +215,7 @@ public class AdresseSystemdata implements Systemdata {
         }
     }
 
-    private boolean isUtenlandskAdresse(final Adresse adresse) {
+    private boolean isUtenlandskAdresse(Adresse adresse) {
         return adresse.getLandkode() != null && !adresse.getLandkode().equals("NOR");
     }
 }
