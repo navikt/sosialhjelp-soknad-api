@@ -48,8 +48,7 @@
             <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-<!--            <groupId>no.nav.tjenestespesifikasjoner</groupId>-->
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>svarut-ks-forsendelsesservice</artifactId>
         </dependency>
         <dependency>

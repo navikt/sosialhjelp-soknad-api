@@ -178,12 +178,9 @@
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
+                <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>svarut-ks-forsendelsesservice</artifactId>
-                <version>9.0.0</version>
-<!--                <groupId>no.nav.tjenestespesifikasjoner</groupId>-->
-<!--                <artifactId>svarut-ks-forsendelsesservice</artifactId>-->
-<!--                <version>${tjenestespesifikasjon.version}</version>-->
+                <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
