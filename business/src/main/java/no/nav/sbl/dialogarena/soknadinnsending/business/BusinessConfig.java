@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.AvbrytAutomatiskSheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.SlettLoggScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandtererImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         LagringsScheduler.class,
+        SlettLoggScheduler.class,
         DbConfig.class,
         ConsumerConfig.class,
         ServiceConfig.class,
