@@ -29,8 +29,7 @@ public class FiksWSConfig {
                 .asStandardService()
                 .withTimeout(receiveTimeout, connectionTimeout)
                 .withAddress(fiksEndpoint)
-                .withWsdl("classpath:/tjenestespesifikasjon/svarUt.wsdl")
-//                .withWsdl("classpath:/wsdl/svarUt.wsdl") // endre når PR til tjenestespesifikasjoner er godkjent og ny versjon er ute
+                .withWsdl("classpath:/wsdl/svarUt.wsdl")
                 .build()
                 .withHttpsMock();
     }
