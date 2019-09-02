@@ -1,8 +1,0 @@
-https://${DomainName}/soknadsosialhjelp-server/internal/selftest*
-https://${DomainName}/soknadsosialhjelp-server/internal/isAlive*
-https://${DomainName}/soknadsosialhjelp-server/css/*
-https://${DomainName}/soknadsosialhjelp-server/img/*
-https://${DomainName}/soknadsosialhjelp-server/js/*
-https://${DomainName}/soknadsosialhjelp-server/font/*
-https://${DomainName}/soknadsosialhjelp-server/informasjon/tilgjengelige_kommuner
-https://${DomainName}/soknadsosialhjelp-server/informasjon/tilgjengelige_kommuner*
