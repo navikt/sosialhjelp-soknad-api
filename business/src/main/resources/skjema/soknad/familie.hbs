@@ -27,6 +27,13 @@
             {{/if}}
             {{#if @root.harBrukerregistrerteBarn}}
                 {{> skjema/soknad/familie_har_brukerregistrerte_barn}}
+            {{else}}
+                {{#if @root.utvidetSoknad}}
+                    <h3>{{hentTekst "familierelasjon.faktum.leggtil.sporsmal"}}</h3>
+                {{/if}}
+            {{/if}}
+            {{#if @root.utvidetSoknad}}
+                {{{settInnKnappTilgjengeligTekst "familie.barn.true.barn.leggtil"}}}
             {{/if}}
             {{#if forsorgerplikt.harForsorgerplikt.verdi}}
                 {{> skjema/soknad/familie_barnebidrag}}
