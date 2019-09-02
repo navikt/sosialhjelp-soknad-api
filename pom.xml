@@ -52,11 +52,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Tjenestespesifikasjoner -->
-        <tjenestespesifikasjon.version>1.2019.08.12-12.12-4258f3dded02</tjenestespesifikasjon.version>
-        <!-- TODO - oppgradere svarut-ks-forsendelsesservice:
-              Endre når https://github.com/navikt/tjenestespesifikasjoner/pull/42 er godkjent og ny versjon er ute
-              se: denne pom-en, business-pom, consumer-pom, mock-pom, web-pom og FiksWSConfig
-              -->
+        <tjenestespesifikasjon.version>1.2019.08.16-13.46-35cbdfd492d4</tjenestespesifikasjon.version>
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>3.2.18.RELEASE</spring.version>
