@@ -152,6 +152,17 @@ public class FiksSenderTest {
         assertThat(forsendelse.getTittel(), is(ETTERSENDELSE_TIL_NAV));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
+        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknad()));
+        when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
+                .withFiksforsendelseId(null));
+        SendtSoknad sendtEttersendelse = lagSendtEttersendelse();
+
+        fiksSender.opprettForsendelse(sendtEttersendelse, new PostAdresse());
+    }
+
     @Test
     public void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
@@ -230,5 +241,9 @@ public class FiksSenderTest {
                 .withOrgnummer(ORGNUMMER)
                 .withNavEnhetsnavn(NAVENHETSNAVN)
                 .withBrukerFerdigDato(LocalDateTime.now());
+    }
+
+    private SendtSoknad lagSendtEttersendelse() {
+        return lagSendtSoknad().withTilknyttetBehandlingsId("soknadId");
     }
 }
