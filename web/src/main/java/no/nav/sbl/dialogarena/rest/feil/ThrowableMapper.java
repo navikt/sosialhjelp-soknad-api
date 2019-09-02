@@ -45,7 +45,7 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
             logger.warn(e.getMessage(), e);
             return status(Response.Status.CONFLICT).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Samtidig oppdatering av søknad")).build();
         } else {
-            logger.error("Noe uventet feilet", e);
+            logger.error("Noe uventet feilet: " + e.getMessage(), e);
             return serverError().header(NO_BIGIP_5XX_REDIRECT, true).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "Noe uventet feilet")).build();
         }
     }
