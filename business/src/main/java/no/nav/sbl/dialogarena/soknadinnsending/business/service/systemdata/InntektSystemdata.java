@@ -48,21 +48,18 @@ public class InntektSystemdata implements Systemdata {
         List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
 
         okonomiOpplysningUtbetalinger.removeIf(utbetaling -> utbetaling.getKilde().equals(JsonKilde.SYSTEM));
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("");
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setUtbetalingerFraNavFeilet(false);
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
         if (systemUtbetalingerNav == null) {
-            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente utbetalinger fra NAV");
+            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setUtbetalingerFraNavFeilet(true);
         } else {
             okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerNav);
         }
 
         if (systemUtbetalingerSkattbar == null) {
-            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente skattbar inntekt fra Skatteetaten");
+            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
         } else {
             okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar);
-        }
-
-        if (systemUtbetalingerNav == null && systemUtbetalingerSkattbar == null) {
-            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setDriftsinformasjon("Kunne ikke hente utbetalinger fra NAV og kunne ikke hente skattbar inntekt fra Skatteetaten");
         }
     }
 

@@ -2,24 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
-import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
-import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
@@ -39,9 +22,9 @@ import java.util.List;
 
 import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
-import static java.util.Collections.emptyList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender.ETTERSENDELSE_TIL_NAV;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender.SOKNAD_TIL_NAV;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -55,6 +38,7 @@ public class FiksSenderTest {
     private static final String ORGNUMMER = "9999";
     private static final String NAVENHETSNAVN = "NAV Sagene";
     private static final String BEHANDLINGSID = "12345";
+    private static final String EIER = "12345678910";
     @Mock
     ForsendelsesServiceV9 forsendelsesService;
     @Mock
@@ -90,7 +74,7 @@ public class FiksSenderTest {
     @Test
     public void opprettForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknad()));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
@@ -114,7 +98,7 @@ public class FiksSenderTest {
     @Test
     public void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknad()));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
         fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService);
         SendtSoknad sendtSoknad = lagSendtSoknad();
@@ -129,7 +113,7 @@ public class FiksSenderTest {
     @Test
     public void opprettForsendelseSetterRiktigTittelForNySoknad() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknad()));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
@@ -153,7 +137,7 @@ public class FiksSenderTest {
     @Test(expected = IllegalStateException.class)
     public void opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknad()));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withFiksforsendelseId(null));
         SendtSoknad sendtEttersendelse = lagSendtEttersendelse();
@@ -164,7 +148,7 @@ public class FiksSenderTest {
     @Test
     public void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
-                .withJsonInternalSoknad(lagInternalSoknad()));
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
         assertThat(fiksDokumenter.size(), is(5));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("soknad.json"));
@@ -231,45 +215,6 @@ public class FiksSenderTest {
                 .withVedleggType(new VedleggType("type|tilleggsinfo"))
                 .withData(new byte[]{1, 2, 3}));
         return opplastedeVedlegg;
-    }
-
-    private JsonInternalSoknad lagInternalSoknad() {
-        return lagInternalSoknadUtenVedleggSpesifikasjon().withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(new ArrayList<>()));
-    }
-
-    private JsonInternalSoknad lagInternalSoknadUtenVedleggSpesifikasjon() {
-        return new JsonInternalSoknad()
-                .withSoknad(new JsonSoknad()
-                        .withVersion("1.0.0")
-                        .withKompatibilitet(emptyList())
-                        .withDriftsinformasjon("")
-                        .withMottaker(new JsonSoknadsmottaker()
-                                .withNavEnhetsnavn("")
-                                .withEnhetsnummer(""))
-                        .withData(new JsonData()
-                                .withArbeid(new JsonArbeid())
-                                .withBegrunnelse(new JsonBegrunnelse()
-                                        .withHvaSokesOm("")
-                                        .withHvorforSoke(""))
-                                .withBosituasjon(new JsonBosituasjon())
-                                .withFamilie(new JsonFamilie()
-                                        .withForsorgerplikt(new JsonForsorgerplikt()))
-                                .withOkonomi(new JsonOkonomi()
-                                        .withOpplysninger(new JsonOkonomiopplysninger())
-                                        .withOversikt(new JsonOkonomioversikt()))
-                                .withPersonalia(new JsonPersonalia()
-                                        .withKontonummer(new JsonKontonummer()
-                                                .withKilde(JsonKilde.BRUKER))
-                                        .withNavn(new JsonSokernavn()
-                                                .withFornavn("Fornavn")
-                                                .withMellomnavn("")
-                                                .withEtternavn("Etternavn")
-                                                .withKilde(JsonSokernavn.Kilde.SYSTEM))
-                                        .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                .withVerdi("12345678910")
-                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)))
-                                .withUtdanning(new JsonUtdanning()
-                                        .withKilde(JsonKilde.BRUKER))));
     }
 
     private SendtSoknad lagSendtSoknad() {

@@ -9,11 +9,11 @@
                     {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
                 {{/if}}
 
-                {{#hvisLik @root.soknad.driftsinformasjon "Kunne ikke hente utbetalinger fra Skatteetaten"}}
+                {{#if @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
                     <ul class="svar-liste">
                         <li>
                             <span class="verdi verdi--tekst">
-                                {{@root.soknad.driftsinformasjon}}
+                                "Kunne ikke hente utbetalinger fra Skatteetaten"
                             </span>
                         </li>
                     </ul>
@@ -101,18 +101,18 @@
                             </span>
                         </li>
                     {{/hvisUtbetalingFinnes}}
-                {{/hvisLik}}
+                {{/if}}
 
                 <h3>{{hentTekst "navytelser.sporsmal"}}</h3>
                 {{#if @root.utvidetSoknad}}
                     {{{ settInnInfotekst "navytelser.infotekst.tekst" }}}
                 {{/if}}
 
-                {{#hvisLik @root.soknad.driftsinformasjon "Kunne ikke hente utbetalinger fra NAV"}}
+                {{#if @root.soknad.driftsinformasjon.utbetalingerFraNavFeilet}}
                     <ul class="svar-liste">
                         <li>
                             <span class="verdi verdi--tekst">
-                                {{@root.soknad.driftsinformasjon}}
+                                "Kunne ikke hente utbetalinger fra NAV"
                             </span>
                         </li>
                     </ul>
@@ -186,7 +186,7 @@
                             </span>
                         </li>
                     {{/hvisUtbetalingFinnes}}
-                {{/hvisLik}}
+                {{/if}}
 
                 <h3>{{hentTekst "inntekt.bostotte.sporsmal"}}</h3>
                 {{#hentOkonomiBekreftelse "bostotte"}}
