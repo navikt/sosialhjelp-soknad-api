@@ -14,7 +14,7 @@ public class MockSoknadsosialhjelpServer {
         System.setProperty("logback.configurationFile", "logback-mock.xml");
 
         File override = new File(Objects.requireNonNull(MockSoknadsosialhjelpServer.class.getClassLoader().getResource("override-web-mock.xml")).getFile());
-        SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, override, "/soknadsosialhjelp-server", null);
+        SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, override, "/sosialhjelp/soknad-api", null);
 
         if (!isRunningOnHeroku()) {
             System.setProperty("sendsoknad.datadir", System.getProperty("user.home") + "/kodeverk/sendsoknad");

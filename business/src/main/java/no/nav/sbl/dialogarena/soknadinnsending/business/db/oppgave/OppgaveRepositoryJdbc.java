@@ -77,6 +77,12 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     }
 
     @Override
+    public Optional<Oppgave> hentOppgave(String behandlingsId) {
+        return getJdbcTemplate().query("SELECT * FROM oppgave WHERE behandlingsid = ?",
+                oppgaveRowMapper, behandlingsId).stream().findFirst();
+    }
+
+    @Override
     public Optional<Oppgave> hentNeste() {
         String select = "SELECT * FROM oppgave WHERE status = ? and (nesteforsok is null OR nesteforsok < ?) " + limit(1);
 
@@ -111,5 +117,10 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
                 Integer.class, UNDER_ARBEID.name(), tidTilTimestamp(LocalDateTime.now().minusMinutes(10))));
 
         return statuser;
+    }
+
+    @Override
+    public void slettOppgave(String behandlingsId) {
+        getJdbcTemplate().update("DELETE FROM oppgave WHERE behandlingsid = ?", behandlingsId);
     }
 }

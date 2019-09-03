@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 import static no.nav.sbl.dialogarena.rest.ressurser.EttersendingRessurs.getByteArray;
 
 @Controller
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @Path("/opplastetVedlegg")
 @Produces(APPLICATION_JSON)
 @Timed
