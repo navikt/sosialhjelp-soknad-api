@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -77,7 +78,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForSoknadJsonLagerKorrektDokument() {
-        Dokument soknadJson = fiksDokumentHelper.lagDokumentForSoknadJson(lagInternalSoknad());
+        Dokument soknadJson = fiksDokumentHelper.lagDokumentForSoknadJson(createEmptyJsonInternalSoknad(EIER));
 
         assertThat(soknadJson.getFilnavn(), is("soknad.json"));
         assertThat(soknadJson.getMimetype(), is("application/json"));
@@ -97,7 +98,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForSaksbehandlerPdfLagerKorrektDokument() {
-        Dokument saksbehandlerPdf = fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(lagInternalSoknad());
+        Dokument saksbehandlerPdf = fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(createEmptyJsonInternalSoknad(EIER));
 
         assertThat(saksbehandlerPdf.getFilnavn(), is("Soknad.pdf"));
         assertThat(saksbehandlerPdf.getMimetype(), is("application/pdf"));
@@ -107,7 +108,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForJuridiskPdfLagerKorrektDokument() {
-        Dokument juridiskPdf = fiksDokumentHelper.lagDokumentForJuridiskPdf(lagInternalSoknad());
+        Dokument juridiskPdf = fiksDokumentHelper.lagDokumentForJuridiskPdf(createEmptyJsonInternalSoknad(EIER));
 
         assertThat(juridiskPdf.getFilnavn(), is("Soknad-juridisk.pdf"));
         assertThat(juridiskPdf.getMimetype(), is("application/pdf"));
@@ -117,7 +118,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForBrukerkvitteringPdfLagerKorrektDokument() {
-        Dokument brukerkvitteringPdf = fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(lagInternalSoknad(), false, EIER);
+        Dokument brukerkvitteringPdf = fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(createEmptyJsonInternalSoknad(EIER), false, EIER);
 
         assertThat(brukerkvitteringPdf.getFilnavn(), is("Brukerkvittering.pdf"));
         assertThat(brukerkvitteringPdf.getMimetype(), is("application/pdf"));
@@ -127,7 +128,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForEttersendelsePdfLagerKorrektDokument() {
-        Dokument ettersendelsePdf = fiksDokumentHelper.lagDokumentForEttersendelsePdf(lagInternalSoknad(), EIER);
+        Dokument ettersendelsePdf = fiksDokumentHelper.lagDokumentForEttersendelsePdf(createEmptyJsonInternalSoknad(EIER), EIER);
 
         assertThat(ettersendelsePdf.getFilnavn(), is("ettersendelse.pdf"));
         assertThat(ettersendelsePdf.getMimetype(), is("application/pdf"));
@@ -193,41 +194,6 @@ public class FiksDokumentHelperTest {
                 .withData(DATA)
                 .withVedleggType(new VedleggType(TYPE2 + "|" + TILLEGGSINFO2)));
         return opplastedeVedlegg;
-    }
-
-    private JsonInternalSoknad lagInternalSoknad() {
-        return new JsonInternalSoknad()
-                .withSoknad(new JsonSoknad()
-                        .withVersion("1.0.0")
-                        .withKompatibilitet(emptyList())
-                        .withDriftsinformasjon("")
-                        .withMottaker(new JsonSoknadsmottaker()
-                                .withNavEnhetsnavn("")
-                                .withEnhetsnummer(""))
-                        .withData(new JsonData()
-                                .withArbeid(new JsonArbeid())
-                                .withBegrunnelse(new JsonBegrunnelse()
-                                        .withHvaSokesOm("")
-                                        .withHvorforSoke(""))
-                                .withBosituasjon(new JsonBosituasjon())
-                                .withFamilie(new JsonFamilie()
-                                        .withForsorgerplikt(new JsonForsorgerplikt()))
-                                .withOkonomi(new JsonOkonomi()
-                                        .withOpplysninger(new JsonOkonomiopplysninger())
-                                        .withOversikt(new JsonOkonomioversikt()))
-                                .withPersonalia(new JsonPersonalia()
-                                        .withKontonummer(new JsonKontonummer()
-                                                .withKilde(JsonKilde.BRUKER))
-                                        .withNavn(new JsonSokernavn()
-                                                .withFornavn("Fornavn")
-                                                .withMellomnavn("")
-                                                .withEtternavn("Etternavn")
-                                                .withKilde(JsonSokernavn.Kilde.SYSTEM))
-                                        .withPersonIdentifikator(new JsonPersonIdentifikator()
-                                                .withVerdi("12345678910")
-                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)))
-                                .withUtdanning(new JsonUtdanning()
-                                        .withKilde(JsonKilde.BRUKER))));
     }
 
     private JsonInternalSoknad lagInternalSoknadForVedlegg() {
