@@ -115,16 +115,8 @@ public class ForsorgerpliktRessurs {
         if (forsorgerpliktFrontend.ansvar != null){
             for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar){
                 for (JsonAnsvar ansvar : systemAnsvar){
-                    if (ansvar.getBarn().getHarDiskresjonskode() != null && ansvar.getBarn().getHarDiskresjonskode()){
-                        continue;
-                    }
                     if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barn.fodselsnummer)){
-                        ansvar.setBorSammenMed(ansvarFrontend.borSammenMed == null ? null :
-                                new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
-                        ansvar.setHarDeltBosted(ansvarFrontend.harDeltBosted == null ? null :
-                                new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.harDeltBosted));
-                        ansvar.setSamvarsgrad(ansvarFrontend.samvarsgrad == null ? null :
-                                new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad));
+                        setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend, ansvar);
                     }
                 }
             }
@@ -132,19 +124,16 @@ public class ForsorgerpliktRessurs {
 
         List<JsonAnsvar> brukerregistrertAnsvar = new ArrayList<>();
         if (forsorgerpliktFrontend.brukerregistrertAnsvar != null && !forsorgerpliktFrontend.brukerregistrertAnsvar.isEmpty()){
+            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.brukerregistrertAnsvar){
+                JsonAnsvar ansvar = new JsonAnsvar()
+                        .withBarn(new JsonBarn().withKilde(JsonKilde.BRUKER)
+                        .withNavn(mapToJsonNavn(ansvarFrontend.barn.navn))
+                        .withFodselsdato(ansvarFrontend.barn.fodselsdato));
+                setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend, ansvar);
+                brukerregistrertAnsvar.add(ansvar);
+            }
             if (forsorgerplikt.getHarForsorgerplikt() == null || forsorgerplikt.getHarForsorgerplikt().getVerdi().equals(false)) {
                 forsorgerplikt.setHarForsorgerplikt(new JsonHarForsorgerplikt().withKilde(JsonKilde.BRUKER).withVerdi(true));
-            }
-            for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.brukerregistrertAnsvar){
-                JsonAnsvar jsonAnsvar = new JsonAnsvar()
-                        .withBorSammenMed(ansvarFrontend.borSammenMed == null ? null :
-                                new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed))
-                        .withSamvarsgrad(ansvarFrontend.samvarsgrad == null ? null :
-                                new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad))
-                        .withBarn(new JsonBarn().withKilde(JsonKilde.BRUKER)
-                                .withNavn(mapToJsonNavn(ansvarFrontend.barn.navn))
-                                .withFodselsdato(ansvarFrontend.barn.fodselsdato));
-                brukerregistrertAnsvar.add(jsonAnsvar);
             }
         } else {
             if (forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getKilde().equals(JsonKilde.BRUKER)) {
@@ -155,6 +144,15 @@ public class ForsorgerpliktRessurs {
 
         systemAnsvar.addAll(brukerregistrertAnsvar);
         forsorgerplikt.setAnsvar(systemAnsvar.isEmpty()? null : systemAnsvar);
+    }
+
+    private void setBorSammenDeltBostedAndSamvarsgrad(AnsvarFrontend ansvarFrontend, JsonAnsvar ansvar) {
+        ansvar.setBorSammenMed(ansvarFrontend.borSammenMed == null ? null :
+                new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
+        ansvar.setHarDeltBosted(ansvarFrontend.harDeltBosted == null ? null :
+                new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.harDeltBosted));
+        ansvar.setSamvarsgrad(ansvarFrontend.samvarsgrad == null ? null :
+                new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.samvarsgrad));
     }
 
     private void removeBarneutgifterFromSoknad(SoknadUnderArbeid soknad) {
