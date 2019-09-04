@@ -29,8 +29,8 @@ public class AdresseSystemdata implements Systemdata {
         JsonAdresse folkeregistrertAdresse = innhentFolkeregistrertAdresse(personIdentifikator);
         JsonAdresse midlertidigAdresse = innhentMidlertidigAdresse(personIdentifikator);
         if (valgtAdresseLikNull(personalia, folkeregistrertAdresse, midlertidigAdresse)) {
-            personalia.getOppholdsadresse().setAdresseValg(null);
-            personalia.getPostadresse().setAdresseValg(null);
+            personalia.setOppholdsadresse(null);
+            personalia.setPostadresse(null);
         }
         personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
         updateOppholdsadresse(personalia, folkeregistrertAdresse, midlertidigAdresse);
