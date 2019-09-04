@@ -200,8 +200,7 @@
                                 </li>
                             </ul>
                             {{#if @root.utvidetSoknad}}
-                                {{#if verdi}}
-                                {{else}}
+                                {{#unless verdi}}
                                     <ul class="svar-liste">
                                         <li>
                                             <h4>{{hentTekst "infotekst.oppsummering.tittel"}}</h4>
@@ -216,7 +215,7 @@
                                             <span>{{hentTekst "informasjon.student.studielan.2"}}</span>
                                         </li>
                                     </ul>
-                                {{/if}}
+                                {{/unless}}
                             {{/if}}
                         </li>
                     {{else}}
@@ -244,10 +243,9 @@
                             </li>
                         </ul>
                         {{#if @root.utvidetSoknad}}
-                            {{#if verdi}}
-                            {{else}}
+                            {{#unless verdi}}
                                 {{{settInnInfotekst "informasjon.husbanken.bostotte"}}}
-                            {{/if}}
+                            {{/unless}}
                         {{/if}}
                     </li>
                 {{else}}
@@ -265,8 +263,8 @@
                 
                 <h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>
                 {{#if @root.utvidetSoknad}}
-                        {{{settInnHjelpetekst "inntekt.eierandeler.hjelpetekst.tekst"}}}
-                    {{/if}}
+                    {{{settInnHjelpetekst "inntekt.eierandeler.hjelpetekst.tekst"}}}
+                {{/if}}
                 {{#hentOkonomiBekreftelse "verdi"}}
                     {{> skjema/soknad/inntekt_verdi}}
                 {{else}}
