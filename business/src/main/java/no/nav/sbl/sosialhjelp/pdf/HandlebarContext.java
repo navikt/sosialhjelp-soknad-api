@@ -63,11 +63,14 @@ public final class HandlebarContext {
         return erEttersending;
     }
 
+    public boolean getHarSystemregistrerteBarn() {
+        return internalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt().getAnsvar().stream()
+                .anyMatch(ansvar -> ansvar.getBarn().getKilde().equals(JsonKilde.SYSTEM));
+    }
+
     public boolean getHarBrukerregistrerteBarn() {
-        Optional<JsonAnsvar> brukerregistrertBarn = internalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt().getAnsvar().stream()
-                .filter(ansvar -> ansvar.getBarn().getKilde().equals(JsonKilde.BRUKER))
-                .findFirst();
-        return brukerregistrertBarn.isPresent();
+        return internalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt().getAnsvar().stream()
+                .anyMatch(ansvar -> ansvar.getBarn().getKilde().equals(JsonKilde.BRUKER));
     }
 
     public Collection<InntektEllerUtgiftType> getFormuetyper() {
