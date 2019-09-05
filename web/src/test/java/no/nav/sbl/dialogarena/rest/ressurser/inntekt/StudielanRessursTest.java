@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
-import no.nav.sbl.dialogarena.rest.ressurser.inntekt.BostotteRessurs.BostotteFrontend;
+import no.nav.sbl.dialogarena.rest.ressurser.inntekt.StudielanRessurs.StudielanFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -32,11 +32,11 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BostotteRessursTest {
+public class StudielanRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
-    private static final String BEKREFTELSE_TYPE = "bostotte";
+    private static final String BEKREFTELSE_TYPE = "studielanOgStipend";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -48,7 +48,7 @@ public class BostotteRessursTest {
     private TextService textService;
 
     @InjectMocks
-    private BostotteRessurs bostotteRessurs;
+    private StudielanRessurs studielanRessurs;
 
     @Before
     public void setUp() {
@@ -64,44 +64,69 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereNull(){
+    public void getStudielanSkalReturnereNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+                createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, null));
 
-        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotteBekreftelse(BEHANDLINGSID);
+        StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
 
-        assertThat(bostotteFrontend.bekreftelse, nullValue());
+        assertThat(studielanFrontend.skalVises, is(true));
+        assertThat(studielanFrontend.bekreftelse, nullValue());
     }
 
     @Test
-    public void getBostotteSkalReturnereBekreftetBostotte(){
+    public void getStudielanSkalReturnereBekreftetStudielan(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithBostotte(true));
+                createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, true));
 
-        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotteBekreftelse(BEHANDLINGSID);
+        StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
 
-        assertTrue(bostotteFrontend.bekreftelse);
+        assertThat(studielanFrontend.skalVises, is(true));
+        assertTrue(studielanFrontend.bekreftelse);
     }
 
     @Test
-    public void getBostotteSkalReturnereHarIkkeBostotte(){
+    public void getStudielanSkalReturnereHarIkkeStudielan(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithBostotte(false));
+                createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, false));
 
-        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotteBekreftelse(BEHANDLINGSID);
+        StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
 
-        assertFalse(bostotteFrontend.bekreftelse);
+        assertThat(studielanFrontend.skalVises, is(true));
+        assertFalse(studielanFrontend.bekreftelse);
     }
 
     @Test
-    public void putBostotteSkalSetteBostotteOgLeggeTilInntektstypen(){
+    public void getStudielanSkalReturnereSkalIkkeVisesHvisIkkeStudent(){
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithErStudentStudielanBekreftelse(false, null));
+
+        StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
+
+        assertThat(studielanFrontend.skalVises, is(false));
+        assertThat(studielanFrontend.bekreftelse, nullValue());
+    }
+
+    @Test
+    public void getStudielanSkalReturnereSkalIkkeVisesHvisStudentSporsmalIkkeBesvart(){
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithErStudentStudielanBekreftelse(null, null));
+
+        StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
+
+        assertThat(studielanFrontend.skalVises, is(false));
+        assertThat(studielanFrontend.bekreftelse, nullValue());
+    }
+
+    @Test
+    public void putStudielanSkalSetteStudielanOgLeggeTilInntektstypen(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
-        BostotteRessurs.BostotteFrontend bostotteFrontend = new BostotteRessurs.BostotteFrontend();
-        bostotteFrontend.setBekreftelse(true);
-        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend);
+        StudielanFrontend studielanFrontend = new StudielanFrontend();
+        studielanFrontend.setBekreftelse(true);
+        studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend);
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
@@ -109,14 +134,14 @@ public class BostotteRessursTest {
         List<JsonOkonomioversiktInntekt> inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getInntekt();
         assertEquals(inntekt.get(0).getType(), BEKREFTELSE_TYPE);
-        JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
-        assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(bostotte.getType(), is(BEKREFTELSE_TYPE));
-        assertTrue(bostotte.getVerdi());
+        JsonOkonomibekreftelse studielan = bekreftelser.get(0);
+        assertThat(studielan.getKilde(), is(JsonKilde.BRUKER));
+        assertThat(studielan.getType(), is(BEKREFTELSE_TYPE));
+        assertTrue(studielan.getVerdi());
     }
 
     @Test
-    public void putBostotteSkalSetteHarIkkeBostotteOgSletteInntektstypen(){
+    public void putStudielanSkalSetteHarIkkeStudielanOgSletteInntektstypen(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         ArrayList<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
@@ -124,9 +149,9 @@ public class BostotteRessursTest {
         soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().setInntekt(inntekt);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
 
-        BostotteRessurs.BostotteFrontend bostotteFrontend = new BostotteRessurs.BostotteFrontend();
-        bostotteFrontend.setBekreftelse(false);
-        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend);
+        StudielanFrontend studielanFrontend = new StudielanFrontend();
+        studielanFrontend.setBekreftelse(false);
+        studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend);
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
@@ -134,10 +159,10 @@ public class BostotteRessursTest {
         List<JsonOkonomioversiktInntekt> jsonInntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getInntekt();
         assertTrue(jsonInntekt.isEmpty());
-        JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
-        assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(bostotte.getType(), is(BEKREFTELSE_TYPE));
-        assertFalse(bostotte.getVerdi());
+        JsonOkonomibekreftelse studielan = bekreftelser.get(0);
+        assertThat(studielan.getKilde(), is(JsonKilde.BRUKER));
+        assertThat(studielan.getType(), is(BEKREFTELSE_TYPE));
+        assertFalse(studielan.getVerdi());
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
@@ -146,13 +171,14 @@ public class BostotteRessursTest {
         return argument.getValue();
     }
 
-    private SoknadUnderArbeid createJsonInternalSoknadWithBostotte(Boolean verdi) {
+    private SoknadUnderArbeid createJsonInternalSoknadWithErStudentStudielanBekreftelse(Boolean erStudent, Boolean verdi) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().withBekreftelse(
                 asList(new JsonOkonomibekreftelse()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(BEKREFTELSE_TYPE)
                         .withVerdi(verdi)));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning().setErStudent(erStudent);
         return soknadUnderArbeid;
     }
 }
