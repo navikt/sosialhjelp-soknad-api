@@ -74,6 +74,12 @@ public class FamilieSystemdataTest {
     private static final boolean ER_FOLKEREGISTRERT_SAMMEN_BARN_2 = false;
     private static final Integer SAMVARSGRAD_BARN_2 = 25;
 
+    private static final String FORNAVN_BARN_3 = "Jula";
+    private static final String MELLOMNAVN_BARN_3 = "Varer Helt Til";
+    private static final String ETTERNAVN_BARN_3= "Påske";
+    private static final LocalDate FODSELSDATO_BARN_3 = LocalDate.parse("2003-02-05");
+    private static final Integer SAMVARSGRAD_BARN_3 = 30;
+
     private static final Barn BARN = new Barn()
             .withFornavn(FORNAVN_BARN)
             .withMellomnavn(MELLOMNAVN_BARN)
@@ -123,6 +129,21 @@ public class FamilieSystemdataTest {
             .withSamvarsgrad(new JsonSamvarsgrad()
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(SAMVARSGRAD_BARN_2));
+
+    private static final JsonAnsvar JSON_ANSVAR_3_BRUKERREGISTRERT = new JsonAnsvar()
+            .withBarn(new JsonBarn()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withNavn(new JsonNavn()
+                            .withFornavn(FORNAVN_BARN_3)
+                            .withMellomnavn(MELLOMNAVN_BARN_3)
+                            .withEtternavn(ETTERNAVN_BARN_3))
+                    .withFodselsdato(FODSELSDATO_BARN_3.toString()))
+            .withBorSammenMed(new JsonBorSammenMed()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(false))
+            .withSamvarsgrad(new JsonSamvarsgrad()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(SAMVARSGRAD_BARN_3));
 
     private final ObjectWriter writer;
     {
@@ -270,9 +291,73 @@ public class FamilieSystemdataTest {
     }
 
     @Test
+    public void skalIkkeOverskriveBrukerregistrerteBarnNaarDetFinnesSystemBarn() throws JsonProcessingException {
+        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
+        jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
+                .withHarForsorgerplikt(new JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(true))
+                .withAnsvar(Arrays.asList(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT));
+        when(personService.hentBarn(anyString())).thenReturn(Arrays.asList(BARN, BARN_2));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(jsonInternalSoknad);
+
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
+
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        ensureValidInternalSoknad(internalSoknad);
+
+        JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
+        JsonAnsvar ansvar = ansvarList.get(0);
+        JsonAnsvar ansvar_2 = ansvarList.get(1);
+        JsonAnsvar ansvar_3 = ansvarList.get(2);
+        assertThat(ansvar.getBarn().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(ansvar_2.getBarn().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(ansvar_3.getBarn().getKilde(), is(JsonKilde.BRUKER));
+        assertThatAnsvarIsCorrectlyConverted(BARN, JSON_ANSVAR);
+        assertThatAnsvarIsCorrectlyConverted(BARN_2, JSON_ANSVAR_2);
+        JsonBarn jsonBarn = ansvar_3.getBarn();
+        assertThat("fornavn", FORNAVN_BARN_3, is(jsonBarn.getNavn().getFornavn()));
+        assertThat("mellomnavn", MELLOMNAVN_BARN_3, is(jsonBarn.getNavn().getMellomnavn()));
+        assertThat("etternavn", ETTERNAVN_BARN_3, is(jsonBarn.getNavn().getEtternavn()));
+    }
+
+    @Test
+    public void skalIkkeOverskriveBrukerregistrerteBarnEllerForsorgerpliktVerdiNaarDetIkkeFinnesSystemBarn() throws JsonProcessingException {
+        when(personService.hentBarn(anyString())).thenReturn(Collections.emptyList());
+        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
+        jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
+                .withHarForsorgerplikt(new JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.BRUKER)
+                        .withVerdi(true))
+                .withAnsvar(Arrays.asList(JSON_ANSVAR_3_BRUKERREGISTRERT));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(jsonInternalSoknad);
+
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
+
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        ensureValidInternalSoknad(internalSoknad);
+
+        JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.BRUKER));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
+        JsonAnsvar ansvar = ansvarList.get(0);
+        assertThat(ansvar.getBarn().getKilde(), is(JsonKilde.BRUKER));
+        JsonBarn jsonBarn = ansvar.getBarn();
+        assertThat("fornavn", FORNAVN_BARN_3, is(jsonBarn.getNavn().getFornavn()));
+        assertThat("mellomnavn", MELLOMNAVN_BARN_3, is(jsonBarn.getNavn().getMellomnavn()));
+        assertThat("etternavn", ETTERNAVN_BARN_3, is(jsonBarn.getNavn().getEtternavn()));
+    }
+
+    @Test
     public void skalIkkeOverskriveSamvaersgradOgHarDeltBostedOgBarnebidrag() throws JsonProcessingException {
         when(personService.hentBarn(anyString())).thenReturn(Arrays.asList(BARN, BARN_2));
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithBarnWithUserFilledInfo());
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn());
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -310,7 +395,7 @@ public class FamilieSystemdataTest {
         assertThat(sivilstatus, nullValue());
     }
 
-    private JsonInternalSoknad createJsonInternalSoknadWithBarnWithUserFilledInfo() {
+    private JsonInternalSoknad createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn() {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
                 .withHarForsorgerplikt(new JsonHarForsorgerplikt()
@@ -320,6 +405,16 @@ public class FamilieSystemdataTest {
                 .withBarnebidrag(new JsonBarnebidrag()
                         .withKilde(JsonKildeBruker.BRUKER)
                         .withVerdi(JsonBarnebidrag.Verdi.BEGGE));
+        return jsonInternalSoknad;
+    }
+
+    private JsonInternalSoknad createJsonInternalSoknadWithBarn(List<JsonAnsvar> ansvar) {
+        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
+        jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
+                .withHarForsorgerplikt(new JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(true))
+                .withAnsvar(ansvar);
         return jsonInternalSoknad;
     }
 
