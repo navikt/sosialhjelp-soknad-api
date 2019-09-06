@@ -4,6 +4,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -24,13 +26,15 @@ public class AdresseSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
+        JsonPersonalia personalia = soknad.getData().getPersonalia();
         String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         JsonAdresse folkeregistrertAdresse = innhentFolkeregistrertAdresse(personIdentifikator);
         JsonAdresse midlertidigAdresse = innhentMidlertidigAdresse(personIdentifikator);
         if (valgtAdresseLikNull(personalia, folkeregistrertAdresse, midlertidigAdresse)) {
             personalia.setOppholdsadresse(null);
             personalia.setPostadresse(null);
+            soknad.setMottaker(new JsonSoknadsmottaker());
         }
         personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
         updateOppholdsadresse(personalia, folkeregistrertAdresse, midlertidigAdresse);
