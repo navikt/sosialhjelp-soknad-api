@@ -89,7 +89,8 @@ public class StudielanRessurs {
 
     private void setBekreftelseOnStudielanFrontend(JsonOkonomiopplysninger opplysninger, StudielanFrontend studielanFrontend) {
         opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("studielanOgStipend")).findFirst()
+                .filter(bekreftelse -> bekreftelse.getType().equals("studielanOgStipend"))
+                .findFirst()
                 .ifPresent(jsonOkonomibekreftelse -> studielanFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
