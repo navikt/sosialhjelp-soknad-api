@@ -7,6 +7,9 @@
 {{#each forsorgerplikt.ansvar}}
     {{#hvisLik barn.kilde "bruker"}}
         <h3>{{ hentTekst "familie.barn.true.listetittel" }}</h3>
+        {{#if @root.utvidetSoknad}}
+            {{{settInnKnappTilgjengeligTekst "familie.barn.true.barn.slett"}}}
+        {{/if}}
         {{#with barn}}
             <li>
                 <span class="label">{{ hentTekst "kontakt.system.personalia.navn" }}</span>
@@ -102,10 +105,5 @@
                 </li>
             {{/if}}
         {{/hvisIkkeTom}}
-        {{#if @root.harBrukerregistrerteBarn}}
-            {{#if @root.utvidetSoknad}}
-                {{{settInnKnappTilgjengeligTekst "familie.barn.true.barn.slett"}}}
-            {{/if}}
-        {{/if}}
     {{/hvisLik}}
 {{/each}}
