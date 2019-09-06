@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -33,7 +34,7 @@ public class AdresseSystemdata implements Systemdata {
         if (valgtAdresseLikNull(personalia, folkeregistrertAdresse, midlertidigAdresse)) {
             personalia.setOppholdsadresse(null);
             personalia.setPostadresse(null);
-            soknad.setMottaker(null);
+            soknad.setMottaker(new JsonSoknadsmottaker());
         }
         personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
         updateOppholdsadresse(personalia, folkeregistrertAdresse, midlertidigAdresse);
