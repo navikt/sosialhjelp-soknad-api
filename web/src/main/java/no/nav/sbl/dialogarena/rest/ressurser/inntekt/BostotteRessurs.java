@@ -81,7 +81,8 @@ public class BostotteRessurs {
 
     private void setBekreftelseOnBostotteFrontend(JsonOkonomiopplysninger opplysninger, BostotteFrontend bostotteFrontend) {
         opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("bostotte")).findFirst()
+                .filter(bekreftelse -> bekreftelse.getType().equals("bostotte"))
+                .findFirst()
                 .ifPresent(jsonOkonomibekreftelse -> bostotteFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
