@@ -3,7 +3,7 @@
   "ingresses": [
     "https://sosialhjelp-soknad-api.nais.oera.no/",
     "https://tjenester.nav.no/sosialhjelp-soknad-api",
-    "https://www.nav.no/sosialhjelp/soknad-api",
+    "https://www.nav.no/sosialhjelp/soknad-api"
   ],
   "vaultKvPath": " /kv/prod/sbs/sosialhjelp-soknad-api/default",
   "datasourceKvPath": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
