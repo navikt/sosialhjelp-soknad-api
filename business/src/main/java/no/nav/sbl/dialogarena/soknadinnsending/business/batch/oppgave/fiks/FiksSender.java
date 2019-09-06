@@ -70,7 +70,7 @@ public class FiksSender {
                 .withForsendelseType("nav.digisos")
                 .withEksternref(environmentNameIfTest() + sendtSoknad.getBehandlingsId())
                 .withTittel(sendtSoknad.erEttersendelse() ? ETTERSENDELSE_TIL_NAV : SOKNAD_TIL_NAV)
-                .withKunDigitalLevering(false)
+                .withKunDigitalLevering(true)
                 .withPrintkonfigurasjon(fakePrintConfig)
                 .withKryptert(SKAL_KRYPTERE)
                 .withKrevNiva4Innlogging(SKAL_KRYPTERE)

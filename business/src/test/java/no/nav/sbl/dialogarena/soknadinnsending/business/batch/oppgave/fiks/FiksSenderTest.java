@@ -85,7 +85,7 @@ public class FiksSenderTest {
         assertThat(forsendelse.getAvgivendeSystem(), is("digisos_avsender"));
         assertThat(forsendelse.getForsendelseType(), is("nav.digisos"));
         assertThat(forsendelse.getEksternref(), is(BEHANDLINGSID));
-        assertThat(forsendelse.isKunDigitalLevering(), is(false));
+        assertThat(forsendelse.isKunDigitalLevering(), is(true));
         assertThat(forsendelse.getPrintkonfigurasjon().getBrevtype(), is(Brevtype.APOST));
         assertThat(forsendelse.isKryptert(), is(true));
         assertThat(forsendelse.isKrevNiva4Innlogging(), is(true));
