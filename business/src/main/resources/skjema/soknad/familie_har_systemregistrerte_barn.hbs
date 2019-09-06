@@ -1,5 +1,5 @@
 {{#if @root.utvidetSoknad}}
-    {{{hentTekstMedParametere "familierelasjon.ingress" "antallBarn" forsorgerplikt.ansvar.size}}}
+    {{{hentTekstMedParametere "familierelasjon.ingress" "antallBarn" @root.antallSystemregistrerteBarn}}}
 {{/if}}
 {{#each forsorgerplikt.ansvar}}
     {{#hvisLik barn.kilde "system"}}

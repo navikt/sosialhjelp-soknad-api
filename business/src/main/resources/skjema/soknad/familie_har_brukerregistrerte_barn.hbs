@@ -56,50 +56,52 @@
                 {{/if}}
             </ul>
         </li>
-        {{#if borSammenMed.verdi}}
-            <li>
-                <span class="label">{{ hentTekst "familie.barn.true.barn.deltbosted.sporsmal" }}</span>
-                {{#if @root.utvidetSoknad}}
-                    {{{settInnHjelpetekst "familie.barn.true.barn.deltbosted.hjelpetekst.tekst"}}}
-                {{/if}}
-                <ul class="svar-liste">
-                    <li>
-                        {{#hvisIkkeTom harDeltBosted.verdi}}
-                            <span class="verdi verdi--tekst">
-                                {{ hentTekst (concat 'familie.barn.true.barn.deltbosted.' harDeltBosted.verdi) }}
-                            </span>
-                        {{else}}
-                            <span class="verdi verdi--ikkeUtfylt">
-                                <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-                            </span>
-                        {{/hvisIkkeTom}}
-                    </li>
+        {{#hvisIkkeTom borSammenMed.verdi}}
+            {{#if borSammenMed.verdi}}
+                <li>
+                    <span class="label">{{ hentTekst "familie.barn.true.barn.deltbosted.sporsmal" }}</span>
                     {{#if @root.utvidetSoknad}}
-                        {{{hentSvaralternativer "familie.barn.true.barn.deltbosted"}}}
+                        {{{settInnHjelpetekst "familie.barn.true.barn.deltbosted.hjelpetekst.tekst"}}}
                     {{/if}}
-                </ul>
-            </li>
-        {{else}}
-            <li>
-                <span class="label">{{ hentTekst "familie.barn.true.barn.grad.sporsmal" }}</span>
-                <ul class="svar-liste">
-                    <li>
-                        {{#hvisIkkeTom samvarsgrad.verdi}}
-                            <span class="verdi verdi--tekst">
-                                {{ samvarsgrad.verdi }} {{ hentTekst "prosent" }}
-                            </span>
-                        {{else}}
-                            <span class="verdi verdi--ikkeUtfylt">
-                                <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-                            </span>
-                        {{/hvisIkkeTom}}
-                    </li>
-                    {{#if @root.utvidetSoknad}}
-                        {{{hentSvaralternativer "familie.barn.true.barn.grad"}}}
-                    {{/if}}
-                </ul>
-            </li>
-        {{/if}}
+                    <ul class="svar-liste">
+                        <li>
+                            {{#hvisIkkeTom harDeltBosted.verdi}}
+                                <span class="verdi verdi--tekst">
+                                    {{ hentTekst (concat 'familie.barn.true.barn.deltbosted.' harDeltBosted.verdi) }}
+                                </span>
+                            {{else}}
+                                <span class="verdi verdi--ikkeUtfylt">
+                                    <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                                </span>
+                            {{/hvisIkkeTom}}
+                        </li>
+                        {{#if @root.utvidetSoknad}}
+                            {{{hentSvaralternativer "familie.barn.true.barn.deltbosted"}}}
+                        {{/if}}
+                    </ul>
+                </li>
+            {{else}}
+                <li>
+                    <span class="label">{{ hentTekst "familie.barn.true.barn.grad.sporsmal" }}</span>
+                    <ul class="svar-liste">
+                        <li>
+                            {{#hvisIkkeTom samvarsgrad.verdi}}
+                                <span class="verdi verdi--tekst">
+                                    {{ samvarsgrad.verdi }} {{ hentTekst "prosent" }}
+                                </span>
+                            {{else}}
+                                <span class="verdi verdi--ikkeUtfylt">
+                                    <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                                </span>
+                            {{/hvisIkkeTom}}
+                        </li>
+                        {{#if @root.utvidetSoknad}}
+                            {{{hentSvaralternativer "familie.barn.true.barn.grad"}}}
+                        {{/if}}
+                    </ul>
+                </li>
+            {{/if}}
+        {{/hvisIkkeTom}}
         {{#if @root.harBrukerregistrerteBarn}}
             {{#if @root.utvidetSoknad}}
                 {{{settInnKnappTilgjengeligTekst "familie.barn.true.barn.slett"}}}
