@@ -13,11 +13,11 @@ jobs:
             echo "$DEPLOYMENT_PASSWORD" | docker login -u "$DEPLOYMENT_USERNAME" --password-stdin docker.pkg.github.com
       - run:
           name: Checkout CI scripts
-          command: git clone https://github.com/sosialhjelp-ci-scripts.git
+          command: git clone https://github.com/sosialhjelp-ci.git
       - run:
           name: Generate version number and docker image tags
           command: |
-            VERSION=$(sosialhjelp-ci-scripts/bin/create-artifact-version.sh)
+            VERSION=$(sosialhjelp-ci/bin/create-artifact-version.sh)
 
             echo "export GIT_TAG=\"$VERSION\"" >> $BASH_ENV
             echo "export DOCKER_TAG=\"docker.pkg.github.com/navikt/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
@@ -33,7 +33,7 @@ jobs:
             export GH_TOKEN=$(generate-installation-token.sh `generate-jwt.sh digisos.key $DIGISOS_APPID`)
             rm digisos.key
 
-            sosialhjelp-ci-scripts/bin/create-github-release.sh -p $CIRCLE_PROJECT_REPONAME -t $GIT_TAG \
+            sosialhjelp-ci/bin/create-github-release.sh -p $CIRCLE_PROJECT_REPONAME -t $GIT_TAG \
                 -c $CIRCLE_SHA1 -m $GIT_COMMIT_MESSAGE -a $GH_TOKEN
       - run:
           name: Build docker image
@@ -54,8 +54,8 @@ jobs:
       - run:
           name: Deploy versjon=${VERSION} til miljø=${MILJO} i dev-sbs
           command: |
-            git clone https://github.com/sosialhjelp-ci-scripts.git
-            VERSION=$(sosialhjelp-ci-scripts/bin/create-artifact-version.sh)
+            git clone https://github.com/sosialhjelp-ci.git
+            VERSION=$(sosialhjelp-ci/bin/create-artifact-version.sh)
             deployment-cli deploy create --cluster=dev-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${VERSION} --vars=web/nais/dev/${MILJO}.json
 
   deploy_prod:
@@ -67,6 +67,6 @@ jobs:
       - run:
           name: Deploy versjon=${VERSION} til prod
           command: |
-            git clone https://github.com/sosialhjelp-ci-scripts.git
-            VERSION=$(sosialhjelp-ci-scripts/bin/create-artifact-version.sh)
+            git clone https://github.com/sosialhjelp-ci.git
+            VERSION=$(sosialhjelp-ci/bin/create-artifact-version.sh)
             deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${VERSION} --vars=web/nais/prod/default.json
