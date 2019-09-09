@@ -14,7 +14,7 @@ public class AdresseSokServiceTest {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "0519";
         AdresseForslag adresseForslag = AdresseSokService.toAdresseForslag(adresseData);
-        assertThat(adresseForslag.kommunenavn).isEqualTo("Pølse");
+        assertThat(adresseForslag.kommunenavn).isEqualTo("Nord-Fron");
     }
 
     @Test
@@ -22,7 +22,7 @@ public class AdresseSokServiceTest {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "0520";
         AdresseForslag adresseForslag = AdresseSokService.toAdresseForslag(adresseData);
-        assertThat(adresseForslag.kommunenavn).isEqualTo("Pølse");
+        assertThat(adresseForslag.kommunenavn).isEqualTo("Nord-Fron");
     }
 
     @Test
