@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -42,9 +43,9 @@ public class UtdanningRessurs {
 
     @GET
     public UtdanningFrontend hentUtdanning(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
 
         return new UtdanningFrontend()
                 .withErStudent(utdanning.getErStudent())
@@ -54,22 +55,23 @@ public class UtdanningRessurs {
     @PUT
     public void updateUtdanning(@PathParam("behandlingsId") String behandlingsId, UtdanningFrontend utdanningFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonUtdanning utdanning = soknad.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
-        final List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonUtdanning utdanning = soknad.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
+        List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         utdanning.setKilde(JsonKilde.BRUKER);
         utdanning.setErStudent(utdanningFrontend.erStudent);
+        String soknadstype = "studielanOgStipend";
+
         if (utdanningFrontend.erStudent){
             utdanning.setStudentgrad(toStudentgrad(utdanningFrontend.studengradErHeltid));
         } else {
             utdanning.setStudentgrad(null);
-        }
-
-        if (utdanning.getErStudent() != null){
-            String soknadstype = "studielanOgStipend";
-            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
-            addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel, utdanning.getErStudent());
+            JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+            if (opplysninger.getBekreftelse() != null) {
+                opplysninger.getBekreftelse().removeIf(bekreftelse -> bekreftelse.getType().equals(soknadstype));
+                inntekter.removeIf(inntekt -> inntekt.getType().equals(soknadstype));
+            }
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
