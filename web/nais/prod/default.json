@@ -7,6 +7,7 @@
   ],
   "vaultKvPath": " /kv/prod/sbs/sosialhjelp-soknad-api/default",
   "datasourceKvPath": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
+  "fasitEnvironment": "p",
   "env": {
     "APPRES_CMS_URL": "https://appres.nav.no",
     "ARBEID_REST_URL": "https://itjenester.oera.no/sbl/tjenester/system/",
