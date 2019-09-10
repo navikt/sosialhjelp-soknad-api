@@ -130,7 +130,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0236", "938679088")    // Nes (Akershus)
             .put("0234", "991378111")    // Gjerdrum
             .put("0101", "959159092")    // Halden
-            .put("0235", "933649768")    // Ullensaker
+            .put("0235", "983870953")    // Ullensaker
             
         
             .build();
