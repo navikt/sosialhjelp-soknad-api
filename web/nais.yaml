@@ -1,8 +1,13 @@
-image: docker.adeo.no:5000/sosialhjelp-soknad-api
-prometheus:
-  enabled: true
-  path: /prometheus
-healthcheck:
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: sosialhjelp-soknad-api
+  namespace: {{namespace}}
+  labels:
+    team: digisos
+spec:
+  image: docker.pkg.github.com/navikt/sosialhjelp-soknad-api/sosialhjelp-soknad-api:{{version}}
+  port: 8080
   liveness:
     path: /sosialhjelp/soknad-api/internal/isAlive
     initialDelay: 60
@@ -13,87 +18,39 @@ healthcheck:
     path: /sosialhjelp/soknad-api/internal/isAlive
     initialDelay: 60
     timeout: 1
-resources:
-  limits:
-    cpu: 3
-    memory: 2Gi
-  requests:
-    memory: 2Gi
-fasitResources:
-  used:
-  - alias: srvsoknadsosialhjelp-server
-    resourceType: credential
-    propertyMap:
-      username: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_USERNAME
-      password: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_PASSWORD
-  - alias: srvsoknadsosialhjelp-server
-    resourceType: certificate
-  - alias: soknadsosialhjelpDataSource
-    resourceType: datasource
-  - alias: virksomhet:Brukerprofil_v1
-    resourceType: webserviceendpoint
-  - alias: virksomhet:DigitalKontakinformasjon_v1
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Person_v1
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Arbeidsforhold_v3
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Organisasjon_v4
-    resourceType: webserviceendpoint
-  - alias: virksomhet:Kodeverk_v2
-    resourceType: webserviceendpoint
-  - alias: saksoversikt.link
-    resourceType: baseurl
-  - alias: dittnav.link
-    resourceType: baseurl
-  - alias: appres.cms
-    resourceType: baseurl
-  - alias: dialogarena.navnolink
-    resourceType: baseurl
-  - alias: soknadinnsending.link
-    resourceType: baseurl
-  - alias: soknad.brukerprofil
-    resourceType: baseurl
-  - alias: arbeid.rest
-    resourceType: baseurl
-  - alias: ekstern:ks_svarut_v1
-    resourceType: webserviceendpoint
-  - alias: dineutbetalinger.link
-    resourceType: baseurl
-  - alias: securityTokenService
-    resourceType: baseurl
-  - alias: Utbetaling_v1
-    resourceType: webserviceendpoint
-  - alias: dokumentinnsending.smtpServer
-    resourceType: smtpserver
-  - alias: arbeidservice
-    resourceType: credential
-  - alias: servicegateway
-    resourceType: webservicegateway
-  - alias: soknadsosialhjelp.featuretoggles
-    resourceType: applicationProperties
-  - alias: soknadsosialhjelp.properties
-    resourceType: applicationProperties
-  - alias: openam
-    resourceType: openam
-  - alias: tpsws.api.v1
-    resourceType: restservice
-  - alias: soknadsosialhjelp-server-tpsws.api.v1-apiKey
-    resourceType: credential
-  - alias: norg2.api.v1
-    resourceType: restservice
-  - alias: soknadsosialhjelp-server-norg2.api.v1-apiKey
-    resourceType: credential
-  - alias: "loginservice_oidc"
-    resourceType: azureoidc
-  - alias: soknadsosialhjelp-server-eksternapp.skatt.datasamarbeid.api.inntektsmottaker-apiKey
-    resourceType: credential
-    propertyMap:
-      username: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_USERNAME
-      password: SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD
-  - alias: eksternapp.skatt.datasamarbeid.api.inntektsmottaker
-    resourceType: restservice
-  - alias: loginservice
-    resourceType: restservice
-  - alias: loadbalancer:sosialhjelp-soknad-api
-    resourceType: LoadBalancerConfig
+  prometheus:
+    enabled: true
+    path: /prometheus
+  replicas:
+    min: 2
+    max: 2
+  webproxy: true
+  vault:
+    enabled: true
+    paths:
+      - mountPath: /var/run/secrets/nais.io/vault
+        kvPath: {{vaultKvPath}}
+      - mountPath: /var/run/secrets/datasource
+        kvPath: {{datasourceKvPath}}
+  ingresses:
+{{#each ingresses}}
+    - "{{this}}"
+{{/each}}
+  resources:
+    limits:
+      cpu: 3000m
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 2Gi
+  env:
+    - name: FASIT_ENVIRONMENT_NAME
+      value: {{fasitEnvironment}}
+    - name: TILLATMOCK
+      value: "false"
+    - name: START_NORG_WITHMOCK
+      value: "false"
+{{#each env}}
+    - name: {{@key}}
+      value: "{{this}}"
+{{/each}}
