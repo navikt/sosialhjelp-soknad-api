@@ -88,7 +88,18 @@
             <groupId>no.nav</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>no.ks.fiks</groupId>
+            <artifactId>streaming-klient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.flipkart.zjsonpatch</groupId>
             <artifactId>zjsonpatch</artifactId>

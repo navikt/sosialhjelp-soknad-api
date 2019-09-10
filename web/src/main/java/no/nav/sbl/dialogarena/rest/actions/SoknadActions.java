@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.FiksIoSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,8 @@ public class SoknadActions {
 
     @Inject
     private SoknadService soknadService;
+    @Inject
+    private FiksIoSoknadService fiksIoSoknadService;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -33,6 +36,11 @@ public class SoknadActions {
     @Path("/send")
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        soknadService.sendSoknad(behandlingsId);
+        if (fiksIoSoknadService.erKommunenPa()) {
+            fiksIoSoknadService.sendSoknad(behandlingsId);
+        } else {
+            soknadService.sendSoknad(behandlingsId);
+        }
+
     }
 }

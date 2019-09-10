@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/personalia/navEnheter")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -80,7 +80,7 @@ public class NavEnhetRessurs {
         if (navEnhetFrontend.enhetsnr != null) {
             soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
                     .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
-                    .withEnhetsnummer(navEnhetFrontend.enhetsnr));
+                    .withEnhetsnummer(navEnhetFrontend.enhetsnr).withKommunenummer(navEnhetFrontend.kommuneNr));
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
@@ -113,6 +113,7 @@ public class NavEnhetRessurs {
         boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresseForslag.kommunenummer);
         String sosialOrgnr = digisosKommune ? navEnhet.sosialOrgnr : null;
         String enhetNr = digisosKommune ? navEnhet.enhetNr : null;
+        String kommuneNr = digisosKommune ? adresseForslag.kommunenummer : null;
         boolean valgt;
         if (valgtEnhetNr != null) {
             valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
@@ -124,7 +125,8 @@ public class NavEnhetRessurs {
                 .withKommunenavn(adresseForslag.kommunenavn)
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
-                .withValgt(valgt);
+                .withValgt(valgt)
+                .withKommuneNr(kommuneNr);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -133,6 +135,7 @@ public class NavEnhetRessurs {
         public String enhetsnr;
         public String enhetsnavn;
         public String kommunenavn;
+        public String kommuneNr;
         public boolean valgt;
 
         public NavEnhetFrontend withOrgnr(String orgnr) {
@@ -157,6 +160,11 @@ public class NavEnhetRessurs {
 
         public NavEnhetFrontend withValgt(boolean valgt) {
             this.valgt = valgt;
+            return this;
+        }
+
+        public NavEnhetFrontend withKommuneNr(String kommuneNr) {
+            this.kommuneNr = kommuneNr;
             return this;
         }
     }
