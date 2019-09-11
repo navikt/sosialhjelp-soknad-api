@@ -67,7 +67,7 @@ public class HandleBarKjoererTest {
 
     @Test
     public void fyllHtmlMalMedInnholdLagerHtmlFraJsonInternalSoknad() throws IOException {
-        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad(FNR));
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad(FNR), false);
 
         assertThat(html, containsString(FNR));
     }
