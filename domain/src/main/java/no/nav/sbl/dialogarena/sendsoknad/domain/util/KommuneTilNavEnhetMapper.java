@@ -127,6 +127,10 @@ public class KommuneTilNavEnhetMapper {
             .put("1021", "964966931")    // Marnardal
             .put("1548", "974545284")    // Fræna, Eide
             .put("0128", "997220838")    // Rakkestad
+            .put("0236", "976665589")    // Nes (Akershus)
+            .put("0234", "974547678")    // Gjerdrum
+            .put("0101", "959159092")    // Halden
+            .put("0235", "983870953")    // Ullensaker
             
         
             .build();
@@ -278,7 +282,15 @@ public class KommuneTilNavEnhetMapper {
                     "1021",
                     "1548",
                     "1551",
-                    "0128"
+                    "0128",
+                    "0236",
+                    "0234",
+                    "0101",
+                    "0235"
+                    
+                
+                
+             
                 
             ));
 
