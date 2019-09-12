@@ -131,7 +131,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0234", "974547678")    // Gjerdrum
             .put("0101", "959159092")    // Halden
             .put("0235", "983870953")    // Ullensaker
-            .put("0238", "9160830734")    // Nannestad
+            .put("0238", "874604682")    // Nannestad
 
         
             .build();
