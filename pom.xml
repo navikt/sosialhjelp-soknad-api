@@ -125,7 +125,6 @@
         <digipost.digg.version>0.13</digipost.digg.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
-        <jaxb2-basics-runtime.version>0.6.5</jaxb2-basics-runtime.version>
         <asm.version>7.0</asm.version>
         <neethi.version>3.1.1</neethi.version>
         <xmlsec.version>2.1.3</xmlsec.version>
@@ -1106,11 +1105,6 @@
             </dependency>
 
             <!-- Dependencies identifisert av maven-enforcer-plugin -->
-            <dependency>
-                <groupId>org.jvnet.jaxb2_commons</groupId>
-                <artifactId>jaxb2-basics-runtime</artifactId>
-                <version>${jaxb2-basics-runtime.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apache.santuario</groupId>
                 <artifactId>xmlsec</artifactId>
