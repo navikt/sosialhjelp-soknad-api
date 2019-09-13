@@ -61,7 +61,7 @@ public class FiksIoSoknadService {
 
         // send sokand    soknadUnderArbeid
         if (digisosApiService.hentKommuneInfo("0301").kanMottaSoknader) {
-            digisosApiService.sendSoknad(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), soknadUnderArbeid.getBehandlingsId());
+            digisosApiService.sendSoknad(soknadUnderArbeid,soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), soknadUnderArbeid.getBehandlingsId());
         }
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());

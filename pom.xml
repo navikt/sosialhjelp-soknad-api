@@ -103,6 +103,7 @@
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
         <streaming-klient.version>1.0.6</streaming-klient.version>
+        <kryptering.version>1.0.5</kryptering.version>
     </properties>
 
     <dependencyManagement>
@@ -409,7 +410,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
+            <dependency>
+                <groupId>no.ks.fiks</groupId>
+                <artifactId>kryptering</artifactId>
+                <version>${kryptering.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
