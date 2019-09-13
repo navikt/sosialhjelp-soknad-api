@@ -12,6 +12,5 @@ if [[ -z "$APP_NAME" ]]; then
     APP_NAME=$(echo -n ${heroku_repo} | sed -E 's#^.*/(.*)\.git$#\1#')
 fi
 
-mvn clean install -DskipTests
 heroku container:push --recursive -a ${APP_NAME}
 heroku container:release web -a ${APP_NAME}
