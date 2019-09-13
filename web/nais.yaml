@@ -45,7 +45,7 @@ spec:
       memory: 2Gi
   env:
     - name: FASIT_ENVIRONMENT_NAME
-      value: {{namespace}}
+      value: {{fasitEnvironment}}
     - name: TILLATMOCK
       value: "false"
     - name: START_NORG_WITHMOCK

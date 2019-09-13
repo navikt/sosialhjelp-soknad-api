@@ -53,7 +53,7 @@ public class DkifWSConfig {
         return new ServiceBuilder<>(DigitalKontaktinformasjonV1.class)
                 .asStandardService()
                 .withAddress(dkifEndpoint)
-                .withWsdl("classpath:dkif/no/nav/tjeneste/virksomhet/digitalKontaktinformasjon/v1/Binding.wsdl")
+                .withWsdl("classpath:wsdl/no/nav/tjeneste/virksomhet/digitalKontaktinformasjon/v1/Binding.wsdl")
                 .withServiceName(new QName("http://nav.no/tjeneste/virksomhet/digitalKontaktinformasjon/v1/Binding", "DigitalKontaktinformasjon_v1"))
                 .withEndpointName(new QName("http://nav.no/tjeneste/virksomhet/digitalKontaktinformasjon/v1/Binding", "DigitalKontaktinformasjon_v1Port"))
                 .build()
