@@ -55,7 +55,7 @@ public class SkattbarInntektService {
                 .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
-        if (Boolean.parseBoolean(System.getProperty("MOCK_SKATT", "false"))) {
+        if (Boolean.parseBoolean(System.getenv("MOCK_SKATT"))||Boolean.parseBoolean(System.getProperty("MOCK_SKATT","false"))) {
             return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(mockRespons()));
         }
 
