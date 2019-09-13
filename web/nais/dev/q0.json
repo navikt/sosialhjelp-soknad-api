@@ -9,6 +9,7 @@
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
   "fasitEnvironment": "q0",
   "env": {
+    "MOCK_SKATT": "true",
     "APPRES_CMS_URL": "https://appres-q0.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q0.oera.no/sbl/tjenester/system/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
