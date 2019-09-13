@@ -22,12 +22,12 @@ public class SkattbarInntektServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        System.setProperty("tillatmock", "true");
+        System.setProperty("MOCK_SKATT", "true");
     }
 
     @After
     public void tearDown() throws Exception {
-        System.setProperty("tillatmock", "false");
+        System.setProperty("MOCK_SKATT", "false");
     }
 
     @Test
