@@ -59,6 +59,23 @@ jobs:
             heroku container:push --recursive -a $CIRCLE_PROJECT_REPONAME
             heroku container:release web -a $CIRCLE_PROJECT_REPONAME
 
+  browser-test:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - run:
+          name: Run browser tests
+          command: |
+            set -eo pipefail
+            git clone https://github.com/navikt/sosialhjelp-tester.git
+            cd sosialhjelp-tester
+
+            npm install
+            npm run saucelabs-soknad
+
+      - store_test_results:
+          path: /tmp/test-results
+
   deploy_miljo:
     docker:
       - image: navikt/deployment-cli:v0.2.0
@@ -94,3 +111,6 @@ workflows:
           filters:
             branches:
               only: master
+      - browser-test:
+          requires:
+            - release
