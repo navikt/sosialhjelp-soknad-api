@@ -5,6 +5,9 @@ import no.ks.fiks.streaming.klient.*;
 import no.ks.fiks.streaming.klient.authentication.PersonAuthenticationStrategy;
 import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.DokumentInfo;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
 import org.eclipse.jetty.client.util.MultiPartContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
 import org.slf4j.Logger;
@@ -31,12 +34,12 @@ public class KrypteringService {
 
     private ExecutorService executor = Executors.newFixedThreadPool(4);
 
-    public KlientResponse<List<DokumentInfo>> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId) {
+    public KlientResponse<List<DokumentInfo>> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
 
         List<CompletableFuture<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         try {
             KlientResponse<List<DokumentInfo>> opplastetFiler = lastOppFiler(dokumenter.stream()
-                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList)))
+                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, token)))
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId);
 
 
@@ -47,8 +50,8 @@ public class KrypteringService {
         }
     }
 
-    private X509Certificate getDokumentlagerPublicKeyX509Certificate() {
-        StreamingKlient streamingKlient = new StreamingKlient(new PersonAuthenticationStrategy("token"));
+    private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
+        StreamingKlient streamingKlient = new StreamingKlient(new PersonAuthenticationStrategy(token));
         List<HttpHeader> httpHeaders = Collections.singletonList(getHttpHeaderRequestId());
         KlientResponse<byte[]> response = streamingKlient.sendGetRawContentRequest(HttpMethod.GET, "https://api.fiks.test.ks.no/", "/digisos/api/v1/dokumentlager-public-key", httpHeaders);
 
@@ -63,9 +66,9 @@ public class KrypteringService {
         }
     }
 
-    private InputStream krypter(InputStream dokumentStream, List<CompletableFuture<Void>> krypteringFutureList) {
+    private InputStream krypter(InputStream dokumentStream, List<CompletableFuture<Void>> krypteringFutureList, String token) {
         CMSStreamKryptering kryptering = new CMSKrypteringImpl();
-        X509Certificate certificate = getDokumentlagerPublicKeyX509Certificate();
+        X509Certificate certificate = getDokumentlagerPublicKeyX509Certificate(token);
 
         PipedInputStream pipedInputStream = new PipedInputStream();
         try {

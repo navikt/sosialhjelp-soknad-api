@@ -62,7 +62,7 @@ public class FiksIoSoknadService {
         // send sokand    soknadUnderArbeid
         if (digisosApiService.hentKommuneInfo("0301").getKanMottaSoknader()) {
             String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
-            digisosApiService.sendOgKrypter(digisosApiService.lagDokumentListe(soknadUnderArbeid), kommunenummer, behandlingsId);
+            digisosApiService.sendOgKrypter(digisosApiService.lagDokumentListe(soknadUnderArbeid), kommunenummer, behandlingsId, "token");
         }
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());

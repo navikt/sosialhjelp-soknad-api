@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.detect.Detect;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneInfo;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -136,8 +138,8 @@ public class DigisosApiService {
         return filOpplastinger;
 
     }
-    public void sendOgKrypter(List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId){
-        krypteringService.krypterOgLastOppFiler(filOpplastinger, kommunenr, navEkseternRefId);
+    public void sendOgKrypter(List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token){
+        krypteringService.krypterOgLastOppFiler(filOpplastinger, kommunenr, navEkseternRefId, token);
     }
 
     FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {

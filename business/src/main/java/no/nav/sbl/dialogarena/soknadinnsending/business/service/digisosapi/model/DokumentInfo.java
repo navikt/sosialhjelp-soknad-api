@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
+package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
