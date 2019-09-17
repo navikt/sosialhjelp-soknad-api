@@ -28,7 +28,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class FiksIoSoknadService {
 
     private static final Logger logger = getLogger(FiksIoSoknadService.class);
-    private final ObjectMapper objectMapper =JsonSosialhjelpObjectMapper.createObjectMapper();
+    private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
     @Inject
     private HenvendelseService henvendelseService;
 
@@ -60,8 +60,9 @@ public class FiksIoSoknadService {
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
 
         // send sokand    soknadUnderArbeid
-        if (digisosApiService.hentKommuneInfo("0301").kanMottaSoknader) {
-            digisosApiService.sendSoknad(soknadUnderArbeid,soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), soknadUnderArbeid.getBehandlingsId());
+        if (digisosApiService.hentKommuneInfo("0301").getKanMottaSoknader()) {
+            String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
+            digisosApiService.sendOgKrypter(digisosApiService.lagDokumentListe(soknadUnderArbeid), kommunenummer, behandlingsId);
         }
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());

@@ -50,7 +50,7 @@ public class IdPortenService {
         }
     }
 
-    public AcceessToken getAccessToken() {
+    public IdPortenAccessTokenResponse getAccessToken() {
         String jws = createJws();
         HttpPost httpPost = new HttpPost(idPortenTokenUrl);
 
@@ -61,11 +61,11 @@ public class IdPortenService {
 
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             CloseableHttpResponse response = client.execute(httpPost);
-            objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
+          return  objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new AcceessToken();
+        return null;
     }
 
     private String createJws() {
@@ -109,21 +109,21 @@ public class IdPortenService {
         public String token;
     }
 
-    class VirksertCredentials {
+    static class VirksertCredentials {
         public String alias;
         public String password;
         public String type;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    class IdPortenOidcConfiguration {
+    static class IdPortenOidcConfiguration {
         @JsonProperty(value = "issuer", required = true)
         String issuer;
         @JsonProperty(value = "token_endpoint", required = true)
         String tokenEndpoint;
     }
 
-    class IdPortenAccessTokenResponse {
+    static class IdPortenAccessTokenResponse {
         @JsonProperty(value = "access_token", required = true)
         String accessToken;
         @JsonProperty(value = "expires_in", required = true)
