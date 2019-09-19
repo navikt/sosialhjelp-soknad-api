@@ -1,28 +1,34 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import no.ks.fiks.streaming.klient.*;
-import no.ks.fiks.streaming.klient.authentication.PersonAuthenticationStrategy;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.ks.fiks.streaming.klient.FilForOpplasting;
+import no.ks.fiks.streaming.klient.HttpHeader;
 import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
-import org.eclipse.jetty.client.util.MultiPartContentProvider;
-import org.eclipse.jetty.http.HttpMethod;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.core.MediaType;
 import java.io.*;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -34,13 +40,13 @@ public class KrypteringService {
 
     private ExecutorService executor = Executors.newFixedThreadPool(4);
 
-    public KlientResponse<List<DokumentInfo>> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
+    public List<DokumentInfo> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
 
         List<CompletableFuture<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         try {
-            KlientResponse<List<DokumentInfo>> opplastetFiler = lastOppFiler(dokumenter.stream()
+            List<DokumentInfo> opplastetFiler = lastOppFiler(dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, token)))
-                    .collect(Collectors.toList()), kommunenr, navEkseternRefId);
+                    .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
 
             waitForFutures(krypteringFutureList);
@@ -51,11 +57,18 @@ public class KrypteringService {
     }
 
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
-        StreamingKlient streamingKlient = new StreamingKlient(new PersonAuthenticationStrategy(token));
-        List<HttpHeader> httpHeaders = Collections.singletonList(getHttpHeaderRequestId());
-        KlientResponse<byte[]> response = streamingKlient.sendGetRawContentRequest(HttpMethod.GET, System.getProperty("digisos_api_baseurl") , "/digisos/api/v1/dokumentlager-public-key", httpHeaders);
+        byte[] publicKey = new byte[0];
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
+            HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
+                    .addHeader("Accept", MediaType.MEDIA_TYPE_WILDCARD)
+                    .addHeader("requestid", UUID.randomUUID().toString())
+                    .addHeader("Authorization", "Bearer " + token).build();
 
-        byte[] publicKey = response.getResult();
+            CloseableHttpResponse response = client.execute(request);
+            publicKey = IOUtils.toByteArray(response.getEntity().getContent());
+        } catch (IOException e) {
+            log.error("", e);
+        }
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 
@@ -109,7 +122,7 @@ public class KrypteringService {
     }
 
     private void waitForFutures(List<CompletableFuture<Void>> krypteringFutureList) {
-         CompletableFuture<Void> allFutures = CompletableFuture.allOf(krypteringFutureList.toArray(new CompletableFuture[]{}));
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(krypteringFutureList.toArray(new CompletableFuture[]{}));
         try {
             allFutures.get(300, TimeUnit.SECONDS);
         } catch (CompletionException e) {
@@ -119,9 +132,8 @@ public class KrypteringService {
         }
     }
 
-    private KlientResponse<List<DokumentInfo>> lastOppFiler(List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId) {
+    private List<DokumentInfo> lastOppFiler(List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
 
-        MultipartContentProviderBuilder multipartBuilder = new MultipartContentProviderBuilder();
 
         List<FilForOpplasting<Object>> filer = new ArrayList<>();
 
@@ -135,13 +147,28 @@ public class KrypteringService {
                 .data(dokument.data)
                 .build()));
 
-        multipartBuilder.addFileData(filer);
-        MultiPartContentProvider multiPartContentProvider = multipartBuilder.build();
 
-        List<HttpHeader> httpHeaders = Collections.singletonList(getHttpHeaderRequestId());
-        StreamingKlient streamingKlient = new StreamingKlient(new PersonAuthenticationStrategy("token"));
+        MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
+        entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
+            entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData());
+        }
 
-        return streamingKlient.sendRequest(multiPartContentProvider, HttpMethod.POST, "https://api.fiks.test.ks.no/", getLastOppFilerPath(kommunenummer, navEkseternRefId), httpHeaders, new TypeReference<List<DokumentInfo>>() {});
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
+            HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
+
+            post.setHeader("Accept", MediaType.MEDIA_TYPE_WILDCARD);
+            post.setHeader("requestid", UUID.randomUUID().toString());
+            post.setHeader("Authorization", "Bearer " + token);
+            post.setEntity(entitybuilder.build());
+            CloseableHttpResponse response = client.execute(post);
+            String x = EntityUtils.toString(response.getEntity());
+            return Arrays.asList(new ObjectMapper().readValue(x, DokumentInfo[].class));
+        } catch (IOException e) {
+            log.error("", e);
+        }
+
+        return null;
 
     }
 

@@ -90,7 +90,7 @@
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
-        <httpclient.version>4.5.7</httpclient.version>
+        <httpclient.version>4.5.10</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
@@ -101,9 +101,8 @@
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
         <streaming-klient.version>1.0.6</streaming-klient.version>
         <kryptering.version>1.0.5</kryptering.version>
-        <jetty-client.version>9.4.20.v20190813</jetty-client.version>
-        <jetty-http.version>9.4.17.v20190418</jetty-http.version>
         <jackson-annotations.version>2.10.0.pr2</jackson-annotations.version>
+        <httpcore.version>4.4.12</httpcore.version>
     </properties>
 
     <dependencyManagement>
@@ -451,7 +450,12 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
-                <version>4.4.4</version>
+                <version>4.4.12</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>4.5.10</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -751,16 +755,6 @@
                 <version>${ojdbc.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-client</artifactId>
-                <version>${jetty-client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-http</artifactId>
-                <version>${jetty-http.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson-annotations.version}</version>
@@ -768,7 +762,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
-                <version>4.4.12</version>
+                <version>${httpcore.version}</version>
             </dependency>
 
             <dependency>

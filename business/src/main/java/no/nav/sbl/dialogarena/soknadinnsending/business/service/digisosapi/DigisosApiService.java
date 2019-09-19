@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneInfo;
@@ -26,6 +27,7 @@ import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -99,7 +101,7 @@ public class DigisosApiService {
 
     public KommuneInfo hentKommuneInfo(String kommunenummer) {
         IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getVirksertAccessToken();
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune/" + kommunenummer);
             http.setHeader("Accept", MediaType.APPLICATION_JSON);
             http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
@@ -170,7 +172,9 @@ public class DigisosApiService {
     }
 
     public void sendOgKrypter(List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
-        krypteringService.krypterOgLastOppFiler(filOpplastinger, kommunenr, navEkseternRefId, token);
+        for (DokumentInfo dokumentInfo : krypteringService.krypterOgLastOppFiler(filOpplastinger, kommunenr, navEkseternRefId, token)) {
+            log.info(String.format("Filnavn %s id %s stoerrelse %d laster opp", dokumentInfo.filnavn, dokumentInfo.dokumentlagerDokumentId.toString(), dokumentInfo.storrelse));
+        }
     }
 
     FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
