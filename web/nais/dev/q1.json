@@ -7,6 +7,7 @@
   ],
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q1",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
+  "virksomhetssertifikat_vault_path": "/secret/virksomhetssertifikat/preprod/shared",
   "fasitEnvironment": "q1",
   "env": {
     "APPRES_CMS_URL": "https://appres-q1.nav.no",
