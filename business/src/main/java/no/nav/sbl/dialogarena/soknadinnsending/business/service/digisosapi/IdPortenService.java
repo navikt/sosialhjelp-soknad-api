@@ -74,9 +74,9 @@ public class IdPortenService {
 
     private String createJws() {
         try {
-            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File("/var/run/secrets/nais.io/virksomhetssertifikat/credentials.json")), VirksertCredentials.class);
+            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File("/var/run/secrets/nais.io/vault/virksomhetssertifikat/credentials.json")), VirksertCredentials.class);
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(FileUtils.readFileToString(new File("/var/run/secrets/nais.io/virksomhetssertifikat/key.p12.b64")))), virksertCredentials.password.toCharArray());
+            keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(FileUtils.readFileToString(new File("/var/run/secrets/nais.io/vault/virksomhetssertifikat/key.p12.b64")))), virksertCredentials.password.toCharArray());
 
             X509Certificate certificate = (X509Certificate) keyStore.getCertificate(virksertCredentials.alias);
 
