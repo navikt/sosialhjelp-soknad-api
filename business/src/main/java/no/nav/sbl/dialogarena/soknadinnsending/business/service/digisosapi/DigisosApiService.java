@@ -76,7 +76,7 @@ public class DigisosApiService {
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
 
     public List<KommuneInfo> hentKommuneInfo() {
-        IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getAccessToken();
+        IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune");
             http.setHeader("Accept", MediaType.APPLICATION_JSON);
@@ -98,7 +98,7 @@ public class DigisosApiService {
     }
 
     public KommuneInfo hentKommuneInfo(String kommunenummer) {
-        IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getAccessToken();
+        IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune/" + kommunenummer);
             http.setHeader("Accept", MediaType.APPLICATION_JSON);

@@ -53,7 +53,7 @@ public class IdPortenService {
         }
     }
 
-    public IdPortenAccessTokenResponse getAccessToken() {
+    public IdPortenAccessTokenResponse getVirksertAccessToken() {
         String jws = createJws();
         HttpPost httpPost = new HttpPost(idPortenTokenUrl);
 
@@ -64,9 +64,10 @@ public class IdPortenService {
 
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             CloseableHttpResponse response = client.execute(httpPost);
+
             return objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("", e);
         }
         return null;
     }
@@ -103,7 +104,7 @@ public class IdPortenService {
             return signedJWT.serialize();
 
         } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | JOSEException e) {
-            e.printStackTrace();
+            log.warn("", e);
         }
         return "";
     }
