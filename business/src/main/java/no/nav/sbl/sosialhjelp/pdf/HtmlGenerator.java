@@ -7,7 +7,6 @@ import java.io.IOException;
 
 
 public interface HtmlGenerator {
-    String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad) throws IOException;
 
     String fyllHtmlMalMedInnhold(JsonInternalSoknad internalSoknad, boolean utvidetSoknad) throws IOException;
 
