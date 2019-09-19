@@ -4,24 +4,21 @@ import no.nav.sbl.dialogarena.bostotte.dto.BostotteDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import java.time.LocalDate;
 
-@Service
 public class BostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(BostotteImpl.class);
     private final BostotteConfig config;
     private final RestOperations operations;
 
     @Inject
-    public BostotteImpl(BostotteConfig config) {
+    public BostotteImpl(BostotteConfig config, RestOperations operations) {
         this.config = config;
-        operations = new RestTemplate();
+        this.operations = operations;
     }
 
     @Override
