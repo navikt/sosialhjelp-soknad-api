@@ -8,10 +8,16 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestCo
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.IdPortenService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.KrypteringService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
+import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
+import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -35,7 +41,9 @@ public class SoknadServiceIntegrationTestContext {
     private DataSource dataSource;
 
     @Bean
-    public Clock clock(){ return Clock.systemDefaultZone(); }
+    public Clock clock() {
+        return Clock.systemDefaultZone();
+    }
 
     @Bean
     public HenvendelseService henvendelseService() {
@@ -68,12 +76,43 @@ public class SoknadServiceIntegrationTestContext {
     }
 
     @Bean
-    public NavMessageSource navMessageSource(){
+    public DigisosApiService digisosApiService() {
+        return new DigisosApiService();
+    }
+
+    @Bean
+    public KrypteringService krypetringService() {
+        return new KrypteringService();
+    }
+
+    @Bean
+    public PDFService pdfService() {
+        return new PDFService();
+    }
+
+    @Bean
+    public HtmlGenerator pdfTemplate() {
+        return new HandleBarKjoerer();
+    }
+
+    @Bean
+    public IdPortenService idPortenService() {
+        System.setProperty("idporten_config_url", "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration");
+        System.setProperty("idporten_scope", "ks:fiks");
+        System.setProperty("idporten_clientid", "1c3631f4-dbf2-4c12-bdc4-156cbd53c625");
+        System.setProperty("idporten_token_url", "https://oidc-ver2.difi.no/idporten-oidc-provider/token");
+        return new IdPortenService();
+    }
+
+    @Bean
+    public NavMessageSource navMessageSource() {
         return new NavMessageSource();
     }
 
     @Bean
-    public EttersendingService ettersendingService() { return new EttersendingService(); }
+    public EttersendingService ettersendingService() {
+        return new EttersendingService();
+    }
 
     @Bean
     public SoknadMetricsService metricsService() {
@@ -109,13 +148,13 @@ public class SoknadServiceIntegrationTestContext {
     SoknadUnderArbeidService soknadUnderArbeidService() {
         return mock(SoknadUnderArbeidService.class);
     }
-    
-    @Bean(autowire=Autowire.NO)
+
+    @Bean(autowire = Autowire.NO)
     SystemdataUpdater systemdataUpdater() {
         return mock(SystemdataUpdater.class);
     }
-    
-    @Bean(autowire=Autowire.NO)
+
+    @Bean(autowire = Autowire.NO)
     Systemdata systemdata() {
         return mock(Systemdata.class);
     }

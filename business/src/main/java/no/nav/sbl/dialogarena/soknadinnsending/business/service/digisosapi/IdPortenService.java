@@ -19,6 +19,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -35,18 +37,19 @@ public class IdPortenService {
     private final String idPortenTokenUrl;
     private final String idPortenClientId;
     private final String idPortenScope;
+    private final Logger log = LoggerFactory.getLogger(IdPortenService.class);
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private ObjectMapper objectMapper;
 
-    public IdPortenService(String idPortenTokenUrl, String idPortenClientId, String idPortenScope, String idPortenConfigUrl) {
-        this.idPortenTokenUrl = idPortenTokenUrl;
-        this.idPortenClientId = idPortenClientId;
-        this.idPortenScope = idPortenScope;
+    public IdPortenService() {
+        this.idPortenTokenUrl = System.getProperty("idporten_token_url");
+        this.idPortenClientId = System.getProperty("idporten_clientid");
+        this.idPortenScope = System.getProperty("idporten_scope");
         try {
             objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
-            idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
+            idPortenOidcConfiguration = objectMapper.readValue(URI.create(System.getProperty("idporten_config_url")).toURL(), IdPortenOidcConfiguration.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("", e);
         }
     }
 
@@ -61,7 +64,7 @@ public class IdPortenService {
 
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             CloseableHttpResponse response = client.execute(httpPost);
-          return  objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
+            return objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

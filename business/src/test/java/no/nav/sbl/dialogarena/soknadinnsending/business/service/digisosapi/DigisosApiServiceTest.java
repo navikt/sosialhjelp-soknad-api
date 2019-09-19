@@ -14,10 +14,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,6 +23,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
@@ -46,24 +44,29 @@ public class DigisosApiServiceTest {
     InnsendingService innsendingService;
 
     @Spy
-    IdPortenService idPortenService = spy(new IdPortenService("https://oidc-ver2.difi.no/idporten-oidc-provider/token",
-            "1c3631f4-dbf2-4c12-bdc4-156cbd53c625",
-            "ks:fiks",
-            "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration"));
+    IdPortenService idPortenService = spy(new IdPortenService());
 
     @InjectMocks
     private DigisosApiService digisosApiService;
 
+    @BeforeClass
+    public static void setUp() throws Exception {
+        System.setProperty("idporten_config_url", "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration");
+        System.setProperty("idporten_scope", "ks:fiks");
+        System.setProperty("idporten_clientid", "1c3631f4-dbf2-4c12-bdc4-156cbd53c625");
+        System.setProperty("idporten_token_url", "https://oidc-ver2.difi.no/idporten-oidc-provider/token");
+        System.setProperty("digisos_api_baseurl", "https://api.fiks.test.ks.no/");
+        System.setProperty("integrasjonsid_fiks", "c4bf2682-327f-4535-a087-c248d35978e1");
+    }
+
     @Before
-    public void setUp() throws Exception {
+    public void setUpBefore() throws Exception {
         when(pdfService.genererSaksbehandlerPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
-
     }
-
 
     @Test
     public void skalLageOpplastingsListeMedDokumenterForSoknad() {
@@ -110,7 +113,7 @@ public class DigisosApiServiceTest {
     @Test
     @Ignore("Må ha tilgang til cert for å teste")
     public void testHentKommuneInfo() {
-        List<KommuneInfo> kommuneInfos = digisosApiService.hentKommuneInfo();
+        List<KommuneInfo> kommuneInfos = Collections.singletonList(digisosApiService.hentKommuneInfo("1234"));
         assertThat(kommuneInfos).isNotEmpty();
     }
 

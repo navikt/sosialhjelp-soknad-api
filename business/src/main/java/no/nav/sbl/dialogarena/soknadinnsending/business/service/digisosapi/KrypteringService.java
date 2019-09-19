@@ -53,7 +53,7 @@ public class KrypteringService {
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
         StreamingKlient streamingKlient = new StreamingKlient(new PersonAuthenticationStrategy(token));
         List<HttpHeader> httpHeaders = Collections.singletonList(getHttpHeaderRequestId());
-        KlientResponse<byte[]> response = streamingKlient.sendGetRawContentRequest(HttpMethod.GET, "https://api.fiks.test.ks.no/", "/digisos/api/v1/dokumentlager-public-key", httpHeaders);
+        KlientResponse<byte[]> response = streamingKlient.sendGetRawContentRequest(HttpMethod.GET, System.getProperty("digisos_api_baseurl") , "/digisos/api/v1/dokumentlager-public-key", httpHeaders);
 
         byte[] publicKey = response.getResult();
         try {

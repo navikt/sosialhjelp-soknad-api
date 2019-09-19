@@ -1,9 +1,12 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.metrics.aspects.Timed;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.FiksIoSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
@@ -26,21 +29,26 @@ public class SoknadActions {
 
     @Inject
     private SoknadService soknadService;
+
     @Inject
-    private FiksIoSoknadService fiksIoSoknadService;
+    private DigisosApiService digisosApiService;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
+
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @POST
     @Path("/send")
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        if (fiksIoSoknadService.erKommunenPa()) {
-            fiksIoSoknadService.sendSoknad(behandlingsId);
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        if (soknadUnderArbeid != null && digisosApiService.kanKommuneMottaSoknader(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer())) {
+            digisosApiService.sendSoknad(soknadUnderArbeid);
         } else {
             soknadService.sendSoknad(behandlingsId);
         }
-
     }
 }

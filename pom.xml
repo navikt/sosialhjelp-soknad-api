@@ -101,6 +101,9 @@
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
         <streaming-klient.version>1.0.6</streaming-klient.version>
         <kryptering.version>1.0.5</kryptering.version>
+        <jetty-client.version>9.4.20.v20190813</jetty-client.version>
+        <jetty-http.version>9.4.17.v20190418</jetty-http.version>
+        <jackson-annotations.version>2.10.0.pr2</jackson-annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -747,6 +750,27 @@
                 <artifactId>ojdbc8</artifactId>
                 <version>${ojdbc.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-client</artifactId>
+                <version>${jetty-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-http</artifactId>
+                <version>${jetty-http.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson-annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>4.4.12</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>

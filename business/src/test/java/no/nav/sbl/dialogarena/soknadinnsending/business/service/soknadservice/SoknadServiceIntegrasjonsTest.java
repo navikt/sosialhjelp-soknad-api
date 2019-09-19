@@ -4,12 +4,17 @@ import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.IdPortenService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.KrypteringService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -25,7 +30,8 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class SoknadServiceIntegrasjonsTest {
     private final String EN_BEHANDLINGSID = "EN_BEHANDLINGSID";
-
+    @Inject
+    IdPortenService idPortenService;
     @Inject
     private SoknadService soknadService;
 
@@ -35,9 +41,19 @@ public class SoknadServiceIntegrasjonsTest {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Inject
+    private KrypteringService krypteringService;
+
+    @Inject
+    private PDFService pdfService;
+
+    @InjectMocks
+    private DigisosApiService digisosApiService;
+
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
+
     }
 
     @Before

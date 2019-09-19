@@ -2,17 +2,27 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.Detect;
+import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneInfo;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -28,9 +38,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -52,41 +64,59 @@ public class DigisosApiService {
     @Inject
     private InnsendingService innSendingService;
 
+    @Inject
+    private HenvendelseService henvendelseService;
+
+    @Inject
+    private OppgaveHandterer oppgaveHandterer;
+
+    @Inject
+    private SoknadMetricsService soknadMetricsService;
+
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
 
     public List<KommuneInfo> hentKommuneInfo() {
         IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getAccessToken();
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpGet http = new HttpGet("https://api.fiks.test.ks.no/digisos/api/v1/nav/kommune");
+            HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune");
             http.setHeader("Accept", MediaType.APPLICATION_JSON);
-            http.setHeader("IntegrasjonId", System.getenv("INTEGRASJONSID_FIKS"));
-            http.setHeader("IntegrasjonPassord", System.getenv("INTEGRASJONPASSORD_FIKS"));
+            http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
+            http.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
             http.setHeader("Authorization", "Bearer " + accessToken.accessToken);
-
+            System.out.println(http);
+            for (Header allHeader : http.getAllHeaders()) {
+                System.out.println(allHeader);
+            }
             CloseableHttpResponse response = client.execute(http);
             String content = EntityUtils.toString(response.getEntity());
+            System.out.println(content);
             return Arrays.asList(objectMapper.readValue(content, KommuneInfo[].class));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Hent kommuneinfo feiler",e);
+            return Collections.emptyList();
         }
-        return null;
     }
 
-    public KommuneInfo hentKommuneInfo(String kommunenr) {
+    public KommuneInfo hentKommuneInfo(String kommunenummer) {
         IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getAccessToken();
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpGet http = new HttpGet("https://api.fiks.test.ks.no/digisos/api/v1/nav/kommune/" + kommunenr);
+            HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune/" + kommunenummer);
             http.setHeader("Accept", MediaType.APPLICATION_JSON);
-            http.setHeader("IntegrasjonId", "fiksIntegrasjonId");
-            http.setHeader("IntegrasjonPassord", "fiksIntegrasjon");
+            http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
+            http.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
             http.setHeader("Authorization", "Bearer " + accessToken.accessToken);
 
             CloseableHttpResponse response = client.execute(http);
             return objectMapper.readValue(EntityUtils.toString(response.getEntity()), KommuneInfo.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Hent kommuneinfo feiler",e);
+            return new KommuneInfo();
         }
-        return null;
+    }
+
+    // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
+    public Boolean kanKommuneMottaSoknader(String kommunenummer) {
+        return  hentKommuneInfo(kommunenummer).getKanMottaSoknader() != null;
     }
 
     public List<FilOpplasting> lagDokumentListe(SoknadUnderArbeid soknadUnderArbeid) {
@@ -126,7 +156,7 @@ public class DigisosApiService {
             List<JsonVedlegg> opplastedeVedleggstyper = internalSoknad.getVedlegg().getVedlegg().stream().filter(jsonVedlegg -> jsonVedlegg.getStatus().equals("LastetOpp"))
                     .collect(Collectors.toList());
             int antallBrukerOpplastedeVedlegg = 0;
-            for (JsonVedlegg vedlegg : opplastedeVedleggstyper){
+            for (JsonVedlegg vedlegg : opplastedeVedleggstyper) {
                 antallBrukerOpplastedeVedlegg += vedlegg.getFiler().size();
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
@@ -138,7 +168,8 @@ public class DigisosApiService {
         return filOpplastinger;
 
     }
-    public void sendOgKrypter(List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token){
+
+    public void sendOgKrypter(List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
         krypteringService.krypterOgLastOppFiler(filOpplastinger, kommunenr, navEkseternRefId, token);
     }
 
@@ -157,22 +188,23 @@ public class DigisosApiService {
             String sonadJson = objectMapper.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad().getSoknad());
             ensureValidSoknad(sonadJson);
             byte[] bytes = sonadJson.getBytes(Charset.defaultCharset());
-           return  new FilOpplasting(new FilMetadata()
-                   .withFilnavn("soknad.json")
-                   .withMimetype("application/json")
-                   .withStorrelse((long) bytes.length),
-                   new ByteArrayInputStream(bytes));
+            return new FilOpplasting(new FilMetadata()
+                    .withFilnavn("soknad.json")
+                    .withMimetype("application/json")
+                    .withStorrelse((long) bytes.length),
+                    new ByteArrayInputStream(bytes));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         return null;
     }
+
     private FilOpplasting lagDokumentForVedleggJson(SoknadUnderArbeid soknadUnderArbeid) {
         try {
             String vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad().getVedlegg());
             ensureValidVedlegg(vedleggJson);
             byte[] bytes = vedleggJson.getBytes(Charset.defaultCharset());
-           return  new FilOpplasting(new FilMetadata().withFilnavn("vedlegg.json").withMimetype("application/json").withStorrelse((long) bytes.length), new ByteArrayInputStream(bytes));
+            return new FilOpplasting(new FilMetadata().withFilnavn("vedlegg.json").withMimetype("application/json").withStorrelse((long) bytes.length), new ByteArrayInputStream(bytes));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -197,7 +229,7 @@ public class DigisosApiService {
     }
 
     FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
-        byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/",erEttersendelse, eier);
+        byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
 
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn("Brukerkvittering.pdf")
@@ -224,5 +256,62 @@ public class DigisosApiService {
                 .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
                 .withStorrelse((long) pdf.length),
                 new ByteArrayInputStream(pdf));
+    }
+
+    public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+        String eier = OidcFeatureToggleUtils.getUserId();
+        String behandlingsId = soknadUnderArbeid.getBehandlingsId();
+        if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
+            log.error(String.format("Kan ikke sende inn ettersendingen med ID %s uten å ha lastet opp vedlegg", behandlingsId));
+            throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+        }
+        log.info(String.format("Starter innsending av søknad med behandlingsId %s", behandlingsId));
+
+
+        SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
+        oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
+
+        // send sokand    soknadUnderArbeid
+        sendOgKrypter(lagDokumentListe(soknadUnderArbeid), soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, "token");
+
+        soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
+        if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {
+            logAlderTilKibana(eier);
+        }
+    }
+
+
+    private SoknadMetadata.VedleggMetadataListe convertToVedleggMetadataListe(SoknadUnderArbeid soknadUnderArbeid) {
+        SoknadMetadata.VedleggMetadataListe vedlegg = new SoknadMetadata.VedleggMetadataListe();
+
+        vedlegg.vedleggListe = getVedleggFromInternalSoknad(soknadUnderArbeid).stream().map(jsonVedlegg -> {
+            SoknadMetadata.VedleggMetadata m = new SoknadMetadata.VedleggMetadata();
+            m.skjema = jsonVedlegg.getType();
+            m.tillegg = jsonVedlegg.getTilleggsinfo();
+            m.filnavn = jsonVedlegg.getType();
+            m.status = Vedleggstatus.valueOf(jsonVedlegg.getStatus());
+            return m;
+        }).collect(Collectors.toList());
+
+        return vedlegg;
+    }
+
+    private static SoknadMetadata.VedleggMetadata mapJsonVedleggToVedleggMetadata(JsonVedlegg jsonVedlegg) {
+        SoknadMetadata.VedleggMetadata m = new SoknadMetadata.VedleggMetadata();
+        m.skjema = jsonVedlegg.getType();
+        m.tillegg = jsonVedlegg.getTilleggsinfo();
+        m.filnavn = jsonVedlegg.getType();
+        m.status = Vedleggstatus.valueOf(jsonVedlegg.getStatus());
+        return m;
+    }
+
+    private static void logAlderTilKibana(String eier) {
+        int age = new PersonAlder(eier).getAlder();
+        if (age > 0 && age < 30) {
+            log.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: " + age);
+        } else {
+            log.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder:" + age);
+        }
     }
 }

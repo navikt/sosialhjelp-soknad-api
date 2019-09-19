@@ -31,7 +31,7 @@ public abstract class AbstractIT {
         jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web-integration.xml"), "/sendsoknad", buildDataSource("hsqldb.properties"));
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // pga saksoversikt uten oidc.
-        setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
+            setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
         setProperty(IS_RUNNING_WITH_OIDC, isRunningWithOidc ? "true" : "false");
         jetty.start();
     }
