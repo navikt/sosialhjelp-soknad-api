@@ -28,34 +28,31 @@
             <artifactId>sendsoknad-domain</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>dkif-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenester.fim</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenester.fim</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenester.fim</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>svarut-ks-forsendelsesservice</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
@@ -71,7 +68,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
         <!-- SPRING DEPS -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -81,7 +82,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
         <!--SPRING DEPS END-->
 
 
@@ -159,7 +163,7 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
         </dependency>
 

@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -47,6 +48,9 @@ public class OpplastetVedleggServiceTest {
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Mock
+    private VirusScanner virusScanner;
 
     @InjectMocks
     private OpplastetVedleggService opplastetVedleggService;

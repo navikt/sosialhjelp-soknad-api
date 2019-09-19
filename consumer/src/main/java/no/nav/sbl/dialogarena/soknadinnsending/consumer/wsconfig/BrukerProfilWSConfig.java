@@ -24,7 +24,7 @@ public class BrukerProfilWSConfig {
         return new ServiceBuilder<>(BrukerprofilPortType.class)
                 .asStandardService()
                 .withAddress(brukerProfilEndpoint)
-                .withWsdl("classpath:brukerprofil/no/nav/tjeneste/virksomhet/brukerprofil/v1/Brukerprofil.wsdl")
+                .withWsdl("classpath:wsdl/brukerprofil/no/nav/tjeneste/virksomhet/brukerprofil/v1/Brukerprofil.wsdl")
                 .build()
                 .withHttpsMock()
                 .withMDC();

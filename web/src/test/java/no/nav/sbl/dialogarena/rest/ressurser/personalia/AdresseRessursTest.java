@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -199,11 +200,11 @@ public class AdresseRessursTest {
     }
 
     private void legacyReturnerNavEnhetTilhorendeValgtAdresse() {
-        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("folkeregistrert"), anyString(), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("folkeregistrert"), anyString())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet").withOrgnr("1")));
-        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("midlertidig"), anyString(), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("midlertidig"), anyString())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withOrgnr("2")));
-        when(navEnhetRessurs.findSoknadsmottaker(any(SoknadUnderArbeid.class), eq("soknad"), anyString(), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("soknad"), anyString())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withOrgnr("3")));
     }
 

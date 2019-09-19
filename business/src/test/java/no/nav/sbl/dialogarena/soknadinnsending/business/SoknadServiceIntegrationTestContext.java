@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseServi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
@@ -118,5 +119,10 @@ public class SoknadServiceIntegrationTestContext {
     @Bean(autowire=Autowire.NO)
     Systemdata systemdata() {
         return mock(Systemdata.class);
+    }
+
+    @Bean
+    VirusScanner virusScanner() {
+        return mock(VirusScanner.class);
     }
 }
