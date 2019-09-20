@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.fiks.streaming.klient.FilForOpplasting;
-import no.ks.fiks.streaming.klient.HttpHeader;
 import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.DokumentInfo;
@@ -19,7 +18,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.MediaType;
@@ -42,7 +40,7 @@ public class KrypteringService {
 
     public List<DokumentInfo> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
         log.info(String.format("Starter kryptering av filer, skal sende til %s %s %s", kommunenr, navEkseternRefId, token));
-        List<CompletableFuture<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
+        List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         try {
             List<DokumentInfo> opplastetFiler = lastOppFiler(dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, token)))
@@ -82,14 +80,15 @@ public class KrypteringService {
         }
     }
 
-    private InputStream krypter(InputStream dokumentStream, List<CompletableFuture<Void>> krypteringFutureList, String token) {
+    private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, String token) {
         CMSStreamKryptering kryptering = new CMSKrypteringImpl();
         X509Certificate certificate = getDokumentlagerPublicKeyX509Certificate(token);
 
         PipedInputStream pipedInputStream = new PipedInputStream();
         try {
             PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
-            CompletableFuture<Void> krypteringFuture = CompletableFuture.runAsync(() -> {
+            Future<Void> krypteringFuture =
+            executor.submit(() -> {
                 try {
                     log.info("Starting encryption...");
                     kryptering.krypterData(pipedOutputStream, dokumentStream, certificate, Security.getProvider("BC"));
@@ -106,8 +105,8 @@ public class KrypteringService {
                         log.error("Failed closing encryption OutputStream", e);
                     }
                 }
-
-            }, executor);
+                return null;
+            });
             krypteringFutureList.add(krypteringFuture);
 
         } catch (IOException e) {
@@ -116,22 +115,15 @@ public class KrypteringService {
         return pipedInputStream;
     }
 
-    private HttpHeader getHttpHeaderRequestId() {
-        String requestId = UUID.randomUUID().toString();
-        if (MDC.get("requestid") != null) {
-            requestId = MDC.get("requestid");
-        }
-        return HttpHeader.builder().headerName("requestid").headerValue(requestId).build();
-    }
-
-    private void waitForFutures(List<CompletableFuture<Void>> krypteringFutureList) {
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(krypteringFutureList.toArray(new CompletableFuture[]{}));
-        try {
-            allFutures.get(300, TimeUnit.SECONDS);
-        } catch (CompletionException e) {
-            throw new IllegalStateException(e.getCause());
-        } catch (ExecutionException | TimeoutException | InterruptedException e) {
-            throw new IllegalStateException(e);
+    private void waitForFutures(List<Future<Void>> krypteringFutureList) {
+        for (Future<Void> voidFuture : krypteringFutureList) {
+            try {
+                voidFuture.get(300, TimeUnit.SECONDS);
+            } catch (CompletionException e) {
+                throw new IllegalStateException(e.getCause());
+            } catch (ExecutionException | TimeoutException | InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 
