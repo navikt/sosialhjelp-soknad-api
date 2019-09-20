@@ -66,7 +66,7 @@ public class KrypteringService {
 
             CloseableHttpResponse response = client.execute(request);
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
-            log.info("Hentet certifikat");
+            log.info("Hentet sertifikat");
         } catch (IOException e) {
             log.error("", e);
         }
