@@ -22,7 +22,7 @@ public class BostotteImpl implements Bostotte {
     }
 
     @Override
-    public BostotteDto hentBostotte(LocalDate fra, LocalDate til) {
+    public BostotteDto hentBostotte(String personIdentifikator, LocalDate fra, LocalDate til) {
         UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
         return operations.exchange(RequestEntity.put(uri.build()).build(), BostotteDto.class).getBody();
     }

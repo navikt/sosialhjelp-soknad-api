@@ -39,6 +39,7 @@ public class BostotteImplTest {
         // Variabler:
         String configUrl = "http://magicUri";
         BostotteDto bostotteDto = new BostotteDto();
+        String personIdentifikator = "121212123456";
         LocalDate fra = LocalDate.now().minusDays(30);
         LocalDate til = LocalDate.now();
 
@@ -47,7 +48,7 @@ public class BostotteImplTest {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(bostotteDto));
 
         // Test kjøring:
-        assertThat(bostotte.hentBostotte(fra,til)).isEqualTo(bostotteDto);
+        assertThat(bostotte.hentBostotte(personIdentifikator, fra,til)).isEqualTo(bostotteDto);
         verify(operations).exchange(captor.capture(), any(Class.class));
         assertThat(captor.getValue().getUrl().toString()).startsWith(configUrl);
     }
@@ -57,6 +58,7 @@ public class BostotteImplTest {
         // Variabler:
         String configUrl = "http://magicUri";
         BostotteDto bostotteDto = new BostotteDto();
+        String personIdentifikator = "121212123456";
         LocalDate fra = LocalDate.now().minusDays(30);
         LocalDate til = LocalDate.now();
 
@@ -65,7 +67,7 @@ public class BostotteImplTest {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(bostotteDto));
 
         // Test kjøring:
-        assertThat(bostotte.hentBostotte(fra,til)).isEqualTo(bostotteDto);
+        assertThat(bostotte.hentBostotte(personIdentifikator, fra,til)).isEqualTo(bostotteDto);
         verify(operations).exchange(captor.capture(), any(Class.class));
         assertThat(captor.getValue().getUrl().toString()).contains("fra=" + fra.toString());
         assertThat(captor.getValue().getUrl().toString()).contains("til=" + til.toString());
