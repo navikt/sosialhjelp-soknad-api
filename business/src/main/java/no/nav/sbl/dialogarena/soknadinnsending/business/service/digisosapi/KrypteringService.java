@@ -55,14 +55,14 @@ public class KrypteringService {
         }
     }
 
-    private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
+    private X509Certificate getDokumentlagerPublicKeyX509Certificate() {
         byte[] publicKey = new byte[0];
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
             log.info("Henter certifikat");
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
                     .addHeader("Accept", MediaType.WILDCARD)
-                    .addHeader("requestid", UUID.randomUUID().toString())
-                    .addHeader("Authorization", "Bearer " + token).build();
+                    .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
+                    .addHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks")).build();
 
             CloseableHttpResponse response = client.execute(request);
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
@@ -82,32 +82,32 @@ public class KrypteringService {
 
     private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, String token) {
         CMSStreamKryptering kryptering = new CMSKrypteringImpl();
-        X509Certificate certificate = getDokumentlagerPublicKeyX509Certificate(token);
+        X509Certificate certificate = getDokumentlagerPublicKeyX509Certificate();
 
         PipedInputStream pipedInputStream = new PipedInputStream();
         try {
             PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
             log.info("Starting encryption submit...");
             Future<Void> krypteringFuture =
-            executor.submit(() -> {
-                try {
-                    log.info("Starting encryption...");
-                    kryptering.krypterData(pipedOutputStream, dokumentStream, certificate, Security.getProvider("BC"));
-                    log.info("Encryption completed");
-                } catch (Exception e) {
-                    log.error("Encryption failed, setting exception on encrypted InputStream", e);
-                    throw new IllegalStateException("An error occurred during encryption", e);
-                } finally {
-                    try {
-                        log.info("Closing encryption OutputStream");
-                        pipedOutputStream.close();
-                        log.info("Encryption OutputStream closed");
-                    } catch (IOException e) {
-                        log.error("Failed closing encryption OutputStream", e);
-                    }
-                }
-                return null;
-            });
+                    executor.submit(() -> {
+                        try {
+                            log.info("Starting encryption...");
+                            kryptering.krypterData(pipedOutputStream, dokumentStream, certificate, Security.getProvider("BC"));
+                            log.info("Encryption completed");
+                        } catch (Exception e) {
+                            log.error("Encryption failed, setting exception on encrypted InputStream", e);
+                            throw new IllegalStateException("An error occurred during encryption", e);
+                        } finally {
+                            try {
+                                log.info("Closing encryption OutputStream");
+                                pipedOutputStream.close();
+                                log.info("Encryption OutputStream closed");
+                            } catch (IOException e) {
+                                log.error("Failed closing encryption OutputStream", e);
+                            }
+                        }
+                        return null;
+                    });
             krypteringFutureList.add(krypteringFuture);
 
         } catch (IOException e) {
