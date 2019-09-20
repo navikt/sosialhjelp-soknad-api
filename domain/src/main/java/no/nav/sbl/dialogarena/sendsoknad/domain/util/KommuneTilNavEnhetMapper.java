@@ -170,7 +170,7 @@ public class KommuneTilNavEnhetMapper {
             .build();
 
     public static String getOrganisasjonsnummer(String enhetNr) {
-        return isProduction() ? PROD_ORGANISASJONSNUMMER.get(enhetNr) : TEST_ORGANISASJONSNUMMER.get(enhetNr);
+        return isNonProduction() ? TEST_ORGANISASJONSNUMMER.get(enhetNr) : PROD_ORGANISASJONSNUMMER.get(enhetNr);
     }
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(
@@ -298,10 +298,11 @@ public class KommuneTilNavEnhetMapper {
      * @return Liste med kommunenumre.
      */
     public static List<String> getDigisoskommuner() {
-        return isProduction() ? PROD_DIGISOS_KOMMUNER : TEST_DIGISOS_KOMMUNER;
+        return isNonProduction() ?  TEST_DIGISOS_KOMMUNER : PROD_DIGISOS_KOMMUNER;
     }
 
-    private static boolean isProduction() {
-        return "p".equals(System.getProperty("environment.name"));
+    private static boolean isNonProduction() {
+        String miljo = System.getProperty("environment.name", "");
+        return miljo.contains("t") || miljo.contains("q") || miljo.equals("local");
     }
 }
