@@ -55,14 +55,15 @@ public class KrypteringService {
         }
     }
 
-    private X509Certificate getDokumentlagerPublicKeyX509Certificate() {
+    private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
         byte[] publicKey = new byte[0];
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
             log.info("Henter certifikat");
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
                     .addHeader("Accept", MediaType.WILDCARD)
                     .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
-                    .addHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks")).build();
+                    .addHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"))
+                    .addHeader("Authorization", "Bearer " + token).build();
 
             CloseableHttpResponse response = client.execute(request);
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
@@ -82,7 +83,7 @@ public class KrypteringService {
 
     private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, String token) {
         CMSStreamKryptering kryptering = new CMSKrypteringImpl();
-        X509Certificate certificate = getDokumentlagerPublicKeyX509Certificate();
+        X509Certificate certificate = getDokumentlagerPublicKeyX509Certificate(token);
 
         PipedInputStream pipedInputStream = new PipedInputStream();
         try {
