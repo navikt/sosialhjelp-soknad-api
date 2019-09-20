@@ -60,7 +60,7 @@ public class KrypteringService {
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
             log.info("Henter certifikat");
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
-                    .addHeader("Accept", MediaType.MEDIA_TYPE_WILDCARD)
+                    .addHeader("Accept", MediaType.WILDCARD)
                     .addHeader("requestid", UUID.randomUUID().toString())
                     .addHeader("Authorization", "Bearer " + token).build();
 
