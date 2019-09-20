@@ -156,7 +156,7 @@ public class KrypteringService {
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
             HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
 
-            post.setHeader("Accept", MediaType.MEDIA_TYPE_WILDCARD);
+            post.setHeader("Accept", MediaType.APPLICATION_JSON);
             post.setHeader("requestid", UUID.randomUUID().toString());
             post.setHeader("Authorization", "Bearer " + token);
             post.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
