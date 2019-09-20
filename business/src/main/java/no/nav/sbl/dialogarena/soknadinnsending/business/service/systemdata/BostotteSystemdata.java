@@ -2,8 +2,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.bostotte.Bostotte;
 import no.nav.sbl.dialogarena.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.bostotte.dto.SakerDto;
 import no.nav.sbl.dialogarena.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse;
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSaksStatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
@@ -26,16 +29,21 @@ public class BostotteSystemdata implements Systemdata {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
-        List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = innhentBostotteFraHusbanken(personIdentifikator);
+        BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator);
+        List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto);
         okonomi.getOpplysninger().getUtbetaling().addAll(jsonOkonomiOpplysningUtbetaling);
+        List<JsonSaksStatus> jsonSaksStatuser = mapToJsonSaksStatuser(bostotteDto);
+        // TODO: pcn: dytt jsonSaksStatuser inn i soknad +/- bytt bort fra jsonSaksStatuser
     }
 
-    private List<JsonOkonomiOpplysningUtbetaling> innhentBostotteFraHusbanken(String personIdentifikator) {
-        BostotteDto bostotteDto = bostotte.hentBostotte(personIdentifikator, LocalDate.now().minusMonths(3), LocalDate.now());
-        List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = bostotteDto.getUtbetalinger().stream()
+    private BostotteDto innhentBostotteFraHusbanken(String personIdentifikator) {
+        return bostotte.hentBostotte(personIdentifikator, LocalDate.now().minusMonths(3), LocalDate.now());
+    }
+
+    private List<JsonOkonomiOpplysningUtbetaling> mapToJsonOkonomiOpplysningUtbetalinger(BostotteDto bostotteDto) {
+        return bostotteDto.getUtbetalinger().stream()
                 .map(this::mapToJsonOkonomiOpplysningUtbetaling)
                 .collect(Collectors.toList());
-        return jsonUtbetalinger;
     }
 
     private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(UtbetalingerDto utbetalingerDto) {
@@ -55,5 +63,21 @@ public class BostotteSystemdata implements Systemdata {
                 .withUtbetalingsdato(utbetalingerDto.getUtbetalingsdato() == null ? null : utbetalingerDto.getUtbetalingsdato().toString())
 //                .withKomponenter(tilUtbetalingskomponentListe(bostotteDto.komponenter))
                 .withOverstyrtAvBruker(false);
+    }
+
+    private List<JsonSaksStatus> mapToJsonSaksStatuser(BostotteDto bostotteDto) {
+        return bostotteDto.getSaker().stream()
+                .map(this::mapToJsonSaksStatus)
+                .collect(Collectors.toList());
+    }
+    private JsonSaksStatus mapToJsonSaksStatus(SakerDto sakerDto) {
+        return new JsonSaksStatus()
+                .withStatus(JsonSaksStatus.Status.fromValue(sakerDto.getStatus()))
+//                .withAdditionalProperty(sakerDto.getRolle(), sakerDto.getRolle())
+                .withHendelsestidspunkt(sakerDto.getDato().toString())
+                .withReferanse(sakerDto.getVedtak().getBeskrivelse())
+                .withTittel("Bostøtte")
+                .withType(JsonHendelse.Type.fromValue(sakerDto.getVedtak().getKode()))
+                ;
     }
 }
