@@ -82,8 +82,6 @@ public class IdPortenService {
             X509Certificate certificate = (X509Certificate) keyStore.getCertificate(virksertCredentials.alias);
 
             KeyPair keyPair = new KeyPair(certificate.getPublicKey(), (PrivateKey) keyStore.getKey(virksertCredentials.alias, virksertCredentials.password.toCharArray()));
-            byte[] encoded = certificate.getEncoded();
-
 
             Date date = new Date();
             Calendar instance = Calendar.getInstance();
@@ -92,7 +90,7 @@ public class IdPortenService {
             Date expDate = instance.getTime();
 
             SignedJWT signedJWT = new SignedJWT(
-                    new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(Collections.singletonList((com.nimbusds.jose.util.Base64.encode(encoded)))).build(),
+                    new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(Collections.singletonList((com.nimbusds.jose.util.Base64.encode(certificate.getEncoded())))).build(),
                     new JWTClaimsSet.Builder()
                             .audience(idPortenOidcConfiguration.issuer)
                             .issuer(idPortenClientId)
@@ -108,10 +106,6 @@ public class IdPortenService {
             log.warn("", e);
         }
         return "";
-    }
-
-    public static class AcceessToken {
-        public String token;
     }
 
     static class VirksertCredentials {

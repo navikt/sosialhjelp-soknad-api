@@ -45,7 +45,7 @@ public class SoknadActions {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        if (soknadUnderArbeid != null && digisosApiService.kanKommuneMottaSoknader(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer())) {
+        if (true || soknadUnderArbeid != null && digisosApiService.kanKommuneMottaSoknader(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer())) {
             digisosApiService.sendSoknad(soknadUnderArbeid);
         } else {
             soknadService.sendSoknad(behandlingsId);

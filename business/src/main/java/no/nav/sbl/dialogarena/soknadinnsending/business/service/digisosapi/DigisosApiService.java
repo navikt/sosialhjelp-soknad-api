@@ -99,7 +99,7 @@ public class DigisosApiService {
         }
     }
 
-    public KommuneInfo hentKommuneInfo(String kommunenummer) {
+    KommuneInfo hentKommuneInfo(String kommunenummer) {
         IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune/" + kommunenummer);
@@ -121,7 +121,7 @@ public class DigisosApiService {
         return  hentKommuneInfo(kommunenummer).getKanMottaSoknader() != null;
     }
 
-    public List<FilOpplasting> lagDokumentListe(SoknadUnderArbeid soknadUnderArbeid) {
+    List<FilOpplasting> lagDokumentListe(SoknadUnderArbeid soknadUnderArbeid) {
         JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         if (internalSoknad == null) {
             throw new RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler");
@@ -171,13 +171,13 @@ public class DigisosApiService {
 
     }
 
-    public void sendOgKrypter(List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
+    private void sendOgKrypter(List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
         for (DokumentInfo dokumentInfo : krypteringService.krypterOgLastOppFiler(filOpplastinger, kommunenr, navEkseternRefId, token)) {
             log.info(String.format("Filnavn %s id %s stoerrelse %d laster opp", dokumentInfo.filnavn, dokumentInfo.dokumentlagerDokumentId.toString(), dokumentInfo.storrelse));
         }
     }
 
-    FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
+    private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
         byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
 
         return new FilOpplasting(new FilMetadata()
@@ -215,14 +215,14 @@ public class DigisosApiService {
         return null;
     }
 
-    List<FilOpplasting> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
+    private List<FilOpplasting> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
         List<OpplastetVedlegg> opplastedeVedlegg = innSendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
         return opplastedeVedlegg.stream()
                 .map(this::opprettDokumentForVedlegg)
                 .collect(Collectors.toList());
     }
 
-    FilOpplasting lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
+    private FilOpplasting lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
         byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
 
         return new FilOpplasting(new FilMetadata()
@@ -232,7 +232,7 @@ public class DigisosApiService {
                 new ByteArrayInputStream(pdf));
     }
 
-    FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
+    private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
         byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
 
         return new FilOpplasting(new FilMetadata()
@@ -242,7 +242,7 @@ public class DigisosApiService {
                 new ByteArrayInputStream(pdf));
     }
 
-    FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
+    private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
 
         return new FilOpplasting(new FilMetadata()
@@ -252,7 +252,7 @@ public class DigisosApiService {
                 new ByteArrayInputStream(pdf));
     }
 
-    FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
+    private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
         byte[] pdf = opplastetVedlegg.getData();
 
         return new FilOpplasting(new FilMetadata()
@@ -276,7 +276,6 @@ public class DigisosApiService {
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
 
-        // send sokand    soknadUnderArbeid
         sendOgKrypter(lagDokumentListe(soknadUnderArbeid), soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, "token");
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
