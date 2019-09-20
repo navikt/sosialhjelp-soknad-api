@@ -46,9 +46,7 @@ public class KrypteringService {
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, token)))
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
-            log.info("Venter på at filene blir ferdig kryptert");
             waitForFutures(krypteringFutureList);
-            log.info("Filene ferdig kryptert");
             return opplastetFiler;
         } finally {
             krypteringFutureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(future -> future.cancel(true));
@@ -67,7 +65,10 @@ public class KrypteringService {
 
             CloseableHttpResponse response = client.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
-            log.info("Statuscode ved henting av sertifikat" + statusCode);
+            if (statusCode >= 300) {
+                log.info("Statuscode ved henting av sertifikat " + statusCode);
+                log.info(response.getStatusLine().getReasonPhrase());
+            }
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
             log.info("Hentet sertifikat");
         } catch (IOException e) {
@@ -94,17 +95,17 @@ public class KrypteringService {
             Future<Void> krypteringFuture =
                     executor.submit(() -> {
                         try {
-                            log.info("Starting encryption...");
+                            log.debug("Starting encryption...");
                             kryptering.krypterData(pipedOutputStream, dokumentStream, certificate, Security.getProvider("BC"));
-                            log.info("Encryption completed");
+                            log.debug("Encryption completed");
                         } catch (Exception e) {
                             log.error("Encryption failed, setting exception on encrypted InputStream", e);
                             throw new IllegalStateException("An error occurred during encryption", e);
                         } finally {
                             try {
-                                log.info("Closing encryption OutputStream");
+                                log.debug("Closing encryption OutputStream");
                                 pipedOutputStream.close();
-                                log.info("Encryption OutputStream closed");
+                                log.debug("Encryption OutputStream closed");
                             } catch (IOException e) {
                                 log.error("Failed closing encryption OutputStream", e);
                             }

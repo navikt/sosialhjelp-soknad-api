@@ -277,7 +277,7 @@ public class DigisosApiService {
 
         List<FilOpplasting> filOpplastinger = lagDokumentListe(soknadUnderArbeid);
         log.info(String.format("Laster opp %d", filOpplastinger.size()));
-        sendOgKrypter(filOpplastinger, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, "eyJraWQiOiJjWmswME1rbTVIQzRnN3Z0NmNwUDVGSFpMS0pzdzhmQkFJdUZiUzRSVEQ0IiwiYWxnIjoiUlMyNTYifQ.eyJhdWQiOiJ1bnNwZWNpZmllZCIsInN1YiI6IkJ6elpDM0RuMlRwQ1BaQnc4aEpYaU1NSnM5WFZGNU1lSFhFb3pCN2FJU009IiwiYWNyIjoiTGV2ZWw0Iiwic2NvcGUiOiJrczpmaWtzIG9wZW5pZCBodXNiYW5rZW46bWluYm9zdG90dGUiLCJpc3MiOiJodHRwczpcL1wvb2lkYy12ZXIyLmRpZmkubm9cL2lkcG9ydGVuLW9pZGMtcHJvdmlkZXJcLyIsInBpZCI6IjIzMDc5NDAzNTk4IiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImV4cCI6MTU2ODk4Mjg4NSwiaWF0IjoxNTY4OTc1Njg2LCJjbGllbnRfaWQiOiIxYzM2MzFmNC1kYmYyLTRjMTItYmRjNC0xNTZjYmQ1M2M2MjUiLCJjbGllbnRfb3Jnbm8iOiI4ODk2NDA3ODIiLCJqdGkiOiJRSHpRU3YzdHZXZjZ1aFR0NnRpRGJuSFhkenJVWFJnX21lajdab2w2cmFBIn0.QlSGL5Z1RtzbOYsmhwwAoxYcZ1IlUigS_ocTG-K0oOP50dVaNC2347bf6GxD1_xYRNWrtHpyQsEzkgG3dx9cRdWpvlfylSjSBHizboDj19WuRqKISQE40ryDf8K1tNsZWtgN3HgGnUQkzjtOdxqo70_YUhchHWKHn4dZ2eLsDUW0--oMsOaOzr_kCuahCQwrvIJ8hDwXrrkmx-lT_8mbOxixOfBvmOBWjBc9GF_CvgAgoTgw2ovsDZuiOJgg5k8IEflYl3EWgjmLXuMw5swgDcHzQYXwxT3rFb6Hsa4_AR8e0kTQjTY6Q4qfcuS78mkOzhY2yhXx-UxNOP5CLtLhyQ");
+        sendOgKrypter(filOpplastinger, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, "token");
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {
