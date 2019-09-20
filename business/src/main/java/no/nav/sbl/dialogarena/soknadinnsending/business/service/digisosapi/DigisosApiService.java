@@ -275,7 +275,9 @@ public class DigisosApiService {
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
 
-        sendOgKrypter(lagDokumentListe(soknadUnderArbeid), soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, "token");
+        List<FilOpplasting> filOpplastinger = lagDokumentListe(soknadUnderArbeid);
+        log.info(String.format("Laster opp %d", filOpplastinger.size()));
+        sendOgKrypter(filOpplastinger, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, "token");
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {

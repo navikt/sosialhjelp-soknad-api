@@ -41,15 +41,16 @@ public class KrypteringService {
     private ExecutorService executor = Executors.newFixedThreadPool(4);
 
     public List<DokumentInfo> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
-
+        log.info(String.format("Starter kryptering av filer, skal sende til %s %s %s", kommunenr, navEkseternRefId, token));
         List<CompletableFuture<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         try {
             List<DokumentInfo> opplastetFiler = lastOppFiler(dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, token)))
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
-
+            log.info("Venter på at filene blir ferdig kryptert");
             waitForFutures(krypteringFutureList);
+            log.info("Filene ferdig kryptert");
             return opplastetFiler;
         } finally {
             krypteringFutureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(future -> future.cancel(true));
