@@ -66,6 +66,8 @@ public class KrypteringService {
                     .addHeader("Authorization", "Bearer " + token).build();
 
             CloseableHttpResponse response = client.execute(request);
+            int statusCode = response.getStatusLine().getStatusCode();
+            log.info("Statuscode ved henting av sertifikat" + statusCode);
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
             log.info("Hentet sertifikat");
         } catch (IOException e) {
@@ -157,6 +159,9 @@ public class KrypteringService {
             post.setHeader("Accept", MediaType.MEDIA_TYPE_WILDCARD);
             post.setHeader("requestid", UUID.randomUUID().toString());
             post.setHeader("Authorization", "Bearer " + token);
+            post.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
+            post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
+
             post.setEntity(entitybuilder.build());
             CloseableHttpResponse response = client.execute(post);
             String x = EntityUtils.toString(response.getEntity());
