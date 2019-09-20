@@ -36,7 +36,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class KrypteringService {
     private static final Logger log = getLogger(KrypteringService.class);
 
-    private ExecutorService executor = Executors.newFixedThreadPool(4);
+    private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
 
     public List<DokumentInfo> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
         log.info(String.format("Starter kryptering av filer, skal sende til %s %s %s", kommunenr, navEkseternRefId, token));
@@ -65,8 +65,8 @@ public class KrypteringService {
                     .addHeader("Authorization", "Bearer " + token).build();
 
             CloseableHttpResponse response = client.execute(request);
-            log.info("Hentet certifikat");
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
+            log.info("Hentet certifikat");
         } catch (IOException e) {
             log.error("", e);
         }
@@ -87,6 +87,7 @@ public class KrypteringService {
         PipedInputStream pipedInputStream = new PipedInputStream();
         try {
             PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
+            log.info("Starting encryption submit...");
             Future<Void> krypteringFuture =
             executor.submit(() -> {
                 try {
