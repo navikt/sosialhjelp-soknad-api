@@ -269,12 +269,11 @@ public class DigisosApiService {
             log.error(String.format("Kan ikke sende inn ettersendingen med ID %s uten å ha lastet opp vedlegg", behandlingsId));
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
-        log.info(String.format("Starter innsending av søknad med behandlingsId %s", behandlingsId));
+        log.info(String.format("Starter innsending av søknad med behandlingsId %s, skal sendes til DigisosApi", behandlingsId));
 
 
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
-        oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
 
         sendOgKrypter(lagDokumentListe(soknadUnderArbeid), soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, "token");
 
