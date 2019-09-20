@@ -60,12 +60,14 @@ public class KrypteringService {
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
         byte[] publicKey = new byte[0];
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
+            log.info("Henter certifikat");
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
                     .addHeader("Accept", MediaType.MEDIA_TYPE_WILDCARD)
                     .addHeader("requestid", UUID.randomUUID().toString())
                     .addHeader("Authorization", "Bearer " + token).build();
 
             CloseableHttpResponse response = client.execute(request);
+            log.info("Hentet certifikat");
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
         } catch (IOException e) {
             log.error("", e);
@@ -89,17 +91,17 @@ public class KrypteringService {
             PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
             CompletableFuture<Void> krypteringFuture = CompletableFuture.runAsync(() -> {
                 try {
-                    log.debug("Starting encryption...");
+                    log.info("Starting encryption...");
                     kryptering.krypterData(pipedOutputStream, dokumentStream, certificate, Security.getProvider("BC"));
-                    log.debug("Encryption completed");
+                    log.info("Encryption completed");
                 } catch (Exception e) {
                     log.error("Encryption failed, setting exception on encrypted InputStream", e);
                     throw new IllegalStateException("An error occurred during encryption", e);
                 } finally {
                     try {
-                        log.debug("Closing encryption OutputStream");
+                        log.info("Closing encryption OutputStream");
                         pipedOutputStream.close();
-                        log.debug("Encryption OutputStream closed");
+                        log.info("Encryption OutputStream closed");
                     } catch (IOException e) {
                         log.error("Failed closing encryption OutputStream", e);
                     }
