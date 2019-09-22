@@ -263,7 +263,6 @@ public class DigisosApiService {
     }
 
     public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid) {
-        String eier = OidcFeatureToggleUtils.getUserId();
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             log.error(String.format("Kan ikke sende inn ettersendingen med ID %s uten å ha lastet opp vedlegg", behandlingsId));
@@ -281,7 +280,7 @@ public class DigisosApiService {
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {
-            logAlderTilKibana(eier);
+            logAlderTilKibana(OidcFeatureToggleUtils.getUserId());
         }
     }
 

@@ -66,8 +66,9 @@ public class KrypteringService {
             CloseableHttpResponse response = client.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode >= 300) {
-                log.info("Statuscode ved henting av sertifikat " + statusCode);
-                log.info(response.getStatusLine().getReasonPhrase());
+                log.warn("Statuscode ved henting av sertifikat " + statusCode);
+                log.warn(response.getStatusLine().getReasonPhrase());
+                log.warn(EntityUtils.toString(response.getEntity()));
             }
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
             log.info("Hentet sertifikat");
@@ -165,6 +166,11 @@ public class KrypteringService {
 
             post.setEntity(entitybuilder.build());
             CloseableHttpResponse response = client.execute(post);
+            if (response.getStatusLine().getStatusCode() >= 300) {
+                log.warn(response.getStatusLine().getReasonPhrase());
+                log.warn(EntityUtils.toString(response.getEntity()));
+            }
+
             String x = EntityUtils.toString(response.getEntity());
             return Arrays.asList(new ObjectMapper().readValue(x, DokumentInfo[].class));
         } catch (IOException e) {
