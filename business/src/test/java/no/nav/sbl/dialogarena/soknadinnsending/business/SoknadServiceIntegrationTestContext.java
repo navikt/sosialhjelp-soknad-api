@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.IdPor
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.KrypteringService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
@@ -157,5 +158,10 @@ public class SoknadServiceIntegrationTestContext {
     @Bean(autowire = Autowire.NO)
     Systemdata systemdata() {
         return mock(Systemdata.class);
+    }
+
+    @Bean
+    VirusScanner virusScanner() {
+        return mock(VirusScanner.class);
     }
 }

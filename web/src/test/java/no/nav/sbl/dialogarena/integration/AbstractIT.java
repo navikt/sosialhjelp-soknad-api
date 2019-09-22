@@ -24,6 +24,7 @@ public abstract class AbstractIT {
 
     public static void beforeClass(boolean isRunningWithOidc) throws Exception {
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
+        System.setProperty("environment.name", "t1");
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
