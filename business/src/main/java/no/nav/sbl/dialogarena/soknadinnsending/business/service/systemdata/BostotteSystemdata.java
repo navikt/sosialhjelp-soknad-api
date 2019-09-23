@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.bostotte.Bostotte;
-import no.nav.sbl.dialogarena.bostotte.dto.BostotteDto;
-import no.nav.sbl.dialogarena.bostotte.dto.SakerDto;
-import no.nav.sbl.dialogarena.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse;
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSaksStatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.bostotte.Bostotte.HUSBANKEN_TYPE;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte.HUSBANKEN_TYPE;
 
 @Component
 public class BostotteSystemdata implements Systemdata {

@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.bostotte.BostotteImpl;
-import no.nav.sbl.dialogarena.bostotte.dto.BostotteDto;
-import no.nav.sbl.dialogarena.bostotte.dto.UtbetalingerDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteImpl;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;

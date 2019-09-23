@@ -1,6 +1,6 @@
-package no.nav.sbl.dialogarena.bostotte;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
-import no.nav.sbl.dialogarena.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;

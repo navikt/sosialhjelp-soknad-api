@@ -1,5 +1,6 @@
-package no.nav.sbl.dialogarena.bostotte;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,7 +14,10 @@ public class BostotteConfig {
     private String uri = "";
 
     @Bean
-    BostotteImpl getBostotteImpl() {
+    Bostotte getBostotteImpl() {
+        if(MockUtils.isTillatMockRessurs()) {
+            return new MockBostotteImpl(this);
+        }
         return new BostotteImpl(this, new RestTemplate());
     }
 

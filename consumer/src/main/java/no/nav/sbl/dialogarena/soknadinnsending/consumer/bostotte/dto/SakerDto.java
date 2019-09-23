@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.bostotte.dto;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto;
 
 import java.time.LocalDate;
 
