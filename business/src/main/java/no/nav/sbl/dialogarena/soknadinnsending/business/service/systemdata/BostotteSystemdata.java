@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.bostotte.Bostotte.HUSBANKEN_TYPE;
+
 @Component
 public class BostotteSystemdata implements Systemdata {
     @Inject
@@ -47,10 +49,9 @@ public class BostotteSystemdata implements Systemdata {
     }
 
     private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(UtbetalingerDto utbetalingerDto) {
-        String type = "husbanken";
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
-                .withType(type)
+                .withType(HUSBANKEN_TYPE)
                 .withTittel(utbetalingerDto.getMottaker())
                 .withBelop(utbetalingerDto.getBelop().intValue())
 //                .withNetto(utbetalingerDto.netto)
