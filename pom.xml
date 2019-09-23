@@ -3,9 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>no.nav.sbl</groupId>
+        <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>3.1</version>
+<!--        <version>1.2019.06.25-08.14-39e4bbe31ce3</version>-->
+        <version>1.2019.09.13-12.30-cc1ac9ca61b6</version>
     </parent>
 
     <modules>
