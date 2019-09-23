@@ -620,6 +620,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-features-logging</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>no.nav.sbl</groupId>
                 <artifactId>rest</artifactId>
                 <version>2018.05.15.11.54</version>
