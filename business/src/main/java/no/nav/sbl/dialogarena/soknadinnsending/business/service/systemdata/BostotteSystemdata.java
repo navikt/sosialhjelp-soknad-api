@@ -32,10 +32,12 @@ public class BostotteSystemdata implements Systemdata {
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
         BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator);
-        List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto);
-        okonomi.getOpplysninger().getUtbetaling().addAll(jsonOkonomiOpplysningUtbetaling);
-        List<JsonSaksStatus> jsonSaksStatuser = mapToJsonSaksStatuser(bostotteDto);
-        // TODO: pcn: dytt jsonSaksStatuser inn i soknad +/- bytt bort fra jsonSaksStatuser
+        if (bostotteDto != null) {
+            List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto);
+            okonomi.getOpplysninger().getUtbetaling().addAll(jsonOkonomiOpplysningUtbetaling);
+            List<JsonSaksStatus> jsonSaksStatuser = mapToJsonSaksStatuser(bostotteDto);
+            // TODO: pcn: dytt jsonSaksStatuser inn i soknad +/- bytt bort fra jsonSaksStatuser
+        }
     }
 
     private BostotteDto innhentBostotteFraHusbanken(String personIdentifikator) {

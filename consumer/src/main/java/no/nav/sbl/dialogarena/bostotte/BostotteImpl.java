@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.bostotte.dto.BostotteDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestOperations;
 
 import javax.inject.Inject;
@@ -23,7 +24,12 @@ public class BostotteImpl implements Bostotte {
 
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, LocalDate fra, LocalDate til) {
-        UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
-        return operations.exchange(RequestEntity.put(uri.build()).build(), BostotteDto.class).getBody();
+        try {
+            UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
+            return operations.exchange(RequestEntity.get(uri.build()).build(), BostotteDto.class).getBody();
+        } catch (ResourceAccessException e) {
+            logger.warn("Problemer med å hente bostøtte informasjon!", e);
+        }
+        return null;
     }
 }

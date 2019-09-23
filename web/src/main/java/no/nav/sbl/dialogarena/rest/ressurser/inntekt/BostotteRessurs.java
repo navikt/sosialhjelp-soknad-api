@@ -1,12 +1,13 @@
 package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.bostotte.Bostotte;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSaksStatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -19,8 +20,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.bostotte.Bostotte.HUSBANKEN_TYPE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
@@ -41,11 +44,8 @@ public class BostotteRessurs {
     @Inject
     private TextService textService;
 
-    @Inject
-    private Bostotte bostotte;
-
     @GET
-    public BostotteFrontend hentBostotteBekreftelse(@PathParam("behandlingsId") String behandlingsId){
+    public BostotteFrontend hentBostotte(@PathParam("behandlingsId") String behandlingsId){
         final String eier = OidcFeatureToggleUtils.getUserId();
         final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
@@ -56,6 +56,9 @@ public class BostotteRessurs {
         }
 
         setBekreftelseOnBostotteFrontend(opplysninger, bostotteFrontend);
+
+        bostotteFrontend.setUtbetalinger(mapToUtbetalinger(soknad));
+        bostotteFrontend.setSaksStatuser(mapToUtSaksStatuser(soknad));
 
         return bostotteFrontend;
     }
@@ -90,12 +93,32 @@ public class BostotteRessurs {
                 .ifPresent(jsonOkonomibekreftelse -> bostotteFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
+    private List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalinger(JsonInternalSoknad soknad) {
+        return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().stream()
+                .filter(utbetaling -> utbetaling.getType().equals(HUSBANKEN_TYPE))
+                .collect(Collectors.toList());
+    }
+
+    private List<JsonSaksStatus> mapToUtSaksStatuser(JsonInternalSoknad soknad) {
+        return null;
+    }
+
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BostotteFrontend {
         public Boolean bekreftelse;
+        public List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
+        public List<JsonSaksStatus> saksStatuser;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
+        }
+
+        public void setUtbetalinger(List<JsonOkonomiOpplysningUtbetaling> utbetalinger) {
+            this.utbetalinger = utbetalinger;
+        }
+
+        public void setSaksStatuser(List<JsonSaksStatus> saksStatuser) {
+            this.saksStatuser = saksStatuser;
         }
     }
 }
