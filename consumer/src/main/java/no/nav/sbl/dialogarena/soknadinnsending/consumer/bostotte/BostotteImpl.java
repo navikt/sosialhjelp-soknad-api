@@ -26,7 +26,7 @@ public class BostotteImpl implements Bostotte {
     public BostotteDto hentBostotte(String personIdentifikator, LocalDate fra, LocalDate til) {
         try {
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
-            return operations.exchange(RequestEntity.get(uri.build()).build(), BostotteDto.class).getBody();
+            return operations.exchange(RequestEntity.get(uri.build()).header(config.getUsername(), config.getAppKey()).build(), BostotteDto.class).getBody();
         } catch (ResourceAccessException e) {
             logger.warn("Problemer med å hente bostøtte informasjon!", e);
         }

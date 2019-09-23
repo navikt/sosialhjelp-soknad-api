@@ -10,18 +10,33 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ComponentScan(basePackageClasses = Bostotte.class)
 public class BostotteConfig {
+
     @Value("${soknad.bostotte.url}")
     private String uri = "";
+
+    @Value("${soknad.bostotte.husbanken.app.key}")
+    private String appKey = "appKey";
+
+    @Value("${soknad.bostotte.husbanken.username}")
+    private String username = "username";
 
     @Bean
     Bostotte getBostotteImpl() {
         if(MockUtils.isTillatMockRessurs()) {
-            return new MockBostotteImpl(this);
+            return new MockBostotteImpl();
         }
         return new BostotteImpl(this, new RestTemplate());
     }
 
     public String getUri() {
         return uri;
+    }
+
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

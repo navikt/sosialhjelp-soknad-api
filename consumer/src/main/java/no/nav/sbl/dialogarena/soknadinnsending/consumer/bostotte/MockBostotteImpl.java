@@ -8,9 +8,6 @@ import java.time.LocalDate;
 
 public class MockBostotteImpl implements Bostotte {
 
-    public MockBostotteImpl(BostotteConfig bostotteConfig) {
-    }
-
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, LocalDate fra, LocalDate til) {
         String mottaker = "Ola Normann";
