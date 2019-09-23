@@ -132,6 +132,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0101", "959159092")    // Halden
             .put("0235", "983870953")    // Ullensaker
             .put("0238", "874604682")    // Nannestad
+            .put("1833", "993576190")    // Rana
 
         
             .build();
@@ -288,7 +289,8 @@ public class KommuneTilNavEnhetMapper {
                     "0234",
                     "0101",
                     "0235",
-                    "0238"
+                    "0238",
+                    "1833"
             ));
 
 
