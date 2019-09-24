@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -48,12 +50,15 @@ public class OpplastetVedleggServiceTest {
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Mock
+    private VirusScanner virusScanner;
+
     @InjectMocks
     private OpplastetVedleggService opplastetVedleggService;
 
     @Before
     public void setUp() {
-        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         opplastetVedleggService.setUp();
     }
 
