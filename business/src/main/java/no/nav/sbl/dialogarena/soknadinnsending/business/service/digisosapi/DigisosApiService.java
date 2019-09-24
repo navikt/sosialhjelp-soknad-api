@@ -10,10 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.DokumentInfo;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneInfo;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -44,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneStatus.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
@@ -117,9 +115,22 @@ public class DigisosApiService {
     }
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
-    public Boolean kanKommuneMottaSoknader(String kommunenummer) {
-        return  hentKommuneInfo(kommunenummer).getKanMottaSoknader() != null;
+    public KommuneStatus kommuneInfo(String kommunenummer) {
+        KommuneInfo kommuneInfo = hentKommuneInfo(kommunenummer);
+
+        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
+            return IKKE_PA_FIKS_ELLER_INNSYN;
+        }
+        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
+            return KUN_PA_FIKS;
+        }
+        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
+            return PA_FIKS_OG_INNSYN;
+        }
+        return null;
     }
+
+
 
     List<FilOpplasting> lagDokumentListe(SoknadUnderArbeid soknadUnderArbeid) {
         JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();

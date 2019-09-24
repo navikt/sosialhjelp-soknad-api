@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -21,7 +22,7 @@ import javax.ws.rs.core.Context;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
 @Timed(name = "SoknadActionsRessurs")
@@ -45,7 +46,8 @@ public class SoknadActions {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        if ( soknadUnderArbeid != null && (digisosApiService.kanKommuneMottaSoknader(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer())|| true)) {
+        KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer());
+        if (soknadUnderArbeid != null && kommuneStatus != null && (kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN || true)) {
             digisosApiService.sendSoknad(soknadUnderArbeid);
         } else {
             soknadService.sendSoknad(behandlingsId);
