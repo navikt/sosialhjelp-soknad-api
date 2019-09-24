@@ -46,11 +46,14 @@ public class SoknadActions {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer());
-        if (soknadUnderArbeid != null && kommuneStatus != null && (kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN || true)) {
-            digisosApiService.sendSoknad(soknadUnderArbeid);
-        } else {
-            soknadService.sendSoknad(behandlingsId);
+        if (soknadUnderArbeid != null) {
+            KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer());
+            if (soknadUnderArbeid != null && kommuneStatus != null && (kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN || true)) {
+                digisosApiService.sendSoknad(soknadUnderArbeid);
+                return;
+            }
         }
+
+        soknadService.sendSoknad(behandlingsId);
     }
 }
