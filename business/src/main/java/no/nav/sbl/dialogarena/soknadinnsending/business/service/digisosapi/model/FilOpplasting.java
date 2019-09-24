@@ -22,5 +22,4 @@ public class FilOpplasting {
         this.data = data;
         return this;
     }
-
 }

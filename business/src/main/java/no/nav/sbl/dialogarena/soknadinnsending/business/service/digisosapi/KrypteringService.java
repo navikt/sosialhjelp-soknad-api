@@ -92,8 +92,7 @@ public class KrypteringService {
         PipedInputStream pipedInputStream = new PipedInputStream();
         try {
             PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
-            log.info("Starting encryption submit...");
-            Future<Void> krypteringFuture =
+             Future<Void> krypteringFuture =
                     executor.submit(() -> {
                         try {
                             log.debug("Starting encryption...");
@@ -169,16 +168,13 @@ public class KrypteringService {
             if (response.getStatusLine().getStatusCode() >= 300) {
                 log.warn(response.getStatusLine().getReasonPhrase());
                 log.warn(EntityUtils.toString(response.getEntity()));
+                throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
             }
 
-            String x = EntityUtils.toString(response.getEntity());
-            return Arrays.asList(new ObjectMapper().readValue(x, DokumentInfo[].class));
+            return Arrays.asList(new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), DokumentInfo[].class));
         } catch (IOException e) {
-            log.error("", e);
+            throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId),e);
         }
-
-        return null;
-
     }
 
     private String getLastOppFilerPath(String kommunenummer, String navEkseternRefId) {

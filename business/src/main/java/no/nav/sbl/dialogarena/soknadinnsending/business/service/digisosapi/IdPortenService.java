@@ -68,9 +68,8 @@ public class IdPortenService {
 
             return objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
         } catch (IOException e) {
-            log.warn("", e);
+            throw new IllegalStateException("Far ikke tak i virksomhets accessToken",e);
         }
-        return null;
     }
 
     private String createJws() {
@@ -103,9 +102,8 @@ public class IdPortenService {
             return signedJWT.serialize();
 
         } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | JOSEException e) {
-            log.warn("", e);
+            throw new IllegalStateException("Far ikke tak i jws token",e);
         }
-        return "";
     }
 
     static class VirksertCredentials {
