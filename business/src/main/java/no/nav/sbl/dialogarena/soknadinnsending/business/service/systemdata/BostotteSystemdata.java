@@ -5,11 +5,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse;
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSaksStatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
@@ -35,8 +34,8 @@ public class BostotteSystemdata implements Systemdata {
         if (bostotteDto != null) {
             List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto);
             okonomi.getOpplysninger().getUtbetaling().addAll(jsonOkonomiOpplysningUtbetaling);
-            List<JsonSaksStatus> jsonSaksStatuser = mapToJsonSaksStatuser(bostotteDto);
-            // TODO: pcn: dytt jsonSaksStatuser inn i soknad +/- bytt bort fra jsonSaksStatuser
+            List<JsonOkonomiOpplysningSak> jsonSaksStatuser = mapToJsonOkonomiOpplysningSaker(bostotteDto);
+            okonomi.getOpplysninger().getSak().addAll(jsonSaksStatuser);
         }
     }
 
@@ -56,31 +55,20 @@ public class BostotteSystemdata implements Systemdata {
                 .withType(HUSBANKEN_TYPE)
                 .withTittel(utbetalingerDto.getMottaker())
                 .withBelop(utbetalingerDto.getBelop().intValue())
-//                .withNetto(utbetalingerDto.netto)
-//                .withBrutto(utbetalingerDto.brutto)
-//                .withSkattetrekk(utbetalingerDto.skattetrekk)
-//                .withOrganisasjon(mapToJsonOrganisasjon(bostotteDto.orgnummer))
-//                .withAndreTrekk(utbetalingerDto.andreTrekk)
-//                .withPeriodeFom(utbetalingerDto.periodeFom != null ? utbetalingerDto.periodeFom.toString() : null)
-//                .withPeriodeTom(utbetalingerDto.periodeTom != null ? utbetalingerDto.periodeTom.toString() : null)
                 .withUtbetalingsdato(utbetalingerDto.getUtbetalingsdato() == null ? null : utbetalingerDto.getUtbetalingsdato().toString())
-//                .withKomponenter(tilUtbetalingskomponentListe(bostotteDto.komponenter))
                 .withOverstyrtAvBruker(false);
     }
 
-    private List<JsonSaksStatus> mapToJsonSaksStatuser(BostotteDto bostotteDto) {
+    private List<JsonOkonomiOpplysningSak> mapToJsonOkonomiOpplysningSaker(BostotteDto bostotteDto) {
         return bostotteDto.getSaker().stream()
-                .map(this::mapToJsonSaksStatus)
+                .map(this::mapToJsonOkonomiOpplysningSak)
                 .collect(Collectors.toList());
     }
-    private JsonSaksStatus mapToJsonSaksStatus(SakerDto sakerDto) {
-        return new JsonSaksStatus()
-                .withStatus(JsonSaksStatus.Status.fromValue(sakerDto.getStatus()))
-//                .withAdditionalProperty(sakerDto.getRolle(), sakerDto.getRolle())
-                .withHendelsestidspunkt(sakerDto.getDato().toString())
-                .withReferanse(sakerDto.getVedtak().getBeskrivelse())
-                .withTittel("Bostøtte")
-                .withType(JsonHendelse.Type.fromValue(sakerDto.getVedtak().getKode()))
-                ;
+    private JsonOkonomiOpplysningSak mapToJsonOkonomiOpplysningSak(SakerDto sakerDto) {
+        return new JsonOkonomiOpplysningSak()
+                .withKilde(JsonKilde.SYSTEM)
+                .withType(HUSBANKEN_TYPE)
+                .withBeskrivelse(sakerDto.getVedtak().getBeskrivelse())
+                .withDato(sakerDto.getDato().toString());
     }
 }

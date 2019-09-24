@@ -9,14 +9,6 @@ public class SakerDto {
     private VedtakDto vedtak;
     private String rolle;
 
-    public Integer getMnd() {
-        return mnd;
-    }
-
-    public Integer getAr() {
-        return ar;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -25,11 +17,16 @@ public class SakerDto {
         return vedtak;
     }
 
-    public String getRolle() {
-        return rolle;
-    }
-
     public LocalDate getDato() {
         return LocalDate.of(ar, mnd, 1);
+    }
+
+    public SakerDto with(Integer mnd, Integer ar, String status, VedtakDto vedtak, String rolle) {
+        this.mnd = mnd;
+        this.ar = ar;
+        this.status = status;
+        this.vedtak = vedtak;
+        this.rolle = rolle;
+        return this;
     }
 }

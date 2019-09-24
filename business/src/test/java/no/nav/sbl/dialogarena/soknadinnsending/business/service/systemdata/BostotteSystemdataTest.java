@@ -38,7 +38,7 @@ public class BostotteSystemdataTest {
         String mottaker = "Ola Normann";
         BigDecimal belop = BigDecimal.valueOf(10000);
         LocalDate utbetalingsDato = LocalDate.now();
-        BostotteDto bostotteDto = new BostotteDto().withWithUtbetaling(new UtbetalingerDto().with(mottaker, belop, utbetalingsDato));
+        BostotteDto bostotteDto = new BostotteDto().withUtbetaling(new UtbetalingerDto().with(mottaker, belop, utbetalingsDato));
 
         // Mock:
         when(bostotte.hentBostotte(any(), any(), any())).thenReturn(bostotteDto);
@@ -62,8 +62,8 @@ public class BostotteSystemdataTest {
         BigDecimal belop2 = BigDecimal.valueOf(20000);
         LocalDate utbetalingsDato = LocalDate.now();
         BostotteDto bostotteDto = new BostotteDto()
-                .withWithUtbetaling(new UtbetalingerDto().with(mottaker, belop1, utbetalingsDato.minusMonths(1)))
-                .withWithUtbetaling(new UtbetalingerDto().with(mottaker, belop2, utbetalingsDato));
+                .withUtbetaling(new UtbetalingerDto().with(mottaker, belop1, utbetalingsDato.minusMonths(1)))
+                .withUtbetaling(new UtbetalingerDto().with(mottaker, belop2, utbetalingsDato));
 
         // Mock:
         when(bostotte.hentBostotte(any(), any(), any())).thenReturn(bostotteDto);

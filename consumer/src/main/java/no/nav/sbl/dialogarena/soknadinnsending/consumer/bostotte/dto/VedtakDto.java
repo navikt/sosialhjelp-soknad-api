@@ -11,4 +11,10 @@ public class VedtakDto {
     public String getBeskrivelse() {
         return beskrivelse;
     }
+
+    public VedtakDto with(String kode, String beskrivelse) {
+        this.kode = kode;
+        this.beskrivelse = beskrivelse;
+        return this;
+    }
 }

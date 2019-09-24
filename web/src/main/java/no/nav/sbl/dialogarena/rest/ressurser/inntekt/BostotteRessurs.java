@@ -4,9 +4,9 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSaksStatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -99,15 +99,17 @@ public class BostotteRessurs {
                 .collect(Collectors.toList());
     }
 
-    private List<JsonSaksStatus> mapToUtSaksStatuser(JsonInternalSoknad soknad) {
-        return null;
+    private List<JsonOkonomiOpplysningSak> mapToUtSaksStatuser(JsonInternalSoknad soknad) {
+        return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getSak().stream()
+                .filter(sak -> sak.getType().equals(HUSBANKEN_TYPE))
+                .collect(Collectors.toList());
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BostotteFrontend {
         public Boolean bekreftelse;
         public List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
-        public List<JsonSaksStatus> saksStatuser;
+        public List<JsonOkonomiOpplysningSak> saker;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
@@ -117,8 +119,8 @@ public class BostotteRessurs {
             this.utbetalinger = utbetalinger;
         }
 
-        public void setSaksStatuser(List<JsonSaksStatus> saksStatuser) {
-            this.saksStatuser = saksStatuser;
+        public void setSaksStatuser(List<JsonOkonomiOpplysningSak> saker) {
+            this.saker = saker;
         }
     }
 }

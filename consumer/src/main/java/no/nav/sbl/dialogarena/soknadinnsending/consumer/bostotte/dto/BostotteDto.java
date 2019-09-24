@@ -15,8 +15,13 @@ public class BostotteDto {
         return utbetalinger;
     }
 
-    public BostotteDto withWithUtbetaling(UtbetalingerDto utbetalingerDto) {
+    public BostotteDto withUtbetaling(UtbetalingerDto utbetalingerDto) {
         utbetalinger.add(utbetalingerDto);
+        return this;
+    }
+
+    public BostotteDto withSak(SakerDto sakerDto) {
+        saker.add(sakerDto);
         return this;
     }
 }
