@@ -19,7 +19,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
-@Path("/innsyn")
+@Path("/soknadoversikt")
 @Timed
 @Produces(APPLICATION_JSON)
 public class SoknadOversiktRessurs {
