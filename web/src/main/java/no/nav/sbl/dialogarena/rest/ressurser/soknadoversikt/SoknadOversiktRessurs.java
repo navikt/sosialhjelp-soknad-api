@@ -36,6 +36,7 @@ public class SoknadOversiktRessurs {
         logger.debug("Henter alle søknader for fnr {}", fnr);
 
         List<SoknadOversikt> soknader = service.hentAlleSoknaderFor(fnr);
+        logger.debug("Hentet {} søknader for bruker", soknader.size());
 
         return soknader;
     }
