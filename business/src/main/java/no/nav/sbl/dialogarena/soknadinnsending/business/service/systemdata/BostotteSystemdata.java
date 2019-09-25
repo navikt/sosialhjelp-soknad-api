@@ -36,6 +36,9 @@ public class BostotteSystemdata implements Systemdata {
             okonomi.getOpplysninger().getUtbetaling().addAll(jsonOkonomiOpplysningUtbetaling);
             List<JsonOkonomiOpplysningSak> jsonSaksStatuser = mapToJsonOkonomiOpplysningSaker(bostotteDto);
             okonomi.getOpplysninger().getSak().addAll(jsonSaksStatuser);
+            soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
+        } else {
+            soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
         }
     }
 

@@ -51,14 +51,13 @@ public class BostotteRessurs {
         final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
         final BostotteFrontend bostotteFrontend = new BostotteFrontend();
 
-        if (opplysninger.getBekreftelse() == null){
-            return bostotteFrontend;
+        if (opplysninger.getBekreftelse() != null){
+            setBekreftelseOnBostotteFrontend(opplysninger, bostotteFrontend);
         }
-
-        setBekreftelseOnBostotteFrontend(opplysninger, bostotteFrontend);
 
         bostotteFrontend.setUtbetalinger(mapToUtbetalinger(soknad));
         bostotteFrontend.setSaksStatuser(mapToUtSaksStatuser(soknad));
+        bostotteFrontend.setStotteFraHusbankenFeilet(soknad.getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet());
 
         return bostotteFrontend;
     }
@@ -110,6 +109,7 @@ public class BostotteRessurs {
         public Boolean bekreftelse;
         public List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
         public List<JsonOkonomiOpplysningSak> saker;
+        public Boolean stotteFraHusbankenFeilet;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
@@ -121,6 +121,10 @@ public class BostotteRessurs {
 
         public void setSaksStatuser(List<JsonOkonomiOpplysningSak> saker) {
             this.saker = saker;
+        }
+
+        public void setStotteFraHusbankenFeilet(Boolean stotteFraHusbankenFeilet) {
+            this.stotteFraHusbankenFeilet = stotteFraHusbankenFeilet;
         }
     }
 }

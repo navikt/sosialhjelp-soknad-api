@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
@@ -163,6 +164,26 @@ public class BostotteRessursTest {
         Assertions.assertThat(bostotteFrontend.utbetalinger).hasSize(0);
     }
 
+    @Test
+    public void bostotte_skalBareHaUtRiktigSak() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithSaker(true, asList("tilfeldig", "salg", "lonn")));
+
+        BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
+
+        Assertions.assertThat(bostotteFrontend.saker).hasSize(1);
+    }
+
+    @Test
+    public void bostotte_skalIkkeHaSak() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn")));
+
+        BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
+
+        Assertions.assertThat(bostotteFrontend.saker).hasSize(0);
+    }
+
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
@@ -195,6 +216,25 @@ public class BostotteRessursTest {
                     .withTittel("tittel"));
         }
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setUtbetaling(utbetalinger);
+        return soknadUnderArbeid;
+    }
+
+    private SoknadUnderArbeid createJsonInternalSoknadWithSaker(Boolean harSaker, List<String> saksTyper) {
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        List<JsonOkonomiOpplysningSak> saker = new ArrayList<>();
+        for (String sak: saksTyper) {
+            saker.add(new JsonOkonomiOpplysningSak()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(sak)
+                    .withStatus("STATUS"));
+        }
+        if(harSaker) {
+            saker.add(new JsonOkonomiOpplysningSak()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(HUSBANKEN_TYPE)
+                    .withStatus("UNDER_BEHANDLING"));
+        }
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setSak(saker);
         return soknadUnderArbeid;
     }
 }
