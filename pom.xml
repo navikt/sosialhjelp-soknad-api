@@ -38,6 +38,25 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>maven-snapshots</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>maven-releases</id>
+            <name>NAV Internal Repository</name>
+            <url>https://repo.adeo.no/repository/maven-releases/</url>
+        </repository>
+    </repositories>
+
     <properties>
         <sonar.exclusions>
             **/mockmodul/**,
@@ -72,7 +91,7 @@
         <jackson.version>2.9.9</jackson.version>
         <jackson-databind.version>2.9.9.3</jackson-databind.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
-        <filformat.version>1.2019.09.02-13.46-fc1be7f64b85</filformat.version>
+        <filformat.version>1.2019.09.25-09.38-1744795f00f1-SNAPSHOT</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
