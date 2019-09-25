@@ -23,10 +23,14 @@ public class BostotteImpl implements Bostotte {
     }
 
     @Override
-    public BostotteDto hentBostotte(String personIdentifikator, LocalDate fra, LocalDate til) {
+    public BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til) {
         try {
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
-            return operations.exchange(RequestEntity.get(uri.build()).header(config.getUsername(), config.getAppKey()).build(), BostotteDto.class).getBody();
+            RequestEntity<Void> request = RequestEntity.get(uri.build())
+                    .header(config.getUsername(), config.getAppKey())
+                    .header("Authorization", "Bearer " + token)
+                    .build();
+            return operations.exchange(request, BostotteDto.class).getBody();
         } catch (ResourceAccessException e) {
             logger.warn("Problemer med å hente bostøtte informasjon!", e);
         }

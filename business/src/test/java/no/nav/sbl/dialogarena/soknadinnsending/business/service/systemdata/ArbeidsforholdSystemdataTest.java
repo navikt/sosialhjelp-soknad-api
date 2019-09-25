@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
-import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
@@ -9,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingSer
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -26,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
@@ -84,7 +81,7 @@ public class ArbeidsforholdSystemdataTest {
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
-        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonArbeidsforhold> jsonArbeidsforholdList = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getForhold();
         JsonArbeidsforhold jsonArbeidsforhold = jsonArbeidsforholdList.get(0);
@@ -106,9 +103,9 @@ public class ArbeidsforholdSystemdataTest {
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
         System.setProperty("tillatmock", "true");
         skattbarInntektService.mockFil = "TULL";
-        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
         System.setProperty("tillatmock", "false");
-        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonOkonomioversiktInntekt inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt().get(0);
 
@@ -128,10 +125,10 @@ public class ArbeidsforholdSystemdataTest {
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
         System.setProperty("tillatmock", "true");
         skattbarInntektService.mockFil = "TULL";
-        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         System.setProperty("tillatmock", "false");
-        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonOkonomiOpplysningUtbetaling utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().get(0);
 
@@ -148,7 +145,7 @@ public class ArbeidsforholdSystemdataTest {
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
 
-        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonArbeidsforhold> jsonArbeidsforholdList = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getForhold();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();

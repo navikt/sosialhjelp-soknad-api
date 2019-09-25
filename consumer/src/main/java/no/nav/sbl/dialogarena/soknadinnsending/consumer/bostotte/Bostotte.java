@@ -7,5 +7,5 @@ import java.time.LocalDate;
 public interface Bostotte {
     String HUSBANKEN_TYPE = "husbanken";
 
-    BostotteDto hentBostotte(String personIdentifikator, LocalDate fra, LocalDate til);
+    BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til);
 }

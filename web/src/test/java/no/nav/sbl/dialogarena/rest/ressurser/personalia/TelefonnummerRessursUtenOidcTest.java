@@ -39,7 +39,7 @@ public class TelefonnummerRessursUtenOidcTest {
     public void setUp() {
         System.setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-        doCallRealMethod().when(telefonnummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class));
+        doCallRealMethod().when(telefonnummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class), any());
     }
 
     @After

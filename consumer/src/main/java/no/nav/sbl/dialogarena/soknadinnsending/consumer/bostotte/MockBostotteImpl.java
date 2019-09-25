@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class MockBostotteImpl implements Bostotte {
 
     @Override
-    public BostotteDto hentBostotte(String personIdentifikator, LocalDate fra, LocalDate til) {
+    public BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til) {
         String mottaker1 = "KOMMUNE";
         String mottaker2 = "HUSSTAND";
         BigDecimal belop1 = BigDecimal.valueOf(10000);

@@ -40,7 +40,7 @@ public class InntektSystemdata implements Systemdata {
     ArbeidsforholdTransformer arbeidsforholdTransformer;
 
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();

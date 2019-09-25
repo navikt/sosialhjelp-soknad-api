@@ -58,7 +58,7 @@ public class BostotteImplTest {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(bostotteDto));
 
         // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, fra,til)).isEqualTo(bostotteDto);
+        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(bostotteDto);
         verify(operations).exchange(captor.capture(), any(Class.class));
         assertThat(captor.getValue().getUrl().toString()).startsWith(configUrl);
     }
@@ -77,7 +77,7 @@ public class BostotteImplTest {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(bostotteDto));
 
         // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, fra,til)).isEqualTo(bostotteDto);
+        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(bostotteDto);
         verify(operations).exchange(captor.capture(), any(Class.class));
         assertThat(captor.getValue().getUrl().toString()).contains("fra=" + fra.toString());
         assertThat(captor.getValue().getUrl().toString()).contains("til=" + til.toString());
@@ -94,6 +94,6 @@ public class BostotteImplTest {
         when(operations.exchange(any(), any(Class.class))).thenThrow(new ResourceAccessException("TestException"));
 
         // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, fra,til)).isEqualTo(null);
+        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(null);
     }
 }

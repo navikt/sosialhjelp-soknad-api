@@ -152,7 +152,7 @@ public class InntektSystemdataTest {
         when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(nav_utbetalinger);
         when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(skattbare_utbetalinger);
 
-        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
@@ -171,7 +171,7 @@ public class InntektSystemdataTest {
         when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(nav_utbetalinger);
         when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(skattbare_utbetalinger);
 
-        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
@@ -190,7 +190,7 @@ public class InntektSystemdataTest {
         List<Utbetaling> utbetalinger = Collections.singletonList(NAV_UTBETALING);
         when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(utbetalinger);
 
-        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);

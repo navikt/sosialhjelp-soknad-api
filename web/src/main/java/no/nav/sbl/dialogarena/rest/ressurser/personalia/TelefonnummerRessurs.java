@@ -74,7 +74,7 @@ public class TelefonnummerRessurs {
             }
         } else {
             jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
-            telefonnummerSystemdata.updateSystemdataIn(soknad);
+            telefonnummerSystemdata.updateSystemdataIn(soknad, "");
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }

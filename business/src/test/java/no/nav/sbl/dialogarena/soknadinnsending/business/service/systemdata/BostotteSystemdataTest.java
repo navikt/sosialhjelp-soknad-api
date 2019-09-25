@@ -32,7 +32,7 @@ public class BostotteSystemdataTest {
     private BostotteSystemdata bostotteSystemdata;
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertMedDataFraHusbanken() {
+    public void updateSystemdata_soknadBlirOppdatertMedUtbetalingFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         String mottaker = "Ola Normann";
@@ -41,10 +41,10 @@ public class BostotteSystemdataTest {
         BostotteDto bostotteDto = new BostotteDto().withUtbetaling(new UtbetalingerDto().with(mottaker, belop, utbetalingsDato));
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any())).thenReturn(bostotteDto);
+        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         assertThat(utbetalinger).isNotEmpty();
@@ -66,10 +66,10 @@ public class BostotteSystemdataTest {
                 .withUtbetaling(new UtbetalingerDto().with(mottaker, belop2, utbetalingsDato));
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any())).thenReturn(bostotteDto);
+        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         assertThat(utbetalinger).isNotEmpty();

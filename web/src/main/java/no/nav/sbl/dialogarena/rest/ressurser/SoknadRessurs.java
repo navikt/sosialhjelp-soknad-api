@@ -13,6 +13,7 @@ import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
@@ -26,9 +27,10 @@ import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -81,7 +83,7 @@ public class SoknadRessurs {
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        systemdata.update(soknadUnderArbeid);
+        systemdata.update(soknadUnderArbeid, "");
 
         final JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -90,7 +92,7 @@ public class SoknadRessurs {
         soknadUnderArbeidService.sortOkonomi(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi());
         soknadUnderArbeidService.sortOkonomi(notUpdatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi());
 
-        if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
+        if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)) {
             return false;
         } else {
             soknadUnderArbeidService.logDifferences(notUpdatedSoknadUnderArbeid, soknadUnderArbeid, "Forskjell på systemdata i json: ");
@@ -102,12 +104,12 @@ public class SoknadRessurs {
     @POST
     @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response) {
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @RequestHeader(value = AUTHORIZATION) String token) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad();
+            opprettetBehandlingsId = soknadService.startSoknad(token);
         } else {
             final String eier = OidcFeatureToggleUtils.getUserId();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);

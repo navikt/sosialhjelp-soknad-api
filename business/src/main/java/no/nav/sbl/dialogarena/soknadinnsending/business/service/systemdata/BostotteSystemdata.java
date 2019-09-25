@@ -26,11 +26,11 @@ public class BostotteSystemdata implements Systemdata {
     private Bostotte bostotte;
 
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
-        BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator);
+        BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
         if (bostotteDto != null) {
             List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto);
             okonomi.getOpplysninger().getUtbetaling().addAll(jsonOkonomiOpplysningUtbetaling);
@@ -39,8 +39,8 @@ public class BostotteSystemdata implements Systemdata {
         }
     }
 
-    private BostotteDto innhentBostotteFraHusbanken(String personIdentifikator) {
-        return bostotte.hentBostotte(personIdentifikator, LocalDate.now().minusMonths(3), LocalDate.now());
+    private BostotteDto innhentBostotteFraHusbanken(String personIdentifikator, String token) {
+        return bostotte.hentBostotte(personIdentifikator, token, LocalDate.now().minusMonths(3), LocalDate.now());
     }
 
     private List<JsonOkonomiOpplysningUtbetaling> mapToJsonOkonomiOpplysningUtbetalinger(BostotteDto bostotteDto) {

@@ -70,7 +70,7 @@ public class KontonummerRessurs {
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto);
         } else if (kontonummer.getKilde() == JsonKilde.BRUKER) {
             kontonummer.setKilde(JsonKilde.SYSTEM);
-            kontonummerSystemdata.updateSystemdataIn(soknad);
+            kontonummerSystemdata.updateSystemdataIn(soknad, "");
             kontonummer.setHarIkkeKonto(null);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);

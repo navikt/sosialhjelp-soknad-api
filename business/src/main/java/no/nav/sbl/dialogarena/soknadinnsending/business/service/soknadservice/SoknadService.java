@@ -74,7 +74,7 @@ public class SoknadService {
     private SystemdataUpdater systemdata;
 
     @Transactional
-    public String startSoknad() {
+    public String startSoknad(String token) {
         String mainUid = randomUUID().toString();
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
@@ -98,7 +98,7 @@ public class SoknadService {
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
 
-        systemdata.update(soknadUnderArbeid);
+        systemdata.update(soknadUnderArbeid, token);
 
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, aktorId);
 
