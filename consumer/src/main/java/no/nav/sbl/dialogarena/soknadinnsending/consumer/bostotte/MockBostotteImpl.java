@@ -12,24 +12,35 @@ public class MockBostotteImpl implements Bostotte {
 
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, LocalDate fra, LocalDate til) {
-        String mottaker = "KOMMUNE";
-        BigDecimal belop = BigDecimal.valueOf(10000);
+        String mottaker1 = "KOMMUNE";
+        String mottaker2 = "HUSSTAND";
+        BigDecimal belop1 = BigDecimal.valueOf(10000);
+        BigDecimal belop2 = BigDecimal.valueOf(20000);
         LocalDate utbetalingsDato = LocalDate.now();
-        LocalDate saksDato = LocalDate.now().minusDays(3);
-        String saksStatus = "VEDTATT";
-        String rolle = "HOVEDPERSON";
+        LocalDate saksDato1 = LocalDate.now().minusDays(3);
+        LocalDate saksDato2 = LocalDate.now().minusDays(33);
+        String saksStatus1 = "VEDTATT";
+        String saksStatus2 = "UNDER_BEHANDLING";
+        String rolle1 = "HOVEDPERSON";
+        String rolle2 = "BIPERSON";
         String vedtaksKode = "V03";
         String vedtaksBeskrivelse = "Avslag - For høy inntekt";
 
-        UtbetalingerDto utbetalingerDto = new UtbetalingerDto()
-                .with(mottaker, belop, utbetalingsDato);
+        UtbetalingerDto utbetalingerDto1 = new UtbetalingerDto()
+                .with(mottaker1, belop1, utbetalingsDato);
+        UtbetalingerDto utbetalingerDto2 = new UtbetalingerDto()
+                .with(mottaker2, belop2, utbetalingsDato);
         VedtakDto vedtakDto = new VedtakDto()
                 .with(vedtaksKode, vedtaksBeskrivelse);
-        SakerDto sakerDto = new SakerDto()
-                .with(saksDato.getMonthValue(), saksDato.getYear(), saksStatus, vedtakDto, rolle);
+        SakerDto sakerDto1 = new SakerDto()
+                .with(saksDato1.getMonthValue(), saksDato1.getYear(), saksStatus1, vedtakDto, rolle1);
+        SakerDto sakerDto2 = new SakerDto()
+                .with(saksDato2.getMonthValue(), saksDato2.getYear(), saksStatus2, null, rolle2);
 
         return new BostotteDto()
-                .withUtbetaling(utbetalingerDto)
-                .withSak(sakerDto);
+                .withUtbetaling(utbetalingerDto1)
+                .withUtbetaling(utbetalingerDto2)
+                .withSak(sakerDto1)
+                .withSak(sakerDto2);
     }
 }

@@ -55,7 +55,7 @@ public class BostotteSystemdata implements Systemdata {
                 .withType(HUSBANKEN_TYPE)
                 .withTittel(utbetalingerDto.getMottaker())
                 .withBelop(utbetalingerDto.getBelop().intValue())
-                .withUtbetalingsdato(utbetalingerDto.getUtbetalingsdato() == null ? null : utbetalingerDto.getUtbetalingsdato().toString())
+                .withUtbetalingsdato(utbetalingerDto.getUtbetalingsdato() != null ? utbetalingerDto.getUtbetalingsdato().toString() : null)
                 .withOverstyrtAvBruker(false);
     }
 
@@ -68,7 +68,8 @@ public class BostotteSystemdata implements Systemdata {
         return new JsonOkonomiOpplysningSak()
                 .withKilde(JsonKilde.SYSTEM)
                 .withType(HUSBANKEN_TYPE)
-                .withBeskrivelse(sakerDto.getVedtak().getBeskrivelse())
+                .withStatus(sakerDto.getStatus())
+                .withBeskrivelse(sakerDto.getVedtak() != null ? sakerDto.getVedtak().getBeskrivelse() : null)
                 .withDato(sakerDto.getDato().toString());
     }
 }
