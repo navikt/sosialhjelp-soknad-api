@@ -43,6 +43,7 @@ public class BostotteSystemdata implements Systemdata {
     }
 
     private BostotteDto innhentBostotteFraHusbanken(String personIdentifikator, String token) {
+        //FIXME: sett riktig fra dato:
         return bostotte.hentBostotte(personIdentifikator, token, LocalDate.now().minusMonths(3), LocalDate.now());
     }
 
