@@ -54,7 +54,7 @@ public class SoknadActions {
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid != null) {
             KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer());
-            if (kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) {
+            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN)|| true) {
                 log.info(kommuneStatus.name());
                 digisosApiService.sendSoknad(soknadUnderArbeid, token);
                 return;

@@ -60,7 +60,7 @@ public class SoknadActionsTest {
 
     @Test
     public void sendSoknadSkalKalleSoknadService() {
-        actions.sendSoknad(BEHANDLINGS_ID, context);
+        actions.sendSoknad(BEHANDLINGS_ID, context, "");
 
         verify(soknadService, times(1)).sendSoknad(eq(BEHANDLINGS_ID));
     }
