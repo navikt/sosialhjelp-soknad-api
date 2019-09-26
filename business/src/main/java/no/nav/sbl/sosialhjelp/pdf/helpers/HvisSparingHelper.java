@@ -20,7 +20,6 @@ public class HvisSparingHelper extends RegistryAwareHelper<Object>{
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
         final Set<String> sparingTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("inntekt.bankinnskudd.true.type", SPRAK);
-        sparingTyper.remove("annet");
 
         if (key != null && sparingTyper.contains(key.toString())){
             return options.fn(this);
