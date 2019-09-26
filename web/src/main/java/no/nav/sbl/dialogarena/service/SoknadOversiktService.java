@@ -19,7 +19,7 @@ public class SoknadOversiktService {
 
     static final String KILDE_SOKNAD_API = "soknad-api";
 
-    static final String DEFAULT_TITTEL = "Søknad om økonomisk sosialhjelp";
+    static final String DEFAULT_TITTEL = "Økonomisk sosialhjelp";
 
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -31,7 +31,7 @@ public class SoknadOversiktService {
         return soknader.stream()
                 .map(soknadMetadata -> new SoknadOversikt()
                         .withFiksDigisosId(null)
-                        .withSoknadTittel(DEFAULT_TITTEL)
+                        .withSoknadTittel(String.format(DEFAULT_TITTEL + " (%s)", soknadMetadata.behandlingsId))
                         .withStatus(soknadMetadata.status.toString())
                         .withSistOppdatert(soknadMetadata.sistEndretDato)
                         .withAntallNyeOppgaver(null)

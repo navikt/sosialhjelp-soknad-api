@@ -18,8 +18,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.service.SoknadOversiktService.DEFAULT_TITTEL;
 import static no.nav.sbl.dialogarena.service.SoknadOversiktService.KILDE_SOKNAD_API;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,7 +53,8 @@ public class SoknadOversiktServiceTest {
         assertEquals(1, resultat.size());
         SoknadOversikt soknad = resultat.get(0);
         assertNull(soknad.getFiksDigisosId());
-        assertEquals(DEFAULT_TITTEL, soknad.getSoknadTittel());
+        assertTrue(soknad.getSoknadTittel().contains(DEFAULT_TITTEL));
+        assertTrue(soknad.getSoknadTittel().contains(soknadMetadata.behandlingsId));
         assertEquals(UNDER_ARBEID.toString(), soknad.getStatus());
         assertEquals(LocalDateTime.of(2018, 4, 11, 13, 30, 0), soknad.getSistOppdatert());
         assertNull(soknad.getAntallNyeOppgaver());
