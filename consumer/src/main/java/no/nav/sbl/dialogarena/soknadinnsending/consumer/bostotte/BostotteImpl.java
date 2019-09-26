@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestOperations;
 
@@ -30,13 +31,11 @@ public class BostotteImpl implements Bostotte {
                     .header(config.getUsername(), config.getAppKey())
                     .header("Authorization", "Bearer " + token)
                     .build();
-            logger.warn("Bostotte hentBostotte args: " + personIdentifikator + "|" + token + "|" + fra.toString() + "|" + til.toString());
-            logger.warn("Bostotte request: " + request.toString());
-            BostotteDto body = operations.exchange(request, BostotteDto.class).getBody();
-            logger.warn("Bostotte request: " + body.toString());
-            return body;
+            return operations.exchange(request, BostotteDto.class).getBody();
         } catch (ResourceAccessException e) {
             logger.warn("Problemer med å hente bostøtte informasjon!", e);
+        } catch (HttpClientErrorException e) {
+            logger.warn("Problemer med å koble opp mot Husbanken!", e);
         }
         return null;
     }

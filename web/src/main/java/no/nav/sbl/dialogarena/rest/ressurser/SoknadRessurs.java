@@ -13,7 +13,6 @@ import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
@@ -104,7 +103,7 @@ public class SoknadRessurs {
     @POST
     @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @RequestHeader(value = AUTHORIZATION) String token) {
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @HeaderParam(value = AUTHORIZATION) String token) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
