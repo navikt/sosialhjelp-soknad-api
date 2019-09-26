@@ -157,7 +157,7 @@ public class SkattbarInntektService {
         Map<String, Map<LocalDate, Utbetaling>> trekkOrgPerMaaned = getUtBetalingPerMaanedPerOrg(grupperEtterOrganisasjon(trekk));
 
         List<Utbetaling> utbetalingerBrutto = bruttoOrgPerMaaned.values().stream().flatMap(m -> m.values().stream()).collect(toList());
-        return utbetalingerBrutto.stream().peek(utbetaling -> {
+        return utbetalingerBrutto.stream().filter(utbetaling -> !utbetaling.orgnummer.equals("995277670")).peek(utbetaling -> {
             Map<LocalDate, Utbetaling> localDateUtbetalingMap = trekkOrgPerMaaned.get(utbetaling.orgnummer);
             if (localDateUtbetalingMap != null) {
                 Utbetaling trekkUtbetaling = localDateUtbetalingMap.get(utbetaling.periodeFom);
