@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneStatus.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
@@ -98,6 +99,10 @@ public class DigisosApiService {
     }
 
     KommuneInfo hentKommuneInfo(String kommunenummer) {
+
+        if (isTillatMockRessurs()) {
+            return new KommuneInfo();
+        }
         IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune/" + kommunenummer);
@@ -274,6 +279,10 @@ public class DigisosApiService {
     }
 
     public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid) {
+        if (MockUtils.isTillatMockRessurs()) {
+            return;
+        }
+
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             log.error(String.format("Kan ikke sende inn ettersendingen med ID %s uten å ha lastet opp vedlegg", behandlingsId));
@@ -290,7 +299,7 @@ public class DigisosApiService {
         sendOgKrypter(filOpplastinger, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, "token");
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
-        if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {
+        if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
             logAlderTilKibana(OidcFeatureToggleUtils.getUserId());
         }
     }

@@ -9,6 +9,7 @@ import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.NameValuePair;
@@ -34,14 +35,17 @@ import java.util.*;
 
 @Component
 public class IdPortenService {
-    private final String idPortenTokenUrl;
-    private final String idPortenClientId;
-    private final String idPortenScope;
+    private  String idPortenTokenUrl;
+    private  String idPortenClientId;
+    private  String idPortenScope;
     private final Logger log = LoggerFactory.getLogger(IdPortenService.class);
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private ObjectMapper objectMapper;
 
     public IdPortenService() {
+        if (MockUtils.isTillatMockRessurs()) {
+            return;
+        }
         this.idPortenTokenUrl = System.getProperty("idporten_token_url");
         this.idPortenClientId = System.getProperty("idporten_clientid");
         this.idPortenScope = System.getProperty("idporten_scope");
