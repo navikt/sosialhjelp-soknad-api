@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -193,7 +194,7 @@ public class BostotteRessursTest {
     private SoknadUnderArbeid createJsonInternalSoknadWithBostotte(Boolean verdi) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().withBekreftelse(
-                asList(new JsonOkonomibekreftelse()
+                Collections.singletonList(new JsonOkonomibekreftelse()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(BEKREFTELSE_TYPE)
                         .withVerdi(verdi)));
