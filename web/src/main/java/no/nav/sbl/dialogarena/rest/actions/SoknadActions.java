@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
@@ -27,6 +29,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Produces(APPLICATION_JSON)
 @Timed(name = "SoknadActionsRessurs")
 public class SoknadActions {
+
+    private static final Logger log = getLogger(SoknadActions.class);
 
     @Inject
     private SoknadService soknadService;
@@ -48,8 +52,9 @@ public class SoknadActions {
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid != null) {
             KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer());
-            if (kommuneStatus != null && kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) {
-                digisosApiService.sendSoknad(soknadUnderArbeid);
+            if (kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) {
+                log.info(kommuneStatus.name());
+                // digisosApiService.sendSoknad(soknadUnderArbeid);
                 return;
             }
         }

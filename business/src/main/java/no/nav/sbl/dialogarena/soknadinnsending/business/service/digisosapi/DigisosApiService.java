@@ -136,7 +136,7 @@ public class DigisosApiService {
         if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
             return PA_FIKS_OG_INNSYN;
         }
-        return null;
+        return IKKE_PA_FIKS_ELLER_INNSYN;
     }
 
 
