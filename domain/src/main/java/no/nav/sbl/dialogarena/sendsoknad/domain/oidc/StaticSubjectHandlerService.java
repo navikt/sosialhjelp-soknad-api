@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
 public class StaticSubjectHandlerService implements SubjectHandlerService {
-    private final static String DEFAULT_USER = "01015245464";
-    private final static String DEFAULT_TOKEN = "01015245464";
+    private final static String DEFAULT_USER = "23079403598"; //Testbruker i idporten.
+    private final static String DEFAULT_TOKEN = "token";
     private String user = DEFAULT_USER;
     private String fakeToken = DEFAULT_TOKEN;
 
