@@ -159,7 +159,7 @@ public class KrypteringService {
 
             post.setHeader("Accept", MediaType.APPLICATION_JSON);
             post.setHeader("requestid", UUID.randomUUID().toString());
-            post.setHeader("Authorization", "Bearer " + token);
+            post.setHeader("Authorization", token);
             post.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
             post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
 

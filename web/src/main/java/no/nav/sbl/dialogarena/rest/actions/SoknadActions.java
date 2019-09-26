@@ -11,6 +11,7 @@ import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Context;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
@@ -46,7 +48,7 @@ public class SoknadActions {
 
     @POST
     @Path("/send")
-    public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
+    public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @RequestHeader(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -54,7 +56,7 @@ public class SoknadActions {
             KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer());
             if (kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) {
                 log.info(kommuneStatus.name());
-                // digisosApiService.sendSoknad(soknadUnderArbeid);
+                digisosApiService.sendSoknad(soknadUnderArbeid, token);
                 return;
             }
         }
