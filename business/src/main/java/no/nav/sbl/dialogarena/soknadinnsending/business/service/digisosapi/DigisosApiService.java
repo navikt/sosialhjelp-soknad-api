@@ -123,6 +123,10 @@ public class DigisosApiService {
     public KommuneStatus kommuneInfo(String kommunenummer) {
         KommuneInfo kommuneInfo = hentKommuneInfo(kommunenummer);
 
+        if (kommuneInfo == null) {
+            return IKKE_PA_FIKS_ELLER_INNSYN;
+        }
+
         if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
             return IKKE_PA_FIKS_ELLER_INNSYN;
         }
