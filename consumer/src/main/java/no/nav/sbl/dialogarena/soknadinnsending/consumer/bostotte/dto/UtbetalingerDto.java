@@ -25,6 +25,10 @@ public class UtbetalingerDto {
         return rolle;
     }
 
+    public void setUtbetalingsdato(String datoString) {
+        this.utbetalingsdato = LocalDate.parse(datoString);
+    }
+
     public UtbetalingerDto with(String mottaker, BigDecimal belop, LocalDate utbetalingsdato) {
         this.mottaker = mottaker;
         this.belop = belop;

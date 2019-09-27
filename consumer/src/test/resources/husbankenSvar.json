@@ -1,0 +1,45 @@
+{
+  "saker": [
+    {
+      "mnd": 7,
+      "ar": 2019,
+      "status": "VEDTATT",
+      "vedtak": {
+        "kode": "V00",
+        "beskrivelse": "Innvilget bostøtte, ord. saker"
+      },
+      "rolle": "HOVEDPERSON"
+    },
+    {
+      "mnd": 8,
+      "ar": 2019,
+      "status": "VEDTATT",
+      "vedtak": {
+        "kode": "V00",
+        "beskrivelse": "Innvilget bostøtte, ord. saker"
+      },
+      "rolle": "HOVEDPERSON"
+    },
+    {
+      "mnd": 9,
+      "ar": 2019,
+      "status": "UNDER_BEHANDLING",
+      "vedtak": null,
+      "rolle": "HOVEDPERSON"
+    }
+  ],
+  "utbetalinger": [
+    {
+      "utbetalingsdato": "2019-07-20",
+      "belop": 4300,
+      "mottaker": "HUSSTAND",
+      "rolle": "HOVEDPERSON"
+    },
+    {
+      "utbetalingsdato": "2019-08-20",
+      "belop": 4300,
+      "mottaker": "HUSSTAND",
+      "rolle": "HOVEDPERSON"
+    }
+  ]
+}

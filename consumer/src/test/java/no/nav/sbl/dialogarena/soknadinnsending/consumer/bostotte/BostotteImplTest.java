@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
+import org.apache.cxf.helpers.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestOperations;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,6 +85,21 @@ public class BostotteImplTest {
         verify(operations).exchange(captor.capture(), any(Class.class));
         assertThat(captor.getValue().getUrl().toString()).contains("fra=" + fra.toString());
         assertThat(captor.getValue().getUrl().toString()).contains("til=" + til.toString());
+    }
+
+    @Test
+    public void hentBostotte_testJson_testingJsonTranslation() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("husbankenSvar.json");
+        String jsonString = IOUtils.toString(resourceAsStream);
+
+        BostotteDto bostotteDto = objectMapper.readValue(jsonString, BostotteDto.class);
+
+        assertThat(bostotteDto.getSaker()).hasSize(3);
+        assertThat(bostotteDto.getUtbetalinger().get(0).getUtbetalingsdato()).isEqualTo(LocalDate.of(2019,7,20));
+        assertThat(bostotteDto.getUtbetalinger().get(1).getUtbetalingsdato()).isEqualTo(LocalDate.of(2019,8,20));
+        assertThat(bostotteDto.getUtbetalinger()).hasSize(2);
     }
 
     @Test
