@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BostotteDto {
-    List<SakerDto> saker = new ArrayList<>();
-    List<UtbetalingerDto> utbetalinger= new ArrayList<>();
+    public List<SakerDto> saker = new ArrayList<>();
+    public List<UtbetalingerDto> utbetalinger= new ArrayList<>();
 
     public List<SakerDto> getSaker() {
         return saker;

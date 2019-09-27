@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestOperations;
@@ -42,6 +43,8 @@ public class BostotteImpl implements Bostotte {
             logger.warn("Problemer med å hente bostøtte informasjon!", e);
         } catch (HttpClientErrorException e) {
             logger.warn("Problemer med å koble opp mot Husbanken!", e);
+        } catch (HttpMessageNotReadableException e) {
+            logger.warn("Problemer med å tolke data fra Husbanken!", e);
         }
         return null;
     }

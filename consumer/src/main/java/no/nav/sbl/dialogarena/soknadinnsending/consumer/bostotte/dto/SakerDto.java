@@ -3,11 +3,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto;
 import java.time.LocalDate;
 
 public class SakerDto {
-    private Integer mnd;
-    private Integer ar;
-    private String status;
-    private VedtakDto vedtak;
-    private String rolle;
+    public Integer mnd;
+    public Integer ar;
+    public String status;
+    public VedtakDto vedtak;
+    public String rolle;
 
     public String getStatus() {
         return status;

@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto;
 
 public class VedtakDto {
-    private String kode;
-    private String beskrivelse;
+    public String kode;
+    public String beskrivelse;
 
     public String getKode() {
         return kode;
