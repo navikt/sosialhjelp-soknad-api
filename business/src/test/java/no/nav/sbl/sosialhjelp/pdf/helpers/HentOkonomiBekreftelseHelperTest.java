@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class HentOkonomiBekreftelseHelperTest {
         final JsonOkonomibekreftelse bostotteBekreftelse = new JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
                 .withTittel("Søkt eller mottatt bostøtte fra Husbanken.")
-                .withType("bostotte");
+                .withType(STUDIELAN);
         
         if (bostotteBekreftelseSkalHaVerdiLikTrue) {
             bostotteBekreftelse.setVerdi(Boolean.TRUE);

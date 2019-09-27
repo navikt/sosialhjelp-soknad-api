@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -43,10 +44,10 @@ public class BoutgiftRessurs {
 
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
+        BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return boutgifterFrontend;
@@ -61,15 +62,15 @@ public class BoutgiftRessurs {
     @PUT
     public void updateBoutgifter(@PathParam("behandlingsId") String behandlingsId, BoutgifterFrontend boutgifterFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(okonomi.getOpplysninger(), "boutgifter", boutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.boutgift"));
+        setBekreftelse(okonomi.getOpplysninger(), BEKREFTELSE_BOUTGIFTER, boutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.boutgift"));
         setBoutgifter(okonomi, boutgifterFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
@@ -79,54 +80,47 @@ public class BoutgiftRessurs {
         List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = okonomi.getOpplysninger().getUtgift();
         List<JsonOkonomioversiktUtgift> oversiktBoutgifter = okonomi.getOversikt().getUtgift();
 
-        String type = "husleie";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.husleie);
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_HUSLEIE));
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, UTGIFTER_HUSLEIE, tittel, boutgifterFrontend.husleie);
 
-        type = "strom";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.strom);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_STROM));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, UTGIFTER_STROM, tittel, boutgifterFrontend.strom);
 
-        type = "kommunalAvgift";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.kommunalAvgift);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_KOMMUNAL_AVGIFT));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, UTGIFTER_KOMMUNAL_AVGIFT, tittel, boutgifterFrontend.kommunalAvgift);
 
-        type = "oppvarming";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.oppvarming);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_OPPVARMING));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, UTGIFTER_OPPVARMING, tittel, boutgifterFrontend.oppvarming);
 
-        type = "boliglanAvdrag";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type) + "." + type);
-        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BOLIGLAN_AVDRAG) + "." + UTGIFTER_BOLIGLAN_AVDRAG);
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, UTGIFTER_BOLIGLAN_AVDRAG, tittel, boutgifterFrontend.boliglan);
 
-        type = "boliglanRenter";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type) + "." + type);
-        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, type, tittel, boutgifterFrontend.boliglan);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BOLIGLAN_RENTER) + "." + UTGIFTER_BOLIGLAN_RENTER);
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, UTGIFTER_BOLIGLAN_RENTER, tittel, boutgifterFrontend.boliglan);
 
-        type = "annenBoutgift";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, type, tittel, boutgifterFrontend.annet);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_ANNET_BO));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, UTGIFTER_ANNET_BO, tittel, boutgifterFrontend.annet);
     }
 
     private void setBekreftelseOnBoutgifterFrontend(JsonOkonomiopplysninger opplysninger, BoutgifterFrontend boutgifterFrontend) {
         opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("boutgifter")).findFirst()
+                .filter(bekreftelse -> bekreftelse.getType().equals(BEKREFTELSE_BOUTGIFTER)).findFirst()
                 .ifPresent(jsonOkonomibekreftelse -> boutgifterFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
     private void setUtgiftstyperOnBoutgifterFrontend(JsonOkonomi okonomi, BoutgifterFrontend boutgifterFrontend) {
         okonomi.getOpplysninger().getUtgift().forEach(utgift -> {
             switch(utgift.getType()){
-                case "strom":
+                case UTGIFTER_STROM:
                     boutgifterFrontend.setStrom(true);
                     break;
-                case "kommunalAvgift":
+                case UTGIFTER_KOMMUNAL_AVGIFT:
                     boutgifterFrontend.setKommunalAvgift(true);
                     break;
-                case "oppvarming":
+                case UTGIFTER_OPPVARMING:
                     boutgifterFrontend.setOppvarming(true);
                     break;
-                case "annenBoutgift":
+                case UTGIFTER_ANNET_BO:
                     boutgifterFrontend.setAnnet(true);
                     break;
             }
@@ -134,10 +128,10 @@ public class BoutgiftRessurs {
         okonomi.getOversikt().getUtgift().forEach(
                 utgift -> {
                     switch(utgift.getType()){
-                        case "husleie":
+                        case UTGIFTER_HUSLEIE:
                             boutgifterFrontend.setHusleie(true);
                             break;
-                        case "boliglanAvdrag":
+                        case UTGIFTER_BOLIGLAN_AVDRAG:
                             boutgifterFrontend.setBoliglan(true);
                             break;
                     }

@@ -18,15 +18,16 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskGruppeMapper.getGruppe;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.*;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 
 public class VedleggMapper {
 
     public static VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi, List<OpplastetVedlegg> opplastedeVedlegg) {
-        final List<FilFrontend> filer = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.getFiler(), opplastedeVedlegg);
+        List<FilFrontend> filer = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.getFiler(), opplastedeVedlegg);
 
-        final String vedleggType = vedlegg.getType() + "|" + vedlegg.getTilleggsinfo();
+        String vedleggType = vedlegg.getType() + "|" + vedlegg.getTilleggsinfo();
 
-        final List<VedleggRadFrontend> rader = getRader(jsonOkonomi, vedleggType);
+        List<VedleggRadFrontend> rader = getRader(jsonOkonomi, vedleggType);
 
         return new VedleggFrontend().withType(vedleggType)
                 .withGruppe(getGruppe(vedleggType))
@@ -38,11 +39,11 @@ public class VedleggMapper {
     private static List<VedleggRadFrontend> getRader(JsonOkonomi jsonOkonomi, String vedleggType) {
         if (!isInSoknadJson(vedleggType)) return Collections.emptyList();
 
-        final String soknadType = vedleggTypeToSoknadType.get(vedleggType);
-        final String soknadPath = getSoknadPath(vedleggType);
+        String soknadType = vedleggTypeToSoknadType.get(vedleggType);
+        String soknadPath = getSoknadPath(vedleggType);
 
         // Spesialtilfelle for avdrag og renter
-        if (soknadType.equals("boliglanAvdrag")){
+        if (soknadType.equals(UTGIFTER_BOLIGLAN_AVDRAG)){
             return getRadListWithAvdragAndRenter(jsonOkonomi);
         }
 
@@ -63,8 +64,8 @@ public class VedleggMapper {
     }
 
     private static List<VedleggRadFrontend> getRadListWithAvdragAndRenter(JsonOkonomi jsonOkonomi) {
-        final List<VedleggRadFrontend> avdragRad = getRadListFromOversiktUtgift(jsonOkonomi, "boliglanAvdrag");
-        final List<VedleggRadFrontend> renterRad = getRadListFromOversiktUtgift(jsonOkonomi, "boliglanRenter");
+        List<VedleggRadFrontend> avdragRad = getRadListFromOversiktUtgift(jsonOkonomi, UTGIFTER_BOLIGLAN_AVDRAG);
+        List<VedleggRadFrontend> renterRad = getRadListFromOversiktUtgift(jsonOkonomi, UTGIFTER_BOLIGLAN_RENTER);
 
         if (avdragRad != null){
             for (int i = 0; i < avdragRad.size(); i++){
@@ -87,7 +88,7 @@ public class VedleggMapper {
                 jsonOkonomi.getOpplysninger().getUtgift().stream()
                         .filter(utgift -> utgift.getType().equals(soknadType))
                         .map(utgift -> getRadFromOpplysningerUtgift(utgift, soknadType)).collect(Collectors.toList());
-        if (radList.isEmpty() && soknadType.equals("annen")){
+        if (radList.isEmpty() && soknadType.equals(UTGIFTER_ANDRE_UTGIFTER)){
             return Collections.singletonList(new VedleggRadFrontend());
         } else {
             return radList;
@@ -130,10 +131,10 @@ public class VedleggMapper {
 
     private static VedleggRadFrontend getRadFromOpplysningerUtgift(JsonOkonomiOpplysningUtgift utgift, String soknadType) {
         switch (soknadType){
-            case "annen":
-            case "annenBarneutgift":
-            case "annenBoutgift":
-            case "barnFritidsaktiviteter":
+            case UTGIFTER_ANDRE_UTGIFTER:
+            case UTGIFTER_ANNET_BARN:
+            case UTGIFTER_ANNET_BO:
+            case UTGIFTER_BARN_FRITIDSAKTIVITETER:
                 return new VedleggRadFrontend().withBelop(utgift.getBelop())
                         .withBeskrivelse(utgift.getTittel().substring(utgift.getTittel().indexOf(":") + 2));
             default:
@@ -142,7 +143,7 @@ public class VedleggMapper {
     }
 
     private static VedleggRadFrontend getRadFromInntekt(JsonOkonomioversiktInntekt inntekt, String soknadType) {
-        if (soknadType.equals("jobb")){
+        if (soknadType.equals(JOBB)){
             return new VedleggRadFrontend()
                     .withBrutto(inntekt.getBrutto())
                     .withNetto(inntekt.getNetto());
@@ -156,9 +157,9 @@ public class VedleggMapper {
     }
 
     private static VedleggRadFrontend getRadFromOversiktUtgift(JsonOkonomioversiktUtgift utgift, String soknadType) {
-        if (soknadType.equals("boliglanAvdrag")){
+        if (soknadType.equals(UTGIFTER_BOLIGLAN_AVDRAG)){
             return new VedleggRadFrontend().withAvdrag(utgift.getBelop());
-        } else if (soknadType.equals("boliglanRenter")){
+        } else if (soknadType.equals(UTGIFTER_BOLIGLAN_RENTER)){
             return new VedleggRadFrontend().withRenter(utgift.getBelop());
         }
         return new VedleggRadFrontend().withBelop(utgift.getBelop());
@@ -166,7 +167,7 @@ public class VedleggMapper {
 
     public static List<FilFrontend> mapJsonFilerAndOpplastedeVedleggToFilerFrontend(List<JsonFiler> filer, List<OpplastetVedlegg> opplastedeVedlegg) {
         return filer.stream().map(fil -> {
-            final OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn()))
+            OpplastetVedlegg opplastetVedlegg = opplastedeVedlegg.stream().filter(oVedlegg -> oVedlegg.getFilnavn().equals(fil.getFilnavn()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Vedlegget finnes ikke"));
             return new FilFrontend().withFilNavn(fil.getFilnavn()).withUuid(opplastetVedlegg.getUuid());
@@ -174,7 +175,7 @@ public class VedleggMapper {
     }
 
     public static List<EttersendtVedlegg> mapVedleggToSortedListOfEttersendteVedlegg(List<OpplastetVedlegg> opplastedeVedlegg, List<JsonVedlegg> originaleVedlegg) {
-        final SortedMap<String, EttersendtVedlegg> ettersendteVedlegg = new TreeMap<>(sortAlphabeticallyAndPutTypeAnnetLast());
+        SortedMap<String, EttersendtVedlegg> ettersendteVedlegg = new TreeMap<>(sortAlphabeticallyAndPutTypeAnnetLast());
 
         originaleVedlegg.forEach(vedlegg -> {
             String sammensattNavn = vedlegg.getType() + "|" + vedlegg.getTilleggsinfo();
@@ -182,7 +183,7 @@ public class VedleggMapper {
             if (!ettersendteVedlegg.containsKey(sammensattNavn)) {
                 List<FilFrontend> filerFrontend = new ArrayList<>();
                 if (vedlegg.getStatus().equals("LastetOpp")){
-                    final List<JsonFiler> filer = vedlegg.getFiler();
+                    List<JsonFiler> filer = vedlegg.getFiler();
                     filerFrontend = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(filer, opplastedeVedlegg);
                 }
 

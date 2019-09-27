@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Set;
 
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BARNEBIDRAG;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 
 @Component
@@ -20,7 +21,7 @@ public class HvisBarneutgiftHelper extends RegistryAwareHelper<Object>{
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
         final Set<String> barneutgiftTyper =  hentSvaralternativerHelper.findChildPropertySubkeys("utgifter.barn.true.utgifter", SPRAK);
-        barneutgiftTyper.add("barnebidrag");
+        barneutgiftTyper.add(BARNEBIDRAG);
 
         if (key != null && barneutgiftTyper.contains(key.toString())){
             return options.fn(this);

@@ -60,10 +60,10 @@ public class TelefonnummerRessurs {
         if ("".equals(telefonnummerFrontend.brukerutfyltVerdi)) {
             telefonnummerFrontend.brukerutfyltVerdi = null;
         }
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :
                 personalia.withTelefonnummer(new JsonTelefonnummer()).getTelefonnummer();
         if (telefonnummerFrontend.brukerdefinert) {
             if (telefonnummerFrontend.brukerutfyltVerdi == null) {

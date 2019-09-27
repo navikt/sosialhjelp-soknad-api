@@ -57,10 +57,10 @@ public class KontonummerRessurs {
     @PUT
     public void updateKontonummer(@PathParam("behandlingsId") String behandlingsId, KontonummerFrontend kontonummerFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        final JsonKontonummer kontonummer = personalia.getKontonummer();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        JsonKontonummer kontonummer = personalia.getKontonummer();
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.setKilde(JsonKilde.BRUKER);
             if ("".equals(kontonummerFrontend.brukerutfyltVerdi)) {

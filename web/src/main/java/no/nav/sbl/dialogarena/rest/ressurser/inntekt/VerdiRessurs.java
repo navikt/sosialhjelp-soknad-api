@@ -24,9 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -46,10 +47,10 @@ public class VerdiRessurs {
 
     @GET
     public VerdierFrontend hentVerdier(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final VerdierFrontend verdierFrontend = new VerdierFrontend();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
+        VerdierFrontend verdierFrontend = new VerdierFrontend();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return verdierFrontend;
@@ -68,15 +69,15 @@ public class VerdiRessurs {
     @PUT
     public void updateVerdier(@PathParam("behandlingsId") String behandlingsId, VerdierFrontend verdierFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(okonomi.getOpplysninger(), "verdi", verdierFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.eierandeler"));
+        setBekreftelse(okonomi.getOpplysninger(), BEKREFTELSE_VERDI, verdierFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.eierandeler"));
         setVerdier(okonomi.getOversikt(), verdierFrontend);
         setBeskrivelseAvAnnet(okonomi.getOpplysninger(), verdierFrontend);
 
@@ -84,27 +85,22 @@ public class VerdiRessurs {
     }
 
     private void setVerdier(JsonOkonomioversikt oversikt, VerdierFrontend verdierFrontend) {
-        final List<JsonOkonomioversiktFormue> verdier = oversikt.getFormue();
+        List<JsonOkonomioversiktFormue> verdier = oversikt.getFormue();
 
-        String type = "bolig";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.bolig);
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(VERDI_BOLIG));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_BOLIG, tittel, verdierFrontend.bolig);
 
-        type = "campingvogn";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.campingvogn);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(VERDI_CAMPINGVOGN));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_CAMPINGVOGN, tittel, verdierFrontend.campingvogn);
 
-        type = "kjoretoy";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.kjoretoy);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(VERDI_KJORETOY));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_KJORETOY, tittel, verdierFrontend.kjoretoy);
 
-        type = "fritidseiendom";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.fritidseiendom);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(VERDI_FRITIDSEIENDOM));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_FRITIDSEIENDOM, tittel, verdierFrontend.fritidseiendom);
 
-        type = "annet";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(verdier, type, tittel, verdierFrontend.annet);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(VERDI_ANNET));
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_ANNET, tittel, verdierFrontend.annet);
     }
 
     private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, VerdierFrontend verdierFrontend) {
@@ -122,7 +118,7 @@ public class VerdiRessurs {
 
     private void setBekreftelseOnVerdierFrontend(JsonOkonomiopplysninger opplysninger, VerdierFrontend verdierFrontend) {
         opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("verdi")).findFirst()
+                .filter(bekreftelse -> bekreftelse.getType().equals(BEKREFTELSE_VERDI)).findFirst()
                 .ifPresent(jsonOkonomibekreftelse -> verdierFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
@@ -130,19 +126,19 @@ public class VerdiRessurs {
         oversikt.getFormue().forEach(
                 formue -> {
                     switch(formue.getType()){
-                        case "bolig":
+                        case VERDI_BOLIG:
                             verdierFrontend.setBolig(true);
                             break;
-                        case "campingvogn":
+                        case VERDI_CAMPINGVOGN:
                             verdierFrontend.setCampingvogn(true);
                             break;
-                        case "kjoretoy":
+                        case VERDI_KJORETOY:
                             verdierFrontend.setKjoretoy(true);
                             break;
-                        case "fritidseiendom":
+                        case VERDI_FRITIDSEIENDOM:
                             verdierFrontend.setFritidseiendom(true);
                             break;
-                        case "annet":
+                        case VERDI_ANNET:
                             verdierFrontend.setAnnet(true);
                             break;
                     }
