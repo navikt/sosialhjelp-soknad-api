@@ -282,7 +282,7 @@ public class DigisosApiService {
                 new ByteArrayInputStream(pdf));
     }
 
-    public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token) {
+    public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
         if (MockUtils.isTillatMockRessurs()) {
             return;
         }
@@ -300,7 +300,7 @@ public class DigisosApiService {
 
         List<FilOpplasting> filOpplastinger = lagDokumentListe(soknadUnderArbeid);
         log.info(String.format("Laster opp %d", filOpplastinger.size()));
-        sendOgKrypter(filOpplastinger, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer(), behandlingsId, token);
+        sendOgKrypter(filOpplastinger, kommunenummer, behandlingsId, token);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {

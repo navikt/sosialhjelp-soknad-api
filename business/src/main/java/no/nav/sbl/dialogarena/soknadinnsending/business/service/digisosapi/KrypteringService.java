@@ -177,6 +177,6 @@ public class KrypteringService {
     }
 
     private String getLastOppFilerPath(String kommunenummer, String navEkseternRefId) {
-        return String.format("/digisos/api/v1/soknader%s/%s", kommunenummer, navEkseternRefId);
+        return String.format("/digisos/api/v1/soknader/%s/%s", kommunenummer, navEkseternRefId);
     }
 }

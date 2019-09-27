@@ -51,10 +51,11 @@ public class SoknadActions {
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid != null) {
-            KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer());
+            String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
+            KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(kommunenummer);
             if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN)|| true) {
                 log.info(kommuneStatus.name());
-                digisosApiService.sendSoknad(soknadUnderArbeid, token);
+                digisosApiService.sendSoknad(soknadUnderArbeid, token, "0301");
                 return;
             }
         }
