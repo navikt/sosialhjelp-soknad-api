@@ -29,7 +29,7 @@ public class BostotteImpl implements Bostotte {
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
             RequestEntity<Void> request = RequestEntity.get(uri.build())
                     .header(config.getUsername(), config.getAppKey())
-                    .header("Authorization", "Bearer " + token)
+                    .header("Authorization", token)
                     .build();
             logger.warn("===============================================================================================================");
             logger.warn("Bostotte hentBostotte args: " + personIdentifikator + "|" + token + "|" + fra.toString() + "|" + til.toString());
