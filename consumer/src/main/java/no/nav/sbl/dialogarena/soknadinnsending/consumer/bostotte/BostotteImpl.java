@@ -32,13 +32,7 @@ public class BostotteImpl implements Bostotte {
                     .header(config.getUsername(), config.getAppKey())
                     .header("Authorization", token)
                     .build();
-            logger.warn("===============================================================================================================");
-            logger.warn("Bostotte hentBostotte args: " + personIdentifikator + "|" + token + "|" + fra.toString() + "|" + til.toString());
-            logger.warn("Bostotte request: " + request.toString());
-            BostotteDto body = operations.exchange(request, BostotteDto.class).getBody();
-            logger.warn("Bostotte request: " + body.toString());
-            logger.warn("===============================================================================================================");
-            return body;
+            return operations.exchange(request, BostotteDto.class).getBody();
         } catch (ResourceAccessException e) {
             logger.warn("Problemer med å hente bostøtte informasjon!", e);
         } catch (HttpClientErrorException e) {
