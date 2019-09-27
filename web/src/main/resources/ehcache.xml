@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache>
-    <defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false"/>
+    <defaultCache eternal="true" maxElementsInMemory="50" overflowToDisk="false"/>
 
     <!--
          Security Tokens are not writable to Disk so use a memory only
@@ -17,20 +17,20 @@
 
     <diskStore path="/tmp/default/path"/>
 
-    <cache name="forhaandsvisning" maxElementsInMemory="1000" overflowToDisk="false" eternal="false"/>
-    <cache name="forhaandsvisningId" maxElementsInMemory="1000" overflowToDisk="false" eternal="false"/>
-    <cache name="brukerbehandling" maxElementsInMemory="1000" overflowToDisk="false" eternal="false"/>
-    <cache name="dokumentInnhold"  maxBytesLocalHeap="500M" overflowToDisk="false" eternal="false"/>
+    <cache name="forhaandsvisning" maxElementsInMemory="500" overflowToDisk="false" eternal="false"/>
+    <cache name="forhaandsvisningId" maxElementsInMemory="500" overflowToDisk="false" eternal="false"/>
+    <cache name="brukerbehandling" maxElementsInMemory="500" overflowToDisk="false" eternal="false"/>
+    <cache name="dokumentInnhold"  maxBytesLocalHeap="400M" overflowToDisk="false" eternal="false"/>
     <cache name="cms.content" maxElementsInMemory="10" overflowToDisk="false" timeToLiveSeconds="1800"  />
-    <cache name="cms.article" maxElementsInMemory="100" overflowToDisk="false" timeToLiveSeconds="1800" />
-    <cache name="person" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="1800"/>
-    <cache name="aktorCache" maxElementsInMemory="1000000" overflowToDisk="true" eternal="true"/>
-    <cache name="arbeidsforholdCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
-    <cache name="personCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
-    <cache name="dkifCache" maxElementsInMemory="100" overflowToDisk="false" timeToLiveSeconds="1800"  />
-    <cache name="adresserOgKontonummerCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
-    <cache name="utbetalingCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="1800"  />
-    <cache name="kommunesokCache" maxElementsInMemory="100" overflowToDisk="false" timeToLiveSeconds="86400"  />
+    <cache name="cms.article" maxElementsInMemory="50" overflowToDisk="false" timeToLiveSeconds="1800" />
+    <cache name="person" maxElementsInMemory="500" overflowToDisk="false" timeToLiveSeconds="1800"/>
+    <cache name="aktorCache" maxElementsInMemory="500000" overflowToDisk="true" eternal="true"/>
+    <cache name="arbeidsforholdCache" maxElementsInMemory="500" overflowToDisk="false" timeToLiveSeconds="3600"  />
+    <cache name="personCache" maxElementsInMemory="500" overflowToDisk="false" timeToLiveSeconds="3600"  />
+    <cache name="dkifCache" maxElementsInMemory="50" overflowToDisk="false" timeToLiveSeconds="1800"  />
+    <cache name="adresserOgKontonummerCache" maxElementsInMemory="500" overflowToDisk="false" timeToLiveSeconds="3600"  />
+    <cache name="utbetalingCache" maxElementsInMemory="500" overflowToDisk="false" timeToLiveSeconds="1800"  />
+    <cache name="kommunesokCache" maxElementsInMemory="50" overflowToDisk="false" timeToLiveSeconds="86400"  />
 
 
 </ehcache>
