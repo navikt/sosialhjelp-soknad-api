@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
+import no.nav.sbl.dialogarena.virusscan.VirusScanConfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,7 +28,8 @@ import org.springframework.context.annotation.Import;
         HandlebarsHelperConfig.class,
         OidcTokenValidatorConfig.class,
         MetricsConfig.class,
-        SaksoversiktMetadataService.class
+        SaksoversiktMetadataService.class,
+        VirusScanConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sbl.dialogarena.rest")
 public class SoknadinnsendingConfig {
