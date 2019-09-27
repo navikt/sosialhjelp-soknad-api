@@ -99,7 +99,6 @@
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
-        <streaming-klient.version>1.0.6</streaming-klient.version>
         <kryptering.version>1.0.5</kryptering.version>
         <jackson-annotations.version>2.10.0.pr2</jackson-annotations.version>
         <httpcore.version>4.4.12</httpcore.version>
@@ -208,7 +207,7 @@
             <dependency>
                 <groupId>no.ks.fiks</groupId>
                 <artifactId>streaming-klient</artifactId>
-                <version>${streaming-klient.version}</version>
+                <version>1.0.6</version>
             </dependency>
 
             <dependency>
@@ -851,7 +850,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-suspend</artifactId>
-                <version>${streaming-klient.version}</version>
+                <version>1.0.6</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
