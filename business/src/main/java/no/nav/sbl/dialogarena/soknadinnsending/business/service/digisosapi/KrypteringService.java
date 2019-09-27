@@ -66,7 +66,7 @@ public class KrypteringService {
             CloseableHttpResponse response = client.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode >= 300) {
-                log.warn("Statuscode ved henting av sertifikat " + statusCode);
+                log.warn(String.format("Statuscode ved henting av sertifikat %d token:%s", statusCode, token));
                 log.warn(response.getStatusLine().getReasonPhrase());
                 log.warn(EntityUtils.toString(response.getEntity()));
             }
