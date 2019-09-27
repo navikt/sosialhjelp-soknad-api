@@ -19,7 +19,7 @@ public class VedleggTypeToSoknadTypeMapper {
         vedleggTypeToSoknadType.put("kjopekontrakt|kjopekontrakt", VERDI_BOLIG); // Økonomisk verdi. Usikker på om denne brukes
         vedleggTypeToSoknadType.put("dokumentasjon|kjoretoy", VERDI_KJORETOY); // Økonomisk verdi. Usikker på om denne brukes
         vedleggTypeToSoknadType.put("faktura|barnehage", UTGIFTER_BARNEHAGE);
-        vedleggTypeToSoknadType.put("barnebidrag|betaler", STUDIELAN);
+        vedleggTypeToSoknadType.put("barnebidrag|betaler", BARNEBIDRAG);
         vedleggTypeToSoknadType.put("kontooversikt|brukskonto", FORMUE_BRUKSKONTO);
         vedleggTypeToSoknadType.put("kontooversikt|bsu", FORMUE_BSU);
         vedleggTypeToSoknadType.put("salgsoppgjor|eiendom", UTBETALING_SALG);
@@ -28,7 +28,7 @@ public class VedleggTypeToSoknadTypeMapper {
         vedleggTypeToSoknadType.put("faktura|husleie", UTGIFTER_HUSLEIE);
         vedleggTypeToSoknadType.put("faktura|kommunaleavgifter", UTGIFTER_KOMMUNAL_AVGIFT);
         vedleggTypeToSoknadType.put("kontooversikt|livsforsikring", FORMUE_LIVSFORSIKRING);
-        vedleggTypeToSoknadType.put("barnebidrag|mottar", STUDIELAN);
+        vedleggTypeToSoknadType.put("barnebidrag|mottar", BARNEBIDRAG);
         vedleggTypeToSoknadType.put("faktura|oppvarming", UTGIFTER_OPPVARMING);
         vedleggTypeToSoknadType.put("faktura|sfo", UTGIFTER_SFO);
         vedleggTypeToSoknadType.put("kontooversikt|sparekonto", FORMUE_SPAREKONTO);
