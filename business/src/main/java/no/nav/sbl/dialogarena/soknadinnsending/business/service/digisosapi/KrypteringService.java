@@ -56,12 +56,12 @@ public class KrypteringService {
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
         byte[] publicKey = new byte[0];
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
-            log.info("Henter certifikat");
+            log.info("Henter sertifikat");
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
                     .addHeader("Accept", MediaType.WILDCARD)
                     .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
                     .addHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"))
-                    .addHeader("Authorization", "Bearer " + token).build();
+                    .addHeader("Authorization", token).build();
 
             CloseableHttpResponse response = client.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
