@@ -148,6 +148,14 @@ public class KrypteringService {
                 .build()));
 
 
+        for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
+            objectFilForOpplasting.getFilnavn();
+            FilMetadata metadata = (FilMetadata) objectFilForOpplasting.getMetadata();
+            log.info(metadata.filnavn);
+            log.info(metadata.mimetype);
+            log.info("" + metadata.storrelse);
+        }
+
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
