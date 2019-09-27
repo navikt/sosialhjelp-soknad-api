@@ -38,12 +38,13 @@ public class KrypteringService {
 
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
 
-    public List<DokumentInfo> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
+    List<DokumentInfo> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
         log.info(String.format("Starter kryptering av filer, skal sende til %s %s %s", kommunenr, navEkseternRefId, token));
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         try {
+            X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
             List<DokumentInfo> opplastetFiler = lastOppFiler(dokumenter.stream()
-                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, token)))
+                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
             waitForFutures(krypteringFutureList);
@@ -85,18 +86,17 @@ public class KrypteringService {
         }
     }
 
-    private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, String token) {
+    private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, X509Certificate dokumentlagerPublicKeyX509Certificate) {
         CMSStreamKryptering kryptering = new CMSKrypteringImpl();
-        X509Certificate certificate = getDokumentlagerPublicKeyX509Certificate(token);
 
         PipedInputStream pipedInputStream = new PipedInputStream();
         try {
             PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
-             Future<Void> krypteringFuture =
+            Future<Void> krypteringFuture =
                     executor.submit(() -> {
                         try {
                             log.debug("Starting encryption...");
-                            kryptering.krypterData(pipedOutputStream, dokumentStream, certificate, Security.getProvider("BC"));
+                            kryptering.krypterData(pipedOutputStream, dokumentStream, dokumentlagerPublicKeyX509Certificate, Security.getProvider("BC"));
                             log.debug("Encryption completed");
                         } catch (Exception e) {
                             log.error("Encryption failed, setting exception on encrypted InputStream", e);
@@ -172,7 +172,7 @@ public class KrypteringService {
 
             return Arrays.asList(new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), DokumentInfo[].class));
         } catch (IOException e) {
-            throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId),e);
+            throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
         }
     }
 

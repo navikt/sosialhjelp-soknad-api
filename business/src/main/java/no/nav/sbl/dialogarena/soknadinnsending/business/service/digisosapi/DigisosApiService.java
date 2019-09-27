@@ -294,7 +294,6 @@ public class DigisosApiService {
         }
         log.info(String.format("Starter innsending av søknad med behandlingsId %s, skal sendes til DigisosApi", behandlingsId));
 
-
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
 
@@ -322,15 +321,6 @@ public class DigisosApiService {
         }).collect(Collectors.toList());
 
         return vedlegg;
-    }
-
-    private static SoknadMetadata.VedleggMetadata mapJsonVedleggToVedleggMetadata(JsonVedlegg jsonVedlegg) {
-        SoknadMetadata.VedleggMetadata m = new SoknadMetadata.VedleggMetadata();
-        m.skjema = jsonVedlegg.getType();
-        m.tillegg = jsonVedlegg.getTilleggsinfo();
-        m.filnavn = jsonVedlegg.getType();
-        m.status = Vedleggstatus.valueOf(jsonVedlegg.getStatus());
-        return m;
     }
 
     private static void logAlderTilKibana(String eier) {
