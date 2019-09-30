@@ -88,11 +88,9 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertMedSakFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        LocalDate saksDato = LocalDate.now().withDayOfMonth(1);
-        String status = "UNDER_BEHANDLING";
-        String rolle = "HOVEDPERSON";
+        SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), "UNDER_BEHANDLING", "HOVEDPERSON", null, null);
         BostotteDto bostotteDto = new BostotteDto()
-                .withSak(new SakerDto().with(saksDato.getMonthValue(), saksDato.getYear(), status, null, rolle));
+                .withSak(sakerDto);
 
         // Mock:
         when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
@@ -106,8 +104,8 @@ public class BostotteSystemdataTest {
         JsonOkonomiOpplysningSak sak = saker.get(0);
         assertThat(sak.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThat(sak.getType()).isEqualTo(HUSBANKEN_TYPE);
-        assertThat(sak.getDato()).isEqualTo(saksDato.toString());
-        assertThat(sak.getStatus()).isEqualTo(status);
+        assertThat(sak.getDato()).isEqualTo(sakerDto.getDato().toString());
+        assertThat(sak.getStatus()).isEqualTo(sakerDto.getStatus());
         assertThat(sak.getBeskrivelse()).isNull();
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
@@ -116,16 +114,11 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertMedToSakerFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        LocalDate saksDato1 = LocalDate.now().withDayOfMonth(1);
-        LocalDate saksDato2 = LocalDate.now().withDayOfMonth(1);
-        String status1 = "UNDER_BEHANDLING";
-        String status2 = "VEDTATT";
-        String rolle = "HOVEDPERSON";
-        String beskrivelse2 = "Avslag - For høy inntekt";
-        VedtakDto vedtakDto = new VedtakDto().with("V02", beskrivelse2);
+        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), "UNDER_BEHANDLING", "HOVEDPERSON", null, null);
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), "VEDTATT", "HOVEDPERSON", "V02", "Avslag - For høy inntekt");
         BostotteDto bostotteDto = new BostotteDto()
-                .withSak(new SakerDto().with(saksDato1.getMonthValue(), saksDato1.getYear(), status1, null, rolle))
-                .withSak(new SakerDto().with(saksDato2.getMonthValue(), saksDato2.getYear(), status2, vedtakDto, rolle));
+                .withSak(sakerDto1)
+                .withSak(sakerDto2);
 
         // Mock:
         when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
@@ -138,12 +131,12 @@ public class BostotteSystemdataTest {
         assertThat(saker).hasSize(2);
         JsonOkonomiOpplysningSak sak1 = saker.get(0);
         JsonOkonomiOpplysningSak sak2 = saker.get(1);
-        assertThat(sak1.getDato()).isEqualTo(saksDato1.toString());
-        assertThat(sak1.getStatus()).isEqualTo(status1);
+        assertThat(sak1.getDato()).isEqualTo(sakerDto1.getDato().toString());
+        assertThat(sak1.getStatus()).isEqualTo(sakerDto1.getStatus());
         assertThat(sak1.getBeskrivelse()).isNull();
-        assertThat(sak2.getDato()).isEqualTo(saksDato2.toString());
-        assertThat(sak2.getStatus()).isEqualTo(status2);
-        assertThat(sak2.getBeskrivelse()).isEqualTo(beskrivelse2);
+        assertThat(sak2.getDato()).isEqualTo(sakerDto2.getDato().toString());
+        assertThat(sak2.getStatus()).isEqualTo(sakerDto2.status);
+        assertThat(sak2.getBeskrivelse()).isEqualTo(sakerDto2.getVedtak().getBeskrivelse());
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
 

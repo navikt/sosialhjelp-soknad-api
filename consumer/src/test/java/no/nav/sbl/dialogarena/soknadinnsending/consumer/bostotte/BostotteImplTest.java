@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.types.Pingable;
 import org.apache.cxf.helpers.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -146,4 +148,14 @@ public class BostotteImplTest {
         // Testkjøring:
         assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(null);
     }
-}
+
+    @Test
+    public void hentBostotte_opprettHusbankenPing() {
+        // Mocks:
+        when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException"));
+
+        // Testkjøring:
+        Pingable pingable = BostotteImpl.opprettHusbankenPing(config, new RestTemplate());
+        assertThat(pingable).isNotNull();
+        assertThat(pingable.ping()).isNotNull();
+    }}

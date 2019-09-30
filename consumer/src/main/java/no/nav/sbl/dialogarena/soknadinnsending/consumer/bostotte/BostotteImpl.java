@@ -47,7 +47,7 @@ public class BostotteImpl implements Bostotte {
         return null;
     }
 
-    static Pingable createHusbankenPing(BostotteConfig config, RestOperations operations) {
+    static Pingable opprettHusbankenPing(BostotteConfig config, RestOperations operations) {
         return new Pingable() {
             Ping.PingMetadata metadata = new Ping.PingMetadata(config.getPingUrl(),"HusbankenPing", false);
 

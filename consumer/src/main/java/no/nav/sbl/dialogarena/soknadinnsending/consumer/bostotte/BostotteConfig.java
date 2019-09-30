@@ -33,11 +33,11 @@ public class BostotteConfig {
     }
 
     @Bean
-    public Pingable forsendelsePing() {
+    public Pingable opprettHusbankenPing() {
         if(MockUtils.isTillatMockRessurs()) {
             return null;
         }
-        return BostotteImpl.createHusbankenPing(this, new RestTemplate());
+        return BostotteImpl.opprettHusbankenPing(this, new RestTemplate());
     }
 
     public String getUri() {
