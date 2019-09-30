@@ -20,12 +20,10 @@ import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
-import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -35,8 +33,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,28 +71,6 @@ public class DigisosApiService {
 
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
 
-    public List<KommuneInfo> hentKommuneInfo() {
-        IdPortenService.IdPortenAccessTokenResponse accessToken = idPortenService.getVirksertAccessToken();
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune");
-            http.setHeader("Accept", MediaType.APPLICATION_JSON);
-            http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
-            http.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
-            http.setHeader("Authorization", "Bearer " + accessToken.accessToken);
-            System.out.println(http);
-            for (Header allHeader : http.getAllHeaders()) {
-                System.out.println(allHeader);
-            }
-            CloseableHttpResponse response = client.execute(http);
-            String content = EntityUtils.toString(response.getEntity());
-            System.out.println(content);
-            return Arrays.asList(objectMapper.readValue(content, KommuneInfo[].class));
-        } catch (IOException e) {
-            log.error("Hent kommuneinfo feiler",e);
-            return Collections.emptyList();
-        }
-    }
-
     KommuneInfo hentKommuneInfo(String kommunenummer) {
 
         if (isTillatMockRessurs()) {
@@ -113,7 +87,7 @@ public class DigisosApiService {
             CloseableHttpResponse response = client.execute(http);
             return objectMapper.readValue(EntityUtils.toString(response.getEntity()), KommuneInfo.class);
         } catch (IOException e) {
-            log.error("Hent kommuneinfo feiler",e);
+            log.error("Hent kommuneinfo feiler", e);
             return new KommuneInfo();
         }
     }
@@ -137,7 +111,6 @@ public class DigisosApiService {
         }
         return IKKE_PA_FIKS_ELLER_INNSYN;
     }
-
 
 
     List<FilOpplasting> lagDokumentListe(SoknadUnderArbeid soknadUnderArbeid) {
