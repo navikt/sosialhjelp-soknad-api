@@ -54,11 +54,11 @@ public class SoknadActions {
             String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
             KommuneStatus kommuneStatus = digisosApiService.kommuneInfo(kommunenummer);
             log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
-//            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN)|| true) {
-//                log.info(kommuneStatus.name());
-//                digisosApiService.sendSoknad(soknadUnderArbeid, token, "0301");
-//                return;
-//            }
+            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN)|| true) {
+                log.info(kommuneStatus.name());
+                digisosApiService.sendSoknad(soknadUnderArbeid, token, "0301");
+                return;
+            }
         }
 
         soknadService.sendSoknad(behandlingsId);
