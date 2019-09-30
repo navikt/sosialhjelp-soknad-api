@@ -146,8 +146,7 @@ public class FamilieSystemdata implements Systemdata {
                                 .withMellomnavn(barn.getMellomnavn())
                                 .withEtternavn(barn.getEtternavn()))
                         .withFodselsdato(barn.getFodselsdato() != null ? barn.getFodselsdato().toString() : null)
-                        .withPersonIdentifikator(barn.getFnr())
-                        .withHarDiskresjonskode(false))
+                        .withPersonIdentifikator(barn.getFnr()))
                 .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen()
                         .withKilde(JsonKildeSystem.SYSTEM)
                         .withVerdi(barn.erFolkeregistrertsammen()));

@@ -96,16 +96,11 @@ public class ArbeidsforholdSystemdata implements Systemdata {
                 .withTom(arbeidsforhold.tom)
                 .withKilde(JsonKilde.SYSTEM)
                 .withStillingsprosent(Math.toIntExact(arbeidsforhold.fastStillingsprosent))
-                .withStillingstype(tilJsonStillingstype(arbeidsforhold.harFastStilling))
                 .withOverstyrtAvBruker(Boolean.FALSE);
     }
 
     private ArbeidsforholdService.Sokeperiode getSoekeperiode() {
         return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(3), new DateTime());
-    }
-
-    private static JsonArbeidsforhold.Stillingstype tilJsonStillingstype(boolean harFastStilling) {
-        return harFastStilling ? JsonArbeidsforhold.Stillingstype.FAST : JsonArbeidsforhold.Stillingstype.VARIABEL;
     }
 
 }

@@ -44,7 +44,6 @@ public class ArbeidRessursTest {
             .withArbeidsgivernavn("Good Corp.")
             .withFom("1337-01-01")
             .withTom("2020-01-01")
-            .withStillingstype(JsonArbeidsforhold.Stillingstype.FAST)
             .withStillingsprosent(50)
             .withOverstyrtAvBruker(Boolean.FALSE);
 
@@ -53,7 +52,6 @@ public class ArbeidRessursTest {
                 .withArbeidsgivernavn("Evil Corp.")
                 .withFom("1337-02-02")
                 .withTom("2020-02-02")
-                .withStillingstype(JsonArbeidsforhold.Stillingstype.VARIABEL)
                 .withStillingsprosent(30)
             .withOverstyrtAvBruker(Boolean.FALSE);
 
@@ -185,19 +183,7 @@ public class ArbeidRessursTest {
         assertThat("fom", forholdFrontend.fom, is(jsonForhold.getFom()));
         assertThat("tom", forholdFrontend.tom, is(jsonForhold.getTom()));
         assertThat("stillingsprosent", forholdFrontend.stillingsprosent, is(jsonForhold.getStillingsprosent()));
-        assertThatStillingstypeIsCorrect(forholdFrontend.stillingstypeErHeltid, jsonForhold.getStillingstype());
         assertThat("overstyrtAvBruker", forholdFrontend.overstyrtAvBruker, is(Boolean.FALSE));
-    }
-
-    private void assertThatStillingstypeIsCorrect(Boolean stillingstypeErHeltid, JsonArbeidsforhold.Stillingstype stillingstype){
-        if (stillingstypeErHeltid == null){
-            return;
-        }
-        if (stillingstypeErHeltid){
-            assertThat("stillingstype", stillingstype, is(JsonArbeidsforhold.Stillingstype.FAST));
-        } else {
-            assertThat("stillingstype", stillingstype, is(JsonArbeidsforhold.Stillingstype.VARIABEL));
-        }
     }
 
     private List<JsonArbeidsforhold> createArbeidsforholdListe(){

@@ -77,16 +77,8 @@ public class ArbeidRessurs {
                 .withArbeidsgivernavn(arbeidsforhold.getArbeidsgivernavn())
                 .withFom(arbeidsforhold.getFom())
                 .withTom(arbeidsforhold.getTom())
-                .withStillingstypeErHeltid(isStillingstypeErHeltid(arbeidsforhold.getStillingstype()))
                 .withStillingsprosent(arbeidsforhold.getStillingsprosent())
                 .withOverstyrtAvBruker(Boolean.FALSE);
-    }
-
-    private static Boolean isStillingstypeErHeltid(JsonArbeidsforhold.Stillingstype stillingstype) {
-        if (stillingstype == null){
-            return null;
-        }
-        return stillingstype == JsonArbeidsforhold.Stillingstype.FAST ? Boolean.TRUE: Boolean.FALSE;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -110,7 +102,6 @@ public class ArbeidRessurs {
         public String arbeidsgivernavn;
         public String fom;
         public String tom;
-        public Boolean stillingstypeErHeltid;
         public Integer stillingsprosent;
         public Boolean overstyrtAvBruker;
 
@@ -126,11 +117,6 @@ public class ArbeidRessurs {
 
         public ArbeidsforholdFrontend withTom(String tom) {
             this.tom = tom;
-            return this;
-        }
-
-        public ArbeidsforholdFrontend withStillingstypeErHeltid(Boolean stillingstypeErHeltid) {
-            this.stillingstypeErHeltid = stillingstypeErHeltid;
             return this;
         }
 

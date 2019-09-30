@@ -217,7 +217,6 @@ public class ForsorgerpliktRessursTest {
         final BarnFrontend barnFrontend = ansvarFrontend.barn;
         final JsonBarn jsonBarn = jsonAnsvar.getBarn();
 
-        assertThat("harDiskresjonskode", ansvarFrontend.harDiskresjonskode, is(jsonBarn.getHarDiskresjonskode()));
         assertThat("borSammenMed", ansvarFrontend.borSammenMed, is(jsonAnsvar.getBorSammenMed()));
         assertThat("harDeltBosted", ansvarFrontend.harDeltBosted,
                 is(jsonAnsvar.getHarDeltBosted() == null ? null : jsonAnsvar.getHarDeltBosted().getVerdi()));

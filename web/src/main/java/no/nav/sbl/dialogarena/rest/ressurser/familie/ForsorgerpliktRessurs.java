@@ -94,13 +94,7 @@ public class ForsorgerpliktRessurs {
 
         if (forsorgerpliktFrontend.ansvar != null && !forsorgerpliktFrontend.ansvar.isEmpty()){
             for (AnsvarFrontend ansvarFrontend : forsorgerpliktFrontend.ansvar){
-                if (ansvarFrontend.harDiskresjonskode != null && ansvarFrontend.harDiskresjonskode){
-                    continue;
-                }
                 for (JsonAnsvar ansvar : forsorgerplikt.getAnsvar()){
-                    if (ansvar.getBarn().getHarDiskresjonskode() != null && ansvar.getBarn().getHarDiskresjonskode()){
-                        continue;
-                    }
                     if (ansvar.getBarn().getPersonIdentifikator().equals(ansvarFrontend.barn.fodselsnummer)){
                         ansvar.setBorSammenMed(ansvarFrontend.borSammenMed == null ? null :
                                 new JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(ansvarFrontend.borSammenMed));
@@ -134,7 +128,6 @@ public class ForsorgerpliktRessurs {
         }
 
         return new AnsvarFrontend().withBarn(mapToBarnFrontend(jsonAnsvar.getBarn()))
-                .withHarDiskresjonskode(jsonAnsvar.getBarn() != null ? jsonAnsvar.getBarn().getHarDiskresjonskode() : null)
                 .withErFolkeregistrertSammen(jsonAnsvar.getErFolkeregistrertSammen() == null ? null :
                         jsonAnsvar.getErFolkeregistrertSammen().getVerdi())
                 .withBorSammenMed(jsonAnsvar.getBorSammenMed() == null ? null : jsonAnsvar.getBorSammenMed().getVerdi())
@@ -179,7 +172,6 @@ public class ForsorgerpliktRessurs {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class AnsvarFrontend {
         public BarnFrontend barn;
-        public Boolean harDiskresjonskode;
         public Boolean borSammenMed;
         public Boolean erFolkeregistrertSammen;
         public Boolean harDeltBosted;
@@ -187,11 +179,6 @@ public class ForsorgerpliktRessurs {
 
         public AnsvarFrontend withBarn(BarnFrontend barn) {
             this.barn = barn;
-            return this;
-        }
-
-        public AnsvarFrontend withHarDiskresjonskode(Boolean harDiskresjonskode) {
-            this.harDiskresjonskode = harDiskresjonskode;
             return this;
         }
 

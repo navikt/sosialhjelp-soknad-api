@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
-import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
@@ -9,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingSer
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -26,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
@@ -173,10 +170,5 @@ public class ArbeidsforholdSystemdataTest {
         assertThat("fom", jsonArbeidsforhold.getFom(), is(arbeidsforhold.fom));
         assertThat("tom", jsonArbeidsforhold.getTom(), is(arbeidsforhold.tom));
         assertThat("stillingsprosent", new Long(jsonArbeidsforhold.getStillingsprosent()), is(arbeidsforhold.fastStillingsprosent));
-        if (arbeidsforhold.harFastStilling) {
-            assertThat("harFastStilling", jsonArbeidsforhold.getStillingstype(), is(JsonArbeidsforhold.Stillingstype.FAST));
-        } else {
-            assertThat("harFastStilling", jsonArbeidsforhold.getStillingstype(), is(JsonArbeidsforhold.Stillingstype.VARIABEL));
-        }
     }
 }
