@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class SoknadOversiktRessurs {
         return soknader;
     }
 
-    //    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static final class SoknadOversikt {
         private String fiksDigisosId;
         private String soknadTittel;
