@@ -38,12 +38,12 @@ public class KrypteringService {
 
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
 
-    List<DokumentInfo> krypterOgLastOppFiler(List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
+    List<DokumentInfo> krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
         log.info(String.format("Starter kryptering av filer, skal sende til %s %s %s", kommunenr, navEkseternRefId, token));
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         try {
             X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
-            List<DokumentInfo> opplastetFiler = lastOppFiler(dokumenter.stream()
+            List<DokumentInfo> opplastetFiler = lastOppFiler(soknadJson, vedleggJson,dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
@@ -132,7 +132,7 @@ public class KrypteringService {
         }
     }
 
-    private List<DokumentInfo> lastOppFiler(List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
+    private List<DokumentInfo> lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
 
 
         List<FilForOpplasting<Object>> filer = new ArrayList<>();
@@ -158,6 +158,10 @@ public class KrypteringService {
 
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+        entitybuilder.addTextBody("soknadJson", soknadJson);
+        entitybuilder.addTextBody("vedleggJson", vedleggJson);
+
         for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
             entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData());
         }

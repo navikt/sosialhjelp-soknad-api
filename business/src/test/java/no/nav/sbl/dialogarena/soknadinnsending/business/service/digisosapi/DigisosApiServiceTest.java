@@ -74,23 +74,16 @@ public class DigisosApiServiceTest {
 
         List<FilOpplasting> filOpplastings = digisosApiService.lagDokumentListe(soknadUnderArbeid);
 
-        FilMetadata metadataFil0 = filOpplastings.get(0).metadata;
-        assertThat(metadataFil0.filnavn).isEqualTo("soknad.json");
-        assertThat(metadataFil0.mimetype).isEqualTo("application/json");
-
-        FilMetadata metadataFil1 = filOpplastings.get(1).metadata;
+        FilMetadata metadataFil1 = filOpplastings.get(0).metadata;
         assertThat(metadataFil1.filnavn).isEqualTo("soknad.pdf");
         assertThat(metadataFil1.mimetype).isEqualTo("application/pdf");
 
-        FilMetadata metadataFil2 = filOpplastings.get(2).metadata;
-        assertThat(metadataFil2.filnavn).isEqualTo("vedlegg.json");
-        assertThat(metadataFil2.mimetype).isEqualTo("application/json");
 
-        FilMetadata metadataFil3 = filOpplastings.get(3).metadata;
+        FilMetadata metadataFil3 = filOpplastings.get(1).metadata;
         assertThat(metadataFil3.filnavn).isEqualTo("Soknad-juridisk.pdf");
         assertThat(metadataFil3.mimetype).isEqualTo("application/pdf");
 
-        FilMetadata metadataFil4 = filOpplastings.get(4).metadata;
+        FilMetadata metadataFil4 = filOpplastings.get(2).metadata;
         assertThat(metadataFil4.filnavn).isEqualTo("Brukerkvittering.pdf");
         assertThat(metadataFil4.mimetype).isEqualTo("application/pdf");
     }
@@ -103,11 +96,10 @@ public class DigisosApiServiceTest {
                 .withTilknyttetBehandlingsId("123")
                 .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
 
-        Assert.assertThat(fiksDokumenter.size(), is(4));
+        Assert.assertThat(fiksDokumenter.size(), is(3));
         Assert.assertThat(fiksDokumenter.get(0).metadata.filnavn, is("ettersendelse.pdf"));
-        Assert.assertThat(fiksDokumenter.get(1).metadata.filnavn, is("vedlegg.json"));
-        Assert.assertThat(fiksDokumenter.get(2).metadata.filnavn, is("Brukerkvittering.pdf"));
-        Assert.assertThat(fiksDokumenter.get(3).metadata.filnavn, is("FILNAVN"));
+        Assert.assertThat(fiksDokumenter.get(1).metadata.filnavn, is("Brukerkvittering.pdf"));
+        Assert.assertThat(fiksDokumenter.get(2).metadata.filnavn, is("FILNAVN"));
     }
 
     @Test
