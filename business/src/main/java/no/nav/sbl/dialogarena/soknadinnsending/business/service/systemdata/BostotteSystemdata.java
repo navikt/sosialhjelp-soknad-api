@@ -32,9 +32,10 @@ public class BostotteSystemdata implements Systemdata {
         String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
         BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
         if (bostotteDto != null) {
-            List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto);
+            boolean trengerBeggeManedene = !harViDataFraSisteManed(bostotteDto);
+            List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerBeggeManedene);
             okonomi.getOpplysninger().getUtbetaling().addAll(jsonOkonomiOpplysningUtbetaling);
-            List<JsonOkonomiOpplysningSak> jsonSaksStatuser = mapToJsonOkonomiOpplysningSaker(bostotteDto);
+            List<JsonOkonomiOpplysningSak> jsonSaksStatuser = mapToJsonOkonomiOpplysningSaker(bostotteDto, trengerBeggeManedene);
             okonomi.getOpplysninger().getSak().addAll(jsonSaksStatuser);
             soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
         } else {
@@ -42,13 +43,28 @@ public class BostotteSystemdata implements Systemdata {
         }
     }
 
-    private BostotteDto innhentBostotteFraHusbanken(String personIdentifikator, String token) {
-        //FIXME: sett riktig fra dato:
-        return bostotte.hentBostotte(personIdentifikator, token, LocalDate.now().minusMonths(3), LocalDate.now());
+    private boolean harViDataFraSisteManed(BostotteDto bostotteDto) {
+        boolean harNyeSaker = bostotteDto.getSaker().stream()
+                .anyMatch(sakerDto -> sakerDto.getDato().isAfter(LocalDate.now().minusMonths(1)));
+        boolean harNyeUtbetalinger = bostotteDto.getUtbetalinger().stream()
+                .anyMatch(utbetalingerDto -> utbetalingerDto.getUtbetalingsdato().isAfter(LocalDate.now().minusMonths(1)));
+        return harNyeSaker || harNyeUtbetalinger;
     }
 
-    private List<JsonOkonomiOpplysningUtbetaling> mapToJsonOkonomiOpplysningUtbetalinger(BostotteDto bostotteDto) {
+    private BostotteDto innhentBostotteFraHusbanken(String personIdentifikator, String token) {
+        BostotteDto bostotteDto = bostotte.hentBostotte(personIdentifikator, token, LocalDate.now().minusMonths(2), LocalDate.now());
+        if(bostotteDto != null) {
+            bostotteDto.saker = bostotteDto.getSaker().stream()
+                    .filter(sakerDto -> sakerDto.getRolle().equalsIgnoreCase("HOVEDPERSON"))
+                    .collect(Collectors.toList());
+        }
+        return bostotteDto;
+    }
+
+    private List<JsonOkonomiOpplysningUtbetaling> mapToJsonOkonomiOpplysningUtbetalinger(BostotteDto bostotteDto, boolean trengerBeggeManedene) {
+        int filterManeder = trengerBeggeManedene ? 2 : 1;
         return bostotteDto.getUtbetalinger().stream()
+                .filter(utbetalingerDto -> utbetalingerDto.getUtbetalingsdato().isAfter(LocalDate.now().minusMonths(filterManeder)))
                 .map(this::mapToJsonOkonomiOpplysningUtbetaling)
                 .collect(Collectors.toList());
     }
@@ -63,8 +79,10 @@ public class BostotteSystemdata implements Systemdata {
                 .withOverstyrtAvBruker(false);
     }
 
-    private List<JsonOkonomiOpplysningSak> mapToJsonOkonomiOpplysningSaker(BostotteDto bostotteDto) {
+    private List<JsonOkonomiOpplysningSak> mapToJsonOkonomiOpplysningSaker(BostotteDto bostotteDto, boolean trengerBeggeManedene) {
+        int filterManeder = trengerBeggeManedene ? 2 : 1;
         return bostotteDto.getSaker().stream()
+                .filter(sakerDto -> sakerDto.getDato().isAfter(LocalDate.now().minusMonths(filterManeder)))
                 .map(this::mapToJsonOkonomiOpplysningSak)
                 .collect(Collectors.toList());
     }

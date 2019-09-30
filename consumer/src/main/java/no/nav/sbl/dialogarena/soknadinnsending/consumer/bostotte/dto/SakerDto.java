@@ -21,6 +21,10 @@ public class SakerDto {
         return LocalDate.of(ar, mnd, 1);
     }
 
+    public String getRolle() {
+        return rolle;
+    }
+
     public SakerDto with(Integer mnd, Integer ar, String status, VedtakDto vedtak, String rolle) {
         this.mnd = mnd;
         this.ar = ar;
