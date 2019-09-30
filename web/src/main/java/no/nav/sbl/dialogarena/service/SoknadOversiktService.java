@@ -26,7 +26,7 @@ public class SoknadOversiktService {
 
     public List<SoknadOversikt> hentAlleSoknaderFor(String fnr) {
 
-        List<SoknadMetadata> soknader = soknadMetadataRepository.hentInnsendteSoknaderForBruker(fnr);
+        List<SoknadMetadata> soknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerUtenEttersendelser(fnr);
 
         return soknader.stream()
                 .map(soknadMetadata -> new SoknadOversikt()
