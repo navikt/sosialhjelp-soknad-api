@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.types.Pingable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
@@ -12,6 +13,9 @@ import org.springframework.web.client.RestOperations;
 import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import java.time.LocalDate;
+
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 public class BostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(BostotteImpl.class);
@@ -41,5 +45,27 @@ public class BostotteImpl implements Bostotte {
             logger.warn("Problemer med å tolke data fra Husbanken!", e);
         }
         return null;
+    }
+
+    static Pingable createHusbankenPing(BostotteConfig config, RestOperations operations) {
+        return new Pingable() {
+            Ping.PingMetadata metadata = new Ping.PingMetadata(config.getPingUrl(),"HusbankenPing", false);
+
+            @Override
+            public Ping ping() {
+                try {
+                    RequestEntity<Void> request = RequestEntity.get(UriBuilder.fromPath(config.getPingUrl()).build())
+                            .header(config.getUsername(), config.getAppKey())
+                            .build();
+                    String result = operations.exchange(request, String.class).getBody();
+                    if(result.equalsIgnoreCase("pong")) {
+                        return lyktes(metadata);
+                    }
+                } catch (Exception e) {
+                    return feilet(metadata, e);
+                }
+                return feilet(metadata, "Feil ping svar fra Husbanken!");
+            }
+        };
     }
 }

@@ -11,8 +11,11 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestOperations;
 
@@ -111,6 +114,34 @@ public class BostotteImplTest {
 
         // Mocks:
         when(operations.exchange(any(), any(Class.class))).thenThrow(new ResourceAccessException("TestException"));
+
+        // Testkjøring:
+        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(null);
+    }
+
+    @Test
+    public void hentBostotte_testUrl_overlevBadConnection() {
+        // Variabler:
+        String personIdentifikator = "121212123456";
+        LocalDate fra = LocalDate.now().minusDays(30);
+        LocalDate til = LocalDate.now();
+
+        // Mocks:
+        when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+
+        // Testkjøring:
+        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(null);
+    }
+
+    @Test
+    public void hentBostotte_testUrl_overlevBadData() {
+        // Variabler:
+        String personIdentifikator = "121212123456";
+        LocalDate fra = LocalDate.now().minusDays(30);
+        LocalDate til = LocalDate.now();
+
+        // Mocks:
+        when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException"));
 
         // Testkjøring:
         assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(null);

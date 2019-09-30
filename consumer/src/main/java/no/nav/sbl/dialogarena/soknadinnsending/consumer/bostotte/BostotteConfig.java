@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sbl.dialogarena.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,12 +21,23 @@ public class BostotteConfig {
     @Value("${soknad.bostotte.husbanken.username}")
     private String username = "username";
 
+    @Value("${soknad.bostotte.ping.url}")
+    private String pingUrl;
+
     @Bean
     Bostotte getBostotteImpl() {
         if(MockUtils.isTillatMockRessurs()) {
             return new MockBostotteImpl();
         }
         return new BostotteImpl(this, new RestTemplate());
+    }
+
+    @Bean
+    public Pingable forsendelsePing() {
+        if(MockUtils.isTillatMockRessurs()) {
+            return null;
+        }
+        return BostotteImpl.createHusbankenPing(this, new RestTemplate());
     }
 
     public String getUri() {
@@ -38,5 +50,9 @@ public class BostotteConfig {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getPingUrl() {
+        return pingUrl;
     }
 }
