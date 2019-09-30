@@ -45,7 +45,7 @@ public class SoknadOversiktServiceTest {
 
     @Test
     public void hentAlleSoknaderForBruker() {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBruker("12345"))
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerUtenEttersendelser("12345"))
                 .thenReturn(singletonList(soknadMetadata));
 
         List<SoknadOversikt> resultat = service.hentAlleSoknaderFor("12345");
