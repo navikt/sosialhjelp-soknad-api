@@ -162,7 +162,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
 
     @Override
     public List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr) {
-        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ?";
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
     }
 
