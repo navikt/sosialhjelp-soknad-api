@@ -78,11 +78,9 @@ public class BostotteSystemdataTest {
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         assertThat(utbetalinger).isNotEmpty();
-        assertThat(utbetalinger).hasSize(2);
+        assertThat(utbetalinger).hasSize(1);
         JsonOkonomiOpplysningUtbetaling utbetaling1 = utbetalinger.get(0);
-        JsonOkonomiOpplysningUtbetaling utbetaling2 = utbetalinger.get(1);
-        assertThatUtbetalingErKorrekt(mottaker, belop1, utbetaling1, utbetalingsDato.minusMonths(1));
-        assertThatUtbetalingErKorrekt(mottaker, belop2, utbetaling2, utbetalingsDato);
+        assertThatUtbetalingErKorrekt(mottaker, belop2, utbetaling1, utbetalingsDato);
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
 
@@ -163,6 +161,81 @@ public class BostotteSystemdataTest {
         List<JsonOkonomiOpplysningSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getSak();
         assertThat(saker).isEmpty();
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isTrue();
+    }
+
+    @Test
+    public void updateSystemdata_bipersonerBlirFiltrertBort() {
+        // Variabler:
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), "UNDER_BEHANDLING", "HOVEDPERSON", null, null);
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), "VEDTATT", "BIPERSON", "V02", "Avslag - For høy inntekt");
+        BostotteDto bostotteDto = new BostotteDto()
+                .withSak(sakerDto1)
+                .withSak(sakerDto2);
+
+        // Mock:
+        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+
+        // Kjøring:
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        List<JsonOkonomiOpplysningSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getSak();
+        assertThat(saker).isNotEmpty();
+        assertThat(saker).hasSize(1);
+        JsonOkonomiOpplysningSak sak1 = saker.get(0);
+        assertThat(sak1.getStatus()).isEqualTo(sakerDto1.getStatus());
+    }
+
+    @Test
+    public void updateSystemdata_bareDataFraSisteManedBlirVist() {
+        // Variabler:
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), "UNDER_BEHANDLING", "HOVEDPERSON", null, null);
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), "VEDTATT", "HOVEDPERSON", "V02", "Avslag - For høy inntekt");
+        BostotteDto bostotteDto = new BostotteDto()
+                .withSak(sakerDto1)
+                .withSak(sakerDto2);
+
+        // Mock:
+        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+
+        // Kjøring:
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        List<JsonOkonomiOpplysningSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getSak();
+        assertThat(saker).isNotEmpty();
+        assertThat(saker).hasSize(1);
+        JsonOkonomiOpplysningSak sak1 = saker.get(0);
+        assertThat(sak1.getStatus()).isEqualTo(sakerDto1.getStatus());
+    }
+
+    @Test
+    public void updateSystemdata_dataFraDeSisteToManederBlirVistNarSisteManedErTom() {
+        // Variabler:
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), "VEDTATT", "HOVEDPERSON", "V02", "Avslag - For høy inntekt");
+        BostotteDto bostotteDto = new BostotteDto()
+                .withSak(sakerDto2);
+
+        // Mock:
+        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+
+        // Kjøring:
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        List<JsonOkonomiOpplysningSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getSak();
+        assertThat(saker).isNotEmpty();
+        assertThat(saker).hasSize(1);
+        JsonOkonomiOpplysningSak sak1 = saker.get(0);
+        assertThat(sak1.getStatus()).isEqualTo(sakerDto2.getStatus());
+    }
+
+    private SakerDto lagSak(LocalDate saksDato, String status, String rolle, String kode, String beskrivelse) {
+        VedtakDto vedtakDto = null;
+        if(kode != null) {
+            vedtakDto = new VedtakDto().with(kode, beskrivelse);
+        }
+        return new SakerDto().with(saksDato.getMonthValue(), saksDato.getYear(), status, vedtakDto, rolle);
     }
 
     private void assertThatUtbetalingErKorrekt(String mottaker, BigDecimal belop, JsonOkonomiOpplysningUtbetaling utbetaling, LocalDate utbetalingsDato) {
