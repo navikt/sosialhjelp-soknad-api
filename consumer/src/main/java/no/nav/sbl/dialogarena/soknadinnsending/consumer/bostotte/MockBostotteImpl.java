@@ -1,17 +1,47 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.VedtakDto;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MockBostotteImpl implements Bostotte {
 
+    private static Map<String, BostotteDto> responses = new HashMap<>();
+
+    public static void setBostotteData(String fnr, String bostotteJson) {
+        ObjectMapper mapper = new ObjectMapper();
+        BostotteDto bostotteDto = null;
+        try {
+            bostotteDto = mapper.readValue(bostotteJson, BostotteDto.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        BostotteDto response = responses.get(fnr);
+        if (response == null){
+            responses.put(fnr, bostotteDto);
+        } else {
+            responses.replace(fnr, bostotteDto);
+        }
+    }
+
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til) {
+        BostotteDto response = responses.get(personIdentifikator);
+        if (response != null){
+            return response;
+        }
+        return hentStandardBostotteDtoMock();
+    }
+
+    private BostotteDto hentStandardBostotteDtoMock() {
         String mottaker1 = "KOMMUNE";
         String mottaker2 = "HUSSTAND";
         BigDecimal belop1 = BigDecimal.valueOf(10000);
