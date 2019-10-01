@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.fiks.streaming.klient.FilForOpplasting;
 import no.ks.kryptering.CMSKrypteringImpl;
@@ -7,6 +8,7 @@ import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -38,12 +40,14 @@ public class KrypteringService {
 
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
 
+    private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
+
     List<DokumentInfo> krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
         log.info(String.format("Starter kryptering av filer, skal sende til %s %s %s", kommunenr, navEkseternRefId, token));
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         try {
             X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
-            List<DokumentInfo> opplastetFiler = lastOppFiler(soknadJson, vedleggJson,dokumenter.stream()
+            List<DokumentInfo> opplastetFiler = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
@@ -161,8 +165,8 @@ public class KrypteringService {
 
         entitybuilder.addTextBody("soknadJson", soknadJson);
         entitybuilder.addTextBody("vedleggJson", vedleggJson);
-
         for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
+            entitybuilder.addTextBody("metadata", getJson(objectFilForOpplasting));
             entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData());
         }
 
@@ -170,6 +174,7 @@ public class KrypteringService {
             HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
+            post.setHeader("Transfer-Encoding", "chunked");
             post.setHeader("Authorization", token);
             post.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
             post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
@@ -185,6 +190,14 @@ public class KrypteringService {
             return Arrays.asList(new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), DokumentInfo[].class));
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
+        }
+    }
+
+    private String getJson(FilForOpplasting<Object> objectFilForOpplasting) {
+        try {
+            return objectMapper.writeValueAsString(objectFilForOpplasting.getMetadata());
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException(e);
         }
     }
 
