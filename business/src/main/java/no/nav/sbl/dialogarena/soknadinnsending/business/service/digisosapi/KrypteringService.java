@@ -167,7 +167,7 @@ public class KrypteringService {
         entitybuilder.addTextBody("vedleggJson", vedleggJson);
         for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
             entitybuilder.addTextBody("metadata", getJson(objectFilForOpplasting));
-            entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData());
+            entitybuilder.addBinaryBody("dokumentdata", objectFilForOpplasting.getData());
         }
 
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
