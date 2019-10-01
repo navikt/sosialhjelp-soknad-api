@@ -133,6 +133,8 @@ public class KommuneTilNavEnhetMapper {
             .put("0235", "983870953")    // Ullensaker
             .put("0238", "874604682")    // Nannestad
             .put("1833", "993576190")    // Rana
+            .put("1149", "995075199")    // Karmøy,Bokn
+            .put("1515", "983931073")    // Herøy,Vanylven
 
         
             .build();
@@ -290,7 +292,11 @@ public class KommuneTilNavEnhetMapper {
                     "0101",
                     "0235",
                     "0238",
-                    "1833"
+                    "1833",
+                    "1149",
+                    "1145",
+                    "1515",
+                    "1511"
             ));
 
 
