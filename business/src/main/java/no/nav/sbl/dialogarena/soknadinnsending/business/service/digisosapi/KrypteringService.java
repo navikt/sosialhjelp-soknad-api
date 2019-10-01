@@ -186,7 +186,7 @@ public class KrypteringService {
                 log.warn(EntityUtils.toString(response.getEntity()));
                 throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
             }
-
+            log.info(EntityUtils.toString(response.getEntity()));
             return Arrays.asList(new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), DokumentInfo[].class));
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
