@@ -174,7 +174,6 @@ public class KrypteringService {
             HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
-            post.setHeader("Transfer-Encoding", "chunked");
             post.setHeader("Authorization", token);
             post.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
             post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
