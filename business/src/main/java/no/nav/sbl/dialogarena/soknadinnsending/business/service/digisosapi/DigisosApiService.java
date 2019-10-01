@@ -34,10 +34,10 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
@@ -85,12 +85,16 @@ public class DigisosApiService {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune/" + kommunenummer);
             http.setHeader("Accept", MediaType.APPLICATION_JSON);
             http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
-            http.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
+            String integrasjonpassord_fiks = System.getProperty("integrasjonpassord_fiks");
+            Objects.requireNonNull(integrasjonpassord_fiks,"integrasjonpassord_fiks");
+            http.setHeader("IntegrasjonPassord", integrasjonpassord_fiks);
             http.setHeader("Authorization", "Bearer " + accessToken.accessToken);
 
             CloseableHttpResponse response = client.execute(http);
-            return objectMapper.readValue(EntityUtils.toString(response.getEntity()), KommuneInfo.class);
-        } catch (IOException e) {
+            String content = EntityUtils.toString(response.getEntity());
+            log.info(content);
+            return objectMapper.readValue(content, KommuneInfo.class);
+        } catch (Exception e) {
             log.error("Hent kommuneinfo feiler", e);
             return new KommuneInfo();
         }
