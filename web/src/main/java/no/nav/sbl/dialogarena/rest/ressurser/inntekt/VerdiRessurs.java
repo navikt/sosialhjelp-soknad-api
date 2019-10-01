@@ -113,9 +113,7 @@ public class VerdiRessurs {
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi("")
                     .withSparing("")
-                    .withUtbetaling("")
-                    .withBoutgifter("")
-                    .withBarneutgifter(""));
+                    .withUtbetaling(""));
         }
         opplysninger.getBeskrivelseAvAnnet().setVerdi(verdierFrontend.beskrivelseAvAnnet != null ? verdierFrontend.beskrivelseAvAnnet : "");
     }

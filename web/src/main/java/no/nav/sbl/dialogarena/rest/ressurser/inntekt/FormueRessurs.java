@@ -119,9 +119,7 @@ public class FormueRessurs {
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi("")
                     .withSparing("")
-                    .withUtbetaling("")
-                    .withBoutgifter("")
-                    .withBarneutgifter(""));
+                    .withUtbetaling(""));
         }
         opplysninger.getBeskrivelseAvAnnet().setSparing(formueFrontend.beskrivelseAvAnnet != null ? formueFrontend.beskrivelseAvAnnet : "");
     }

@@ -107,9 +107,7 @@ public class UtbetalingRessurs {
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi("")
                     .withSparing("")
-                    .withUtbetaling("")
-                    .withBoutgifter("")
-                    .withBarneutgifter(""));
+                    .withUtbetaling(""));
         }
         opplysninger.getBeskrivelseAvAnnet().setUtbetaling(utbetalingerFrontend.beskrivelseAvAnnet != null ? utbetalingerFrontend.beskrivelseAvAnnet : "");
     }
