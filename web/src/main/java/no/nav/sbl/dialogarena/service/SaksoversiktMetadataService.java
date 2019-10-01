@@ -67,14 +67,12 @@ public class SaksoversiktMetadataService {
     }
 
     public List<PabegyntSoknad> hentPabegynteSoknaderForBruker(String fnr) {
-        Properties bundle = getBundle();
-
         List<SoknadMetadata> soknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr);
 
         return soknader.stream().map(soknad ->
                 new PabegyntSoknad()
                         .withBehandlingsId(soknad.behandlingsId)
-                        .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
+                        .withTittel("Søknad om økonomisk sosialhjelp")
                         .withSisteEndring(tilDate(soknad.sistEndretDato))
                         .withLenke(lagFortsettSoknadLenke(soknad.behandlingsId))
         ).collect(toList());
