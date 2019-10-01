@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneInfo;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -14,7 +13,10 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,7 +25,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
@@ -100,13 +101,6 @@ public class DigisosApiServiceTest {
         Assert.assertThat(fiksDokumenter.get(0).metadata.filnavn, is("ettersendelse.pdf"));
         Assert.assertThat(fiksDokumenter.get(1).metadata.filnavn, is("Brukerkvittering.pdf"));
         Assert.assertThat(fiksDokumenter.get(2).metadata.filnavn, is("FILNAVN"));
-    }
-
-    @Test
-    @Ignore("Må ha tilgang til cert for å teste")
-    public void testHentKommuneInfo() {
-        List<KommuneInfo> kommuneInfos = Collections.singletonList(digisosApiService.hentKommuneInfo("1234"));
-        assertThat(kommuneInfos).isNotEmpty();
     }
 
     private JsonInternalSoknad lagInternalSoknadForEttersending() {
