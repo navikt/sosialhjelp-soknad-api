@@ -10,7 +10,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneInfo;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -161,10 +164,8 @@ public class DigisosApiService {
 
     }
 
-    private void sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
-        for (DokumentInfo dokumentInfo : krypteringService.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token)) {
-            log.info(String.format("Filnavn %s id %s stoerrelse %d laster opp", dokumentInfo.filnavn, dokumentInfo.dokumentlagerDokumentId.toString(), dokumentInfo.storrelse));
-        }
+     void sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
+         krypteringService.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token);
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
@@ -252,7 +253,7 @@ public class DigisosApiService {
         }
     }
 
-    private String getSoknadJson(SoknadUnderArbeid soknadUnderArbeid) {
+    String getSoknadJson(SoknadUnderArbeid soknadUnderArbeid) {
         try {
             String sonadJson = objectMapper.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad().getSoknad());
             ensureValidSoknad(sonadJson);
@@ -262,7 +263,7 @@ public class DigisosApiService {
         }
     }
 
-    private String getVedleggJson(SoknadUnderArbeid soknadUnderArbeid) {
+    String getVedleggJson(SoknadUnderArbeid soknadUnderArbeid) {
         try {
             String vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad().getVedlegg());
             ensureValidVedlegg(vedleggJson);
