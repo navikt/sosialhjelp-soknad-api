@@ -15,7 +15,7 @@ public class VedleggTypeToSoknadTypeMapper {
         vedleggTypeToSoknadType.put("dokumentasjon|annetinntekter", UTBETALING_ANNET);
         vedleggTypeToSoknadType.put("dokumentasjon|annetverdi", VERDI_ANNET); // Økonomisk verdi. Usikker på om denne brukes
         vedleggTypeToSoknadType.put("dokumentasjon|campingvogn", VERDI_CAMPINGVOGN); // Økonomisk verdi. Usikker på om denne brukes
-        vedleggTypeToSoknadType.put("dokumentasjon|fritidseiendom", VERDI_CAMPINGVOGN); // Økonomisk verdi. Usikker på om denne brukes
+        vedleggTypeToSoknadType.put("dokumentasjon|fritidseiendom", VERDI_FRITIDSEIENDOM); // Økonomisk verdi. Usikker på om denne brukes
         vedleggTypeToSoknadType.put("kjopekontrakt|kjopekontrakt", VERDI_BOLIG); // Økonomisk verdi. Usikker på om denne brukes
         vedleggTypeToSoknadType.put("dokumentasjon|kjoretoy", VERDI_KJORETOY); // Økonomisk verdi. Usikker på om denne brukes
         vedleggTypeToSoknadType.put("faktura|barnehage", UTGIFTER_BARNEHAGE);

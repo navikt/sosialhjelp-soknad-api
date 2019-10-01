@@ -92,10 +92,10 @@ public class BoutgiftRessurs {
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_OPPVARMING));
         addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBoutgifter, UTGIFTER_OPPVARMING, tittel, boutgifterFrontend.oppvarming);
 
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BOLIGLAN_AVDRAG) + "." + UTGIFTER_BOLIGLAN_AVDRAG);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BOLIGLAN_AVDRAG));
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, UTGIFTER_BOLIGLAN_AVDRAG, tittel, boutgifterFrontend.boliglan);
 
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BOLIGLAN_RENTER) + "." + UTGIFTER_BOLIGLAN_RENTER);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BOLIGLAN_RENTER));
         addutgiftIfCheckedElseDeleteInOversikt(oversiktBoutgifter, UTGIFTER_BOLIGLAN_RENTER, tittel, boutgifterFrontend.boliglan);
 
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_ANNET_BO));

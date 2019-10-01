@@ -10,8 +10,8 @@ public class TitleKeyMapper {
 
     static {
         soknadTypeToTitleKey.put(UTGIFTER_HUSLEIE, "opplysninger.utgifter.boutgift.husleie");
-        soknadTypeToTitleKey.put(UTGIFTER_BOLIGLAN_AVDRAG, "opplysninger.utgifter.boutgift.avdraglaan");
-        soknadTypeToTitleKey.put(UTGIFTER_BOLIGLAN_RENTER, "opplysninger.utgifter.boutgift.avdraglaan");
+        soknadTypeToTitleKey.put(UTGIFTER_BOLIGLAN_AVDRAG, "opplysninger.utgifter.boutgift.avdraglaan.boliglanAvdrag");
+        soknadTypeToTitleKey.put(UTGIFTER_BOLIGLAN_RENTER, "opplysninger.utgifter.boutgift.avdraglaan.boliglanRenter");
         soknadTypeToTitleKey.put(UTGIFTER_BARNEHAGE, "opplysninger.utgifter.barn.barnehage");
         soknadTypeToTitleKey.put(UTGIFTER_SFO, "opplysninger.utgifter.barn.sfo");
         soknadTypeToTitleKey.put(FORMUE_BRUKSKONTO, "opplysninger.inntekt.bankinnskudd.brukskonto");
