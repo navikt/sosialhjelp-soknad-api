@@ -1,11 +1,8 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -229,22 +226,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         if (data == null){
             return null;
         }
-        try { // try-blokken kan erstattes med "return mapper.readValue(data, JsonInternalSoknad.class);" to uker etter prodsetting av filformat versjon 1.0.8
-            JsonNode node = mapper.readTree(data);
-            String fieldName = "driftsinformasjon";
-            JsonNode driftNode = node.findValue(fieldName);
-            if (driftNode instanceof TextNode) {
-                String value = ((TextNode) driftNode).textValue();
-                JsonNode soknadNode = node.findValue("soknad");
-                ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("utbetalingerFraNavFeilet",
-                        value.equals("Kunne ikke hente utbetalinger fra NAV") ? Boolean.TRUE : Boolean.FALSE);
-                objectNode.put("inntektFraSkatteetatenFeilet",
-                        value.equals("Kunne ikke hente skattbar inntekt fra Skatteetaten") ? Boolean.TRUE : Boolean.FALSE);
-                objectNode.put("stotteFraHusbankenFeilet", Boolean.FALSE);
-                ((ObjectNode) soknadNode).put(fieldName, objectNode);
-            }
-            return mapper.treeToValue(node, JsonInternalSoknad.class);
+        try {
+            return mapper.readValue(data, JsonInternalSoknad.class);
         } catch (IOException e) {
             logger.error("Kunne ikke finne søknad", e);
             throw new RuntimeException(e);
