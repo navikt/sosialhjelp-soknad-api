@@ -183,4 +183,9 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE fnr = ? AND behandlingsid = ?", eier, behandlingsId);
     }
 
+    @Override
+    public List<SoknadMetadata> hentInnsendteSoknaderForBrukerUtenEttersendelser(String fnr) {
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND tilknyttetbehandlingsid IS NULL";
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
+    }
 }
