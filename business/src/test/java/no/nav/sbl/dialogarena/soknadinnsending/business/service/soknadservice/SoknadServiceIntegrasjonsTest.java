@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegration
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.KrypteringService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -40,7 +40,7 @@ public class SoknadServiceIntegrasjonsTest {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private KrypteringService krypteringService;
+    private DigisosApi digisosApi;
 
     @Inject
     private PDFService pdfService;

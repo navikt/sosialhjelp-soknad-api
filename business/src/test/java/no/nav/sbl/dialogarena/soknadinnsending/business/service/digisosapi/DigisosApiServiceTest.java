@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilOpplasting;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;

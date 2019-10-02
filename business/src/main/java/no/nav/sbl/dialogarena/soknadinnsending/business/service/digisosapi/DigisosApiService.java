@@ -7,12 +7,12 @@ import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.FilOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilOpplasting;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -43,7 +43,7 @@ public class DigisosApiService {
     private static final Logger log = getLogger(DigisosApiService.class);
 
     @Inject
-    private KrypteringService krypteringService;
+    private DigisosApi digisosApi;
 
     @Inject
     private PDFService pdfService;
@@ -53,9 +53,6 @@ public class DigisosApiService {
 
     @Inject
     private HenvendelseService henvendelseService;
-
-    @Inject
-    private OppgaveHandterer oppgaveHandterer;
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
@@ -111,7 +108,7 @@ public class DigisosApiService {
     }
 
     void sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
-        krypteringService.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token);
+        digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token);
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {

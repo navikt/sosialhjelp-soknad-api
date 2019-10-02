@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.KrypteringService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
@@ -20,7 +19,6 @@ import org.springframework.context.annotation.Import;
         EttersendingService.class,
         DigisosApiService.class,
         IdPortenService.class,
-        KrypteringService.class,
         SoknadMetricsService.class,
         HenvendelseService.class,
         InnsendingService.class,

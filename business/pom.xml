@@ -77,10 +77,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.ks.fiks</groupId>
-            <artifactId>kryptering</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.migesok</groupId>
@@ -90,18 +86,6 @@
         <dependency>
             <groupId>no.nav</groupId>
             <artifactId>metrics</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.ks.fiks</groupId>
-            <artifactId>streaming-klient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
         </dependency>
 
         <dependency>
@@ -320,14 +304,6 @@
         <dependency>
             <groupId>org.verapdf</groupId>
             <artifactId>core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
         </dependency>
 
     </dependencies>
