@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -43,6 +43,7 @@ public class ConsumerConfig {
             OrganisasjonWSConfig.class,
             BrukerProfilWSConfig.class,
             DkifWSConfig.class,
+            DigisosApiRestConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class,
             FiksWSConfig.class,

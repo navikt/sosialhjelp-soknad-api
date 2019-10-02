@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi;
 
 public enum KommuneStatus {
     IKKE_PA_FIKS_ELLER_INNSYN,

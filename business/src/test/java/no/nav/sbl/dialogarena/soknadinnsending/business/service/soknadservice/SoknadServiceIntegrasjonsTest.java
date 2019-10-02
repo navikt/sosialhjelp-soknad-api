@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegration
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.IdPortenService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.KrypteringService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
@@ -30,8 +29,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class SoknadServiceIntegrasjonsTest {
     private final String EN_BEHANDLINGSID = "EN_BEHANDLINGSID";
-    @Inject
-    IdPortenService idPortenService;
+
     @Inject
     private SoknadService soknadService;
 

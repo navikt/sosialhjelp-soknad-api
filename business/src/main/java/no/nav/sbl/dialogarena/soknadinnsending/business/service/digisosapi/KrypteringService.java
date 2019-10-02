@@ -64,7 +64,6 @@ public class KrypteringService {
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
         byte[] publicKey = new byte[0];
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
-            log.info("Henter sertifikat");
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
                     .addHeader("Accept", MediaType.WILDCARD)
                     .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
@@ -79,7 +78,6 @@ public class KrypteringService {
                 log.warn(EntityUtils.toString(response.getEntity()));
             }
             publicKey = IOUtils.toByteArray(response.getEntity().getContent());
-            log.info("Hentet sertifikat");
         } catch (IOException e) {
             log.error("", e);
         }
@@ -102,9 +100,7 @@ public class KrypteringService {
             Future<Void> krypteringFuture =
                     executor.submit(() -> {
                         try {
-                            log.debug("Starting encryption...");
                             kryptering.krypterData(pipedOutputStream, dokumentStream, dokumentlagerPublicKeyX509Certificate, Security.getProvider("BC"));
-                            log.debug("Encryption completed");
                         } catch (Exception e) {
                             log.error("Encryption failed, setting exception on encrypted InputStream", e);
                             throw new IllegalStateException("An error occurred during encryption", e);
@@ -140,7 +136,6 @@ public class KrypteringService {
     }
 
     private void lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
-
 
         List<FilForOpplasting<Object>> filer = new ArrayList<>();
 
@@ -188,8 +183,8 @@ public class KrypteringService {
                 log.warn(EntityUtils.toString(response.getEntity()));
                 throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
             }
-            log.info(EntityUtils.toString(response.getEntity()));
-         } catch (IOException e) {
+            log.info(String.format("Sendte inn søknad og fikk digisosid: %s", EntityUtils.toString(response.getEntity())));
+        } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
         }
     }

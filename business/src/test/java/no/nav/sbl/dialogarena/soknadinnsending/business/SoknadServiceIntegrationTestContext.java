@@ -9,9 +9,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.IdPortenService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.KrypteringService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.IdPortenService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.sosialhjelp.InnsendingService;

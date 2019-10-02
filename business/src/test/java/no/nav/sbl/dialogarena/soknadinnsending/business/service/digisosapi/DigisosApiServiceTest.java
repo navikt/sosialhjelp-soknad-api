@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -31,7 +30,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -43,9 +41,6 @@ public class DigisosApiServiceTest {
 
     @Mock
     InnsendingService innsendingService;
-
-    @Spy
-    IdPortenService idPortenService = spy(new IdPortenService());
 
     @InjectMocks
     private DigisosApiService digisosApiService;

@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import org.junit.Before;
@@ -42,6 +43,8 @@ public class SoknadActionsTest {
     SystemdataUpdater systemdataUpdater;
     @Inject
     SoknadActions actions;
+    @Inject
+    DigisosApi digisosApi;
     @Inject
     private Tilgangskontroll tilgangskontroll;
 

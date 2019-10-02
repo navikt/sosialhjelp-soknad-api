@@ -3,9 +3,9 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.model.KommuneStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -34,7 +34,7 @@ public class SoknadActions {
     private SoknadService soknadService;
 
     @Inject
-    private DigisosApiService digisosApiService;
+    private DigisosApi digisosApi;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -53,7 +53,7 @@ public class SoknadActions {
         if (soknadUnderArbeid != null) {
             // String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
             try {
-                KommuneStatus kommuneStatus = digisosApiService.kommuneInfo("1201");
+                KommuneStatus kommuneStatus = digisosApi.kommuneInfo("1201");
                 log.info(String.format("Kommune: %s Status: %s", "1201", kommuneStatus.name()));
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo", e);
