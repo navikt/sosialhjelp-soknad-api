@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -84,13 +85,14 @@ public class SaksoversiktMetadataService {
         Properties bundle = getBundle();
         LocalDateTime ettersendelseFrist = LocalDateTime.now(clock)
                 .minusDays(ETTERSENDELSE_FRIST_DAGER);
+        DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
 
         List<SoknadMetadata> soknader = soknadMetadataRepository.hentSoknaderForEttersending(fnr, ettersendelseFrist);
 
         return soknader.stream().map(soknad ->
             new EttersendingsSoknad()
                 .withBehandlingsId(soknad.behandlingsId)
-                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
+                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn") + " (" + soknad.innsendtDato.format(datoFormatter) + ")")
                 .withLenke(lagEttersendelseLenke(soknad.behandlingsId))
                 .withVedlegg(finnManglendeVedlegg(soknad, bundle))
         ).collect(toList());
