@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRolle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -55,7 +56,10 @@ public class BostotteSystemdata implements Systemdata {
         BostotteDto bostotteDto = bostotte.hentBostotte(personIdentifikator, token, LocalDate.now().minusMonths(2), LocalDate.now());
         if(bostotteDto != null) {
             bostotteDto.saker = bostotteDto.getSaker().stream()
-                    .filter(sakerDto -> sakerDto.getRolle().equalsIgnoreCase("HOVEDPERSON"))
+                    .filter(sakerDto -> sakerDto.getRolle().equals(BostotteRolle.HOVEDPERSON))
+                    .collect(Collectors.toList());
+            bostotteDto.utbetalinger = bostotteDto.getUtbetalinger().stream()
+                    .filter(utbetalingerDto -> utbetalingerDto.getRolle().equals(BostotteRolle.HOVEDPERSON))
                     .collect(Collectors.toList());
         }
         return bostotteDto;
@@ -73,7 +77,7 @@ public class BostotteSystemdata implements Systemdata {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
                 .withType(HUSBANKEN_TYPE)
-                .withTittel(utbetalingerDto.getMottaker())
+                .withTittel(utbetalingerDto.getMottaker().toString())
                 .withBelop(utbetalingerDto.getBelop().intValue())
                 .withUtbetalingsdato(utbetalingerDto.getUtbetalingsdato() != null ? utbetalingerDto.getUtbetalingsdato().toString() : null)
                 .withOverstyrtAvBruker(false);
@@ -90,7 +94,7 @@ public class BostotteSystemdata implements Systemdata {
         return new JsonOkonomiOpplysningSak()
                 .withKilde(JsonKilde.SYSTEM)
                 .withType(HUSBANKEN_TYPE)
-                .withStatus(sakerDto.getStatus())
+                .withStatus(sakerDto.getStatus().toString())
                 .withBeskrivelse(sakerDto.getVedtak() != null ? sakerDto.getVedtak().getBeskrivelse() : null)
                 .withDato(sakerDto.getDato().toString());
     }

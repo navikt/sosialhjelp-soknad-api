@@ -1,10 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.VedtakDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -42,24 +39,24 @@ public class MockBostotteImpl implements Bostotte {
     }
 
     private BostotteDto hentStandardBostotteDtoMock() {
-        String mottaker1 = "KOMMUNE";
-        String mottaker2 = "HUSSTAND";
+        BostotteMottaker mottaker1 = BostotteMottaker.KOMMUNE;
+        BostotteMottaker mottaker2 = BostotteMottaker.HUSSTAND;
         BigDecimal belop1 = BigDecimal.valueOf(10000);
         BigDecimal belop2 = BigDecimal.valueOf(20000);
         LocalDate utbetalingsDato = LocalDate.now();
         LocalDate saksDato1 = LocalDate.now().minusDays(3);
         LocalDate saksDato2 = LocalDate.now().minusDays(33);
-        String saksStatus1 = "VEDTATT";
-        String saksStatus2 = "UNDER_BEHANDLING";
-        String rolle1 = "HOVEDPERSON";
-        String rolle2 = "BIPERSON";
+        BostotteStatus saksStatus1 = BostotteStatus.VEDTATT;
+        BostotteStatus saksStatus2 = BostotteStatus.UNDER_BEHANDLING;
+        BostotteRolle rolle1 = BostotteRolle.HOVEDPERSON;
+        BostotteRolle rolle2 = BostotteRolle.BIPERSON;
         String vedtaksKode = "V03";
         String vedtaksBeskrivelse = "Avslag - For høy inntekt";
 
         UtbetalingerDto utbetalingerDto1 = new UtbetalingerDto()
-                .with(mottaker1, belop1, utbetalingsDato);
+                .with(mottaker1, belop1, utbetalingsDato, BostotteRolle.HOVEDPERSON);
         UtbetalingerDto utbetalingerDto2 = new UtbetalingerDto()
-                .with(mottaker2, belop2, utbetalingsDato);
+                .with(mottaker2, belop2, utbetalingsDato, BostotteRolle.HOVEDPERSON);
         VedtakDto vedtakDto = new VedtakDto()
                 .with(vedtaksKode, vedtaksBeskrivelse);
         SakerDto sakerDto1 = new SakerDto()

@@ -6,8 +6,8 @@ import java.time.LocalDate;
 public class UtbetalingerDto {
     public LocalDate utbetalingsdato;
     public BigDecimal belop;
-    public String mottaker;
-    public String rolle;
+    public BostotteMottaker mottaker;
+    public BostotteRolle rolle;
 
     public LocalDate getUtbetalingsdato() {
         return utbetalingsdato;
@@ -17,11 +17,11 @@ public class UtbetalingerDto {
         return belop;
     }
 
-    public String getMottaker() {
+    public BostotteMottaker getMottaker() {
         return mottaker;
     }
 
-    public String getRolle() {
+    public BostotteRolle getRolle() {
         return rolle;
     }
 
@@ -29,10 +29,11 @@ public class UtbetalingerDto {
         this.utbetalingsdato = LocalDate.parse(datoString);
     }
 
-    public UtbetalingerDto with(String mottaker, BigDecimal belop, LocalDate utbetalingsdato) {
+    public UtbetalingerDto with(BostotteMottaker mottaker, BigDecimal belop, LocalDate utbetalingsdato, BostotteRolle rolle) {
         this.mottaker = mottaker;
         this.belop = belop;
         this.utbetalingsdato = utbetalingsdato;
+        this.rolle = rolle;
         return this;
     }
 }

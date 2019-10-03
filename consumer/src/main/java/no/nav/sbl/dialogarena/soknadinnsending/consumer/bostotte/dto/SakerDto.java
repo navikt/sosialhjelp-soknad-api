@@ -5,11 +5,11 @@ import java.time.LocalDate;
 public class SakerDto {
     public Integer mnd;
     public Integer ar;
-    public String status;
+    public BostotteStatus status;
     public VedtakDto vedtak;
-    public String rolle;
+    public BostotteRolle rolle;
 
-    public String getStatus() {
+    public BostotteStatus getStatus() {
         return status;
     }
 
@@ -21,11 +21,11 @@ public class SakerDto {
         return LocalDate.of(ar, mnd, 1);
     }
 
-    public String getRolle() {
+    public BostotteRolle getRolle() {
         return rolle;
     }
 
-    public SakerDto with(Integer mnd, Integer ar, String status, VedtakDto vedtak, String rolle) {
+    public SakerDto with(Integer mnd, Integer ar, BostotteStatus status, VedtakDto vedtak, BostotteRolle rolle) {
         this.mnd = mnd;
         this.ar = ar;
         this.status = status;
