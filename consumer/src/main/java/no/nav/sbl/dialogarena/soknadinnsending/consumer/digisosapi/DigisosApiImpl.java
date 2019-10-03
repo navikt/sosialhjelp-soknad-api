@@ -329,8 +329,9 @@ public class DigisosApiImpl implements DigisosApi {
                             .claim("scope", idPortenScope)
                             .build());
             signedJWT.sign(new RSASSASigner(keyPair.getPrivate()));
-            log.info("clientid:" +  idPortenClientId + " scope:" + idPortenScope +" vp:" + virksertCredentials.password.length() + " sertLength" + src.length());
-            return signedJWT.serialize();
+            String serialize = signedJWT.serialize();
+            log.info("clientid:" +  idPortenClientId + " scope:" + idPortenScope +" vp:" + virksertCredentials.password.length() + " sertLength:" + src.length() +" token" + serialize);
+            return serialize;
 
         } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | JOSEException e) {
             throw new IllegalStateException("Far ikke tak i jws token", e);
