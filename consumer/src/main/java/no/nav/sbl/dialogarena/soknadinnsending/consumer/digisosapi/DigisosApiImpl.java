@@ -305,7 +305,8 @@ public class DigisosApiImpl implements DigisosApi {
             String virksomhetsSertifikatPath = System.getProperty("virksomhetssertifikat_path", "/var/run/secrets/nais.io/virksomhetssertifikat");
             VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/credentials.json")), VirksertCredentials.class);
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/key.p12.b64")))), virksertCredentials.password.toCharArray());
+            String src = FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/key.p12.b64"));
+            keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(src)), virksertCredentials.password.toCharArray());
 
             X509Certificate certificate = (X509Certificate) keyStore.getCertificate(virksertCredentials.alias);
 
@@ -328,6 +329,7 @@ public class DigisosApiImpl implements DigisosApi {
                             .claim("scope", idPortenScope)
                             .build());
             signedJWT.sign(new RSASSASigner(keyPair.getPrivate()));
+            log.info("clientid:" +  idPortenClientId + " scope:" + idPortenScope +" vp:" + virksertCredentials.password.length() + " sertLength" + src.length());
             return signedJWT.serialize();
 
         } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | JOSEException e) {
