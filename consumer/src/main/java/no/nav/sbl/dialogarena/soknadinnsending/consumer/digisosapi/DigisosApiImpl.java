@@ -51,9 +51,9 @@ public class DigisosApiImpl implements DigisosApi {
     private static final Logger log = getLogger(DigisosApiImpl.class);
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
-    private  String idPortenTokenUrl;
-    private  String idPortenClientId;
-    private  String idPortenScope;
+    private String idPortenTokenUrl;
+    private String idPortenClientId;
+    private String idPortenScope;
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
 
     public DigisosApiImpl() {
@@ -296,16 +296,16 @@ public class DigisosApiImpl implements DigisosApi {
 
             return objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
         } catch (IOException e) {
-            throw new IllegalStateException("Far ikke tak i virksomhets accessToken",e);
+            throw new IllegalStateException("Far ikke tak i virksomhets accessToken", e);
         }
     }
 
     private String createJws() {
         try {
-            String virksomhetsSertifikatPath = System.getProperty("virksomhetssertifikat_path","/var/run/secrets/nais.io/virksomhetssertifikat");
+            String virksomhetsSertifikatPath = System.getProperty("virksomhetssertifikat_path", "/var/run/secrets/nais.io/virksomhetssertifikat");
             VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/credentials.json")), VirksertCredentials.class);
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(FileUtils.readFileToString(new File(virksomhetsSertifikatPath +"/key.p12.b64")))), virksertCredentials.password.toCharArray());
+            keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/key.p12.b64")))), virksertCredentials.password.toCharArray());
 
             X509Certificate certificate = (X509Certificate) keyStore.getCertificate(virksertCredentials.alias);
 
@@ -331,9 +331,10 @@ public class DigisosApiImpl implements DigisosApi {
             return signedJWT.serialize();
 
         } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | JOSEException e) {
-            throw new IllegalStateException("Far ikke tak i jws token",e);
+            throw new IllegalStateException("Far ikke tak i jws token", e);
         }
     }
+
     static class VirksertCredentials {
         public String alias;
         public String password;
@@ -356,6 +357,4 @@ public class DigisosApiImpl implements DigisosApi {
         @JsonProperty(value = "scope", required = true)
         String scope;
     }
-
-
 }

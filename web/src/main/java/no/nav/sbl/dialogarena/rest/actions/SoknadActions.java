@@ -45,8 +45,6 @@ public class SoknadActions {
     @POST
     @Path("/send")
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
-        log.info("Sender soknad " + token);
-
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);

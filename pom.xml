@@ -102,6 +102,7 @@
         <kryptering.version>1.0.5</kryptering.version>
         <jackson-annotations.version>2.10.0.pr2</jackson-annotations.version>
         <httpcore.version>4.4.12</httpcore.version>
+        <streaming-klient.version>1.0.6</streaming-klient.version>
     </properties>
 
     <dependencyManagement>
@@ -207,7 +208,7 @@
             <dependency>
                 <groupId>no.ks.fiks</groupId>
                 <artifactId>streaming-klient</artifactId>
-                <version>1.0.6</version>
+                <version>${streaming-klient.version}</version>
             </dependency>
 
             <dependency>

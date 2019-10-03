@@ -211,6 +211,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
@@ -226,8 +236,18 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
+            <groupId>no.ks.fiks</groupId>
+            <artifactId>streaming-klient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>no.ks.fiks</groupId>
+            <artifactId>kryptering</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
 
         <dependency>
@@ -284,24 +304,6 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.ks.fiks</groupId>
-            <artifactId>streaming-klient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.ks.fiks</groupId>
-            <artifactId>kryptering</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-
-
     </dependencies>
 
     <build>
