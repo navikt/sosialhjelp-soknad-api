@@ -330,7 +330,7 @@ public class DigisosApiImpl implements DigisosApi {
                             .build());
             signedJWT.sign(new RSASSASigner(keyPair.getPrivate()));
             String serialize = signedJWT.serialize();
-            log.info("clientid:" +  idPortenClientId + " scope:" + idPortenScope +" vp:" + virksertCredentials.password.length() + " sertLength:" + src.length() +" token" + serialize);
+            log.info("clientid:" +  idPortenClientId + " scope:" + idPortenScope +" vp:" + virksertCredentials.password.length() + " sertLength:" + src.length() +" token:" + serialize);
             return serialize;
 
         } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | JOSEException e) {
