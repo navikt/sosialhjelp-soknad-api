@@ -32,6 +32,8 @@ spec:
         kvPath: {{vaultKvPath}}
       - mountPath: /var/run/secrets/datasource
         kvPath: {{datasourceKvPath}}
+      - mountPath: /var/run/secrets/nais.io/virksomhetssertifikat
+        kvPath: {{virksomhetssertifikatKvPath}}
   ingresses:
 {{#each ingresses}}
     - "{{this}}"
