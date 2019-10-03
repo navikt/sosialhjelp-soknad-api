@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.IdPortenService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
@@ -27,8 +26,7 @@ import static java.lang.System.setProperty;
         AdresseSokService.class,
         NorgService.class,
         UtbetalingService.class,
-        SkattbarInntektService.class,
-        IdPortenService.class
+        SkattbarInntektService.class
 })
 
 public class ConsumerConfig {

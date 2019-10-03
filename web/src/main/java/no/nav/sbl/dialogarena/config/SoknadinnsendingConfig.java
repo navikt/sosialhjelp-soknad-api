@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.IdPortenService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.virusscan.VirusScanConfig;
 import org.springframework.context.annotation.*;
@@ -28,7 +27,6 @@ import org.springframework.context.annotation.*;
         MetricsConfig.class,
         SaksoversiktMetadataService.class,
         SoknadOversiktService.class,
-        IdPortenService.class,
         VirusScanConfig.class,
         DigisosApiRestConfig.class
 })
