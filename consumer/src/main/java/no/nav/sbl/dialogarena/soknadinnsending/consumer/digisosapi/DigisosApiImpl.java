@@ -28,6 +28,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.MediaType;
@@ -80,6 +81,7 @@ public class DigisosApiImpl implements DigisosApi {
 
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
+    @Cacheable(value = "kommuneinfoCache", key = "#kommunenummer")
     @Override
     public KommuneStatus kommuneInfo(String kommunenummer) {
         KommuneInfo kommuneInfo = hentKommuneInfo(kommunenummer);
@@ -104,6 +106,7 @@ public class DigisosApiImpl implements DigisosApi {
         if (isTillatMockRessurs()) {
             return new KommuneInfo();
         }
+
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune/" + kommunenummer);
@@ -330,7 +333,7 @@ public class DigisosApiImpl implements DigisosApi {
                             .build());
             signedJWT.sign(new RSASSASigner(keyPair.getPrivate()));
             String serialize = signedJWT.serialize();
-            log.info("clientid:" +  idPortenClientId + " scope:" + idPortenScope +" vp:" + virksertCredentials.password.length() + " sertLength:" + src.length() );
+            log.info("clientid:" + idPortenClientId + " scope:" + idPortenScope + " vp:" + virksertCredentials.password.length() + " sertLength:" + src.length());
             return serialize;
 
         } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | JOSEException e) {
