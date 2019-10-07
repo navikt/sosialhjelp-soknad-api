@@ -102,7 +102,7 @@ public class DigisosApiImpl implements DigisosApi {
         return IKKE_PA_FIKS_ELLER_INNSYN;
     }
 
-    @Cacheable(value = "kommuneinfoCache")
+    @Cacheable("kommuneinfoCache")
     public Map<String, KommuneInfo> hentKommuneInfo() {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
