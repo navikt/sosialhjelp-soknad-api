@@ -28,7 +28,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.MediaType;
@@ -43,7 +42,7 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -81,24 +80,24 @@ public class DigisosApiImpl implements DigisosApi {
 
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
-    @Cacheable(value = "kommuneinfoCache", key = "#kommunenummer")
+  //  @Cacheable(value = "kommuneinfoCache", key = "#kommunenummer")
     @Override
     public KommuneStatus kommuneInfo(String kommunenummer) {
-        KommuneInfo kommuneInfo = hentKommuneInfo(kommunenummer);
-
-        if (kommuneInfo.getKanMottaSoknader() == null) {
-            return IKKE_PA_FIKS_ELLER_INNSYN;
-        }
-
-        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-            return IKKE_PA_FIKS_ELLER_INNSYN;
-        }
-        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-            return KUN_PA_FIKS;
-        }
-        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
-            return PA_FIKS_OG_INNSYN;
-        }
+//        KommuneInfo kommuneInfo = hentKommuneInfo(kommunenummer);
+//
+//        if (kommuneInfo.getKanMottaSoknader() == null) {
+//            return IKKE_PA_FIKS_ELLER_INNSYN;
+//        }
+//
+//        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
+//            return IKKE_PA_FIKS_ELLER_INNSYN;
+//        }
+//        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
+//            return KUN_PA_FIKS;
+//        }
+//        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
+//            return PA_FIKS_OG_INNSYN;
+//        }
         return IKKE_PA_FIKS_ELLER_INNSYN;
     }
 
