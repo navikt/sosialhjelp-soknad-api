@@ -28,7 +28,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.MediaType;
@@ -38,8 +37,11 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,6 +59,8 @@ public class DigisosApiImpl implements DigisosApi {
     private String idPortenClientId;
     private String idPortenScope;
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
+    private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
+    private LocalDateTime cacheTimestamp;
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
@@ -84,7 +88,7 @@ public class DigisosApiImpl implements DigisosApi {
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     @Override
     public KommuneStatus kommuneInfo(String kommunenummer) {
-        KommuneInfo kommuneInfo = hentKommuneInfo().getOrDefault(kommunenummer,new KommuneInfo() );
+        KommuneInfo kommuneInfo = hentKommuneInfo().getOrDefault(kommunenummer, new KommuneInfo());
 
         if (kommuneInfo.getKanMottaSoknader() == null) {
             return IKKE_PA_FIKS_ELLER_INNSYN;
@@ -102,10 +106,14 @@ public class DigisosApiImpl implements DigisosApi {
         return IKKE_PA_FIKS_ELLER_INNSYN;
     }
 
-    @Cacheable("kommuneinfoCache")
+    // @Cacheable("kommuneinfoCache")
+    // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
     public Map<String, KommuneInfo> hentKommuneInfo() {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
+        }
+        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
+            return cacheForKommuneinfo.get();
         }
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
@@ -121,7 +129,10 @@ public class DigisosApiImpl implements DigisosApi {
             CloseableHttpResponse response = client.execute(http);
             String content = EntityUtils.toString(response.getEntity());
             log.info(content);
-            return Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
+            Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
+            cacheForKommuneinfo.set(collect);
+            cacheTimestamp =  LocalDateTime.now();
+            return collect;
         } catch (Exception e) {
             log.error("Hent kommuneinfo feiler", e);
             return Collections.emptyMap();
