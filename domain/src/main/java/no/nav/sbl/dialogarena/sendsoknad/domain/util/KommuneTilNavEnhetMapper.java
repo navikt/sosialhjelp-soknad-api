@@ -135,7 +135,8 @@ public class KommuneTilNavEnhetMapper {
             .put("1833", "993576190")    // Rana
             .put("1149", "995075199")    // Karmøy,Bokn
             .put("1515", "983931073")    // Herøy,Vanylven
-            .put("1106", "974575906")    // Haugesund og Utsira
+            .put("1106", "974575906")    // Haugesund
+            .put("1151", "974575906")    // Utsira
             .put("1663", "974624257")    // Malvik
             .put("1146", "964979812")    // Tysvær
             .put("0536", "974596393")    // Søndre Land
