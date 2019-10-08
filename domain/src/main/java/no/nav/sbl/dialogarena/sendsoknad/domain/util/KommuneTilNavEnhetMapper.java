@@ -19,7 +19,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0520", "Nord-Fron") // Ringebu
             .put("0631", "Rollag")    // Flesberg
             .put("0633", "Rollag")    // Nore og Uvdal
-            .put("1151", "Haugesund)  // Utsira
+            .put("1151", "Haugesund")  // Utsira
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
