@@ -42,6 +42,12 @@ public class SoknadActions {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @GET
+    @Path("/kommuneinfo")
+    public void hentKommuneinfo() {
+        KommuneStatus kommuneStatus = digisosApi.kommuneInfo("1201");
+    }
+
     @POST
     @Path("/send")
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {

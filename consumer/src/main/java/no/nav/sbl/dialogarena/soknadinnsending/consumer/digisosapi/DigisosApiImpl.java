@@ -37,12 +37,16 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -55,6 +59,8 @@ public class DigisosApiImpl implements DigisosApi {
     private String idPortenClientId;
     private String idPortenScope;
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
+    private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
+    private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
@@ -72,43 +78,47 @@ public class DigisosApiImpl implements DigisosApi {
 
     @Override
     public void ping() {
-        KommuneInfo kommuneInfo = hentKommuneInfo("0301");
-        if (kommuneInfo.getKanMottaSoknader() == null) {
+        Map<String, KommuneInfo> kommuneInfo = hentKommuneInfo();
+        if (kommuneInfo.isEmpty()) {
             throw new IllegalStateException("Fikk ikke kontakt med digisosapi");
         }
     }
 
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
-  //  @Cacheable(value = "kommuneinfoCache", key = "#kommunenummer")
     @Override
     public KommuneStatus kommuneInfo(String kommunenummer) {
-//        KommuneInfo kommuneInfo = hentKommuneInfo(kommunenummer);
-//
-//        if (kommuneInfo.getKanMottaSoknader() == null) {
-//            return IKKE_PA_FIKS_ELLER_INNSYN;
-//        }
-//
-//        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-//            return IKKE_PA_FIKS_ELLER_INNSYN;
-//        }
-//        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-//            return KUN_PA_FIKS;
-//        }
-//        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
-//            return PA_FIKS_OG_INNSYN;
-//        }
+        KommuneInfo kommuneInfo = hentKommuneInfo().getOrDefault(kommunenummer, new KommuneInfo());
+
+        if (kommuneInfo.getKanMottaSoknader() == null) {
+            return IKKE_PA_FIKS_ELLER_INNSYN;
+        }
+
+        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
+            return IKKE_PA_FIKS_ELLER_INNSYN;
+        }
+        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
+            return KUN_PA_FIKS;
+        }
+        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
+            return PA_FIKS_OG_INNSYN;
+        }
         return IKKE_PA_FIKS_ELLER_INNSYN;
     }
 
-    private KommuneInfo hentKommuneInfo(String kommunenummer) {
+    // @Cacheable("kommuneinfoCache")
+    // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
+    public Map<String, KommuneInfo> hentKommuneInfo() {
         if (isTillatMockRessurs()) {
-            return new KommuneInfo();
+            return Collections.emptyMap();
+        }
+        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
+            return cacheForKommuneinfo.get();
         }
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-            HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommune/" + kommunenummer);
+            HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommuner/");
             http.setHeader("Accept", MediaType.APPLICATION_JSON);
             http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
             String integrasjonpassord_fiks = System.getProperty("integrasjonpassord_fiks");
@@ -119,10 +129,13 @@ public class DigisosApiImpl implements DigisosApi {
             CloseableHttpResponse response = client.execute(http);
             String content = EntityUtils.toString(response.getEntity());
             log.info(content);
-            return objectMapper.readValue(content, KommuneInfo.class);
+            Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
+            cacheForKommuneinfo.set(collect);
+            cacheTimestamp =  LocalDateTime.now();
+            return collect;
         } catch (Exception e) {
             log.error("Hent kommuneinfo feiler", e);
-            return new KommuneInfo();
+            return Collections.emptyMap();
         }
     }
 
