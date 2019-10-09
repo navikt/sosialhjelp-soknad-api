@@ -156,6 +156,7 @@
         <prometheus.version>0.5.0</prometheus.version>
         <javax.websocket-api.version>1.1</javax.websocket-api.version>
         <jsoup.version>1.11.3</jsoup.version>
+        <oauth2-oidc-sdk.version>6.1.1</oauth2-oidc-sdk.version>
     </properties>
 
     <dependencyManagement>
@@ -258,11 +259,6 @@
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.ks.fiks</groupId>
-                <artifactId>streaming-klient</artifactId>
-                <version>${streaming-klient.version}</version>
             </dependency>
 
 
@@ -486,7 +482,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-annotations.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -602,6 +598,11 @@
             </dependency>
 
             <!-- Fiks -->
+            <dependency>
+                <groupId>no.ks.fiks</groupId>
+                <artifactId>streaming-klient</artifactId>
+                <version>${streaming-klient.version}</version>
+            </dependency>
             <dependency>
                 <groupId>no.ks.fiks</groupId>
                 <artifactId>kryptering</artifactId>
@@ -839,11 +840,6 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
                 <version>${logback.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson-annotations.version}</version>
             </dependency>
 
             <dependency>
@@ -1265,6 +1261,21 @@
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>oauth2-oidc-sdk</artifactId>
+                <version>${oauth2-oidc-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-io</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-client</artifactId>
+                <version>${jetty.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
