@@ -265,6 +265,7 @@
             <groupId>org.verapdf</groupId>
             <artifactId>core</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

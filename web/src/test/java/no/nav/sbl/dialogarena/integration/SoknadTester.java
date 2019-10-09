@@ -26,7 +26,7 @@ public class SoknadTester extends JerseyTest {
 
     private SoknadTester() {
         super();
-        this.user = "01015245464";
+        this.user = "23079403598";
         this.token = JwtTokenGenerator.createSignedJWT(this.user).serialize();
     }
 

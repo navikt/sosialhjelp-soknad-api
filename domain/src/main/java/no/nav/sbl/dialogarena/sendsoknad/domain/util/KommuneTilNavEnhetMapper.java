@@ -19,6 +19,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0520", "Nord-Fron") // Ringebu
             .put("0631", "Rollag")    // Flesberg
             .put("0633", "Rollag")    // Nore og Uvdal
+            .put("1151", "Haugesund")  // Utsira
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -135,6 +136,10 @@ public class KommuneTilNavEnhetMapper {
             .put("1833", "993576190")    // Rana
             .put("1149", "995075199")    // Karmøy,Bokn
             .put("1515", "983931073")    // Herøy,Vanylven
+            .put("1106", "974575906")    // Haugesund, Utsira
+            .put("1663", "974624257")    // Malvik
+            .put("1146", "964979812")    // Tysvær
+            .put("0536", "974596393")    // Søndre Land
 
         
             .build();
@@ -296,7 +301,13 @@ public class KommuneTilNavEnhetMapper {
                     "1149",
                     "1145",
                     "1515",
-                    "1511"
+                    "1511",
+                    "1106",
+                    "1151",
+                    "5031",
+                    "1146",
+                    "0536"
+                
             ));
 
 
