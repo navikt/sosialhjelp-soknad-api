@@ -60,7 +60,7 @@ public class DigisosApiImpl implements DigisosApi {
     private String idPortenScope;
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
-    private LocalDateTime cacheTimestamp;
+    private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
