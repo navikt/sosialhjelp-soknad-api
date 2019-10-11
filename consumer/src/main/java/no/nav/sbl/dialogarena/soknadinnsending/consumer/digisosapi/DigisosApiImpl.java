@@ -88,7 +88,13 @@ public class DigisosApiImpl implements DigisosApi {
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     @Override
     public KommuneStatus kommuneInfo(String kommunenummer) {
-        KommuneInfo kommuneInfo = hentKommuneInfo().getOrDefault(kommunenummer, new KommuneInfo());
+        Map<String, KommuneInfo> stringKommuneInfoMap;
+        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
+            stringKommuneInfoMap = cacheForKommuneinfo.get();
+        } else{
+            stringKommuneInfoMap= hentKommuneInfo();
+        }
+        KommuneInfo kommuneInfo = stringKommuneInfoMap.getOrDefault(kommunenummer, new KommuneInfo());
 
         if (kommuneInfo.getKanMottaSoknader() == null) {
             return IKKE_PA_FIKS_ELLER_INNSYN;
@@ -112,9 +118,7 @@ public class DigisosApiImpl implements DigisosApi {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
         }
-        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
-            return cacheForKommuneinfo.get();
-        }
+
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
