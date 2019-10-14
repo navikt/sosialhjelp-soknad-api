@@ -55,14 +55,14 @@ public class SoknadActions {
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid != null) {
-            // String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
+            String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
             try {
-                KommuneStatus kommuneStatus = digisosApi.kommuneInfo("1201");
-                log.info(String.format("Kommune: %s Status: %s", "1201", kommuneStatus.name()));
+                KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
+                log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo ", e);
             }
-//            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN)&& false) {
+//            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) && false) {
 //                digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
 //                return;
 //            }

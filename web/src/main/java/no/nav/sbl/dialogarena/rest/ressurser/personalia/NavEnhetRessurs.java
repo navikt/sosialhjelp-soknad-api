@@ -40,7 +40,7 @@ public class NavEnhetRessurs {
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
-    @Inject
+    @Inje
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
@@ -74,8 +74,8 @@ public class NavEnhetRessurs {
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
         soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
-                .withEnhetsnummer(navEnhetFrontend.enhetsnr));
-      //          .withKommunenummer(navEnhetFrontend.kommuneNr));
+                .withEnhetsnummer(navEnhetFrontend.enhetsnr)
+                .withKommunenummer(navEnhetFrontend.kommuneNr));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
