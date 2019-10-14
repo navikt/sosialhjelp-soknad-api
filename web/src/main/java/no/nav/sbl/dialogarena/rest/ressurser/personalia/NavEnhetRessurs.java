@@ -40,7 +40,7 @@ public class NavEnhetRessurs {
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
-    @Inje
+    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
