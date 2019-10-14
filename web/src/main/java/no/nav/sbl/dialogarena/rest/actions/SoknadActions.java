@@ -55,8 +55,8 @@ public class SoknadActions {
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid != null) {
-            String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
             try {
+                String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
                 KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
                 log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
             } catch (Exception e) {
