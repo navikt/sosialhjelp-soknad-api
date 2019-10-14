@@ -42,12 +42,6 @@ public class SoknadActions {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @GET
-    @Path("/kommuneinfo")
-    public void hentKommuneinfo() {
-        KommuneStatus kommuneStatus = digisosApi.kommuneInfo("1201");
-    }
-
     @POST
     @Path("/send")
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
@@ -56,15 +50,19 @@ public class SoknadActions {
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid != null) {
             try {
-                String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
-                KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
-                log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
+                if (!soknadUnderArbeid.erEttersendelse()) {
+                    String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
+                    KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
+                    log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
+                }
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo ", e);
             }
+//            if (!soknadUnderArbeid.erEttersendelse()) {
 //            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) && false) {
 //                digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
 //                return;
+//            }
 //            }
         }
 
