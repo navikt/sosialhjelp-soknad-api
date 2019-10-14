@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
@@ -225,13 +226,13 @@ public class BostotteRessursTest {
         List<JsonOkonomiOpplysningSak> saker = new ArrayList<>();
         for (String sak: saksTyper) {
             saker.add(new JsonOkonomiOpplysningSak()
-                    .withKilde(JsonKilde.BRUKER)
+                    .withKilde(JsonKildeSystem.SYSTEM)
                     .withType(sak)
                     .withStatus("STATUS"));
         }
         if(harSaker) {
             saker.add(new JsonOkonomiOpplysningSak()
-                    .withKilde(JsonKilde.BRUKER)
+                    .withKilde(JsonKildeSystem.SYSTEM)
                     .withType(HUSBANKEN_TYPE)
                     .withStatus("UNDER_BEHANDLING"));
         }
