@@ -70,6 +70,7 @@
 
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2019.07.25-08.54-f2bfe18c24bc</nav-common.version>
+        <nav-metrics.version>2018.02.27.19.33</nav-metrics.version>
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>4.1.0.RELEASE</spring.version>
@@ -276,12 +277,22 @@
                         <groupId>com.google.code.findbugs</groupId>
                         <artifactId>jsr305</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>no.nav.common</groupId>
+                        <artifactId>metrics</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>no.nav.common</groupId>
+                <groupId>no.nav</groupId>
                 <artifactId>metrics</artifactId>
-                <version>${nav-common.version}</version>
+                <version>${nav-metrics.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>no.nav.sbl</groupId>
+                        <artifactId>util</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>no.nav.common</groupId>
@@ -296,6 +307,10 @@
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
                         <artifactId>javax.inject</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>no.nav.common</groupId>
+                        <artifactId>metrics</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -1115,6 +1130,12 @@
                 <artifactId>jetty</artifactId>
                 <version>${nav-common.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>no.nav.common</groupId>
+                        <artifactId>metrics</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>

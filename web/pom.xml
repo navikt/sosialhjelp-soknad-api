@@ -83,7 +83,7 @@
             <artifactId>sendsoknad-domain</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
+            <groupId>no.nav</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
         <dependency>

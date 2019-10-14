@@ -20,7 +20,7 @@ spec:
     timeout: 1
   prometheus:
     enabled: true
-    path: /sosialhjelp/soknad-api/internal/metrics
+    path: /prometheus
   replicas:
     min: 2
     max: 2
