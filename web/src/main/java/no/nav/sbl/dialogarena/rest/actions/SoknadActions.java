@@ -56,9 +56,11 @@ public class SoknadActions {
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid != null) {
             try {
-                String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
-                KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
-                log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
+                if (!soknadUnderArbeid.erEttersendelse()) {
+                    String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
+                    KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
+                    log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
+                }
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo ", e);
             }
