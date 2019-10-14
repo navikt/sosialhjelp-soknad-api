@@ -1,14 +1,14 @@
 package no.nav.sbl.dialogarena.virusscan;
 
-import static no.nav.sbl.dialogarena.virusscan.Result.OK;
-
-import java.net.URI;
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestOperations;
+
+import java.net.URI;
+
+import static no.nav.sbl.dialogarena.virusscan.Result.OK;
 
 class VirusScanConnection {
 
@@ -38,7 +38,6 @@ class VirusScanConnection {
                 return false;
             }
             ScanResult scanResult = scanResults[0];
-            logger.info("Fikk scan result {}", scanResult);
             if (OK.equals(scanResult.getResult())) {
                 logger.info("Ingen virus i {}", filnavn);
                 return false;
