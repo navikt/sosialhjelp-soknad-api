@@ -42,12 +42,6 @@ public class SoknadActions {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @GET
-    @Path("/kommuneinfo")
-    public void hentKommuneinfo() {
-        KommuneStatus kommuneStatus = digisosApi.kommuneInfo("1201");
-    }
-
     @POST
     @Path("/send")
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
@@ -64,9 +58,11 @@ public class SoknadActions {
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo ", e);
             }
+//            if (!soknadUnderArbeid.erEttersendelse()) {
 //            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) && false) {
 //                digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
 //                return;
+//            }
 //            }
         }
 
