@@ -69,7 +69,7 @@
         <tjenestespesifikasjon.version>1.2019.08.16-13.46-35cbdfd492d4</tjenestespesifikasjon.version>
 
         <!-- Nav felles java-bibliotek -->
-        <nav-common.version>1.2019.07.25-08.54-f2bfe18c24bc</nav-common.version>
+        <nav-common.version>1.2019.09.13-12.30-cc1ac9ca61b6</nav-common.version>
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>4.1.0.RELEASE</spring.version>
