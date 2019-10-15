@@ -83,8 +83,8 @@
         <ojdbc.version>12.2.0.1</ojdbc.version>
         <flying.saucer.version>9.0.8</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
-        <jackson.version>2.9.10</jackson.version>
-        <jackson-databind.version>2.9.10</jackson-databind.version>
+        <jackson.version>2.10.0.pr1</jackson.version>
+        <jackson-databind.version>2.10.0.pr1</jackson-databind.version>
         <metrics.version>2018.02.27.19.33</metrics.version>
         <filformat.version>1.2019.10.12-16.00-80b320ae6384</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
