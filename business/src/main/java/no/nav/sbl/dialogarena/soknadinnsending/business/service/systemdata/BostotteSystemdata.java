@@ -7,11 +7,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRol
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningSak;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
@@ -35,10 +34,10 @@ public class BostotteSystemdata implements Systemdata {
         BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
         if (bostotteDto != null) {
             boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
-            List<JsonOkonomiOpplysningUtbetaling> jsonOkonomiOpplysningUtbetaling = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
-            okonomi.getOpplysninger().getUtbetaling().addAll(jsonOkonomiOpplysningUtbetaling);
-            List<JsonOkonomiOpplysningSak> jsonSaksStatuser = mapToJsonOkonomiOpplysningSaker(bostotteDto, trengerViDataFraDeSiste60Dager);
-            okonomi.getOpplysninger().getSak().addAll(jsonSaksStatuser);
+            List<JsonBostotteUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
+            okonomi.getOpplysninger().getBostotte().getUtbetalinger().addAll(jsonBostotteUtbetalinger);
+            List<JsonBostotteSak> jsonSaksStatuser = mapToJsonOkonomiOpplysningSaker(bostotteDto, trengerViDataFraDeSiste60Dager);
+            okonomi.getOpplysninger().getBostotte().getSaker().addAll(jsonSaksStatuser);
             soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
         } else {
             soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
@@ -55,7 +54,7 @@ public class BostotteSystemdata implements Systemdata {
 
     private BostotteDto innhentBostotteFraHusbanken(String personIdentifikator, String token) {
         BostotteDto bostotteDto = bostotte.hentBostotte(personIdentifikator, token, LocalDate.now().minusDays(60), LocalDate.now());
-        if(bostotteDto != null) {
+        if (bostotteDto != null) {
             bostotteDto.saker = bostotteDto.getSaker().stream()
                     .filter(sakerDto -> sakerDto.getRolle().equals(BostotteRolle.HOVEDPERSON))
                     .collect(Collectors.toList());
@@ -66,7 +65,7 @@ public class BostotteSystemdata implements Systemdata {
         return bostotteDto;
     }
 
-    private List<JsonOkonomiOpplysningUtbetaling> mapToJsonOkonomiOpplysningUtbetalinger(BostotteDto bostotteDto, boolean trengerViDataFraDeSiste60Dager) {
+    private List<JsonBostotteUtbetaling> mapToJsonOkonomiOpplysningUtbetalinger(BostotteDto bostotteDto, boolean trengerViDataFraDeSiste60Dager) {
         int filterDays = trengerViDataFraDeSiste60Dager ? 60 : 30;
         return bostotteDto.getUtbetalinger().stream()
                 .filter(utbetalingerDto -> utbetalingerDto.getUtbetalingsdato().isAfter(LocalDate.now().minusDays(filterDays)))
@@ -74,30 +73,30 @@ public class BostotteSystemdata implements Systemdata {
                 .collect(Collectors.toList());
     }
 
-    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(UtbetalingerDto utbetalingerDto) {
-        return new JsonOkonomiOpplysningUtbetaling()
-                .withKilde(JsonKilde.SYSTEM)
+    private JsonBostotteUtbetaling mapToJsonOkonomiOpplysningUtbetaling(UtbetalingerDto utbetalingerDto) {
+        return new JsonBostotteUtbetaling()
+                .withKilde(JsonKildeSystem.SYSTEM)
                 .withType(HUSBANKEN_TYPE)
                 .withTittel("Statlig bostotte")
-                .withMottaker(gjorForsteBokstavStor(utbetalingerDto.getMottaker().toString()))
-                .withBelop(utbetalingerDto.getBelop().intValue())
-                .withUtbetalingsdato(utbetalingerDto.getUtbetalingsdato() != null ? utbetalingerDto.getUtbetalingsdato().toString() : null)
-                .withOverstyrtAvBruker(false);
+                .withMottaker(JsonBostotteUtbetaling.Mottaker.fromValue(gjorForsteBokstavStor(utbetalingerDto.getMottaker().toString())))
+                .withBelop(utbetalingerDto.getBelop().doubleValue())
+                .withUtbetalingsdato(utbetalingerDto.getUtbetalingsdato() != null ? utbetalingerDto.getUtbetalingsdato().toString() : null);
     }
 
     private String gjorForsteBokstavStor(String navn) {
-        return navn.substring(0,1).toUpperCase() + navn.substring(1).toLowerCase();
+        return navn.substring(0, 1).toUpperCase() + navn.substring(1).toLowerCase();
     }
 
-    private List<JsonOkonomiOpplysningSak> mapToJsonOkonomiOpplysningSaker(BostotteDto bostotteDto, boolean trengerViDataFraDeSiste60Dager) {
+    private List<JsonBostotteSak> mapToJsonOkonomiOpplysningSaker(BostotteDto bostotteDto, boolean trengerViDataFraDeSiste60Dager) {
         int filterDays = trengerViDataFraDeSiste60Dager ? 60 : 30;
         return bostotteDto.getSaker().stream()
                 .filter(sakerDto -> sakerDto.getDato().isAfter(LocalDate.now().minusDays(filterDays)))
                 .map(this::mapToJsonOkonomiOpplysningSak)
                 .collect(Collectors.toList());
     }
-    private JsonOkonomiOpplysningSak mapToJsonOkonomiOpplysningSak(SakerDto sakerDto) {
-        return new JsonOkonomiOpplysningSak()
+
+    private JsonBostotteSak mapToJsonOkonomiOpplysningSak(SakerDto sakerDto) {
+        return new JsonBostotteSak()
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withType(HUSBANKEN_TYPE)
                 .withStatus(sakerDto.getStatus().toString())

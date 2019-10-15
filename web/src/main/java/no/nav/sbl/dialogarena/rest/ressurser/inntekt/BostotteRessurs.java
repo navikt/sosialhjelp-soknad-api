@@ -5,9 +5,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningSak;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -92,14 +92,14 @@ public class BostotteRessurs {
                 .ifPresent(jsonOkonomibekreftelse -> bostotteFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
-    private List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalinger(JsonInternalSoknad soknad) {
-        return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().stream()
+    private List<JsonBostotteUtbetaling> mapToUtbetalinger(JsonInternalSoknad soknad) {
+        return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getUtbetalinger().stream()
                 .filter(utbetaling -> utbetaling.getType().equals(HUSBANKEN_TYPE))
                 .collect(Collectors.toList());
     }
 
-    private List<JsonOkonomiOpplysningSak> mapToUtSaksStatuser(JsonInternalSoknad soknad) {
-        return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getSak().stream()
+    private List<JsonBostotteSak> mapToUtSaksStatuser(JsonInternalSoknad soknad) {
+        return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker().stream()
                 .filter(sak -> sak.getType().equals(HUSBANKEN_TYPE))
                 .collect(Collectors.toList());
     }
@@ -107,19 +107,19 @@ public class BostotteRessurs {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BostotteFrontend {
         public Boolean bekreftelse;
-        public List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
-        public List<JsonOkonomiOpplysningSak> saker;
+        public List<JsonBostotteUtbetaling> utbetalinger;
+        public List<JsonBostotteSak> saker;
         public Boolean stotteFraHusbankenFeilet;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
         }
 
-        public void setUtbetalinger(List<JsonOkonomiOpplysningUtbetaling> utbetalinger) {
+        public void setUtbetalinger(List<JsonBostotteUtbetaling> utbetalinger) {
             this.utbetalinger = utbetalinger;
         }
 
-        public void setSaksStatuser(List<JsonOkonomiOpplysningSak> saker) {
+        public void setSaksStatuser(List<JsonBostotteSak> saker) {
             this.saker = saker;
         }
 
