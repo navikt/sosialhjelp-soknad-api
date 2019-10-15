@@ -53,6 +53,10 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
+          name: GitHub package registry login
+          command: |
+            echo "$DEPLOYMENT_PASSWORD" | docker login -u "$DEPLOYMENT_USERNAME" --password-stdin docker.pkg.github.com
+      - run:
           name: Deploy on Heroku
           command: |
             heroku container:login
