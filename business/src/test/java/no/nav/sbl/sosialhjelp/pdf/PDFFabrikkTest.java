@@ -59,6 +59,7 @@ public class PDFFabrikkTest {
         handleBarKjoerer.registrerHelper("hvisIkkeTom", new HvisIkkeTomHelper());
         handleBarKjoerer.registrerHelper("concat", new ConcatHelper());
         handleBarKjoerer.registrerHelper("formaterDato", new FormaterDatoHelper());
+        handleBarKjoerer.registrerHelper("formaterDecimal", new FormaterDecimalHelper());
         handleBarKjoerer.registrerHelper("personnr", new PersonnrHelper());
         handleBarKjoerer.registrerHelper("hvisUtbetalingFinnes", new HvisUtbetalingFinnesHelper());
         handleBarKjoerer.registrerHelper("hentOkonomiBekreftelse", new HentOkonomiBekreftelseHelper());
@@ -67,6 +68,8 @@ public class PDFFabrikkTest {
         handleBarKjoerer.registrerHelper("hvisBarneutgift", new HvisBarneutgiftHelper());
         handleBarKjoerer.registrerHelper("hvisBoutgift", new HvisBoutgiftHelper());
         handleBarKjoerer.registrerHelper("landMedFulltNavn", new LandMedFulltNavnHelper());
+        handleBarKjoerer.registrerHelper("finnSaksStatus", new FinnSaksStatusHelper());
+        handleBarKjoerer.registrerHelper("erListeTom", new ErListeTomHelper());
     }
 
     @Test

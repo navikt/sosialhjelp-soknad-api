@@ -232,29 +232,103 @@
                     </li>
                 {{/if}}
 
-                <h3>{{hentTekst "inntekt.bostotte.sporsmal"}}</h3>
-                {{#hentOkonomiBekreftelse "bostotte"}}
-                    <li>
-                        <ul class="svar-liste">
-                            <li>
+                <h3>{{hentTekst "inntekt.bostotte.overskrift"}}</h3>
+                {{#if @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
+                    {{#hentOkonomiBekreftelse "bostotte"}}
+                        <h4>{{hentTekst "inntekt.bostotte.sporsmal"}}</h4>
+                        <li>
+                            <ul class="svar-liste">
+                                <li>
                                 <span class="verdi verdi--radio">
                                     {{ hentTekst (concat 'inntekt.bostotte.' verdi) }}
                                 </span>
-                            </li>
-                        </ul>
-                        {{#if @root.utvidetSoknad}}
-                            {{#unless verdi}}
-                                {{{settInnInfotekst "informasjon.husbanken.bostotte"}}}
-                            {{/unless}}
-                        {{/if}}
-                    </li>
-                {{else}}
-                    <li>
+                                </li>
+                            </ul>
+                            {{#if @root.utvidetSoknad}}
+                                {{#unless verdi}}
+                                    {{{settInnInfotekst "informasjon.husbanken.bostotte"}}}
+                                {{/unless}}
+                            {{/if}}
+                        </li>
+                    {{else}}
+                        <li>
                         <span class="verdi verdi--ikkeUtfylt">
                             <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
                         </span>
-                    </li>
-                {{/hentOkonomiBekreftelse}}
+                        </li>
+                    {{/hentOkonomiBekreftelse}}
+                    <ul class="svar-liste">
+                        <li>
+                            <span class="verdi verdi--tekst">
+                                "Kunne ikke hente status fra Husbanken"
+                            </span>
+                        </li>
+                    </ul>
+                {{else}}
+                    {{#with bostotte}}
+                        {{#each utbetalinger}}
+                            <h4>{{hentTekst "inntekt.bostotte.utbetaling"}}</h4>
+                            <li>
+                                <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.mottaker"}}</span>
+                                <ul class="svar-liste">
+                                    <li>
+                                        <span class="verdi verdi--tekst">
+                                            {{mottaker}}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.utbetalingsdato"}}</span>
+                                <ul class="svar-liste">
+                                    <li>
+                                        <span class="verdi verdi--tekst">
+                                            {{formaterDato utbetalingsdato "dd.MM.yyyy"}}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.belop"}}</span>
+                                <ul class="svar-liste">
+                                    <li>
+                                        <span class="verdi verdi--tekst">
+                                            {{formaterDecimal belop}}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                        {{/each}}
+                        {{#each saker}}
+                            <h4>{{hentTekst "inntekt.bostotte.sak"}}</h4>
+                            <li>
+                                <span class="label">{{hentTekst "inntekt.bostotte.sak.dato"}}</span>
+                                <ul class="svar-liste">
+                                    <li>
+                                        <span class="verdi verdi--tekst">
+                                            <div style="text-transform: capitalize;">{{formaterDato dato "MMMM yyyy"}}</div>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <span class="label">{{hentTekst "inntekt.bostotte.sak.status"}}</span>
+                                <ul class="svar-liste">
+                                    <li>
+                                        <span class="verdi verdi--tekst">
+                                            {{finnSaksStatus status beskrivelse}}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                        {{/each}}
+                        {{#erListeTom saker}}
+                            {{#erListeTom utbetalinger}}
+                                <span class="label">{{hentTekst "inntekt.bostotte.ikkefunnet"}}</span>
+                            {{/erListeTom}}
+                        {{/erListeTom}}
+                    {{/with}}
+                {{/if}}
                 <li>
                     {{#if @root.utvidetSoknad}}
                         {{{hentSvaralternativer "inntekt.bostotte"}}}
