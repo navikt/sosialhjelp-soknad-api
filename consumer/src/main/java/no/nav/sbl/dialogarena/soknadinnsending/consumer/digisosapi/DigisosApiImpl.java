@@ -87,38 +87,53 @@ public class DigisosApiImpl implements DigisosApi {
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     @Override
-    public KommuneStatus kommuneInfo(String kommunenummer) {
+    public KommuneStatus kommuneInfo(String kommunenummer, Map<String, KommuneInfo> kommuneInfoMap) {
         Map<String, KommuneInfo> stringKommuneInfoMap;
         if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
             stringKommuneInfoMap = cacheForKommuneinfo.get();
         } else{
-            stringKommuneInfoMap= hentKommuneInfo();
+            stringKommuneInfoMap= kommuneInfoMap;
         }
         KommuneInfo kommuneInfo = stringKommuneInfoMap.getOrDefault(kommunenummer, new KommuneInfo());
 
         if (kommuneInfo.getKanMottaSoknader() == null) {
-            return IKKE_PA_FIKS_ELLER_INNSYN;
+            return MANGLER_KONFIGURASJON;
         }
 
-        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-            return IKKE_PA_FIKS_ELLER_INNSYN;
+        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus() && !kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
+            return HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
         }
-        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-            return KUN_PA_FIKS;
+
+        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus() && !kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
+            return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
         }
-        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
-            return PA_FIKS_OG_INNSYN;
+
+        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus() && !kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
+            return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
         }
-        return IKKE_PA_FIKS_ELLER_INNSYN;
+
+        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus() && kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
+            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SOM_VANLIG;
+        }
+
+        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus() && kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
+            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_IKKE_MULIG;
+        }
+
+        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus() && kommuneInfo.getHarMidlertidigDeaktivertMottak() && kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
+            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SKAL_VISE_FEILSIDE;
+        }
+
+        return IKKE_STOTTET_CASE;
     }
 
     // @Cacheable("kommuneinfoCache")
     // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
+    @Override
     public Map<String, KommuneInfo> hentKommuneInfo() {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
         }
-
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {

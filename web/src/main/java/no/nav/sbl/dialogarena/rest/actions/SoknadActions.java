@@ -52,18 +52,29 @@ public class SoknadActions {
             try {
                 if (!soknadUnderArbeid.erEttersendelse()) {
                     String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
-                    KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
+                    KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer, digisosApi.hentKommuneInfo());
                     log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
+                    switch (kommuneStatus) {
+                        case HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT:
+                        case MANGLER_KONFIGURASJON:
+                            soknadService.sendSoknad(behandlingsId);
+                            return;
+                        case SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA:
+                        case IKKE_STOTTET_CASE:
+                            //digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
+                            //return;
+                            break;
+                        case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SOM_VANLIG:
+                            break;
+                        case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_IKKE_MULIG:
+                            break;
+                        case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SKAL_VISE_FEILSIDE:
+                            break;
+                    }
                 }
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo ", e);
             }
-//            if (!soknadUnderArbeid.erEttersendelse()) {
-//            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) && false) {
-//                digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
-//                return;
-//            }
-//            }
         }
 
         soknadService.sendSoknad(behandlingsId);

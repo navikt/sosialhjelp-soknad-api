@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilOpplasting;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -24,7 +23,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,4 +123,74 @@ public class DigisosApiServiceTest {
         return opplastedeVedlegg;
     }
 
+    @Test
+    public void kommuneInfo() {
+        System.setProperty("tillatMockRessurs", "true");
+        DigisosApiImpl digisosApi = new DigisosApiImpl();
+        System.setProperty("tillatMockRessurs", "false");
+        // Case 1
+        Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
+        KommuneStatus kommuneStatus = digisosApi.kommuneInfo("1234", kommuneInfoMap);
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.MANGLER_KONFIGURASJON);
+
+        // Case 2
+        KommuneInfo value = new KommuneInfo();
+        value.setKommunenummer("1234");
+        value.setKanMottaSoknader(false);
+        value.setKanOppdatereStatus(false);
+        value.setHarMidlertidigDeaktivertMottak(false);
+        value.setHarMidlertidigDeaktivertOppdateringer(false);
+
+        kommuneInfoMap.put("1234", value);
+        kommuneStatus = digisosApi.kommuneInfo("1234", kommuneInfoMap);
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
+
+        // Case 3
+        value = new KommuneInfo();
+        value.setKommunenummer("1234");
+        value.setKanMottaSoknader(true);
+        value.setKanOppdatereStatus(false);
+        value.setHarMidlertidigDeaktivertMottak(false);
+        value.setHarMidlertidigDeaktivertOppdateringer(false);
+
+        kommuneInfoMap.put("1234", value);
+        kommuneStatus = digisosApi.kommuneInfo("1234", kommuneInfoMap);
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
+
+        // Case 4
+        value = new KommuneInfo();
+        value.setKommunenummer("1234");
+        value.setKanMottaSoknader(true);
+        value.setKanOppdatereStatus(true);
+        value.setHarMidlertidigDeaktivertMottak(false);
+        value.setHarMidlertidigDeaktivertOppdateringer(false);
+
+        kommuneInfoMap.put("1234", value);
+        kommuneStatus = digisosApi.kommuneInfo("1234", kommuneInfoMap);
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
+
+        // Case 5
+        value = new KommuneInfo();
+        value.setKommunenummer("1234");
+        value.setKanMottaSoknader(true);
+        value.setKanOppdatereStatus(true);
+        value.setHarMidlertidigDeaktivertMottak(true);
+        value.setHarMidlertidigDeaktivertOppdateringer(false);
+
+        kommuneInfoMap.put("1234", value);
+        kommuneStatus = digisosApi.kommuneInfo("1234", kommuneInfoMap);
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SOM_VANLIG);
+
+        // Case 6
+        value = new KommuneInfo();
+        value.setKommunenummer("1234");
+        value.setKanMottaSoknader(true);
+        value.setKanOppdatereStatus(true);
+        value.setHarMidlertidigDeaktivertMottak(true);
+        value.setHarMidlertidigDeaktivertOppdateringer(true);
+
+        kommuneInfoMap.put("1234", value);
+        kommuneStatus = digisosApi.kommuneInfo("1234", kommuneInfoMap);
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SKAL_VISE_FEILSIDE);
+    }
 }
