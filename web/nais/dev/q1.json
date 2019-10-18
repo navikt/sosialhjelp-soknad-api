@@ -7,6 +7,7 @@
   ],
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q1",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
+  "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
   "fasitEnvironment": "q1",
   "env": {
     "APPRES_CMS_URL": "https://appres-q1.nav.no",
@@ -22,6 +23,10 @@
     "EKSTERN_KS_SVARUT_V1_SECURITYTOKEN": "SAML",
     "EKSTERN_KS_SVARUT_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/ekstern-ks-svarUt-tjenestespesifikasjon/1.0.1/ekstern-ks-svarUt-tjenestespesifikasjon-1.0.1.zip",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
+    "DIGISOS_API_BASEURL" : "https://api.fiks.test.ks.no/",
+    "IDPORTEN_TOKEN_URL" : "https://oidc-ver2.difi.no/idporten-oidc-provider/token",
+    "IDPORTEN_CLIENTID" : "1c3631f4-dbf2-4c12-bdc4-156cbd53c625",
+    "IDPORTEN_CONFIG_URL" : "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "LOGINSERVICE_URL": "https://loginservice-q.nav.no/login",
     "NORG2_API_V1_URL": "https://api-gw-q1.oera.no/norg2/api/v1/",
     "SAKSOVERSIKT_LINK_URL": "https://tjenester-q1.nav.no/saksoversikt",

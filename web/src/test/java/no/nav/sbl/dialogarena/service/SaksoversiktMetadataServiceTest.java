@@ -30,6 +30,7 @@ import java.util.Properties;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -119,7 +120,7 @@ public class SaksoversiktMetadataServiceTest {
 
         assertEquals(1, resultat.size());
         EttersendingsSoknad soknad = resultat.get(0);
-        assertEquals("saksoversikt.soknadsnavn", soknad.getTittel());
+        assertTrue(soknad.getTittel().contains("saksoversikt.soknadsnavn"));
         assertEquals(1, soknad.getVedlegg().size());
         assertEquals("vedlegg.skjema2.tillegg1.tittel", soknad.getVedlegg().get(0).getTittel());
     }

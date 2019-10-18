@@ -74,7 +74,8 @@ public class NavEnhetRessurs {
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
         soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
-                .withEnhetsnummer(navEnhetFrontend.enhetsnr));
+                .withEnhetsnummer(navEnhetFrontend.enhetsnr)
+                .withKommunenummer(navEnhetFrontend.kommuneNr));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
@@ -113,7 +114,8 @@ public class NavEnhetRessurs {
                 .withKommunenavn(adresseForslag.kommunenavn)
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
-                .withValgt(valgt);
+                .withValgt(valgt)
+                .withKommuneNr(adresseForslag.kommunenummer);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -122,6 +124,7 @@ public class NavEnhetRessurs {
         public String enhetsnr;
         public String enhetsnavn;
         public String kommunenavn;
+        public String kommuneNr;
         public boolean valgt;
 
         public NavEnhetFrontend withOrgnr(String orgnr) {
@@ -146,6 +149,11 @@ public class NavEnhetRessurs {
 
         public NavEnhetFrontend withValgt(boolean valgt) {
             this.valgt = valgt;
+            return this;
+        }
+
+        public NavEnhetFrontend withKommuneNr(String kommuneNr) {
+            this.kommuneNr = kommuneNr;
             return this;
         }
     }

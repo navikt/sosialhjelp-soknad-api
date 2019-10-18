@@ -19,6 +19,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0520", "Nord-Fron") // Ringebu
             .put("0631", "Rollag")    // Flesberg
             .put("0633", "Rollag")    // Nore og Uvdal
+            .put("1151", "Haugesund")  // Utsira
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -132,6 +133,13 @@ public class KommuneTilNavEnhetMapper {
             .put("0101", "959159092")    // Halden
             .put("0235", "983870953")    // Ullensaker
             .put("0238", "874604682")    // Nannestad
+            .put("1833", "993576190")    // Rana
+            .put("1149", "995075199")    // Karmøy,Bokn
+            .put("1515", "983931073")    // Herøy,Vanylven
+            .put("1106", "974575906")    // Haugesund, Utsira
+            .put("1663", "974624257")    // Malvik
+            .put("1146", "974617757")    // Tysvær
+            .put("0536", "974596393")    // Søndre Land
 
         
             .build();
@@ -170,7 +178,7 @@ public class KommuneTilNavEnhetMapper {
             .build();
 
     public static String getOrganisasjonsnummer(String enhetNr) {
-        return isProduction() ? PROD_ORGANISASJONSNUMMER.get(enhetNr) : TEST_ORGANISASJONSNUMMER.get(enhetNr);
+        return isNonProduction() ? TEST_ORGANISASJONSNUMMER.get(enhetNr) : PROD_ORGANISASJONSNUMMER.get(enhetNr);
     }
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(
@@ -288,7 +296,18 @@ public class KommuneTilNavEnhetMapper {
                     "0234",
                     "0101",
                     "0235",
-                    "0238"
+                    "0238",
+                    "1833",
+                    "1149",
+                    "1145",
+                    "1515",
+                    "1511",
+                    "1106",
+                    "1151",
+                    "5031",
+                    "1146",
+                    "0536"
+                
             ));
 
 
@@ -298,10 +317,11 @@ public class KommuneTilNavEnhetMapper {
      * @return Liste med kommunenumre.
      */
     public static List<String> getDigisoskommuner() {
-        return isProduction() ? PROD_DIGISOS_KOMMUNER : TEST_DIGISOS_KOMMUNER;
+        return isNonProduction() ?  TEST_DIGISOS_KOMMUNER : PROD_DIGISOS_KOMMUNER;
     }
 
-    private static boolean isProduction() {
-        return "p".equals(System.getProperty("environment.name"));
+    private static boolean isNonProduction() {
+        String miljo = System.getProperty("environment.name", "");
+        return miljo.contains("t") || miljo.contains("q") || miljo.equals("local");
     }
 }

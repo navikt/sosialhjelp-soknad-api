@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>no.nav.sbl</groupId>
+        <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>3.1</version>
+        <version>1.2019.10.14-11.26-d162453764a7</version>
     </parent>
 
     <modules>
@@ -50,11 +50,6 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>maven-releases</id>
-            <name>NAV Internal Repository</name>
-            <url>https://repo.adeo.no/repository/maven-releases/</url>
-        </repository>
     </repositories>
 
     <properties>
@@ -71,14 +66,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Tjenestespesifikasjoner -->
-        <tjenestespesifikasjon.version>1.2019.08.16-13.46-35cbdfd492d4</tjenestespesifikasjon.version>
+        <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
+
+        <!-- Nav felles java-bibliotek -->
+        <nav-common.version>1.2019.10.14-11.26-d162453764a7</nav-common.version>
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>4.1.0.RELEASE</spring.version>
-        <jetty.version>9.4.17.v20190418</jetty.version>
+        <jetty.version>9.4.18.v20190429</jetty.version>
         <jersey.version>2.25.1</jersey.version>
         <oidc-support.version>0.2.10</oidc-support.version>
-        <nimbus-jose-jwt.version>6.5</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>7.8</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <jcip-annotations.version>1.0-1</jcip-annotations.version>
         <cxf.version>3.3.2</cxf.version>
@@ -86,24 +84,78 @@
         <wss4j.version>2.2.3</wss4j.version>
         <lokalt.kodeverk>1.12.28</lokalt.kodeverk>
         <ojdbc.version>12.2.0.1</ojdbc.version>
+        <flyway-core.version>5.0.7</flyway-core.version>
         <flying.saucer.version>9.0.8</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
-        <jackson.version>2.9.9</jackson.version>
-        <jackson-databind.version>2.9.9.3</jackson-databind.version>
-        <metrics.version>2018.02.27.19.33</metrics.version>
+        <jackson.version>2.9.10</jackson.version>
+        <jackson-databind.version>2.9.10</jackson-databind.version>
         <filformat.version>1.2019.10.18-09.22-8153be564783-SNAPSHOT</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
-        <httpclient.version>4.5.7</httpclient.version>
+        <httpclient.version>4.5.10</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
+        <verapdf.version>1.12.1</verapdf.version>
+        <logback.version>1.2.3</logback.version>
+        <hsqldb.version>2.3.2</hsqldb.version>
+        <hikaricp.version>2.7.8</hikaricp.version>
+        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+        <ehcache.version>2.10.4</ehcache.version>
+        <woodstox-core-asl.version>4.4.0</woodstox-core-asl.version>
+        <joda-time.version>2.7</joda-time.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <gson.version>2.3.1</gson.version>
+        <commons-codec.version>1.10</commons-codec.version>
+        <commons-io.version>2.4</commons-io.version>
+        <commons-lang.version>2.4</commons-lang.version>
+        <commons-lang3.version>3.3.2</commons-lang3.version>
+        <httpcore.version>4.4.12</httpcore.version>
+        <httpmime.version>4.5.10</httpmime.version>
+        <json-smart.version>2.3</json-smart.version>
+        <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
+        <javax.annotation-api.version>1.2</javax.annotation-api.version>
+        <javax.ws.rs-api.version>2.1</javax.ws.rs-api.version>
+        <modig-core.version>1.0.1</modig-core.version>
+        <modig-content.version>2.0.9</modig-content.version>
+        <modig-lang.version>2.0.2</modig-lang.version>
+        <aspectjweaver.version>1.8.8</aspectjweaver.version>
+        <zjsonpatch.version>0.4.8</zjsonpatch.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
+
+        <kryptering.version>1.0.5</kryptering.version>
+        <jackson-annotations.version>2.10.0.pr2</jackson-annotations.version>
+        <streaming-klient.version>1.0.6</streaming-klient.version>
+
+        <!-- Versjoner for test dependencies -->
+        <hamcrest.version>1.3</hamcrest.version>
+        <junit.version>4.12</junit.version>
+        <mockito.version>1.10.8</mockito.version>
+        <assertj.version>3.13.2</assertj.version>
+        <reflections.version>0.9.10</reflections.version>
+        <modig-core-test.version>1.0.0</modig-core-test.version>
+        <modig-testcertificates.version>1.2.5</modig-testcertificates.version>
+        <digipost.digg.version>0.13</digipost.digg.version>
+
+        <!-- Versjoner identifisert av maven-enforcer-plugin -->
+        <asm.version>7.0</asm.version>
+        <neethi.version>3.1.1</neethi.version>
+        <xmlsec.version>2.1.3</xmlsec.version>
+        <nav-sbl-util.version>2018.05.15.11.54</nav-sbl-util.version>
+        <rhino.version>1.7.7.2</rhino.version>
+        <opensaml.version>3.3.0</opensaml.version>
+        <validation-api.version>2.0.1.Final</validation-api.version>
+        <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
+        <hk2.version>2.5.0-b42</hk2.version>
+        <prometheus.version>0.5.0</prometheus.version>
+        <javax.websocket-api.version>1.1</javax.websocket-api.version>
+        <jsoup.version>1.11.3</jsoup.version>
+        <oauth2-oidc-sdk.version>6.1.1</oauth2-oidc-sdk.version>
     </properties>
 
     <dependencyManagement>
@@ -160,6 +212,7 @@
                 </exclusions>
             </dependency>
 
+
             <!-- Tjenestespesifikasjoner -->
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
@@ -207,138 +260,72 @@
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.json</groupId>
-                <artifactId>json</artifactId>
-                <version>20140107</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.ext</groupId>
-                <artifactId>jersey-spring3</artifactId>
-                <version>${jersey.version}</version>
-                <scope>runtime</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>javax.inject</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-server</artifactId>
-                <version>${jersey.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>javax.inject</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-multipart</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson-databind.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-joda</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
 
+            <!-- NAV felles biblioteker (nytt) -->
             <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>dialogarena-fillager</artifactId>
-                <version>0.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-cxf</artifactId>
-                <version>3.2.18</version>
+                <groupId>no.nav.common</groupId>
+                <artifactId>cxf</artifactId>
+                <version>${nav-common.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.cxf</groupId>
                         <artifactId>cxf-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>jsr305</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>no.bekk.bekkopen</groupId>
-                <artifactId>nocommons</artifactId>
-                <version>0.5</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>1.10</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav</groupId>
+                <groupId>no.nav.common</groupId>
                 <artifactId>metrics</artifactId>
-                <version>${metrics.version}</version>
+                <version>${nav-common.version}</version>
             </dependency>
+            <dependency>
+                <groupId>no.nav.common</groupId>
+                <artifactId>types</artifactId>
+                <version>${nav-common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.common</groupId>
+                <artifactId>rest</artifactId>
+                <version>${nav-common.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.glassfish.hk2.external</groupId>
+                        <artifactId>javax.inject</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.common</groupId>
+                <artifactId>suspend</artifactId>
+                <version>${nav-common.version}</version>
+            </dependency>
+            <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
+            <!--            <dependency>-->
+            <!--                <groupId>no.nav.common</groupId>-->
+            <!--                <artifactId>web</artifactId>-->
+            <!--                <version>${nav-common.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>no.nav.common</groupId>-->
+            <!--                <artifactId>selftest</artifactId>-->
+            <!--                <version>${nav-common.version}</version>-->
+            <!--            </dependency>-->
+            <dependency>
+                <groupId>no.nav.common</groupId>
+                <artifactId>util</artifactId>
+                <version>${nav-common.version}</version>
+            </dependency>
+
+
+            <!-- NAV felles biblioteker (gammelt) -->
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-lokalt-kodeverk</artifactId>
                 <version>${lokalt.kodeverk}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-types</artifactId>
-                <version>2.0.11</version>
-            </dependency>
-
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.7</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-lang</artifactId>
-                <version>2.0.2</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -354,111 +341,16 @@
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>pdfbox</artifactId>
-                <version>${pdfbox.version}</version>
-                <exclusions>
+                    <!-- common-pdf er ikke overført - så ekskluderer avhengighet til gamle common-bibliotek -->
                     <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.xhtmlrenderer</groupId>
-                <artifactId>flying-saucer-pdf</artifactId>
-                <version>${flying.saucer.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.jknack</groupId>
-                <artifactId>handlebars</artifactId>
-                <version>${handlebars.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lowagie</groupId>
-                <artifactId>itext</artifactId>
-                <version>2.1.7</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcmail-jdk14</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcprov-jdk14</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bctsp-jdk14</artifactId>
+                        <groupId>no.nav.sbl.dialogarena</groupId>
+                        <artifactId>common-test</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
 
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-library</artifactId>
-                <version>1.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-core</artifactId>
-                <version>1.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.25</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.25</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>4.4.4</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.4</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${commons-fileupload.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.collections</groupId>
-                <artifactId>collections-generic</artifactId>
-                <version>4.01</version>
-            </dependency>
+
+            <!-- Spring avhengigheter -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
@@ -527,11 +419,78 @@
                 <artifactId>spring-aop</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+
+
+            <!-- Jersey avhengigheter -->
             <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>1</version>
+                <groupId>org.glassfish.jersey.ext</groupId>
+                <artifactId>jersey-spring3</artifactId>
+                <version>${jersey.version}</version>
+                <scope>runtime</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.glassfish.hk2.external</groupId>
+                        <artifactId>javax.inject</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-server</artifactId>
+                <version>${jersey.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.glassfish.hk2.external</groupId>
+                        <artifactId>javax.inject</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-multipart</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>${javax.ws.rs-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax.annotation-api.version}</version>
+            </dependency>
+
+
+            <!-- Jackson avhengigheter -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-json-provider</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson-annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-joda</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+
+            <!-- CXF avhengigheter -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-core</artifactId>
@@ -592,7 +551,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
@@ -638,15 +596,28 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>no.nav.sbl</groupId>
-                <artifactId>rest</artifactId>
-                <version>2018.05.15.11.54</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>javax.inject</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-features-logging</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+
+            <!-- Fiks -->
+            <dependency>
+                <groupId>no.ks.fiks</groupId>
+                <artifactId>streaming-klient</artifactId>
+                <version>${streaming-klient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.ks.fiks</groupId>
+                <artifactId>kryptering</artifactId>
+                <version>${kryptering.version}</version>
+            </dependency>
+
+            <!-- Modig avhengigheter -->
+            <dependency>
+                <groupId>no.nav.modig</groupId>
+                <artifactId>modig-lang</artifactId>
+                <version>${modig-lang.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
@@ -686,6 +657,159 @@
                 <version>${modig-security.version}</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.modig</groupId>
+                <artifactId>modig-core</artifactId>
+                <version>${modig-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.modig</groupId>
+                <artifactId>modig-content</artifactId>
+                <version>${modig-content.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>net.sf.ehcache</groupId>
+                        <artifactId>ehcache-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Database avhengigheter -->
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${ojdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>${hsqldb.version}</version>
+            </dependency>
+
+            <!-- diverse avhengigheter -->
+            <dependency>
+                <groupId>no.bekk.bekkopen</groupId>
+                <artifactId>nocommons</artifactId>
+                <version>0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf</artifactId>
+                <version>${flying.saucer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars</artifactId>
+                <version>${handlebars.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lowagie</groupId>
+                <artifactId>itext</artifactId>
+                <version>2.1.7</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>bouncycastle</groupId>
+                        <artifactId>bcmail-jdk14</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>bouncycastle</groupId>
+                        <artifactId>bcprov-jdk14</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>bouncycastle</groupId>
+                        <artifactId>bctsp-jdk14</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${httpcore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${httpmime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons-fileupload.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.collections</groupId>
+                <artifactId>collections-generic</artifactId>
+                <version>4.01</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>1</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.wss4j</groupId>
                 <artifactId>wss4j-ws-security-common</artifactId>
                 <version>${wss4j.version}</version>
@@ -707,40 +831,16 @@
             </dependency>
 
             <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-core</artifactId>
-                <version>1.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>mail</artifactId>
-                <version>1.4.7</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-web</artifactId>
-                <version>5.0.35</version>
-            </dependency>
-            <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.3</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>1.2.3</version>
+                <version>${logback.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>2.3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>com.oracle</groupId>
-                <artifactId>ojdbc8</artifactId>
-                <version>${ojdbc.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -765,12 +865,12 @@
             <dependency>
                 <groupId>com.migesok</groupId>
                 <artifactId>jaxb-java-time-adapters</artifactId>
-                <version>1.1.3</version>
+                <version>${jaxb-java-time-adapters.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.minidev</groupId>
                 <artifactId>json-smart</artifactId>
-                <version>2.3</version>
+                <version>${json-smart.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.security</groupId>
@@ -793,19 +893,63 @@
                 <version>${activation.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.stephenc.jcip</groupId>
-                <artifactId>jcip-annotations</artifactId>
-                <version>${jcip-annotations.version}</version>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
+                <scope>compile</scope>
             </dependency>
-
             <dependency>
-                <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
-                <artifactId>jersey-guava</artifactId>
-                <version>2.6</version>
+                <groupId>org.verapdf</groupId>
+                <artifactId>validation-model</artifactId>
+                <version>${verapdf.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.cxf</groupId>
+                        <artifactId>cxf-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.verapdf</groupId>
+                <artifactId>core</artifactId>
+                <version>${verapdf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.flipkart.zjsonpatch</groupId>
+                <artifactId>zjsonpatch</artifactId>
+                <version>${zjsonpatch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.jaxb2_commons</groupId>
+                <artifactId>jaxb2-basics-runtime</artifactId>
+                <version>${jaxb2-basics-runtime.version}</version>
             </dependency>
 
-            <!-- Avhengigheter med scope runtime -->
-
+            <!-- Avhengigheter med runtime scope -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
+                <scope>runtime</scope>
+            </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-log-filter</artifactId>
@@ -815,19 +959,14 @@
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
-                <version>2.10.4</version>
+                <version>${ehcache.version}</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>woodstox-core-asl</artifactId>
-                <version>4.4.0</version>
+                <version>${woodstox-core-asl.version}</version>
                 <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-suspend</artifactId>
-                <version>1.0.6</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
@@ -835,19 +974,31 @@
                 <version>${stax2-api.version}</version>
                 <scope>runtime</scope>
             </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectjweaver.version}</version>
+                <scope>runtime</scope>
+            </dependency>
 
 
             <!-- Avhengigheter med provided scope -->
-
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>3.1.0</version>
+                <version>${javax.servlet-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>preflight</artifactId>
+                <version>${pdfbox.version}</version>
                 <scope>provided</scope>
             </dependency>
 
-            <!-- Avhengigheter med scope test -->
 
+            <!-- Avhengigheter med test scope -->
             <dependency>
                 <groupId>no.nav.security</groupId>
                 <artifactId>oidc-test-support</artifactId>
@@ -867,7 +1018,7 @@
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
-                <version>0.9.10</version>
+                <version>${reflections.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -893,16 +1044,16 @@
             </dependency>
 
             <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-test</artifactId>
-                <version>1.3</version>
+                <groupId>no.nav.common</groupId>
+                <artifactId>test</artifactId>
+                <version>${nav-common.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-core-test</artifactId>
                 <scope>test</scope>
-                <version>1.0.0</version>
+                <version>${modig-core-test.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
@@ -921,31 +1072,36 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-testcertificates</artifactId>
-                <version>1.2.5</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
+                <version>${modig-testcertificates.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>no.digipost</groupId>
                 <artifactId>digg</artifactId>
-                <version>0.13</version>
+                <version>${digipost.digg.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>${hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>${hamcrest.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>1.10.8</version>
+                <version>${mockito.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -954,33 +1110,9 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>com.jayway.jsonpath</groupId>
-                <artifactId>json-path</artifactId>
-                <version>0.9.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-utils</artifactId>
-                <version>3.0.15</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>args4j</groupId>
-                <artifactId>args4j</artifactId>
-                <version>2.0.25</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.webbitserver</groupId>
-                <artifactId>webbit</artifactId>
-                <version>0.4.15</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-jetty</artifactId>
-                <version>1.0.23</version>
+                <groupId>no.nav.common</groupId>
+                <artifactId>jetty</artifactId>
+                <version>${nav-common.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -990,65 +1122,164 @@
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-content</artifactId>
-                <version>2.0.9</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.sf.ehcache</groupId>
-                        <artifactId>ehcache-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.13.2</version>
+                <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>2.7.8</version>
-                <scope>compile</scope>
+                <groupId>org.glassfish.jersey.test-framework</groupId>
+                <artifactId>jersey-test-framework-core</artifactId>
+                <scope>test</scope>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.verapdf</groupId>
-                <artifactId>validation-model</artifactId>
-                <version>1.12.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.verapdf</groupId>
-                <artifactId>core</artifactId>
-                <version>1.12.1</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>preflight</artifactId>
-                <version>${pdfbox.version}</version>
-                <scope>provided</scope>
+                <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+                <artifactId>jersey-test-framework-provider-external</artifactId>
+                <scope>test</scope>
+                <version>${jersey.version}</version>
             </dependency>
 
+            <!-- Dependencies identifisert av maven-enforcer-plugin -->
             <dependency>
-                <groupId>org.jvnet.jaxb2_commons</groupId>
-                <artifactId>jaxb2-basics-runtime</artifactId>
-                <version>${jaxb2-basics-runtime.version}</version>
+                <groupId>org.apache.santuario</groupId>
+                <artifactId>xmlsec</artifactId>
+                <version>${xmlsec.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>${asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.neethi</groupId>
+                <artifactId>neethi</artifactId>
+                <version>${neethi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mozilla</groupId>
+                <artifactId>rhino</artifactId>
+                <version>${rhino.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-saml-api</artifactId>
+                <version>${opensaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-core</artifactId>
+                <version>${opensaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-common</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash-logback-encoder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-locator</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-utils</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2.external</groupId>
+                <artifactId>aopalliance-repackaged</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-api</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient</artifactId>
+                <version>${prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlet</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-security</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-http</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-plus</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.websocket</groupId>
+                <artifactId>javax.websocket-api</artifactId>
+                <version>${javax.websocket-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>oauth2-oidc-sdk</artifactId>
+                <version>${oauth2-oidc-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-io</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-client</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -1093,28 +1324,47 @@
                         </dependency>
                     </dependencies>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <systemPropertyVariables>
-                            <java.awt.headless>true</java.awt.headless>
-                        </systemPropertyVariables>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.9</version>
-                    <configuration>
-                        <systemPropertyVariables>
-                            <user.language>nb</user.language>
-                            <user.region>NO</user.region>
-                        </systemPropertyVariables>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
+
+        <!-- Overskriver surefire-plugin i mor-pom -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+
+                    <!-- Ekskluderer integrasjonstester som slutter på *IT. De kjøres av failsafe-plugin -->
+                    <excludes>
+                        <exclude>*IT</exclude>
+                    </excludes>
+
+                    <systemPropertyVariables>
+                        <java.awt.headless>true</java.awt.headless>
+                        <user.language>nb</user.language>
+                        <user.region>NO</user.region>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <dependencyConvergence/>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 
     </build>
     <scm>
