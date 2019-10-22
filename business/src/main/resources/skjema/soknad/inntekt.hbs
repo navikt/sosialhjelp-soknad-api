@@ -262,11 +262,9 @@
                             {{{hentSvaralternativer "inntekt.bostotte.sporsmal"}}}
                         </li>
                     {{/if}}
-                    <ul class="svar-liste">
-                        <span class="verdi verdi--tekst">
-                            Kunne ikke hente status fra Husbanken
-                        </span>
-                    </ul>
+                    <div class="verdi verdi--tekst">
+                        Kunne ikke hente status fra Husbanken
+                    </div>
                 {{else}}
                     {{#with bostotte}}
                         {{#each utbetalinger}}
@@ -309,7 +307,7 @@
                                 <ul class="svar-liste">
                                     <li>
                                         <span class="verdi verdi--tekst">
-                                            <div style="text-transform: capitalize;">{{formaterDato dato "MMMM yyyy"}}</div>
+                                            <span style="text-transform: capitalize;">{{formaterDato dato "MMMM yyyy"}}</span>
                                         </span>
                                     </li>
                                 </ul>
