@@ -257,6 +257,11 @@
                         </span>
                         </li>
                     {{/hentOkonomiBekreftelse}}
+                    {{#if @root.utvidetSoknad}}
+                        <li>
+                            {{{hentSvaralternativer "inntekt.bostotte.sporsmal"}}}
+                        </li>
+                    {{/if}}
                     <ul class="svar-liste">
                         <li>
                             <span class="verdi verdi--tekst">
@@ -329,12 +334,7 @@
                         {{/erListeTom}}
                     {{/with}}
                 {{/if}}
-                <li>
-                    {{#if @root.utvidetSoknad}}
-                        {{{hentSvaralternativer "inntekt.bostotte"}}}
-                    {{/if}}
-                </li>
-                
+
                 <h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>
                 {{#if @root.utvidetSoknad}}
                     {{{settInnHjelpetekst "inntekt.eierandeler.hjelpetekst.tekst"}}}
