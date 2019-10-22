@@ -13,7 +13,7 @@
                     <ul class="svar-liste">
                         <li>
                             <span class="verdi verdi--tekst">
-                                "Kunne ikke hente utbetalinger fra Skatteetaten"
+                                Kunne ikke hente utbetalinger fra Skatteetaten
                             </span>
                         </li>
                     </ul>
@@ -112,7 +112,7 @@
                     <ul class="svar-liste">
                         <li>
                             <span class="verdi verdi--tekst">
-                                "Kunne ikke hente utbetalinger fra NAV"
+                                Kunne ikke hente utbetalinger fra NAV
                             </span>
                         </li>
                     </ul>
@@ -263,11 +263,9 @@
                         </li>
                     {{/if}}
                     <ul class="svar-liste">
-                        <li>
-                            <span class="verdi verdi--tekst">
-                                "Kunne ikke hente status fra Husbanken"
-                            </span>
-                        </li>
+                        <span class="verdi verdi--tekst">
+                            Kunne ikke hente status fra Husbanken
+                        </span>
                     </ul>
                 {{else}}
                     {{#with bostotte}}
@@ -329,7 +327,9 @@
                         {{/each}}
                         {{#erListeTom saker}}
                             {{#erListeTom utbetalinger}}
-                                <span class="label">{{hentTekst "inntekt.bostotte.ikkefunnet"}}</span>
+                                <li>
+                                    <span class="label">{{hentTekst "inntekt.bostotte.ikkefunnet"}}</span>
+                                </li>
                             {{/erListeTom}}
                         {{/erListeTom}}
                     {{/with}}
