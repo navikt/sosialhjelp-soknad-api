@@ -141,7 +141,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1146", "974617757")    // Tysvær
             .put("0536", "974596393")    // Søndre Land
             .put("0219", "974702401")    // Bærum
-
+            .put("1416", "976831322")    // Høyanger
         
             .build();
 
@@ -308,7 +308,8 @@ public class KommuneTilNavEnhetMapper {
                     "5031",
                     "1146",
                     "0536",
-                    "0219"
+                    "0219",
+                    "1416"
                 
             ));
 
