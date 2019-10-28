@@ -6,6 +6,7 @@ public enum SoknadInnsendingStatus {
     LAAST,
     FERDIG,
     AVBRUTT_AV_BRUKER,
-    AVBRUTT_AUTOMATISK
+    AVBRUTT_AUTOMATISK,
+    SENDT_MED_DIGISOS_API
 
 }
