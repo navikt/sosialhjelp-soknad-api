@@ -89,7 +89,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.9.10</jackson.version>
         <jackson-databind.version>2.9.10</jackson-databind.version>
-        <filformat.version>1.2019.10.12-16.00-80b320ae6384</filformat.version>
+        <filformat.version>1.2019.10.25-10.57-030829b50afb</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>

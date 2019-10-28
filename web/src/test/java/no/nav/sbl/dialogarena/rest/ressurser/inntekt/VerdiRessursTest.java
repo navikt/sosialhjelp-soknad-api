@@ -26,6 +26,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -37,12 +38,6 @@ public class VerdiRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
-    private static final String BEKREFTELSE_TYPE = "verdi";
-    private static final String BOLIG_TYPE = "bolig";
-    private static final String CAMPINGVOGN_TYPE = "campingvogn";
-    private static final String KJORETOY_TYPE = "kjoretoy";
-    private static final String FRITIDSEIENDOM_TYPE = "fritidseiendom";
-    private static final String ANNET_TYPE = "annet";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -88,8 +83,8 @@ public class VerdiRessursTest {
     @Test
     public void getVerdierSkalReturnereBekreftelserLikTrue(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithVerdier(true, asList(BOLIG_TYPE, CAMPINGVOGN_TYPE, KJORETOY_TYPE,
-                        FRITIDSEIENDOM_TYPE, ANNET_TYPE), null));
+                createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY,
+                        VERDI_FRITIDSEIENDOM, VERDI_ANNET), null));
 
         VerdierFrontend verdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID);
 
@@ -106,7 +101,7 @@ public class VerdiRessursTest {
     public void getVerdierSkalReturnereBeskrivelseAvAnnet(){
         String beskrivelse = "Bestefars klokke";
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithVerdier(true, asList(ANNET_TYPE), beskrivelse));
+                createJsonInternalSoknadWithVerdier(true, asList(VERDI_ANNET), beskrivelse));
 
         VerdierFrontend verdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID);
 
@@ -119,8 +114,8 @@ public class VerdiRessursTest {
     public void putVerdierSkalSetteAltFalseDersomManVelgerHarIkkeVerdier(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithVerdier(true, asList(BOLIG_TYPE, CAMPINGVOGN_TYPE, KJORETOY_TYPE,
-                        ANNET_TYPE), "Bestefars klokke"));
+                createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY,
+                        VERDI_ANNET), "Bestefars klokke"));
 
         VerdierFrontend verdierFrontend = new VerdierFrontend();
         verdierFrontend.setBekreftelse(false);
@@ -140,8 +135,8 @@ public class VerdiRessursTest {
     public void putVerdierSkalSetteAlleBekreftelserLikFalse(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithVerdier(true, asList(BOLIG_TYPE, CAMPINGVOGN_TYPE,
-                        KJORETOY_TYPE, ANNET_TYPE), "Bestefars klokke"));
+                createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN,
+                        VERDI_KJORETOY, VERDI_ANNET), "Bestefars klokke"));
 
         VerdierFrontend verdierFrontend = new VerdierFrontend();
         verdierFrontend.setBekreftelse(false);
@@ -182,13 +177,13 @@ public class VerdiRessursTest {
         List<JsonOkonomioversiktFormue> verdier = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
         assertThat(verdiBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(verdiBekreftelse.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(verdiBekreftelse.getType(), is(BEKREFTELSE_VERDI));
         assertTrue(verdiBekreftelse.getVerdi());
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(BOLIG_TYPE)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(CAMPINGVOGN_TYPE)));
-        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(KJORETOY_TYPE)));
-        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(FRITIDSEIENDOM_TYPE)));
-        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(ANNET_TYPE)));
+        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_BOLIG)));
+        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_CAMPINGVOGN)));
+        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_KJORETOY)));
+        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_FRITIDSEIENDOM)));
+        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_ANNET)));
     }
 
     @Test
@@ -213,20 +208,20 @@ public class VerdiRessursTest {
         List<JsonOkonomioversiktFormue> verdier = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
         assertThat(verdiBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(verdiBekreftelse.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(verdiBekreftelse.getType(), is(BEKREFTELSE_VERDI));
         assertTrue(verdiBekreftelse.getVerdi());
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(KJORETOY_TYPE)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(CAMPINGVOGN_TYPE)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(BOLIG_TYPE)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(FRITIDSEIENDOM_TYPE)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(ANNET_TYPE)));
+        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_KJORETOY)));
+        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_CAMPINGVOGN)));
+        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_BOLIG)));
+        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_FRITIDSEIENDOM)));
+        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_ANNET)));
     }
 
     @Test
     public void putVerdierSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithVerdier(true, asList(ANNET_TYPE), "Vinylplater"));
+                createJsonInternalSoknadWithVerdier(true, asList(VERDI_ANNET), "Vinylplater"));
 
         VerdierFrontend verdierFrontend = new VerdierFrontend();
         verdierFrontend.setBekreftelse(false);
@@ -259,7 +254,7 @@ public class VerdiRessursTest {
         }
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBekreftelse(asList(new JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
-                .withType(BEKREFTELSE_TYPE)
+                .withType(BEKREFTELSE_VERDI)
                 .withVerdi(harVerdier)));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().setFormue(verdier);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBeskrivelseAvAnnet(

@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -69,7 +71,7 @@ public class InntektSystemdata implements Systemdata {
         if (utbetalinger == null) {
             return null;
         }
-        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, "navytelse")).collect(Collectors.toList());
+        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, UTBETALING_NAVYTELSE)).collect(Collectors.toList());
     }
 
     public List<JsonOkonomiOpplysningUtbetaling> innhentSkattbarSystemregistrertInntekt(String personIdentifikator) {
@@ -78,7 +80,7 @@ public class InntektSystemdata implements Systemdata {
         if (utbetalinger == null) {
             return null;
         }
-        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, "skatteetaten")).collect(Collectors.toList());
+        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, UTBETALING_SKATTEETATEN)).collect(Collectors.toList());
     }
 
     JsonOrganisasjon mapToJsonOrganisasjon(String orgnummer) {
