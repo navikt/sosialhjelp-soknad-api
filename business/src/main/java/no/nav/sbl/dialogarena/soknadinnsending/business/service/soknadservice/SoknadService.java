@@ -121,7 +121,7 @@ public class SoknadService {
         logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
 
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, false);
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
 
         innsendingService.opprettSendtSoknad(soknadUnderArbeid);

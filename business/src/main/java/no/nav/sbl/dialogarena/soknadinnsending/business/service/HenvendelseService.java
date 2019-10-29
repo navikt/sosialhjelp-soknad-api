@@ -86,7 +86,7 @@ public class HenvendelseService {
         return soknadMetadataRepository.hentBehandlingskjede(behandlingskjedeId);
     }
 
-    public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, SoknadMetadata.VedleggMetadataListe vedlegg, SoknadUnderArbeid soknadUnderArbeid) {
+    public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, SoknadMetadata.VedleggMetadataListe vedlegg, SoknadUnderArbeid soknadUnderArbeid, boolean brukerDigisosApi) {
         SoknadMetadata meta = soknadMetadataRepository.hent(behandlingsId);
 
         HovedskjemaMetadata hovedskjema = new HovedskjemaMetadata();
@@ -102,7 +102,8 @@ public class HenvendelseService {
         meta.sistEndretDato = LocalDateTime.now(clock);
         meta.innsendtDato = LocalDateTime.now(clock);
 
-        meta.status = FERDIG;
+        meta.status = brukerDigisosApi ? SENDT_MED_DIGISOS_API : FERDIG;
+
         soknadMetadataRepository.oppdater(meta);
 
         logger.info("Søknad avsluttet " + behandlingsId + " " + meta.skjema + ", " + vedlegg.vedleggListe.size());
