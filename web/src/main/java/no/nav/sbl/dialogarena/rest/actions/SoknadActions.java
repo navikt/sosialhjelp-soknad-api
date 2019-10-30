@@ -62,7 +62,7 @@ public class SoknadActions {
                         case HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT:
                         case MANGLER_KONFIGURASJON:
                             soknadService.sendSoknad(behandlingsId);
-                            return;
+                        //    return;
                         case SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA:
                         case IKKE_STOTTET_CASE:
                          //   digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
@@ -74,12 +74,13 @@ public class SoknadActions {
                         case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SKAL_VISE_FEILSIDE:
                             break;
                     }
+
+                    digisosApiService.sendSoknad(soknadUnderArbeid, token, "2352");
                 }
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo ", e);
             }
         }
-        digisosApiService.sendSoknad(soknadUnderArbeid, token, "2352");
         //soknadService.sendSoknad(behandlingsId);
     }
 }
