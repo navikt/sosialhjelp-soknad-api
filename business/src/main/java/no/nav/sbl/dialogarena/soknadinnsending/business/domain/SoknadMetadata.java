@@ -13,7 +13,6 @@ import java.util.List;
 public class SoknadMetadata {
     public Long id;
     public String behandlingsId, tilknyttetBehandlingsId, fnr, skjema, orgnr, navEnhet, fiksForsendelseId;
-    public HovedskjemaMetadata hovedskjema;
     public VedleggMetadataListe vedlegg = new VedleggMetadataListe();
     public SoknadType type;
     public SoknadInnsendingStatus status;
@@ -39,15 +38,9 @@ public class SoknadMetadata {
         public String tillegg;
     }
 
-    @XmlRootElement
-    public static class HovedskjemaMetadata extends FilData {
-        public List<FilData> alternativRepresentasjon = new ArrayList<>();
-    }
     public final static JAXBHelper JAXB = new JAXBHelper(
             FilData.class,
             VedleggMetadata.class,
-            VedleggMetadataListe.class,
-            HovedskjemaMetadata.class
-
+            VedleggMetadataListe.class
     );
 }

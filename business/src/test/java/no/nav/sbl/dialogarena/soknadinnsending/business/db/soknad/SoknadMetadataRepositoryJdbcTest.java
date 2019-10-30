@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,9 +94,7 @@ public class SoknadMetadataRepositoryJdbcTest {
         meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden);
         meta.opprettetDato = LocalDateTime.now().minusDays(dagerSiden);
         meta.sistEndretDato = LocalDateTime.now().minusDays(dagerSiden);
-        meta.hovedskjema = new HovedskjemaMetadata();
-        meta.hovedskjema.filUuid = null;
-        
+
         return meta;
     }
 }
