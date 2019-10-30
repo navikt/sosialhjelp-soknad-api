@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus;
@@ -42,6 +43,9 @@ public class SoknadActions {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Inject
+    private DigisosApiService digisosApiService;
+
     @POST
     @Path("/send")
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
@@ -61,9 +65,8 @@ public class SoknadActions {
                             return;
                         case SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA:
                         case IKKE_STOTTET_CASE:
-                            //digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
-                            //return;
-                            break;
+                         //   digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
+                        //    return;
                         case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SOM_VANLIG:
                             break;
                         case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_IKKE_MULIG:
@@ -76,7 +79,7 @@ public class SoknadActions {
                 log.error("Feil ved henting av kommuneinfo ", e);
             }
         }
-
-        soknadService.sendSoknad(behandlingsId);
+        digisosApiService.sendSoknad(soknadUnderArbeid, token, "2352");
+        //soknadService.sendSoknad(behandlingsId);
     }
 }
