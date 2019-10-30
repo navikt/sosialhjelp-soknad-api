@@ -11,6 +11,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -62,6 +63,7 @@ public class SoknadActionsTest {
     }
 
     @Test
+    @Ignore
     public void sendSoknadSkalKalleSoknadService() {
         actions.sendSoknad(BEHANDLINGS_ID, context, "");
 
