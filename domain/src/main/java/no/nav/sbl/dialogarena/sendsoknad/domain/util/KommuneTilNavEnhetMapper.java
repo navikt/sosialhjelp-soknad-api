@@ -145,7 +145,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0402", "944117784")    // Kongsvinger
             .put("0419", "874602612")    // Sør-Odal
             .put("0215", "974600544")    // Frogn
-            .put("5037", "974556464")    // Levanger
+            .put("1719", "974556464")    // Levanger
         
             .build();
 
@@ -317,7 +317,7 @@ public class KommuneTilNavEnhetMapper {
                     "0402",
                     "0419",
                     "0215",
-                    "1719"
+                    "5037"
                 
             ));
 
