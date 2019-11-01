@@ -161,6 +161,7 @@ public class DigisosApiImpl implements DigisosApi {
     @Override
     public void krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
         log.info(String.format("Starter kryptering av filer, skal sende til %s %s", kommunenr, navEkseternRefId));
+        log.info("Soknadjson: " + soknadJson);
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         try {
             X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
