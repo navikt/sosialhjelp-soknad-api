@@ -12,5 +12,5 @@ public interface DigisosApi {
     // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
     Map<String, KommuneInfo> hentKommuneInfo();
 
-    void krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
+    String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
 }

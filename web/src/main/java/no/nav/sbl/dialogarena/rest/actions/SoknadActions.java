@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -30,6 +32,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class SoknadActions {
 
     private static final Logger log = getLogger(SoknadActions.class);
+    private static final String SVARUT = "SVARUT";
+    private static final String FIKS_DIGISOS_API = "FIKS_DIGISOS_API";
 
     @Inject
     private SoknadService soknadService;
@@ -48,7 +52,7 @@ public class SoknadActions {
 
     @POST
     @Path("/send")
-    public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
+    public SendTilUrlFrontend sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -62,11 +66,11 @@ public class SoknadActions {
                         case HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT:
                         case MANGLER_KONFIGURASJON:
                             soknadService.sendSoknad(behandlingsId);
-                        //    return;
+//                            return new SendTilUrlFrontend().withSendtTil(SVARUT).withId(behandlingsId);
                         case SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA:
                         case IKKE_STOTTET_CASE:
-                         //   digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
-                        //    return;
+//                            String digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
+//                            return new SendTilUrlFrontend().withSendtTil(FIKS_DIGISOS_API).withId(digisosId);
                         case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SOM_VANLIG:
                             break;
                         case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_IKKE_MULIG:
@@ -75,12 +79,31 @@ public class SoknadActions {
                             break;
                     }
 
-                    digisosApiService.sendSoknad(soknadUnderArbeid, token, "2352");
+                    String digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, "2352");
+                    return new SendTilUrlFrontend().withSendtTil(FIKS_DIGISOS_API).withId(digisosId);
                 }
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo ", e);
             }
         }
-        //soknadService.sendSoknad(behandlingsId);
+        soknadService.sendSoknad(behandlingsId);
+        return new SendTilUrlFrontend().withSendtTil(SVARUT).withId(behandlingsId);
+    }
+
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static final class SendTilUrlFrontend {
+        public String sendtTil;
+        public String id;
+
+        public SendTilUrlFrontend withSendtTil(String sendtTil) {
+            this.sendtTil = sendtTil;
+            return this;
+        }
+
+        public SendTilUrlFrontend withId(String id) {
+            this.id = id;
+            return this;
+        }
     }
 }
