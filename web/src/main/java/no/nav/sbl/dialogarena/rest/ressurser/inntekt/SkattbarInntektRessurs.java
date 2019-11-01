@@ -21,6 +21,7 @@ import java.util.*;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
@@ -44,7 +45,7 @@ public class SkattbarInntektRessurs {
                 utbetalinger.stream()
                         .filter(u -> u.getTittel() != null)
                         .filter(jsonOkonomiOpplysningUtbetaling -> jsonOkonomiOpplysningUtbetaling.getType() != null &&
-                                jsonOkonomiOpplysningUtbetaling.getType().equals("skatteetaten")).collect(toList());
+                                jsonOkonomiOpplysningUtbetaling.getType().equals(UTBETALING_SKATTEETATEN)).collect(toList());
 
         return organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger);
     }

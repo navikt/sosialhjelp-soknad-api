@@ -27,6 +27,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BARNEBIDRAG;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -46,9 +47,9 @@ public class ForsorgerpliktRessurs {
 
     @GET
     public ForsorgerpliktFrontend hentForsorgerplikt(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
 
         return mapToForsorgerpliktFrontend(jsonForsorgerplikt);
     }
@@ -56,9 +57,9 @@ public class ForsorgerpliktRessurs {
     @PUT
     public void updateForsorgerplikt(@PathParam("behandlingsId") String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonForsorgerplikt forsorgerplikt = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonForsorgerplikt forsorgerplikt = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
 
         if(forsorgerpliktFrontend.barnebidrag != null) {
             if (forsorgerplikt.getBarnebidrag() == null) {
@@ -66,7 +67,6 @@ public class ForsorgerpliktRessurs {
             } else {
                 forsorgerplikt.getBarnebidrag().setVerdi(forsorgerpliktFrontend.barnebidrag);
             }
-            String soknadstype = "barnebidrag";
             JsonOkonomioversikt oversikt = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt();
             List<JsonOkonomioversiktInntekt> inntekter = oversikt.getInntekt();
             List<JsonOkonomioversiktUtgift> utgifter = oversikt.getUtgift();
@@ -74,20 +74,20 @@ public class ForsorgerpliktRessurs {
             String tittel_betaler = textService.getJsonOkonomiTittel("opplysninger.familiesituasjon.barnebidrag.betaler");
             switch (forsorgerpliktFrontend.barnebidrag){
                 case BEGGE:
-                    addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel_mottar, true);
-                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, soknadstype, tittel_betaler, true);
+                    addInntektIfCheckedElseDeleteInOversikt(inntekter, BARNEBIDRAG, tittel_mottar, true);
+                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, BARNEBIDRAG, tittel_betaler, true);
                     break;
                 case BETALER:
-                    addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel_mottar, false);
-                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, soknadstype, tittel_betaler, true);
+                    addInntektIfCheckedElseDeleteInOversikt(inntekter, BARNEBIDRAG, tittel_mottar, false);
+                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, BARNEBIDRAG, tittel_betaler, true);
                     break;
                 case MOTTAR:
-                    addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel_mottar, true);
-                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, soknadstype, tittel_betaler, false);
+                    addInntektIfCheckedElseDeleteInOversikt(inntekter, BARNEBIDRAG, tittel_mottar, true);
+                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, BARNEBIDRAG, tittel_betaler, false);
                     break;
                 case INGEN:
-                    addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel_mottar, false);
-                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, soknadstype, tittel_betaler, false);
+                    addInntektIfCheckedElseDeleteInOversikt(inntekter, BARNEBIDRAG, tittel_mottar, false);
+                    addutgiftIfCheckedElseDeleteInOversikt(utgifter, BARNEBIDRAG, tittel_betaler, false);
                     break;
             }
         }
@@ -117,7 +117,7 @@ public class ForsorgerpliktRessurs {
     }
 
     private ForsorgerpliktFrontend mapToForsorgerpliktFrontend(JsonForsorgerplikt jsonForsorgerplikt) {
-        final List<AnsvarFrontend> ansvar = jsonForsorgerplikt.getAnsvar() == null ? null :
+        List<AnsvarFrontend> ansvar = jsonForsorgerplikt.getAnsvar() == null ? null :
                 jsonForsorgerplikt.getAnsvar().stream().map(this::mapToAnsvarFrontend)
                         .collect(Collectors.toList());
         return new ForsorgerpliktFrontend()

@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -13,16 +13,17 @@ import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -67,14 +68,12 @@ public class SaksoversiktMetadataService {
     }
 
     public List<PabegyntSoknad> hentPabegynteSoknaderForBruker(String fnr) {
-        Properties bundle = getBundle();
-
         List<SoknadMetadata> soknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr);
 
         return soknader.stream().map(soknad ->
                 new PabegyntSoknad()
                         .withBehandlingsId(soknad.behandlingsId)
-                        .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
+                        .withTittel("Søknad om økonomisk sosialhjelp")
                         .withSisteEndring(tilDate(soknad.sistEndretDato))
                         .withLenke(lagFortsettSoknadLenke(soknad.behandlingsId))
         ).collect(toList());
@@ -84,13 +83,14 @@ public class SaksoversiktMetadataService {
         Properties bundle = getBundle();
         LocalDateTime ettersendelseFrist = LocalDateTime.now(clock)
                 .minusDays(ETTERSENDELSE_FRIST_DAGER);
+        DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
 
         List<SoknadMetadata> soknader = soknadMetadataRepository.hentSoknaderForEttersending(fnr, ettersendelseFrist);
 
         return soknader.stream().map(soknad ->
             new EttersendingsSoknad()
                 .withBehandlingsId(soknad.behandlingsId)
-                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
+                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn") + " (" + soknad.innsendtDato.format(datoFormatter) + ")")
                 .withLenke(lagEttersendelseLenke(soknad.behandlingsId))
                 .withVedlegg(finnManglendeVedlegg(soknad, bundle))
         ).collect(toList());
@@ -127,7 +127,7 @@ public class SaksoversiktMetadataService {
         return navMessageSource.getBundleFor("soknadsosialhjelp", new Locale("nb", "NO"));
     }
 
-    private String lagEttersendelseLenke(String behandlingsId) {
+    static String lagEttersendelseLenke(String behandlingsId) {
         return lagContextLenke() + "skjema/" + behandlingsId + "/ettersendelse";
     }
 
@@ -135,7 +135,7 @@ public class SaksoversiktMetadataService {
         return lagContextLenke() + "skjema/" + behandlingsId + "/1";
     }
 
-    private String lagContextLenke() {
+    private static String lagContextLenke() {
         String miljo = System.getProperty("environment.name", "");
 
         String tjenesterPostfix = "";

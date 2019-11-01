@@ -18,10 +18,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     private Map<String, Helper> helpers = new HashMap<>();
 
-    public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad) throws IOException {
-        return fyllHtmlMalMedInnhold(jsonInternalSoknad, false);
-    }
-
     @Override
     public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) throws IOException {
         final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false, "");

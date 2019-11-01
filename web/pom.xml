@@ -27,7 +27,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>5.0.7</version>
         </dependency>
 
         <!-- Avhengigheter med scope compile -->
@@ -60,14 +59,12 @@
             <artifactId>modig-security-authorization</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenester.fim</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenester.fim</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -86,11 +83,11 @@
             <artifactId>sendsoknad-domain</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav</groupId>
+            <groupId>no.nav.common</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
@@ -159,21 +156,15 @@
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
-            <version>1.2</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.8.8</version>
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>args4j</groupId>
-            <artifactId>args4j</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -181,10 +172,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars</artifactId>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
@@ -259,13 +246,11 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>4.10</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.7.12</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -278,20 +263,29 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>compile</scope>
         </dependency>
+        <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
+<!--        <dependency>-->
+<!--            <groupId>no.nav.common</groupId>-->
+<!--            <artifactId>web</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>no.nav.common</groupId>-->
+<!--            <artifactId>selftest</artifactId>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-web</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>types</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-types</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>util</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon</artifactId>
         </dependency>
         <dependency>
@@ -301,7 +295,6 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -344,49 +337,48 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-jetty</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>jetty</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-test</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>test</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jaas</artifactId>
             <scope>compile</scope>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-security</artifactId>
             <scope>compile</scope>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-http</artifactId>
             <scope>compile</scope>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <scope>compile</scope>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <scope>compile</scope>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <scope>compile</scope>
-            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
@@ -395,17 +387,6 @@
         <dependency>
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-plus</artifactId>
-            <scope>compile</scope>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -421,18 +402,8 @@
             <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -441,28 +412,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.webbitserver</groupId>
-            <artifactId>webbit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-business</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
             <exclusions>
-                <exclusion>
-                    <groupId>org.mock-server</groupId>
-                    <artifactId>mockserver-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mock-server</groupId>
-                    <artifactId>mockserver-client-java</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mock-server</groupId>
-                    <artifactId>mockserver-netty</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>javax.activation</groupId>
                     <artifactId>activation</artifactId>
@@ -476,7 +430,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>svarut-ks-forsendelsesservice</artifactId>
         </dependency>
         <dependency>
@@ -496,16 +450,14 @@
             <groupId>org.glassfish.jersey.test-framework</groupId>
             <artifactId>jersey-test-framework-core</artifactId>
             <scope>test</scope>
-            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.test-framework.providers</groupId>
             <artifactId>jersey-test-framework-provider-external</artifactId>
             <scope>test</scope>
-            <version>${jersey.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>dkif-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>

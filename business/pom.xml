@@ -37,9 +37,8 @@
             <artifactId>modig-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenester.fim</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
         </dependency>
         <dependency>
             <groupId>com.lowagie</groupId>
@@ -59,11 +58,11 @@
             <artifactId>pdfbox</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>svarut-ks-forsendelsesservice</artifactId>
         </dependency>
         <dependency>
@@ -85,14 +84,13 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav</groupId>
+            <groupId>no.nav.common</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.flipkart.zjsonpatch</groupId>
             <artifactId>zjsonpatch</artifactId>
-            <version>0.4.8</version>
         </dependency>
 
         <dependency>
@@ -142,12 +140,12 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-types</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>types</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-suspend</artifactId>
+            <groupId>no.nav.common</groupId>
+            <artifactId>suspend</artifactId>
         </dependency>
 
         <dependency>
@@ -164,65 +162,10 @@
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
-            <version>1.2</version>
             <scope>runtime</scope>
         </dependency>
 
         <!-- Avhengigheter med scope test -->
-        <dependency>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.mock-server</groupId>
-            <artifactId>mockserver-netty</artifactId>
-            <version>3.10.1</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.code.findbugs</groupId>
-                    <artifactId>jsr305</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.mail</groupId>
-                    <artifactId>mailapi</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.mock-server</groupId>
-            <artifactId>mockserver-core</artifactId>
-            <version>3.10.1</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.code.findbugs</groupId>
-                    <artifactId>jsr305</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.mail</groupId>
-                    <artifactId>mailapi</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-cxf</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
@@ -233,11 +176,6 @@
             <artifactId>modig-security-core</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -306,6 +244,7 @@
             <groupId>org.verapdf</groupId>
             <artifactId>core</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -352,14 +291,9 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>net.java.dev.jaxb2-commons</groupId>
-                        <artifactId>jaxb-fluent-api</artifactId>
-                        <version>2.1.8</version>
-                    </dependency>
-                    <dependency>
                         <groupId>org.jvnet.jaxb2_commons</groupId>
-                        <artifactId>jaxb2-basics</artifactId>
-                        <version>0.6.4</version>
+                        <artifactId>jaxb2-basics-runtime</artifactId>
+                        <version>${jaxb2-basics-runtime.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

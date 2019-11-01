@@ -13,7 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -59,17 +59,21 @@ public class NavEnhetRessursTest {
 
     private static final String ENHETSNAVN = "NAV Testenhet";
     private static final String KOMMUNENAVN = "Test kommune";
-    private static final String ORGNR = KommuneTilNavEnhetMapper.getDigisoskommuner().get(0);
+    private static final String KOMMUNENR = KommuneTilNavEnhetMapper.getDigisoskommuner().get(0);
+    private static final String ENHETSNR = "1234";
+    private static final String ORGNR = "123456789";
     private static final String ENHETSNAVN_2 = "NAV Van";
     private static final String KOMMUNENAVN_2 = "Enummok kommune";
-    private static final String ORGNR_2 = KommuneTilNavEnhetMapper.getDigisoskommuner().get(1);
+    private static final String KOMMUNENR_2 = KommuneTilNavEnhetMapper.getDigisoskommuner().get(1);
+    private static final String ENHETSNR_2 = "5678";
+    private static final String ORGNR_2 = "987654321";
     private static final JsonSoknadsmottaker SOKNADSMOTTAKER = new JsonSoknadsmottaker()
             .withNavEnhetsnavn(ENHETSNAVN + ", " + KOMMUNENAVN)
-            .withOrganisasjonsnummer(ORGNR);
+            .withEnhetsnummer(ENHETSNR);
 
     private static final JsonSoknadsmottaker SOKNADSMOTTAKER_2 = new JsonSoknadsmottaker()
             .withNavEnhetsnavn(ENHETSNAVN_2 + ", " + KOMMUNENAVN_2)
-            .withOrganisasjonsnummer(ORGNR_2);
+            .withEnhetsnummer(ENHETSNR_2);
 
     private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG = new AdresseForslag();
     private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG_2 = new AdresseForslag();
@@ -80,17 +84,19 @@ public class NavEnhetRessursTest {
     static {
         SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning = ENHETSNAVN;
         SOKNADSMOTTAKER_FORSLAG.kommunenavn = KOMMUNENAVN;
-        SOKNADSMOTTAKER_FORSLAG.kommunenummer = ORGNR;
+        SOKNADSMOTTAKER_FORSLAG.kommunenummer = KOMMUNENR;
 
         NAV_ENHET.navn = ENHETSNAVN;
         NAV_ENHET.sosialOrgnr = ORGNR;
+        NAV_ENHET.enhetNr = ENHETSNR;
 
         SOKNADSMOTTAKER_FORSLAG_2.geografiskTilknytning = ENHETSNAVN_2;
         SOKNADSMOTTAKER_FORSLAG_2.kommunenavn = KOMMUNENAVN_2;
-        SOKNADSMOTTAKER_FORSLAG_2.kommunenummer = ORGNR_2;
+        SOKNADSMOTTAKER_FORSLAG_2.kommunenummer = KOMMUNENR_2;
 
         NAV_ENHET_2.navn = ENHETSNAVN_2;
         NAV_ENHET_2.sosialOrgnr = ORGNR_2;
+        NAV_ENHET_2.enhetNr = ENHETSNR_2;
     }
 
     private static final String EIER = "123456789101";
@@ -125,7 +131,7 @@ public class NavEnhetRessursTest {
     @Test
     public void getNavEnheterSkalReturnereEnheterRiktigKonvertert(){
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        soknadUnderArbeid.getJsonInternalSoknad().withMottaker(SOKNADSMOTTAKER).getSoknad().getData().getPersonalia()
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert"))).thenReturn(
@@ -158,19 +164,20 @@ public class NavEnhetRessursTest {
     @Test
     public void putNavEnhetSkalSetteNavenhet(){
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        soknadUnderArbeid.getJsonInternalSoknad().withMottaker(SOKNADSMOTTAKER).getSoknad().getData().getPersonalia()
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         NavEnhetFrontend navEnhetFrontend = new NavEnhetFrontend()
                 .withEnhetsnavn(ENHETSNAVN_2)
                 .withKommunenavn(KOMMUNENAVN_2)
-                .withOrgnr(ORGNR_2);
+                .withOrgnr(ORGNR_2)
+                .withEnhetsnr(ENHETSNR_2);
 
         navEnhetRessurs.updateNavEnhet(BEHANDLINGSID, navEnhetFrontend);
 
         SoknadUnderArbeid updatedSoknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        JsonSoknadsmottaker jsonSoknadsmottaker = updatedSoknadUnderArbeid.getJsonInternalSoknad().getMottaker();
+        JsonSoknadsmottaker jsonSoknadsmottaker = updatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
         assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, jsonSoknadsmottaker);
     }
 
@@ -192,7 +199,7 @@ public class NavEnhetRessursTest {
 
         assertThat("Enhetsnavn", navEnhetFrontend.enhetsnavn, is(enhetsnavn));
         assertThat("kommunenavn", navEnhetFrontend.kommunenavn, is(kommunenavn));
-        assertThat("orgnr", navEnhetFrontend.orgnr, is(soknadsmottaker.getOrganisasjonsnummer()));
+        assertThat("enhetsnr", navEnhetFrontend.enhetsnr, is(soknadsmottaker.getEnhetsnummer()));
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

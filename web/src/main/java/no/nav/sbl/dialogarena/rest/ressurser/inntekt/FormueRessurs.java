@@ -24,9 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -46,10 +47,10 @@ public class FormueRessurs {
 
     @GET
     public FormueFrontend hentFormue(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final FormueFrontend formueFrontend = new FormueFrontend();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
+        FormueFrontend formueFrontend = new FormueFrontend();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return formueFrontend;
@@ -67,9 +68,9 @@ public class FormueRessurs {
     @PUT
     public void updateFormue(@PathParam("behandlingsId") String behandlingsId, FormueFrontend formueFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
@@ -78,7 +79,7 @@ public class FormueRessurs {
         boolean hasAnyFormueType = formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
                 formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet;
 
-        setBekreftelse(okonomi.getOpplysninger(), "sparing", hasAnyFormueType, textService.getJsonOkonomiTittel("inntekt.bankinnskudd"));
+        setBekreftelse(okonomi.getOpplysninger(), BEKREFTELSE_SPARING, hasAnyFormueType, textService.getJsonOkonomiTittel("inntekt.bankinnskudd"));
         setFormue(okonomi.getOversikt(), formueFrontend);
         setBeskrivelseAvAnnet(okonomi.getOpplysninger(), formueFrontend);
 
@@ -86,31 +87,25 @@ public class FormueRessurs {
     }
 
     private void setFormue(JsonOkonomioversikt oversikt, FormueFrontend formueFrontend) {
-        final List<JsonOkonomioversiktFormue> formue = oversikt.getFormue();
+        List<JsonOkonomioversiktFormue> formue = oversikt.getFormue();
 
-        String type = "brukskonto";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.brukskonto);
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(FORMUE_BRUKSKONTO));
+        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_BRUKSKONTO, tittel, formueFrontend.brukskonto);
 
-        type = "bsu";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.bsu);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(FORMUE_BSU));
+        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_BSU, tittel, formueFrontend.bsu);
 
-        type = "livsforsikringssparedel";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.livsforsikring);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(FORMUE_LIVSFORSIKRING));
+        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_LIVSFORSIKRING, tittel, formueFrontend.livsforsikring);
 
-        type = "sparekonto";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.sparekonto);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(FORMUE_SPAREKONTO));
+        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_SPAREKONTO, tittel, formueFrontend.sparekonto);
 
-        type = "verdipapirer";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.verdipapirer);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(FORMUE_VERDIPAPIRER));
+        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_VERDIPAPIRER, tittel, formueFrontend.verdipapirer);
 
-        type = "belop";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addFormueIfCheckedElseDeleteInOversikt(formue, type, tittel, formueFrontend.annet);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(FORMUE_ANNET));
+        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_ANNET, tittel, formueFrontend.annet);
     }
 
     private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, FormueFrontend formueFrontend) {
@@ -130,22 +125,22 @@ public class FormueRessurs {
         oversikt.getFormue().forEach(
                 formue -> {
                     switch(formue.getType()){
-                        case "brukskonto":
+                        case FORMUE_BRUKSKONTO:
                             formueFrontend.setBrukskonto(true);
                             break;
-                        case "bsu":
+                        case FORMUE_BSU:
                             formueFrontend.setBsu(true);
                             break;
-                        case "sparekonto":
+                        case FORMUE_SPAREKONTO:
                             formueFrontend.setSparekonto(true);
                             break;
-                        case "livsforsikringssparedel":
+                        case FORMUE_LIVSFORSIKRING:
                             formueFrontend.setLivsforsikring(true);
                             break;
-                        case "verdipapirer":
+                        case FORMUE_VERDIPAPIRER:
                             formueFrontend.setVerdipapirer(true);
                             break;
-                        case "belop":
+                        case FORMUE_ANNET:
                             formueFrontend.setAnnet(true);
                             break;
                     }

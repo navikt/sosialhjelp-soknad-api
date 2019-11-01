@@ -29,6 +29,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -40,12 +41,6 @@ public class BarneutgiftRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
-    private static final String BEKREFTELSE_TYPE = "barneutgifter";
-    private static final String BARNEHAGE_TYPE = "barnehage";
-    private static final String SFO_TYPE = "sfo";
-    private static final String FRITIDSAKTIVITETER_TYPE = "barnFritidsaktiviteter";
-    private static final String TANNREGULERING_TYPE = "barnTannregulering";
-    private static final String ANNET_TYPE = "annenBarneutgift";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -107,8 +102,8 @@ public class BarneutgiftRessursTest {
     @Test
     public void getBarneutgifterSkalReturnereBekreftelserLikTrue(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithBarneutgifter(true, true, asList(BARNEHAGE_TYPE, SFO_TYPE, FRITIDSAKTIVITETER_TYPE,
-                        TANNREGULERING_TYPE, ANNET_TYPE)));
+                createJsonInternalSoknadWithBarneutgifter(true, true, asList(UTGIFTER_BARNEHAGE, UTGIFTER_SFO, UTGIFTER_BARN_FRITIDSAKTIVITETER,
+                        UTGIFTER_BARN_TANNREGULERING, UTGIFTER_ANNET_BARN)));
 
         BarneutgifterFrontend barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID);
 
@@ -125,8 +120,8 @@ public class BarneutgiftRessursTest {
     public void putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithBarneutgifter(true, true, asList(BARNEHAGE_TYPE, SFO_TYPE,
-                        FRITIDSAKTIVITETER_TYPE, ANNET_TYPE)));
+                createJsonInternalSoknadWithBarneutgifter(true, true, asList(UTGIFTER_BARNEHAGE, UTGIFTER_SFO,
+                        UTGIFTER_BARN_FRITIDSAKTIVITETER, UTGIFTER_ANNET_BARN)));
 
         BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
         barneutgifterFrontend.setBekreftelse(false);
@@ -169,13 +164,13 @@ public class BarneutgiftRessursTest {
         List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
         assertThat(barneutgiftBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(barneutgiftBekreftelse.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(barneutgiftBekreftelse.getType(), is(BEKREFTELSE_BARNEUTGIFTER));
         assertTrue(barneutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(BARNEHAGE_TYPE)));
-        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(SFO_TYPE)));
-        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(FRITIDSAKTIVITETER_TYPE)));
-        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(TANNREGULERING_TYPE)));
-        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(ANNET_TYPE)));
+        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARNEHAGE)));
+        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_SFO)));
+        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_FRITIDSAKTIVITETER)));
+        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_TANNREGULERING)));
+        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_ANNET_BARN)));
     }
 
     @Test
@@ -202,13 +197,13 @@ public class BarneutgiftRessursTest {
         List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
         assertThat(barneutgiftBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(barneutgiftBekreftelse.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(barneutgiftBekreftelse.getType(), is(BEKREFTELSE_BARNEUTGIFTER));
         assertTrue(barneutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(BARNEHAGE_TYPE)));
-        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(SFO_TYPE)));
-        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(FRITIDSAKTIVITETER_TYPE)));
-        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(TANNREGULERING_TYPE)));
-        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(ANNET_TYPE)));
+        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARNEHAGE)));
+        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_SFO)));
+        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_FRITIDSAKTIVITETER)));
+        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_TANNREGULERING)));
+        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_ANNET_BARN)));
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
@@ -222,13 +217,13 @@ public class BarneutgiftRessursTest {
         List<JsonOkonomioversiktUtgift> oversiktUtgifter = new ArrayList<>();
         List<JsonOkonomiOpplysningUtgift> opplysningUtgifter = new ArrayList<>();
         for (String utgiftstype: utgiftstyper) {
-            if (utgiftstype.equals(BARNEHAGE_TYPE) || utgiftstype.equals(SFO_TYPE)) {
+            if (utgiftstype.equals(UTGIFTER_BARNEHAGE) || utgiftstype.equals(UTGIFTER_SFO)) {
                 oversiktUtgifter.add(new JsonOkonomioversiktUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
                         .withTittel("tittel"));
-            } else if (utgiftstype.equals(FRITIDSAKTIVITETER_TYPE) || utgiftstype.equals(TANNREGULERING_TYPE)
-                    || utgiftstype.equals(ANNET_TYPE)) {
+            } else if (utgiftstype.equals(UTGIFTER_BARN_FRITIDSAKTIVITETER) || utgiftstype.equals(UTGIFTER_BARN_TANNREGULERING)
+                    || utgiftstype.equals(UTGIFTER_ANNET_BARN)) {
                 opplysningUtgifter.add(new JsonOkonomiOpplysningUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
@@ -237,7 +232,7 @@ public class BarneutgiftRessursTest {
         }
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBekreftelse(asList(new JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
-                .withType(BEKREFTELSE_TYPE)
+                .withType(BEKREFTELSE_BARNEUTGIFTER)
                 .withVerdi(harUtgifter)));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().setUtgift(oversiktUtgifter);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setUtgift(opplysningUtgifter);

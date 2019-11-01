@@ -38,12 +38,12 @@ public class ArbeidRessurs {
 
     @GET
     public ArbeidFrontend hentArbeid(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
-        final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
+        JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
 
-        final List<ArbeidsforholdFrontend> forhold;
+        List<ArbeidsforholdFrontend> forhold;
         if (arbeid.getForhold() != null){
             forhold = arbeid.getForhold().stream()
                     .map(this::mapToArbeidsforholdFrontend)
@@ -59,9 +59,9 @@ public class ArbeidRessurs {
     @PUT
     public void updateArbeid(@PathParam("behandlingsId") String behandlingsId, ArbeidFrontend arbeidFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
         if (!isBlank(arbeidFrontend.kommentarTilArbeidsforhold)){
             arbeid.setKommentarTilArbeidsforhold(new JsonKommentarTilArbeidsforhold()
                     .withKilde(JsonKildeBruker.BRUKER)

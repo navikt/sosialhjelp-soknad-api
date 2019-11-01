@@ -25,6 +25,8 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.InntektSystemdata.tilIntegerMedAvrunding;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -159,8 +161,8 @@ public class InntektSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
 
         assertThat(utbetaling.getKilde(), is(JsonKilde.SYSTEM));
-        assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING, utbetaling, "navytelse");
-        assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING, utbetaling_1, "skatteetaten");
+        assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING, utbetaling, UTBETALING_NAVYTELSE);
+        assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING, utbetaling_1, UTBETALING_SKATTEETATEN);
     }
 
     @Test
@@ -199,7 +201,7 @@ public class InntektSystemdataTest {
         assertThat(utbetaling.getKilde(), is(JsonKilde.BRUKER));
         assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
         assertThat(utbetaling_1.getKilde(), is(JsonKilde.SYSTEM));
-        assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING, utbetaling_1, "navytelse");
+        assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING, utbetaling_1, UTBETALING_NAVYTELSE);
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithUtbetalinger() {
