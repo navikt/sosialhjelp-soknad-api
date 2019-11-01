@@ -15,6 +15,7 @@ import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
@@ -91,8 +92,8 @@ public class DigisosApiImpl implements DigisosApi {
         Map<String, KommuneInfo> stringKommuneInfoMap;
         if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
             stringKommuneInfoMap = cacheForKommuneinfo.get();
-        } else{
-            stringKommuneInfoMap= kommuneInfoMap;
+        } else {
+            stringKommuneInfoMap = kommuneInfoMap;
         }
         KommuneInfo kommuneInfo = stringKommuneInfoMap.getOrDefault(kommunenummer, new KommuneInfo());
 
@@ -150,7 +151,7 @@ public class DigisosApiImpl implements DigisosApi {
             log.info(content);
             Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
             cacheForKommuneinfo.set(collect);
-            cacheTimestamp =  LocalDateTime.now();
+            cacheTimestamp = LocalDateTime.now();
             return collect;
         } catch (Exception e) {
             log.error("Hent kommuneinfo feiler", e);
@@ -274,10 +275,11 @@ public class DigisosApiImpl implements DigisosApi {
         }
 
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
+        entitybuilder.setCharset(Charsets.UTF_8);
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
-        entitybuilder.addTextBody("soknadJson", soknadJson);
-        entitybuilder.addTextBody("vedleggJson", vedleggJson);
+        entitybuilder.addTextBody("soknadJson", soknadJson, ContentType.APPLICATION_JSON);
+        entitybuilder.addTextBody("vedleggJson", vedleggJson, ContentType.APPLICATION_JSON);
         for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
             entitybuilder.addTextBody("metadata", getJson(objectFilForOpplasting));
             entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData(), ContentType.APPLICATION_OCTET_STREAM, objectFilForOpplasting.getFilnavn());
