@@ -3,44 +3,46 @@ package no.nav.sbl.dialogarena.rest.mappers;
 import java.util.HashMap;
 import java.util.Map;
 
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
+
 public class VedleggTypeToSoknadTypeMapper {
     public static final Map<String,String> vedleggTypeToSoknadType = new HashMap<>();
 
     static {
-        vedleggTypeToSoknadType.put("kontooversikt|aksjer", "verdipapirer");
-        vedleggTypeToSoknadType.put("faktura|annetbarnutgift", "annenBarneutgift");
-        vedleggTypeToSoknadType.put("dokumentasjon|annetboutgift", "annenBoutgift");
-        vedleggTypeToSoknadType.put("dokumentasjon|annetinntekter", "annen");
-        vedleggTypeToSoknadType.put("dokumentasjon|annetverdi", "annet"); // Økonomisk verdi. Usikker på om denne brukes
-        vedleggTypeToSoknadType.put("dokumentasjon|campingvogn", "campingvogn"); // Økonomisk verdi. Usikker på om denne brukes
-        vedleggTypeToSoknadType.put("dokumentasjon|fritidseiendom", "fritidseiendom"); // Økonomisk verdi. Usikker på om denne brukes
-        vedleggTypeToSoknadType.put("kjopekontrakt|kjopekontrakt", "bolig"); // Økonomisk verdi. Usikker på om denne brukes
-        vedleggTypeToSoknadType.put("dokumentasjon|kjoretoy", "kjoretoy"); // Økonomisk verdi. Usikker på om denne brukes
-        vedleggTypeToSoknadType.put("faktura|barnehage", "barnehage");
-        vedleggTypeToSoknadType.put("barnebidrag|betaler", "barnebidrag");
-        vedleggTypeToSoknadType.put("kontooversikt|brukskonto", "brukskonto");
-        vedleggTypeToSoknadType.put("kontooversikt|bsu", "bsu");
-        vedleggTypeToSoknadType.put("salgsoppgjor|eiendom", "salg");
-        vedleggTypeToSoknadType.put("dokumentasjon|forsikringsutbetaling", "forsikring");
-        vedleggTypeToSoknadType.put("faktura|fritidsaktivitet", "barnFritidsaktiviteter");
-        vedleggTypeToSoknadType.put("faktura|husleie", "husleie");
-        vedleggTypeToSoknadType.put("faktura|kommunaleavgifter", "kommunalAvgift");
-        vedleggTypeToSoknadType.put("kontooversikt|livsforsikring", "livsforsikringssparedel");
-        vedleggTypeToSoknadType.put("barnebidrag|mottar", "barnebidrag");
-        vedleggTypeToSoknadType.put("faktura|oppvarming", "oppvarming");
-        vedleggTypeToSoknadType.put("faktura|sfo", "sfo");
-        vedleggTypeToSoknadType.put("kontooversikt|sparekonto", "sparekonto");
-        vedleggTypeToSoknadType.put("faktura|strom", "strom");
-        vedleggTypeToSoknadType.put("faktura|tannbehandling", "barnTannregulering");
-        vedleggTypeToSoknadType.put("dokumentasjon|utbytte", "utbytte");
-        vedleggTypeToSoknadType.put("bostotte|vedtak", "bostotte");
-        vedleggTypeToSoknadType.put("student|vedtak", "studielanOgStipend");
-        vedleggTypeToSoknadType.put("lonnslipp|arbeid", "jobb");
-        vedleggTypeToSoknadType.put("sluttoppgjor|arbeid", "sluttoppgjoer");
-        vedleggTypeToSoknadType.put("kontooversikt|annet", "belop");
-        vedleggTypeToSoknadType.put("annet|annet", "annen");
-        vedleggTypeToSoknadType.put("dokumentasjon|annet", "annen");
-        vedleggTypeToSoknadType.put("nedbetalingsplan|avdraglaan", "boliglanAvdrag"); // vedleggstypen er også knyttet til soknadstypen "boliglanRenter"
+        vedleggTypeToSoknadType.put("kontooversikt|aksjer", FORMUE_VERDIPAPIRER);
+        vedleggTypeToSoknadType.put("faktura|annetbarnutgift", UTGIFTER_ANNET_BARN);
+        vedleggTypeToSoknadType.put("dokumentasjon|annetboutgift", UTGIFTER_ANNET_BO);
+        vedleggTypeToSoknadType.put("dokumentasjon|annetinntekter", UTBETALING_ANNET);
+        vedleggTypeToSoknadType.put("dokumentasjon|annetverdi", VERDI_ANNET); // Økonomisk verdi. Usikker på om denne brukes
+        vedleggTypeToSoknadType.put("dokumentasjon|campingvogn", VERDI_CAMPINGVOGN); // Økonomisk verdi. Usikker på om denne brukes
+        vedleggTypeToSoknadType.put("dokumentasjon|fritidseiendom", VERDI_FRITIDSEIENDOM); // Økonomisk verdi. Usikker på om denne brukes
+        vedleggTypeToSoknadType.put("kjopekontrakt|kjopekontrakt", VERDI_BOLIG); // Økonomisk verdi. Usikker på om denne brukes
+        vedleggTypeToSoknadType.put("dokumentasjon|kjoretoy", VERDI_KJORETOY); // Økonomisk verdi. Usikker på om denne brukes
+        vedleggTypeToSoknadType.put("faktura|barnehage", UTGIFTER_BARNEHAGE);
+        vedleggTypeToSoknadType.put("barnebidrag|betaler", BARNEBIDRAG);
+        vedleggTypeToSoknadType.put("kontooversikt|brukskonto", FORMUE_BRUKSKONTO);
+        vedleggTypeToSoknadType.put("kontooversikt|bsu", FORMUE_BSU);
+        vedleggTypeToSoknadType.put("salgsoppgjor|eiendom", UTBETALING_SALG);
+        vedleggTypeToSoknadType.put("dokumentasjon|forsikringsutbetaling", UTBETALING_FORSIKRING);
+        vedleggTypeToSoknadType.put("faktura|fritidsaktivitet", UTGIFTER_BARN_FRITIDSAKTIVITETER);
+        vedleggTypeToSoknadType.put("faktura|husleie", UTGIFTER_HUSLEIE);
+        vedleggTypeToSoknadType.put("faktura|kommunaleavgifter", UTGIFTER_KOMMUNAL_AVGIFT);
+        vedleggTypeToSoknadType.put("kontooversikt|livsforsikring", FORMUE_LIVSFORSIKRING);
+        vedleggTypeToSoknadType.put("barnebidrag|mottar", BARNEBIDRAG);
+        vedleggTypeToSoknadType.put("faktura|oppvarming", UTGIFTER_OPPVARMING);
+        vedleggTypeToSoknadType.put("faktura|sfo", UTGIFTER_SFO);
+        vedleggTypeToSoknadType.put("kontooversikt|sparekonto", FORMUE_SPAREKONTO);
+        vedleggTypeToSoknadType.put("faktura|strom", UTGIFTER_STROM);
+        vedleggTypeToSoknadType.put("faktura|tannbehandling", UTGIFTER_BARN_TANNREGULERING);
+        vedleggTypeToSoknadType.put("dokumentasjon|utbytte", UTBETALING_UTBYTTE);
+        vedleggTypeToSoknadType.put("bostotte|vedtak", BOSTOTTE);
+        vedleggTypeToSoknadType.put("student|vedtak", STUDIELAN);
+        vedleggTypeToSoknadType.put("lonnslipp|arbeid", JOBB);
+        vedleggTypeToSoknadType.put("sluttoppgjor|arbeid", SLUTTOPPGJOER);
+        vedleggTypeToSoknadType.put("kontooversikt|annet", FORMUE_ANNET);
+        vedleggTypeToSoknadType.put("annet|annet", UTGIFTER_ANDRE_UTGIFTER);
+        vedleggTypeToSoknadType.put("dokumentasjon|annet", UTBETALING_ANNET);
+        vedleggTypeToSoknadType.put("nedbetalingsplan|avdraglaan", UTGIFTER_BOLIGLAN_AVDRAG); // vedleggstypen er også knyttet til soknadstypen "boliglanRenter"
     }
 
     public static String getSoknadPath(String vedleggType){

@@ -7,9 +7,11 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.sql.Timestamp;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.service.SaksoversiktMetadataService.lagEttersendelseLenke;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -33,10 +35,10 @@ public class SoknadOversiktService {
                         .withFiksDigisosId(null)
                         .withSoknadTittel(String.format(DEFAULT_TITTEL + " (%s)", soknadMetadata.behandlingsId))
                         .withStatus(soknadMetadata.status.toString())
-                        .withSistOppdatert(soknadMetadata.sistEndretDato)
+                        .withSistOppdatert(Timestamp.valueOf(soknadMetadata.sistEndretDato))
                         .withAntallNyeOppgaver(null)
-                        .withKilde(KILDE_SOKNAD_API))
+                        .withKilde(KILDE_SOKNAD_API)
+                        .withUrl(lagEttersendelseLenke(soknadMetadata.behandlingsId)))
                 .collect(toList());
     }
-
 }
