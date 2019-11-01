@@ -7,5 +7,5 @@ public interface DigisosApi {
 
     KommuneStatus kommuneInfo(String kommunenr);
 
-    void krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
+    String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
 }
