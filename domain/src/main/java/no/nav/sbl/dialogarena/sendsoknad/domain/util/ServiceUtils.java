@@ -44,4 +44,8 @@ public class ServiceUtils {
     public static boolean isScheduledTasksDisabled(){
         return Boolean.valueOf(System.getProperty(IS_SCHEDULED_TASKS_DISABLED, "false"));
     }
+
+    public static String stripVekkFnutter(String tekstMedFnutt) {
+        return tekstMedFnutt.replace("\"", "");
+    }
 }

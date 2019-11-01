@@ -46,6 +46,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -284,7 +285,7 @@ public class DigisosApiImpl implements DigisosApi {
                 log.warn(EntityUtils.toString(response.getEntity()));
                 throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
             }
-            String digisosId = EntityUtils.toString(response.getEntity());
+            String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
             log.info(String.format("Sendte inn søknad og fikk digisosid: %s", digisosId));
             return digisosId;
         } catch (IOException e) {
