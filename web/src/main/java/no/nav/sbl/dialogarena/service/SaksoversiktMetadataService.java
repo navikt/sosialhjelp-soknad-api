@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
+import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -20,10 +20,10 @@ import java.util.Locale;
 import java.util.Properties;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
+import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -127,7 +127,7 @@ public class SaksoversiktMetadataService {
         return navMessageSource.getBundleFor("soknadsosialhjelp", new Locale("nb", "NO"));
     }
 
-    private String lagEttersendelseLenke(String behandlingsId) {
+    static String lagEttersendelseLenke(String behandlingsId) {
         return lagContextLenke() + "skjema/" + behandlingsId + "/ettersendelse";
     }
 
@@ -135,7 +135,7 @@ public class SaksoversiktMetadataService {
         return lagContextLenke() + "skjema/" + behandlingsId + "/1";
     }
 
-    private String lagContextLenke() {
+    private static String lagContextLenke() {
         String miljo = System.getProperty("environment.name", "");
 
         String tjenesterPostfix = "";

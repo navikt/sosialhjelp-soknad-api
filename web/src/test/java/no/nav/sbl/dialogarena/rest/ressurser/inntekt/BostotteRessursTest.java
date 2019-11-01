@@ -25,6 +25,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -36,7 +37,6 @@ public class BostotteRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
-    private static final String BEKREFTELSE_TYPE = "bostotte";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -108,10 +108,10 @@ public class BostotteRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomioversiktInntekt> inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getInntekt();
-        assertEquals(inntekt.get(0).getType(), BEKREFTELSE_TYPE);
+        assertEquals(inntekt.get(0).getType(), BOSTOTTE);
         JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
         assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(bostotte.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(bostotte.getType(), is(BOSTOTTE));
         assertTrue(bostotte.getVerdi());
     }
 
@@ -120,7 +120,7 @@ public class BostotteRessursTest {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         ArrayList<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
-        inntekt.add(new JsonOkonomioversiktInntekt().withType(BEKREFTELSE_TYPE));
+        inntekt.add(new JsonOkonomioversiktInntekt().withType(BOSTOTTE));
         soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().setInntekt(inntekt);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
 
@@ -136,7 +136,7 @@ public class BostotteRessursTest {
         assertTrue(jsonInntekt.isEmpty());
         JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
         assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(bostotte.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(bostotte.getType(), is(BOSTOTTE));
         assertFalse(bostotte.getVerdi());
     }
 
@@ -151,7 +151,7 @@ public class BostotteRessursTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().withBekreftelse(
                 asList(new JsonOkonomibekreftelse()
                         .withKilde(JsonKilde.BRUKER)
-                        .withType(BEKREFTELSE_TYPE)
+                        .withType(BOSTOTTE)
                         .withVerdi(verdi)));
         return soknadUnderArbeid;
     }

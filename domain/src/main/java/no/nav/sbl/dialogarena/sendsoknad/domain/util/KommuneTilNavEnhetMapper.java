@@ -140,7 +140,12 @@ public class KommuneTilNavEnhetMapper {
             .put("1663", "974624257")    // Malvik
             .put("1146", "974617757")    // Tysvær
             .put("0536", "974596393")    // Søndre Land
-
+            .put("0219", "974702401")    // Bærum
+            .put("1416", "976831322")    // Høyanger
+            .put("0402", "944117784")    // Kongsvinger
+            .put("0419", "874602612")    // Sør-Odal
+            .put("0215", "974600544")    // Frogn
+            .put("1719", "974556464")    // Levanger
         
             .build();
 
@@ -306,7 +311,13 @@ public class KommuneTilNavEnhetMapper {
                     "1151",
                     "5031",
                     "1146",
-                    "0536"
+                    "0536",
+                    "0219",
+                    "1416",
+                    "0402",
+                    "0419",
+                    "0215",
+                    "5037"
                 
             ));
 

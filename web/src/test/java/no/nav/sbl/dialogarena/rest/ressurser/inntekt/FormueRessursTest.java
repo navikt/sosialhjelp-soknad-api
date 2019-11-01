@@ -26,6 +26,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -37,13 +38,6 @@ public class FormueRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
-    private static final String BEKREFTELSE_TYPE = "sparing";
-    private static final String BRUKSKONTO_TYPE = "brukskonto";
-    private static final String BSU_TYPE = "bsu";
-    private static final String LIVSFORSIKRING_TYPE = "livsforsikringssparedel";
-    private static final String VERDIPAPIRER_TYPE = "verdipapirer";
-    private static final String SPAREKONTO_TYPE = "sparekonto";
-    private static final String ANNET_TYPE = "belop";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -89,8 +83,8 @@ public class FormueRessursTest {
     @Test
     public void getFormueSkalReturnereBekreftelserLikTrue(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithFormue(asList(BRUKSKONTO_TYPE, BSU_TYPE,
-                        LIVSFORSIKRING_TYPE, VERDIPAPIRER_TYPE, SPAREKONTO_TYPE, ANNET_TYPE), null));
+                createJsonInternalSoknadWithFormue(asList(FORMUE_BRUKSKONTO, FORMUE_BSU,
+                        FORMUE_LIVSFORSIKRING, FORMUE_VERDIPAPIRER, FORMUE_SPAREKONTO, FORMUE_ANNET), null));
 
         FormueFrontend formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID);
 
@@ -107,7 +101,7 @@ public class FormueRessursTest {
     public void getFormueSkalReturnereBeskrivelseAvAnnet(){
         String beskrivelse = "Vinylplater";
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithFormue(asList(ANNET_TYPE), beskrivelse));
+                createJsonInternalSoknadWithFormue(asList(FORMUE_ANNET), beskrivelse));
 
         FormueFrontend formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID);
 
@@ -119,8 +113,8 @@ public class FormueRessursTest {
     public void putFormueSkalSetteAlleBekreftelserLikFalse(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithFormue(asList(BRUKSKONTO_TYPE, BSU_TYPE,
-                        LIVSFORSIKRING_TYPE, VERDIPAPIRER_TYPE, SPAREKONTO_TYPE, ANNET_TYPE), "Vinylplater"));
+                createJsonInternalSoknadWithFormue(asList(FORMUE_BRUKSKONTO, FORMUE_BSU,
+                        FORMUE_LIVSFORSIKRING, FORMUE_VERDIPAPIRER, FORMUE_SPAREKONTO, FORMUE_ANNET), "Vinylplater"));
 
         FormueFrontend formueFrontend = new FormueFrontend();
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend);
@@ -160,14 +154,14 @@ public class FormueRessursTest {
         List<JsonOkonomioversiktFormue> formuer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
         assertThat(sparing.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(sparing.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(sparing.getType(), is(BEKREFTELSE_SPARING));
         assertTrue(sparing.getVerdi());
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(BRUKSKONTO_TYPE)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(BSU_TYPE)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(LIVSFORSIKRING_TYPE)));
-        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(SPAREKONTO_TYPE)));
-        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(VERDIPAPIRER_TYPE)));
-        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(ANNET_TYPE)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BRUKSKONTO)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BSU)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_LIVSFORSIKRING)));
+        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_SPAREKONTO)));
+        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_VERDIPAPIRER)));
+        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_ANNET)));
     }
 
     @Test
@@ -192,21 +186,21 @@ public class FormueRessursTest {
         List<JsonOkonomioversiktFormue> formuer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
         assertThat(sparing.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(sparing.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(sparing.getType(), is(BEKREFTELSE_SPARING));
         assertTrue(sparing.getVerdi());
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(BRUKSKONTO_TYPE)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(BSU_TYPE)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(LIVSFORSIKRING_TYPE)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(SPAREKONTO_TYPE)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(VERDIPAPIRER_TYPE)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(ANNET_TYPE)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BRUKSKONTO)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BSU)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_LIVSFORSIKRING)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_SPAREKONTO)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_VERDIPAPIRER)));
+        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_ANNET)));
     }
 
     @Test
     public void putFormueSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithFormue(asList(ANNET_TYPE), "Vinylplater"));
+                createJsonInternalSoknadWithFormue(asList(FORMUE_ANNET), "Vinylplater"));
 
         FormueFrontend formueFrontend = new FormueFrontend();
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend);

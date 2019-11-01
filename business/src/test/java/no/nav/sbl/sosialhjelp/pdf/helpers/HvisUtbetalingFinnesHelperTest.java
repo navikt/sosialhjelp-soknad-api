@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class HvisUtbetalingFinnesHelperTest {
         final JsonOkonomiOpplysningUtbetaling navUtbetaling = new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
                 .withTittel("Dagpenger")
-                .withType("navytelse");
+                .withType(UTBETALING_NAVYTELSE);
         
         final JsonOkonomiOpplysningUtbetaling annenUtbetaling = new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.BRUKER)

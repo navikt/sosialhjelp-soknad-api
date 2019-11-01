@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,8 +57,9 @@ public class SoknadOversiktServiceTest {
         assertTrue(soknad.getSoknadTittel().contains(DEFAULT_TITTEL));
         assertTrue(soknad.getSoknadTittel().contains(soknadMetadata.behandlingsId));
         assertEquals(UNDER_ARBEID.toString(), soknad.getStatus());
-        assertEquals(LocalDateTime.of(2018, 4, 11, 13, 30, 0), soknad.getSistOppdatert());
+        assertEquals(Timestamp.valueOf(soknadMetadata.innsendtDato), soknad.getSistOppdatert());
         assertNull(soknad.getAntallNyeOppgaver());
         assertEquals(KILDE_SOKNAD_API, soknad.getKilde());
+        assertTrue(soknad.getUrl().contains(soknadMetadata.behandlingsId));
     }
 }
