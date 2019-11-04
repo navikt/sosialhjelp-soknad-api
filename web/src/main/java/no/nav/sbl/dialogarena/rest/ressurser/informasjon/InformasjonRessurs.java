@@ -9,6 +9,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -52,6 +54,8 @@ public class InformasjonRessurs {
     private PersonService personService;
     @Inject
     private AdresseSokService adresseSokService;
+    @Inject
+    private DigisosApi digisosApi;
 
     @GET
     @Path("/miljovariabler")
@@ -147,7 +151,33 @@ public class InformasjonRessurs {
     @GET
     @Path("/tilgjengelige_kommuner")
     public List<String> hentTilgjengeligeKommuner() {
-        return KommuneTilNavEnhetMapper.getDigisoskommuner();
+        return new ArrayList<>(hentTilgjengeligeKommunerKommunerMap().keySet());
+    }
+
+    @Unprotected
+    @GET
+    @Path("/tilgjengelige_kommuner_kommuner_map")
+    public Map<String, KommuneInfo> hentTilgjengeligeKommunerKommunerMap() {
+        Map<String, KommuneInfo> digisosKommuneMap = KommuneTilNavEnhetMapper.getDigisoskommuner().stream().map(s -> {
+            KommuneInfo kommuneInfo = new KommuneInfo();
+            kommuneInfo.setKommunenummer(s);
+            kommuneInfo.setKanMottaSoknader(false);
+            kommuneInfo.setKanOppdatereStatus(false);
+            kommuneInfo.setHarMidlertidigDeaktivertOppdateringer(false);
+            kommuneInfo.setHarMidlertidigDeaktivertMottak(false);
+            return kommuneInfo;
+        }).collect(Collectors.toMap(KommuneInfo::getKommunenummer, kommuneInfo -> kommuneInfo));
+
+        Map<String, KommuneInfo> kommuneinfoFraFiks = digisosApi.hentKommuneInfo();
+
+        for (String key : kommuneinfoFraFiks.keySet()) {
+            if (!digisosKommuneMap.containsKey(key) &&!kommuneinfoFraFiks.get(key).getKanMottaSoknader() ) {
+                continue;
+            }
+            digisosKommuneMap.put(key, kommuneinfoFraFiks.get(key));
+        }
+
+        return digisosKommuneMap;
     }
 
     @Unprotected

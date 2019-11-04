@@ -231,7 +231,6 @@ public class KommuneTilNavEnhetMapper {
                     "0532",
                     "1401",
                     "1238",
-                    "1939",
                     "5030",
                     "1933",
                     "1939",

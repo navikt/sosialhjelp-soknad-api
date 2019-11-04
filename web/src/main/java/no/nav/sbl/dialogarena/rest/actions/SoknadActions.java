@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -52,8 +51,8 @@ public class SoknadActions {
             try {
                 if (!soknadUnderArbeid.erEttersendelse()) {
                     String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
-                    KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
-                    log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
+            //        KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
+     //               log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
                 }
             } catch (Exception e) {
                 log.error("Feil ved henting av kommuneinfo ", e);
