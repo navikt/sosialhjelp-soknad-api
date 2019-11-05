@@ -29,7 +29,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void skal_ha_kanMottaSoknader_som_false_dersom_kommunen_innes_i_fallbacklista_og_hos_fiks() {
+    public void skal_ha_kanMottaSoknader_som_false_dersom_kommunen_finnes_i_fallbacklista_og_hos_fiks() {
         Map<String, KommuneInfo> kommuneInfo = new HashMap<>();
         KommuneInfo k = new KommuneInfo();
         k.setKommunenummer("0301");
@@ -47,7 +47,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void skal_ha_kanMottaSoknader_som_true_dersom_kommunen_innes_i_fallbacklista_og_hos_fiks_og_har_satt_enable_mottak_av_soknader() {
+    public void skal_ha_kanMottaSoknader_som_true_dersom_kommunen_finnes_i_fallbacklista_og_hos_fiks_og_har_satt_enable_mottak_av_soknader() {
         Map<String, KommuneInfo> kommuneInfo = new HashMap<>();
         KommuneInfo k = new KommuneInfo();
         k.setKommunenummer("0301");
