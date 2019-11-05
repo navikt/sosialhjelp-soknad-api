@@ -60,6 +60,9 @@
     "VIRKSOMHET_ORGANISASJON_V4_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-organisasjon-v4-tjenestespesifikasjon/1.0.4/nav-fim-organisasjon-v4-tjenestespesifikasjon-1.0.4.zip",
     "VIRKSOMHET_PERSON_V1_ENDPOINTURL": "https://wasapp-q0.adeo.no/tpsws/Person_v1",
     "VIRKSOMHET_PERSON_V1_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip"
+    "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip",
+    "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
+    "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "true"
+
   }
 }

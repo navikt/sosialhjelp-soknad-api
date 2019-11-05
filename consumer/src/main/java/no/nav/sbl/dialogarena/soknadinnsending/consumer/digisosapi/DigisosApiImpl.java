@@ -100,32 +100,14 @@ public class DigisosApiImpl implements DigisosApi {
         if (kommuneInfo.getKanMottaSoknader() == null) {
             return MANGLER_KONFIGURASJON;
         }
-
-        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus() && !kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
+        if (!kommuneInfo.getKanMottaSoknader()) {
             return HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
         }
-
-        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus() && !kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
-            return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
+        if (kommuneInfo.getHarMidlertidigDeaktivertMottak()) {
+            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
         }
 
-        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus() && !kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
-            return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
-        }
-
-        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus() && kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
-            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SOM_VANLIG;
-        }
-
-        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus() && kommuneInfo.getHarMidlertidigDeaktivertMottak() && !kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
-            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_IKKE_MULIG;
-        }
-
-        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus() && kommuneInfo.getHarMidlertidigDeaktivertMottak() && kommuneInfo.getHarMidlertidigDeaktivertOppdateringer()) {
-            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER_INNSYN_SKAL_VISE_FEILSIDE;
-        }
-
-        return IKKE_STOTTET_CASE;
+        return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
     }
 
     // @Cacheable("kommuneinfoCache")
