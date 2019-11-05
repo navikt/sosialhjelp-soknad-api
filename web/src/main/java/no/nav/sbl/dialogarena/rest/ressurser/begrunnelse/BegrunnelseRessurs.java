@@ -34,9 +34,9 @@ public class BegrunnelseRessurs {
 
     @GET
     public BegrunnelseFrontend hentBegrunnelse(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
 
         return new BegrunnelseFrontend()
                 .withHvaSokesOm(begrunnelse.getHvaSokesOm())
@@ -46,9 +46,9 @@ public class BegrunnelseRessurs {
     @PUT
     public void updateBegrunnelse(@PathParam("behandlingsId") String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
         begrunnelse.setKilde(JsonKildeBruker.BRUKER);
         begrunnelse.setHvaSokesOm(begrunnelseFrontend.hvaSokesOm);
         begrunnelse.setHvorforSoke(begrunnelseFrontend.hvorforSoke);

@@ -25,6 +25,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -36,7 +37,6 @@ public class StudielanRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
-    private static final String BEKREFTELSE_TYPE = "studielanOgStipend";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -133,10 +133,10 @@ public class StudielanRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomioversiktInntekt> inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getInntekt();
-        assertEquals(inntekt.get(0).getType(), BEKREFTELSE_TYPE);
+        assertEquals(inntekt.get(0).getType(), STUDIELAN);
         JsonOkonomibekreftelse studielan = bekreftelser.get(0);
         assertThat(studielan.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(studielan.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(studielan.getType(), is(STUDIELAN));
         assertTrue(studielan.getVerdi());
     }
 
@@ -145,7 +145,7 @@ public class StudielanRessursTest {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         ArrayList<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
-        inntekt.add(new JsonOkonomioversiktInntekt().withType(BEKREFTELSE_TYPE));
+        inntekt.add(new JsonOkonomioversiktInntekt().withType(STUDIELAN));
         soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().setInntekt(inntekt);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
 
@@ -161,7 +161,7 @@ public class StudielanRessursTest {
         assertTrue(jsonInntekt.isEmpty());
         JsonOkonomibekreftelse studielan = bekreftelser.get(0);
         assertThat(studielan.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(studielan.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(studielan.getType(), is(STUDIELAN));
         assertFalse(studielan.getVerdi());
     }
 
@@ -176,7 +176,7 @@ public class StudielanRessursTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().withBekreftelse(
                 asList(new JsonOkonomibekreftelse()
                         .withKilde(JsonKilde.BRUKER)
-                        .withType(BEKREFTELSE_TYPE)
+                        .withType(STUDIELAN)
                         .withVerdi(verdi)));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning().setErStudent(erStudent);
         return soknadUnderArbeid;

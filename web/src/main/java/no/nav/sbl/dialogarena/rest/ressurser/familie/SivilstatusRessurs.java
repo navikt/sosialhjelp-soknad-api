@@ -42,9 +42,9 @@ public class SivilstatusRessurs {
 
     @GET
     public SivilstatusFrontend hentSivilstatus(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonSivilstatus jsonSivilstatus = soknad.getSoknad().getData().getFamilie().getSivilstatus();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonSivilstatus jsonSivilstatus = soknad.getSoknad().getData().getFamilie().getSivilstatus();
 
         if (jsonSivilstatus == null){
             return null;
@@ -56,15 +56,15 @@ public class SivilstatusRessurs {
     @PUT
     public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();
 
         if (familie.getSivilstatus() == null){
             soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().setSivilstatus(new JsonSivilstatus());
         }
 
-        final JsonSivilstatus sivilstatus = familie.getSivilstatus();
+        JsonSivilstatus sivilstatus = familie.getSivilstatus();
         sivilstatus.setKilde(JsonKilde.BRUKER);
         sivilstatus.setStatus(sivilstatusFrontend.sivilstatus);
         sivilstatus.setEktefelle(mapToJsonEktefelle(sivilstatusFrontend.ektefelle));
@@ -74,7 +74,7 @@ public class SivilstatusRessurs {
     }
 
     private EktefelleFrontend addEktefelleFrontend(JsonEktefelle jsonEktefelle) {
-        final JsonNavn navn = jsonEktefelle.getNavn();
+        JsonNavn navn = jsonEktefelle.getNavn();
         return new EktefelleFrontend()
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withFodselsdato(jsonEktefelle.getFodselsdato())
@@ -94,9 +94,9 @@ public class SivilstatusRessurs {
         if (fodselsdato == null || personnummer == null){
             return null;
         }
-        final DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final DateFormat targetFormat = new SimpleDateFormat("ddMMyy");
-        final Date date = originalFormat.parse(fodselsdato);
+        DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat targetFormat = new SimpleDateFormat("ddMMyy");
+        Date date = originalFormat.parse(fodselsdato);
         return targetFormat.format(date) + personnummer;
     }
 

@@ -182,7 +182,7 @@ public class DigisosApiService {
         log.info(String.format("Starter innsending av søknad med behandlingsId %s, skal sendes til DigisosApi", behandlingsId));
 
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true);
 
         List<FilOpplasting> filOpplastinger = lagDokumentListe(soknadUnderArbeid);
         log.info(String.format("Laster opp %d", filOpplastinger.size()));

@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.rest.ressurser.utdanning;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
@@ -21,8 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -33,9 +31,6 @@ public class UtdanningRessurs {
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
-
-    @Inject
-    private TextService textService;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -61,7 +56,6 @@ public class UtdanningRessurs {
         List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         utdanning.setKilde(JsonKilde.BRUKER);
         utdanning.setErStudent(utdanningFrontend.erStudent);
-        String soknadstype = "studielanOgStipend";
 
         if (utdanningFrontend.erStudent){
             utdanning.setStudentgrad(toStudentgrad(utdanningFrontend.studengradErHeltid));
@@ -69,8 +63,8 @@ public class UtdanningRessurs {
             utdanning.setStudentgrad(null);
             JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
             if (opplysninger.getBekreftelse() != null) {
-                opplysninger.getBekreftelse().removeIf(bekreftelse -> bekreftelse.getType().equals(soknadstype));
-                inntekter.removeIf(inntekt -> inntekt.getType().equals(soknadstype));
+                opplysninger.getBekreftelse().removeIf(bekreftelse -> bekreftelse.getType().equals(STUDIELAN));
+                inntekter.removeIf(inntekt -> inntekt.getType().equals(STUDIELAN));
             }
         }
 
