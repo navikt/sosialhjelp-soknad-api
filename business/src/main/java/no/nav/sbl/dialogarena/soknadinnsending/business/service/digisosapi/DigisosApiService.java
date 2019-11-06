@@ -107,8 +107,8 @@ public class DigisosApiService {
 
     }
 
-    void sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
-        digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token);
+    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
+        return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token);
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
@@ -169,9 +169,9 @@ public class DigisosApiService {
                 new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
     }
 
-    public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
+    public String sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
         if (MockUtils.isTillatMockRessurs()) {
-            return;
+            return null;
         }
 
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
@@ -188,12 +188,13 @@ public class DigisosApiService {
         log.info(String.format("Laster opp %d", filOpplastinger.size()));
         String soknadJson = getSoknadJson(soknadUnderArbeid);
         String vedleggJson = getVedleggJson(soknadUnderArbeid);
-        sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, behandlingsId, token);
+        String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, behandlingsId, token);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
             logAlderTilKibana(OidcFeatureToggleUtils.getUserId());
         }
+        return digisosId;
     }
 
     String getSoknadJson(SoknadUnderArbeid soknadUnderArbeid) {

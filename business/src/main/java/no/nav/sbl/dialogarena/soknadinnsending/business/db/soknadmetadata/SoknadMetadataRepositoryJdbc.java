@@ -30,7 +30,6 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         m.tilknyttetBehandlingsId = rs.getString("tilknyttetBehandlingsId");
         m.skjema = rs.getString("skjema");
         m.fnr = rs.getString("fnr");
-        m.hovedskjema = SoknadMetadata.JAXB.unmarshal(rs.getString("hovedskjema"), HovedskjemaMetadata.class);
         m.vedlegg = SoknadMetadata.JAXB.unmarshal(rs.getString("vedlegg"), VedleggMetadataListe.class);
         m.orgnr = rs.getString("orgnr");
         m.navEnhet = rs.getString("navenhet");

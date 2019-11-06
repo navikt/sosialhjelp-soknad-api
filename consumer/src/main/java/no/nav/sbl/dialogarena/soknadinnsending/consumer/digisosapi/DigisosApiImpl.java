@@ -46,6 +46,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -87,38 +88,35 @@ public class DigisosApiImpl implements DigisosApi {
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     @Override
-    public KommuneStatus kommuneInfo(String kommunenummer) {
+    public KommuneStatus kommuneInfo(String kommunenummer, Map<String, KommuneInfo> kommuneInfoMap) {
         Map<String, KommuneInfo> stringKommuneInfoMap;
         if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
             stringKommuneInfoMap = cacheForKommuneinfo.get();
         } else{
-            stringKommuneInfoMap= hentKommuneInfo();
+            stringKommuneInfoMap= kommuneInfoMap;
         }
         KommuneInfo kommuneInfo = stringKommuneInfoMap.getOrDefault(kommunenummer, new KommuneInfo());
 
         if (kommuneInfo.getKanMottaSoknader() == null) {
-            return IKKE_PA_FIKS_ELLER_INNSYN;
+            return MANGLER_KONFIGURASJON;
+        }
+        if (!kommuneInfo.getKanMottaSoknader()) {
+            return HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
+        }
+        if (kommuneInfo.getHarMidlertidigDeaktivertMottak()) {
+            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
         }
 
-        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-            return IKKE_PA_FIKS_ELLER_INNSYN;
-        }
-        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-            return KUN_PA_FIKS;
-        }
-        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
-            return PA_FIKS_OG_INNSYN;
-        }
-        return IKKE_PA_FIKS_ELLER_INNSYN;
+        return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
     }
 
     // @Cacheable("kommuneinfoCache")
     // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
+    @Override
     public Map<String, KommuneInfo> hentKommuneInfo() {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
         }
-
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
@@ -144,12 +142,13 @@ public class DigisosApiImpl implements DigisosApi {
     }
 
     @Override
-    public void krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
+    public String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
         log.info(String.format("Starter kryptering av filer, skal sende til %s %s", kommunenr, navEkseternRefId));
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
+        String digisosId;
         try {
             X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
-            lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
+            digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
@@ -158,6 +157,7 @@ public class DigisosApiImpl implements DigisosApi {
         } finally {
             krypteringFutureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(future -> future.cancel(true));
         }
+        return digisosId;
     }
 
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
@@ -234,7 +234,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
-    private void lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
+    private String lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
 
         List<FilForOpplasting<Object>> filer = new ArrayList<>();
 
@@ -282,7 +282,9 @@ public class DigisosApiImpl implements DigisosApi {
                 log.warn(EntityUtils.toString(response.getEntity()));
                 throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
             }
-            log.info(String.format("Sendte inn søknad og fikk digisosid: %s", EntityUtils.toString(response.getEntity())));
+            String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
+            log.info(String.format("Sendte inn søknad og fikk digisosid: %s", digisosId));
+            return digisosId;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
         }
