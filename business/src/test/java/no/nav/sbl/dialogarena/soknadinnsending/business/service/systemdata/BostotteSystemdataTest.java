@@ -3,8 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
-import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,9 +38,9 @@ public class BostotteSystemdataTest {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         BostotteMottaker mottaker = BostotteMottaker.HUSSTAND;
-        BigDecimal belop = BigDecimal.valueOf(10000);
+        BigDecimal netto = BigDecimal.valueOf(10000.5);
         LocalDate utbetalingsDato = LocalDate.now();
-        BostotteDto bostotteDto = new BostotteDto().withUtbetaling(new UtbetalingerDto().with(mottaker, belop, utbetalingsDato, BostotteRolle.HOVEDPERSON));
+        BostotteDto bostotteDto = new BostotteDto().withUtbetaling(new UtbetalingerDto().with(mottaker, netto, utbetalingsDato, BostotteRolle.HOVEDPERSON));
 
         // Mock:
         when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
@@ -47,11 +48,11 @@ public class BostotteSystemdataTest {
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        List<JsonBostotteUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getUtbetalinger();
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         assertThat(utbetalinger).isNotEmpty();
         assertThat(utbetalinger).hasSize(1);
-        JsonBostotteUtbetaling utbetaling = utbetalinger.get(0);
-        assertThatUtbetalingErKorrekt(mottaker, belop, utbetaling, utbetalingsDato);
+        JsonOkonomiOpplysningUtbetaling utbetaling = utbetalinger.get(0);
+        assertThatUtbetalingErKorrekt(mottaker, netto, utbetaling, utbetalingsDato);
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
 
@@ -60,12 +61,12 @@ public class BostotteSystemdataTest {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         BostotteMottaker mottaker = BostotteMottaker.HUSSTAND;
-        BigDecimal belop1 = BigDecimal.valueOf(10000);
-        BigDecimal belop2 = BigDecimal.valueOf(20000);
+        BigDecimal netto1 = BigDecimal.valueOf(10000);
+        BigDecimal netto2 = BigDecimal.valueOf(20000);
         LocalDate utbetalingsDato = LocalDate.now();
         BostotteDto bostotteDto = new BostotteDto()
-                .withUtbetaling(new UtbetalingerDto().with(mottaker, belop1, utbetalingsDato.minusMonths(1), BostotteRolle.HOVEDPERSON))
-                .withUtbetaling(new UtbetalingerDto().with(mottaker, belop2, utbetalingsDato, BostotteRolle.HOVEDPERSON));
+                .withUtbetaling(new UtbetalingerDto().with(mottaker, netto1, utbetalingsDato.minusMonths(1), BostotteRolle.HOVEDPERSON))
+                .withUtbetaling(new UtbetalingerDto().with(mottaker, netto2, utbetalingsDato, BostotteRolle.HOVEDPERSON));
 
         // Mock:
         when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
@@ -73,11 +74,11 @@ public class BostotteSystemdataTest {
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        List<JsonBostotteUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getUtbetalinger();
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         assertThat(utbetalinger).isNotEmpty();
         assertThat(utbetalinger).hasSize(1);
-        JsonBostotteUtbetaling utbetaling1 = utbetalinger.get(0);
-        assertThatUtbetalingErKorrekt(mottaker, belop2, utbetaling1, utbetalingsDato);
+        JsonOkonomiOpplysningUtbetaling utbetaling1 = utbetalinger.get(0);
+        assertThatUtbetalingErKorrekt(mottaker, netto2, utbetaling1, utbetalingsDato);
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
 
@@ -192,11 +193,11 @@ public class BostotteSystemdataTest {
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        List<JsonBostotteUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getUtbetalinger();
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         assertThat(utbetalinger).isNotEmpty();
         assertThat(utbetalinger).hasSize(1);
-        JsonBostotteUtbetaling utbetaling = utbetalinger.get(0);
-        assertThat(utbetaling.getBelop()).isEqualTo(utbetalingerDto1.getBelop().longValue());
+        JsonOkonomiOpplysningUtbetaling utbetaling = utbetalinger.get(0);
+        assertThat(utbetaling.getNetto()).isEqualTo(utbetalingerDto1.getBelop().longValue());
     }
 
     @Test
@@ -251,12 +252,12 @@ public class BostotteSystemdataTest {
         return new SakerDto().with(saksDato.getMonthValue(), saksDato.getYear(), status, vedtakDto, rolle);
     }
 
-    private void assertThatUtbetalingErKorrekt(BostotteMottaker mottaker, BigDecimal belop, JsonBostotteUtbetaling utbetaling, LocalDate utbetalingsDato) {
+    private void assertThatUtbetalingErKorrekt(BostotteMottaker mottaker, BigDecimal netto, JsonOkonomiOpplysningUtbetaling utbetaling, LocalDate utbetalingsDato) {
         assertThat(utbetaling.getTittel()).isEqualToIgnoringCase("Statlig bostotte");
-        assertThat(utbetaling.getMottaker()).isEqualTo(JsonBostotteUtbetaling.Mottaker.fromValue(mottaker.getValue()));
+        assertThat(utbetaling.getMottaker()).isEqualTo(JsonOkonomiOpplysningUtbetaling.Mottaker.fromValue(mottaker.getValue()));
         assertThat(utbetaling.getType()).isEqualTo(HUSBANKEN_TYPE);
         assertThat(utbetaling.getUtbetalingsdato()).isEqualTo(utbetalingsDato.toString());
-        assertThat(utbetaling.getBelop()).isEqualTo(belop.intValue());
-        assertThat(utbetaling.getKilde()).isEqualTo(JsonKildeSystem.SYSTEM);
+        assertThat(utbetaling.getNetto()).isEqualTo(netto.doubleValue());
+        assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.SYSTEM);
     }
 }

@@ -1,9 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto;
 
-import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteUtbetaling;
+
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 
 public enum BostotteMottaker {
-    KOMMUNE(JsonBostotteUtbetaling.Mottaker.KOMMUNE.value()), HUSSTAND(JsonBostotteUtbetaling.Mottaker.HUSSTAND.value());
+    KOMMUNE(JsonOkonomiOpplysningUtbetaling.Mottaker.KOMMUNE.value()), HUSSTAND(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND.value());
 
     private String value;
 

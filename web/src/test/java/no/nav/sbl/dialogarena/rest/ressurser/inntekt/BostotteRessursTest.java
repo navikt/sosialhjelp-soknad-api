@@ -6,9 +6,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
-import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -204,20 +204,20 @@ public class BostotteRessursTest {
 
     private SoknadUnderArbeid createJsonInternalSoknadWithBostotteUtbetalinger(Boolean harUtbetalinger, List<String> utbetalingTyper) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        List<JsonBostotteUtbetaling> utbetalinger = new ArrayList<>();
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = new ArrayList<>();
         for (String utbetaling: utbetalingTyper) {
-            utbetalinger.add(new JsonBostotteUtbetaling()
-                    .withKilde(JsonKildeSystem.SYSTEM)
+            utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
+                    .withKilde(JsonKilde.SYSTEM)
                     .withType(utbetaling)
                     .withTittel("tittel"));
         }
         if(harUtbetalinger) {
-            utbetalinger.add(new JsonBostotteUtbetaling()
-                    .withKilde(JsonKildeSystem.SYSTEM)
+            utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
+                    .withKilde(JsonKilde.SYSTEM)
                     .withType(HUSBANKEN_TYPE)
                     .withTittel("tittel"));
         }
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().setUtbetalinger(utbetalinger);
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setUtbetaling(utbetalinger);
         return soknadUnderArbeid;
     }
 

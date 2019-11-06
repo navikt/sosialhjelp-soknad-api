@@ -31,7 +31,7 @@
   "utbetalinger": [
     {
       "utbetalingsdato": "2019-07-20",
-      "belop": 4300,
+      "belop": 4300.5,
       "mottaker": "HUSSTAND",
       "rolle": "HOVEDPERSON"
     },

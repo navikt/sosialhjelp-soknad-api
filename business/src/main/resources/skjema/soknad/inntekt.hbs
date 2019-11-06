@@ -266,16 +266,19 @@
                         Kunne ikke hente status fra Husbanken
                     </div>
                 {{else}}
-                    {{#with bostotte}}
-                        {{#each utbetalinger}}
+                    {{#if @root.utvidetSoknad}}
+                        {{{ settInnInfotekst "inntekt.bostotte.infotekst.tekst" }}}
+                    {{/if}}
+                    {{#each utbetaling}}
+                        {{#hvisLik type "husbanken"}}
                             <h4>{{hentTekst "inntekt.bostotte.utbetaling"}}</h4>
                             <li>
                                 <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.mottaker"}}</span>
                                 <ul class="svar-liste">
                                     <li>
-                                        <span class="verdi verdi--tekst">
-                                            {{mottaker}}
-                                        </span>
+                                            <span class="verdi verdi--tekst">
+                                                {{mottaker}}
+                                            </span>
                                     </li>
                                 </ul>
                             </li>
@@ -283,9 +286,9 @@
                                 <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.utbetalingsdato"}}</span>
                                 <ul class="svar-liste">
                                     <li>
-                                        <span class="verdi verdi--tekst">
-                                            {{formaterDato utbetalingsdato "dd.MM.yyyy"}}
-                                        </span>
+                                            <span class="verdi verdi--tekst">
+                                                {{formaterDato utbetalingsdato "dd.MM.yyyy"}}
+                                            </span>
                                     </li>
                                 </ul>
                             </li>
@@ -293,13 +296,15 @@
                                 <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.belop"}}</span>
                                 <ul class="svar-liste">
                                     <li>
-                                        <span class="verdi verdi--tekst">
-                                            {{formaterDecimal belop}}
-                                        </span>
+                                            <span class="verdi verdi--tekst">
+                                                {{formaterDecimal netto}}
+                                            </span>
                                     </li>
                                 </ul>
                             </li>
-                        {{/each}}
+                        {{/hvisLik}}
+                    {{/each}}
+                    {{#with bostotte}}
                         {{#each saker}}
                             <h4>{{hentTekst "inntekt.bostotte.sak"}}</h4>
                             <li>
@@ -323,14 +328,25 @@
                                 </ul>
                             </li>
                         {{/each}}
-                        {{#erListeTom saker}}
-                            {{#erListeTom utbetalinger}}
-                                <li>
-                                    <span class="label">{{hentTekst "inntekt.bostotte.ikkefunnet"}}</span>
-                                </li>
-                            {{/erListeTom}}
-                        {{/erListeTom}}
                     {{/with}}
+                    {{#erListeTom bostotte.saker}}
+                        {{#hvisUtbetalingFinnes "husbanken"}}
+                            <li>
+                                <span class="label">{{hentTekst "inntekt.bostotte.sakerIkkefunnet"}}</span>
+                            </li>
+                        {{else}}
+                            <li>
+                                <span class="label">{{hentTekst "inntekt.bostotte.ikkefunnet"}}</span>
+                            </li>
+                        {{/hvisUtbetalingFinnes}}
+                    {{else}}
+                        {{#hvisUtbetalingFinnes "husbanken"}}
+                        {{else}}
+                            <li>
+                                <span class="label">{{hentTekst "inntekt.bostotte.utbetalingerIkkefunnet"}}</span>
+                            </li>
+                        {{/hvisUtbetalingFinnes}}
+                    {{/erListeTom}}
                 {{/if}}
 
                 <h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>

@@ -1,7 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,15 +23,15 @@ public class FormaterDecimalHelperTest {
 
     @Test
     public void skalViseToDesimalerSomStandard() throws IOException {
-        JsonBostotteUtbetaling bostotteUtbetaling = new JsonBostotteUtbetaling().withBelop(123.0);
-        String compiled = handlebars.compileInline("{{formaterDecimal belop}}").apply(bostotteUtbetaling);
+        JsonOkonomiOpplysningUtbetaling bostotteUtbetaling = new JsonOkonomiOpplysningUtbetaling().withNetto(123.0);
+        String compiled = handlebars.compileInline("{{formaterDecimal netto}}").apply(bostotteUtbetaling);
         assertThat(compiled, is("123,00"));
     }
 
     @Test
     public void skalkunneViseTreDecimaler() throws IOException {
-        JsonBostotteUtbetaling bostotteUtbetaling = new JsonBostotteUtbetaling().withBelop(123.0);
-        String compiled = handlebars.compileInline("{{formaterDecimal belop 3}}").apply(bostotteUtbetaling);
+        JsonOkonomiOpplysningUtbetaling bostotteUtbetaling = new JsonOkonomiOpplysningUtbetaling().withNetto(123.0);
+        String compiled = handlebars.compileInline("{{formaterDecimal netto 3}}").apply(bostotteUtbetaling);
         assertThat(compiled, is("123,000"));
     }
 
