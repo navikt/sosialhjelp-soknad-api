@@ -8,7 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -46,7 +46,7 @@ public class SoknadActions {
     private SoknadService soknadService;
 
     @Inject
-    private DigisosApi digisosApi;
+    private KommuneInfoService kommuneInfoService;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -82,7 +82,7 @@ public class SoknadActions {
 
         log.info(String.format("BehandlingsId %s sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.", behandlingsId));
         String kommunenummer = getKommunenummerOrMock(soknadUnderArbeid);
-        KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer, digisosApi.hentKommuneInfo());
+        KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo(kommunenummer);
         log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus));
 
         switch (kommuneStatus) {

@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
@@ -37,6 +38,11 @@ public class SoknadActionsTestConfig {
     @Bean
     public DigisosApi DigisosApi() {
         return mock(DigisosApi.class);
+    }
+
+    @Bean
+    public KommuneInfoService KommuneInfoService() {
+        return mock(KommuneInfoService.class);
     }
 
     @Bean

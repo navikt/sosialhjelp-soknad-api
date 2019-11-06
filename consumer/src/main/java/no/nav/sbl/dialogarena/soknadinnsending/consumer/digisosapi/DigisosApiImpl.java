@@ -85,37 +85,16 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
-
-    // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
-    @Override
-    public KommuneStatus kommuneInfo(String kommunenummer, Map<String, KommuneInfo> kommuneInfoMap) {
-        Map<String, KommuneInfo> stringKommuneInfoMap;
-        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
-            stringKommuneInfoMap = cacheForKommuneinfo.get();
-        } else{
-            stringKommuneInfoMap= kommuneInfoMap;
-        }
-        KommuneInfo kommuneInfo = stringKommuneInfoMap.getOrDefault(kommunenummer, new KommuneInfo());
-
-        if (kommuneInfo.getKanMottaSoknader() == null) {
-            return MANGLER_KONFIGURASJON;
-        }
-        if (!kommuneInfo.getKanMottaSoknader()) {
-            return HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
-        }
-        if (kommuneInfo.getHarMidlertidigDeaktivertMottak()) {
-            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
-        }
-
-        return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
-    }
-
     // @Cacheable("kommuneinfoCache")
     // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
     @Override
     public Map<String, KommuneInfo> hentKommuneInfo() {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
+        }
+
+        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
+            return cacheForKommuneinfo.get();
         }
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();

@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApiImpl;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,11 @@ public class DigisosApiRestConfig {
         DigisosApi mock = mock(DigisosApi.class);
         DigisosApi prod = new DigisosApiImpl();
         return createMetricsProxyWithInstanceSwitcher("DigisosApi", prod, mock, DIGISOSAPI_WITHMOCK, DigisosApi.class);
+    }
+
+    @Bean
+    public KommuneInfoService kommuneInfoService() {
+        return new KommuneInfoService();
     }
 
     @Bean
