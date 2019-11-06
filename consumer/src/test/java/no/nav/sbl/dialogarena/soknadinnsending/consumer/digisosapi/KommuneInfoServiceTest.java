@@ -23,12 +23,72 @@ public class KommuneInfoServiceTest {
 
 
     @Test
-    public void kommuneInfo_case1_ingen_konfigurasjon() {
-        System.setProperty("tillatMockRessurs", "true");
-        System.setProperty("tillatMockRessurs", "false");
-        // Case 1
+    public void kommuneUtenKonfigurasjonSkalGikanMottaSoknaderFalse() {
+        when(digisosApi.hentKommuneInfo()).thenReturn(new HashMap<>());
+
+        boolean kanMottaSoknader = kommuneInfoService.kanMottaSoknader("1111");
+        assertThat(kanMottaSoknader).isFalse();
+    }
+
+    @Test
+    public void kommuneMedKonfigurasjonSkalGikanMottaSoknaderLikKonfigurasjon() {
+        // True
+        KommuneInfo value = new KommuneInfo();
+        value.setKommunenummer("1111");
+        value.setKanMottaSoknader(true);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
+        kommuneInfoMap.put("1111", value);
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+
+        boolean kanMottaSoknader = kommuneInfoService.kanMottaSoknader("1111");
+        assertThat(kanMottaSoknader).isTrue();
+
+        // False
+        value = new KommuneInfo();
+        value.setKommunenummer("1111");
+        value.setKanMottaSoknader(false);
+        kommuneInfoMap.put("1111", value);
+        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+
+        kanMottaSoknader = kommuneInfoService.kanMottaSoknader("1111");
+        assertThat(kanMottaSoknader).isFalse();
+    }
+
+    @Test
+    public void kommuneUtenKonfigurasjonSkalGiharMidlertidigDeaktivertMottakFalse() {
+        when(digisosApi.hentKommuneInfo()).thenReturn(new HashMap<>());
+        boolean harMidlertidigDeaktivertMottak = kommuneInfoService.harMidlertidigDeaktivertMottak("1111");
+        assertThat(harMidlertidigDeaktivertMottak).isFalse();
+    }
+
+    @Test
+    public void kommuneMedKonfigurasjonSkalGiharMidlertidigDeaktivertMottakLikKonfigurasjon() {
+        // True
+        KommuneInfo value = new KommuneInfo();
+        value.setKommunenummer("1111");
+        value.setHarMidlertidigDeaktivertMottak(true);
+        Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
+        kommuneInfoMap.put("1111", value);
+        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+
+        boolean kanMottaSoknader = kommuneInfoService.harMidlertidigDeaktivertMottak("1111");
+        assertThat(kanMottaSoknader).isTrue();
+
+        // False
+        value = new KommuneInfo();
+        value.setKommunenummer("1111");
+        value.setHarMidlertidigDeaktivertMottak(false);
+        kommuneInfoMap.put("1111", value);
+        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+
+        kanMottaSoknader = kommuneInfoService.harMidlertidigDeaktivertMottak("1111");
+        assertThat(kanMottaSoknader).isFalse();
+    }
+
+    @Test
+    public void kommuneInfo_case1_ingen_konfigurasjon() {
+        // Case 1
+        when(digisosApi.hentKommuneInfo()).thenReturn(new HashMap<>());
 
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.MANGLER_KONFIGURASJON);
@@ -36,10 +96,7 @@ public class KommuneInfoServiceTest {
 
     @Test
     public void kommuneInfo_case2_deaktivert_mottak_8_permutasjoner_0000_0111() {
-        System.setProperty("tillatMockRessurs", "true");
-        System.setProperty("tillatMockRessurs", "false");
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
-
 
         // Kun deaktivert mottak (permutasjon 0 = 0000)
         KommuneInfo value = new KommuneInfo();
@@ -163,8 +220,6 @@ public class KommuneInfoServiceTest {
 
     @Test
     public void kommuneInfo_case3_aktivert_mottak() {
-        System.setProperty("tillatMockRessurs", "true");
-        System.setProperty("tillatMockRessurs", "false");
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Kun aktivert mottak (permutasjon 8 = 1000)
@@ -199,8 +254,6 @@ public class KommuneInfoServiceTest {
 
     @Test
     public void kommuneInfo_case4_aktivert_mottak_og_innsyn() {
-        System.setProperty("tillatMockRessurs", "true");
-        System.setProperty("tillatMockRessurs", "false");
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 4 (permutasjon 12 = 1100)
@@ -234,8 +287,6 @@ public class KommuneInfoServiceTest {
 
     @Test
     public void kommuneInfo_case5_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak() {
-        System.setProperty("tillatMockRessurs", "true");
-        System.setProperty("tillatMockRessurs", "false");
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 5 (permutasjon 14 = 1110)
@@ -283,8 +334,6 @@ public class KommuneInfoServiceTest {
 
     @Test
     public void kommuneInfo_case6_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak_og_innsyn() {
-        System.setProperty("tillatMockRessurs", "true");
-        System.setProperty("tillatMockRessurs", "false");
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 6 (permutasjon 15 = 1111)
@@ -301,4 +350,5 @@ public class KommuneInfoServiceTest {
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
     }
+
 }

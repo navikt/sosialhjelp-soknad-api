@@ -27,9 +27,9 @@ public class KommuneInfoService {
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     public KommuneStatus kommuneInfo(String kommunenummer) {
-        KommuneInfo kommuneInfo = digisosApi.hentKommuneInfo().getOrDefault(kommunenummer, new KommuneInfo());
+        KommuneInfo kommuneInfo = digisosApi.hentKommuneInfo().getOrDefault(kommunenummer, null);
 
-        if (kommuneInfo.getKanMottaSoknader() == null) {
+        if (kommuneInfo == null) {
             return MANGLER_KONFIGURASJON;
         }
         if (!kommuneInfo.getKanMottaSoknader()) {

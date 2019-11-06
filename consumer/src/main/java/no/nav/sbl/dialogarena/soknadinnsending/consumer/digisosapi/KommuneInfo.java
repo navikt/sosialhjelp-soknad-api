@@ -9,13 +9,13 @@ public class KommuneInfo {
     @JsonProperty("kommunenummer")
     private String kommunenummer;
     @JsonProperty("kanMottaSoknader")
-    private Boolean kanMottaSoknader;
+    private boolean kanMottaSoknader;
     @JsonProperty("kanOppdatereStatus")
-    private Boolean kanOppdatereStatus;
+    private boolean kanOppdatereStatus;
     @JsonProperty("harMidlertidigDeaktivertMottak")
-    private Boolean harMidlertidigDeaktivertMottak;
+    private boolean harMidlertidigDeaktivertMottak;
     @JsonProperty("harMidlertidigDeaktivertOppdateringer")
-    private Boolean harMidlertidigDeaktivertOppdateringer;
+    private boolean harMidlertidigDeaktivertOppdateringer;
 
     @JsonProperty("kommunenummer")
     public String getKommunenummer() {
@@ -28,42 +28,42 @@ public class KommuneInfo {
     }
 
     @JsonProperty("kanMottaSoknader")
-    public Boolean getKanMottaSoknader() {
+    public boolean getKanMottaSoknader() {
         return kanMottaSoknader;
     }
 
     @JsonProperty("kanMottaSoknader")
-    public void setKanMottaSoknader(Boolean kanMottaSoknader) {
+    public void setKanMottaSoknader(boolean kanMottaSoknader) {
         this.kanMottaSoknader = kanMottaSoknader;
     }
 
     @JsonProperty("kanOppdatereStatus")
-    public Boolean getKanOppdatereStatus() {
+    public boolean getKanOppdatereStatus() {
         return kanOppdatereStatus;
     }
 
     @JsonProperty("kanOppdatereStatus")
-    public void setKanOppdatereStatus(Boolean kanOppdatereStatus) {
+    public void setKanOppdatereStatus(boolean kanOppdatereStatus) {
         this.kanOppdatereStatus = kanOppdatereStatus;
     }
 
     @JsonProperty("harMidlertidigDeaktivertMottak")
-    public Boolean getHarMidlertidigDeaktivertMottak() {
+    public boolean getHarMidlertidigDeaktivertMottak() {
         return harMidlertidigDeaktivertMottak;
     }
 
     @JsonProperty("harMidlertidigDeaktivertMottak")
-    public void setHarMidlertidigDeaktivertMottak(Boolean harMidlertidigDeaktivertMottak) {
+    public void setHarMidlertidigDeaktivertMottak(boolean harMidlertidigDeaktivertMottak) {
         this.harMidlertidigDeaktivertMottak = harMidlertidigDeaktivertMottak;
     }
 
     @JsonProperty("harMidlertidigDeaktivertOppdateringer")
-    public Boolean getHarMidlertidigDeaktivertOppdateringer() {
+    public boolean getHarMidlertidigDeaktivertOppdateringer() {
         return harMidlertidigDeaktivertOppdateringer;
     }
 
     @JsonProperty("harMidlertidigDeaktivertOppdateringer")
-    public void setHarMidlertidigDeaktivertOppdateringer(Boolean harMidlertidigDeaktivertOppdateringer) {
+    public void setHarMidlertidigDeaktivertOppdateringer(boolean harMidlertidigDeaktivertOppdateringer) {
         this.harMidlertidigDeaktivertOppdateringer = harMidlertidigDeaktivertOppdateringer;
     }
 
