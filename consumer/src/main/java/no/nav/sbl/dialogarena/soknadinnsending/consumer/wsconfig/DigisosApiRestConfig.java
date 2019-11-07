@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApiImpl;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApiImpl;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.digisosapi.DigisosApiMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
-import static org.mockito.Mockito.mock;
 
 @Configuration
 public class DigisosApiRestConfig {
@@ -22,7 +22,7 @@ public class DigisosApiRestConfig {
 
     @Bean
     public DigisosApi digisosApi() {
-        DigisosApi mock = mock(DigisosApi.class);
+        DigisosApi mock = new DigisosApiMock().digisosApiMock();
         DigisosApi prod = new DigisosApiImpl();
         return createMetricsProxyWithInstanceSwitcher("DigisosApi", prod, mock, DIGISOSAPI_WITHMOCK, DigisosApi.class);
     }

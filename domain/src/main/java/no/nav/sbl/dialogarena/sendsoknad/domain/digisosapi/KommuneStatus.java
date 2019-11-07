@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi;
+package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
 
 public enum KommuneStatus {
     HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT,

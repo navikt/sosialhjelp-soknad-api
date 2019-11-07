@@ -1,11 +1,11 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi;
+package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
 
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
 
 @Component
 public class KommuneInfoService {

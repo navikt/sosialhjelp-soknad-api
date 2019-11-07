@@ -156,6 +156,7 @@
         <javax.websocket-api.version>1.1</javax.websocket-api.version>
         <jsoup.version>1.11.3</jsoup.version>
         <oauth2-oidc-sdk.version>6.1.1</oauth2-oidc-sdk.version>
+        <lang-tag.version>1.4.4</lang-tag.version>
     </properties>
 
     <dependencyManagement>
@@ -621,6 +622,11 @@
                 <groupId>no.ks.fiks</groupId>
                 <artifactId>kryptering</artifactId>
                 <version>${kryptering.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>lang-tag</artifactId>
+                <version>${lang-tag.version}</version>
             </dependency>
 
             <!-- Modig avhengigheter -->

@@ -24,7 +24,7 @@ public class NorgConsumerMock {
         NorgConsumer mock = mock(NorgConsumer.class);
 
         when(mock.finnEnhetForGeografiskTilknytning(any(String.class)))
-                .thenAnswer(invocationOnMock -> getOrCreateCurrentUserResponse(invocationOnMock));
+                .thenAnswer(NorgConsumerMock::getOrCreateCurrentUserResponse);
 
         return mock;
     }
@@ -36,9 +36,18 @@ public class NorgConsumerMock {
             rsNorgEnhetMap = getDefaultMap();
             responses.put(OidcFeatureToggleUtils.getUserId(), rsNorgEnhetMap);
         }
-        
+
         String argumentAt = invocationOnMock.getArgumentAt(0, String.class);
         return rsNorgEnhetMap.get(argumentAt);
+    }
+
+
+    public static RsNorgEnhet getKommuneResponse(String kommune, String enhetsNr){
+        return new RsNorgEnhet()
+                .withEnhetId(Long.parseLong("9"+ enhetsNr + enhetsNr))
+                .withEnhetNr(enhetsNr)
+                .withNavn("NAV " + kommune)
+                .withOrgNrTilKommunaltNavKontor("9"+ enhetsNr + enhetsNr);
     }
 
     private static Map<String, RsNorgEnhet> getDefaultMap(){
@@ -47,6 +56,16 @@ public class NorgConsumerMock {
                         .withEnhetNr("1209")
                         .withNavn("NAV Bergenhus")
                         .withOrgNrTilKommunaltNavKontor("976830563"))
+                .put("0106", getKommuneResponse("Fredrikstad", "0106"))
+                .put("0701", getKommuneResponse("Horten", "0701"))
+                .put("0101", getKommuneResponse("Halden", "0101"))
+                .put("1247", getKommuneResponse("Askøy", "1247"))
+                .put("0105", getKommuneResponse("Sarpsborg", "0105"))
+                .put("0219", getKommuneResponse("Bærum", "0219"))
+                .put("0111", getKommuneResponse("Hvaler", "0111"))
+                .put("5001", getKommuneResponse("Moss", "5001"))
+                .put("0136", getKommuneResponse("Rygge", "0136"))
+                .put("0403", getKommuneResponse("Hamar", "0403"))
                 .build();
     }
 
