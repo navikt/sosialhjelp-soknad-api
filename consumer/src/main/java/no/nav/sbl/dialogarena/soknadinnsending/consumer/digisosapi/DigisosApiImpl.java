@@ -46,6 +46,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -144,12 +145,13 @@ public class DigisosApiImpl implements DigisosApi {
     }
 
     @Override
-    public void krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
+    public String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
         log.info(String.format("Starter kryptering av filer, skal sende til %s %s", kommunenr, navEkseternRefId));
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
+        String digisosId;
         try {
             X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
-            lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
+            digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
@@ -158,6 +160,7 @@ public class DigisosApiImpl implements DigisosApi {
         } finally {
             krypteringFutureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(future -> future.cancel(true));
         }
+        return digisosId;
     }
 
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
@@ -234,7 +237,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
-    private void lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
+    private String lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
 
         List<FilForOpplasting<Object>> filer = new ArrayList<>();
 
@@ -282,7 +285,9 @@ public class DigisosApiImpl implements DigisosApi {
                 log.warn(EntityUtils.toString(response.getEntity()));
                 throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
             }
-            log.info(String.format("Sendte inn søknad og fikk digisosid: %s", EntityUtils.toString(response.getEntity())));
+            String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
+            log.info(String.format("Sendte inn søknad og fikk digisosid: %s", digisosId));
+            return digisosId;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
         }
