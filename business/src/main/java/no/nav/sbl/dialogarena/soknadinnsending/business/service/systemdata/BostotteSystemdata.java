@@ -98,11 +98,17 @@ public class BostotteSystemdata implements Systemdata {
     }
 
     private JsonBostotteSak mapToJsonOkonomiOpplysningSak(SakerDto sakerDto) {
-        return new JsonBostotteSak()
+        JsonBostotteSak bostotteSak = new JsonBostotteSak()
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withType(HUSBANKEN_TYPE)
                 .withStatus(sakerDto.getStatus().toString())
-                .withBeskrivelse(sakerDto.getVedtak() != null ? sakerDto.getVedtak().getBeskrivelse() : null)
                 .withDato(sakerDto.getDato().toString());
+        if(sakerDto.getVedtak() != null) {
+            bostotteSak.withBeskrivelse(sakerDto.getVedtak().getBeskrivelse());
+            if(sakerDto.getVedtak().getStatus() != null) {
+                bostotteSak.withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.fromValue(sakerDto.getVedtak().getStatus()));
+            }
+        }
+        return bostotteSak;
     }
 }

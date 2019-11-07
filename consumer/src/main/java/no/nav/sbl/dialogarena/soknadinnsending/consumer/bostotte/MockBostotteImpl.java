@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -52,13 +53,14 @@ public class MockBostotteImpl implements Bostotte {
         BostotteRolle rolle2 = BostotteRolle.BIPERSON;
         String vedtaksKode = "V03";
         String vedtaksBeskrivelse = "Avslag - For høy inntekt";
+        JsonBostotteSak.Vedtaksstatus vedtaksstatus = JsonBostotteSak.Vedtaksstatus.AVSLAG;
 
         UtbetalingerDto utbetalingerDto1 = new UtbetalingerDto()
                 .with(mottaker1, belop1, utbetalingsDato, BostotteRolle.HOVEDPERSON);
         UtbetalingerDto utbetalingerDto2 = new UtbetalingerDto()
                 .with(mottaker2, belop2, utbetalingsDato, BostotteRolle.HOVEDPERSON);
         VedtakDto vedtakDto = new VedtakDto()
-                .with(vedtaksKode, vedtaksBeskrivelse);
+                .with(vedtaksKode, vedtaksBeskrivelse, vedtaksstatus.toString());
         SakerDto sakerDto1 = new SakerDto()
                 .with(saksDato1.getMonthValue(), saksDato1.getYear(), saksStatus1, vedtakDto, rolle1);
         SakerDto sakerDto2 = new SakerDto()

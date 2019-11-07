@@ -19,6 +19,7 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte.HUSBANKEN_TYPE;
+import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedtaksstatus.AVSLAG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -86,7 +87,7 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertMedSakFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null);
+        SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto);
 
@@ -112,8 +113,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertMedToSakerFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null);
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt");
+        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto1)
                 .withSak(sakerDto2);
@@ -135,6 +136,7 @@ public class BostotteSystemdataTest {
         assertThat(sak2.getDato()).isEqualTo(sakerDto2.getDato().toString());
         assertThat(sak2.getStatus()).isEqualToIgnoringCase(sakerDto2.status.toString());
         assertThat(sak2.getBeskrivelse()).isEqualTo(sakerDto2.getVedtak().getBeskrivelse());
+        assertThat(sak2.getVedtaksstatus().value()).isEqualTo(sakerDto2.getVedtak().getStatus());
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
 
@@ -158,8 +160,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_saker_bipersonerBlirFiltrertBort() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null);
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.BIPERSON, "V02", "Avslag - For høy inntekt");
+        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.BIPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto1)
                 .withSak(sakerDto2);
@@ -204,8 +206,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_bareDataFraSisteManedBlirVist() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null);
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt");
+        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto1)
                 .withSak(sakerDto2);
@@ -227,7 +229,7 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_dataFraDeSisteToManederBlirVistNarSisteManedErTom() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt");
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto2);
 
@@ -244,10 +246,10 @@ public class BostotteSystemdataTest {
         assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakerDto2.getStatus().toString());
     }
 
-    private SakerDto lagSak(LocalDate saksDato, BostotteStatus status, BostotteRolle rolle, String kode, String beskrivelse) {
+    private SakerDto lagSak(LocalDate saksDato, BostotteStatus status, BostotteRolle rolle, String kode, String beskrivelse, JsonBostotteSak.Vedtaksstatus vedtaksstatus) {
         VedtakDto vedtakDto = null;
         if(kode != null) {
-            vedtakDto = new VedtakDto().with(kode, beskrivelse);
+            vedtakDto = new VedtakDto().with(kode, beskrivelse, vedtaksstatus.toString());
         }
         return new SakerDto().with(saksDato.getMonthValue(), saksDato.getYear(), status, vedtakDto, rolle);
     }

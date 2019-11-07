@@ -22,8 +22,20 @@ public class FinnSaksStatusHelperTest {
 
     @Test
     public void skalViseBeskrivelseVedVedtak() throws IOException {
-        String compiled = handlebars.compileInline("{{finnSaksStatus \"VEDTATT\" \"Beskrivelse av vedtak\"}}").apply(new Object());
+        String compiled = handlebars.compileInline("{{finnSaksStatus \"VEDTATT\" \"Beskrivelse av vedtak\" \"INNVILGET\"}}").apply(new Object());
         assertThat(compiled, is("Beskrivelse av vedtak"));
+    }
+
+    @Test
+    public void skalLeggePaAvslag() throws IOException {
+        String compiled = handlebars.compileInline("{{finnSaksStatus \"VEDTATT\" \"Beskrivelse av vedtak\" \"AVSLAG\"}}").apply(new Object());
+        assertThat(compiled, is("Avslått: Beskrivelse av vedtak"));
+    }
+
+    @Test
+    public void skalLeggePaAvvist() throws IOException {
+        String compiled = handlebars.compileInline("{{finnSaksStatus \"VEDTATT\" \"Beskrivelse av vedtak\" \"AVVIST\"}}").apply(new Object());
+        assertThat(compiled, is("Avvist: Beskrivelse av vedtak"));
     }
 
     @Test

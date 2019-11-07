@@ -3,6 +3,9 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
+import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedtaksstatus.AVVIST;
+import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedtaksstatus.INNVILGET;
+
 @Component
 public class FinnSaksStatusHelper extends RegistryAwareHelper<String> {
 
@@ -23,8 +26,14 @@ public class FinnSaksStatusHelper extends RegistryAwareHelper<String> {
         }
 
         if(status.equalsIgnoreCase("VEDTATT")) {
-            if(options.params.length > 0) {
-                return String.valueOf(options.params[0]);
+            if(options.params.length > 1) {
+                if (options.params[1] == INNVILGET || "INNVILGET".equalsIgnoreCase(options.params[1].toString())) {
+                    return String.valueOf(options.params[0]);
+                }
+                if (options.params[1] == AVVIST || "AVVIST".equalsIgnoreCase(options.params[1].toString())) {
+                    return "Avvist: " + options.params[0];
+                }
+                return "Avslått: " + options.params[0];
             }
             return "Vedtatt";
         }
