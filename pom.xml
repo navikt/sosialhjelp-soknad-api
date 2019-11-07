@@ -98,7 +98,7 @@
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
-        <verapdf.version>1.12.1</verapdf.version>
+        <verapdf.version>1.14.104</verapdf.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.3.2</hsqldb.version>
         <hikaricp.version>2.7.8</hikaricp.version>
