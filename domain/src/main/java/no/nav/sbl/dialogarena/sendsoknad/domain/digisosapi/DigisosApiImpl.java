@@ -140,7 +140,7 @@ public class DigisosApiImpl implements DigisosApi {
 
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
         byte[] publicKey = new byte[0];
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
                     .addHeader("Accept", MediaType.WILDCARD)
                     .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
@@ -245,7 +245,7 @@ public class DigisosApiImpl implements DigisosApi {
             entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData(), ContentType.APPLICATION_OCTET_STREAM, objectFilForOpplasting.getFilnavn());
         }
 
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
