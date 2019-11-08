@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
@@ -105,31 +106,35 @@ public class NavEnhetRessurs {
             return null;
         }
 
-        if (adresseForslag.kommunenummer == null
-                || adresseForslag.kommunenummer.length() != 4) {
+        String kommunenummer = adresseForslag.kommunenummer;
+        if (kommunenummer == null || kommunenummer.length() != 4) {
             return null;
         }
 
-        boolean digisosKommune = isDigisosKommune(adresseForslag.kommunenummer);
+        if (!ServiceUtils.isRunningInProd() && ServiceUtils.isAlltidSendTilNavTestkommune()) {
+            logger.warn("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
+            kommunenummer = "2352";
+        }
+
+        boolean digisosKommune = isDigisosKommune(kommunenummer);
         String sosialOrgnr = digisosKommune ? navEnhet.sosialOrgnr : null;
         String enhetNr = digisosKommune ? navEnhet.enhetNr : null;
 
         boolean valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
-                .withKommunenavn(adresseForslag.kommunenavn)
+                .withKommunenavn(kommunenummer)
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
                 .withValgt(valgt)
-                .withKommuneNr(adresseForslag.kommunenummer)
-                .withisMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(adresseForslag.kommunenummer));
+                .withKommuneNr(kommunenummer)
+                .withisMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer));
     }
 
     private boolean isDigisosKommune(String kommunenummer){
         boolean isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer);
         boolean isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer);
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune;
-
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
