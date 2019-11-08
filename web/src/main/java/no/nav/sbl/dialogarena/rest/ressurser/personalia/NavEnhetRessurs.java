@@ -123,7 +123,7 @@ public class NavEnhetRessurs {
         boolean valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
-                .withKommunenavn(kommunenummer)
+                .withKommunenavn(adresseForslag.kommunenavn)
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
                 .withValgt(valgt)
