@@ -35,7 +35,7 @@
     "SERVICEGATEWAY_URL": "https://service-gw-q0.oera-q.local/",
     "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_q0",
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "true",
-    "SOKNAD_BRUKERPROFIL_URL": "https://tjenester-q1.nav.no/brukerprofil/",
+    "SOKNAD_BRUKERPROFIL_URL": "https://www-q0.nav.no/person/personopplysninger/",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "90",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester-q0.nav.no/soknadinnsending",
