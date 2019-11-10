@@ -13,7 +13,6 @@ import java.util.List;
 public class SoknadMetadata {
     public Long id;
     public String behandlingsId, tilknyttetBehandlingsId, fnr, skjema, orgnr, navEnhet, fiksForsendelseId;
-    public HovedskjemaMetadata hovedskjema;
     public VedleggMetadataListe vedlegg = new VedleggMetadataListe();
     public SoknadType type;
     public SoknadInnsendingStatus status;
