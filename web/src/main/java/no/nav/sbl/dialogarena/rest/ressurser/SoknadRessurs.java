@@ -89,11 +89,12 @@ public class SoknadRessurs {
 
         soknadUnderArbeidService.sortOkonomi(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi());
         soknadUnderArbeidService.sortOkonomi(notUpdatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi());
+        soknadUnderArbeidService.sortArbeid(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid());
+        soknadUnderArbeidService.sortArbeid(notUpdatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid());
 
         if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
             return false;
         } else {
-            soknadUnderArbeidService.logDifferences(notUpdatedSoknadUnderArbeid, soknadUnderArbeid, "Forskjell på systemdata i json: ");
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
             return true;
         }
