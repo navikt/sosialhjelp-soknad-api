@@ -150,7 +150,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0420", "874602752")    // Eidskog
             .put("1438", "973981749")    // Bremanger
             .put("1443", "974556154")    // Eid (Eid Selje)
-            .put("1441", "970541705")    // Selje (Eid Selje)
+            .put("1441", "990230862")    // Selje (Eid Selje)
             .put("1445", "964969124")    // Gloppen
             .put("1449", "976831772")    // Stryn
             .put("1439", "942952880")    // Vågsøy
@@ -326,9 +326,9 @@ public class KommuneTilNavEnhetMapper {
                     "0419",
                     "0215",
                     "5037",
-                    "3029",
-                    "3416",
-                    "4648",
+                    "0230",
+                    "0420",
+                    "1438",
                     "1443",
                     "1441",
                     "1445",
