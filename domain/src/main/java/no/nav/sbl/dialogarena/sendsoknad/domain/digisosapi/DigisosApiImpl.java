@@ -61,6 +61,7 @@ public class DigisosApiImpl implements DigisosApi {
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
     private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
+    private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
@@ -92,7 +93,7 @@ public class DigisosApiImpl implements DigisosApi {
             return Collections.emptyMap();
         }
 
-        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
+        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(KOMMUNEINFO_CACHE_IN_MINUTES)))) {
             return cacheForKommuneinfo.get();
         }
 
