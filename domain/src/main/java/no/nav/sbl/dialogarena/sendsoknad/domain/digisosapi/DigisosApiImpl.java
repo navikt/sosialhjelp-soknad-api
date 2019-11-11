@@ -92,7 +92,7 @@ public class DigisosApiImpl implements DigisosApi {
             return Collections.emptyMap();
         }
 
-        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
+        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(1)))) {
             return cacheForKommuneinfo.get();
         }
 
