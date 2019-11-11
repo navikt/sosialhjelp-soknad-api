@@ -53,13 +53,14 @@ public class OpplastetVedleggService {
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         String eier = OidcFeatureToggleUtils.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        Long soknadId = soknadUnderArbeid.getSoknadId();
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
         String contentType = Detect.CONTENT_TYPE.transform(data);
 
         validerFil(data);
         virusScanner.scan(filnavn, data);
+
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        Long soknadId = soknadUnderArbeid.getSoknadId();
 
         OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
                 .withEier(eier)
