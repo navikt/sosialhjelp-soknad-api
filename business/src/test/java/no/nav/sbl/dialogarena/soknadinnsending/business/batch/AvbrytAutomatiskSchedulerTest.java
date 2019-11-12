@@ -85,8 +85,6 @@ public class AvbrytAutomatiskSchedulerTest {
         meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden);
         meta.opprettetDato = LocalDateTime.now().minusDays(dagerSiden);
         meta.sistEndretDato = LocalDateTime.now().minusDays(dagerSiden);
-        meta.hovedskjema = new SoknadMetadata.HovedskjemaMetadata();
-        meta.hovedskjema.filUuid = null;
 
         return meta;
     }

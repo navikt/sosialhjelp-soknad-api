@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -55,15 +54,14 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     @Override
     public void opprett(SoknadMetadata metadata) {
         getJdbcTemplate().update("INSERT INTO soknadmetadata (id, behandlingsid, tilknyttetBehandlingsId, skjema, " +
-                        "fnr, hovedskjema, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, " +
+                        "fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, " +
                         "innsendingstatus, opprettetdato, sistendretdato, innsendtdato)" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 metadata.id,
                 metadata.behandlingsId,
                 metadata.tilknyttetBehandlingsId,
                 metadata.skjema,
                 metadata.fnr,
-                SoknadMetadata.JAXB.marshal(metadata.hovedskjema),
                 SoknadMetadata.JAXB.marshal(metadata.vedlegg),
                 metadata.orgnr,
                 metadata.navEnhet,
@@ -78,13 +76,12 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     @Override
     public void oppdater(SoknadMetadata metadata) {
         getJdbcTemplate().update("UPDATE soknadmetadata SET tilknyttetBehandlingsId = ?, skjema = ?, " +
-                        "fnr = ?, hovedskjema = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, " +
+                        "fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, " +
                         "innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? " +
                         "WHERE id = ?",
                 metadata.tilknyttetBehandlingsId,
                 metadata.skjema,
                 metadata.fnr,
-                SoknadMetadata.JAXB.marshal(metadata.hovedskjema),
                 SoknadMetadata.JAXB.marshal(metadata.vedlegg),
                 metadata.orgnr,
                 metadata.navEnhet,
