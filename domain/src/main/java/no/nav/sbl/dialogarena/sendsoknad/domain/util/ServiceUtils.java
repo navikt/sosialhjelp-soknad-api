@@ -14,6 +14,7 @@ public class ServiceUtils {
     public final static String IS_SCHEDULED_TASKS_DISABLED = "scheduler.disable";
     public final static String IS_SENDING_TIL_DIGISOS_API_ENABLED = "digisosapi.sending.enable";
     public final static String IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE = "digisosapi.sending.alltidTilTestkommune.enable";
+    public final static String IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE = "digisosapi.henting.alltidTestkommune.enable";
 
     public static XMLGregorianCalendar stringTilXmldato(String dato) {
         return lagDatatypeFactory().newXMLGregorianCalendar(DateTime.parse(dato).toGregorianCalendar());
@@ -53,6 +54,10 @@ public class ServiceUtils {
 
     public static boolean isAlltidSendTilNavTestkommune(){
         return Boolean.valueOf(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
+    }
+
+    public static boolean isAlltidHentKommuneInfoFraNavTestkommune(){
+        return Boolean.valueOf(System.getProperty(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
     }
 
     public static String stripVekkFnutter(String tekstMedFnutt) {
