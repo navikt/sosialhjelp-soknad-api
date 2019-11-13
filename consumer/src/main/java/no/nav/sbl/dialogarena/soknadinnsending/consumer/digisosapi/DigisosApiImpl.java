@@ -250,7 +250,7 @@ public class DigisosApiImpl implements DigisosApi {
                 .build()));
 
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
-        entitybuilder.setCharset(Charsets.UTF_8);
+        //entitybuilder.setCharset(Charsets.UTF_8);
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
         entitybuilder.addTextBody("soknadJson", soknadJson, ContentType.APPLICATION_JSON);
