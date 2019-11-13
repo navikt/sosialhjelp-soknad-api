@@ -15,6 +15,7 @@ import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
@@ -88,38 +89,35 @@ public class DigisosApiImpl implements DigisosApi {
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     @Override
-    public KommuneStatus kommuneInfo(String kommunenummer) {
+    public KommuneStatus kommuneInfo(String kommunenummer, Map<String, KommuneInfo> kommuneInfoMap) {
         Map<String, KommuneInfo> stringKommuneInfoMap;
         if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
             stringKommuneInfoMap = cacheForKommuneinfo.get();
-        } else{
-            stringKommuneInfoMap= hentKommuneInfo();
+        } else {
+            stringKommuneInfoMap = kommuneInfoMap;
         }
         KommuneInfo kommuneInfo = stringKommuneInfoMap.getOrDefault(kommunenummer, new KommuneInfo());
 
         if (kommuneInfo.getKanMottaSoknader() == null) {
-            return IKKE_PA_FIKS_ELLER_INNSYN;
+            return MANGLER_KONFIGURASJON;
+        }
+        if (!kommuneInfo.getKanMottaSoknader()) {
+            return HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
+        }
+        if (kommuneInfo.getHarMidlertidigDeaktivertMottak()) {
+            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
         }
 
-        if (!kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-            return IKKE_PA_FIKS_ELLER_INNSYN;
-        }
-        if (kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getKanOppdatereStatus()) {
-            return KUN_PA_FIKS;
-        }
-        if (kommuneInfo.getKanMottaSoknader() && kommuneInfo.getKanOppdatereStatus()) {
-            return PA_FIKS_OG_INNSYN;
-        }
-        return IKKE_PA_FIKS_ELLER_INNSYN;
+        return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
     }
 
     // @Cacheable("kommuneinfoCache")
     // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
+    @Override
     public Map<String, KommuneInfo> hentKommuneInfo() {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
         }
-
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
@@ -136,7 +134,7 @@ public class DigisosApiImpl implements DigisosApi {
             log.info(content);
             Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
             cacheForKommuneinfo.set(collect);
-            cacheTimestamp =  LocalDateTime.now();
+            cacheTimestamp = LocalDateTime.now();
             return collect;
         } catch (Exception e) {
             log.error("Hent kommuneinfo feiler", e);
@@ -146,7 +144,7 @@ public class DigisosApiImpl implements DigisosApi {
 
     @Override
     public String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
-        log.info(String.format("Starter kryptering av filer, skal sende til %s %s", kommunenr, navEkseternRefId));
+        log.info("Starter kryptering av filer, skal sende til {} {}", kommunenr, navEkseternRefId);
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         String digisosId;
         try {
@@ -175,7 +173,7 @@ public class DigisosApiImpl implements DigisosApi {
             CloseableHttpResponse response = client.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode >= 300) {
-                log.warn(String.format("Statuscode ved henting av sertifikat %d token:%s", statusCode, token));
+                log.warn("Statuscode ved henting av sertifikat {} token:{}", statusCode, token);
                 log.warn(response.getStatusLine().getReasonPhrase());
                 log.warn(EntityUtils.toString(response.getEntity()));
             }
@@ -251,20 +249,12 @@ public class DigisosApiImpl implements DigisosApi {
                 .data(dokument.data)
                 .build()));
 
-
-        for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
-            objectFilForOpplasting.getFilnavn();
-            FilMetadata metadata = (FilMetadata) objectFilForOpplasting.getMetadata();
-            log.info(metadata.filnavn);
-            log.info(metadata.mimetype);
-            log.info("" + metadata.storrelse);
-        }
-
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
+        entitybuilder.setCharset(Charsets.UTF_8);
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
-        entitybuilder.addTextBody("soknadJson", soknadJson);
-        entitybuilder.addTextBody("vedleggJson", vedleggJson);
+        entitybuilder.addTextBody("soknadJson", soknadJson, ContentType.APPLICATION_JSON);
+        entitybuilder.addTextBody("vedleggJson", vedleggJson, ContentType.APPLICATION_JSON);
         for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
             entitybuilder.addTextBody("metadata", getJson(objectFilForOpplasting));
             entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData(), ContentType.APPLICATION_OCTET_STREAM, objectFilForOpplasting.getFilnavn());
@@ -286,7 +276,7 @@ public class DigisosApiImpl implements DigisosApi {
                 throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
-            log.info(String.format("Sendte inn søknad og fikk digisosid: %s", digisosId));
+            log.info("Sendte inn søknad og fikk digisosid: {}", digisosId);
             return digisosId;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);

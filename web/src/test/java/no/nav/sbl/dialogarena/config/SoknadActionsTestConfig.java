@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
@@ -32,9 +33,15 @@ public class SoknadActionsTestConfig {
     public SoknadService soknadService() {
         return mock(SoknadService.class);
     }
+
     @Bean
     public DigisosApi DigisosApi() {
         return mock(DigisosApi.class);
+    }
+
+    @Bean
+    public DigisosApiService DigisosApiService() {
+        return mock(DigisosApiService.class);
     }
 
     @Bean

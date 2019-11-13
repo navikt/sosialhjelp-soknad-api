@@ -35,11 +35,6 @@ public class DummyHolderConfig {
     }
 
     @Bean
-    public DigisosApiService digisosApiService() {
-        return null;
-    }
-
-    @Bean
     @Named("threadPoolTaskExecutor")
     public TaskExecutor threadPoolTaskExecutor() {
         return null;

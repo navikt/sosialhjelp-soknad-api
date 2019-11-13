@@ -20,9 +20,9 @@ public class MultipartLogFilter implements Filter {
         if (servletRequest.getContentType() != null && servletRequest.getContentType().toLowerCase().contains("multipart/form-data")) {
             String path = (servletRequest instanceof Request) ? ((Request) servletRequest).getRequestURI() : "kunne ikke hente";
             if (servletRequest.getContentLength() == 0) {
-                log.error(String.format("Request har content-type: multipart/form-data med contentLength 0. Det virker som bruker forsøker å bruke opplastningsfunksjonen uten filer. Path: %s", path));
+                log.error("Request har content-type: multipart/form-data med contentLength 0. Det virker som bruker forsøker å bruke opplastningsfunksjonen uten filer. Path: {}", path);
             } else {
-                log.debug(String.format("Request har content-type: multipart/form-data med contentLength %d. Path: %s", servletRequest.getContentLength(), path));
+                log.debug("Request har content-type: multipart/form-data med contentLength {}. Path: {}", servletRequest.getContentLength(), path);
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);
