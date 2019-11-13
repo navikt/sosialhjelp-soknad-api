@@ -97,6 +97,7 @@ public class AdresseTransform {
             return hentBostedGateAdresse((XMLGateadresse) strukturertAdresse);
         }
         if (strukturertAdresse instanceof XMLMatrikkeladresse) {
+            logger.info("Matrikkeladresse " + strukturertAdresse.toString());
             return hentBostedMatrikkelAdresse((XMLMatrikkeladresse) strukturertAdresse);
         }
         return null;
