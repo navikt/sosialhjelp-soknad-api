@@ -176,16 +176,16 @@ public class DigisosApiService {
 
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
-            log.error(String.format("Kan ikke sende inn ettersendingen med ID %s uten å ha lastet opp vedlegg", behandlingsId));
+            log.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
-        log.info(String.format("Starter innsending av søknad med behandlingsId %s, skal sendes til DigisosApi", behandlingsId));
+        log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi", behandlingsId);
 
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true);
 
         List<FilOpplasting> filOpplastinger = lagDokumentListe(soknadUnderArbeid);
-        log.info(String.format("Laster opp %d", filOpplastinger.size()));
+        log.info("Laster opp {}", filOpplastinger.size());
         String soknadJson = getSoknadJson(soknadUnderArbeid);
         String vedleggJson = getVedleggJson(soknadUnderArbeid);
         String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, behandlingsId, token);
