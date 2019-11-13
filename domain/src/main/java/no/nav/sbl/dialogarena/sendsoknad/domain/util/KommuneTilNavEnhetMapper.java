@@ -151,7 +151,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1438", "973981749")    // Bremanger
             .put("1443", "974556154")    // Eid (Eid Selje)
             .put("1441", "990230862")    // Selje (Eid Selje)
-            .put("1445", "964969124")    // Gloppen
+            .put("1445", "976675185")    // Gloppen
             .put("1449", "976831772")    // Stryn
             .put("1439", "942952880")    // Vågsøy
 
