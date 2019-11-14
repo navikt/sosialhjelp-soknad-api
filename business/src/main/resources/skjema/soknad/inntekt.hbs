@@ -5,19 +5,14 @@
             {{#with opplysninger}}
 
                 <h3>{{hentTekst "utbetalinger.inntekt.skattbar.tittel"}}</h3>
-                {{#if @root.utvidetSoknad}}
-                    {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
-                {{/if}}
-
                 {{#if @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
-                    <ul class="svar-liste">
-                        <li>
-                            <span class="verdi verdi--tekst">
-                                Kunne ikke hente utbetalinger fra Skatteetaten
-                            </span>
-                        </li>
-                    </ul>
+                    <div class="verdi verdi--tekst">
+                        Kunne ikke hente utbetalinger fra Skatteetaten
+                    </div>
                 {{else}}
+                    {{#if @root.utvidetSoknad}}
+                        {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
+                    {{/if}}
                     {{#hvisUtbetalingFinnes "skatteetaten"}}
                         <h3>{{hentTekst "utbetalinger.skatt"}}</h3>
                         {{#each utbetaling}}

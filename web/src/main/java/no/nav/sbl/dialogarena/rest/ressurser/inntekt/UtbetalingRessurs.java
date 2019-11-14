@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -48,6 +48,8 @@ public class UtbetalingRessurs {
         final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
         final UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+
+        utbetalingerFrontend.setUtbetalingerFraNavFeilet(soknad.getSoknad().getDriftsinformasjon().getUtbetalingerFraNavFeilet());
 
         if (opplysninger.getBekreftelse() == null){
             return utbetalingerFrontend;
@@ -140,6 +142,7 @@ public class UtbetalingRessurs {
                 });
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class UtbetalingerFrontend {
         public Boolean bekreftelse;
@@ -148,6 +151,7 @@ public class UtbetalingRessurs {
         public boolean forsikring;
         public boolean annet;
         public String beskrivelseAvAnnet;
+        public Boolean utbetalingerFraNavFeilet;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
@@ -171,6 +175,10 @@ public class UtbetalingRessurs {
 
         public void setBeskrivelseAvAnnet(String beskrivelseAvAnnet) {
             this.beskrivelseAvAnnet = beskrivelseAvAnnet;
+        }
+
+        public void setUtbetalingerFraNavFeilet(Boolean utbetalingerFraNavFeilet) {
+            this.utbetalingerFraNavFeilet = utbetalingerFraNavFeilet;
         }
     }
 }
