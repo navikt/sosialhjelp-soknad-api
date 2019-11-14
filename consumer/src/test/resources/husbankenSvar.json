@@ -6,7 +6,8 @@
       "status": "VEDTATT",
       "vedtak": {
         "kode": "V00",
-        "beskrivelse": "Innvilget bostøtte, ord. saker"
+        "beskrivelse": "Innvilget bostøtte, ord. saker",
+        "type": "INNVILGET"
       },
       "rolle": "HOVEDPERSON"
     },
@@ -16,7 +17,8 @@
       "status": "VEDTATT",
       "vedtak": {
         "kode": "V00",
-        "beskrivelse": "Innvilget bostøtte, ord. saker"
+        "beskrivelse": "Innvilget bostøtte, ord. saker",
+        "type": "INNVILGET"
       },
       "rolle": "HOVEDPERSON"
     },

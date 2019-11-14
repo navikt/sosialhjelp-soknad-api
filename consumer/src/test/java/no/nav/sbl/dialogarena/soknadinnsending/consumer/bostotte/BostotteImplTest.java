@@ -97,16 +97,18 @@ public class BostotteImplTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("husbankenSvar.json");
+        assertThat(resourceAsStream).isNotNull();
         String jsonString = IOUtils.toString(resourceAsStream);
 
         BostotteDto bostotteDto = objectMapper.readValue(jsonString, BostotteDto.class);
 
         assertThat(bostotteDto.getSaker()).hasSize(3);
+        assertThat(bostotteDto.getSaker().get(0).getVedtak().getType()).isEqualTo("INNVILGET");
+        assertThat(bostotteDto.getUtbetalinger()).hasSize(2);
         assertThat(bostotteDto.getUtbetalinger().get(0).getUtbetalingsdato()).isEqualTo(LocalDate.of(2019,7,20));
         assertThat(bostotteDto.getUtbetalinger().get(0).getBelop().doubleValue()).isEqualTo(4300.5);
         assertThat(bostotteDto.getUtbetalinger().get(1).getUtbetalingsdato()).isEqualTo(LocalDate.of(2019,8,20));
         assertThat(bostotteDto.getUtbetalinger().get(1).getBelop().doubleValue()).isEqualTo(4300);
-        assertThat(bostotteDto.getUtbetalinger()).hasSize(2);
     }
 
     @Test

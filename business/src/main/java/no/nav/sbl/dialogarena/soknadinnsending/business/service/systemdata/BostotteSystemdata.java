@@ -105,8 +105,8 @@ public class BostotteSystemdata implements Systemdata {
                 .withDato(sakerDto.getDato().toString());
         if(sakerDto.getVedtak() != null) {
             bostotteSak.withBeskrivelse(sakerDto.getVedtak().getBeskrivelse());
-            if(sakerDto.getVedtak().getStatus() != null) {
-                bostotteSak.withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.fromValue(sakerDto.getVedtak().getStatus()));
+            if(sakerDto.getVedtak().getType() != null) {
+                bostotteSak.withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.fromValue(sakerDto.getVedtak().getType()));
             }
         }
         return bostotteSak;

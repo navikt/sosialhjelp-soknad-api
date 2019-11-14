@@ -1,7 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDate;
 
+@SuppressWarnings("WeakerAccess")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SakerDto {
     public Integer mnd;
     public Integer ar;

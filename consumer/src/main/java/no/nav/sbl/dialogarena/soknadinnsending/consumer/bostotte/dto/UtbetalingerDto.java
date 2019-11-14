@@ -1,12 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UtbetalingerDto {
     public LocalDate utbetalingsdato;
     public BigDecimal belop;
     public BostotteMottaker mottaker;
+    @SuppressWarnings("WeakerAccess")
     public BostotteRolle rolle;
 
     public LocalDate getUtbetalingsdato() {

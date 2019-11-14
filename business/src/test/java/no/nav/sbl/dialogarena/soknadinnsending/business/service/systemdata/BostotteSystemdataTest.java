@@ -136,7 +136,7 @@ public class BostotteSystemdataTest {
         assertThat(sak2.getDato()).isEqualTo(sakerDto2.getDato().toString());
         assertThat(sak2.getStatus()).isEqualToIgnoringCase(sakerDto2.status.toString());
         assertThat(sak2.getBeskrivelse()).isEqualTo(sakerDto2.getVedtak().getBeskrivelse());
-        assertThat(sak2.getVedtaksstatus().value()).isEqualTo(sakerDto2.getVedtak().getStatus());
+        assertThat(sak2.getVedtaksstatus().value()).isEqualTo(sakerDto2.getVedtak().getType());
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
 
