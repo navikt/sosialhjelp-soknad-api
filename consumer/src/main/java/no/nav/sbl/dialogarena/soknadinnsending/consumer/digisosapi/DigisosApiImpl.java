@@ -152,14 +152,14 @@ public class DigisosApiImpl implements DigisosApi {
             digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
                     .map(dokument ->
                     {
-                        try {
-                            StringWriter writer = new StringWriter();
-                            IOUtils.copy(dokument.data, writer, Charsets.UTF_8);
-                            String theString = writer.toString();
-                            log.info("Filnavn: {}, første chars før kryptering: {} ", dokument.metadata.filnavn, theString);
-                        } catch (Exception e) {
-                            // do nothing
-                        }
+//                        try {
+//                            StringWriter writer = new StringWriter();
+//                            IOUtils.copy(dokument.data, writer, Charsets.UTF_8);
+//                            String theString = writer.toString();
+//                            log.info("Filnavn: {}, første chars før kryptering: {} ", dokument.metadata.filnavn, theString);
+//                        } catch (Exception e) {
+//                            // do nothing
+//                        }
                         if (Objects.equals(dokument.metadata.filnavn.toLowerCase(), "soknad-juridisk.pdf")) {
                             return new FilOpplasting(dokument.metadata, dokument.data);
                         }
@@ -265,14 +265,14 @@ public class DigisosApiImpl implements DigisosApi {
 
         for (FilOpplasting dokument:dokumenter) {
             log.info("Filnavn {}, mimetype {}, storrelse {}", dokument.metadata.filnavn, dokument.metadata.mimetype, dokument.metadata.storrelse);
-            try {
-                StringWriter writer = new StringWriter();
-                IOUtils.copy(dokument.data, writer, Charsets.UTF_8);
-                String theString = writer.toString();
-                log.info("Filnavn: {}, første chars etter kryptering: {} ", dokument.metadata.filnavn, theString.substring(0, 20));
-            } catch (Exception e) {
-                // do nothing
-            }
+//            try {
+//                StringWriter writer = new StringWriter();
+//                IOUtils.copy(dokument.data, writer, Charsets.UTF_8);
+//                String theString = writer.toString();
+//                log.info("Filnavn: {}, første chars etter kryptering: {} ", dokument.metadata.filnavn, theString.substring(0, 20));
+//            } catch (Exception e) {
+//                // do nothing
+//            }
         }
 
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();

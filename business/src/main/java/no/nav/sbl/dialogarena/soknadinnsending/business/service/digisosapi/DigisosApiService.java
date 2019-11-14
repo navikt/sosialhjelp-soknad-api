@@ -82,6 +82,7 @@ public class DigisosApiService {
         } else {
             filOpplastinger.add(lagDokumentForSaksbehandlerPdf(soknadUnderArbeid));
             filOpplastinger.add(lagDokumentForJuridiskPdf(internalSoknad));
+            filOpplastinger.add(lagDokumentForJuridiskPdfUtenBase64(internalSoknad));
             filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
@@ -153,10 +154,20 @@ public class DigisosApiService {
         byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
 
         return new FilOpplasting(new FilMetadata()
-                .withFilnavn("Soknad-juridisk.pdf")
+                .withFilnavn("Soknad-juridisk_old.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) pdf.length),
                 new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+    }
+
+    private FilOpplasting lagDokumentForJuridiskPdfUtenBase64(JsonInternalSoknad internalSoknad) {
+        byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+
+        return new FilOpplasting(new FilMetadata()
+                .withFilnavn("Soknad-juridisk.pdf")
+                .withMimetype("application/pdf")
+                .withStorrelse((long) pdf.length),
+                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
