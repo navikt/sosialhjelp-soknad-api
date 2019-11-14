@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -136,7 +135,7 @@ public class DigisosApiService {
                 .withFilnavn("ettersendelse.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
@@ -146,7 +145,7 @@ public class DigisosApiService {
                 .withFilnavn("Brukerkvittering.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
@@ -156,7 +155,7 @@ public class DigisosApiService {
                 .withFilnavn("Soknad-juridisk.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
@@ -166,7 +165,7 @@ public class DigisosApiService {
                 .withFilnavn(opplastetVedlegg.getFilnavn())
                 .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
                 .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+                new ByteArrayInputStream(pdf));
     }
 
     public String sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
