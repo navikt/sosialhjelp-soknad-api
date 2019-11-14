@@ -273,9 +273,6 @@ public class DigisosApiImpl implements DigisosApi {
             post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
 
             post.setEntity(entitybuilder.build());
-            log.info("POST ENTITY: " + post.getEntity().toString());
-            log.info("POST HEADER: " + Arrays.toString(post.getAllHeaders()));
-            log.info("POST HEADER content-type: " + Arrays.toString(post.getHeaders("Content-Type")));
             CloseableHttpResponse response = client.execute(post);
             if (response.getStatusLine().getStatusCode() >= 300) {
                 log.warn(response.getStatusLine().getReasonPhrase());
