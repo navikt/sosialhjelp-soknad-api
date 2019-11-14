@@ -154,7 +154,7 @@ public class DigisosApiImpl implements DigisosApi {
                     {
                         try {
                             StringWriter writer = new StringWriter();
-                            IOUtils.copy(dokument.data, writer);
+                            IOUtils.copy(dokument.data, writer, Charsets.UTF_8);
                             String theString = writer.toString();
                             log.info("Filnavn: {}, første chars før kryptering: {} ", dokument.metadata.filnavn, theString.substring(0, 20));
                         } catch (Exception e) {
@@ -267,7 +267,7 @@ public class DigisosApiImpl implements DigisosApi {
             log.info("Filnavn {}, mimetype {}, storrelse {}", dokument.metadata.filnavn, dokument.metadata.mimetype, dokument.metadata.storrelse);
             try {
                 StringWriter writer = new StringWriter();
-                IOUtils.copy(dokument.data, writer);
+                IOUtils.copy(dokument.data, writer, Charsets.UTF_8);
                 String theString = writer.toString();
                 log.info("Filnavn: {}, første chars etter kryptering: {} ", dokument.metadata.filnavn, theString.substring(0, 20));
             } catch (Exception e) {
