@@ -42,6 +42,10 @@ public class SoknadsosialhjelpServer {
             throw new Error("tillatMockRessurs har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
+        if (ServiceUtils.isRunningInProd() && MockUtils.isAlltidHentKommuneInfoFraNavTestkommune() || MockUtils.isAlltidSendTilNavTestkommune()) {
+            throw new Error("Alltid send eller hent fra NavTestkommune er satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
+        }
+
         if (MockUtils.isTillatMockRessurs()) {
             dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
         }

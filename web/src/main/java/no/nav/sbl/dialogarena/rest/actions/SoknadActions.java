@@ -104,7 +104,7 @@ public class SoknadActions {
 
     String getKommunenummerOrMock(SoknadUnderArbeid soknadUnderArbeid) {
         if (!ServiceUtils.isRunningInProd() && isAlltidSendTilNavTestkommune()) {
-            log.warn("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
+            log.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
             return "2352";
         } else {
             return soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();

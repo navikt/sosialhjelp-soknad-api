@@ -112,7 +112,7 @@ public class NavEnhetRessurs {
         }
 
         if (!ServiceUtils.isRunningInProd() && ServiceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-            logger.warn("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
+            logger.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
             kommunenummer = "2352";
         }
 
