@@ -156,7 +156,7 @@ public class DigisosApiImpl implements DigisosApi {
                             StringWriter writer = new StringWriter();
                             IOUtils.copy(dokument.data, writer, Charsets.UTF_8);
                             String theString = writer.toString();
-                            log.info("Filnavn: {}, første chars før kryptering: {} ", dokument.metadata.filnavn, theString.substring(0, 20));
+                            log.info("Filnavn: {}, første chars før kryptering: {} ", dokument.metadata.filnavn, theString);
                         } catch (Exception e) {
                             // do nothing
                         }
@@ -286,7 +286,7 @@ public class DigisosApiImpl implements DigisosApi {
             entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData(), ContentType.APPLICATION_OCTET_STREAM, objectFilForOpplasting.getFilnavn());
         }
 
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
