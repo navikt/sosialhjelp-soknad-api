@@ -249,6 +249,10 @@ public class DigisosApiImpl implements DigisosApi {
                 .data(dokument.data)
                 .build()));
 
+        for (FilOpplasting dokument:dokumenter) {
+            log.info("Filnavn {}, mimetype {}, storrelse {}", dokument.metadata.filnavn, dokument.metadata.mimetype, dokument.metadata.storrelse);
+        }
+
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
         //entitybuilder.setCharset(Charsets.UTF_8);
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
