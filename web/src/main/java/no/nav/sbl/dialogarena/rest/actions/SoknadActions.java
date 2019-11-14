@@ -71,28 +71,28 @@ public class SoknadActions {
                 || !isSendingTilFiksEnabled()
                 || soknadUnderArbeid == null
                 || isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
-            log.info(String.format("BehandlingsId %s sendes til SvarUt.", behandlingsId));
+            log.info("BehandlingsId {} sendes til SvarUt.", behandlingsId);
             soknadService.sendSoknad(behandlingsId);
             return new SendTilUrlFrontend().withSendtTil(SVARUT).withId(behandlingsId);
         }
         if (soknadUnderArbeid.erEttersendelse()) {
-            log.error(String.format("Ettersendelse %s blir forsøkt sendt med soknad-api selv om den tiknyttede søknaden ble sendt til Fiks-Digisos-api. Dette skal ikke skje, disse skal sendes via innsyn-api.", behandlingsId));
+            log.error("Ettersendelse {} blir forsøkt sendt med soknad-api selv om den tiknyttede søknaden ble sendt til Fiks-Digisos-api. Dette skal ikke skje, disse skal sendes via innsyn-api.", behandlingsId);
             throw new IllegalStateException("Ettersendelse på søknad sendt via fiks-digisos-api skal sendes via innsyn-api");
         }
 
-        log.info(String.format("BehandlingsId %s sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.", behandlingsId));
+        log.info("BehandlingsId {} sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.", behandlingsId);
         String kommunenummer = getKommunenummerOrMock(soknadUnderArbeid);
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo(kommunenummer);
-        log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus));
+        log.info("Kommune: {} Status: {}", kommunenummer, kommuneStatus);
 
         switch (kommuneStatus) {
             case MANGLER_KONFIGURASJON:
             case HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT:
-                log.info(String.format("BehandlingsId %s sendes til SvarUt (sfa. Fiks-konfigurasjon).", behandlingsId));
+                log.info("BehandlingsId {} sendes til SvarUt (sfa. Fiks-konfigurasjon).", behandlingsId);
                 soknadService.sendSoknad(behandlingsId);
                 return new SendTilUrlFrontend().withSendtTil(SVARUT).withId(behandlingsId);
             case SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA:
-                log.info(String.format("BehandlingsId %s sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).", behandlingsId));
+                log.info("BehandlingsId {} sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).", behandlingsId);
                 String digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
                 return new SendTilUrlFrontend().withSendtTil(FIKS_DIGISOS_API).withId(digisosId);
             case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER:

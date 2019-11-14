@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
-    
+
     public static final String SOKNADINNSENDING_ETTERSENDING_URL = "/soknadinnsending/ettersending";
     public static final String SAKSOVERSIKT_URL = "/saksoversikt";
     public static final String TESTKOMMUNE = "2352";
