@@ -150,7 +150,21 @@ public class DigisosApiImpl implements DigisosApi {
         try {
             X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
             digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
-                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
+                    .map(dokument ->
+                    {
+                        try {
+                            StringWriter writer = new StringWriter();
+                            IOUtils.copy(dokument.data, writer);
+                            String theString = writer.toString();
+                            log.info("Filnavn: {}, første chars før kryptering: {} ", dokument.metadata.filnavn, theString.substring(0, 20));
+                        } catch (Exception e) {
+                            // do nothing
+                        }
+                        if (Objects.equals(dokument.metadata.filnavn.toLowerCase(), "soknad-juridisk.pdf")) {
+                            return new FilOpplasting(dokument.metadata, dokument.data);
+                        }
+                        return new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate));
+                    })
                     .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
 
             waitForFutures(krypteringFutureList);
@@ -251,6 +265,14 @@ public class DigisosApiImpl implements DigisosApi {
 
         for (FilOpplasting dokument:dokumenter) {
             log.info("Filnavn {}, mimetype {}, storrelse {}", dokument.metadata.filnavn, dokument.metadata.mimetype, dokument.metadata.storrelse);
+            try {
+                StringWriter writer = new StringWriter();
+                IOUtils.copy(dokument.data, writer);
+                String theString = writer.toString();
+                log.info("Filnavn: {}, første chars etter kryptering: {} ", dokument.metadata.filnavn, theString.substring(0, 20));
+            } catch (Exception e) {
+                // do nothing
+            }
         }
 
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
