@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
@@ -10,6 +11,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.Digis
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -88,6 +90,9 @@ public class SoknadActions {
         switch (kommuneStatus) {
             case MANGLER_KONFIGURASJON:
             case HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT:
+                if (!KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer)) {
+                    throw new SendingTilKommuneErIkkeAktivertException(String.format("Sending til kommune %s er ikke aktivert og kommunen er ikke i listen over svarUt-kommuner", kommunenummer));
+                }
                 log.info("BehandlingsId {} sendes til SvarUt (sfa. Fiks-konfigurasjon).", behandlingsId);
                 soknadService.sendSoknad(behandlingsId);
                 return new SendTilUrlFrontend().withSendtTil(SVARUT).withId(behandlingsId);
