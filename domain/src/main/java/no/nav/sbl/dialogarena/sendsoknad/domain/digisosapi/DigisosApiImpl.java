@@ -110,7 +110,7 @@ public class DigisosApiImpl implements DigisosApi {
 
             CloseableHttpResponse response = client.execute(http);
             String content = EntityUtils.toString(response.getEntity());
-            log.info(content);
+            log.info("KommuneInfo: {}", content);
             Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
             cacheForKommuneinfo.set(collect);
             cacheTimestamp = LocalDateTime.now();

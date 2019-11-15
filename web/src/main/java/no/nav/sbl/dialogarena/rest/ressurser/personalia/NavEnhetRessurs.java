@@ -132,7 +132,7 @@ public class NavEnhetRessurs {
     }
 
     private boolean isDigisosKommune(String kommunenummer){
-        boolean isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer);
+        boolean isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && ServiceUtils.isSendingTilFiksEnabled();
         boolean isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer);
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune;
     }

@@ -1,5 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -9,14 +12,19 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.
 
 @Component
 public class KommuneInfoService {
+    private static final Logger log = LoggerFactory.getLogger(KommuneInfoService.class);
 
     @Inject
     private DigisosApi digisosApi;
 
     public boolean kanMottaSoknader(String kommunenummer) {
-        return digisosApi.hentKommuneInfo()
+        boolean kanMottaSoknader = digisosApi.hentKommuneInfo()
                 .getOrDefault(kommunenummer, new KommuneInfo())
                 .getKanMottaSoknader();
+        if (ServiceUtils.isRunningInProd() && kanMottaSoknader) {
+            log.error("Kommune {} har aktivert Digisos i Fiks konfigurasjonen. (Dette er ingen feil, men kanskje litt overraskende?)", kommunenummer);
+        }
+        return kanMottaSoknader;
     }
 
     public boolean harMidlertidigDeaktivertMottak(String kommunenummer) {
