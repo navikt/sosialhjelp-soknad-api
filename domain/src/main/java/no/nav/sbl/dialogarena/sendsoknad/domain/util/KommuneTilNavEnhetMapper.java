@@ -165,7 +165,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1202", "910230913")   // Fana, Bergen kommune
             .put("0312", "910229699")   // Frogner, Oslo kommune
             .put("1247", "910230182")   // Askøy
-            .put("0315", "811213322")   // Grünerløkka, Oslo kommune
+            //.put("0315", "811213322")   // Grünerløkka, Oslo kommune
             .put("0328", "910229702")   // Grorud, Oslo kommune
             .put("0327", "910589792")   // Stovner, Oslo kommune
             .put("0314", "910565338")   // Sagene, Oslo kommune
