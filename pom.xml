@@ -129,7 +129,7 @@
         <modig-lang.version>2.0.2</modig-lang.version>
         <aspectjweaver.version>1.8.8</aspectjweaver.version>
         <zjsonpatch.version>0.4.8</zjsonpatch.version>
-        <xml.version>2.3.0</xml.version>
+        <jaxb.version>2.3.0</jaxb.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -502,17 +502,17 @@
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
-                <version>${xml.version}</version>
+                <version>${jaxb.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-core</artifactId>
-                <version>${xml.version}</version>
+                <version>${jaxb.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
-                <version>${xml.version}</version>
+                <version>${jaxb.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
