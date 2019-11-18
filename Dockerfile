@@ -1,4 +1,4 @@
-FROM docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.1 as builder
+FROM docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.2-jdk-11 as builder
 WORKDIR /source
 ADD / /source
 RUN mvn package
