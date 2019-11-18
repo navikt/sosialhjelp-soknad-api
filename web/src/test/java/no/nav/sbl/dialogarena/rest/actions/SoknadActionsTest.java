@@ -10,10 +10,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -35,10 +37,11 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
-    
+
     public static final String SOKNADINNSENDING_ETTERSENDING_URL = "/soknadinnsending/ettersending";
     public static final String SAKSOVERSIKT_URL = "/saksoversikt";
     public static final String TESTKOMMUNE = "2352";
+    public static final String KOMMUNE_I_SVARUT_LISTEN = "0701";
     private String EIER;
 
     @Inject
@@ -55,6 +58,8 @@ public class SoknadActionsTest {
     SoknadActions actions;
     @Inject
     DigisosApi digisosApi;
+    @Inject
+    KommuneInfoService kommuneInfoService;
     @Inject
     private Tilgangskontroll tilgangskontroll;
     @Inject
@@ -149,8 +154,9 @@ public class SoknadActionsTest {
     public void sendSoknadTilKommuneUtenKonfigurasjonSkalKalleSoknadService() {
         String behandlingsId = "kommuneUtenKonfigurasjon";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer(KOMMUNE_I_SVARUT_LISTEN);
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
-        when(digisosApi.kommuneInfo(any(String.class), any())).thenReturn(KommuneStatus.MANGLER_KONFIGURASJON);
+        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.MANGLER_KONFIGURASJON);
         System.setProperty("digisosapi.sending.enable", "true");
 
         actions.sendSoknad(behandlingsId, context, "");
@@ -162,8 +168,9 @@ public class SoknadActionsTest {
     public void sendSoknadTilKommuneMedSvarUtSkalKalleSoknadService() {
         String behandlingsId = "kommuneMedSvarUt";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer(KOMMUNE_I_SVARUT_LISTEN);
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
-        when(digisosApi.kommuneInfo(any(String.class), any())).thenReturn(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
+        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
         System.setProperty("digisosapi.sending.enable", "true");
 
         actions.sendSoknad(behandlingsId, context, "");
@@ -176,7 +183,7 @@ public class SoknadActionsTest {
         String behandlingsId = "kommuneMedFDA";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
-        when(digisosApi.kommuneInfo(any(String.class), any())).thenReturn(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
+        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
         System.setProperty("digisosapi.sending.enable", "true");
 
         actions.sendSoknad(behandlingsId, context, "");
@@ -189,7 +196,21 @@ public class SoknadActionsTest {
         String behandlingsId = "kommuneMedMidlertidigFeil";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
-        when(digisosApi.kommuneInfo(any(String.class), any())).thenReturn(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
+        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
+        System.setProperty("digisosapi.sending.enable", "true");
+
+        actions.sendSoknad(behandlingsId, context, "");
+
+        verify(digisosApiService, times(0)).sendSoknad(eq(soknadUnderArbeid), any(), any());
+    }
+
+    @Test(expected = SendingTilKommuneErIkkeAktivertException.class)
+    public void sendSoknadTilKommuneSomIkkeErAktivertEllerSvarUtSkalKasteException() {
+        String behandlingsId = "kommueMedMottakDeaktivertOgIkkeSvarut";
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer("9999_kommune_uten_svarut");
+        when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
+        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
         System.setProperty("digisosapi.sending.enable", "true");
 
         actions.sendSoknad(behandlingsId, context, "");

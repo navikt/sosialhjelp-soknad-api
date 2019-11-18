@@ -96,6 +96,30 @@
             <artifactId>oidc-test-support</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>no.ks.fiks</groupId>
+            <artifactId>streaming-klient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.ks.fiks</groupId>
+            <artifactId>kryptering</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>lang-tag</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

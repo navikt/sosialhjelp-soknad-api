@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi;
+package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,7 +48,6 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -63,6 +62,7 @@ public class DigisosApiImpl implements DigisosApi {
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
     private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
+    private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
@@ -86,37 +86,16 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
-
-    // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
-    @Override
-    public KommuneStatus kommuneInfo(String kommunenummer, Map<String, KommuneInfo> kommuneInfoMap) {
-        Map<String, KommuneInfo> stringKommuneInfoMap;
-        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(30)))) {
-            stringKommuneInfoMap = cacheForKommuneinfo.get();
-        } else {
-            stringKommuneInfoMap = kommuneInfoMap;
-        }
-        KommuneInfo kommuneInfo = stringKommuneInfoMap.getOrDefault(kommunenummer, new KommuneInfo());
-
-        if (kommuneInfo.getKanMottaSoknader() == null) {
-            return MANGLER_KONFIGURASJON;
-        }
-        if (!kommuneInfo.getKanMottaSoknader()) {
-            return HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
-        }
-        if (kommuneInfo.getHarMidlertidigDeaktivertMottak()) {
-            return SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
-        }
-
-        return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
-    }
-
     // @Cacheable("kommuneinfoCache")
     // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
     @Override
     public Map<String, KommuneInfo> hentKommuneInfo() {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
+        }
+
+        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(KOMMUNEINFO_CACHE_IN_MINUTES)))) {
+            return cacheForKommuneinfo.get();
         }
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
@@ -131,7 +110,7 @@ public class DigisosApiImpl implements DigisosApi {
 
             CloseableHttpResponse response = client.execute(http);
             String content = EntityUtils.toString(response.getEntity());
-            log.info(content);
+            log.info("KommuneInfo: {}", content);
             Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
             cacheForKommuneinfo.set(collect);
             cacheTimestamp = LocalDateTime.now();
@@ -163,7 +142,7 @@ public class DigisosApiImpl implements DigisosApi {
 
     private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
         byte[] publicKey = new byte[0];
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
                     .addHeader("Accept", MediaType.WILDCARD)
                     .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
@@ -260,7 +239,7 @@ public class DigisosApiImpl implements DigisosApi {
             entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData(), ContentType.APPLICATION_OCTET_STREAM, objectFilForOpplasting.getFilnavn());
         }
 
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build();) {
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
