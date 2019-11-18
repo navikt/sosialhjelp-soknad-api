@@ -325,10 +325,6 @@
             <artifactId>gson</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-        </dependency>
 
         <!-- Avhengigheter med scope test -->
 
@@ -573,7 +569,6 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!-- FIXME: Feiler med missing class javax/xml/bind/JAXBException
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -582,17 +577,39 @@
                     <execution>
                         <goals>
                             <goal>integration-test</goal>
+                            <!-- FIXME: Fiks integrasjonstestene -->
                             <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <argLine>
-                        &#45;&#45;illegal-access=permit
-                        &#45;&#45;add-modules=java.xml.bind
+                        --illegal-access=permit
                     </argLine>
                 </configuration>
-            </plugin>-->
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                        <version>${jaxb.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-impl</artifactId>
+                        <version>${jaxb.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-runtime</artifactId>
+                        <version>${jaxb.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.activation</groupId>
+                        <artifactId>activation</artifactId>
+                        <version>${activation.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
