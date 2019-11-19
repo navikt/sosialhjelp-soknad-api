@@ -28,12 +28,12 @@ public class FinnSaksStatusHelper extends RegistryAwareHelper<String> {
         if(status.equalsIgnoreCase("VEDTATT")) {
             if(options.params.length > 1) {
                 if (options.params[1] == INNVILGET || "INNVILGET".equalsIgnoreCase(options.params[1].toString())) {
-                    return String.valueOf(options.params[0]);
+                    return "Innvilget: " + options.params[0];
                 }
                 if (options.params[1] == AVVIST || "AVVIST".equalsIgnoreCase(options.params[1].toString())) {
                     return "Avvist: " + options.params[0];
                 }
-                return "Avslått: " + options.params[0];
+                return "Avslag: " + options.params[0];
             }
             return "Vedtatt";
         }
