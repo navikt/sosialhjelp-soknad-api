@@ -9,6 +9,8 @@ import static org.mockito.Mockito.anyString;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 
+import java.util.Objects;
+
 public class AdresseStringSplitterTest {
 
     @Test
@@ -18,7 +20,7 @@ public class AdresseStringSplitterTest {
     
     @Test
     public void nullStrengGirNullSvar() {
-        Assert.assertEquals(null, AdresseStringSplitter.toSokedata(null).adresse);
+        Assert.assertNull(AdresseStringSplitter.toSokedata(null).adresse);
     }
     
     @Test
@@ -32,12 +34,25 @@ public class AdresseStringSplitterTest {
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
     }
+
+    @Test
+    public void kunHusnummer() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("234");
+        Assert.assertEquals("234", result.husnummer);
+    }
     
     @Test
     public void husbokstav() {
         final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
+        Assert.assertEquals("G", result.husbokstav);
+    }
+
+    @Test
+    public void husnummerOgBokstav() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("212G");
+        Assert.assertEquals("212", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
     }
     
@@ -49,6 +64,27 @@ public class AdresseStringSplitterTest {
         Assert.assertEquals("G", result.husbokstav);
         Assert.assertEquals("0882", result.postnummer);
     }
+
+    @Test
+    public void postnummerMedMellomromFlyttet() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G ,0882");
+        Assert.assertEquals("asdf", result.adresse);
+        Assert.assertEquals("2", result.husnummer);
+        Assert.assertEquals("G", result.husbokstav);
+        Assert.assertEquals("0882", result.postnummer);
+    }
+
+    @Test
+    public void kunPostnummer() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("0882");
+        Assert.assertEquals("0882", result.postnummer);
+    }
+
+    @Test
+    public void kunPostnummerMedMellomrom() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("   0882   ");
+        Assert.assertEquals("0882", result.postnummer);
+    }
     
     @Test
     public void poststed() {
@@ -57,6 +93,48 @@ public class AdresseStringSplitterTest {
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
         Assert.assertEquals("0882", result.postnummer);
+        Assert.assertEquals("OSLO", result.poststed);
+    }
+
+    @Test
+    public void kunGateOgPostnummer() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("Veivei, 0110 ");
+        Assert.assertEquals("Veivei", result.adresse);
+        Assert.assertEquals("0110", result.postnummer);
+    }
+
+    @Test
+    public void kunGateOgPoststed() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("Veivei, OSLO");
+        Assert.assertEquals("Veivei", result.adresse);
+        Assert.assertEquals("OSLO", result.poststed);
+    }
+
+    @Test
+    public void dobbeltnavnPlussDiverseMellomrom() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("    Nedre Glommas    Vei   211G  ,  0882  ØVRE OSLO   ");
+        Assert.assertEquals("Nedre Glommas Vei", result.adresse);
+        Assert.assertEquals("211", result.husnummer);
+        Assert.assertEquals("G", result.husbokstav);
+        Assert.assertEquals("0882", result.postnummer);
+        Assert.assertEquals("ØVRE OSLO", result.poststed);
+    }
+    @Test
+    public void kompakt() {
+        final Sokedata result = AdresseStringSplitter.toSokedata(" Nedre Glommas Vei211G,0882ØVRE OSLO   ");
+        Assert.assertEquals("Nedre Glommas Vei", result.adresse);
+        Assert.assertEquals("211", result.husnummer);
+        Assert.assertEquals("G", result.husbokstav);
+        Assert.assertEquals("0882", result.postnummer);
+        Assert.assertEquals("ØVRE OSLO", result.poststed);
+    }
+
+    @Test
+    public void poststedUtenPostnummer() {
+        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G OSLO");
+        Assert.assertEquals("asdf", result.adresse);
+        Assert.assertEquals("2", result.husnummer);
+        Assert.assertEquals("G", result.husbokstav);
         Assert.assertEquals("OSLO", result.poststed);
     }
     
@@ -74,7 +152,7 @@ public class AdresseStringSplitterTest {
         when(kodeverk.gjettKommunenummer(anyString())).thenReturn("0301");
         final Sokedata result = AdresseStringSplitter.toSokedata(kodeverk, "asdf, OSLO");
         Assert.assertEquals("asdf", result.adresse);
-        Assert.assertEquals(null, result.poststed);
+        Assert.assertNull(result.poststed);
         Assert.assertEquals("0301", result.kommunenummer);
     }
     
@@ -86,6 +164,27 @@ public class AdresseStringSplitterTest {
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("0756", result.postnummer);
         Assert.assertEquals("OSLO", result.poststed);
-        Assert.assertEquals(null, result.kommunenummer);
+        Assert.assertNull(result.kommunenummer);
+    }
+
+    @Test
+    public void postnummerMatchTest() {
+        Sokedata sokedata = AdresseStringSplitter.postnummerMatch("0001");
+        Assert.assertEquals("0001", Objects.requireNonNull(sokedata).postnummer);
+        sokedata = AdresseStringSplitter.postnummerMatch("0001 ");
+        Assert.assertEquals("0001", Objects.requireNonNull(sokedata).postnummer);
+        sokedata = AdresseStringSplitter.postnummerMatch(" 0001");
+        Assert.assertEquals("0001", Objects.requireNonNull(sokedata).postnummer);
+
+        sokedata = AdresseStringSplitter.postnummerMatch("Haugeveien, 0001 klavestaad");
+        Assert.assertNull(sokedata);
+        sokedata = AdresseStringSplitter.postnummerMatch("Sannergata 2");
+        Assert.assertNull(sokedata);
+        sokedata = AdresseStringSplitter.postnummerMatch("Sannergata0001");
+        Assert.assertNull(sokedata);
+        sokedata = AdresseStringSplitter.postnummerMatch("0001Klavestad");
+        Assert.assertNull(sokedata);
+        sokedata = AdresseStringSplitter.postnummerMatch("0001 Klavestad");
+        Assert.assertNull(sokedata);
     }
 }
