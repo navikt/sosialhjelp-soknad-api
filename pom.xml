@@ -130,6 +130,7 @@
         <aspectjweaver.version>1.8.8</aspectjweaver.version>
         <zjsonpatch.version>0.4.8</zjsonpatch.version>
         <jaxb.version>2.3.0</jaxb.version>
+        <soap.version>1.4.0</soap.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -497,8 +498,7 @@
                 <version>${jackson.version}</version>
             </dependency>
 
-
-            <!-- CXF avhengigheter -->
+            <!-- JAXB/SOAP-avhengigheter -->
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
@@ -514,6 +514,18 @@
                 <artifactId>jaxb-impl</artifactId>
                 <version>${jaxb.version}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.xml.ws</groupId>
+                <artifactId>jaxws-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.soap</groupId>
+                <artifactId>javax.xml.soap-api</artifactId>
+                <version>${soap.version}</version>
+            </dependency>
+
+            <!-- CXF avhengigheter -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-core</artifactId>
