@@ -31,6 +31,4 @@ public interface SoknadMetadataRepository {
     List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime after);
 
     void slettSoknadMetaData(String behandlingsId, String eier);
-
-    List<SoknadMetadata> hentInnsendteSoknaderForBrukerUtenEttersendelser(String fnr);
 }
