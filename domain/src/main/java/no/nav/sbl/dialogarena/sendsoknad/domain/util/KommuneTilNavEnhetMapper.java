@@ -153,6 +153,9 @@ public class KommuneTilNavEnhetMapper {
             .put("1445", "976675185")    // Gloppen
             .put("1449", "976831772")    // Stryn
             .put("1439", "942952880")    // Vågsøy
+            .put("1505", "974775719")    // Kristiansund
+            .put("1554", "962378064")    // Averøy
+            .put("1557", "974782170")    // Gjemnes
 
             .build();
 
@@ -331,7 +334,10 @@ public class KommuneTilNavEnhetMapper {
                     "1443",
                     "1445",
                     "1449",
-                    "1439"
+                    "1439",
+                    "1505",
+                    "1554",
+                    "1557"
             ));
 
 
