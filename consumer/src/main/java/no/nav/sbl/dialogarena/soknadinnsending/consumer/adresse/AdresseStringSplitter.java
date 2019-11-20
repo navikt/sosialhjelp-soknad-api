@@ -5,9 +5,13 @@ import java.util.regex.Pattern;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import org.slf4j.Logger;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 public final class AdresseStringSplitter {
+    private static final Logger log = getLogger(AdresseStringSplitter.class);
 
     private AdresseStringSplitter() {
         
@@ -35,6 +39,11 @@ public final class AdresseStringSplitter {
         if (m.matches()) {
             final String postnummer = m.group(4);
             final String kommunenavn = (postnummer == null) ? m.group(5) : null;
+            if (kodeverk != null) {
+                log.info("Kommune: navn {} nummer {}", kommunenavn, kodeverk.gjettKommunenummer(kommunenavn));
+            } else {
+                log.info("kodeverk er null");
+            }
             final String kommunenummer = (kommunenavn != null && !kommunenavn.trim().isEmpty() && kodeverk != null) ? kodeverk.gjettKommunenummer(kommunenavn) : null;
             final String poststed = kommunenummer == null ? m.group(5) : null;
             
