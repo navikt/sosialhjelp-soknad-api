@@ -114,7 +114,9 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     private AdressesokRespons createAdressesokRespons(Sokedata sokedata, Response response) {
         final AdressesokRespons result = response.readEntity(AdressesokRespons.class);
 
-        logger.info("adressesøket: {}", result);
+        logger.info("adressesøket antall treff: {}", result.adresseDataList.size());
+        result.adresseDataList.forEach( adresseData -> logger.info("res: {}", result.adresseDataList.size()));
+
         taMedDataFraRequest(sokedata, result);
         return result;
     }

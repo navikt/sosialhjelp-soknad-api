@@ -58,7 +58,7 @@ public interface AdresseSokConsumer {
         public String poststed;
         
         public String kommunenummer;
-        public Soketype soketype = Soketype.FONETISK;
+        public Soketype soketype = Soketype.EKSAKT;
         
         public Sokedata withAdresse(String adresse) {
             this.adresse = adresse;
