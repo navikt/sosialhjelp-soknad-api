@@ -39,7 +39,7 @@ public interface AdresseSokConsumer {
         FONETISK("F"),
         EKSAKT("E"),
         TILFELDIG("T"),
-        LIK("L");
+        LIGNENDE("L");
 
         String tpsKode;
         
@@ -60,7 +60,7 @@ public interface AdresseSokConsumer {
         public String poststed;
         
         public String kommunenummer;
-        public Soketype soketype = Soketype.LIK;
+        public Soketype soketype = Soketype.LIGNENDE;
         
         public Sokedata withAdresse(String adresse) {
             this.adresse = adresse;
