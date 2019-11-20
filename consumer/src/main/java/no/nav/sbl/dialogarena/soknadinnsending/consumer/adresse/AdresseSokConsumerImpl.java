@@ -158,7 +158,8 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
         final String maxretur = (sokedata.postnummer != null) ? "100" : "8";
-        logger.info("maxretur {}", maxretur);
+        logger.info("maxretur {}, søker på: \nadresse {}, \npostnummer {}, \npoststed {}, \nkommunenummer {}, \nhusnummer {}, \nhusbokstav {}, \n",
+                maxretur, sokedata.adresse, sokedata.postnummer, sokedata.poststed, sokedata.kommunenummer, sokedata.husnummer, sokedata.husbokstav);
         WebTarget b = executionContext.getClient().target(endpoint + "adressesoek")
                 .queryParam("soketype", soketype)
                 .queryParam("alltidRetur", "true")
