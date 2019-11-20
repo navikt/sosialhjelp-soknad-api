@@ -37,8 +37,10 @@ public interface AdresseSokConsumer {
     
     enum Soketype {
         FONETISK("F"),
-        EKSAKT("E");
-        
+        EKSAKT("E"),
+        TILFELDIG("T"),
+        LIK("L");
+
         String tpsKode;
         
         Soketype(String tpsKode) {
@@ -58,7 +60,7 @@ public interface AdresseSokConsumer {
         public String poststed;
         
         public String kommunenummer;
-        public Soketype soketype = Soketype.EKSAKT;
+        public Soketype soketype = Soketype.LIK;
         
         public Sokedata withAdresse(String adresse) {
             this.adresse = adresse;
