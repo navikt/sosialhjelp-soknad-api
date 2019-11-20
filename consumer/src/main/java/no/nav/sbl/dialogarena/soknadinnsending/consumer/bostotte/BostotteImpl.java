@@ -38,11 +38,11 @@ public class BostotteImpl implements Bostotte {
                     .build();
             return operations.exchange(request, BostotteDto.class).getBody();
         } catch (ResourceAccessException e) {
-            logger.warn("Problemer med å hente bostøtte informasjon!", e);
+            logger.error("Problemer med å hente bostøtte informasjon!", e);
         } catch (HttpClientErrorException e) {
-            logger.warn("Problemer med å koble opp mot Husbanken!", e);
+            logger.error("Problemer med å koble opp mot Husbanken!", e);
         } catch (HttpMessageNotReadableException e) {
-            logger.warn("Problemer med å tolke data fra Husbanken!", e);
+            logger.error("Problemer med å tolke data fra Husbanken!", e);
         }
         return null;
     }
