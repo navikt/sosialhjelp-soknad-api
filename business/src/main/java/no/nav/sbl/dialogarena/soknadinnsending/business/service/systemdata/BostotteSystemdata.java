@@ -78,7 +78,7 @@ public class BostotteSystemdata implements Systemdata {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
                 .withType(HUSBANKEN_TYPE)
-                .withTittel("Statlig bostotte")
+                .withTittel("Statlig bostøtte")
                 .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.fromValue(gjorForsteBokstavStor(utbetalingerDto.getMottaker().toString())))
                 .withNetto(utbetalingerDto.getBelop().doubleValue())
                 .withUtbetalingsdato(utbetalingerDto.getUtbetalingsdato() != null ? utbetalingerDto.getUtbetalingsdato().toString() : null)

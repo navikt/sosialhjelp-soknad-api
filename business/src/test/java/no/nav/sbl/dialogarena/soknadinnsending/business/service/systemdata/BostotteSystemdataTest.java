@@ -255,7 +255,7 @@ public class BostotteSystemdataTest {
     }
 
     private void assertThatUtbetalingErKorrekt(BostotteMottaker mottaker, BigDecimal netto, JsonOkonomiOpplysningUtbetaling utbetaling, LocalDate utbetalingsDato) {
-        assertThat(utbetaling.getTittel()).isEqualToIgnoringCase("Statlig bostotte");
+        assertThat(utbetaling.getTittel()).isEqualToIgnoringCase("Statlig bostøtte");
         assertThat(utbetaling.getMottaker()).isEqualTo(JsonOkonomiOpplysningUtbetaling.Mottaker.fromValue(mottaker.getValue()));
         assertThat(utbetaling.getType()).isEqualTo(HUSBANKEN_TYPE);
         assertThat(utbetaling.getUtbetalingsdato()).isEqualTo(utbetalingsDato.toString());
