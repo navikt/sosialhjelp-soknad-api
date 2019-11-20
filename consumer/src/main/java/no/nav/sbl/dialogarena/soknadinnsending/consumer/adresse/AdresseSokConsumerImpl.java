@@ -158,6 +158,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
         final String maxretur = (sokedata.postnummer != null || sokedata.poststed != null) ? "100" : "20";
+        logger.info("maxretur {}", maxretur);
         WebTarget b = executionContext.getClient().target(endpoint + "adressesoek")
                 .queryParam("soketype", soketype)
                 .queryParam("alltidRetur", "true")
@@ -168,9 +169,6 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         }
         if (sokedata.postnummer != null) {
             b = b.queryParam("postnr", sokedata.postnummer);
-        }
-        if (sokedata.poststed != null) {
-            b = b.queryParam("poststed", sokedata.poststed);
         }
         if (sokedata.kommunenummer != null) {
             b = b.queryParam("kommunenr", sokedata.kommunenummer);
