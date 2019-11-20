@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -34,9 +34,9 @@ public class SendtSoknadRepositoryJdbcTest {
     private static final String FIKSFORSENDELSEID3 = "12652";
     private static final String ORGNUMMER = "987654";
     private static final String NAVENHETSNAVN = "NAV Enhet";
-    private static final LocalDateTime BRUKER_OPPRETTET_DATO = now().minusDays(2);
-    private static final LocalDateTime BRUKER_FERDIG_DATO = now().minusSeconds(50);
-    private static final LocalDateTime SENDT_DATO = now();
+    private static final LocalDateTime BRUKER_OPPRETTET_DATO = now().minusDays(2).truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalDateTime BRUKER_FERDIG_DATO = now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalDateTime SENDT_DATO = now().truncatedTo(ChronoUnit.MILLIS);
 
     @Inject
     private SendtSoknadRepository sendtSoknadRepository;
@@ -66,7 +66,6 @@ public class SendtSoknadRepositoryJdbcTest {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null);
     }
 
-    @Ignore("Timestamp/LocalDateTime har ulikt antall desimaler")
     @Test
     public void hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
