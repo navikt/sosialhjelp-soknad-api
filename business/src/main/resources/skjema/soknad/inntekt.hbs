@@ -230,12 +230,12 @@
                 <h3>{{hentTekst "inntekt.bostotte.overskrift"}}</h3>
                 {{#if @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
                     {{#hentOkonomiBekreftelse "bostotte"}}
-                        <h4>{{hentTekst "inntekt.bostotte.sporsmal"}}</h4>
+                        <h4>{{hentTekst "inntekt.bostotte.sporsmal.sporsmal"}}</h4>
                         <li>
                             <ul class="svar-liste">
                                 <li>
                                 <span class="verdi verdi--radio">
-                                    {{ hentTekst (concat 'inntekt.bostotte.' verdi) }}
+                                    {{ hentTekst (concat 'inntekt.bostotte.sporsmal.' verdi) }}
                                 </span>
                                 </li>
                             </ul>
