@@ -32,7 +32,7 @@ public class BostotteSystemdata implements Systemdata {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
-        BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
+        BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token + "_bad");
         if (bostotteDto != null) {
             boolean trengerViDataFraDeSiste60Dager = true;
             List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
