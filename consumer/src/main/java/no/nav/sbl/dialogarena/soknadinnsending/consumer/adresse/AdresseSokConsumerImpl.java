@@ -157,7 +157,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
-        final String maxretur = (sokedata.postnummer != null || sokedata.poststed != null) ? "100" : "20";
+        final String maxretur = (sokedata.postnummer != null) ? "100" : "10";
         logger.info("maxretur {}", maxretur);
         WebTarget b = executionContext.getClient().target(endpoint + "adressesoek")
                 .queryParam("soketype", soketype)
