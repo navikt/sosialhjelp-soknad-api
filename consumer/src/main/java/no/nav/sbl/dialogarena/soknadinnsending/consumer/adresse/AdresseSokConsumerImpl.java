@@ -115,7 +115,23 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         final AdressesokRespons result = response.readEntity(AdressesokRespons.class);
 
         logger.info("adressesøket antall treff: {}", result.adresseDataList.size());
-        result.adresseDataList.forEach( adresseData -> logger.info("res: {}", result.adresseDataList.size()));
+        result.adresseDataList.forEach( adresseData -> logger.info(
+                "res: " +
+                        "adressenavn {}\n husnummer {}\n husbokstav {}\n " +
+                        "postnummer {}\n poststed {}\n bydel {}\n kommunenavn {}\n kommunenummer {}\n " +
+                        "gatekode {}\n geografiskTilknytning {}\n husnummerFra {}\n husnummerTil {}\n",
+                adresseData.adressenavn,
+                adresseData.husnummer,
+                adresseData.husbokstav,
+                adresseData.postnummer,
+                adresseData.poststed,
+                adresseData.bydel,
+                adresseData.kommunenavn,
+                adresseData.kommunenummer,
+                adresseData.gatekode,
+                adresseData.geografiskTilknytning,
+                adresseData.husnummerFra,
+                adresseData.husnummerTil));
 
         taMedDataFraRequest(sokedata, result);
         return result;
