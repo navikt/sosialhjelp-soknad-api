@@ -61,8 +61,8 @@
     "VIRKSOMHET_PERSON_V1_ENDPOINTURL": "https://wasapp-q0.adeo.no/tpsws/Person_v1",
     "VIRKSOMHET_PERSON_V1_SECURITYTOKEN": "SAML",
     "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip",
-    "VIRKSOMHET_PERSON_V3_ENDPOINTURL": "https://wasapp-q0.adeo.no/tpsws/Person_v3",
+    "VIRKSOMHET_PERSON_V3_ENDPOINTURL": "https://wasapp-q0.adeo.no/tpsws/ws/Person/v3",
     "VIRKSOMHET_PERSON_V3_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v3-tjenestespesifikasjon/1.0.4/nav-fim-person-v3-tjenestespesifikasjon-1.0.4.zip"
+    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip"
   }
 }
