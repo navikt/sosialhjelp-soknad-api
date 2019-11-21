@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonService2;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
@@ -58,7 +58,7 @@ public class AdresseSystemdataTest {
     }
 
     @Mock
-    private BrukerprofilService brukerprofilService;
+    private PersonService2 personService;
 
     @InjectMocks
     private AdresseSystemdata adresseSystemdata;
@@ -67,7 +67,7 @@ public class AdresseSystemdataTest {
     public void skalOppdatereFolkeregistrertAdresse() {
         AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer().withFolkeregistrertAdresse(GATEADRESSE);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -85,7 +85,7 @@ public class AdresseSystemdataTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -107,7 +107,7 @@ public class AdresseSystemdataTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse())
                 .withPostadresse(new JsonAdresse());
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
@@ -129,7 +129,7 @@ public class AdresseSystemdataTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG));
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 

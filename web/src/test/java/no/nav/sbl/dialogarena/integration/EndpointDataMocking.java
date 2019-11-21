@@ -17,11 +17,17 @@ import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentD
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
+import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import org.mockito.Mockito;
 
 import javax.xml.datatype.DatatypeFactory;
 
+import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.Person2Mock.createPersonV3HentPersonRequest;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 public class EndpointDataMocking {
 
@@ -30,6 +36,7 @@ public class EndpointDataMocking {
     public static void setupMockWsEndpointData() throws Exception {
         mockBrukerProfilEndpoint();
         mockPersonEndpoint();
+        mockPerson2Endpoint();
         mockDkifService();
         mockArbeidsForholdService();
     }
@@ -73,6 +80,19 @@ public class EndpointDataMocking {
         hentKjerneinformasjonResponse.setPerson(person);
 
         Mockito.when(personEndpoint.hentKjerneinformasjon(any())).thenReturn(hentKjerneinformasjonResponse);
+    }
+
+    static void mockPerson2Endpoint() throws Exception {
+        PersonV3 mock = IntegrationConfig.getMocked("personV3Endpoint");
+
+        try {
+            when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequest());
+        } catch (HentPersonPersonIkkeFunnet hentPersonPersonIkkeFunnet) {
+            hentPersonPersonIkkeFunnet.printStackTrace();
+        } catch (HentPersonSikkerhetsbegrensning hentPersonSikkerhetsbegrensning) {
+            hentPersonSikkerhetsbegrensning.printStackTrace();
+        }
+
     }
 
     static void mockDkifService() throws Exception {
