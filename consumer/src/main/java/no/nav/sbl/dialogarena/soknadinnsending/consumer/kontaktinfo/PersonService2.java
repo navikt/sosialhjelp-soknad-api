@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDat
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
@@ -55,7 +56,8 @@ public class PersonService2 {
     }
 
     private Person getPerson(String fodselsnummer) throws HentPersonPersonIkkeFunnet, HentPersonSikkerhetsbegrensning {
-        HentPersonRequest request = new HentPersonRequest().withAktoer(new PersonIdent().withIdent(new NorskIdent().withIdent(fodselsnummer)));
+        HentPersonRequest request = new HentPersonRequest().withAktoer(new PersonIdent().withIdent(
+                new NorskIdent().withIdent(fodselsnummer))).withInformasjonsbehov(Informasjonsbehov.ADRESSE, Informasjonsbehov.BANKKONTO);
         HentPersonResponse hentPersonResponse = personV3.hentPerson(request);
         return hentPersonResponse.getPerson();
     }
