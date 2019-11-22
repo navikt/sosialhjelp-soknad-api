@@ -29,8 +29,8 @@ import javax.xml.ws.WebServiceException;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-public class PersonService2 {
-    private static final Logger logger = getLogger(PersonService2.class);
+public class PersonServiceV3 {
+    private static final Logger logger = getLogger(PersonServiceV3.class);
 
     @Inject
     @Named("personV3Endpoint")
@@ -92,6 +92,7 @@ public class PersonService2 {
             matrikkelAdresse.postnummer = midlertidigMatrikkeladresse.getPostnummer();
             matrikkelAdresse.poststed = midlertidigMatrikkeladresse.getPoststed();
             midlertidigAdresse.setStrukturertAdresse(matrikkelAdresse);
+            midlertidigAdresse.setAdressetype("Matrikkel");
         }
         if (strukturertAdresse instanceof Gateadresse) {
             Gateadresse midlertidigGateadresse = (Gateadresse) strukturertAdresse;
@@ -105,6 +106,7 @@ public class PersonService2 {
             gateadresse.postnummer = midlertidigGateadresse.getPostnummer();
             gateadresse.poststed = midlertidigGateadresse.getPoststed();
             midlertidigAdresse.setStrukturertAdresse(gateadresse);
+            midlertidigAdresse.setAdressetype("Gateadresse");
         }
         return midlertidigAdresse;
     }

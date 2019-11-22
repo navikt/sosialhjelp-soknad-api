@@ -4,12 +4,6 @@ import no.nav.sbl.dialogarena.config.IntegrationConfig;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoNorge;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontonummer;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
@@ -34,24 +28,10 @@ public class EndpointDataMocking {
     private static int behandlingsIdCounter = 1;
 
     public static void setupMockWsEndpointData() throws Exception {
-        mockBrukerProfilEndpoint();
         mockPersonEndpoint();
-        mockPerson2Endpoint();
+        mockPersonV3Endpoint();
         mockDkifService();
         mockArbeidsForholdService();
-    }
-
-    static void mockBrukerProfilEndpoint() throws Exception {
-        BrukerprofilPortType brukerProfil = IntegrationConfig.getMocked("brukerProfilEndpoint");
-        Mockito.when(brukerProfil.hentKontaktinformasjonOgPreferanser(any())).thenReturn(
-                new XMLHentKontaktinformasjonOgPreferanserResponse().withPerson(
-                        new XMLBruker()
-                                .withBankkonto(new XMLBankkontoNorge()
-                                        .withBankkonto(new XMLBankkontonummer().withBankkontonummer("65294512345"))
-                                )
-                                .withIdent(new XMLNorskIdent().withIdent("12127612345"))
-                )
-        );
     }
 
     static void mockPersonEndpoint() throws Exception {
@@ -82,11 +62,11 @@ public class EndpointDataMocking {
         Mockito.when(personEndpoint.hentKjerneinformasjon(any())).thenReturn(hentKjerneinformasjonResponse);
     }
 
-    static void mockPerson2Endpoint() throws Exception {
+    static void mockPersonV3Endpoint() throws Exception {
         PersonV3 mock = IntegrationConfig.getMocked("personV3Endpoint");
 
         try {
-            when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequest());
+            when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequest("12"));
         } catch (HentPersonPersonIkkeFunnet hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
         } catch (HentPersonSikkerhetsbegrensning hentPersonSikkerhetsbegrensning) {

@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonService2;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
@@ -20,7 +20,7 @@ import static java.lang.System.setProperty;
 @Import({
         PersonService.class,
         EpostService.class,
-        PersonService2.class,
+        PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         AdresseSokService.class,
@@ -41,7 +41,6 @@ public class ConsumerConfig {
     @Import({
             ArbeidWSConfig.class,
             OrganisasjonWSConfig.class,
-            BrukerProfilWSConfig.class,
             DkifWSConfig.class,
             DigisosApiRestConfig.class,
             KodeverkWSConfig.class,

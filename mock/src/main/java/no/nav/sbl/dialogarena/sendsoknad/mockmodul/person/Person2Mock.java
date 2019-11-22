@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
@@ -9,6 +13,7 @@ import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import java.util.HashMap;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -16,12 +21,48 @@ import static org.mockito.Mockito.when;
 
 public class Person2Mock {
 
+    private static HashMap<String, Person> responses = new HashMap<>();
+
+    public static void setBrukerprofil(String jsonBrukerprofil) {
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(jsonBrukerprofil);
+
+        try {
+            JsonNode node = mapper.readTree(jsonBrukerprofil);
+            String gatenavnNode = node.at("/person/bostedsadresse/strukturertAdresse/gatenavn").textValue();
+            String postkodeNode = node.at("/person/bostedsadresse/strukturertAdresse/poststed/value").textValue();
+            String kommunenr = node.at("/person/bostedsadresse/strukturertAdresse/kommunenummer").textValue();
+            String husnr = node.at("/person/bostedsadresse/strukturertAdresse/husnummer").textValue();
+
+            Person defaultPerson = getDefaultPerson();
+            Integer husnummer;
+            try {
+                husnummer = Integer.valueOf(husnr);
+            } catch (NumberFormatException e) {
+                husnummer = 0;
+            }
+            defaultPerson.setBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Gateadresse()
+                            .withGatenavn(gatenavnNode)
+                            .withPoststed(new Postnummer().withValue(postkodeNode))
+                            .withKommunenummer(kommunenr)
+                            .withHusnummer(husnummer)
+                    )
+            );
+
+
+            responses.put(OidcFeatureToggleUtils.getUserId(), defaultPerson);
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
     public PersonV3 Person2Mock() {
 
         PersonV3 mock = mock(PersonV3.class);
 
         try {
-            when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequest());
+            when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(OidcFeatureToggleUtils.getUserId()));
         } catch (HentPersonPersonIkkeFunnet hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
         } catch (HentPersonSikkerhetsbegrensning hentPersonSikkerhetsbegrensning) {
@@ -32,10 +73,9 @@ public class Person2Mock {
     }
 
 
-    public static HentPersonResponse createPersonV3HentPersonRequest() {
+    public static HentPersonResponse createPersonV3HentPersonRequest(String userId) {
         HentPersonResponse response = new HentPersonResponse();
-        response.setPerson(getDefaultPerson());
-
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson()));
         return response;
     }
 

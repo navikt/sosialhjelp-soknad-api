@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonService2;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -15,7 +15,7 @@ import javax.inject.Inject;
 public class KontonummerSystemdata implements Systemdata {
 
     @Inject
-    private PersonService2 personService;
+    private PersonServiceV3 personService;
     
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {

@@ -1,17 +1,11 @@
 package no.nav.sbl.dialogarena.rest.utils;
 
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.Person2Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 
-import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock.Adressetyper;
-import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock.Adressetyper.*;
-import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock.POSTTYPE_UTENLANDSK;
 
 
 public class MocksetupUtils {
@@ -20,7 +14,7 @@ public class MocksetupUtils {
     private final static String VALG_INGEN = "INGEN";
 
     private static PersonPortTypeMock personPortTypeMock = new PersonMock().personPortTypeMock();
-    private static BrukerprofilMock brukerprofilMock = BrukerprofilMock.getInstance();
+    private static Person2Mock brukerprofilMock = new Person2Mock();
 
     public static Diskresjonskoder getDiskresjonskode() {
         Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
@@ -36,45 +30,10 @@ public class MocksetupUtils {
         String statsborgerskap = person.getStatsborgerskap().getLand().getValue().toUpperCase();
         fields.setStatsborgerskap(statsborgerskap);
 
-        XMLBruker bruker = getBrukerFraBrukerprofil();
-        String primarType = bruker.getGjeldendePostadresseType().getValue();
-        fields.setPrimarAdressetype(primarType.equalsIgnoreCase(POSTTYPE_UTENLANDSK) ? VALG_UTENLANDSK : VALG_NORSK);
-
-        XMLMidlertidigPostadresse postadresse = bruker.getMidlertidigPostadresse();
-        if(postadresse == null) {
-            fields.setSekundarAdressetype(VALG_INGEN);
-        } else if(XMLMidlertidigPostadresseUtland.class.isAssignableFrom(postadresse.getClass())) {
-            fields.setSekundarAdressetype(VALG_UTENLANDSK);
-        } else {
-            fields.setSekundarAdressetype(VALG_NORSK);
-        }
-
+        fields.setPrimarAdressetype( VALG_NORSK);
         return fields;
     }
 
-    public static void settPostadressetype(String type){
-        XMLBruker bruker = getBrukerFraBrukerprofil();
-        BrukerprofilMock.settPostadresse(bruker, mapValueTilAdressetype(type));
-    }
-
-    public static void settSekundarAdressetype(String type) {
-        XMLBruker bruker = getBrukerFraBrukerprofil();
-        BrukerprofilMock.settSekundarAdresse(bruker, mapValueTilAdressetype(type));
-    }
-
-    private static XMLBruker getBrukerFraBrukerprofil(){
-        return brukerprofilMock.getBrukerprofilPortTypeMock().getPerson();
-    }
-
-    private static Adressetyper mapValueTilAdressetype(String type){
-        if(type.equals(VALG_NORSK)){
-            return NORSK;
-        } else if(type.equals(VALG_UTENLANDSK)) {
-            return UTENLANDSK;
-        } else {
-            return INGEN;
-        }
-    }
 
     public static class MocksetupFields {
         private Boolean kode6;
