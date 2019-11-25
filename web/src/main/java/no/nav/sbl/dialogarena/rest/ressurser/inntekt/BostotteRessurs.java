@@ -56,10 +56,13 @@ public class BostotteRessurs {
             setBekreftelseOnBostotteFrontend(opplysninger, bostotteFrontend);
         }
 
-        bostotteFrontend.setUtbetalinger(mapToUtbetalinger(soknad));
-        bostotteFrontend.setSaksStatuser(mapToUtSaksStatuser(soknad));
-        bostotteFrontend.setStotteFraHusbankenFeilet(soknad.getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet());
-
+        if(soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte() == null) {
+            bostotteFrontend.setStotteFraHusbankenFeilet(true);
+        } else {
+            bostotteFrontend.setUtbetalinger(mapToUtbetalinger(soknad));
+            bostotteFrontend.setSaksStatuser(mapToUtSaksStatuser(soknad));
+            bostotteFrontend.setStotteFraHusbankenFeilet(soknad.getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet());
+        }
         return bostotteFrontend;
     }
 
@@ -99,9 +102,6 @@ public class BostotteRessurs {
     }
 
     private List<JsonBostotteSak> mapToUtSaksStatuser(JsonInternalSoknad soknad) {
-        if(soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte() == null) {
-            return new ArrayList<>();
-        }
         return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker().stream()
                 .filter(sak -> sak.getType().equals(HUSBANKEN_TYPE))
                 .collect(Collectors.toList());
