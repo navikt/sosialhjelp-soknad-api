@@ -100,6 +100,11 @@ public class FiksSender {
             throw new RuntimeException("Kan ikke sende ettersendelse fordi vedlegg mangler");
         }
 
+        // TODO: 2019-11-25 pcn: Denne er her midlertidig for å fange opp søknader som er started før bostøtte ble rullet ut.
+        if(internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte() == null) {
+            internalSoknad.getSoknad().getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
+        }
+
         List<Dokument> fiksDokumenter = new ArrayList<>();
         int antallVedleggForsendelse;
         if (soknadUnderArbeid.erEttersendelse()) {
