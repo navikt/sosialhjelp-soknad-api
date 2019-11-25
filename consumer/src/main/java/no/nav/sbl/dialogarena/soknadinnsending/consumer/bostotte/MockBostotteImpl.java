@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -11,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MockBostotteImpl implements Bostotte {
+    private static final Logger logger = LoggerFactory.getLogger(MockBostotteImpl.class);
 
     private static Map<String, BostotteDto> responses = new HashMap<>();
 
@@ -20,7 +23,7 @@ public class MockBostotteImpl implements Bostotte {
         try {
             bostotteDto = mapper.readValue(bostotteJson, BostotteDto.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Problemer med å tolke json stingen til mocken!", e);
         }
         BostotteDto response = responses.get(fnr);
         if (response == null){

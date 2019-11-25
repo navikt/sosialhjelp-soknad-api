@@ -68,7 +68,7 @@ public class PDFFabrikkTest {
         handleBarKjoerer.registrerHelper("hvisBarneutgift", new HvisBarneutgiftHelper());
         handleBarKjoerer.registrerHelper("hvisBoutgift", new HvisBoutgiftHelper());
         handleBarKjoerer.registrerHelper("landMedFulltNavn", new LandMedFulltNavnHelper());
-        handleBarKjoerer.registrerHelper("finnSaksStatus", new FinnSaksStatusHelper());
+        handleBarKjoerer.registrerHelper("finnSaksstatus", new FinnSaksstatusHelper());
         handleBarKjoerer.registrerHelper("erListeTom", new ErListeTomHelper());
     }
 

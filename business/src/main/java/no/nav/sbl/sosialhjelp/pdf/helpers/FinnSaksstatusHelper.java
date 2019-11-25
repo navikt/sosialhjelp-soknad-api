@@ -7,16 +7,16 @@ import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedta
 import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedtaksstatus.INNVILGET;
 
 @Component
-public class FinnSaksStatusHelper extends RegistryAwareHelper<String> {
+public class FinnSaksstatusHelper extends RegistryAwareHelper<String> {
 
     @Override
     public String getNavn() {
-        return "finnSaksStatus";
+        return "finnSaksstatus";
     }
 
     @Override
     public String getBeskrivelse() {
-        return "Finner ut hva som er rett saks status å vise.";
+        return "Finner ut hva som er rett saksstatus å vise.";
     }
 
     @Override

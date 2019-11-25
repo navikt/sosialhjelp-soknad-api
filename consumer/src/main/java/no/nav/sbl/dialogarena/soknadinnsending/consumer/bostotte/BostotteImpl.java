@@ -49,7 +49,7 @@ public class BostotteImpl implements Bostotte {
 
     static Pingable opprettHusbankenPing(BostotteConfig config, RestOperations operations) {
         return new Pingable() {
-            Ping.PingMetadata metadata = new Ping.PingMetadata(config.getPingUrl(),"HusbankenPing", false);
+            Ping.PingMetadata metadata = new Ping.PingMetadata(config.getPingUrl(),"Husbanken API", false);
 
             @Override
             public Ping ping() {

@@ -16,7 +16,7 @@ public class ErListeTomHelper extends RegistryAwareHelper<Collection<Object>> {
 
     @Override
     public String getBeskrivelse() {
-        return "Returnerer sant dersom lisen er tom";
+        return "Returnerer sant dersom listen er tom";
     }
 
     @Override
