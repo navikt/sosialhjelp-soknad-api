@@ -47,7 +47,7 @@ public class PersonServiceV3 {
             PersonData personData = personDataMapper.tilPersonData(person);
             return mapResponsTilAdresserOgKontonummer(personData);
         } catch (WebServiceException e) {
-            logger.warn("Ingen kontakt med TPS (Brukerprofil_v1).", e);
+            logger.warn("Ingen kontakt med TPS (Person_V3).", e);
             throw new TjenesteUtilgjengeligException("TPS:webserviceException", e);
         } catch (HentPersonSikkerhetsbegrensning | HentPersonPersonIkkeFunnet hentPersonSikkerhetsbegrensning) {
             hentPersonSikkerhetsbegrensning.printStackTrace();
