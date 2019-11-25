@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte.HUSBANKEN_TYPE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/inntekt/bostotte")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -46,13 +46,13 @@ public class BostotteRessurs {
     private TextService textService;
 
     @GET
-    public BostotteFrontend hentBostotte(@PathParam("behandlingsId") String behandlingsId){
+    public BostotteFrontend hentBostotte(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
         BostotteFrontend bostotteFrontend = new BostotteFrontend();
 
-        if (opplysninger.getBekreftelse() != null){
+        if (opplysninger.getBekreftelse() != null) {
             setBekreftelseOnBostotteFrontend(opplysninger, bostotteFrontend);
         }
 
@@ -64,20 +64,20 @@ public class BostotteRessurs {
     }
 
     @PUT
-    public void updateBostotte(@PathParam("behandlingsId") String behandlingsId, BostotteFrontend bostotteFrontend){
+    public void updateBostotte(@PathParam("behandlingsId") String behandlingsId, BostotteFrontend bostotteFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
         List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
 
-        if (opplysninger.getBekreftelse() == null){
+        if (opplysninger.getBekreftelse() == null) {
             opplysninger.setBekreftelse(new ArrayList<>());
         }
 
         setBekreftelse(opplysninger, BOSTOTTE, bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
 
-        if (bostotteFrontend.bekreftelse != null){
+        if (bostotteFrontend.bekreftelse != null) {
             String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(BOSTOTTE));
             addInntektIfCheckedElseDeleteInOversikt(inntekter, BOSTOTTE, tittel, bostotteFrontend.bekreftelse);
         }
@@ -99,11 +99,15 @@ public class BostotteRessurs {
     }
 
     private List<JsonBostotteSak> mapToUtSaksStatuser(JsonInternalSoknad soknad) {
+        if(soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte() == null) {
+            return new ArrayList<>();
+        }
         return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker().stream()
                 .filter(sak -> sak.getType().equals(HUSBANKEN_TYPE))
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BostotteFrontend {
         public Boolean bekreftelse;
