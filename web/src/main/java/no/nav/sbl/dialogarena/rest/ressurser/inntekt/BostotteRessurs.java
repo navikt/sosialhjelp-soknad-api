@@ -57,6 +57,7 @@ public class BostotteRessurs {
         }
 
         if(soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte() == null) {
+            // TODO: 2019-11-25 pcn: Denne er her midlertidig for å fange opp søknader som er started før bostøtte ble rullet ut.
             bostotteFrontend.setStotteFraHusbankenFeilet(true);
         } else {
             bostotteFrontend.setUtbetalinger(mapToUtbetalinger(soknad));
