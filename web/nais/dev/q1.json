@@ -37,7 +37,6 @@
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "true",
     "SOKNAD_BOSTOTTE_URL": "https://api-gw-q1.oera.no/ekstern/husbanken/api/nav/minbostotte",
     "SOKNAD_BOSTOTTE_PING_URL": "https://api-gw-q1.oera.no/ekstern/husbanken/api/nav/minbostotte/ping",
-    "SOKNAD_BRUKERPROFIL_URL": "https://tjenester-q1.nav.no/brukerprofil/",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "90",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester-q1.nav.no/esso/saml2/jsp/spSSOInit.jsp?metaAlias=/sp&idpEntityID=idporten-ver1.difi.no-v3&NameIDFormat=transient&AuthLevel=4&goto=https://tjenester-q1.nav.no/soknadinnsending",
@@ -62,6 +61,9 @@
     "VIRKSOMHET_ORGANISASJON_V4_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-organisasjon-v4-tjenestespesifikasjon/1.0.4/nav-fim-organisasjon-v4-tjenestespesifikasjon-1.0.4.zip",
     "VIRKSOMHET_PERSON_V1_ENDPOINTURL": "https://wasapp-q1.adeo.no/tpsws/Person_v1",
     "VIRKSOMHET_PERSON_V1_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip"
+    "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip",
+    "IS_SENDING_TIL_DIGISOS_API_ENABLED": "false",
+    "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
+    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false"
   }
 }

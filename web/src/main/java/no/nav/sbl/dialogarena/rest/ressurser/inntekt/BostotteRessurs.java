@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
@@ -69,17 +70,16 @@ public class BostotteRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
         List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
-        String soknadstype = "bostotte";
 
         if (opplysninger.getBekreftelse() == null){
             opplysninger.setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(opplysninger, soknadstype, bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
+        setBekreftelse(opplysninger, BOSTOTTE, bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
 
         if (bostotteFrontend.bekreftelse != null){
-            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
-            addInntektIfCheckedElseDeleteInOversikt(inntekter, soknadstype, tittel, bostotteFrontend.bekreftelse);
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(BOSTOTTE));
+            addInntektIfCheckedElseDeleteInOversikt(inntekter, BOSTOTTE, tittel, bostotteFrontend.bekreftelse);
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
@@ -87,7 +87,7 @@ public class BostotteRessurs {
 
     private void setBekreftelseOnBostotteFrontend(JsonOkonomiopplysninger opplysninger, BostotteFrontend bostotteFrontend) {
         opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("bostotte"))
+                .filter(bekreftelse -> bekreftelse.getType().equals(BOSTOTTE))
                 .findFirst()
                 .ifPresent(jsonOkonomibekreftelse -> bostotteFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }

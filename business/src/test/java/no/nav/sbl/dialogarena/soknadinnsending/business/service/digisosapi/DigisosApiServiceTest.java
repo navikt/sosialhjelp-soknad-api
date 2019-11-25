@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilOpplasting;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -121,5 +121,4 @@ public class DigisosApiServiceTest {
                 .withData(new byte[]{1, 2, 3}));
         return opplastedeVedlegg;
     }
-
 }

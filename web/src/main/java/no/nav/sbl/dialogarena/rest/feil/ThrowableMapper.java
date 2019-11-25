@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +43,7 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
             }
 
             return status(exception.getResponse().getStatus()).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Noe uventet feilet")).build();
-        } else if (e instanceof SamtidigOppdateringException){
+        } else if (e instanceof SamtidigOppdateringException) {
             logger.warn(e.getMessage(), e);
             return status(Response.Status.CONFLICT).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Samtidig oppdatering av søknad")).build();
         } else {

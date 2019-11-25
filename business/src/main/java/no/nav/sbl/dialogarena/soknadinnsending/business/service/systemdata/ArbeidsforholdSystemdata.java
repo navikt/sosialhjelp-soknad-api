@@ -22,8 +22,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService.Sokeperiode;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 
 @Component
 public class ArbeidsforholdSystemdata implements Systemdata {
@@ -50,20 +52,18 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         List<JsonOkonomioversiktInntekt> inntekter = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad);
 
-        String soknadstype = "sluttoppgjoer";
         if (typeIsInList(jsonVedleggs, "sluttoppgjor")){
-            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, soknadstype, tittel);
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(SLUTTOPPGJOER));
+            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, SLUTTOPPGJOER, tittel);
         } else {
-            removeUtbetalingIfPresentInOpplysninger(utbetalinger, soknadstype);
+            removeUtbetalingIfPresentInOpplysninger(utbetalinger, SLUTTOPPGJOER);
         }
 
-        soknadstype = "jobb";
         if (typeIsInList(jsonVedleggs, "lonnslipp")){
-            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(soknadstype));
-            addInntektIfNotPresentInOversikt(inntekter, soknadstype, tittel);
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(JOBB));
+            addInntektIfNotPresentInOversikt(inntekter, JOBB, tittel);
         } else {
-            removeInntektIfPresentInOversikt(inntekter, soknadstype);
+            removeInntektIfPresentInOversikt(inntekter, JOBB);
         }
     }
 

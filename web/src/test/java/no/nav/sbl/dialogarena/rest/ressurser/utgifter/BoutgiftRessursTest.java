@@ -26,6 +26,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -37,14 +38,6 @@ public class BoutgiftRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
-    private static final String BEKREFTELSE_TYPE = "boutgifter";
-    private static final String HUSLEIE_TYPE = "husleie";
-    private static final String STROM_TYPE = "strom";
-    private static final String KOMMUNALAVGIFT_TYPE = "kommunalAvgift";
-    private static final String OPPVARMING_TYPE = "oppvarming";
-    private static final String BOLIGLAN_TYPE_1 = "boliglanAvdrag";
-    private static final String BOLIGLAN_TYPE_2 = "boliglanRenter";
-    private static final String ANNET_TYPE = "annenBoutgift";
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -90,8 +83,8 @@ public class BoutgiftRessursTest {
     @Test
     public void getBoutgifterSkalReturnereBekreftelserLikTrue(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithBoutgifter(true, asList(HUSLEIE_TYPE, STROM_TYPE, KOMMUNALAVGIFT_TYPE,
-                        OPPVARMING_TYPE, BOLIGLAN_TYPE_1, BOLIGLAN_TYPE_2, ANNET_TYPE)));
+                createJsonInternalSoknadWithBoutgifter(true, asList(UTGIFTER_HUSLEIE, UTGIFTER_STROM, UTGIFTER_KOMMUNAL_AVGIFT,
+                        UTGIFTER_OPPVARMING, UTGIFTER_BOLIGLAN_AVDRAG, UTGIFTER_BOLIGLAN_RENTER, UTGIFTER_ANNET_BO)));
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
 
@@ -108,8 +101,8 @@ public class BoutgiftRessursTest {
     public void putBoutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBoutgifter(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
-                createJsonInternalSoknadWithBoutgifter(true, asList(HUSLEIE_TYPE, STROM_TYPE,
-                        KOMMUNALAVGIFT_TYPE, ANNET_TYPE)));
+                createJsonInternalSoknadWithBoutgifter(true, asList(UTGIFTER_HUSLEIE, UTGIFTER_STROM,
+                        UTGIFTER_KOMMUNAL_AVGIFT, UTGIFTER_ANNET_BO)));
 
         BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
         boutgifterFrontend.setBekreftelse(false);
@@ -153,15 +146,15 @@ public class BoutgiftRessursTest {
         List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
         assertThat(boutgiftBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(boutgiftBekreftelse.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(boutgiftBekreftelse.getType(), is(BEKREFTELSE_BOUTGIFTER));
         assertTrue(boutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(HUSLEIE_TYPE)));
-        assertFalse(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(BOLIGLAN_TYPE_1)));
-        assertFalse(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(BOLIGLAN_TYPE_2)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(STROM_TYPE)));
-        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(KOMMUNALAVGIFT_TYPE)));
-        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(OPPVARMING_TYPE)));
-        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(ANNET_TYPE)));
+        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_HUSLEIE)));
+        assertFalse(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_AVDRAG)));
+        assertFalse(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_RENTER)));
+        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_STROM)));
+        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_KOMMUNAL_AVGIFT)));
+        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_OPPVARMING)));
+        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_ANNET_BO)));
     }
 
     @Test
@@ -189,15 +182,15 @@ public class BoutgiftRessursTest {
         List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
         assertThat(boutgiftBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(boutgiftBekreftelse.getType(), is(BEKREFTELSE_TYPE));
+        assertThat(boutgiftBekreftelse.getType(), is(BEKREFTELSE_BOUTGIFTER));
         assertTrue(boutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(HUSLEIE_TYPE)));
-        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(BOLIGLAN_TYPE_1)));
-        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(BOLIGLAN_TYPE_2)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(STROM_TYPE)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(KOMMUNALAVGIFT_TYPE)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(OPPVARMING_TYPE)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(ANNET_TYPE)));
+        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_HUSLEIE)));
+        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_AVDRAG)));
+        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_RENTER)));
+        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_STROM)));
+        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_KOMMUNAL_AVGIFT)));
+        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_OPPVARMING)));
+        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_ANNET_BO)));
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
@@ -211,13 +204,13 @@ public class BoutgiftRessursTest {
         List<JsonOkonomioversiktUtgift> oversiktUtgifter = new ArrayList<>();
         List<JsonOkonomiOpplysningUtgift> opplysningUtgifter = new ArrayList<>();
         for (String utgiftstype: utgiftstyper) {
-            if (utgiftstype.equals(HUSLEIE_TYPE) || utgiftstype.equals(BOLIGLAN_TYPE_1) || utgiftstype.equals(BOLIGLAN_TYPE_2)) {
+            if (utgiftstype.equals(UTGIFTER_HUSLEIE) || utgiftstype.equals(UTGIFTER_BOLIGLAN_AVDRAG) || utgiftstype.equals(UTGIFTER_BOLIGLAN_RENTER)) {
                 oversiktUtgifter.add(new JsonOkonomioversiktUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
                         .withTittel("tittel"));
-            } else if (utgiftstype.equals(STROM_TYPE) || utgiftstype.equals(OPPVARMING_TYPE)
-                    || utgiftstype.equals(KOMMUNALAVGIFT_TYPE) || utgiftstype.equals(ANNET_TYPE)) {
+            } else if (utgiftstype.equals(UTGIFTER_STROM) || utgiftstype.equals(UTGIFTER_OPPVARMING)
+                    || utgiftstype.equals(UTGIFTER_KOMMUNAL_AVGIFT) || utgiftstype.equals(UTGIFTER_ANNET_BO)) {
                 opplysningUtgifter.add(new JsonOkonomiOpplysningUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
@@ -226,7 +219,7 @@ public class BoutgiftRessursTest {
         }
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBekreftelse(asList(new JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
-                .withType(BEKREFTELSE_TYPE)
+                .withType(BEKREFTELSE_BOUTGIFTER)
                 .withVerdi(harUtgifter)));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().setUtgift(oversiktUtgifter);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setUtgift(opplysningUtgifter);

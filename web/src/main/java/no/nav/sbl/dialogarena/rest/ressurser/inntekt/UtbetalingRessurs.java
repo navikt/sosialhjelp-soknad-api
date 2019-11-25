@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -44,10 +46,10 @@ public class UtbetalingRessurs {
 
     @GET
     public UtbetalingerFrontend hentUtbetalinger(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
-        final UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
+        UtbetalingerFrontend utbetalingerFrontend = new UtbetalingerFrontend();
 
         utbetalingerFrontend.setUtbetalingerFraNavFeilet(soknad.getSoknad().getDriftsinformasjon().getUtbetalingerFraNavFeilet());
 
@@ -68,15 +70,15 @@ public class UtbetalingRessurs {
     @PUT
     public void updateUtbetalinger(@PathParam("behandlingsId") String behandlingsId, UtbetalingerFrontend utbetalingerFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 
         if (opplysninger.getBekreftelse() == null){
             opplysninger.setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(opplysninger, "utbetaling", utbetalingerFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.inntekter"));
+        setBekreftelse(opplysninger, BEKREFTELSE_UTBETALING, utbetalingerFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.inntekter"));
         setUtbetalinger(opplysninger, utbetalingerFrontend);
         setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend);
 
@@ -86,21 +88,17 @@ public class UtbetalingRessurs {
     private void setUtbetalinger(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = opplysninger.getUtbetaling();
 
-        String type = "utbytte";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.utbytte);
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTBETALING_UTBYTTE));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, UTBETALING_UTBYTTE, tittel, utbetalingerFrontend.utbytte);
 
-        type = "salg";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.salg);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTBETALING_SALG));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, UTBETALING_SALG, tittel, utbetalingerFrontend.salg);
 
-        type = "forsikring";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.forsikring);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTBETALING_FORSIKRING));
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, UTBETALING_FORSIKRING, tittel, utbetalingerFrontend.forsikring);
 
-        type = "annen";
         tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet");
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, type, tittel, utbetalingerFrontend.annet);
+        addUtbetalingIfCheckedElseDeleteInOpplysninger(utbetalinger, UTBETALING_ANNET, tittel, utbetalingerFrontend.annet);
     }
 
     private void setBeskrivelseAvAnnet(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
@@ -118,7 +116,7 @@ public class UtbetalingRessurs {
 
     private void setBekreftelseOnUtbetalingerFrontend(JsonOkonomiopplysninger opplysninger, UtbetalingerFrontend utbetalingerFrontend) {
         opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("utbetaling")).findFirst()
+                .filter(bekreftelse -> bekreftelse.getType().equals(BEKREFTELSE_UTBETALING)).findFirst()
                 .ifPresent(jsonOkonomibekreftelse -> utbetalingerFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
@@ -126,16 +124,16 @@ public class UtbetalingRessurs {
         opplysninger.getUtbetaling().forEach(
                 utbetaling -> {
                     switch(utbetaling.getType()){
-                        case "utbytte":
+                        case UTBETALING_UTBYTTE:
                             utbetalingerFrontend.setUtbytte(true);
                             break;
-                        case "salg":
+                        case UTBETALING_SALG:
                             utbetalingerFrontend.setSalg(true);
                             break;
-                        case "forsikring":
+                        case UTBETALING_FORSIKRING:
                             utbetalingerFrontend.setForsikring(true);
                             break;
-                        case "annen":
+                        case UTBETALING_ANNET:
                             utbetalingerFrontend.setAnnet(true);
                             break;
                     }

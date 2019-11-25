@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi;
+package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
 
 public class FilMetadata {
 

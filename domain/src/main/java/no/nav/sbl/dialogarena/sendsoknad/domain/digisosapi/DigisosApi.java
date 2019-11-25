@@ -1,0 +1,12 @@
+package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
+
+import java.util.List;
+import java.util.Map;
+
+public interface DigisosApi {
+    void ping();
+
+    Map<String, KommuneInfo> hentKommuneInfo();
+
+    String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
+}

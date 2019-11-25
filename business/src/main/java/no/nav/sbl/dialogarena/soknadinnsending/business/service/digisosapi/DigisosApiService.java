@@ -10,9 +10,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.FilOpplasting;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,8 +106,8 @@ public class DigisosApiService {
 
     }
 
-    void sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
-        digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token);
+    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
+        return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token);
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
@@ -136,7 +135,7 @@ public class DigisosApiService {
                 .withFilnavn("ettersendelse.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
@@ -146,7 +145,7 @@ public class DigisosApiService {
                 .withFilnavn("Brukerkvittering.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
@@ -156,7 +155,7 @@ public class DigisosApiService {
                 .withFilnavn("Soknad-juridisk.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
@@ -166,34 +165,35 @@ public class DigisosApiService {
                 .withFilnavn(opplastetVedlegg.getFilnavn())
                 .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
                 .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(Base64.getEncoder().encode(pdf)));
+                new ByteArrayInputStream(pdf));
     }
 
-    public void sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
+    public String sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
         if (MockUtils.isTillatMockRessurs()) {
-            return;
+            return null;
         }
 
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
-            log.error(String.format("Kan ikke sende inn ettersendingen med ID %s uten å ha lastet opp vedlegg", behandlingsId));
+            log.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
-        log.info(String.format("Starter innsending av søknad med behandlingsId %s, skal sendes til DigisosApi", behandlingsId));
+        log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi", behandlingsId);
 
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid);
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true);
 
         List<FilOpplasting> filOpplastinger = lagDokumentListe(soknadUnderArbeid);
-        log.info(String.format("Laster opp %d", filOpplastinger.size()));
+        log.info("Laster opp {}", filOpplastinger.size());
         String soknadJson = getSoknadJson(soknadUnderArbeid);
         String vedleggJson = getVedleggJson(soknadUnderArbeid);
-        sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, behandlingsId, token);
+        String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, behandlingsId, token);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
             logAlderTilKibana(OidcFeatureToggleUtils.getUserId());
         }
+        return digisosId;
     }
 
     String getSoknadJson(SoknadUnderArbeid soknadUnderArbeid) {

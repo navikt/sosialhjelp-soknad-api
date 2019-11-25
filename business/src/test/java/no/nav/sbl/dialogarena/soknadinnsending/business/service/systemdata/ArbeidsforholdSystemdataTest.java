@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -110,7 +112,7 @@ public class ArbeidsforholdSystemdataTest {
         JsonOkonomioversiktInntekt inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt().get(0);
 
         assertThat(inntekt.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(inntekt.getType(), is("jobb"));
+        assertThat(inntekt.getType(), is(JOBB));
         assertThat(inntekt.getTittel(), is(tittel));
         assertThat(inntekt.getOverstyrtAvBruker(), is(false));
     }
@@ -133,7 +135,7 @@ public class ArbeidsforholdSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().get(0);
 
         assertThat(utbetaling.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetaling.getType(), is("sluttoppgjoer"));
+        assertThat(utbetaling.getType(), is(SLUTTOPPGJOER));
         assertThat(utbetaling.getTittel(), is(tittel));
         assertThat(utbetaling.getOverstyrtAvBruker(), is(false));
     }
@@ -160,8 +162,8 @@ public class ArbeidsforholdSystemdataTest {
     private JsonInternalSoknad createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp() {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getArbeid().getForhold().add(new JsonArbeidsforhold());
-        jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().add(new JsonOkonomiOpplysningUtbetaling().withType("sluttoppgjoer"));
-        jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt().add(new JsonOkonomioversiktInntekt().withType("jobb"));
+        jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().add(new JsonOkonomiOpplysningUtbetaling().withType(SLUTTOPPGJOER));
+        jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt().add(new JsonOkonomioversiktInntekt().withType(JOBB));
         return jsonInternalSoknad;
     }
 

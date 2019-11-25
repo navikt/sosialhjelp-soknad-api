@@ -10,7 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseServi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.sosialhjelp.InnsendingService;

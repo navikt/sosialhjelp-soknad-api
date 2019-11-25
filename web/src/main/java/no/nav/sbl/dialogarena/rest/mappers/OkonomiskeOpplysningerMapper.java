@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOpplysninger;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class OkonomiskeOpplysningerMapper {
@@ -70,7 +71,7 @@ public class OkonomiskeOpplysningerMapper {
             utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, eksisterendeOversiktUtgift.get()));
 
             // ---------- Spesialtilfelle for boliglan. Må kjøre på nytt for å få med renter ----------
-            if (soknadType.equals("boliglanAvdrag")){
+            if (soknadType.equals(UTGIFTER_BOLIGLAN_AVDRAG)){
                 addBoliglanRenterToUtgifter(vedleggFrontend, jsonOkonomi, utgifter);
             }
             // ----------------------------------------------------------------------------------------
@@ -87,7 +88,7 @@ public class OkonomiskeOpplysningerMapper {
                 .findFirst();
 
         if (vedleggFrontend.type.equals("annet|annet")){
-            eksisterendeOpplysningUtgift = Optional.of(new JsonOkonomiOpplysningUtgift().withType("annen").withTittel("Annen (brukerangitt): "));
+            eksisterendeOpplysningUtgift = Optional.of(new JsonOkonomiOpplysningUtgift().withType(UTGIFTER_ANDRE_UTGIFTER).withTittel("Annen (brukerangitt): "));
             final List<JsonOkonomiOpplysningUtgift> utgifter = jsonOkonomi.getOpplysninger().getUtgift();
             if (checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)){
                 removeUtgiftIfPresentInOpplysninger(utgifter, soknadType);
@@ -132,7 +133,7 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static void addBoliglanRenterToUtgifter(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, List<JsonOkonomioversiktUtgift> utgifter) {
-        String soknadType = "boliglanRenter";
+        String soknadType = UTGIFTER_BOLIGLAN_RENTER;
         final Optional<JsonOkonomioversiktUtgift> eksisterendeRenter = jsonOkonomi.getOversikt().getUtgift().stream()
                 .filter(utgift -> utgift.getType().equals(soknadType))
                 .findFirst();
@@ -199,8 +200,8 @@ public class OkonomiskeOpplysningerMapper {
         return new JsonOkonomioversiktUtgift().withKilde(JsonKilde.BRUKER)
                 .withType(type)
                 .withTittel(getTittelWithBeskrivelse(typetittel, radFrontend.beskrivelse))
-                .withBelop(type.equals("boliglanAvdrag") ? radFrontend.avdrag :
-                        type.equals("boliglanRenter") ? radFrontend.renter : radFrontend.belop)
+                .withBelop(type.equals(UTGIFTER_BOLIGLAN_AVDRAG) ? radFrontend.avdrag :
+                        type.equals(UTGIFTER_BOLIGLAN_RENTER) ? radFrontend.renter : radFrontend.belop)
                 .withOverstyrtAvBruker(false);
     }
 

@@ -33,9 +33,9 @@ public class BosituasjonRessurs {
 
     @GET
     public BosituasjonFrontend hentBosituasjon(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        final JsonBosituasjon bosituasjon = soknad.getSoknad().getData().getBosituasjon();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        JsonBosituasjon bosituasjon = soknad.getSoknad().getData().getBosituasjon();
 
         return new BosituasjonFrontend()
                 .withBotype(bosituasjon.getBotype())
@@ -45,9 +45,9 @@ public class BosituasjonRessurs {
     @PUT
     public void updateBosituasjon(@PathParam("behandlingsId") String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonBosituasjon bosituasjon = soknad.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonBosituasjon bosituasjon = soknad.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
         bosituasjon.setKilde(JsonKildeBruker.BRUKER);
         if (bosituasjonFrontend.botype != null) {
             bosituasjon.setBotype(bosituasjonFrontend.botype);

@@ -39,7 +39,7 @@ class VirusScanConnection {
             }
             ScanResult scanResult = scanResults[0];
             if (OK.equals(scanResult.getResult())) {
-                logger.info("Ingen virus i {}", filnavn);
+                logger.info("Ingen virus i fil");
                 return false;
             }
             logger.warn("Fant virus i {}, status {}", filnavn, scanResult.getResult());

@@ -103,7 +103,7 @@ public class SoknadServiceTest {
 
         ArgumentCaptor<SoknadUnderArbeid> soknadUnderArbeidCaptor = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
-        verify(henvendelsesConnector, atLeastOnce()).oppdaterMetadataVedAvslutningAvSoknad(eq(behandlingsId), vedleggCaptor.capture(), soknadUnderArbeidCaptor.capture());
+        verify(henvendelsesConnector, atLeastOnce()).oppdaterMetadataVedAvslutningAvSoknad(eq(behandlingsId), vedleggCaptor.capture(), soknadUnderArbeidCaptor.capture(), eq(false));
         verify(oppgaveHandterer).leggTilOppgave(eq(behandlingsId), anyString());
 
         SoknadUnderArbeid capturedSoknadUnderArbeid = soknadUnderArbeidCaptor.getValue();

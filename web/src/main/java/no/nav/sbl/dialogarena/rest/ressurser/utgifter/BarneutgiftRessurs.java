@@ -23,8 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TittelNoklerOgBelopNavnMapper.soknadTypeToTittelKey;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -44,16 +45,16 @@ public class BarneutgiftRessurs {
 
     @GET
     public BarneutgifterFrontend hentBarneutgifter(@PathParam("behandlingsId") String behandlingsId){
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
 
-        final JsonHarForsorgerplikt harForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt();
+        JsonHarForsorgerplikt harForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt();
         if (harForsorgerplikt == null || harForsorgerplikt.getVerdi() == null || !harForsorgerplikt.getVerdi()){
             return new BarneutgifterFrontend().withHarForsorgerplikt(false);
         }
 
-        final JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
-        final BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend().withHarForsorgerplikt(true);
+        JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
+        BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend().withHarForsorgerplikt(true);
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return barneutgifterFrontend;
@@ -68,15 +69,15 @@ public class BarneutgiftRessurs {
     @PUT
     public void updateBarneutgifter(@PathParam("behandlingsId") String behandlingsId, BarneutgifterFrontend barneutgifterFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
-        final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        final JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
-        setBekreftelse(okonomi.getOpplysninger(), "barneutgifter", barneutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.barn"));
+        setBekreftelse(okonomi.getOpplysninger(), BEKREFTELSE_BARNEUTGIFTER, barneutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.barn"));
         setBarneutgifter(okonomi, barneutgifterFrontend);
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
@@ -86,43 +87,38 @@ public class BarneutgiftRessurs {
         List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = okonomi.getOpplysninger().getUtgift();
         List<JsonOkonomioversiktUtgift> oversiktBarneutgifter = okonomi.getOversikt().getUtgift();
 
-        String type = "barnehage";
-        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOversikt(oversiktBarneutgifter, type, tittel, barneutgifterFrontend.barnehage);
+        String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BARNEHAGE));
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBarneutgifter, UTGIFTER_BARNEHAGE, tittel, barneutgifterFrontend.barnehage);
 
-        type = "sfo";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOversikt(oversiktBarneutgifter, type, tittel, barneutgifterFrontend.sfo);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_SFO));
+        addutgiftIfCheckedElseDeleteInOversikt(oversiktBarneutgifter, UTGIFTER_SFO, tittel, barneutgifterFrontend.sfo);
 
-        type = "barnFritidsaktiviteter";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.fritidsaktiviteter);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BARN_FRITIDSAKTIVITETER));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, UTGIFTER_BARN_FRITIDSAKTIVITETER, tittel, barneutgifterFrontend.fritidsaktiviteter);
 
-        type = "barnTannregulering";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.tannregulering);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_BARN_TANNREGULERING));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, UTGIFTER_BARN_TANNREGULERING, tittel, barneutgifterFrontend.tannregulering);
 
-        type = "annenBarneutgift";
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTittelKey.get(type));
-        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, type, tittel, barneutgifterFrontend.annet);
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(UTGIFTER_ANNET_BARN));
+        addutgiftIfCheckedElseDeleteInOpplysninger(opplysningerBarneutgifter, UTGIFTER_ANNET_BARN, tittel, barneutgifterFrontend.annet);
     }
 
     private void setBekreftelseOnBarneutgifterFrontend(JsonOkonomiopplysninger opplysninger, BarneutgifterFrontend barneutgifterFrontend) {
         opplysninger.getBekreftelse().stream()
-                .filter(bekreftelse -> bekreftelse.getType().equals("barneutgifter")).findFirst()
+                .filter(bekreftelse -> bekreftelse.getType().equals(BEKREFTELSE_BARNEUTGIFTER)).findFirst()
                 .ifPresent(jsonOkonomibekreftelse -> barneutgifterFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
     }
 
     private void setUtgiftstyperOnBarneutgifterFrontend(JsonOkonomi okonomi, BarneutgifterFrontend barneutgifterFrontend) {
         okonomi.getOpplysninger().getUtgift().forEach(utgift -> {
             switch(utgift.getType()){
-                case "barnFritidsaktiviteter":
+                case UTGIFTER_BARN_FRITIDSAKTIVITETER:
                     barneutgifterFrontend.setFritidsaktiviteter(true);
                     break;
-                case "barnTannregulering":
+                case UTGIFTER_BARN_TANNREGULERING:
                     barneutgifterFrontend.setTannregulering(true);
                     break;
-                case "annenBarneutgift":
+                case UTGIFTER_ANNET_BARN:
                     barneutgifterFrontend.setAnnet(true);
                     break;
             }
@@ -130,10 +126,10 @@ public class BarneutgiftRessurs {
         okonomi.getOversikt().getUtgift().forEach(
                 utgift -> {
                     switch(utgift.getType()){
-                        case "barnehage":
+                        case UTGIFTER_BARNEHAGE:
                             barneutgifterFrontend.setBarnehage(true);
                             break;
-                        case "sfo":
+                        case UTGIFTER_SFO:
                             barneutgifterFrontend.setSfo(true);
                             break;
                     }
