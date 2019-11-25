@@ -67,10 +67,8 @@ public class EndpointDataMocking {
 
         try {
             when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequest("12"));
-        } catch (HentPersonPersonIkkeFunnet hentPersonPersonIkkeFunnet) {
+        } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
-        } catch (HentPersonSikkerhetsbegrensning hentPersonSikkerhetsbegrensning) {
-            hentPersonSikkerhetsbegrensning.printStackTrace();
         }
 
     }
