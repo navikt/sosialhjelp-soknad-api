@@ -12,10 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDat
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 import org.slf4j.Logger;
@@ -56,8 +53,15 @@ public class PersonServiceV3 {
     }
 
     private Person getPerson(String fodselsnummer) throws HentPersonPersonIkkeFunnet, HentPersonSikkerhetsbegrensning {
+
+        Personidenter personidenter = new Personidenter();
+        personidenter.setValue("FNR");
+        NorskIdent norskIdent = new NorskIdent();
+        norskIdent.setIdent(fodselsnummer);
+        norskIdent.setType(personidenter);
+
         HentPersonRequest request = new HentPersonRequest().withAktoer(new PersonIdent().withIdent(
-                new NorskIdent().withIdent(fodselsnummer))).withInformasjonsbehov(Informasjonsbehov.ADRESSE, Informasjonsbehov.BANKKONTO);
+                norskIdent)).withInformasjonsbehov(Informasjonsbehov.ADRESSE, Informasjonsbehov.BANKKONTO);
         HentPersonResponse hentPersonResponse = personV3.hentPerson(request);
         return hentPersonResponse.getPerson();
     }
@@ -72,7 +76,7 @@ public class PersonServiceV3 {
 
         return new AdresserOgKontonummer()
                 .withMidlertidigAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getMidlertidigAdresseNorge() == null ? null : personData.getMidlertidigAdresseNorge().getStrukturertAdresse()))
-                .withFolkeregistrertAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getBostedsadresse() == null? null:personData.getBostedsadresse().getStrukturertAdresse()))
+                .withFolkeregistrertAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getBostedsadresse() == null ? null:personData.getBostedsadresse().getStrukturertAdresse()))
                 .withKontonummer(personData.getKontonummer());
     }
 
