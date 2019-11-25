@@ -33,7 +33,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-@Path("/soknader/{behandlingsId}/personalia/navEnheter")
+@Path("/soknader/{behandlingsId}/personalia")
 @Timed
 @Produces(APPLICATION_JSON)
 public class NavEnhetRessurs {
@@ -56,6 +56,7 @@ public class NavEnhetRessurs {
     private KommuneInfoService kommuneInfoService;
 
     @GET
+    @Path("/navEnheter")
     public List<NavEnhetFrontend> hentNavEnheter(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
         JsonSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad();
@@ -69,7 +70,8 @@ public class NavEnhetRessurs {
         return findSoknadsmottaker(soknad, adresseValg, valgtEnhetNr);
     }
 
-    @Path("/valgt")
+    @GET
+    @Path("/navEnhet")
     public NavEnhetFrontend hentValgtNavEnhet(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
         JsonSoknadsmottaker soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad().getMottaker();
@@ -92,6 +94,7 @@ public class NavEnhetRessurs {
     }
 
     @PUT
+    @Path("/navEnheter")
     public void updateNavEnhet(@PathParam("behandlingsId") String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();

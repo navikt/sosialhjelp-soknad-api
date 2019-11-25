@@ -42,11 +42,11 @@ public class NorgConsumerMock {
     }
 
 
-    public static RsNorgEnhet getKommuneResponse(String kommune, String enhetsNr){
+    public static RsNorgEnhet getKommuneResponse(String enhetsnavn, String enhetsNr){
         return new RsNorgEnhet()
                 .withEnhetId(Long.parseLong("9"+ enhetsNr + enhetsNr))
                 .withEnhetNr(enhetsNr)
-                .withNavn("NAV " + kommune)
+                .withNavn("NAV " + enhetsnavn)
                 .withOrgNrTilKommunaltNavKontor("9"+ enhetsNr + enhetsNr);
     }
 
@@ -66,6 +66,8 @@ public class NorgConsumerMock {
                 .put("5001", getKommuneResponse("Moss", "5001"))
                 .put("0136", getKommuneResponse("Rygge", "0136"))
                 .put("0403", getKommuneResponse("Hamar", "0403"))
+                .put("2222", getKommuneResponse("Dobbelby", "2222"))
+                .put("2223", getKommuneResponse("Dobbelby2", "2223"))
                 .build();
     }
 
