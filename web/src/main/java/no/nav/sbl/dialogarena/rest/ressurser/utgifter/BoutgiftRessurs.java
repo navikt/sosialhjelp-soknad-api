@@ -4,9 +4,11 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -20,10 +22,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 
 @Controller
@@ -45,9 +48,11 @@ public class BoutgiftRessurs {
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
         String eier = OidcFeatureToggleUtils.getUserId();
-        JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
-        JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
+        JsonSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad();
+        JsonOkonomi okonomi = soknad.getData().getOkonomi();
         BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
+
+        setSkalViseInfoVedBekreftelseOnBoutgifterFrontend(soknad, okonomi, boutgifterFrontend);
 
         if (okonomi.getOpplysninger().getBekreftelse() == null){
             return boutgifterFrontend;
@@ -138,6 +143,37 @@ public class BoutgiftRessurs {
                 });
     }
 
+    private void setSkalViseInfoVedBekreftelseOnBoutgifterFrontend(JsonSoknad soknad, JsonOkonomi okonomi, BoutgifterFrontend boutgifterFrontend) {
+        if (soknad.getDriftsinformasjon().getStotteFraHusbankenFeilet()) {
+            if (okonomi.getOpplysninger().getBekreftelse() != null) {
+                okonomi.getOpplysninger().getBekreftelse().stream()
+                        .filter(bekreftelse -> bekreftelse.getType().equals(BOSTOTTE))
+                        .findFirst()
+                        .ifPresent(jsonOkonomibekreftelse -> boutgifterFrontend.setSkalViseInfoVedBekreftelse(
+                                jsonOkonomibekreftelse.getVerdi() != null ? jsonOkonomibekreftelse.getVerdi() : false));
+            }
+        } else {
+            List<JsonBostotteSak> bostotteSaker = mapToUtSaksStatuser(soknad);
+            List<JsonOkonomiOpplysningUtbetaling> bostotteUtbetalinger = mapToBostotteUtbetalinger(soknad);
+            if ((bostotteSaker == null || bostotteSaker.isEmpty()) &&
+                    (bostotteUtbetalinger == null || bostotteUtbetalinger.isEmpty())) {
+                boutgifterFrontend.setSkalViseInfoVedBekreftelse(true);
+            }
+        }
+    }
+
+    private List<JsonOkonomiOpplysningUtbetaling> mapToBostotteUtbetalinger(JsonSoknad soknad) {
+        return soknad.getData().getOkonomi().getOpplysninger().getUtbetaling().stream()
+                .filter(utbetaling -> utbetaling.getType().equals(UTBETALING_HUSBANKEN))
+                .collect(Collectors.toList());
+    }
+
+    private List<JsonBostotteSak> mapToUtSaksStatuser(JsonSoknad soknad) {
+        return soknad.getData().getOkonomi().getOpplysninger().getBostotte().getSaker().stream()
+                .filter(sak -> sak.getType().equals(UTBETALING_HUSBANKEN))
+                .collect(Collectors.toList());
+    }
+
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BoutgifterFrontend {
         public Boolean bekreftelse;
@@ -147,6 +183,7 @@ public class BoutgiftRessurs {
         public boolean oppvarming;
         public boolean boliglan;
         public boolean annet;
+        public boolean skalViseInfoVedBekreftelse;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
@@ -174,6 +211,10 @@ public class BoutgiftRessurs {
 
         public void setAnnet(boolean annet) {
             this.annet = annet;
+        }
+
+        public void setSkalViseInfoVedBekreftelse(boolean skalViseInfoVedBekreftelse) {
+            this.skalViseInfoVedBekreftelse = skalViseInfoVedBekreftelse;
         }
     }
 }

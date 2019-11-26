@@ -39,7 +39,7 @@ public class BostotteSystemdata implements Systemdata {
             boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
             List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
             okonomi.getOpplysninger().getUtbetaling().addAll(jsonBostotteUtbetalinger);
-            List<JsonBostotteSak> jsonSaksStatuser = mapToJsonOkonomiOpplysningSaker(bostotteDto, trengerViDataFraDeSiste60Dager);
+            List<JsonBostotteSak> jsonSaksStatuser = mapToBostotteSaker(bostotteDto, trengerViDataFraDeSiste60Dager);
             if(okonomi.getOpplysninger().getBostotte() == null) {
                 okonomi.getOpplysninger().setBostotte(new JsonBostotte());
             }
@@ -94,15 +94,15 @@ public class BostotteSystemdata implements Systemdata {
         return WordUtils.capitalizeFully(navn);
     }
 
-    private List<JsonBostotteSak> mapToJsonOkonomiOpplysningSaker(BostotteDto bostotteDto, boolean trengerViDataFraDeSiste60Dager) {
+    private List<JsonBostotteSak> mapToBostotteSaker(BostotteDto bostotteDto, boolean trengerViDataFraDeSiste60Dager) {
         int filterDays = trengerViDataFraDeSiste60Dager ? 60 : 30;
         return bostotteDto.getSaker().stream()
                 .filter(sakerDto -> sakerDto.getDato().isAfter(LocalDate.now().minusDays(filterDays)))
-                .map(this::mapToJsonOkonomiOpplysningSak)
+                .map(this::mapToBostotteSak)
                 .collect(Collectors.toList());
     }
 
-    private JsonBostotteSak mapToJsonOkonomiOpplysningSak(SakerDto sakerDto) {
+    private JsonBostotteSak mapToBostotteSak(SakerDto sakerDto) {
         JsonBostotteSak bostotteSak = new JsonBostotteSak()
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withType(UTBETALING_HUSBANKEN)
