@@ -5,10 +5,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -22,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
@@ -153,25 +150,20 @@ public class BoutgiftRessurs {
                                 jsonOkonomibekreftelse.getVerdi() != null ? jsonOkonomibekreftelse.getVerdi() : false));
             }
         } else {
-            List<JsonBostotteSak> bostotteSaker = mapToUtSaksStatuser(soknad);
-            List<JsonOkonomiOpplysningUtbetaling> bostotteUtbetalinger = mapToBostotteUtbetalinger(soknad);
-            if ((bostotteSaker == null || bostotteSaker.isEmpty()) &&
-                    (bostotteUtbetalinger == null || bostotteUtbetalinger.isEmpty())) {
+            if (!isAnyHusbankenSaker(soknad) && !isAnyHusbankenUtbetalinger(soknad)) {
                 boutgifterFrontend.setSkalViseInfoVedBekreftelse(true);
             }
         }
     }
 
-    private List<JsonOkonomiOpplysningUtbetaling> mapToBostotteUtbetalinger(JsonSoknad soknad) {
+    private boolean isAnyHusbankenUtbetalinger(JsonSoknad soknad) {
         return soknad.getData().getOkonomi().getOpplysninger().getUtbetaling().stream()
-                .filter(utbetaling -> utbetaling.getType().equals(UTBETALING_HUSBANKEN))
-                .collect(Collectors.toList());
+                .anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_HUSBANKEN));
     }
 
-    private List<JsonBostotteSak> mapToUtSaksStatuser(JsonSoknad soknad) {
+    private boolean isAnyHusbankenSaker(JsonSoknad soknad) {
         return soknad.getData().getOkonomi().getOpplysninger().getBostotte().getSaker().stream()
-                .filter(sak -> sak.getType().equals(UTBETALING_HUSBANKEN))
-                .collect(Collectors.toList());
+                .anyMatch(sak -> sak.getType().equals(UTBETALING_HUSBANKEN));
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
