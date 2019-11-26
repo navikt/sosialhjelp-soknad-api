@@ -79,10 +79,10 @@ public class SoknadRessurs {
 
     @GET
     @Path("/{behandlingsId}/erSystemdataEndret")
-    public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId) {
+    public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        systemdata.update(soknadUnderArbeid, "");
+        systemdata.update(soknadUnderArbeid, token);
 
         final JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
