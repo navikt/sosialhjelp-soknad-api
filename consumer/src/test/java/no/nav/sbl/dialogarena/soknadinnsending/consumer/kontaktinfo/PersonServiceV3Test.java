@@ -97,4 +97,13 @@ public class PersonServiceV3Test {
         AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
         assertThat(adresserOgKontonummer.getFolkeregistrertAdresse().getStrukturertAdresse().kommunenummer).isEqualTo("0301");
     }
+
+    @Test
+    public void skalHenteKontonummer() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
+        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Bruker()
+                .withBankkonto(new BankkontoNorge().withBankkonto(new Bankkontonummer().withBankkontonummer("00000000000")))
+        ));
+        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
+        assertThat(adresserOgKontonummer.getKontonummer()).isEqualTo("00000000000");
+    }
 }
