@@ -147,7 +147,7 @@ public class BoutgiftRessurs {
                         .filter(bekreftelse -> bekreftelse.getType().equals(BOSTOTTE))
                         .findFirst()
                         .ifPresent(jsonOkonomibekreftelse -> boutgifterFrontend.setSkalViseInfoVedBekreftelse(
-                                jsonOkonomibekreftelse.getVerdi() != null ? jsonOkonomibekreftelse.getVerdi() : false));
+                                jsonOkonomibekreftelse.getVerdi() != null && !jsonOkonomibekreftelse.getVerdi()));
             }
         } else {
             if (!isAnyHusbankenSaker(soknad) && !isAnyHusbankenUtbetalinger(soknad)) {
