@@ -63,6 +63,7 @@ public class PersonServiceV3 {
         HentPersonRequest request = new HentPersonRequest().withAktoer(new PersonIdent().withIdent(
                 norskIdent)).withInformasjonsbehov(Informasjonsbehov.ADRESSE, Informasjonsbehov.BANKKONTO);
         HentPersonResponse hentPersonResponse = personV3.hentPerson(request);
+
         return hentPersonResponse.getPerson();
     }
 
@@ -72,6 +73,7 @@ public class PersonServiceV3 {
         }
 
         String diskresjonskode = personData.getDiskresjonskode();
+        logger.info("diskresjonskode=" + diskresjonskode);
         boolean diskresjonsKodeSatt = diskresjonskode != null && (diskresjonskode.equals("6") || diskresjonskode.equals("7"));
 
         return new AdresserOgKontonummer()

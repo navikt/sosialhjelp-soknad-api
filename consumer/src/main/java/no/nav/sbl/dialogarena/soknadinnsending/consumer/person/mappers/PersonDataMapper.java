@@ -20,6 +20,7 @@ public class PersonDataMapper {
     private static final String KODE_7 = "7";
 
     public PersonData tilPersonData(Person person) {
+
         return new PersonData()
                 .withFornavn(kanskjeFornavn(person))
                 .withMellomnavn(kanskjeMellomnavn(person))
