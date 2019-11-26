@@ -35,7 +35,8 @@
     "SERVICEGATEWAY_URL": "https://service-gw-q0.oera-q.local/",
     "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_q0",
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "true",
-    "SOKNAD_BRUKERPROFIL_URL": "https://tjenester-q1.nav.no/brukerprofil/",
+    "SOKNAD_BOSTOTTE_URL": "https://api-gw-q0.oera.no/ekstern/husbanken/api/nav/minbostotte",
+    "SOKNAD_BOSTOTTE_PING_URL": "https://api-gw-q0.oera.no/ekstern/husbanken/api/nav/minbostotte/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "90",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester-q0.nav.no/soknadinnsending",
@@ -63,6 +64,9 @@
     "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip",
     "VIRKSOMHET_PERSON_V3_ENDPOINTURL": "https://wasapp-q0.adeo.no/tpsws/ws/Person/v3",
     "VIRKSOMHET_PERSON_V3_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip"
+    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip",
+    "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
+    "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "true",
+    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false"
   }
 }

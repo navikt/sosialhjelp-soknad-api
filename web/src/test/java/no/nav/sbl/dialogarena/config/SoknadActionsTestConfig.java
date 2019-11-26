@@ -4,10 +4,12 @@ import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
@@ -32,9 +34,20 @@ public class SoknadActionsTestConfig {
     public SoknadService soknadService() {
         return mock(SoknadService.class);
     }
+
     @Bean
     public DigisosApi DigisosApi() {
         return mock(DigisosApi.class);
+    }
+
+    @Bean
+    public KommuneInfoService KommuneInfoService() {
+        return mock(KommuneInfoService.class);
+    }
+
+    @Bean
+    public DigisosApiService DigisosApiService() {
+        return mock(DigisosApiService.class);
     }
 
     @Bean

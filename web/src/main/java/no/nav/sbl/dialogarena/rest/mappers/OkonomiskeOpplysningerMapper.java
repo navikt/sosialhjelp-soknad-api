@@ -210,7 +210,7 @@ public class OkonomiskeOpplysningerMapper {
     }
 
     private static String getTypetittel(String tittel) {
-        return !tittel.contains(":") ? tittel : tittel.substring(0, tittel.indexOf(":") + 2);
+        return !tittel.contains(":") ? tittel : tittel.substring(0, tittel.indexOf(":") + 1) + " ";
     }
 
     private static List<JsonOkonomiOpplysningUtgift> mapToOppysningUtgiftList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtgift eksisterendeUtgift) {

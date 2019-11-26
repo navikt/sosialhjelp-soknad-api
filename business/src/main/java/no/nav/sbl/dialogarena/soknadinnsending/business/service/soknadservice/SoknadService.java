@@ -14,6 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
@@ -74,7 +75,7 @@ public class SoknadService {
     private SystemdataUpdater systemdata;
 
     @Transactional
-    public String startSoknad() {
+    public String startSoknad(String token) {
         String mainUid = randomUUID().toString();
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
@@ -98,7 +99,7 @@ public class SoknadService {
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
 
-        systemdata.update(soknadUnderArbeid);
+        systemdata.update(soknadUnderArbeid, token);
 
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, aktorId);
 
@@ -115,7 +116,7 @@ public class SoknadService {
         final String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()){
-            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", behandlingsId);
+            logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
         logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
@@ -184,6 +185,7 @@ public class SoknadService {
                                 .withOpplysninger(new JsonOkonomiopplysninger()
                                         .withUtbetaling(new ArrayList<>())
                                         .withUtgift(new ArrayList<>())
+                                        .withBostotte(new JsonBostotte())
                                 )
                                 .withOversikt(new JsonOkonomioversikt()
                                         .withInntekt(new ArrayList<>())

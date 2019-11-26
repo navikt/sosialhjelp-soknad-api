@@ -18,10 +18,10 @@ public class KontonummerSystemdata implements Systemdata {
     private PersonServiceV3 personService;
     
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
-        JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-        JsonKontonummer kontonummer = personalia.getKontonummer();
-        String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
+        final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        final JsonKontonummer kontonummer = personalia.getKontonummer();
+        final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (kontonummer.getKilde() == JsonKilde.SYSTEM) {
             String systemverdi = innhentSystemverdiKontonummer(personIdentifikator);
             if (systemverdi == null || systemverdi.isEmpty()){

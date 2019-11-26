@@ -40,7 +40,7 @@ public class KontonummerSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -55,7 +55,7 @@ public class KontonummerSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -70,7 +70,7 @@ public class KontonummerSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedKontonummer());
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -86,7 +86,7 @@ public class KontonummerSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -101,7 +101,7 @@ public class KontonummerSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 

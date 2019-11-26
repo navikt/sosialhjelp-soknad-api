@@ -35,7 +35,8 @@ import org.springframework.context.annotation.Import;
         ArbeidsforholdSystemdata.class,
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,
-        FamilieSystemdata.class
+        FamilieSystemdata.class,
+        BostotteSystemdata.class
 })
 public class BusinessConfig {
 

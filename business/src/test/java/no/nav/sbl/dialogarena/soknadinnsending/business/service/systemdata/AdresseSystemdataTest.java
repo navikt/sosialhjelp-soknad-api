@@ -69,7 +69,7 @@ public class AdresseSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonAdresse folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
 
@@ -87,7 +87,7 @@ public class AdresseSystemdataTest {
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonAdresse folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
         JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -109,7 +109,7 @@ public class AdresseSystemdataTest {
                 .withPostadresse(new JsonAdresse());
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         JsonAdresse postadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPostadresse();
@@ -131,7 +131,7 @@ public class AdresseSystemdataTest {
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG));
         when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonAdresse folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
         JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
