@@ -2,7 +2,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.ks.svarut.servicesv9.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
@@ -204,7 +209,12 @@ public class FiksSenderTest {
                 .withTilleggsinfo("tilleggsinfo")
                 .withFiler(jsonFiler));
         return new JsonInternalSoknad()
-                .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg));
+                .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg))
+                .withSoknad(new JsonSoknad()
+                        .withDriftsinformasjon(new JsonDriftsinformasjon())
+                        .withData(new JsonData()
+                                .withOkonomi(new JsonOkonomi()
+                                .withOpplysninger(new JsonOkonomiopplysninger()))));
     }
 
     private List<OpplastetVedlegg> lagOpplastetVedlegg() {

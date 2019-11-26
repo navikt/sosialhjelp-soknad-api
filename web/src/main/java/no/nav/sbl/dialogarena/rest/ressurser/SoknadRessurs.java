@@ -26,9 +26,10 @@ import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -81,7 +82,7 @@ public class SoknadRessurs {
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        systemdata.update(soknadUnderArbeid);
+        systemdata.update(soknadUnderArbeid, "");
 
         final JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -92,7 +93,7 @@ public class SoknadRessurs {
         soknadUnderArbeidService.sortArbeid(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid());
         soknadUnderArbeidService.sortArbeid(notUpdatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid());
 
-        if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
+        if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)) {
             return false;
         } else {
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
@@ -103,12 +104,12 @@ public class SoknadRessurs {
     @POST
     @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response) {
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @HeaderParam(value = AUTHORIZATION) String token) {
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad();
+            opprettetBehandlingsId = soknadService.startSoknad(token);
         } else {
             final String eier = OidcFeatureToggleUtils.getUserId();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);

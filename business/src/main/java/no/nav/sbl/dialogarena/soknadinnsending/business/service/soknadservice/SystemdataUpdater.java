@@ -1,12 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import javax.inject.Inject;
+import java.util.List;
 
 @Component
 public class SystemdataUpdater {
@@ -14,7 +12,7 @@ public class SystemdataUpdater {
     @Inject
     private List<Systemdata> systemdatas;
 
-    public void update(SoknadUnderArbeid soknadUnderArbeid) {
-        systemdatas.forEach((s) -> s.updateSystemdataIn(soknadUnderArbeid));
+    public void update(SoknadUnderArbeid soknadUnderArbeid, String token) {
+        systemdatas.forEach((s) -> s.updateSystemdataIn(soknadUnderArbeid, token));
     }
 }
