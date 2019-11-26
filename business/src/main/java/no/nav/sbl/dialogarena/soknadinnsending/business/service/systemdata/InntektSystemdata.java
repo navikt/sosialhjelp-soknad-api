@@ -49,7 +49,9 @@ public class InntektSystemdata implements Systemdata {
         List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerNav = innhentNavSystemregistrertInntekt(personIdentifikator);
         List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
 
-        okonomiOpplysningUtbetalinger.removeIf(utbetaling -> utbetaling.getKilde().equals(JsonKilde.SYSTEM));
+        okonomiOpplysningUtbetalinger.removeIf(
+                utbetaling -> utbetaling.getType().equalsIgnoreCase(UTBETALING_NAVYTELSE) ||
+                        utbetaling.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setUtbetalingerFraNavFeilet(false);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
         if (systemUtbetalingerNav == null) {
