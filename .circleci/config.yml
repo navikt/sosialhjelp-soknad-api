@@ -56,8 +56,8 @@ jobs:
           name: Deploy on Heroku
           command: |
             heroku container:login
-            heroku container:push --recursive -a digisos-bostotte-api # FIXME: Endres tilbake til $CIRCLE_PROJECT_REPONAME
-            heroku container:release web -a digisos-bostotte-api # FIXME: Endres tilbake til $CIRCLE_PROJECT_REPONAME
+            heroku container:push --recursive -a $CIRCLE_PROJECT_REPONAME
+            heroku container:release web -a $CIRCLE_PROJECT_REPONAME
 
   browser-test:
     docker:
@@ -110,7 +110,7 @@ workflows:
       - deploy_heroku:
           filters:
             branches:
-              only: feature/BostotteApi # FIXME Endres tilbake til master
+              only: master
 #      - browser-test:
 #          requires:
 #            - deploy_heroku
