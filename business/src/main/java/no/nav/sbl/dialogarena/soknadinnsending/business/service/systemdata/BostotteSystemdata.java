@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRol
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -39,6 +40,9 @@ public class BostotteSystemdata implements Systemdata {
             List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
             okonomi.getOpplysninger().getUtbetaling().addAll(jsonBostotteUtbetalinger);
             List<JsonBostotteSak> jsonSaksStatuser = mapToJsonOkonomiOpplysningSaker(bostotteDto, trengerViDataFraDeSiste60Dager);
+            if(okonomi.getOpplysninger().getBostotte() == null) {
+                okonomi.getOpplysninger().setBostotte(new JsonBostotte());
+            }
             okonomi.getOpplysninger().getBostotte().getSaker().addAll(jsonSaksStatuser);
             soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
         } else {
