@@ -101,8 +101,10 @@ public class FiksSender {
         }
 
         // TODO: 2019-11-25 pcn: Denne er her midlertidig for å fange opp søknader som er started før bostøtte ble rullet ut...
-        if(internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte() == null) {
-            internalSoknad.getSoknad().getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
+        if (!soknadUnderArbeid.erEttersendelse()) {
+            if (internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte() == null) {
+                internalSoknad.getSoknad().getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
+            }
         }
 
         List<Dokument> fiksDokumenter = new ArrayList<>();
