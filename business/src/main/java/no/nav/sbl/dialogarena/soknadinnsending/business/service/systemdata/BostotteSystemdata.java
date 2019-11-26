@@ -35,7 +35,7 @@ public class BostotteSystemdata implements Systemdata {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
-        clearOldHusbankenData(okonomi.getOpplysninger());
+        fjernGamleHusbankenData(okonomi.getOpplysninger());
         BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
         if (bostotteDto != null) {
             boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
@@ -49,7 +49,7 @@ public class BostotteSystemdata implements Systemdata {
         }
     }
 
-    private void clearOldHusbankenData(JsonOkonomiopplysninger okonomiopplysninger) {
+    private void fjernGamleHusbankenData(JsonOkonomiopplysninger okonomiopplysninger) {
         okonomiopplysninger.getUtbetaling().removeIf(utbetaling -> utbetaling.getType().equalsIgnoreCase(HUSBANKEN_TYPE));
         okonomiopplysninger.setBostotte(new JsonBostotte());
     }
