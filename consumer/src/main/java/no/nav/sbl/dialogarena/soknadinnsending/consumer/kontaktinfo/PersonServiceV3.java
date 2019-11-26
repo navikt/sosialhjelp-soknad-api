@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Gateadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Matrikkeladresse;
@@ -40,16 +42,21 @@ public class PersonServiceV3 {
     public AdresserOgKontonummer hentAddresserOgKontonummer(String fodselsnummer) {
         try {
             Person person = getPerson(fodselsnummer);
+            if (person == null) {
+                logger.warn("Person er null");
+                return new AdresserOgKontonummer();
+            }
             PersonDataMapper personDataMapper = new PersonDataMapper();
             PersonData personData = personDataMapper.tilPersonData(person);
             return mapResponsTilAdresserOgKontonummer(personData);
         } catch (WebServiceException e) {
             logger.warn("Ingen kontakt med TPS (Person_V3).", e);
             throw new TjenesteUtilgjengeligException("TPS:webserviceException", e);
-        } catch (HentPersonSikkerhetsbegrensning | HentPersonPersonIkkeFunnet hentPersonSikkerhetsbegrensning) {
-            hentPersonSikkerhetsbegrensning.printStackTrace();
+        } catch (HentPersonSikkerhetsbegrensning e) {
+            throw new SikkerhetsBegrensningException(e.getMessage(), e);
+        } catch (HentPersonPersonIkkeFunnet e) {
+            throw new IkkeFunnetException(e.getMessage(), e);
         }
-        return null;
     }
 
     private Person getPerson(String fodselsnummer) throws HentPersonPersonIkkeFunnet, HentPersonSikkerhetsbegrensning {
@@ -73,12 +80,12 @@ public class PersonServiceV3 {
         }
 
         String diskresjonskode = personData.getDiskresjonskode();
-        logger.info("diskresjonskode=" + diskresjonskode);
+
         boolean diskresjonsKodeSatt = diskresjonskode != null && (diskresjonskode.equals("6") || diskresjonskode.equals("7"));
 
         return new AdresserOgKontonummer()
                 .withMidlertidigAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getMidlertidigAdresseNorge() == null ? null : personData.getMidlertidigAdresseNorge().getStrukturertAdresse()))
-                .withFolkeregistrertAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getBostedsadresse() == null ? null:personData.getBostedsadresse().getStrukturertAdresse()))
+                .withFolkeregistrertAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getBostedsadresse() == null ? null : personData.getBostedsadresse().getStrukturertAdresse()))
                 .withKontonummer(personData.getKontonummer());
     }
 
@@ -93,17 +100,17 @@ public class PersonServiceV3 {
             matrikkelAdresse.festenummer = midlertidigMatrikkeladresse.getFestenummer();
             matrikkelAdresse.seksjonsnummer = midlertidigMatrikkeladresse.getSeksjonsnummer();
             matrikkelAdresse.undernummer = midlertidigMatrikkeladresse.getUndernummer();
-            matrikkelAdresse.type = "Matrikkel";
+            matrikkelAdresse.type = "matrikkel";
             matrikkelAdresse.kommunenummer = midlertidigMatrikkeladresse.getKommunenummer();
             matrikkelAdresse.postnummer = midlertidigMatrikkeladresse.getPostnummer();
             matrikkelAdresse.poststed = midlertidigMatrikkeladresse.getPoststed();
             midlertidigAdresse.setStrukturertAdresse(matrikkelAdresse);
-            midlertidigAdresse.setAdressetype("Matrikkel");
+            midlertidigAdresse.setAdressetype("matrikkel");
         }
         if (strukturertAdresse instanceof Gateadresse) {
             Gateadresse midlertidigGateadresse = (Gateadresse) strukturertAdresse;
             Adresse.Gateadresse gateadresse = new Adresse.Gateadresse();
-            gateadresse.type = "Gateadresse";
+            gateadresse.type = "gateadresse";
             gateadresse.gatenavn = midlertidigGateadresse.getGatenavn();
             gateadresse.husnummer = String.valueOf(midlertidigGateadresse.getHusnummer());
             gateadresse.husbokstav = midlertidigGateadresse.getHusbokstav();
@@ -112,7 +119,7 @@ public class PersonServiceV3 {
             gateadresse.postnummer = midlertidigGateadresse.getPostnummer();
             gateadresse.poststed = midlertidigGateadresse.getPoststed();
             midlertidigAdresse.setStrukturertAdresse(gateadresse);
-            midlertidigAdresse.setAdressetype("Gateadresse");
+            midlertidigAdresse.setAdressetype("gateadresse");
         }
         return midlertidigAdresse;
     }
