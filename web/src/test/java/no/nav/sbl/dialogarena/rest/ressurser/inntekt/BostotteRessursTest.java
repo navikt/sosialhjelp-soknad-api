@@ -31,7 +31,7 @@ import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte.HUSBANKEN_TYPE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -214,7 +214,7 @@ public class BostotteRessursTest {
         if(harUtbetalinger) {
             utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withType(HUSBANKEN_TYPE)
+                    .withType(UTBETALING_HUSBANKEN)
                     .withTittel("tittel"));
         }
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setUtbetaling(utbetalinger);
@@ -233,7 +233,7 @@ public class BostotteRessursTest {
         if(harSaker) {
             saker.add(new JsonBostotteSak()
                     .withKilde(JsonKildeSystem.SYSTEM)
-                    .withType(HUSBANKEN_TYPE)
+                    .withType(UTBETALING_HUSBANKEN)
                     .withStatus("UNDER_BEHANDLING"));
         }
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().setSaker(saker);

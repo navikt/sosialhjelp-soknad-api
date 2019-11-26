@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte.HUSBANKEN_TYPE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 
 @Component
 public class BostotteSystemdata implements Systemdata {
@@ -82,7 +82,7 @@ public class BostotteSystemdata implements Systemdata {
     private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(UtbetalingerDto utbetalingerDto) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
-                .withType(HUSBANKEN_TYPE)
+                .withType(UTBETALING_HUSBANKEN)
                 .withTittel("Statlig bostøtte")
                 .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.fromValue(gjorForsteBokstavStor(utbetalingerDto.getMottaker().toString())))
                 .withNetto(utbetalingerDto.getBelop().doubleValue())
@@ -105,7 +105,7 @@ public class BostotteSystemdata implements Systemdata {
     private JsonBostotteSak mapToJsonOkonomiOpplysningSak(SakerDto sakerDto) {
         JsonBostotteSak bostotteSak = new JsonBostotteSak()
                 .withKilde(JsonKildeSystem.SYSTEM)
-                .withType(HUSBANKEN_TYPE)
+                .withType(UTBETALING_HUSBANKEN)
                 .withStatus(sakerDto.getStatus().toString())
                 .withDato(sakerDto.getDato().toString());
         if(sakerDto.getVedtak() != null) {
