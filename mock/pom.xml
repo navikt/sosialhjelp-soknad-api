@@ -45,11 +45,6 @@
 
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>svarut-ks-forsendelsesservice</artifactId>
         </dependency>
 

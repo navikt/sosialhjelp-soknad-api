@@ -19,7 +19,7 @@ import org.mockito.Mockito;
 
 import javax.xml.datatype.DatatypeFactory;
 
-import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.Person2Mock.createPersonV3HentPersonRequest;
+import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock.createPersonV3HentPersonRequest;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 

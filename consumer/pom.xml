@@ -29,10 +29,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>person-v3-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.Person2Mock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
@@ -37,7 +37,7 @@ public class PersonV3WSConfig {
 
     @Bean
     public PersonV3 personV3Endpoint() {
-        PersonV3 mock = new Person2Mock().Person2Mock();
+        PersonV3 mock = new PersonV3Mock().Person2Mock();
         PersonV3 prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Person", prod, mock, PERSON_KEY, PersonV3.class);
     }

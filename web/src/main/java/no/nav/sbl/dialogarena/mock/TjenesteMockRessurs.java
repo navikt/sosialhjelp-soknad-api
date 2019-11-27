@@ -9,7 +9,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.Person2Mock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
@@ -177,7 +177,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        Person2Mock.setBrukerprofil(jsonBrukerProfil);
+        PersonV3Mock.setPersonV3(jsonBrukerProfil);
         clearCache();
     }
 

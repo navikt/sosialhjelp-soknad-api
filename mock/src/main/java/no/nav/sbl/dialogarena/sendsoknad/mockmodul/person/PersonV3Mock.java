@@ -19,16 +19,15 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class Person2Mock {
+public class PersonV3Mock {
 
     private static HashMap<String, Person> responses = new HashMap<>();
 
-    public static void setBrukerprofil(String jsonBrukerprofil) {
+    public static void setPersonV3(String json) {
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(jsonBrukerprofil);
 
         try {
-            JsonNode node = mapper.readTree(jsonBrukerprofil);
+            JsonNode node = mapper.readTree(json);
             String gatenavnNode = node.at("/person/bostedsadresse/strukturertAdresse/gatenavn").textValue();
             String postkodeNode = node.at("/person/bostedsadresse/strukturertAdresse/poststed/value").textValue();
             String kommunenr = node.at("/person/bostedsadresse/strukturertAdresse/kommunenummer").textValue();
