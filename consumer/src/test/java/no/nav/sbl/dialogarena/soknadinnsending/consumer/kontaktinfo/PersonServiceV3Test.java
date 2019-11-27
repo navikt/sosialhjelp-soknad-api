@@ -33,6 +33,7 @@ public class PersonServiceV3Test {
     private Kodeverk kodeverk;
 
 
+
     @Test(expected = IkkeFunnetException.class)
     public void skalKasteIkkeFunnetExceptionHvisPersonIkkeFinnesITps() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
         when(personV3.hentPerson(any(HentPersonRequest.class))).thenThrow(new HentPersonPersonIkkeFunnet("", null));
