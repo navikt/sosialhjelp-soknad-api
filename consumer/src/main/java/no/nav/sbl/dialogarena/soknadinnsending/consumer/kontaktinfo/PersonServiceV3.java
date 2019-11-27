@@ -90,38 +90,40 @@ public class PersonServiceV3 {
     }
 
     private Adresse getAdresse(StrukturertAdresse strukturertAdresse) {
-        Adresse midlertidigAdresse = new Adresse();
+        Adresse adresse = new Adresse();
         if (strukturertAdresse instanceof Matrikkeladresse) {
-            Matrikkeladresse midlertidigMatrikkeladresse = (Matrikkeladresse) strukturertAdresse;
+            Matrikkeladresse matrikkeladresseStrukturert = (Matrikkeladresse) strukturertAdresse;
             Adresse.MatrikkelAdresse matrikkelAdresse = new Adresse.MatrikkelAdresse();
-            matrikkelAdresse.eiendomsnavn = midlertidigMatrikkeladresse.getEiendomsnavn();
-            matrikkelAdresse.gaardsnummer = midlertidigMatrikkeladresse.getGardsnummer();
-            matrikkelAdresse.bruksnummer = midlertidigMatrikkeladresse.getBruksnummer();
-            matrikkelAdresse.festenummer = midlertidigMatrikkeladresse.getFestenummer();
-            matrikkelAdresse.seksjonsnummer = midlertidigMatrikkeladresse.getSeksjonsnummer();
-            matrikkelAdresse.undernummer = midlertidigMatrikkeladresse.getUndernummer();
+            matrikkelAdresse.eiendomsnavn = matrikkeladresseStrukturert.getEiendomsnavn();
+            matrikkelAdresse.gaardsnummer = matrikkeladresseStrukturert.getGardsnummer();
+            matrikkelAdresse.bruksnummer = matrikkeladresseStrukturert.getBruksnummer();
+            matrikkelAdresse.festenummer = matrikkeladresseStrukturert.getFestenummer();
+            matrikkelAdresse.seksjonsnummer = matrikkeladresseStrukturert.getSeksjonsnummer();
+            matrikkelAdresse.undernummer = matrikkeladresseStrukturert.getUndernummer();
             matrikkelAdresse.type = "matrikkel";
-            matrikkelAdresse.kommunenummer = midlertidigMatrikkeladresse.getKommunenummer();
-            matrikkelAdresse.postnummer = midlertidigMatrikkeladresse.getPostnummer();
-            matrikkelAdresse.poststed = midlertidigMatrikkeladresse.getPoststed();
-            midlertidigAdresse.setStrukturertAdresse(matrikkelAdresse);
-            midlertidigAdresse.setAdressetype("matrikkel");
+            matrikkelAdresse.kommunenummer = matrikkeladresseStrukturert.getKommunenummer();
+            matrikkelAdresse.postnummer = matrikkeladresseStrukturert.getPostnummer();
+            matrikkelAdresse.poststed = matrikkeladresseStrukturert.getPoststed();
+            adresse.setStrukturertAdresse(matrikkelAdresse);
+            adresse.setAdressetype("matrikkel");
         }
+
         if (strukturertAdresse instanceof Gateadresse) {
-            Gateadresse midlertidigGateadresse = (Gateadresse) strukturertAdresse;
+            Gateadresse gateAdresseStrukturert = (Gateadresse) strukturertAdresse;
             Adresse.Gateadresse gateadresse = new Adresse.Gateadresse();
             gateadresse.type = "gateadresse";
-            gateadresse.gatenavn = midlertidigGateadresse.getGatenavn();
-            gateadresse.husnummer = String.valueOf(midlertidigGateadresse.getHusnummer());
-            gateadresse.husbokstav = midlertidigGateadresse.getHusbokstav();
-            gateadresse.bolignummer = midlertidigGateadresse.getBolignummer();
-            gateadresse.kommunenummer = midlertidigGateadresse.getKommunenummer();
-            gateadresse.postnummer = midlertidigGateadresse.getPostnummer();
-            gateadresse.poststed = midlertidigGateadresse.getPoststed();
-            midlertidigAdresse.setStrukturertAdresse(gateadresse);
-            midlertidigAdresse.setAdressetype("gateadresse");
+            gateadresse.gatenavn = gateAdresseStrukturert.getGatenavn();
+            gateadresse.husnummer = String.valueOf(gateAdresseStrukturert.getHusnummer());
+            gateadresse.husbokstav = gateAdresseStrukturert.getHusbokstav();
+            gateadresse.bolignummer = gateAdresseStrukturert.getBolignummer();
+            gateadresse.kommunenummer = gateAdresseStrukturert.getKommunenummer();
+            gateadresse.postnummer = gateAdresseStrukturert.getPostnummer();
+            gateadresse.poststed = gateAdresseStrukturert.getPoststed();
+            adresse.setStrukturertAdresse(gateadresse);
+            adresse.setAdressetype("gateadresse");
         }
-        return midlertidigAdresse;
+
+        return adresse;
     }
 
 }
