@@ -25,7 +25,7 @@ public class AdresseSystemdata implements Systemdata {
     private BrukerprofilService brukerprofilService;
 
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonPersonalia personalia = soknad.getData().getPersonalia();
         String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();

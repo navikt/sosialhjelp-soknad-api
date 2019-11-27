@@ -14,6 +14,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -240,5 +241,16 @@ public class TjenesteMockRessurs {
         }
         NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
         clearCache();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/bostotte")
+    public void setBostotte(@RequestBody String bostotteJson, @QueryParam("fnr") String fnr) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+        MockBostotteImpl.setBostotteData(fnr, bostotteJson);
     }
 }

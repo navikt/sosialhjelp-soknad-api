@@ -5,11 +5,15 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,12 +24,14 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte.HUSBANKEN_TYPE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -68,7 +74,7 @@ public class BostotteRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
-        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotteBekreftelse(BEHANDLINGSID);
+        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
         assertThat(bostotteFrontend.bekreftelse, nullValue());
     }
@@ -78,7 +84,7 @@ public class BostotteRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotte(true));
 
-        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotteBekreftelse(BEHANDLINGSID);
+        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
         assertTrue(bostotteFrontend.bekreftelse);
     }
@@ -88,7 +94,7 @@ public class BostotteRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotte(false));
 
-        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotteBekreftelse(BEHANDLINGSID);
+        BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
         assertFalse(bostotteFrontend.bekreftelse);
     }
@@ -140,6 +146,46 @@ public class BostotteRessursTest {
         assertFalse(bostotte.getVerdi());
     }
 
+    @Test
+    public void bostotte_skalBareHaUtRiktigUtbetaling() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithBostotteUtbetalinger(true, asList("tilfeldig", "salg", "lonn")));
+
+        BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
+
+        Assertions.assertThat(bostotteFrontend.utbetalinger).hasSize(1);
+    }
+
+    @Test
+    public void bostotte_skalIkkeHaUtbetaling() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithBostotteUtbetalinger(false, asList("tilfeldig", "salg", "lonn")));
+
+        BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
+
+        Assertions.assertThat(bostotteFrontend.utbetalinger).hasSize(0);
+    }
+
+    @Test
+    public void bostotte_skalBareHaUtRiktigSak() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithSaker(true, asList("tilfeldig", "salg", "lonn")));
+
+        BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
+
+        Assertions.assertThat(bostotteFrontend.saker).hasSize(1);
+    }
+
+    @Test
+    public void bostotte_skalIkkeHaSak() {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn")));
+
+        BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
+
+        Assertions.assertThat(bostotteFrontend.saker).hasSize(0);
+    }
+
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
@@ -149,10 +195,48 @@ public class BostotteRessursTest {
     private SoknadUnderArbeid createJsonInternalSoknadWithBostotte(Boolean verdi) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().withBekreftelse(
-                asList(new JsonOkonomibekreftelse()
+                Collections.singletonList(new JsonOkonomibekreftelse()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(BOSTOTTE)
                         .withVerdi(verdi)));
+        return soknadUnderArbeid;
+    }
+
+    private SoknadUnderArbeid createJsonInternalSoknadWithBostotteUtbetalinger(Boolean harUtbetalinger, List<String> utbetalingTyper) {
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = new ArrayList<>();
+        for (String utbetaling: utbetalingTyper) {
+            utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
+                    .withKilde(JsonKilde.SYSTEM)
+                    .withType(utbetaling)
+                    .withTittel("tittel"));
+        }
+        if(harUtbetalinger) {
+            utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
+                    .withKilde(JsonKilde.SYSTEM)
+                    .withType(HUSBANKEN_TYPE)
+                    .withTittel("tittel"));
+        }
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setUtbetaling(utbetalinger);
+        return soknadUnderArbeid;
+    }
+
+    private SoknadUnderArbeid createJsonInternalSoknadWithSaker(Boolean harSaker, List<String> saksTyper) {
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        List<JsonBostotteSak> saker = new ArrayList<>();
+        for (String sak: saksTyper) {
+            saker.add(new JsonBostotteSak()
+                    .withKilde(JsonKildeSystem.SYSTEM)
+                    .withType(sak)
+                    .withStatus("STATUS"));
+        }
+        if(harSaker) {
+            saker.add(new JsonBostotteSak()
+                    .withKilde(JsonKildeSystem.SYSTEM)
+                    .withType(HUSBANKEN_TYPE)
+                    .withStatus("UNDER_BEHANDLING"));
+        }
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().setSaker(saker);
         return soknadUnderArbeid;
     }
 }

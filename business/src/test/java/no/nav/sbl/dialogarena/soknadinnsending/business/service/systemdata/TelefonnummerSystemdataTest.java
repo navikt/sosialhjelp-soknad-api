@@ -38,7 +38,7 @@ public class TelefonnummerSystemdataTest {
         when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(TELEFONNUMMER_SYSTEM));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -51,7 +51,7 @@ public class TelefonnummerSystemdataTest {
         when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer("+47" + TELEFONNUMMER_SYSTEM));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -64,7 +64,7 @@ public class TelefonnummerSystemdataTest {
         when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(TELEFONNUMMER_SYSTEM));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedTelefonnummer());
 
-        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -77,7 +77,7 @@ public class TelefonnummerSystemdataTest {
         when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(""));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -89,7 +89,7 @@ public class TelefonnummerSystemdataTest {
         when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(null));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 

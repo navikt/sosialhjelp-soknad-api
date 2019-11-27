@@ -18,7 +18,7 @@ public class KontonummerSystemdata implements Systemdata {
     private BrukerprofilService brukerprofilService;
     
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final JsonKontonummer kontonummer = personalia.getKontonummer();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
