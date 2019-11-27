@@ -123,7 +123,6 @@ public class PersonServiceV3 {
             adresse.setAdressetype("gateadresse");
         }
 
-
         return adresse;
     }
 
