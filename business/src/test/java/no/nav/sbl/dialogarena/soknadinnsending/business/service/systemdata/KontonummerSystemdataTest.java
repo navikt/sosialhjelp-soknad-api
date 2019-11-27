@@ -78,7 +78,6 @@ public class KontonummerSystemdataTest {
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_BRUKER));
     }
 
-
     @Test
     public void skalSetteNullDersomKontonummerErTomStreng() {
         AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
