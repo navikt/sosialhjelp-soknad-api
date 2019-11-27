@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
 
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
@@ -28,6 +29,9 @@ public class PersonServiceV3Test {
     private PersonServiceV3 personService;
     @Mock
     private PersonV3 personV3;
+    @Mock
+    private Kodeverk kodeverk;
+
 
     @Test(expected = IkkeFunnetException.class)
     public void skalKasteIkkeFunnetExceptionHvisPersonIkkeFinnesITps() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
