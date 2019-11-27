@@ -56,7 +56,7 @@ public class PersonV3Mock {
         }
     }
 
-    public PersonV3 Person2Mock() {
+    public PersonV3 PersonV3Mock() {
 
         PersonV3 mock = mock(PersonV3.class);
 
@@ -79,7 +79,7 @@ public class PersonV3Mock {
     }
 
     public static Person getDefaultPerson() {
-        Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Donald", "D.", "Mockmann");
+        Person person = genererPersonMedGyldigIdentOgNavn("01234567890", "Donald", "D.", "Mockmann");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();

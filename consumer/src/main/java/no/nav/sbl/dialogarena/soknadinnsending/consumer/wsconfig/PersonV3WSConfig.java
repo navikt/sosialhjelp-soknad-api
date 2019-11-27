@@ -37,7 +37,7 @@ public class PersonV3WSConfig {
 
     @Bean
     public PersonV3 personV3Endpoint() {
-        PersonV3 mock = new PersonV3Mock().Person2Mock();
+        PersonV3 mock = new PersonV3Mock().PersonV3Mock();
         PersonV3 prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Person", prod, mock, PERSON_KEY, PersonV3.class);
     }

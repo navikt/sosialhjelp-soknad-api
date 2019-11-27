@@ -25,6 +25,7 @@ public class KontonummerSystemdata implements Systemdata {
         if (kontonummer.getKilde() == JsonKilde.SYSTEM) {
             String systemverdi = innhentSystemverdiKontonummer(personIdentifikator);
             if (systemverdi == null || systemverdi.isEmpty()){
+                kontonummer.setKilde(JsonKilde.BRUKER);
                 kontonummer.setVerdi(null);
             } else {
                 String verdi = systemverdi.replaceAll("\\D", "");
