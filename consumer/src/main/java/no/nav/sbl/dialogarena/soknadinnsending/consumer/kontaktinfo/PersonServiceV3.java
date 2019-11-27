@@ -103,7 +103,7 @@ public class PersonServiceV3 {
             matrikkelAdresse.type = "matrikkel";
             matrikkelAdresse.kommunenummer = matrikkeladresseStrukturert.getKommunenummer();
             matrikkelAdresse.postnummer = matrikkeladresseStrukturert.getPostnummer();
-            matrikkelAdresse.poststed = matrikkeladresseStrukturert.getPoststed();
+            matrikkelAdresse.poststed =  kodeverk.getPoststed( matrikkelAdresse.postnummer);
             adresse.setStrukturertAdresse(matrikkelAdresse);
             adresse.setAdressetype("matrikkel");
         }
@@ -118,7 +118,7 @@ public class PersonServiceV3 {
             gateadresse.bolignummer = gateAdresseStrukturert.getBolignummer();
             gateadresse.kommunenummer = gateAdresseStrukturert.getKommunenummer();
             gateadresse.postnummer = gateAdresseStrukturert.getPostnummer();
-            gateadresse.poststed = gateAdresseStrukturert.getPoststed();
+            gateadresse.poststed = kodeverk.getPoststed( gateadresse.postnummer);
             adresse.setStrukturertAdresse(gateadresse);
             adresse.setAdressetype("gateadresse");
         }

@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import no.ks.svarut.servicesv9.PostAdresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Bostedsadresse;
@@ -10,7 +9,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Postboksad
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.StrukturertAdresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.UstrukturertAdresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.*;
-import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import org.slf4j.Logger;
 
@@ -26,13 +24,6 @@ public class PersonDataMapper {
 
     private static final Logger log = getLogger(PersonService.class);
     public PersonData tilPersonData(Person person) {
-        try {
-            String s = JsonSosialhjelpObjectMapper.createObjectMapper().writeValueAsString(person);
-            log.warn(s);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
         return new PersonData()
                 .withFornavn(kanskjeFornavn(person))
                 .withMellomnavn(kanskjeMellomnavn(person))
