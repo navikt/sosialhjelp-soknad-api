@@ -7,10 +7,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRol
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.apache.commons.lang3.text.WordUtils;
@@ -33,6 +35,7 @@ public class BostotteSystemdata implements Systemdata {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
+        fjernGamleHusbankenData(okonomi.getOpplysninger());
         BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
         if (bostotteDto != null) {
             boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
@@ -44,6 +47,11 @@ public class BostotteSystemdata implements Systemdata {
         } else {
             soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
         }
+    }
+
+    private void fjernGamleHusbankenData(JsonOkonomiopplysninger okonomiopplysninger) {
+        okonomiopplysninger.getUtbetaling().removeIf(utbetaling -> utbetaling.getType().equalsIgnoreCase(HUSBANKEN_TYPE));
+        okonomiopplysninger.setBostotte(new JsonBostotte());
     }
 
     private boolean harViDataFraSiste30Dager(BostotteDto bostotteDto) {
@@ -104,9 +112,9 @@ public class BostotteSystemdata implements Systemdata {
                 .withType(HUSBANKEN_TYPE)
                 .withStatus(sakerDto.getStatus().toString())
                 .withDato(sakerDto.getDato().toString());
-        if(sakerDto.getVedtak() != null) {
+        if (sakerDto.getVedtak() != null) {
             bostotteSak.withBeskrivelse(sakerDto.getVedtak().getBeskrivelse());
-            if(sakerDto.getVedtak().getType() != null) {
+            if (sakerDto.getVedtak().getType() != null) {
                 bostotteSak.withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.fromValue(sakerDto.getVedtak().getType()));
             }
         }
