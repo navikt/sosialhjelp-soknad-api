@@ -26,8 +26,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte.HUSBANKEN_TYPE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
@@ -98,13 +98,13 @@ public class BostotteRessurs {
 
     private List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalinger(JsonInternalSoknad soknad) {
         return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().stream()
-                .filter(utbetaling -> utbetaling.getType().equals(HUSBANKEN_TYPE))
+                .filter(utbetaling -> utbetaling.getType().equals(UTBETALING_HUSBANKEN))
                 .collect(Collectors.toList());
     }
 
     private List<JsonBostotteSak> mapToUtSaksStatuser(JsonInternalSoknad soknad) {
         return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker().stream()
-                .filter(sak -> sak.getType().equals(HUSBANKEN_TYPE))
+                .filter(sak -> sak.getType().equals(UTBETALING_HUSBANKEN))
                 .collect(Collectors.toList());
     }
 

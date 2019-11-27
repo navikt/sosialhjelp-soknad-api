@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte.HUSBANKEN_TYPE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedtaksstatus.AVSLAG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -102,7 +102,7 @@ public class BostotteSystemdataTest {
         assertThat(saker).hasSize(1);
         JsonBostotteSak sak = saker.get(0);
         assertThat(sak.getKilde()).isEqualTo(JsonKildeSystem.SYSTEM);
-        assertThat(sak.getType()).isEqualTo(HUSBANKEN_TYPE);
+        assertThat(sak.getType()).isEqualTo(UTBETALING_HUSBANKEN);
         assertThat(sak.getDato()).isEqualTo(sakerDto.getDato().toString());
         assertThat(sak.getStatus()).isEqualToIgnoringCase(sakerDto.getStatus().toString());
         assertThat(sak.getBeskrivelse()).isNull();
@@ -257,7 +257,7 @@ public class BostotteSystemdataTest {
     private void assertThatUtbetalingErKorrekt(BostotteMottaker mottaker, BigDecimal netto, JsonOkonomiOpplysningUtbetaling utbetaling, LocalDate utbetalingsDato) {
         assertThat(utbetaling.getTittel()).isEqualToIgnoringCase("Statlig bostøtte");
         assertThat(utbetaling.getMottaker()).isEqualTo(JsonOkonomiOpplysningUtbetaling.Mottaker.fromValue(mottaker.getValue()));
-        assertThat(utbetaling.getType()).isEqualTo(HUSBANKEN_TYPE);
+        assertThat(utbetaling.getType()).isEqualTo(UTBETALING_HUSBANKEN);
         assertThat(utbetaling.getUtbetalingsdato()).isEqualTo(utbetalingsDato.toString());
         assertThat(utbetaling.getNetto()).isEqualTo(netto.doubleValue());
         assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.SYSTEM);
