@@ -343,6 +343,7 @@ public class DigisosApiImpl implements DigisosApi {
         String tokenEndpoint;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     static class IdPortenAccessTokenResponse {
         @JsonProperty(value = "access_token", required = true)
         String accessToken;
