@@ -75,13 +75,18 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     @Override
+    public String getKommunenavn(final String kommunenummer) {
+        return hentFoersteTermnavnFraKodenavnIKodeverk(kommunenummer, KOMMUNE.toString());
+    }
+
+    @Override
     public String getPoststed(final String postnummer) {
-        return hentFoersteTermnavnFraKodeIKodeverk(postnummer, POSTNUMMER.toString());
+        return hentFoersteTermnavnFraKodenavnIKodeverk(postnummer, POSTNUMMER.toString());
     }
 
     @Override
     public String getLand(String landkode) {
-        String landFraKodeverk = hentFoersteTermnavnFraKodeIKodeverk(landkode, LANDKODE.toString());
+        String landFraKodeverk = hentFoersteTermnavnFraKodenavnIKodeverk(landkode, LANDKODE.toString());
 
         return formaterLand(landFraKodeverk);
     }
@@ -165,7 +170,7 @@ public class StandardKodeverk implements Kodeverk {
         return kodeverk.get(kodeverknavn);
     }
 
-    private String hentFoersteTermnavnFraKodeIKodeverk(String kodenavn, String kodeverknavn) {
+    private String hentFoersteTermnavnFraKodenavnIKodeverk(String kodenavn, String kodeverknavn) {
         for (XMLKode kode : kodeverkMedNavn(kodeverknavn).getKode()) {
             if (kode.getNavn().equalsIgnoreCase(kodenavn)) {
                 return kode.getTerm().get(0).getNavn();
