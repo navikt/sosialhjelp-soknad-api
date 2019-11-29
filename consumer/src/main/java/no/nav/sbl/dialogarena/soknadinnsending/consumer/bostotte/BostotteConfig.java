@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -29,7 +30,8 @@ public class BostotteConfig {
         if(MockUtils.isTillatMockRessurs()) {
             return new MockBostotteImpl();
         }
-        return new BostotteImpl(this, new RestTemplate());
+        RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
+        return new BostotteImpl(this, restTemplate);
     }
 
     @Bean
@@ -37,7 +39,15 @@ public class BostotteConfig {
         if(MockUtils.isTillatMockRessurs()) {
             return null;
         }
-        return BostotteImpl.opprettHusbankenPing(this, new RestTemplate());
+        return BostotteImpl.opprettHusbankenPing(this, new RestTemplate(getClientHttpRequestFactory()));
+    }
+
+    private HttpComponentsClientHttpRequestFactory getClientHttpRequestFactory() {
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+                = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setConnectTimeout(10_000);
+        clientHttpRequestFactory.setReadTimeout(60_000);
+        return clientHttpRequestFactory;
     }
 
     public String getUri() {
