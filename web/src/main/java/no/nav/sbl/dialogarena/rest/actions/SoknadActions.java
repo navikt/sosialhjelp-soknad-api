@@ -69,8 +69,7 @@ public class SoknadActions {
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
-        if (ServiceUtils.isRunningInProd()
-                || !isSendingTilFiksEnabled()
+        if (!isSendingTilFiksEnabled()
                 || soknadUnderArbeid == null
                 || isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
             log.info("BehandlingsId {} sendes til SvarUt.", behandlingsId);
