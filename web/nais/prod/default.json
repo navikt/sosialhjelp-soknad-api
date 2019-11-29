@@ -46,9 +46,6 @@
     "VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL": "https://modapp.adeo.no/aareg-services/ArbeidsforholdService/v3",
     "VIRKSOMHET_ARBEIDSFORHOLD_V3_SECURITYTOKEN": "SAML",
     "VIRKSOMHET_ARBEIDSFORHOLD_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-arbeidsforhold-v3-tjenestespesifikasjon/3.0.0/nav-arbeidsforhold-v3-tjenestespesifikasjon-3.0.0.zip",
-    "VIRKSOMHET_BRUKERPROFIL_V1_ENDPOINTURL": "https://wasapp.adeo.no/tpsws/Brukerprofil_v1",
-    "VIRKSOMHET_BRUKERPROFIL_V1_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_BRUKERPROFIL_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-brukerprofil-v1-tjenestespesifikasjon/1.0.2/nav-fim-brukerprofil-v1-tjenestespesifikasjon-1.0.2.zip",
     "VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_ENDPOINTURL": "https://dkif.nais.adeo.no/ws/DigitalKontaktinformasjon/v1",
     "VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_SECURITYTOKEN": "SAML",
     "VIRKSOMHET_DIGITALKONTAKINFORMASJON_V1_WSDLURL": "http://maven.adeo.no/nexus/service/local/artifact/maven/redirect?a=nav-digitalKontaktinformasjon-v1-tjenestespesifikasjon&e=zip&g=no.nav.tjenester.fim&r=m2internal&v=2.0.0",
@@ -63,6 +60,9 @@
     "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "false",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
-    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false"
+    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
+    "VIRKSOMHET_PERSON_V3_ENDPOINTURL": "https://wasapp-q0.adeo.no/tpsws/Person/v3",
+    "VIRKSOMHET_PERSON_V3_SECURITYTOKEN": "SAML",
+    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip"
   }
 }

@@ -217,7 +217,7 @@
             <!-- Tjenestespesifikasjoner -->
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
+                <artifactId>person-v3-tjenestespesifikasjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>

@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
@@ -28,7 +28,7 @@ public class KontonummerSystemdataTest {
     private static final String KONTONUMMER_BRUKER = "11223344556";
 
     @Mock
-    private BrukerprofilService brukerprofilService;
+    private PersonServiceV3 personService;
 
     @InjectMocks
     private KontonummerSystemdata kontonummerSystemdata;
@@ -36,10 +36,9 @@ public class KontonummerSystemdataTest {
     @Test
     public void skalOppdatereKontonummer() {
         AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
-                .withKontonummer(KONTONUMMER_SYSTEM)
-                .withUtenlandskBankkonto(false);
+                .withKontonummer(KONTONUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -52,10 +51,9 @@ public class KontonummerSystemdataTest {
     @Test
     public void skalOppdatereKontonummerOgFjerneUlovligeSymboler() {
         AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
-                .withKontonummer(KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* ")
-                .withUtenlandskBankkonto(false);
+                .withKontonummer(KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* ");
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -68,10 +66,9 @@ public class KontonummerSystemdataTest {
     @Test
     public void skalIkkeOppdatereKontonummerDersomKildeErBruker() {
         AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
-                .withKontonummer(KONTONUMMER_SYSTEM)
-                .withUtenlandskBankkonto(false);
+                .withKontonummer(KONTONUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedKontonummer());
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -82,28 +79,11 @@ public class KontonummerSystemdataTest {
     }
 
     @Test
-    public void skalSetteNullDersomUtenlandskKontonummer() {
-        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
-                .withKontonummer(KONTONUMMER_SYSTEM)
-                .withUtenlandskBankkonto(true);
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
-
-        kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
-
-        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
-
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
-    }
-
-    @Test
     public void skalSetteNullDersomKontonummerErTomStreng() {
         AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
-                .withKontonummer("")
-                .withUtenlandskBankkonto(false);
+                .withKontonummer("");
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -114,12 +94,11 @@ public class KontonummerSystemdataTest {
     }
 
     @Test
-    public void skalSetteNullOgKildeBrukerDersomKontonummerErNull() {
+    public void skalSetteNullDersomKontonummerErNull() {
         AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
-                .withKontonummer(null)
-                .withUtenlandskBankkonto(false);
+                .withKontonummer(null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(brukerprofilService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 

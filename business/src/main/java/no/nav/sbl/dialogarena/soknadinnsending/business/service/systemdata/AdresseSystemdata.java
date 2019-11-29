@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
@@ -22,7 +22,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 public class AdresseSystemdata implements Systemdata {
 
     @Inject
-    private BrukerprofilService brukerprofilService;
+    private PersonServiceV3 personService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -77,12 +77,12 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     public JsonAdresse innhentFolkeregistrertAdresse(String personIdentifikator) {
-        AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(personIdentifikator);
+        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
         return mapToJsonAdresse(adresserOgKontonummer.getFolkeregistrertAdresse());
     }
 
     public JsonAdresse innhentMidlertidigAdresse(String personIdentifikator) {
-        AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(personIdentifikator);
+        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
         return mapToJsonAdresse(adresserOgKontonummer.getMidlertidigAdresse());
     }
 
