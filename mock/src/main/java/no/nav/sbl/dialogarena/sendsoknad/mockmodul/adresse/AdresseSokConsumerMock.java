@@ -36,6 +36,11 @@ public class AdresseSokConsumerMock {
                         return getTest2Respons();
                     }
 
+                    if (sokedata.adresse.contains("Dobbel")) {
+                        String adresse = sokedata.adresse.replace("gata", "");
+                        return getDobbelRespons(adresse, sokedata.postnummer);
+                    }
+
                     if (sokedata.adresse.contains("gata")) {
                         String adresse = sokedata.adresse.replace("gata", "");
                         return getGataRespons(adresse, sokedata.postnummer);
@@ -93,6 +98,13 @@ public class AdresseSokConsumerMock {
         return response;
     }
 
+    private static AdressesokRespons getDobbelRespons(String kommunenavn, String postnummer){
+        AdressesokRespons response = new AdressesokRespons();
+        response.adresseDataList.add(createAdresse(kommunenavn, postnummer, postnummer));
+        response.adresseDataList.add(createAdresse(kommunenavn, Long.toString(Long.parseLong(postnummer) +1), postnummer));
+        return response;
+    }
+
     private static AdressesokRespons getTestRespons(){
         AdressesokRespons response = new AdressesokRespons();
         response.adresseDataList.add(createAdresse("Fredrikstad", "0106"));
@@ -113,17 +125,23 @@ public class AdresseSokConsumerMock {
         response.adresseDataList.add(createAdresse("Moss", "5001"));
         response.adresseDataList.add(createAdresse("Rygge", "0136"));
         response.adresseDataList.add(createAdresse("Hamar", "0403"));
+        response.adresseDataList.add(createAdresse("DobbelKommune", "2222"));
         return response;
     }
 
     private static AdresseData createAdresse(String kommunenavn, String kommunenummer){
+        return createAdresse(kommunenavn, kommunenummer, kommunenummer);
+    }
+
+
+    private static AdresseData createAdresse(String kommunenavn, String kommunenummer, String postnummer){
         final AdresseData a1 = new AdresseData();
         a1.kommunenummer = kommunenummer;
         a1.kommunenavn = kommunenavn;
         a1.adressenavn = kommunenavn + "gata";
         a1.husnummerFra = "0001";
         a1.husnummerTil = "0010";
-        a1.postnummer = kommunenummer;
+        a1.postnummer = postnummer;
         a1.poststed = kommunenavn;
         a1.geografiskTilknytning = kommunenummer;
         a1.gatekode = kommunenummer;

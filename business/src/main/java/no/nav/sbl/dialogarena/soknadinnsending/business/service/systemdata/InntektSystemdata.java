@@ -42,14 +42,14 @@ public class InntektSystemdata implements Systemdata {
     ArbeidsforholdTransformer arbeidsforholdTransformer;
 
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();
         List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerNav = innhentNavSystemregistrertInntekt(personIdentifikator);
         List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
 
-        okonomiOpplysningUtbetalinger.removeIf(utbetaling -> utbetaling.getKilde().equals(JsonKilde.SYSTEM));
+        fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setUtbetalingerFraNavFeilet(false);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
         if (systemUtbetalingerNav == null) {
@@ -63,6 +63,12 @@ public class InntektSystemdata implements Systemdata {
         } else {
             okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar);
         }
+    }
+
+    private void fjernGamleUtbetalinger(List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger) {
+        okonomiOpplysningUtbetalinger.removeIf(
+                utbetaling -> utbetaling.getType().equalsIgnoreCase(UTBETALING_NAVYTELSE) ||
+                        utbetaling.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN));
     }
 
     public List<JsonOkonomiOpplysningUtbetaling> innhentNavSystemregistrertInntekt(String personIdentifikator) {

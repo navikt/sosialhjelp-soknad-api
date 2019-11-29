@@ -18,7 +18,7 @@ public class TelefonnummerSystemdata implements Systemdata {
     private EpostService epostService;
 
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer();
 

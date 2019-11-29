@@ -6,14 +6,14 @@ import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
 
 public interface Kodeverk extends Adressekodeverk {
-    public enum EksponertKodeverk {
+    enum EksponertKodeverk {
         LANDKODE("Landkoder"),
         KOMMUNE("Kommuner"),
         POSTNUMMER("Postnummer");
 
         private final String value;
 
-        private EksponertKodeverk(final String value) {
+        EksponertKodeverk(final String value) {
             this.value = value;
         }
 
@@ -27,6 +27,8 @@ public interface Kodeverk extends Adressekodeverk {
 
     void lastInnNyeKodeverk();
 
-    public String gjettKommunenummer(String kommunenavn);
+    String gjettKommunenummer(String kommunenavn);
+
+    String getKommunenavn(final String kommunenummer);
 }
     

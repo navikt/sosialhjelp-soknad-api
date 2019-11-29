@@ -69,7 +69,7 @@ public class SoknadServiceTest {
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
-        soknadService.startSoknad();
+        soknadService.startSoknad("");
 
         String bruker = OidcFeatureToggleUtils.getUserId();
         verify(henvendelsesConnector).startSoknad(eq(bruker));

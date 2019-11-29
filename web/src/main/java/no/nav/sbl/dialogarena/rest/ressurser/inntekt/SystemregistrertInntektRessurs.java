@@ -38,8 +38,9 @@ public class SystemregistrertInntektRessurs {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
 
         return new SysteminntekterFrontend().withSysteminntekter(utbetalinger.stream()
-                        .filter(utbetaling -> utbetaling.getType().equals(UTBETALING_NAVYTELSE))
-                        .map(this::mapToUtbetalingFrontend).collect(Collectors.toList()));
+                .filter(utbetaling -> utbetaling.getType().equals(UTBETALING_NAVYTELSE))
+                .map(this::mapToUtbetalingFrontend).collect(Collectors.toList()))
+                .withUtbetalingerFraNavFeilet(soknad.getSoknad().getDriftsinformasjon().getUtbetalingerFraNavFeilet());
     }
 
     private SysteminntektFrontend mapToUtbetalingFrontend(JsonOkonomiOpplysningUtbetaling utbetaling) {
@@ -48,16 +49,24 @@ public class SystemregistrertInntektRessurs {
                 .withUtbetalingsdato(utbetaling.getUtbetalingsdato());
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class SysteminntekterFrontend {
         public List<SysteminntektFrontend> systeminntekter;
+        public Boolean utbetalingerFraNavFeilet;
 
         public SysteminntekterFrontend withSysteminntekter(List<SysteminntektFrontend> systeminntekter) {
             this.systeminntekter = systeminntekter;
             return this;
         }
+
+        public SysteminntekterFrontend withUtbetalingerFraNavFeilet(Boolean utbetalingerFraNavFeilet) {
+            this.utbetalingerFraNavFeilet = utbetalingerFraNavFeilet;
+            return this;
+        }
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class SysteminntektFrontend {
         public String inntektType;

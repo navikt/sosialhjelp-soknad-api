@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
+            <artifactId>person-v3-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>

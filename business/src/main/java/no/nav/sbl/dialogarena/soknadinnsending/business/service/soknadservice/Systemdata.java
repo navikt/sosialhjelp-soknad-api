@@ -4,6 +4,6 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 
 public interface Systemdata {
 
-    void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid);
+    void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token);
     
 }
