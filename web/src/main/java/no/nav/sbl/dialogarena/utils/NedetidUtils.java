@@ -10,8 +10,8 @@ import java.time.format.DateTimeParseException;
 public class NedetidUtils {
     private static final Logger log = LoggerFactory.getLogger(NedetidUtils.class);
     private final static int planlagtNedetidVarselAntallDager = 14;
-    public final static String NEDETID_START = "nedetid_start";
-    public final static String NEDETID_SLUTT = "nedetid_slutt";
+    public final static String NEDETID_START = "nedetid.start";
+    public final static String NEDETID_SLUTT = "nedetid.slutt";
     public final static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     private static LocalDateTime getNedetid(String propertyname) {
@@ -21,7 +21,7 @@ public class NedetidUtils {
         try {
             return LocalDateTime.parse(nedetid, dateFormat);
         } catch (DateTimeParseException e) {
-            log.error("Klarte ikke parse {}: {}", propertyname, nedetid);
+            log.error("Klarte ikke parse {}: {}. Skal være på formatet: {}", propertyname, nedetid, dateFormat.toString());
             return null;
         }
     }

@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.oidc.api.Unprotected;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.time.LocalDateTime;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.utils.NedetidUtils.*;
@@ -27,8 +25,8 @@ public class NedetidRessurs {
     @GET
     public NedetidFrontend hentNedetidInformasjon() {
         return new NedetidFrontend()
-                .withNedetidStarter(getNedetidAsStringOrNull(NEDETID_START))
-                .withNedetidSlutter(getNedetidAsStringOrNull(NEDETID_SLUTT))
+                .withNedetidStart(getNedetidAsStringOrNull(NEDETID_START))
+                .withNedetidSlutt(getNedetidAsStringOrNull(NEDETID_SLUTT))
                 .withIsNedetid(isInnenforNedetid())
                 .withIsPlanlagtNedetid(isInnenforPlanlagtNedetid());
     }
@@ -38,8 +36,8 @@ public class NedetidRessurs {
     public static class NedetidFrontend {
         public boolean isNedetid;
         public boolean isPlanlagtNedetid;
-        public String nedetidStarter;
-        public String nedetidSlutter;
+        public String nedetidStart;
+        public String nedetidSlutt;
 
         public NedetidFrontend withIsNedetid(boolean isNedetid) {
             this.isNedetid = isNedetid;
@@ -51,13 +49,13 @@ public class NedetidRessurs {
             return this;
         }
 
-        public NedetidFrontend withNedetidStarter(String nedetidStarter) {
-            this.nedetidStarter = nedetidStarter;
+        public NedetidFrontend withNedetidStart(String nedetidStart) {
+            this.nedetidStart = nedetidStart;
             return this;
         }
 
-        public NedetidFrontend withNedetidSlutter(String nedetidSlutter) {
-            this.nedetidSlutter = nedetidSlutter;
+        public NedetidFrontend withNedetidSlutt(String nedetidSlutt) {
+            this.nedetidSlutt = nedetidSlutt;
             return this;
         }
     }

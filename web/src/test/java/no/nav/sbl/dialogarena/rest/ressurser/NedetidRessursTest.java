@@ -30,21 +30,21 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNull(nedetidFrontend.nedetidSlutter);
-        assertNull(nedetidFrontend.nedetidStarter);
+        assertNull(nedetidFrontend.nedetidSlutt);
+        assertNull(nedetidFrontend.nedetidStart);
 
         System.setProperty(NedetidUtils.NEDETID_START, LocalDateTime.now().format(NedetidUtils.dateFormat));
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNull(nedetidFrontend.nedetidSlutter);
+        assertNull(nedetidFrontend.nedetidSlutt);
 
         System.clearProperty(NedetidUtils.NEDETID_START);
         System.setProperty(NedetidUtils.NEDETID_SLUTT, LocalDateTime.now().format(NedetidUtils.dateFormat));
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNull(nedetidFrontend.nedetidStarter);
+        assertNull(nedetidFrontend.nedetidStart);
     }
 
     @Test
@@ -57,8 +57,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
     @Test
@@ -71,8 +71,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
 
@@ -88,8 +88,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertTrue(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
     @Test
@@ -102,8 +102,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertTrue(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
     // Innenfor nedetid:
@@ -118,8 +118,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertTrue(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
     @Test
@@ -132,8 +132,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertTrue(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
     @Test
@@ -146,10 +146,10 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertTrue(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
-        assertEquals(nedetidStart.format(NedetidUtils.dateFormat), nedetidFrontend.nedetidStarter);
-        assertEquals(nedetidSlutt.format(NedetidUtils.dateFormat), nedetidFrontend.nedetidSlutter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
+        assertEquals(nedetidStart.format(NedetidUtils.dateFormat), nedetidFrontend.nedetidStart);
+        assertEquals(nedetidSlutt.format(NedetidUtils.dateFormat), nedetidFrontend.nedetidSlutt);
     }
 
     // Etter nedetid
@@ -163,8 +163,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
     @Test
@@ -177,8 +177,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
     // Rare caser
@@ -193,8 +193,8 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNotNull(nedetidFrontend.nedetidSlutter);
-        assertNotNull(nedetidFrontend.nedetidStarter);
+        assertNotNull(nedetidFrontend.nedetidSlutt);
+        assertNotNull(nedetidFrontend.nedetidStart);
     }
 
     @Test
@@ -203,23 +203,23 @@ public class NedetidRessursTest {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNull(nedetidFrontend.nedetidSlutter);
-        assertNull(nedetidFrontend.nedetidStarter);
+        assertNull(nedetidFrontend.nedetidSlutt);
+        assertNull(nedetidFrontend.nedetidStart);
 
         System.clearProperty(NedetidUtils.NEDETID_START);
         System.setProperty(NedetidUtils.NEDETID_SLUTT, "null");
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNull(nedetidFrontend.nedetidSlutter);
-        assertNull(nedetidFrontend.nedetidStarter);
+        assertNull(nedetidFrontend.nedetidSlutt);
+        assertNull(nedetidFrontend.nedetidStart);
 
         System.setProperty(NedetidUtils.NEDETID_START, "");
         System.setProperty(NedetidUtils.NEDETID_SLUTT, "noe");
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNull(nedetidFrontend.nedetidSlutter);
-        assertNull(nedetidFrontend.nedetidStarter);
+        assertNull(nedetidFrontend.nedetidSlutt);
+        assertNull(nedetidFrontend.nedetidStart);
     }
 }
