@@ -26,15 +26,21 @@ public class NedetidUtils {
         }
     }
 
-    public static boolean isUtenforNedetidEllerPlanlagtNedetid(LocalDateTime now, LocalDateTime start, LocalDateTime slutt) {
-        return now.plusDays(planlagtNedetidVarselAntallDager).isBefore(start) || now.isAfter(slutt);
-    }
+    public static boolean isInnenforPlanlagtNedetid() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start = getNedetid(NEDETID_START);
+        LocalDateTime slutt = getNedetid(NEDETID_SLUTT);
 
-    public static boolean isInnenforPlanlagtNedetid(LocalDateTime now, LocalDateTime start) {
+        if (start == null || slutt == null || slutt.isBefore(start)) return false;
         return now.plusDays(planlagtNedetidVarselAntallDager).isAfter(start) && now.isBefore(start);
     }
 
-    public static boolean isInnenforNedetid(LocalDateTime now, LocalDateTime start, LocalDateTime slutt) {
+    public static boolean isInnenforNedetid() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start = getNedetid(NEDETID_START);
+        LocalDateTime slutt = getNedetid(NEDETID_SLUTT);
+
+        if (start == null || slutt == null || slutt.isBefore(start)) return false;
         return now.isAfter(start) && now.isBefore(slutt);
     }
 }

@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.time.LocalDateTime;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.*;
 
 @Controller
 @Unprotected
@@ -25,32 +26,11 @@ public class NedetidRessurs {
 
     @GET
     public NedetidFrontend hentNedetidInformasjon() {
-        LocalDateTime nedetidStart = NedetidUtils.getNedetid(NedetidUtils.NEDETID_START);
-        LocalDateTime nedetidSlutt = NedetidUtils.getNedetid(NedetidUtils.NEDETID_SLUTT);
-
-        if (nedetidStart == null || nedetidSlutt == null) {
-            return new NedetidFrontend();
-        }
-        NedetidFrontend nedetidResponse = new NedetidFrontend()
-                .withNedetidStarter(nedetidStart)
-                .withNedetidSlutter(nedetidSlutt);
-
-        LocalDateTime now = LocalDateTime.now();
-
-        if (NedetidUtils.isUtenforNedetidEllerPlanlagtNedetid(now, nedetidStart, nedetidSlutt)){
-            return nedetidResponse;
-        }
-
-        if (NedetidUtils.isInnenforPlanlagtNedetid(now, nedetidStart)) {
-            return nedetidResponse.withIsPlanlagtNedetid(true);
-        }
-
-        if (NedetidUtils.isInnenforNedetid(now, nedetidStart, nedetidSlutt)) {
-            return nedetidResponse.withIsNedetid(true);
-        }
-
-        log.error("Nedetidscase som ikke er tenkt på, start {}, slutt {}", nedetidStart, nedetidSlutt);
-        return new NedetidFrontend();
+        return new NedetidFrontend()
+                .withNedetidStarter(getNedetid(NEDETID_START))
+                .withNedetidSlutter(getNedetid(NEDETID_SLUTT))
+                .withIsNedetid(isInnenforNedetid())
+                .withIsPlanlagtNedetid(isInnenforPlanlagtNedetid());
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -72,12 +52,12 @@ public class NedetidRessurs {
         }
 
         public NedetidFrontend withNedetidStarter(LocalDateTime nedetidStarter) {
-            this.nedetidStarter = nedetidStarter.format(NedetidUtils.dateFormat);
+            this.nedetidStarter = (nedetidStarter == null ? null : nedetidStarter.format(NedetidUtils.dateFormat));
             return this;
         }
 
         public NedetidFrontend withNedetidSlutter(LocalDateTime nedetidSlutter) {
-            this.nedetidSlutter = nedetidSlutter.format(NedetidUtils.dateFormat);
+            this.nedetidSlutter = (nedetidSlutter == null ? null : nedetidSlutter.format(NedetidUtils.dateFormat));
             return this;
         }
     }

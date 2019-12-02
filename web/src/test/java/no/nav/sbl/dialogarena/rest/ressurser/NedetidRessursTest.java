@@ -38,14 +38,12 @@ public class NedetidRessursTest {
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
         assertNull(nedetidFrontend.nedetidSlutter);
-        assertNull(nedetidFrontend.nedetidStarter);
 
         System.clearProperty(NedetidUtils.NEDETID_START);
         System.setProperty(NedetidUtils.NEDETID_SLUTT, LocalDateTime.now().format(NedetidUtils.dateFormat));
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
-        assertNull(nedetidFrontend.nedetidSlutter);
         assertNull(nedetidFrontend.nedetidStarter);
     }
 
