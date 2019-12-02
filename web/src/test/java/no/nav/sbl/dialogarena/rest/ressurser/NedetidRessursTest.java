@@ -33,7 +33,7 @@ public class NedetidRessursTest {
         assertNull(nedetidFrontend.nedetidSlutter);
         assertNull(nedetidFrontend.nedetidStarter);
 
-        System.setProperty(NedetidUtils.NEDETID_START, "noe");
+        System.setProperty(NedetidUtils.NEDETID_START, LocalDateTime.now().format(NedetidUtils.dateFormat));
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
@@ -197,5 +197,31 @@ public class NedetidRessursTest {
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
         assertNotNull(nedetidFrontend.nedetidSlutter);
         assertNotNull(nedetidFrontend.nedetidStarter);
+    }
+
+    @Test
+    public void whenPropertyIsNotInDateformat_ShouldReturnNullAndFalse() {
+        System.setProperty(NedetidUtils.NEDETID_START, "noe");
+        NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
+        assertFalse(nedetidFrontend.isNedetid);
+        assertFalse(nedetidFrontend.isPlanlagtNedetid);
+        assertNull(nedetidFrontend.nedetidSlutter);
+        assertNull(nedetidFrontend.nedetidStarter);
+
+        System.clearProperty(NedetidUtils.NEDETID_START);
+        System.setProperty(NedetidUtils.NEDETID_SLUTT, "null");
+        nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
+        assertFalse(nedetidFrontend.isNedetid);
+        assertFalse(nedetidFrontend.isPlanlagtNedetid);
+        assertNull(nedetidFrontend.nedetidSlutter);
+        assertNull(nedetidFrontend.nedetidStarter);
+
+        System.setProperty(NedetidUtils.NEDETID_START, "");
+        System.setProperty(NedetidUtils.NEDETID_SLUTT, "noe");
+        nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
+        assertFalse(nedetidFrontend.isNedetid);
+        assertFalse(nedetidFrontend.isPlanlagtNedetid);
+        assertNull(nedetidFrontend.nedetidSlutter);
+        assertNull(nedetidFrontend.nedetidStarter);
     }
 }
