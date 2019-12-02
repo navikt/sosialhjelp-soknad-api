@@ -22,7 +22,9 @@ jobs:
           name: Generate version number and docker image tags
           command: |
             VERSION=$(create-artifact-version.sh)
-            echo "export DOCKER_TAG=\"docker.pkg.github.com/navikt/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
+            # echo "export DOCKER_TAG=\"docker.pkg.github.com/navikt/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
+            # FIXME: Workaround pga. billing issues
+            echo "export DOCKER_TAG=\"docker.pkg.github.com/fleskesvor/actions-test/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
       - run:
           name: Build docker image
           command: |
