@@ -1,0 +1,40 @@
+package no.nav.sbl.dialogarena.utils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class NedetidUtils {
+    private static final Logger log = LoggerFactory.getLogger(NedetidUtils.class);
+    private final static int planlagtNedetidVarselAntallDager = 14;
+    public final static String NEDETID_START = "nedetid_start";
+    public final static String NEDETID_SLUTT = "nedetid_slutt";
+    public final static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
+    public static LocalDateTime getNedetid(String propertyname) {
+        String nedetid = System.getProperty(propertyname, null);
+        if (nedetid == null) return null;
+
+        try {
+            return LocalDateTime.parse(nedetid, dateFormat);
+        } catch (DateTimeParseException e) {
+            log.error("Klarte ikke parse {}: {}", propertyname, nedetid);
+            return null;
+        }
+    }
+
+    public static boolean isUtenforNedetidEllerPlanlagtNedetid(LocalDateTime now, LocalDateTime start, LocalDateTime slutt) {
+        return now.plusDays(planlagtNedetidVarselAntallDager).isBefore(start) || now.isAfter(slutt);
+    }
+
+    public static boolean isInnenforPlanlagtNedetid(LocalDateTime now, LocalDateTime start) {
+        return now.plusDays(planlagtNedetidVarselAntallDager).isAfter(start) && now.isBefore(start);
+    }
+
+    public static boolean isInnenforNedetid(LocalDateTime now, LocalDateTime start, LocalDateTime slutt) {
+        return now.isAfter(start) && now.isBefore(slutt);
+    }
+}
