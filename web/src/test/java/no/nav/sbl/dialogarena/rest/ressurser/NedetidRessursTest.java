@@ -41,7 +41,7 @@ public class NedetidRessursTest {
         assertNull(nedetidFrontend.nedetidStarter);
 
         System.clearProperty(NedetidUtils.NEDETID_START);
-        System.setProperty(NedetidUtils.NEDETID_SLUTT, "noe");
+        System.setProperty(NedetidUtils.NEDETID_SLUTT, LocalDateTime.now().format(NedetidUtils.dateFormat));
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertFalse(nedetidFrontend.isNedetid);
         assertFalse(nedetidFrontend.isPlanlagtNedetid);
