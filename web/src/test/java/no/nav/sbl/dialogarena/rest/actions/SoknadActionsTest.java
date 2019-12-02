@@ -97,8 +97,8 @@ public class SoknadActionsTest {
 
     @Test(expected = SoknadenHarNedetidException.class)
     public void sendSoknadINedetidSkalKasteException() {
-        System.setProperty(NedetidUtils.NEDETID_START, LocalDateTime.now().minusDays(1).format(NedetidUtils.dateFormat));
-        System.setProperty(NedetidUtils.NEDETID_SLUTT, LocalDateTime.now().plusDays(2).format(NedetidUtils.dateFormat));
+        System.setProperty(NedetidUtils.NEDETID_START, LocalDateTime.now().minusDays(1).format(NedetidUtils.dateTimeFormatter));
+        System.setProperty(NedetidUtils.NEDETID_SLUTT, LocalDateTime.now().plusDays(2).format(NedetidUtils.dateTimeFormatter));
         actions.sendSoknad("behandlingsId", context, "");
 
         verify(soknadService, times(0)).sendSoknad(any());
