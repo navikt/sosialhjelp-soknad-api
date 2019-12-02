@@ -27,8 +27,8 @@ public class NedetidRessurs {
     @GET
     public NedetidFrontend hentNedetidInformasjon() {
         return new NedetidFrontend()
-                .withNedetidStarter(getNedetid(NEDETID_START))
-                .withNedetidSlutter(getNedetid(NEDETID_SLUTT))
+                .withNedetidStarter(getNedetidAsStringOrNull(NEDETID_START))
+                .withNedetidSlutter(getNedetidAsStringOrNull(NEDETID_SLUTT))
                 .withIsNedetid(isInnenforNedetid())
                 .withIsPlanlagtNedetid(isInnenforPlanlagtNedetid());
     }
@@ -51,13 +51,13 @@ public class NedetidRessurs {
             return this;
         }
 
-        public NedetidFrontend withNedetidStarter(LocalDateTime nedetidStarter) {
-            this.nedetidStarter = (nedetidStarter == null ? null : nedetidStarter.format(NedetidUtils.dateFormat));
+        public NedetidFrontend withNedetidStarter(String nedetidStarter) {
+            this.nedetidStarter = nedetidStarter;
             return this;
         }
 
-        public NedetidFrontend withNedetidSlutter(LocalDateTime nedetidSlutter) {
-            this.nedetidSlutter = (nedetidSlutter == null ? null : nedetidSlutter.format(NedetidUtils.dateFormat));
+        public NedetidFrontend withNedetidSlutter(String nedetidSlutter) {
+            this.nedetidSlutter = nedetidSlutter;
             return this;
         }
     }

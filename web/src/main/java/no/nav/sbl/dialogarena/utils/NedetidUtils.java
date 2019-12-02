@@ -14,7 +14,7 @@ public class NedetidUtils {
     public final static String NEDETID_SLUTT = "nedetid_slutt";
     public final static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
-    public static LocalDateTime getNedetid(String propertyname) {
+    private static LocalDateTime getNedetid(String propertyname) {
         String nedetid = System.getProperty(propertyname, null);
         if (nedetid == null) return null;
 
@@ -24,6 +24,11 @@ public class NedetidUtils {
             log.error("Klarte ikke parse {}: {}", propertyname, nedetid);
             return null;
         }
+    }
+
+    public static String getNedetidAsStringOrNull(String propertyname) {
+        LocalDateTime nedetid = getNedetid(propertyname);
+        return nedetid == null ? null : nedetid.format(dateFormat);
     }
 
     public static boolean isInnenforPlanlagtNedetid() {
