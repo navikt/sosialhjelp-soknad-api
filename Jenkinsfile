@@ -31,20 +31,6 @@ node {
         }
     }
 
-    stage('Deploy nexus') {
-        try {
-            sh "mvn -B deploy -DskipTests -P pipeline"
-            currentBuild.description = "Version: ${version}"
-            if (useSnapshot != 'true') {
-                sh "git tag -a ${version} -m ${version} HEAD && git push --tags"
-            }
-            else {
-                sh "mvn versions:set -DnewVersion=${pom.version}"
-            }
-        } catch(Exception e) {
-            notifyFailed("Deploy av artifakt til nexus feilet", e)
-        }
-    }
 }
 
 stage("Deploy app") {
