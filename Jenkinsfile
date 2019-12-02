@@ -31,15 +31,6 @@ node {
         }
     }
 
-    stage('Run tests (java)') {
-        try {
-            sh "mvn test -P pipeline"
-        } catch(Exception e) {
-            step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
-            notifyFailed("Java-tester feilet", e)
-        }
-    }
-
     stage('Deploy nexus') {
         try {
             sh "mvn -B deploy -DskipTests -P pipeline"
