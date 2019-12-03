@@ -65,7 +65,7 @@ function revert_version() {
 }
 
 function package() {
-    mvn clean package -DskipTests
+    mvn clean package
 }
 
 function publish() {
