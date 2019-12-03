@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -31,7 +31,7 @@ public class BasisPersonaliaSystemdataTest {
     private static final String IKKE_NORDISK_STATSBORGERSKAP = "GER";
 
     @Mock
-    private PersonService personService;
+    private PersonServiceV3 personService;
 
     @InjectMocks
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
@@ -39,7 +39,7 @@ public class BasisPersonaliaSystemdataTest {
     @Test
     public void skalIkkeOppdatereDersomPersonaliaErNull() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentPerson(anyString())).thenReturn(null);
+        when( personService.getPersonData(anyString())).thenReturn(null);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -57,13 +57,13 @@ public class BasisPersonaliaSystemdataTest {
 
     @Test
     public void skalOppdatereNordiskPersonalia() {
-        Person person = new Person()
+        PersonData person = new PersonData()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap(NORDISK_STATSBORGERSKAP);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentPerson(anyString())).thenReturn(person);
+        when( personService.getPersonData(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -83,13 +83,13 @@ public class BasisPersonaliaSystemdataTest {
 
     @Test
     public void skalOppdatereIkkeNordiskPersonalia() {
-        Person person = new Person()
+        PersonData person = new PersonData()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap(IKKE_NORDISK_STATSBORGERSKAP);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentPerson(anyString())).thenReturn(person);
+        when( personService.getPersonData(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -110,13 +110,13 @@ public class BasisPersonaliaSystemdataTest {
     //Denne skal fjernes når TPS har oppdatert til å bruke ukjent som XXX istedenfor ???
     @Test
     public void skalikkeSendeMedStatsborgerskapForUkjent() {
-        Person person = new Person()
+        PersonData person = new PersonData()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap("???");
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentPerson(anyString())).thenReturn(person);
+        when( personService.getPersonData(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 

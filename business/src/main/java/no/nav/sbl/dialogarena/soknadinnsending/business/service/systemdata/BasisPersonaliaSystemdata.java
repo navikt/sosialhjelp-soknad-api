@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -14,7 +14,7 @@ import javax.inject.Inject;
 public class BasisPersonaliaSystemdata implements Systemdata {
 
     @Inject
-    private PersonService personService;
+    private PersonServiceV3 personService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -22,7 +22,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         final JsonPersonalia systemPersonalia = innhentSystemBasisPersonalia(personIdentifikator);
 
-        if (systemPersonalia == null){
+        if (systemPersonalia == null) {
             return;
         }
 
@@ -32,15 +32,15 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     public JsonPersonalia innhentSystemBasisPersonalia(final String personIdentifikator) {
-        Person person = personService.hentPerson(personIdentifikator);
-        if (person == null){
+        PersonData personData = (personService.getPersonData(personIdentifikator));
+        if (personData == null) {
             return null;
         }
 
-        return mapToJsonPersonalia(person);
+        return mapToJsonPersonalia(personData);
     }
 
-    private JsonPersonalia mapToJsonPersonalia(Person person){
+    private JsonPersonalia mapToJsonPersonalia(PersonData person) {
         return new JsonPersonalia()
                 .withPersonIdentifikator(mapToJsonPersonIdentifikator(person))
                 .withNavn(mapToJsonSokernavn(person))
@@ -48,13 +48,13 @@ public class BasisPersonaliaSystemdata implements Systemdata {
                 .withNordiskBorger(mapToJsonNordiskBorger(person));
     }
 
-    private JsonPersonIdentifikator mapToJsonPersonIdentifikator(Person person) {
+    private JsonPersonIdentifikator mapToJsonPersonIdentifikator(PersonData person) {
         return new JsonPersonIdentifikator()
                 .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                .withVerdi(person.getFnr());
+                .withVerdi(person.getFodselsnummer());
     }
 
-    private JsonSokernavn mapToJsonSokernavn(Person person) {
+    private JsonSokernavn mapToJsonSokernavn(PersonData person) {
         return new JsonSokernavn()
                 .withKilde(JsonSokernavn.Kilde.SYSTEM)
                 .withFornavn(person.getFornavn() != null ? person.getFornavn() : "")
@@ -62,9 +62,9 @@ public class BasisPersonaliaSystemdata implements Systemdata {
                 .withEtternavn(person.getEtternavn() != null ? person.getEtternavn() : "");
     }
 
-    private JsonStatsborgerskap mapToJsonStatsborgerskap(Person person) {
+    private JsonStatsborgerskap mapToJsonStatsborgerskap(PersonData person) {
         String statsborgerskap = person.getStatsborgerskap();
-        if (statsborgerskap == null || statsborgerskap.equals("???")){
+        if (statsborgerskap == null || statsborgerskap.equals("???")) {
             return null;
         }
 
@@ -73,18 +73,18 @@ public class BasisPersonaliaSystemdata implements Systemdata {
                 .withVerdi(statsborgerskap);
     }
 
-    private JsonNordiskBorger mapToJsonNordiskBorger(Person person) {
+    private JsonNordiskBorger mapToJsonNordiskBorger(PersonData person) {
         Boolean nordiskBorger = erNordiskBorger(person.getStatsborgerskap());
-        if (nordiskBorger == null){
+        if (nordiskBorger == null) {
             return null;
         }
         return new JsonNordiskBorger()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(nordiskBorger);
+                .withKilde(JsonKilde.SYSTEM)
+                .withVerdi(nordiskBorger);
     }
 
     static Boolean erNordiskBorger(String statsborgerskap) {
-        if (statsborgerskap == null || statsborgerskap.equals("???")){
+        if (statsborgerskap == null || statsborgerskap.equals("???")) {
             return null;
         }
         switch (statsborgerskap) {

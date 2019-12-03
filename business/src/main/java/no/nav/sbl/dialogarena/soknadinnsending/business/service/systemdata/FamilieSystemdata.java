@@ -2,9 +2,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -19,13 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
 public class FamilieSystemdata implements Systemdata {
 
     @Inject
-    private PersonService personService;
+    private PersonServiceV3 personService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -80,13 +79,13 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
-        Person person = personService.hentPerson(personIdentifikator);
-        if (person == null || isEmpty(person.getSivilstatus())) {
+        PersonData person = personService.getPersonData(personIdentifikator);
+        if (person == null || person.getSivilStand() == null) {
             return null;
         }
 
         Ektefelle ektefelle = person.getEktefelle();
-        JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(person.getSivilstatus());
+        JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(person.getSivilStand().getSivilstand().getValue());
         if (!GIFT.equals(status) || ektefelle == null){
             return null;
         }

@@ -1,8 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
@@ -10,7 +12,8 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -46,31 +49,6 @@ public class PersonDataMapperTest {
     private static final int FODSELSMANED_BARN2 = 2;
     private static final int FODSELSDAG_BARN2 = 3;
 
-    @Test
-    public void mapXmlPersonTilPersonMapperPersonRiktig() {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = mapXmlPersonTilPerson(lagXmlPerson());
-
-        assertThat(person.getFornavn(), is(FORNAVN));
-        assertThat(person.getMellomnavn(), is(MELLOMNAVN));
-        assertThat(person.getEtternavn(), is(ETTERNAVN));
-        assertThat(person.getSammensattNavn(), is(SAMMENSATT_NAVN));
-        assertThat(person.getFnr(), is(FNR));
-        assertThat(person.getFodselsdato().getYear(), is(FODSELSAR));
-        assertThat(person.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
-        assertThat(person.getFodselsdato().getDayOfMonth(), is(FODSELSDAG));
-        assertThat(person.getAlder(), notNullValue());
-        assertThat(person.getKjonn(), is("k"));
-        assertThat(person.getSivilstatus(), is("enke"));
-        assertThat(person.getStatsborgerskap(), is(LANDKODE));
-        assertThat(person.getDiskresjonskode(), is(DISKRESJONSKODE_UFB));
-    }
-
-    @Test
-    public void mapXmlPersonTilPersonTaklerTomPerson() {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = mapXmlPersonTilPerson(new Person());
-
-        assertThat(person, notNullValue());
-    }
 
     @Test
     public void finnEktefelleForPersonSetterRiktigInfoForRegistrertPartnerUtenDiskresjonskodeOgSammeAdresse() {
@@ -250,38 +228,6 @@ public class PersonDataMapperTest {
     }
 
     @Test
-    public void finnSivilstatusSetterSivilstatusGiftForGiftBruker() {
-        String sivilstatus = finnSivilstatus(lagXmlPersonMedSivilstatus(SIVILSTATUS_GIFT));
-
-        assertThat(sivilstatus, notNullValue());
-        assertThat(sivilstatus, is("gift"));
-    }
-
-    @Test
-    public void finnSivilstatusSetterSivilstatusGiftForGLADBruker() {
-        String sivilstatus = finnSivilstatus(lagXmlPersonMedSivilstatus(SIVILSTATUS_GLAD));
-
-        assertThat(sivilstatus, notNullValue());
-        assertThat(sivilstatus, is("gift"));
-    }
-
-    @Test
-    public void finnSivilstatusSetterSivilstatusGiftForBrukerMedRegistrertPartner() {
-        String sivilstatus = finnSivilstatus(lagXmlPersonMedSivilstatus(SIVILSTATUS_REPA));
-
-        assertThat(sivilstatus, notNullValue());
-        assertThat(sivilstatus, is("gift"));
-    }
-
-    @Test
-    public void finnSivilstatusSetterSivilstatusUgiftForUgiftBruker() {
-        String sivilstatus = finnSivilstatus(lagXmlPersonMedSivilstatus(SIVILSTATUS_UGIF));
-
-        assertThat(sivilstatus, notNullValue());
-        assertThat(sivilstatus, is("ugift"));
-    }
-
-    @Test
     public void erMyndigReturnererFalseForDatoMindreEnnAttenAarSiden() {
         boolean erMyndig = erMyndig(new LocalDate(2017, 1, 1));
 
@@ -326,7 +272,7 @@ public class PersonDataMapperTest {
         NorskIdent norskIdent = new NorskIdent();
         norskIdent.setIdent(FNR);
         norskIdent.setType(personidenter);
-        xmlPerson.setIdent(norskIdent);
+        xmlPerson.setAktoer(new PersonIdent().withIdent(norskIdent));
 
         xmlPerson.setFoedselsdato(fodseldato(FODSELSAR, FODSELSMANED, FODSELSDAG));
 
@@ -451,7 +397,14 @@ public class PersonDataMapperTest {
         NorskIdent norskIdent = new NorskIdent();
         norskIdent.setIdent(fnr);
         norskIdent.setType(personidenter);
-        xmlPerson.setIdent(norskIdent);
+        XMLGregorianCalendarImpl xmlGregorianCalendar = new XMLGregorianCalendarImpl();
+        NavFodselsnummer navFodselsnummer = new NavFodselsnummer(norskIdent.getIdent());
+        xmlGregorianCalendar.setDay(Integer.parseInt(navFodselsnummer.getDayInMonth()));
+        xmlGregorianCalendar.setMonth(Integer.parseInt(navFodselsnummer.getMonth()));
+        xmlGregorianCalendar.setYear(Integer.parseInt(navFodselsnummer.getBirthYear()));
+        xmlPerson.setFoedselsdato(new Foedselsdato().withFoedselsdato(xmlGregorianCalendar));
+
+        xmlPerson.setAktoer(new PersonIdent().withIdent(norskIdent));
 
         if (personstatus != null) {
             Personstatuser personstatuser = new Personstatuser();

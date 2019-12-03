@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.ks.svarut.servicesv9.PostAdresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstand;
 
 import java.util.Optional;
 
@@ -19,6 +21,9 @@ public class PersonData {
     private String mellomnavn;
     private String etternavn;
     private String fodselsnummer;
+    private String statsborgerskap;
+    private Ektefelle ektefelle;
+    private Sivilstand sivilStand;
 
     @JsonIgnore
     public Optional<String> getPostnummerForBostedsadresse() {
@@ -49,6 +54,10 @@ public class PersonData {
 
     public PersonData withDiskresjonskode(String diskresjonskode) {
         this.diskresjonskode = diskresjonskode;
+        return this;
+    }
+    public PersonData withStatsborgerskap(String statsborgerskap) {
+        this.statsborgerskap = statsborgerskap;
         return this;
     }
 
@@ -85,6 +94,11 @@ public class PersonData {
 
     public PersonData withEtternavn(String etternavn) {
         this.etternavn = etternavn;
+        return this;
+    }
+
+    public PersonData withEktefelle(Ektefelle ektefelle) {
+        this.ektefelle = ektefelle;
         return this;
     }
 
@@ -138,4 +152,24 @@ public class PersonData {
         return fodselsnummer;
     }
 
+    public String getStatsborgerskap() {
+        return statsborgerskap;
+    }
+
+    public void setSivilstand(Sivilstand sivilstand) {
+        this.sivilStand = sivilstand;
+    }
+
+    public PersonData withSivilstand(Sivilstand sivilstand) {
+        this.sivilStand = sivilstand;
+        return this;
+    }
+
+    public Sivilstand getSivilStand() {
+        return sivilStand;
+    }
+
+    public Ektefelle getEktefelle() {
+        return ektefelle;
+    }
 }

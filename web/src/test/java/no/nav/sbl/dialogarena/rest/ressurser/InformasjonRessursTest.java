@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class InformasjonRessursTest {
     @Spy
     SoknadService soknadService;
     @Mock
-    private PersonService personService;
+    private PersonServiceV3 personService;
     @Mock
     NavMessageSource messageSource;
 
@@ -50,7 +50,7 @@ public class InformasjonRessursTest {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
 
-        when(personService.hentPerson(anyString())).thenReturn(new Person().withFnr("01018012345"));
+        when( personService.getPersonData(anyString())).thenReturn(new PersonData().withFodselsnummer("01018012345"));
     }
 
     @After

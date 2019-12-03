@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -24,7 +25,10 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnBarnForPerson;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -33,7 +37,11 @@ public class PersonServiceV3 {
 
     @Inject
     @Named("personV3Endpoint")
-    private PersonV3 personV3;
+    private PersonV3 personV3Endpoint;
+
+    @Inject
+    @Named("personV3SelftestEndpoint")
+    private PersonV3 personSelftestEndpoint;
 
     @Inject
     private Kodeverk kodeverk;
@@ -59,7 +67,8 @@ public class PersonServiceV3 {
         }
     }
 
-    private Person getPerson(String fodselsnummer) throws HentPersonPersonIkkeFunnet, HentPersonSikkerhetsbegrensning {
+
+    public Person getPerson(String fodselsnummer) throws HentPersonPersonIkkeFunnet, HentPersonSikkerhetsbegrensning {
 
         Personidenter personidenter = new Personidenter();
         personidenter.setValue("FNR");
@@ -68,11 +77,32 @@ public class PersonServiceV3 {
         norskIdent.setType(personidenter);
 
         HentPersonRequest request = new HentPersonRequest().withAktoer(new PersonIdent().withIdent(
-                norskIdent)).withInformasjonsbehov(Informasjonsbehov.ADRESSE, Informasjonsbehov.BANKKONTO);
-        HentPersonResponse hentPersonResponse = personV3.hentPerson(request);
+                norskIdent)).withInformasjonsbehov(Informasjonsbehov.ADRESSE, Informasjonsbehov.BANKKONTO, Informasjonsbehov.FAMILIERELASJONER);
+        HentPersonResponse hentPersonResponse = personV3Endpoint.hentPerson(request);
 
         return hentPersonResponse.getPerson();
     }
+
+    public PersonData getPersonData(String fodselsnummer) {
+        try {
+            Person person = getPerson(fodselsnummer);
+            if (person == null) {
+                logger.warn("Person er null");
+                return null;
+            }
+            PersonDataMapper personDataMapper = new PersonDataMapper();
+            PersonData personData = personDataMapper.tilPersonData(person);
+            return personData;
+        } catch (WebServiceException e) {
+            logger.warn("Ingen kontakt med TPS (Person_V3).", e);
+            throw new TjenesteUtilgjengeligException("TPS:webserviceException", e);
+        } catch (HentPersonSikkerhetsbegrensning e) {
+            throw new SikkerhetsBegrensningException(e.getMessage(), e);
+        } catch (HentPersonPersonIkkeFunnet e) {
+            throw new IkkeFunnetException(e.getMessage(), e);
+        }
+    }
+
 
     private AdresserOgKontonummer mapResponsTilAdresserOgKontonummer(PersonData personData) {
         if (personData == null) {
@@ -126,4 +156,17 @@ public class PersonServiceV3 {
         return adresse;
     }
 
+    public List<Barn> hentBarn(String fodselsnummer) {
+        no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person;
+        try {
+            person = getPerson(fodselsnummer);
+        } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning hentPersonPersonIkkeFunnet) {
+            return new ArrayList<>();
+        }
+        return finnBarnForPerson(person);
+    }
+
+    public void ping() {
+        personSelftestEndpoint.ping();
+    }
 }

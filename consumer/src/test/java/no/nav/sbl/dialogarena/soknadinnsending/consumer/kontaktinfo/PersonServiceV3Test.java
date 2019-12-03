@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,43 +26,49 @@ import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class PersonServiceV3Test {
-    @InjectMocks
-    private PersonServiceV3 personService;
     @Mock
-    private PersonV3 personV3;
+    @Named("personV3Endpoint")
+    private PersonV3 personV3Endpoint;
+
+    @Mock
+    @Named("personV3SelftestEndpoint")
+    private PersonV3 personV3SelftestEndpoint;
+
     @Mock
     private Kodeverk kodeverk;
 
+    @InjectMocks
+    private PersonServiceV3 personService;
 
 
     @Test(expected = IkkeFunnetException.class)
     public void skalKasteIkkeFunnetExceptionHvisPersonIkkeFinnesITps() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenThrow(new HentPersonPersonIkkeFunnet("", null));
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenThrow(new HentPersonPersonIkkeFunnet("", null));
         personService.hentAddresserOgKontonummer("");
     }
 
     @Test(expected = SikkerhetsBegrensningException.class)
     public void skalKasteSikkerhetsBegrensningExceptionHvisTpsNekterTilgangTilBruker() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenThrow(new HentPersonSikkerhetsbegrensning("", null));
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenThrow(new HentPersonSikkerhetsbegrensning("", null));
         personService.hentAddresserOgKontonummer("");
     }
 
     @Test(expected = TjenesteUtilgjengeligException.class)
     public void skalKasteTjenesteUtilgjengeligExceptionHvisTpsErNede() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenThrow(new WebServiceException("", null));
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenThrow(new WebServiceException("", null));
         personService.hentAddresserOgKontonummer("");
     }
 
     @Test
     public void skalTakleTomRespons() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse());
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse());
         AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
         assertThat(adresserOgKontonummer).isNotNull();
     }
 
     @Test
     public void skalIkkeVisePersonerMedDiskresjonsKode6() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
                 .withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Gateadresse()
                         .withPoststed(new Postnummer().withValue("Oslo"))
                         .withGatenavn("Veien")))
@@ -72,7 +79,7 @@ public class PersonServiceV3Test {
 
     @Test
     public void skalIkkeVisePersonerMedDiskresjonsKode7() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
                 .withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Gateadresse()
                         .withPoststed(new Postnummer().withValue("Oslo"))
                         .withGatenavn("Veien")))
@@ -83,7 +90,7 @@ public class PersonServiceV3Test {
 
     @Test
     public void skalVisePersonerUtenDiskresjonsKode() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
                 .withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Gateadresse()
                         .withPoststed(new Postnummer().withValue("Oslo"))
                         .withGatenavn("Veien")))
@@ -94,7 +101,7 @@ public class PersonServiceV3Test {
 
     @Test
     public void skalHenteMatrikkelAdresseMedKommunenr() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
                 .withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Matrikkeladresse()
                         .withPoststed(new Postnummer().withValue("Oslo"))
                         .withKommunenummer("0301")))
@@ -105,7 +112,7 @@ public class PersonServiceV3Test {
 
     @Test
     public void skalHenteKontonummer() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Bruker()
+        when(personV3Endpoint.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Bruker()
                 .withBankkonto(new BankkontoNorge().withBankkonto(new Bankkontonummer().withBankkontonummer("00000000000")))
         ));
         AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");

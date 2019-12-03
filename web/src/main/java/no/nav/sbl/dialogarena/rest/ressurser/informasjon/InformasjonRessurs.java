@@ -3,13 +3,13 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
@@ -49,7 +49,7 @@ public class InformasjonRessurs {
     @Inject
     private NavMessageSource messageSource;
     @Inject
-    private PersonService personService;
+    private PersonServiceV3 personService;
     @Inject
     private AdresseSokService adresseSokService;
 
@@ -63,7 +63,7 @@ public class InformasjonRessurs {
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
         String fnr = OidcFeatureToggleUtils.getUserId();
-        Person person = personService.hentPerson(fnr);
+        PersonData person =  personService.getPersonData(fnr);
         if (person == null){
             return new HashMap<>();
         }
@@ -98,7 +98,7 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = OidcFeatureToggleUtils.getUserId();
-        Person person = personService.hentPerson(uid);
+        PersonData person =  personService.getPersonData(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 

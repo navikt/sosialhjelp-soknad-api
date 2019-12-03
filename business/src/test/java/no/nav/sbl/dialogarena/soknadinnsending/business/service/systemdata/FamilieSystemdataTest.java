@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -15,7 +16,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstand;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstander;
 import org.joda.time.LocalDate;
@@ -68,7 +68,7 @@ public class FamilieSystemdataTest {
 
     private static final String FORNAVN_BARN_2 = "Unna";
     private static final String MELLOMNAVN_BARN_2 = "Vei";
-    private static final String ETTERNAVN_BARN_2= "Herkommerjeg";
+    private static final String ETTERNAVN_BARN_2 = "Herkommerjeg";
     private static final LocalDate FODSELSDATO_BARN_2 = LocalDate.parse("2003-02-01");
     private static final String FNR_BARN_2 = "01020312345";
     private static final boolean ER_FOLKEREGISTRERT_SAMMEN_BARN_2 = false;
@@ -125,6 +125,7 @@ public class FamilieSystemdataTest {
                     .withVerdi(SAMVARSGRAD_BARN_2));
 
     private final ObjectWriter writer;
+
     {
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
@@ -132,17 +133,20 @@ public class FamilieSystemdataTest {
     }
 
     @Mock
-    private PersonService personService;
+    private PersonServiceV3 personService;
 
     @InjectMocks
     private FamilieSystemdata familieSystemdata;
 
     @Test
     public void skalSetteSivilstatusGiftMedEktefelle() throws JsonProcessingException {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
-                .withSivilstatus(GIFT.toString())
+        Sivilstand sivilstand = new Sivilstand();
+        Sivilstander value = new Sivilstander();
+        value.setValue(GIFT.toString());
+        sivilstand.setSivilstand(value);
+        PersonData person = new PersonData().withSivilstand(sivilstand)
                 .withEktefelle(EKTEFELLE);
-        when(personService.hentPerson(anyString())).thenReturn(person);
+        when(personService.getPersonData(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -162,9 +166,12 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
-                .withSivilstatus(GIFT.toString());
-        when(personService.hentPerson(anyString())).thenReturn(person);
+        Sivilstand sivilstand = new Sivilstand();
+        Sivilstander value = new Sivilstander();
+        value.setValue(GIFT.toString());
+        sivilstand.setSivilstand(value);
+        PersonData person = new PersonData().withSivilstand(sivilstand);
+        when(personService.getPersonData(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -197,8 +204,8 @@ public class FamilieSystemdataTest {
         String status;
         Sivilstand sivilstand = new Sivilstand();
         Sivilstander sivilstander = new Sivilstander();
-        Person person = new Person();
-        for (String tpsKode : muligeTPSKoder){
+        PersonData person = new PersonData();
+        for (String tpsKode : muligeTPSKoder) {
             sivilstander.setValue(tpsKode);
             sivilstand.setSivilstand(sivilstander);
             person.setSivilstand(sivilstand);
@@ -209,10 +216,13 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
-                .withSivilstatus(GIFT.toString())
+        Sivilstand sivilstand = new Sivilstand();
+        Sivilstander value = new Sivilstander();
+        value.setValue(GIFT.toString());
+        sivilstand.setSivilstand(value);
+        PersonData person = new PersonData().withSivilstand(sivilstand)
                 .withEktefelle(EKTEFELLE_MED_DISKRESJONSKODE);
-        when(personService.hentPerson(anyString())).thenReturn(person);
+        when(personService.getPersonData(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -294,10 +304,13 @@ public class FamilieSystemdataTest {
     }
 
     private void sivilstatusSkalIkkeSettes(JsonSivilstatus.Status status, Ektefelle ektefelle) throws JsonProcessingException {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
-                .withSivilstatus(status.toString())
+        Sivilstand sivilstand = new Sivilstand();
+        Sivilstander value = new Sivilstander();
+        value.setValue(status.toString());
+        sivilstand.setSivilstand(value);
+        PersonData person = new PersonData().withSivilstand(sivilstand)
                 .withEktefelle(ektefelle);
-        when(personService.hentPerson(anyString())).thenReturn(person);
+        when(personService.getPersonData(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -330,7 +343,7 @@ public class FamilieSystemdataTest {
                 is(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi()));
 
         assertThat("fodselsnummer", barn.getFnr(), is(jsonBarn.getPersonIdentifikator()));
-        if (barn.getFodselsdato() != null){
+        if (barn.getFodselsdato() != null) {
             assertThat("FODSELSDATO_BARN", barn.getFodselsdato().toString(), is(jsonBarn.getFodselsdato()));
         } else {
             assertThat("FODSELSDATO_BARN", jsonBarn.getFodselsdato(), nullValue());
@@ -341,7 +354,7 @@ public class FamilieSystemdataTest {
     }
 
     private void assertThatEktefelleIsCorrectlyConverted(Ektefelle ektefelle, JsonEktefelle jsonEktefelle) {
-        if (ektefelle.getFodselsdato() != null){
+        if (ektefelle.getFodselsdato() != null) {
             assertThat("FODSELSDATO_BARN", ektefelle.getFodselsdato().toString(), is(jsonEktefelle.getFodselsdato()));
         } else {
             assertThat("FODSELSDATO_BARN", jsonEktefelle.getFodselsdato(), nullValue());
