@@ -19,6 +19,7 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.security.oidc.api.Unprotected;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -36,6 +37,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -66,6 +69,21 @@ public class TjenesteMockRessurs {
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
             cacheManager.getCache(cacheName).clear();
+        }
+    }
+
+    @GET
+    @Path("/pdfboxtest")
+    public void generatePdfAndSaveToDisk(){
+        SosialhjelpPdfGenerator sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
+        byte[] bytes = sosialhjelpPdfGenerator.generate();
+
+        try {
+            FileOutputStream out = new FileOutputStream("starcraft.pdf");
+            out.write(bytes);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
