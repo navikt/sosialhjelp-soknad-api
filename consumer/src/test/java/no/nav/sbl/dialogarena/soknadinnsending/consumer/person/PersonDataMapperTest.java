@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDataMapper.*;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
