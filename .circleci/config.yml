@@ -9,9 +9,9 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: GitHub package registry login
+          name: Docker Hub login
           command: |
-            echo "$DEPLOYMENT_PASSWORD" | docker login -u "$DEPLOYMENT_USERNAME" --password-stdin docker.pkg.github.com
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - run:
           name: Checkout CI scripts
           command: |
@@ -22,7 +22,7 @@ jobs:
           name: Generate version number and docker image tags
           command: |
             VERSION=$(create-artifact-version.sh)
-            echo "export DOCKER_TAG=\"docker.pkg.github.com/navikt/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
+            echo "export DOCKER_TAG=\"navikt/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
       - run:
           name: Build docker image
           command: |
@@ -44,7 +44,7 @@ jobs:
 
   deploy_heroku:
     docker:
-      - image: docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.1.1
+      - image: navikt/sosialhjelp-soknad-api:heroku-cli
         auth:
           username: $DEPLOYMENT_USERNAME
           password: $DEPLOYMENT_PASSWORD
