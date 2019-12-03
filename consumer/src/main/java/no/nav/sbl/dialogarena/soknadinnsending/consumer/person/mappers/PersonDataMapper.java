@@ -1,6 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers;
 
+import com.google.common.collect.ImmutableMap;
 import no.ks.svarut.servicesv9.PostAdresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
+import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Bostedsadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Gateadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Matrikkeladresse;
@@ -9,45 +13,135 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Strukturer
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.UstrukturertAdresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.*;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
+import org.joda.time.LocalDate;
 
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.Optional.ofNullable;
 
 public class PersonDataMapper {
+    static final String RELASJON_EKTEFELLE = "EKTE";
+    static final String RELASJON_REGISTRERT_PARTNER = "REPA";
+    static final String RELASJON_BARN = "BARN";
+    static final String KODE_6 = "SPSF";
+    static final String KODE_7 = "SPFO";
+    static final String KODE_6_TALLFORM = "6";
+    static final String KODE_7_TALLFORM = "7";
+    static final String DOED = "DØD";
+    private static final Map<String, String> MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<String, String>()
+            .put("GIFT", "gift")
+            .put("GLAD", "gift")
+            .put("REPA", "gift")
+            .put("SAMB", "samboer")
+            .put("UGIF", "ugift")
+            .put("ENKE", "enke")
+            .put("GJPA", "enke")
+            .put("SEPA", "separert")
+            .put("SEPR", "separert")
+            .put("SKIL", "skilt")
+            .put("SKPA", "skilt").build();
 
-    private static final String KODE_6 = "6";
-    private static final String KODE_7 = "7";
-
-    public PersonData tilPersonData(Person person) {
-        return new PersonData()
-                .withFornavn(kanskjeFornavn(person))
-                .withMellomnavn(kanskjeMellomnavn(person))
-                .withEtternavn(kanskjeEtternavn(person))
-                .withDiskresjonskode(kanskjeDiskresjonskode(person))
-                .withStatsborgerskap(kanskjeStatsborgerskap(person))
-                .withKontonummer(kanskjeKontonummer(person))
-                .withBostedsadresse(kanskjeBostedsadresse(person))
-                .withMidlertidigAdresseNorge(kanskjeMidlertidigAdresseNorge(person))
-                .withMidlertidigAdresseUtland(kanskjeMidlertidigAdresseUtland(person))
-                .withPostAdresse(kanskjePostAdresse(person));
+    public static String finnSivilstatus(PersonData personData) {
+        if (personData.getSivilStand() == null ) {
+            return null;
+        }
+        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(personData.getSivilStand().getSivilstand().getValue());
     }
 
-    private static String kanskjeFodselsnummer(Person person) {
-        Aktoer aktoer = person.getAktoer();
-        if (aktoer instanceof PersonIdent) {
-            return kanskjeNorskIdent((PersonIdent) aktoer);
+    public static List<Barn> finnBarnForPerson(Person xmlPerson) {
+        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForPerson(xmlPerson);
+        List<Barn> alleBarn = new ArrayList<>();
+        for (Familierelasjon familierelasjon : familierelasjoner) {
+            Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
+            if (RELASJON_BARN.equals(familierelasjonType.getValue())) {
+                alleBarn.add(mapFamilierelasjonTilBarn(familierelasjon));
+            }
+        }
+        alleBarn.removeIf(Objects::isNull);
+        return alleBarn;
+    }
+
+    public static List<Familierelasjon> finnFamilierelasjonerForPerson(Person xmlPerson) {
+        List<Familierelasjon> familierelasjoner = xmlPerson.getHarFraRolleI();
+        if (familierelasjoner == null || familierelasjoner.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return familierelasjoner;
+    }
+
+    private static Barn mapFamilierelasjonTilBarn(Familierelasjon familierelasjon) {
+        Person barn = familierelasjon.getTilPerson();
+        if (xmlPersonHarDiskresjonskode(barn)) {
+            return null;
+        }
+
+        if (!PersonMapper.erMyndig(finnFodselsdatoFraFnr(barn)) && !PersonMapper.erDoed(barn)) {
+            return new Barn()
+                    .withFornavn(finnFornavn(barn))
+                    .withMellomnavn(finnMellomnavn(barn))
+                    .withEtternavn(finnEtternavn(barn))
+                    .withFnr(finnFodselsnummer(barn))
+                    .withFodselsdato(finnFodselsdatoFraFnr(barn))
+                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
+                    .withIkkeTilgang(false);
+        } else {
+            return null;
+        }
+    }
+
+    public static LocalDate finnFodselsdatoFraFnr(Person xmlPerson) {
+        if (xmlPerson.getFoedselsdato()== null) {
+            return null;
+        }
+            String fnr = PersonMapper.finnFnr(xmlPerson);
+        if (fnr != null) {
+            NavFodselsnummer navFnr = new NavFodselsnummer(fnr);
+
+            return new LocalDate(navFnr.getBirthYear() + "-" + navFnr.getMonth() + "-" + navFnr.getDayInMonth());
         }
         return null;
     }
 
-    private static String kanskjeNorskIdent(PersonIdent aktoer) {
+    public static String finnFornavn(Person xmlPerson) {
+        return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getFornavn() != null ? xmlPerson.getPersonnavn().getFornavn() : "";
+    }
+
+    public static boolean xmlPersonHarDiskresjonskode(Person xmlPerson) {
+        final String diskresjonskode = PersonMapper.finnDiskresjonskode(xmlPerson);
+        return KODE_6_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_6.equalsIgnoreCase(diskresjonskode)
+                || KODE_7_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_7.equalsIgnoreCase(diskresjonskode);
+    }
+
+
+    public PersonData tilPersonData(Person person) {
+        return new PersonData()
+                .withFornavn(kanskjeFornavn(person))
+                .withMellomnavn(finnMellomnavn(person))
+                .withEtternavn(finnEtternavn(person))
+                .withDiskresjonskode(kanskjeDiskresjonskode(person))
+                .withStatsborgerskap(finnStatsborgerskap(person))
+                .withKontonummer(kanskjeKontonummer(person))
+                .withBostedsadresse(finnBostedsadresse(person))
+                .withMidlertidigAdresseNorge(finnMidlertidigAdresseNorge(person))
+                .withMidlertidigAdresseUtland(finnMidlertidigAdresseUtland(person))
+                .withPostAdresse(finnPostAdresse(person));
+    }
+
+    private static String finnFodselsnummer(Person person) {
+        Aktoer aktoer = person.getAktoer();
+        if (aktoer instanceof PersonIdent) {
+            return finnNorskIdent((PersonIdent) aktoer);
+        }
+        return null;
+    }
+
+    private static String finnNorskIdent(PersonIdent aktoer) {
         return ofNullable(aktoer.getIdent())
                 .map(NorskIdent::getIdent)
                 .orElse(null);
     }
 
-    private String kanskjeEtternavn(Person person) {
+    private static String finnEtternavn(Person person) {
         return ofNullable(person.getPersonnavn())
                 .map(Personnavn::getEtternavn)
                 .orElse(null);
@@ -59,20 +153,20 @@ public class PersonDataMapper {
                 .orElse(null);
     }
 
-    private static String kanskjeStatsborgerskap(Person person) {
+    private static String finnStatsborgerskap(Person person) {
         return ofNullable(person.getStatsborgerskap())
                 .map(Statsborgerskap::getLand)
                 .map(Kodeverdi::getValue)
                 .orElse(null);
     }
 
-    private String kanskjeMellomnavn(Person person) {
+    public static String finnMellomnavn(Person person) {
         return ofNullable(person.getPersonnavn())
                 .map(Personnavn::getMellomnavn)
                 .orElse(null);
     }
 
-    private static Bostedsadresse kanskjeBostedsadresse(Person person) {
+    private static Bostedsadresse finnBostedsadresse(Person person) {
         Bostedsadresse bostedsadresse = null;
 
         no.nav.tjeneste.virksomhet.person.v3.informasjon.Bostedsadresse wsBostedsadresse = person.getBostedsadresse();
@@ -83,7 +177,7 @@ public class PersonDataMapper {
         return bostedsadresse;
     }
 
-    private static MidlertidigAdresseNorge kanskjeMidlertidigAdresseNorge(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
+    private static MidlertidigAdresseNorge finnMidlertidigAdresseNorge(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
         MidlertidigAdresseNorge midlertidigAdresseNorge = null;
 
         if (person instanceof Bruker) {
@@ -97,7 +191,7 @@ public class PersonDataMapper {
         return midlertidigAdresseNorge;
     }
 
-    private static MidlertidigAdresseUtland kanskjeMidlertidigAdresseUtland(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
+    private static MidlertidigAdresseUtland finnMidlertidigAdresseUtland(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
         MidlertidigAdresseUtland midlertidigAdresseUtland = null;
 
         if (person instanceof no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker) {
@@ -113,7 +207,7 @@ public class PersonDataMapper {
         return midlertidigAdresseUtland;
     }
 
-    private static PostAdresse kanskjePostAdresse(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
+    private static PostAdresse finnPostAdresse(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
         PostAdresse postAdresse = null;
 
         no.nav.tjeneste.virksomhet.person.v3.informasjon.Postadresse wsPostadresse = person.getPostadresse();

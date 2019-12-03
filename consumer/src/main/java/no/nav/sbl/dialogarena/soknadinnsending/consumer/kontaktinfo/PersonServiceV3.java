@@ -28,7 +28,7 @@ import javax.xml.ws.WebServiceException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnBarnForPerson;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDataMapper.finnBarnForPerson;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service

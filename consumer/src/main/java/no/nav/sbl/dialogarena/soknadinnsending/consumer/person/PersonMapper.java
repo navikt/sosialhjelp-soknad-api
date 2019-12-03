@@ -1,17 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
-import com.google.common.collect.ImmutableMap;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDataMapper;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import org.joda.time.LocalDate;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Optional.ofNullable;
 import static org.joda.time.Years.yearsBetween;
@@ -27,21 +21,9 @@ public class PersonMapper {
     static final String KODE_7_TALLFORM = "7";
     static final String DOED = "DØD";
 
-    private static final Map<String, String> MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<String, String>()
-            .put("GIFT", "gift")
-            .put("GLAD", "gift")
-            .put("REPA", "gift")
-            .put("SAMB", "samboer")
-            .put("UGIF", "ugift")
-            .put("ENKE", "enke")
-            .put("GJPA", "enke")
-            .put("SEPA", "separert")
-            .put("SEPR", "separert")
-            .put("SKIL", "skilt")
-            .put("SKPA", "skilt").build();
 
     static Ektefelle finnEktefelleForPerson(Person xmlPerson) {
-        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForPerson(xmlPerson);
+        final List<Familierelasjon> familierelasjoner = PersonDataMapper.finnFamilierelasjonerForPerson(xmlPerson);
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
@@ -51,78 +33,31 @@ public class PersonMapper {
         return null;
     }
 
-    private static List<Familierelasjon> finnFamilierelasjonerForPerson(Person xmlPerson) {
-        List<Familierelasjon> familierelasjoner = xmlPerson.getHarFraRolleI();
-        if (familierelasjoner == null || familierelasjoner.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return familierelasjoner;
-    }
-
     private static Ektefelle mapFamilierelasjonTilEktefelle(Familierelasjon familierelasjon) {
         Person xmlEktefelle = familierelasjon.getTilPerson();
-        if (xmlPersonHarDiskresjonskode(xmlEktefelle)) {
+        if (PersonDataMapper.xmlPersonHarDiskresjonskode(xmlEktefelle)) {
             return new Ektefelle()
                     .withIkketilgangtilektefelle(true);
         }
         return new Ektefelle()
-                .withFornavn(finnFornavn(xmlEktefelle))
-                .withMellomnavn(finnMellomnavn(xmlEktefelle))
+                .withFornavn(PersonDataMapper.finnFornavn(xmlEktefelle))
+                .withMellomnavn(PersonDataMapper.finnMellomnavn(xmlEktefelle))
                 .withEtternavn(finnEtternavn(xmlEktefelle))
-                .withFodselsdato(finnFodselsdatoFraFnr(xmlEktefelle))
+                .withFodselsdato(PersonDataMapper.finnFodselsdatoFraFnr(xmlEktefelle))
                 .withFnr(finnFnr(xmlEktefelle))
                 .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
                 .withIkketilgangtilektefelle(false);
     }
 
-    public static List<Barn> finnBarnForPerson(Person xmlPerson) {
-        final List<Familierelasjon> familierelasjoner = finnFamilierelasjonerForPerson(xmlPerson);
-        List<Barn> alleBarn = new ArrayList<>();
-        for (Familierelasjon familierelasjon : familierelasjoner) {
-            Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
-            if (RELASJON_BARN.equals(familierelasjonType.getValue())) {
-                alleBarn.add(mapFamilierelasjonTilBarn(familierelasjon));
-            }
-        }
-        alleBarn.removeIf(Objects::isNull);
-        return alleBarn;
-    }
 
-
-    private static Barn mapFamilierelasjonTilBarn(Familierelasjon familierelasjon) {
-        Person xmlBarn = familierelasjon.getTilPerson();
-        if (xmlPersonHarDiskresjonskode(xmlBarn)) {
-            return null;
-        }
-
-        if (!erMyndig(finnFodselsdatoFraFnr(xmlBarn)) && !erDoed(xmlBarn)) {
-            return new Barn()
-                    .withFornavn(finnFornavn(xmlBarn))
-                    .withMellomnavn(finnMellomnavn(xmlBarn))
-                    .withEtternavn(finnEtternavn(xmlBarn))
-                    .withFnr(finnFnr(xmlBarn))
-                    .withFodselsdato(finnFodselsdatoFraFnr(xmlBarn))
-                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
-                    .withIkkeTilgang(false);
-        } else {
-            return null;
-        }
-    }
-
-    static boolean xmlPersonHarDiskresjonskode(Person xmlPerson) {
-        final String diskresjonskode = finnDiskresjonskode(xmlPerson);
-        return KODE_6_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_6.equalsIgnoreCase(diskresjonskode)
-                || KODE_7_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_7.equalsIgnoreCase(diskresjonskode);
-    }
-
-    private static String finnDiskresjonskode(Person xmlPerson) {
+    public static String finnDiskresjonskode(Person xmlPerson) {
         if (xmlPerson.getDiskresjonskode() == null) {
             return null;
         }
         return xmlPerson.getDiskresjonskode().getValue();
     }
 
-    static boolean erDoed(Person xmlPerson) {
+    public static boolean erDoed(Person xmlPerson) {
         String personstatus = finnPersonstatus(xmlPerson);
         return xmlPerson.getDoedsdato() != null || DOED.equals(personstatus);
     }
@@ -135,7 +70,7 @@ public class PersonMapper {
         return "";
     }
 
-    static boolean erMyndig(LocalDate fodselsdato) {
+    public static boolean erMyndig(LocalDate fodselsdato) {
         return finnAlder(fodselsdato) >= 18;
     }
 
@@ -146,20 +81,7 @@ public class PersonMapper {
         return 0;
     }
 
-    private static LocalDate finnFodselsdatoFraFnr(Person xmlPerson) {
-        if (xmlPerson.getFoedselsdato()== null) {
-            return null;
-        }
-            String fnr = finnFnr(xmlPerson);
-        if (fnr != null) {
-            NavFodselsnummer navFnr = new NavFodselsnummer(fnr);
-
-            return new LocalDate(navFnr.getBirthYear() + "-" + navFnr.getMonth() + "-" + navFnr.getDayInMonth());
-        }
-        return null;
-    }
-
-    private static String finnFnr(Person person) {
+    public static String finnFnr(Person person) {
         Aktoer aktoer = person.getAktoer();
         if (aktoer instanceof PersonIdent) {
             return kanskjeNorskIdent((PersonIdent) aktoer);
@@ -173,30 +95,15 @@ public class PersonMapper {
                 .orElse(null);
     }
 
-    public static String finnSivilstatus(PersonData xmlPerson) {
-        if (xmlPerson.getSivilStand() == null ) {
-            return null;
-        }
-        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(xmlPerson.getSivilStand().getSivilstand().getValue());
-    }
-
-    private static String finnFornavn(Person xmlPerson) {
-        return fornavnExists(xmlPerson) ? xmlPerson.getPersonnavn().getFornavn() : "";
-    }
-
-    private static boolean fornavnExists(Person xmlPerson) {
+    public static boolean fornavnExists(Person xmlPerson) {
         return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getFornavn() != null;
     }
 
-    private static String finnMellomnavn(Person xmlPerson) {
-        return mellomnavnExists(xmlPerson) ? xmlPerson.getPersonnavn().getMellomnavn() : "";
-    }
-
-    private static boolean mellomnavnExists(Person xmlPerson) {
+    public static boolean mellomnavnExists(Person xmlPerson) {
         return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getMellomnavn() != null;
     }
 
-    private static String finnEtternavn(Person xmlPerson) {
+    public static String finnEtternavn(Person xmlPerson) {
         return etternavnExists(xmlPerson) ? xmlPerson.getPersonnavn().getEtternavn() : "";
     }
 
@@ -206,9 +113,9 @@ public class PersonMapper {
 
     static String finnSammensattNavn(Person xmlPerson) {
         if (fornavnExists(xmlPerson) && mellomnavnExists(xmlPerson)) {
-            return finnFornavn(xmlPerson) + " " + finnMellomnavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
+            return PersonDataMapper.finnFornavn(xmlPerson) + " " + PersonDataMapper.finnMellomnavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
         } else if (fornavnExists(xmlPerson)) {
-            return finnFornavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
+            return PersonDataMapper.finnFornavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
         } else {
             return finnEtternavn(xmlPerson);
         }

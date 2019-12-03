@@ -4,6 +4,7 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDataMapper;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -135,7 +136,7 @@ public class PersonDataMapperTest {
         Person xmlBarn = lagXmlPersonMedNavnOgIdent(FORNAVN_BARN, MELLOMNAVN_BARN, ETTERNAVN_BARN, FNR_BARN, null);
         Person xmlBarn2 = lagXmlPersonMedNavnOgIdent(FORNAVN_BARN2, MELLOMNAVN_BARN2, ETTERNAVN_BARN2, FNR_BARN2, null);
 
-        List<Barn> barnliste = finnBarnForPerson(lagPersonSomHarToBarn(xmlBarn, xmlBarn2));
+        List<Barn> barnliste = PersonDataMapper.finnBarnForPerson(lagPersonSomHarToBarn(xmlBarn, xmlBarn2));
         Barn barn = barnliste.get(0);
         Barn barn2 = barnliste.get(1);
 
@@ -162,7 +163,7 @@ public class PersonDataMapperTest {
 
     @Test
     public void finnBarnForPersonViserIngenInfoForBarnMedDiskresjonskode() {
-        List<Barn> barnliste = finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_UGIF, RELASJON_BARN, true,
+        List<Barn> barnliste = PersonDataMapper.finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_UGIF, RELASJON_BARN, true,
                 KODE_6_TALLFORM, true, null));
 
         assertThat(barnliste.isEmpty(), is(true));
@@ -170,7 +171,7 @@ public class PersonDataMapperTest {
 
     @Test
     public void finnBarnForPersonIgnorererMyndigBarn() {
-        List<Barn> barnliste = finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_UGIF, RELASJON_BARN, false,
+        List<Barn> barnliste = PersonDataMapper.finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_UGIF, RELASJON_BARN, false,
                 "", false, null));
 
         assertThat(barnliste.size(), is(0));
@@ -178,7 +179,7 @@ public class PersonDataMapperTest {
 
     @Test
     public void finnBarnForPersonIgnorererDoedtBarn() {
-        List<Barn> barnliste = finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_UGIF, RELASJON_BARN, false,
+        List<Barn> barnliste = PersonDataMapper.finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_UGIF, RELASJON_BARN, false,
                 "", false, null));
 
         assertThat(barnliste.size(), is(0));
@@ -186,7 +187,7 @@ public class PersonDataMapperTest {
 
     @Test
     public void finnBarnForPersonFinnerIngenBarnForBrukerUtenBarn() {
-        List<Barn> barn = finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_REPA, RELASJON_REGISTRERT_PARTNER, false,
+        List<Barn> barn = PersonDataMapper.finnBarnForPerson(lagPersonSomHarEnRelasjon(SIVILSTATUS_REPA, RELASJON_REGISTRERT_PARTNER, false,
                 null, true, null));
 
         assertThat(barn.size(), is(0));
@@ -194,28 +195,28 @@ public class PersonDataMapperTest {
 
     @Test
     public void xmlPersonHarDiskresjonskodeReturnererTrueHvisBrukerHarKode6() {
-        boolean harDiskresjonskode = xmlPersonHarDiskresjonskode(lagXmlPersonMedDiskresjonskode(KODE_6_TALLFORM));
+        boolean harDiskresjonskode = PersonDataMapper.xmlPersonHarDiskresjonskode(lagXmlPersonMedDiskresjonskode(KODE_6_TALLFORM));
 
         assertThat(harDiskresjonskode, is(true));
     }
 
     @Test
     public void xmlPersonHarDiskresjonskodeReturnererTrueHvisBrukerHarKode7() {
-        boolean harDiskresjonskode = xmlPersonHarDiskresjonskode(lagXmlPersonMedDiskresjonskode(KODE_7_TALLFORM));
+        boolean harDiskresjonskode = PersonDataMapper.xmlPersonHarDiskresjonskode(lagXmlPersonMedDiskresjonskode(KODE_7_TALLFORM));
 
         assertThat(harDiskresjonskode, is(true));
     }
 
     @Test
     public void xmlPersonHarDiskresjonskodeReturnererTrueHvisBrukerHarKodeSPSF() {
-        boolean harDiskresjonskode = xmlPersonHarDiskresjonskode(lagXmlPersonMedDiskresjonskode(KODE_6));
+        boolean harDiskresjonskode = PersonDataMapper.xmlPersonHarDiskresjonskode(lagXmlPersonMedDiskresjonskode(KODE_6));
 
         assertThat(harDiskresjonskode, is(true));
     }
 
     @Test
     public void xmlPersonHarDiskresjonskodeReturnererFalseHvisBrukerHarDiskresjonskodeUFB() {
-        boolean harDiskresjonskode = xmlPersonHarDiskresjonskode(lagXmlPersonMedDiskresjonskode(DISKRESJONSKODE_UFB));
+        boolean harDiskresjonskode = PersonDataMapper.xmlPersonHarDiskresjonskode(lagXmlPersonMedDiskresjonskode(DISKRESJONSKODE_UFB));
 
         assertThat(harDiskresjonskode, is(false));
     }
