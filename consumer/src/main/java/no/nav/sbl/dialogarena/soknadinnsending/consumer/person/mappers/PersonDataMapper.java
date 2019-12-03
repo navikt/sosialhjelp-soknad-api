@@ -436,11 +436,6 @@ public class PersonDataMapper {
         return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getMellomnavn() != null;
     }
 
-
-    private static boolean etternavnExists(Person xmlPerson) {
-        return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getEtternavn() != null;
-    }
-
     public static String finnSammensattNavn(Person xmlPerson) {
         if (fornavnExists(xmlPerson) && mellomnavnExists(xmlPerson)) {
             return PersonDataMapper.finnFornavn(xmlPerson) + " " + PersonDataMapper.finnMellomnavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
