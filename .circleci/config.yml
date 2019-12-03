@@ -9,38 +9,44 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: GitHub package registry login
-          command: |
-            echo "$DEPLOYMENT_PASSWORD" | docker login -u "$DEPLOYMENT_USERNAME" --password-stdin docker.pkg.github.com
-      - run:
-          name: Checkout CI scripts
+          name: Generate version number
           command: |
             git clone https://github.com/navikt/github-apps-support.git
-            git clone https://github.com/navikt/sosialhjelp-ci.git
-            echo "export PATH=\"`pwd`/github-apps-support/bin:`pwd`/sosialhjelp-ci/bin:$PATH\"" >> $BASH_ENV
-      - run:
-          name: Generate version number and docker image tags
-          command: |
-            VERSION=$(create-artifact-version.sh)
-            echo "export DOCKER_TAG=\"docker.pkg.github.com/navikt/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
-      - run:
-          name: Build docker image
-          command: |
-            docker build -t $DOCKER_TAG .
-      - run:
-          name: Create tag and release
-          command: |
-            echo $DIGISOS_KEY | tr '_' '\n' > digisos.key
-            GH_TOKEN=$(generate-installation-token.sh `generate-jwt.sh digisos.key $DIGISOS_APPID`)
-            rm digisos.key
-
-            create-github-release.sh -p $CIRCLE_PROJECT_REPONAME -t $(create-artifact-version.sh) \
-                -c $CIRCLE_SHA1 -m "$(format-commit-message.sh)" -a $GH_TOKEN
-      - run:
-          name: Docker push
-          command: |
-            echo $DOCKER_TAG
-            docker push $DOCKER_TAG
+            versjon=$(./sosialhjelp-ci/bin/create-artifact-version.sh)
+            echo "https://repo.adeo.no/#browse/search=format%3Ddocker%20AND%20name.raw%3Dsosialhjelp-soknad-api%20AND%20version%3D${versjon}"
+#      - run:
+#          name: GitHub package registry login
+#          command: |
+#            echo "$DEPLOYMENT_PASSWORD" | docker login -u "$DEPLOYMENT_USERNAME" --password-stdin docker.pkg.github.com
+#      - run:
+#          name: Checkout CI scripts
+#          command: |
+#            git clone https://github.com/navikt/github-apps-support.git
+#            git clone https://github.com/navikt/sosialhjelp-ci.git
+#            echo "export PATH=\"`pwd`/github-apps-support/bin:`pwd`/sosialhjelp-ci/bin:$PATH\"" >> $BASH_ENV
+#      - run:
+#          name: Generate version number and docker image tags
+#          command: |
+#            VERSION=$(create-artifact-version.sh)
+#            echo "export DOCKER_TAG=\"docker.pkg.github.com/navikt/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$VERSION\"" >> $BASH_ENV
+#      - run:
+#          name: Build docker image
+#          command: |
+#            docker build -t $DOCKER_TAG .
+#      - run:
+#          name: Create tag and release
+#          command: |
+#            echo $DIGISOS_KEY | tr '_' '\n' > digisos.key
+#            GH_TOKEN=$(generate-installation-token.sh `generate-jwt.sh digisos.key $DIGISOS_APPID`)
+#            rm digisos.key
+#
+#            create-github-release.sh -p $CIRCLE_PROJECT_REPONAME -t $(create-artifact-version.sh) \
+#                -c $CIRCLE_SHA1 -m "$(format-commit-message.sh)" -a $GH_TOKEN
+#      - run:
+#          name: Docker push
+#          command: |
+#            echo $DOCKER_TAG
+#            docker push $DOCKER_TAG
 
   deploy_heroku:
     docker:
@@ -107,10 +113,10 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - deploy_heroku:
-          filters:
-            branches:
-              only: master
+#      - deploy_heroku:
+#          filters:
+#            branches:
+#              only: master
 #      - browser-test:
 #          requires:
 #            - deploy_heroku
