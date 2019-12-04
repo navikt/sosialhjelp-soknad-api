@@ -11,7 +11,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -21,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -29,7 +27,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Timed
 @Produces(APPLICATION_JSON)
 public class AdresseRessurs {
-    private static final Logger log = getLogger(AdresseRessurs.class);
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -61,7 +58,6 @@ public class AdresseRessurs {
 
     @PUT
     public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresserFrontend adresserFrontend) {
-        long startTime = System.currentTimeMillis();
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -83,12 +79,6 @@ public class AdresseRessurs {
         personalia.setPostadresse(midlertidigLosningForPostadresse(personalia.getOppholdsadresse()));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
-        long endTime = System.currentTimeMillis();
-        if (endTime - startTime > 2000) {
-            log.error("Timer 1: Henting og oppdatering av soknadUnderArbeid tok: {} ms", endTime - startTime);
-        } else {
-            log.info("Timer 1: Henting og oppdatering av soknadUnderArbeid tok: {} ms", endTime - startTime);
-        }
         return navEnhetRessurs.findSoknadsmottaker(soknad.getJsonInternalSoknad().getSoknad(), adresserFrontend.valg.toString(), null);
     }
 

@@ -124,31 +124,16 @@ public class NavEnhetRessurs {
     }
 
     public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(JsonSoknad soknad, String valg, String valgtEnhetNr) {
-        long startTime = System.currentTimeMillis();
         JsonPersonalia personalia = soknad.getData().getPersonalia();
 
         List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
-        long endTime = System.currentTimeMillis();
-        if (endTime - startTime > 2000) {
-            log.error("Timer 2: soknadsmottakerGitt: {} ms", endTime - startTime);
-        } else {
-            log.info("Timer 2: soknadsmottakerGitt: {} ms", endTime - startTime);
-        }
-
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
          * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
          */
         return adresseForslagene.stream().map((adresseForslag) -> {
-            long startTimeNorg = System.currentTimeMillis();
             NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-            long endTimeNorg = System.currentTimeMillis();
-            if (endTimeNorg - startTimeNorg > 2000) {
-                log.error("Timer 3: Henting fra norg tok: {} ms", endTimeNorg - startTimeNorg);
-            } else {
-                log.info("Timer 3: Henting fra norg tok: {} ms", endTimeNorg - startTimeNorg);
-            }
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtEnhetNr);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
