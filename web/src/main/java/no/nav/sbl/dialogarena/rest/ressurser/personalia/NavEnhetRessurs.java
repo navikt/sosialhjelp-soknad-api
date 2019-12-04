@@ -37,7 +37,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Timed
 @Produces(APPLICATION_JSON)
 public class NavEnhetRessurs {
-    private static final Logger logger = LoggerFactory.getLogger(AdresseRessurs.class);
+    private static final Logger log = LoggerFactory.getLogger(NavEnhetRessurs.class);
     private static final String SPLITTER = ", ";
 
     @Inject
@@ -124,23 +124,30 @@ public class NavEnhetRessurs {
     }
 
     public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(JsonSoknad soknad, String valg, String valgtEnhetNr) {
+        long startTime = System.currentTimeMillis();
         JsonPersonalia personalia = soknad.getData().getPersonalia();
 
         List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
+        long endTime = System.currentTimeMillis();
+        log.info("Timer 2: soknadsmottakerGitt: {} ms", endTime - startTime);
+
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
          * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
          */
         return adresseForslagene.stream().map((adresseForslag) -> {
+            long startTimeNorg = System.currentTimeMillis();
             NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+            long endTimeNorg = System.currentTimeMillis();
+            log.info("Timer 3: Henting fra norg tok: {} ms", endTimeNorg - startTimeNorg);
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtEnhetNr);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
 
     private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
         if (navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
+            log.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
         }
 
@@ -150,7 +157,7 @@ public class NavEnhetRessurs {
         }
 
         if (!ServiceUtils.isRunningInProd() && ServiceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-            logger.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
+            log.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
             kommunenummer = "2352";
         }
 
@@ -171,7 +178,10 @@ public class NavEnhetRessurs {
     }
 
     private boolean isDigisosKommune(String kommunenummer){
+        long startTime = System.currentTimeMillis();
         boolean isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && ServiceUtils.isSendingTilFiksEnabled();
+        long endTime = System.currentTimeMillis();
+        log.info("Timer 4: Henting fra fiks tok: {} ms", endTime - startTime);
         boolean isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer);
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune;
     }
