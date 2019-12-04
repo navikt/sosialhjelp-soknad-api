@@ -113,26 +113,6 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
     private AdressesokRespons createAdressesokRespons(Sokedata sokedata, Response response) {
         final AdressesokRespons result = response.readEntity(AdressesokRespons.class);
-
-        logger.info("adressesøket antall treff: {}", result.adresseDataList.size());
-        result.adresseDataList.forEach( adresseData -> logger.info(
-                "res: " +
-                        "adressenavn {}\n husnummer {}\n husbokstav {}\n " +
-                        "postnummer {}\n poststed {}\n bydel {}\n kommunenavn {}\n kommunenummer {}\n " +
-                        "gatekode {}\n geografiskTilknytning {}\n husnummerFra {}\n husnummerTil {}\n",
-                adresseData.adressenavn,
-                adresseData.husnummer,
-                adresseData.husbokstav,
-                adresseData.postnummer,
-                adresseData.poststed,
-                adresseData.bydel,
-                adresseData.kommunenavn,
-                adresseData.kommunenummer,
-                adresseData.gatekode,
-                adresseData.geografiskTilknytning,
-                adresseData.husnummerFra,
-                adresseData.husnummerTil));
-
         taMedDataFraRequest(sokedata, result);
         return result;
     }
@@ -158,8 +138,6 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
         final String maxretur = (sokedata.postnummer != null) ? "100" : "8";
-        logger.info("maxretur {}, søker på: \nadresse {}, \npostnummer {}, \npoststed {}, \nkommunenummer {}, \nhusnummer {}, \nhusbokstav {}, \n",
-                maxretur, sokedata.adresse, sokedata.postnummer, sokedata.poststed, sokedata.kommunenummer, sokedata.husnummer, sokedata.husbokstav);
         WebTarget b = executionContext.getClient().target(endpoint + "adressesoek")
                 .queryParam("soketype", soketype)
                 .queryParam("alltidRetur", "true")
