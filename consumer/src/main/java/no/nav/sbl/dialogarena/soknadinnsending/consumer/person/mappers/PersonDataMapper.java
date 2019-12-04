@@ -14,6 +14,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Ustrukture
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.*;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -21,14 +23,15 @@ import static java.util.Optional.ofNullable;
 import static org.joda.time.Years.yearsBetween;
 
 public class PersonDataMapper {
+    private static Logger log = LoggerFactory.getLogger(PersonDataMapper.class);
     public static final String RELASJON_EKTEFELLE = "EKTE";
     public static final String RELASJON_REGISTRERT_PARTNER = "REPA";
     public static final String RELASJON_BARN = "BARN";
-    public  static final String KODE_6 = "SPSF";
+    public static final String KODE_6 = "SPSF";
     public static final String KODE_7 = "SPFO";
     public static final String KODE_6_TALLFORM = "6";
     public static final String KODE_7_TALLFORM = "7";
-    public   static final String DOED = "DØD";
+    public static final String DOED = "DØD";
     private static final Map<String, String> MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<String, String>()
             .put("GIFT", "gift")
             .put("GLAD", "gift")
@@ -43,7 +46,8 @@ public class PersonDataMapper {
             .put("SKPA", "skilt").build();
 
     public static String finnSivilstatus(Person person) {
-        if (person.getSivilstand() == null ) {
+        log.error("person.getSivilstand " +person.getSivilstand());
+        if (person.getSivilstand() == null) {
             return null;
         }
         return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(person.getSivilstand().getSivilstand().getValue());
@@ -91,10 +95,10 @@ public class PersonDataMapper {
     }
 
     public static LocalDate finnFodselsdatoFraFnr(Person xmlPerson) {
-        if (xmlPerson.getFoedselsdato()== null) {
+        if (xmlPerson.getFoedselsdato() == null) {
             return null;
         }
-            String fnr = finnFnr(xmlPerson);
+        String fnr = finnFnr(xmlPerson);
         if (fnr != null) {
             NavFodselsnummer navFnr = new NavFodselsnummer(fnr);
 
@@ -353,8 +357,6 @@ public class PersonDataMapper {
                 .map(DiskresjonskodeMapper::mapTilTallkode)
                 .orElse(null);
     }
-
-
 
 
     public static Ektefelle finnEktefelleForPerson(Person xmlPerson) {

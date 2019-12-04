@@ -206,7 +206,6 @@ public class FamilieSystemdataTest {
             JsonSivilstatus.Status.fromValue(status);
         }
     }
-    
 
     @Test
     public void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
