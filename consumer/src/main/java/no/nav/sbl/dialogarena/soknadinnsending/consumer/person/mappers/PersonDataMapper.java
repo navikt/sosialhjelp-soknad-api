@@ -445,4 +445,5 @@ public class PersonDataMapper {
             return finnEtternavn(xmlPerson);
         }
     }
+
 }
