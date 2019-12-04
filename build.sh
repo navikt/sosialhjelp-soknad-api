@@ -74,7 +74,7 @@ function publish() {
 
 function build_and_deploy_docker() {
     (
-        docker build . -t repo.adeo.no:5443/sosialhjelp-soknad-api:${versjon}
+        docker build . -t repo.adeo.no:5443/sosialhjelp-soknad-api:${versjon} -f Dockerfile.jenkins
         docker push repo.adeo.no:5443/sosialhjelp-soknad-api:${versjon}
     )
 } 
