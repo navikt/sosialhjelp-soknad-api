@@ -82,15 +82,13 @@ public class FamilieSystemdata implements Systemdata {
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
         PersonData person = personService.getPersonData(personIdentifikator);
-        if (person == null || person.getSivilStand() == null) {
-            log.error("Person er null " + personIdentifikator  + " Eller mangler sivilstand");
+        if (person == null || person.getSivilstatus() == null) {
             return null;
         }
 
         Ektefelle ektefelle = person.getEktefelle();
-        JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(person.getSivilStand().getSivilstand().getValue());
+        JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(person.getSivilstatus());
         if (!GIFT.equals(status) || ektefelle == null){
-            log.error("Person er ikke gift eller ektefellen er null ");
             return null;
         }
 

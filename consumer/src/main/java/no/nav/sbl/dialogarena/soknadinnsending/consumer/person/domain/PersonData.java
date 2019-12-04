@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.ks.svarut.servicesv9.PostAdresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstand;
 
 import java.util.Optional;
 
@@ -23,7 +22,7 @@ public class PersonData {
     private String fodselsnummer;
     private String statsborgerskap;
     private Ektefelle ektefelle;
-    private Sivilstand sivilStand;
+    private String sivilstatus;
 
     @JsonIgnore
     public Optional<String> getPostnummerForBostedsadresse() {
@@ -156,17 +155,13 @@ public class PersonData {
         return statsborgerskap;
     }
 
-    public void setSivilstand(Sivilstand sivilstand) {
-        this.sivilStand = sivilstand;
-    }
-
-    public PersonData withSivilstand(Sivilstand sivilstand) {
-        this.sivilStand = sivilstand;
+    public PersonData withSivilstatus(String sivilstatus) {
+        this.sivilstatus = sivilstatus;
         return this;
     }
 
-    public Sivilstand getSivilStand() {
-        return sivilStand;
+    public String getSivilstatus() {
+        return sivilstatus;
     }
 
     public Ektefelle getEktefelle() {

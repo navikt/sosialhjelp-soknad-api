@@ -42,11 +42,11 @@ public class PersonDataMapper {
             .put("SKIL", "skilt")
             .put("SKPA", "skilt").build();
 
-    public static String finnSivilstatus(PersonData personData) {
-        if (personData.getSivilStand() == null ) {
+    public static String finnSivilstatus(Person person) {
+        if (person.getSivilstand() == null ) {
             return null;
         }
-        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(personData.getSivilStand().getSivilstand().getValue());
+        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(person.getSivilstand().getSivilstand().getValue());
     }
 
     public static List<Barn> finnBarnForPerson(Person xmlPerson) {
@@ -125,7 +125,8 @@ public class PersonDataMapper {
                 .withBostedsadresse(finnBostedsadresse(person))
                 .withMidlertidigAdresseNorge(finnMidlertidigAdresseNorge(person))
                 .withMidlertidigAdresseUtland(finnMidlertidigAdresseUtland(person))
-                .withPostAdresse(finnPostAdresse(person));
+                .withPostAdresse(finnPostAdresse(person))
+                .withSivilstatus(finnSivilstatus(person));
     }
 
     private static String finnFodselsnummer(Person person) {

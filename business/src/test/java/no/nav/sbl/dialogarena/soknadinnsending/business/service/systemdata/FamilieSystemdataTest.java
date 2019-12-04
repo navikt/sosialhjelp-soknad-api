@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDataMapper;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -16,8 +17,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstand;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstander;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Sivilstand;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Sivilstander;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +33,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDataMapper.finnSivilstatus;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -140,11 +141,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalSetteSivilstatusGiftMedEktefelle() throws JsonProcessingException {
-        Sivilstand sivilstand = new Sivilstand();
-        Sivilstander value = new Sivilstander();
-        value.setValue(GIFT.toString());
-        sivilstand.setSivilstand(value);
-        PersonData person = new PersonData().withSivilstand(sivilstand)
+        PersonData person = new PersonData().withSivilstatus(GIFT.toString())
                 .withEktefelle(EKTEFELLE);
         when(personService.getPersonData(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -166,11 +163,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
-        Sivilstand sivilstand = new Sivilstand();
-        Sivilstander value = new Sivilstander();
-        value.setValue(GIFT.toString());
-        sivilstand.setSivilstand(value);
-        PersonData person = new PersonData().withSivilstand(sivilstand);
+        PersonData person = new PersonData().withSivilstatus(GIFT.toString());
         when(personService.getPersonData(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -204,23 +197,19 @@ public class FamilieSystemdataTest {
         String status;
         Sivilstand sivilstand = new Sivilstand();
         Sivilstander sivilstander = new Sivilstander();
-        PersonData person = new PersonData();
+        Person person = new Person();
         for (String tpsKode : muligeTPSKoder) {
-            sivilstander.setValue(tpsKode);
+            sivilstander.withValue(tpsKode);
             sivilstand.setSivilstand(sivilstander);
-            person.setSivilstand(sivilstand);
-            status = finnSivilstatus(person);
+            person.withSivilstand(sivilstand);
+            status =  PersonDataMapper.finnSivilstatus(person);
             JsonSivilstatus.Status.fromValue(status);
         }
     }
 
     @Test
     public void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
-        Sivilstand sivilstand = new Sivilstand();
-        Sivilstander value = new Sivilstander();
-        value.setValue(GIFT.toString());
-        sivilstand.setSivilstand(value);
-        PersonData person = new PersonData().withSivilstand(sivilstand)
+        PersonData person = new PersonData().withSivilstatus(GIFT.toString())
                 .withEktefelle(EKTEFELLE_MED_DISKRESJONSKODE);
         when(personService.getPersonData(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -304,11 +293,7 @@ public class FamilieSystemdataTest {
     }
 
     private void sivilstatusSkalIkkeSettes(JsonSivilstatus.Status status, Ektefelle ektefelle) throws JsonProcessingException {
-        Sivilstand sivilstand = new Sivilstand();
-        Sivilstander value = new Sivilstander();
-        value.setValue(status.toString());
-        sivilstand.setSivilstand(value);
-        PersonData person = new PersonData().withSivilstand(sivilstand)
+        PersonData person = new PersonData().withSivilstatus(status.toString())
                 .withEktefelle(ektefelle);
         when(personService.getPersonData(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
