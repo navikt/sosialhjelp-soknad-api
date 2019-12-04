@@ -72,7 +72,7 @@
         <nav-common.version>1.2019.10.14-11.26-d162453764a7</nav-common.version>
 
         <modig.frontend>1.1.96</modig.frontend>
-        <spring.version>4.1.0.RELEASE</spring.version>
+        <spring.version>4.1.9.RELEASE</spring.version>
         <jetty.version>9.4.18.v20190429</jetty.version>
         <jersey.version>2.25.1</jersey.version>
         <oidc-support.version>0.2.18</oidc-support.version>
@@ -101,7 +101,7 @@
         <verapdf.version>1.12.1</verapdf.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.3.2</hsqldb.version>
-        <hikaricp.version>2.7.8</hikaricp.version>
+        <hikaricp.version>3.4.1</hikaricp.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <ehcache.version>2.10.4</ehcache.version>
         <woodstox-core-asl.version>4.4.0</woodstox-core-asl.version>
