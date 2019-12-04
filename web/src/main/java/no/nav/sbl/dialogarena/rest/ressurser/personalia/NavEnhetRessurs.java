@@ -37,7 +37,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Timed
 @Produces(APPLICATION_JSON)
 public class NavEnhetRessurs {
-    private static final Logger logger = LoggerFactory.getLogger(AdresseRessurs.class);
+    private static final Logger log = LoggerFactory.getLogger(NavEnhetRessurs.class);
     private static final String SPLITTER = ", ";
 
     @Inject
@@ -140,7 +140,7 @@ public class NavEnhetRessurs {
 
     private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
         if (navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
+            log.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
         }
 
@@ -150,7 +150,7 @@ public class NavEnhetRessurs {
         }
 
         if (!ServiceUtils.isRunningInProd() && ServiceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-            logger.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
+            log.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
             kommunenummer = "2352";
         }
 
