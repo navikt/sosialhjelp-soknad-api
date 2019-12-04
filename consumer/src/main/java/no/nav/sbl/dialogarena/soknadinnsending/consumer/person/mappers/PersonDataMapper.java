@@ -46,11 +46,13 @@ public class PersonDataMapper {
             .put("SKPA", "skilt").build();
 
     public static String finnSivilstatus(Person person) {
-        log.error("person.getSivilstand " +person.getSivilstand());
+        log.info("person.getSivilstand " +person.getSivilstand().getSivilstand().getValue());
         if (person.getSivilstand() == null) {
             return null;
         }
-        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(person.getSivilstand().getSivilstand().getValue());
+        String s = MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(person.getSivilstand().getSivilstand().getValue());
+        log.info("person.getSivilstand " +s);
+        return s;
     }
 
     public static List<Barn> finnBarnForPerson(Person xmlPerson) {
