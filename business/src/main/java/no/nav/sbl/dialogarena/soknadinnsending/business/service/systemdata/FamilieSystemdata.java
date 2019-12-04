@@ -11,6 +11,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -22,7 +24,7 @@ import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status
 
 @Component
 public class FamilieSystemdata implements Systemdata {
-
+    Logger log = LoggerFactory.getLogger(FamilieSystemdata.class);
     @Inject
     private PersonServiceV3 personService;
 
@@ -81,12 +83,14 @@ public class FamilieSystemdata implements Systemdata {
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
         PersonData person = personService.getPersonData(personIdentifikator);
         if (person == null || person.getSivilStand() == null) {
+            log.error("Person er null " + personIdentifikator);
             return null;
         }
 
         Ektefelle ektefelle = person.getEktefelle();
         JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(person.getSivilStand().getSivilstand().getValue());
         if (!GIFT.equals(status) || ektefelle == null){
+            log.error("Person er ikke gift eller ektefellen er null ");
             return null;
         }
 
