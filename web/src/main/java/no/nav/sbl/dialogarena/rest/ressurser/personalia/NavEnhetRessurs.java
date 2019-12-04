@@ -129,7 +129,11 @@ public class NavEnhetRessurs {
 
         List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
         long endTime = System.currentTimeMillis();
-        log.info("Timer 2: soknadsmottakerGitt: {} ms", endTime - startTime);
+        if (endTime - startTime > 2000) {
+            log.error("Timer 2: soknadsmottakerGitt: {} ms", endTime - startTime);
+        } else {
+            log.info("Timer 2: soknadsmottakerGitt: {} ms", endTime - startTime);
+        }
 
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
@@ -140,7 +144,11 @@ public class NavEnhetRessurs {
             long startTimeNorg = System.currentTimeMillis();
             NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
             long endTimeNorg = System.currentTimeMillis();
-            log.info("Timer 3: Henting fra norg tok: {} ms", endTimeNorg - startTimeNorg);
+            if (endTimeNorg - startTimeNorg > 2000) {
+                log.error("Timer 3: Henting fra norg tok: {} ms", endTimeNorg - startTimeNorg);
+            } else {
+                log.info("Timer 3: Henting fra norg tok: {} ms", endTimeNorg - startTimeNorg);
+            }
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtEnhetNr);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
@@ -181,7 +189,11 @@ public class NavEnhetRessurs {
         long startTime = System.currentTimeMillis();
         boolean isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && ServiceUtils.isSendingTilFiksEnabled();
         long endTime = System.currentTimeMillis();
-        log.info("Timer 4: Henting fra fiks tok: {} ms", endTime - startTime);
+        if (endTime - startTime > 2000) {
+            log.error("Timer 4: Henting fra fiks tok: {} ms", endTime - startTime);
+        } else {
+            log.info("Timer 4: Henting fra fiks tok: {} ms", endTime - startTime);
+        }
         boolean isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer);
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune;
     }

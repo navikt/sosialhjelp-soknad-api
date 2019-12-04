@@ -84,7 +84,11 @@ public class AdresseRessurs {
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
         long endTime = System.currentTimeMillis();
-        log.info("Timer 1: Henting og oppdatering av soknadUnderArbeid tok: {} ms", endTime - startTime);
+        if (endTime - startTime > 2000) {
+            log.error("Timer 1: Henting og oppdatering av soknadUnderArbeid tok: {} ms", endTime - startTime);
+        } else {
+            log.info("Timer 1: Henting og oppdatering av soknadUnderArbeid tok: {} ms", endTime - startTime);
+        }
         return navEnhetRessurs.findSoknadsmottaker(soknad.getJsonInternalSoknad().getSoknad(), adresserFrontend.valg.toString(), null);
     }
 
