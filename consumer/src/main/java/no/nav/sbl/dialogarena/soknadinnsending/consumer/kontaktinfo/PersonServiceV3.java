@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
@@ -12,6 +14,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Matrikkela
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.StrukturertAdresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers.PersonDataMapper;
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
@@ -91,7 +94,14 @@ public class PersonServiceV3 {
                 return null;
             }
             PersonDataMapper personDataMapper = new PersonDataMapper();
+            ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
+
             PersonData personData = personDataMapper.tilPersonData(person);
+            try {
+                logger.info(objectMapper.writeValueAsString(person));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
             return personData;
         } catch (WebServiceException e) {
             logger.warn("Ingen kontakt med TPS (Person_V3).", e);
