@@ -100,7 +100,6 @@ public class DigisosApiImpl implements DigisosApi {
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-            long startTimeLageFiksRequest = System.currentTimeMillis();
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommuner/");
             http.setHeader("Accept", MediaType.APPLICATION_JSON);
             http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
@@ -108,34 +107,19 @@ public class DigisosApiImpl implements DigisosApi {
             Objects.requireNonNull(integrasjonpassord_fiks, "integrasjonpassord_fiks");
             http.setHeader("IntegrasjonPassord", integrasjonpassord_fiks);
             http.setHeader("Authorization", "Bearer " + accessToken.accessToken);
-            long endTimeLageFiksRequest = System.currentTimeMillis();
-            if (endTimeLageFiksRequest - startTimeLageFiksRequest > 2000) {
-                log.error("Timer 4.4: Lage fiks-request: {} ms", endTimeLageFiksRequest - startTimeLageFiksRequest);
-            } else {
-                log.info("Timer 4.4: Lage fiks-request: {} ms", endTimeLageFiksRequest - startTimeLageFiksRequest);
-            }
 
-            long startTimeSendeFiksRequest = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(http);
-            long endTimeSendeFiksRequest = System.currentTimeMillis();
-            if (endTimeSendeFiksRequest - startTimeSendeFiksRequest > 2000) {
-                log.error("Timer 4.5: Sende fiks-request: {} ms", endTimeSendeFiksRequest - startTimeSendeFiksRequest);
-            } else {
-                log.info("Timer 4.5: Sende fiks-request: {} ms", endTimeSendeFiksRequest - startTimeSendeFiksRequest);
+            long endTime = System.currentTimeMillis();
+            if (endTime - startTime > 2000) {
+                log.error("Timer: Sende fiks-request: {} ms", endTime - startTime);
             }
 
-            long startTimeLageCache = System.currentTimeMillis();
             String content = EntityUtils.toString(response.getEntity());
             log.info("KommuneInfo: {}", content);
             Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
             cacheForKommuneinfo.set(collect);
             cacheTimestamp = LocalDateTime.now();
-            long endTimeLageCache = System.currentTimeMillis();
-            if (endTimeLageCache - startTimeLageCache > 2000) {
-                log.error("Timer 4.6: Lage cache: {} ms", endTimeLageCache - startTimeLageCache);
-            } else {
-                log.info("Timer 4.6: Lage cache: {} ms", endTimeLageCache - startTimeLageCache);
-            }
             return collect;
         } catch (Exception e) {
             log.error("Hent kommuneinfo feiler", e);
@@ -297,16 +281,7 @@ public class DigisosApiImpl implements DigisosApi {
     }
 
     private IdPortenAccessTokenResponse getVirksertAccessToken() {
-        long startTimeJws = System.currentTimeMillis();
         String jws = createJws();
-        long endTimeJws = System.currentTimeMillis();
-        if (endTimeJws - startTimeJws > 2000) {
-            log.error("Timer 4.1: createJws() tok: {} ms", endTimeJws - startTimeJws);
-        } else {
-            log.info("Timer 4.1: createJws() tok: {} ms", endTimeJws - startTimeJws);
-        }
-
-        long startTimeLageRequest = System.currentTimeMillis();
         HttpPost httpPost = new HttpPost(idPortenTokenUrl);
 
         List<NameValuePair> params = new ArrayList<>();
@@ -316,21 +291,7 @@ public class DigisosApiImpl implements DigisosApi {
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
 
             httpPost.setEntity(new UrlEncodedFormEntity(params));
-            long endTimeLageRequest = System.currentTimeMillis();
-            if (endTimeLageRequest - startTimeLageRequest > 2000) {
-                log.error("Timer 4.2: Lage virkset-request tok: {} ms", endTimeLageRequest - startTimeLageRequest);
-            } else {
-                log.info("Timer 4.2: Lage virkset-request tok: {} ms", endTimeLageRequest - startTimeLageRequest);
-            }
-
-            long startTimePostVirksert = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(httpPost);
-            long endTimePostVirksert = System.currentTimeMillis();
-            if (endTimePostVirksert - startTimePostVirksert > 2000) {
-                log.error("Timer 4.3: Post for å hente virksert tok: {} ms", endTimePostVirksert - startTimePostVirksert);
-            } else {
-                log.info("Timer 4.3: Post for å hente virksert tok: {} ms", endTimePostVirksert - startTimePostVirksert);
-            }
 
             return objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
         } catch (IOException e) {

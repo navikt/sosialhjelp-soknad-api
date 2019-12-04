@@ -171,14 +171,7 @@ public class NavEnhetRessurs {
     }
 
     private boolean isDigisosKommune(String kommunenummer){
-        long startTime = System.currentTimeMillis();
         boolean isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && ServiceUtils.isSendingTilFiksEnabled();
-        long endTime = System.currentTimeMillis();
-        if (endTime - startTime > 2000) {
-            log.error("Timer 4: Henting fra fiks tok: {} ms", endTime - startTime);
-        } else {
-            log.info("Timer 4: Henting fra fiks tok: {} ms", endTime - startTime);
-        }
         boolean isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer);
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune;
     }
