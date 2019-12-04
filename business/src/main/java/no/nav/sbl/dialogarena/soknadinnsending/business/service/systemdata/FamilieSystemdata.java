@@ -83,7 +83,7 @@ public class FamilieSystemdata implements Systemdata {
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
         PersonData person = personService.getPersonData(personIdentifikator);
         if (person == null || person.getSivilStand() == null) {
-            log.error("Person er null " + personIdentifikator);
+            log.error("Person er null " + personIdentifikator  + " Eller mangler sivilstand");
             return null;
         }
 
