@@ -49,10 +49,7 @@ public class PersonDataMapper {
         if (person.getSivilstand() == null) {
             return null;
         }
-        log.info("person.getSivilstand " +person.getSivilstand().getSivilstand().getValue());
-        String s = MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(person.getSivilstand().getSivilstand().getValue());
-        log.info("person.getSivilstand " +s);
-        return s;
+        return MAP_XMLSIVILSTATUS_TIL_JSONSIVILSTATUS.get(person.getSivilstand().getSivilstand().getValue());
     }
 
     public static List<Barn> finnBarnForPerson(Person xmlPerson) {
@@ -362,7 +359,8 @@ public class PersonDataMapper {
 
 
     public static Ektefelle finnEktefelleForPerson(Person xmlPerson) {
-        final List<Familierelasjon> familierelasjoner = PersonDataMapper.finnFamilierelasjonerForPerson(xmlPerson);
+        List<Familierelasjon> familierelasjoner = PersonDataMapper.finnFamilierelasjonerForPerson(xmlPerson);
+        log.info("familierelasjoner " + familierelasjoner);
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (RELASJON_EKTEFELLE.equals(familierelasjonType.getValue()) || RELASJON_REGISTRERT_PARTNER.equals(familierelasjonType.getValue())) {
