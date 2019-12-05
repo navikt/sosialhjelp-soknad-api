@@ -168,7 +168,7 @@ public class PersonDataMapper {
     public static String finnMellomnavn(Person person) {
         return ofNullable(person.getPersonnavn())
                 .map(Personnavn::getMellomnavn)
-                .orElse(null);
+                .orElse("");
     }
 
     private static Bostedsadresse finnBostedsadresse(Person person) {
