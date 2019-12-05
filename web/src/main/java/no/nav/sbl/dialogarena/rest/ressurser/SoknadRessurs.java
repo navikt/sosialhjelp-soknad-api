@@ -133,7 +133,7 @@ public class SoknadRessurs {
 
     private static Cookie xsrfCookie(String behandlingId) {
         Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
-        xsrfCookie.setPath(String.format("/sosialhjelp/soknad/skjema/%s/", behandlingId));
+        xsrfCookie.setPath(String.format("/sosialhjelp/soknad/skjema/%s", behandlingId));
         xsrfCookie.setSecure(true);
         return xsrfCookie;
     }
