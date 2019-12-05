@@ -46,7 +46,7 @@ public class BostotteConfig {
         HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
                 = new HttpComponentsClientHttpRequestFactory();
         clientHttpRequestFactory.setConnectTimeout(10_000);
-        clientHttpRequestFactory.setReadTimeout(60_000);
+        clientHttpRequestFactory.setReadTimeout(10_000);
         return clientHttpRequestFactory;
     }
 
