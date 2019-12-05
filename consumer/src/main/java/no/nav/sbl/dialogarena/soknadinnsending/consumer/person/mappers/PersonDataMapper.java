@@ -115,16 +115,20 @@ public class PersonDataMapper {
         return KODE_6_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_6.equalsIgnoreCase(diskresjonskode)
                 || KODE_7_TALLFORM.equalsIgnoreCase(diskresjonskode) || KODE_7.equalsIgnoreCase(diskresjonskode);
     }
+    public static boolean harDiskresjonskode(String kode) {
+        return KODE_6_TALLFORM.equalsIgnoreCase(kode) || KODE_6.equalsIgnoreCase(kode)
+                || KODE_7_TALLFORM.equalsIgnoreCase(kode) || KODE_7.equalsIgnoreCase(kode);
+    }
 
 
     public PersonData tilPersonData(Person person) {
         return new PersonData()
-                .withFornavn(kanskjeFornavn(person))
+                .withFornavn(finnFornavn(person))
                 .withMellomnavn(finnMellomnavn(person))
                 .withEtternavn(finnEtternavn(person))
-                .withDiskresjonskode(kanskjeDiskresjonskode(person))
+                .withDiskresjonskode(finnDiskresjonskode(person))
                 .withStatsborgerskap(finnStatsborgerskap(person))
-                .withKontonummer(kanskjeKontonummer(person))
+                .withKontonummer(finnKontonummer(person))
                 .withBostedsadresse(finnBostedsadresse(person))
                 .withMidlertidigAdresseNorge(finnMidlertidigAdresseNorge(person))
                 .withMidlertidigAdresseUtland(finnMidlertidigAdresseUtland(person))
@@ -150,12 +154,6 @@ public class PersonDataMapper {
         return ofNullable(person.getPersonnavn())
                 .map(Personnavn::getEtternavn)
                 .orElse("");
-    }
-
-    private String kanskjeFornavn(Person person) {
-        return ofNullable(person.getPersonnavn())
-                .map(Personnavn::getFornavn)
-                .orElse(null);
     }
 
     private static String finnStatsborgerskap(Person person) {
@@ -324,16 +322,16 @@ public class PersonDataMapper {
                         .orElse(null));
     }
 
-    private static String kanskjeKontonummer(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
+    private static String finnKontonummer(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
         if (person instanceof no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker) {
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkonto bankkonto =
                     ((no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker) person).getBankkonto();
-            return kanskjeKontonummer(bankkonto);
+            return finnKontonummer(bankkonto);
         }
         return null;
     }
 
-    private static String kanskjeKontonummer(no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkonto bankkonto) {
+    private static String finnKontonummer(no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkonto bankkonto) {
         if (bankkonto instanceof no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge) {
             no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge bankkontoNorge =
                     (no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge) bankkonto;
@@ -350,12 +348,6 @@ public class PersonDataMapper {
         return null;
     }
 
-    private static String kanskjeDiskresjonskode(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-        return ofNullable(person.getDiskresjonskode())
-                .map(no.nav.tjeneste.virksomhet.person.v3.informasjon.Kodeverdi::getValue)
-                .map(DiskresjonskodeMapper::mapTilTallkode)
-                .orElse(null);
-    }
 
 
     public static Ektefelle finnEktefelleForPerson(Person xmlPerson) {

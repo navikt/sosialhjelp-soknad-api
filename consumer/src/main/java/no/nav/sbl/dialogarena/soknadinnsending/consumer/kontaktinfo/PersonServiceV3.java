@@ -119,9 +119,7 @@ public class PersonServiceV3 {
             return null;
         }
 
-        String diskresjonskode = personData.getDiskresjonskode();
-
-        boolean diskresjonsKodeSatt = diskresjonskode != null && (diskresjonskode.equals("6") || diskresjonskode.equals("7"));
+        boolean diskresjonsKodeSatt = PersonDataMapper.harDiskresjonskode(personData.getDiskresjonskode());
 
         return new AdresserOgKontonummer()
                 .withMidlertidigAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getMidlertidigAdresseNorge() == null ? null : personData.getMidlertidigAdresseNorge().getStrukturertAdresse()))

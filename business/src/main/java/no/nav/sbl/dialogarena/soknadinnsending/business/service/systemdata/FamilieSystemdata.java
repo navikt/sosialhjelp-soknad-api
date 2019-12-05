@@ -122,7 +122,6 @@ public class FamilieSystemdata implements Systemdata {
 
     private JsonForsorgerplikt innhentSystemverdiForsorgerplikt(String personIdentifikator) {
         JsonForsorgerplikt jsonForsorgerplikt = new JsonForsorgerplikt().withHarForsorgerplikt(new JsonHarForsorgerplikt());
-
         List<Barn> barn = personService.hentBarn(personIdentifikator);
         if (barn == null || barn.isEmpty()) {
             jsonForsorgerplikt.getHarForsorgerplikt()
