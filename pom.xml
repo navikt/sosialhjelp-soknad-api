@@ -75,7 +75,7 @@
         <spring.version>4.1.0.RELEASE</spring.version>
         <jetty.version>9.4.18.v20190429</jetty.version>
         <jersey.version>2.25.1</jersey.version>
-        <oidc-support.version>0.2.10</oidc-support.version>
+        <oidc-support.version>0.2.18</oidc-support.version>
         <nimbus-jose-jwt.version>7.8</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <jcip-annotations.version>1.0-1</jcip-annotations.version>
@@ -89,7 +89,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.10.0</jackson.version>
         <jackson-databind.version>2.10.0</jackson-databind.version>
-        <filformat.version>1.2019.11.25-13.11-518d6e67d0f9-SNAPSHOT</filformat.version>
+        <filformat.version>1.2019.11.27-10.45-cf682907bdc8</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
