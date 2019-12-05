@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class PersonMapperTest {
+public class PersonDataMapperTest {
     private static final String SIVILSTATUS_REPA = "REPA";
     private static final String SIVILSTATUS_GIFT = "GIFT";
     private static final String SIVILSTATUS_GLAD = "GLAD";

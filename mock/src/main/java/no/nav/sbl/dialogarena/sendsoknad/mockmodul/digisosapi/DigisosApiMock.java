@@ -33,6 +33,7 @@ public class DigisosApiMock {
         kommuneInfoMap.put("5001", getKommuneInfo("5001", false, true)); // Moss
         kommuneInfoMap.put("0136", getKommuneInfo("0136", true, true)); // Rygge
         kommuneInfoMap.put("0403", getKommuneInfo("0403", true, true)); // Hamar
+        kommuneInfoMap.put("2222", getKommuneInfo("2222", true, false)); // Dobbelby
 
         return kommuneInfoMap;
     }

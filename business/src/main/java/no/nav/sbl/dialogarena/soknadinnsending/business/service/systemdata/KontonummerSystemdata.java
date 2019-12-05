@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.BrukerprofilService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -15,16 +15,16 @@ import javax.inject.Inject;
 public class KontonummerSystemdata implements Systemdata {
 
     @Inject
-    private BrukerprofilService brukerprofilService;
+    private PersonServiceV3 personService;
     
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final JsonKontonummer kontonummer = personalia.getKontonummer();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (kontonummer.getKilde() == JsonKilde.SYSTEM) {
             String systemverdi = innhentSystemverdiKontonummer(personIdentifikator);
-            if (systemverdi == null){
+            if (systemverdi == null || systemverdi.isEmpty()){
                 kontonummer.setKilde(JsonKilde.BRUKER);
                 kontonummer.setVerdi(null);
             } else {
@@ -35,23 +35,10 @@ public class KontonummerSystemdata implements Systemdata {
     }
     
     public String innhentSystemverdiKontonummer(final String personIdentifikator) {
-        AdresserOgKontonummer adresserOgKontonummer = brukerprofilService.hentAddresserOgKontonummer(personIdentifikator);
+        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
         if (adresserOgKontonummer == null) {
             return null;
         }
-        return norskKontonummer(adresserOgKontonummer);
-    }
-    
-    
-    private String norskKontonummer(AdresserOgKontonummer adresserOgKontonummer) {
-        if (adresserOgKontonummer.isUtenlandskBankkonto()) {
-            return null;
-        } else {
-            final String kontonummer = adresserOgKontonummer.getKontonummer();
-            if (kontonummer == null || kontonummer.isEmpty()) {
-                return null;
-            }
-            return kontonummer;
-        }
+        return adresserOgKontonummer.getKontonummer();
     }
 }

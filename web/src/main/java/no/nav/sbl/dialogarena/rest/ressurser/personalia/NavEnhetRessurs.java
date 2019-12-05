@@ -33,11 +33,12 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-@Path("/soknader/{behandlingsId}/personalia/navEnheter")
+@Path("/soknader/{behandlingsId}/personalia")
 @Timed
 @Produces(APPLICATION_JSON)
 public class NavEnhetRessurs {
-    private static final Logger logger = LoggerFactory.getLogger(AdresseRessurs.class);
+    private static final Logger log = LoggerFactory.getLogger(NavEnhetRessurs.class);
+    private static final String SPLITTER = ", ";
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -55,6 +56,7 @@ public class NavEnhetRessurs {
     private KommuneInfoService kommuneInfoService;
 
     @GET
+    @Path("/navEnheter")
     public List<NavEnhetFrontend> hentNavEnheter(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
         JsonSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad();
@@ -68,7 +70,31 @@ public class NavEnhetRessurs {
         return findSoknadsmottaker(soknad, adresseValg, valgtEnhetNr);
     }
 
+    @GET
+    @Path("/navEnhet")
+    public NavEnhetFrontend hentValgtNavEnhet(@PathParam("behandlingsId") String behandlingsId) {
+        String eier = OidcFeatureToggleUtils.getUserId();
+        JsonSoknadsmottaker soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad().getMottaker();
+        String kommunenummer = soknadsmottaker.getKommunenummer();
+
+        if (kommunenummer == null || kommunenummer.isEmpty() ||
+                soknadsmottaker.getNavEnhetsnavn() == null || soknadsmottaker.getNavEnhetsnavn().isEmpty()) {
+            return null;
+        }
+
+        return new NavEnhetFrontend()
+                .withEnhetsnr(soknadsmottaker.getEnhetsnummer())
+                .withEnhetsnavn(getEnhetsnavnFromNavEnhetsnavn(soknadsmottaker.getNavEnhetsnavn()))
+                .withKommunenavn(getKommunenavnFromNavEnhetsnavn(soknadsmottaker.getNavEnhetsnavn()))
+                .withKommuneNr(kommunenummer)
+                .withIsMottakDeaktivert(!isDigisosKommune(kommunenummer))
+                .withIsMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer))
+                .withOrgnr(null) // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
+                .withValgt(true);
+    }
+
     @PUT
+    @Path("/navEnheter")
     public void updateNavEnhet(@PathParam("behandlingsId") String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
@@ -78,11 +104,23 @@ public class NavEnhetRessurs {
                 .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
         soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
-                .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
+                .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
                 .withEnhetsnummer(navEnhetFrontend.enhetsnr)
                 .withKommunenummer(navEnhetFrontend.kommuneNr));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+    }
+
+    public String createNavEnhetsnavn(String enhetsnavn, String kommunenavn) {
+        return enhetsnavn + SPLITTER + kommunenavn;
+    }
+
+    public String getEnhetsnavnFromNavEnhetsnavn(String navEnhetsnavn) {
+        return navEnhetsnavn.split(SPLITTER)[0];
+    }
+
+    public String getKommunenavnFromNavEnhetsnavn(String navEnhetsnavn) {
+        return navEnhetsnavn.split(SPLITTER)[1];
     }
 
     public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(JsonSoknad soknad, String valg, String valgtEnhetNr) {
@@ -102,7 +140,7 @@ public class NavEnhetRessurs {
 
     private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
         if (navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
+            log.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
         }
 
@@ -112,7 +150,7 @@ public class NavEnhetRessurs {
         }
 
         if (!ServiceUtils.isRunningInProd() && ServiceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-            logger.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
+            log.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
             kommunenummer = "2352";
         }
 
@@ -128,7 +166,8 @@ public class NavEnhetRessurs {
                 .withEnhetsnr(enhetNr)
                 .withValgt(valgt)
                 .withKommuneNr(kommunenummer)
-                .withisMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer));
+                .withIsMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer))
+                .withIsMottakDeaktivert(!digisosKommune);
     }
 
     private boolean isDigisosKommune(String kommunenummer){
@@ -146,6 +185,7 @@ public class NavEnhetRessurs {
         public String kommuneNr;
         public boolean valgt;
         public boolean isMottakMidlertidigDeaktivert;
+        public boolean isMottakDeaktivert;
 
         public NavEnhetFrontend withOrgnr(String orgnr) {
             this.orgnr = orgnr;
@@ -177,8 +217,13 @@ public class NavEnhetRessurs {
             return this;
         }
 
-        public NavEnhetFrontend withisMottakMidlertidigDeaktivert(boolean isMottakMidlertidigDeaktivert) {
+        public NavEnhetFrontend withIsMottakMidlertidigDeaktivert(boolean isMottakMidlertidigDeaktivert) {
             this.isMottakMidlertidigDeaktivert = isMottakMidlertidigDeaktivert;
+            return this;
+        }
+
+        public NavEnhetFrontend withIsMottakDeaktivert(boolean isMottakDeaktivert) {
+            this.isMottakDeaktivert = isMottakDeaktivert;
             return this;
         }
     }

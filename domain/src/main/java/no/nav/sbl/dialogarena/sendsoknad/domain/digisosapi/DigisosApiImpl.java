@@ -108,7 +108,13 @@ public class DigisosApiImpl implements DigisosApi {
             http.setHeader("IntegrasjonPassord", integrasjonpassord_fiks);
             http.setHeader("Authorization", "Bearer " + accessToken.accessToken);
 
+            long startTime = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(http);
+            long endTime = System.currentTimeMillis();
+            if (endTime - startTime > 2000) {
+                log.error("Timer: Sende fiks-request: {} ms", endTime - startTime);
+            }
+
             String content = EntityUtils.toString(response.getEntity());
             log.info("KommuneInfo: {}", content);
             Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
@@ -343,6 +349,7 @@ public class DigisosApiImpl implements DigisosApi {
         String tokenEndpoint;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     static class IdPortenAccessTokenResponse {
         @JsonProperty(value = "access_token", required = true)
         String accessToken;

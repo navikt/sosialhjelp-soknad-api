@@ -1,5 +1,8 @@
 ## Sendsoknad
 
+### Kjøring lokalt med mock
+Bruk MockSoknadsosialhjelpServer istedenfor DevSoknadsosialhjelpServer.
+
 ### Kjøring lokalt
 
 Backenden kan startes ved å kjøre main-metoden i DevSoknadsosialhjelpServer. Den kjører på port 8181. I utgangspunktet kjører backenden lokalt mot en in memory-database, men hvis du ønsker å kjøre mot en faktisk database kan du lage en kopi av filen `oracledb.properties.default`, fjerne .default-endelsen og fylle inn verdiene for databasen du vil teste mot (`oracledb.properties` er ignorert i gitignore og vil ikke bli sjekket inn). 

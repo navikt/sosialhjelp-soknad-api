@@ -34,7 +34,7 @@ public class SkattbarInntektRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @GET
-    public List<SkattbarInntektOgForskuddstrekk> hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
+    public SkattbarInntektFrontend hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
 
@@ -47,7 +47,9 @@ public class SkattbarInntektRessurs {
                         .filter(jsonOkonomiOpplysningUtbetaling -> jsonOkonomiOpplysningUtbetaling.getType() != null &&
                                 jsonOkonomiOpplysningUtbetaling.getType().equals(UTBETALING_SKATTEETATEN)).collect(toList());
 
-        return organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger);
+        return new SkattbarInntektFrontend()
+                .withInntektFraSkatteetaten(organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger))
+                .withInntektFraSkatteetatenFeilet(soknad.getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet());
     }
 
     private List<SkattbarInntektOgForskuddstrekk> organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger) {
@@ -91,6 +93,7 @@ public class SkattbarInntektRessurs {
     }
 
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class SkattbarInntektOgForskuddstrekk {
         public List<Organisasjon> organisasjoner;
@@ -101,6 +104,7 @@ public class SkattbarInntektRessurs {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class Organisasjon {
         public List<Utbetaling> utbetalinger;
@@ -135,10 +139,9 @@ public class SkattbarInntektRessurs {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class Utbetaling {
-
-
         public Double brutto;
         public Double forskuddstrekk;
         public String tittel;
@@ -158,5 +161,22 @@ public class SkattbarInntektRessurs {
             return this;
         }
 
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static final class SkattbarInntektFrontend {
+        public List<SkattbarInntektOgForskuddstrekk> inntektFraSkatteetaten;
+        public Boolean inntektFraSkatteetatenFeilet;
+
+        public SkattbarInntektFrontend withInntektFraSkatteetaten(List<SkattbarInntektOgForskuddstrekk> inntektFraSkatteetaten) {
+            this.inntektFraSkatteetaten = inntektFraSkatteetaten;
+            return this;
+        }
+
+        public SkattbarInntektFrontend withInntektFraSkatteetatenFeilet(Boolean inntektFraSkatteetatenFeilet) {
+            this.inntektFraSkatteetatenFeilet = inntektFraSkatteetatenFeilet;
+            return this;
+        }
     }
 }

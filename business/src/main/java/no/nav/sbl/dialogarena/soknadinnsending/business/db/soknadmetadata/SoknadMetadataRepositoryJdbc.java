@@ -158,18 +158,18 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
 
     @Override
     public List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr) {
-        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL";
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
     }
 
     @Override
     public List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr) {
-        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND soknadtype = ?";
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND soknadtype = ? ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.UNDER_ARBEID.name(), SoknadType.SEND_SOKNAD_KOMMUNAL.name());
     }
     @Override
     public List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime tidsgrense) {
-        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL";
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
                 fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidsgrense));
     }
@@ -177,11 +177,5 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     @Override
     public void slettSoknadMetaData(String behandlingsId, String eier) {
         getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE fnr = ? AND behandlingsid = ?", eier, behandlingsId);
-    }
-
-    @Override
-    public List<SoknadMetadata> hentInnsendteSoknaderForBrukerUtenEttersendelser(String fnr) {
-        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND tilknyttetbehandlingsid IS NULL";
-        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
     }
 }

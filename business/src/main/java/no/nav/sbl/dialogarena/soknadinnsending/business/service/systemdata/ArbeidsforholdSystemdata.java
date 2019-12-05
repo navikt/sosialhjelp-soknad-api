@@ -39,7 +39,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     private TextService textService;
 
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         String eier = soknadUnderArbeid.getEier();
         JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         internalSoknad.getSoknad().getData().getArbeid().setForhold(innhentSystemArbeidsforhold(eier));

@@ -156,6 +156,10 @@ public class KommuneTilNavEnhetMapper {
             .put("1505", "974775719")    // Kristiansund
             .put("1554", "962378064")    // Averøy
             .put("1557", "974782170")    // Gjemnes
+            .put("1942", "974574101")    // Nordreisa
+            .put("1941", "976835441")    // Skjervøy
+            .put("0425", "974602970")    // Åsnes
+            .put("0135", "974569906")    // Råde
 
             .build();
 
@@ -337,7 +341,12 @@ public class KommuneTilNavEnhetMapper {
                     "1439",
                     "1505",
                     "1554",
-                    "1557"
+                    "1557",
+                    "1942",
+                    "1941",
+                    "0425",
+                    "0135"
+                
             ));
 
 
