@@ -16,10 +16,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksS
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.Unprotected;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -65,6 +72,8 @@ public class TjenesteMockRessurs {
     private NavMessageSource messageSource;
     @Inject
     private SoknadService soknadService;
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
@@ -75,8 +84,21 @@ public class TjenesteMockRessurs {
     @GET
     @Path("/pdfboxtest")
     public void generatePdfAndSaveToDisk(){
+
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+
+//        final String fnr = OidcFeatureToggleUtils.getUserId();
+//        final JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, fnr).getJsonInternalSoknad();
+
         SosialhjelpPdfGenerator sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
-        byte[] bytes = sosialhjelpPdfGenerator.generate();
+
+        byte[] bytes = sosialhjelpPdfGenerator.generate(new JsonInternalSoknad().withSoknad(
+                new JsonSoknad().withData(new JsonData().withPersonalia(new JsonPersonalia().withNavn(
+                        new JsonSokernavn().withFornavn("Han").withEtternavn("Solo")
+                ))
+        )));
 
         try {
             FileOutputStream out = new FileOutputStream("starcraft.pdf");
