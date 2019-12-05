@@ -3,12 +3,13 @@ package no.nav.sbl.sosialhjelp.pdf;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import org.apache.pdfbox.PDFBox;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
@@ -68,6 +69,6 @@ public class PDFFabrikk {
     }
     
     private static String inPdfBox(String path) {
-        return PDFBox.class.getResource(path).toString();
+        return PDDocument.class.getResource(path).toString();
     }
 }
