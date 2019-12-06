@@ -13,18 +13,27 @@ import java.util.List;
 public class PdfGenerator {
 
     public static final int MARGIN = 40;
+    public static final int INNRYKK_1 = 50;
+    public static final int INNRYKK_2 = 60;
+    public static final int INNRYKK_3 = 70;
+    public static final int INNRYKK_4 = 80;
 
     public static final PDFont FONT_PLAIN = PDType1Font.HELVETICA;
+    public static final PDFont FONT_KURSIV = PDType1Font.HELVETICA_OBLIQUE;
     public static final PDFont FONT_BOLD = PDType1Font.HELVETICA_BOLD;
 
     public static final int FONT_PLAIN_SIZE = 12;
-    public static final int FONT_HEADING_SIZE = 16;
+    public static final int FONT_H1_SIZE = 20;
+    public static final int FONT_H2_SIZE = 18;
+    public static final int FONT_H3_SIZE = 16;
+    public static final int FONT_H4_SIZE = 14;
     private static final int fontPLainHeight =
             Math.round(FONT_PLAIN.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * FONT_PLAIN_SIZE);
     private static final int fontHeadingHeight =
-            Math.round(FONT_PLAIN.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * FONT_HEADING_SIZE);
+            Math.round(FONT_PLAIN.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * FONT_H1_SIZE);
 
     public static final PDRectangle MEDIA_BOX = new PDPage(PDRectangle.A4).getMediaBox();
+    public static final float WIDTH_OF_CONTENT_COLUMN = new PDPage(PDRectangle.A4).getMediaBox().getWidth() - MARGIN * 2;
 
     private static final int DEFAULT_USER_SPACE_UNIT_DPI = 72;
     private static final float MM_TO_UNITS = 1/(10*2.54f)*DEFAULT_USER_SPACE_UNIT_DPI;
@@ -68,22 +77,20 @@ public class PdfGenerator {
         return yTotal;
     }
 
-    public float addCenteredHeading(String heading, PDPageContentStream cos, float startY) throws IOException {
-        final float y = addCenteredParagraph(cos, MEDIA_BOX.getWidth() - 2 * MARGIN, startY, heading, FONT_BOLD, FONT_HEADING_SIZE, LEADING_PERCENTAGE);
+    public float addCenteredH1Bold(PDPageContentStream cos, float startY, String heading) throws IOException {
+        final float y = addCenteredParagraph(cos, MEDIA_BOX.getWidth() - 2 * MARGIN, startY, heading, FONT_BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
         return y;
     }
 
-    public float addCenteredHeadings(List<String> headings, PDPageContentStream cos, float startY) throws IOException {
-        float yTotal = 0;
-        for (String heading : headings) {
-            yTotal += addCenteredHeading(heading, cos, startY - yTotal);
-        }
-        return yTotal;
+    public float addCenteredH4Bold(PDPageContentStream cos, float startY, String heading) throws IOException {
+        final float y = addCenteredParagraph(cos, MEDIA_BOX.getWidth() - 2 * MARGIN, startY, heading, FONT_BOLD, FONT_H4_SIZE, LEADING_PERCENTAGE);
+        return y;
     }
+
 
     public float addLeftHeading(String heading, PDPageContentStream cos, float startY) throws IOException {
         cos.beginText();
-        cos.setFont(FONT_BOLD, FONT_HEADING_SIZE);
+        cos.setFont(FONT_BOLD, FONT_H1_SIZE);
         float startX = MARGIN;
         cos.moveTextPositionByAmount(startX, startY);
         cos.drawString(heading);
@@ -99,43 +106,29 @@ public class PdfGenerator {
         return 20;
     }
 
-    public float addBlankLine() {
-        return 20;
-    }
 
     public static float addParagraph(
             PDPageContentStream contentStream,
-            float width,
-            float sx,
-            float sy,
+            float y,
             String text,
             PDFont font,
-            float fontSize,
-            float leadingPercentage
+            float fontSize, int margin
     ) throws IOException {
-        return addParagraph(contentStream, width, sx, sy, text, font, fontSize, leadingPercentage, false);
-    }
 
-    public static float addParagraph(
-            PDPageContentStream contentStream,
-            float width,
-            float sx,
-            float sy,
-            String text,
-            PDFont font,
-            float fontSize,
-            float leadingPercentage,
-            boolean justify
-    ) throws IOException {
-        List<String> lines = parseLines(text, width, font, fontSize);
+        boolean justify = false;
+
+        List<String> lines = parseLines(text,WIDTH_OF_CONTENT_COLUMN , font, fontSize);
         contentStream.setFont(font, fontSize);
-        contentStream.newLineAtOffset(sx, sy);
-        for (String line : lines) {
+        contentStream.beginText();
+        contentStream.newLineAtOffset(margin, y);
+
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
             float charSpacing = 0;
             if (justify) {
                 if (line.length() > 1) {
                     float size = fontSize * font.getStringWidth(line) / 1000;
-                    float free = width - size;
+                    float free = WIDTH_OF_CONTENT_COLUMN - size;
                     if (free > 0 && !lines.get(lines.size() - 1).equals(line)) {
                         charSpacing = free / (line.length() - 1);
                     }
@@ -143,20 +136,12 @@ public class PdfGenerator {
             }
             contentStream.setCharacterSpacing(charSpacing);
             contentStream.showText(line);
-            contentStream.newLineAtOffset(0, leadingPercentage * fontSize);
+            contentStream.newLineAtOffset(0, -LEADING_PERCENTAGE * fontSize);
         }
+        contentStream.endText();
 
-        return lines.size() * fontSize;
+        return lines.size() * fontSize * LEADING_PERCENTAGE;
     }
-
-//    cos.beginText();
-//    cos.setFont(fontBold, fontHeadingSize);
-//    float titleWidth = fontBold.getStringWidth(heading) / 1000 * fontHeadingSize;
-//    float startX = (mediaBox.getWidth() - titleWidth) / 2;
-//    cos.moveTextPositionByAmount(startX, startY);
-//    cos.drawString(heading);
-//    cos.endText();
-//    return fontHeadingHeight;
 
     public static float addCenteredParagraph(
             PDPageContentStream contentStream,
