@@ -1,11 +1,13 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,91 +38,134 @@ public class PdfGenerator {
     public static final float WIDTH_OF_CONTENT_COLUMN = new PDPage(PDRectangle.A4).getMediaBox().getWidth() - MARGIN * 2;
 
     private static final int DEFAULT_USER_SPACE_UNIT_DPI = 72;
-    private static final float MM_TO_UNITS = 1/(10*2.54f)*DEFAULT_USER_SPACE_UNIT_DPI;
-    public static final float PAGE_WIDTH = 210*MM_TO_UNITS;
+    private static final float MM_TO_UNITS = 1 / (10 * 2.54f) * DEFAULT_USER_SPACE_UNIT_DPI;
+    public static final float PAGE_WIDTH = 210 * MM_TO_UNITS;
     public static final float LEADING_PERCENTAGE = 1.5f;
 
-    public PDPage newPage() {
-        return new PDPage(PDRectangle.A4);
+
+    private PDDocument document = new PDDocument();
+    private ArrayList<PDPage> completedPages;
+    private PDPage currentPage = new PDPage(PDRectangle.A4);
+    private ArrayList<PDPageContentStream> completedStreams;
+    private PDPageContentStream currentStream;
+    private float y;
+
+    public PdfGenerator() throws IOException {
+        this.currentStream = new PDPageContentStream(document, currentPage);
+        this.y = calculateStartY();
     }
+
+    public byte[] finish() throws IOException {
+
+        // Add current page to document
+        this.document.addPage(this.currentPage);
+
+        // Close remaining streams
+        this.currentStream.close();
+
+        // save document to byte array output stream and return byte array
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.document.save(baos);
+        byte[] pdf;
+        pdf = baos.toByteArray();
+        return pdf;
+    }
+
+    private void continueOnNewPage() throws IOException {
+
+        // add page to doc
+        this.document.addPage(this.currentPage);
+
+        // close stream
+        this.currentStream.close();
+
+        // add new page and stream
+        this.currentPage = new PDPage(PDRectangle.A4);
+        this.currentStream = new PDPageContentStream(this.document, this.currentPage);
+
+        // reset y
+        this.y = calculateStartY();
+    }
+
+    public void addHeading(String heading, String navn, String fnr) throws IOException {
+        this.addCenteredH1Bold(heading);
+        this.addCenteredH4Bold(navn);
+        this.addCenteredH4Bold(fnr);
+        this.addDividerLine();
+    }
+
+    public void addBlankLine(){
+        this.y -= 20;
+    }
+
 
     public static float calculateStartY() {
         return MEDIA_BOX.getUpperRightY() - MARGIN;
     }
 
-    public float addLineOfRegularText(String line, PDPageContentStream cos, float startY) throws IOException {
-        cos.beginText();
-        cos.setFont(FONT_PLAIN, FONT_PLAIN_SIZE);
-        cos.moveTextPositionByAmount(MARGIN, startY);
-        cos.drawString(line);
-        cos.endText();
-        return fontPLainHeight;
+    public void skrivTekst(String text) throws IOException {
+        this.addParagraph(text, FONT_PLAIN, FONT_PLAIN_SIZE, MARGIN);
     }
 
-    public float addLinesOfRegularText(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
-        float yTotal = 0;
-        for (String line : lines) {
-            yTotal += addLineOfRegularText(line, cos, startY - yTotal);
-        }
-        return yTotal;
+    public void skrivTekstKursiv(String text) throws IOException {
+        this.addParagraph(text, FONT_KURSIV, FONT_PLAIN_SIZE, MARGIN);
     }
 
-    public float addBulletPoint(String line, PDPageContentStream cos, float startY) throws IOException {
-        return addLineOfRegularText("\u2022 " + line, cos, startY);
+    public void skrivTekstMedInnrykk(String text, int innrykk) throws IOException {
+        this.addParagraph(text, FONT_PLAIN, FONT_PLAIN_SIZE, innrykk);
     }
 
-    public float addBulletList(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
-        float yTotal = 0;
-        for (String line : lines) {
-            yTotal += addBulletPoint(line, cos, startY - yTotal);
-        }
-        return yTotal;
+    public void skrivTekstBold(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_BOLD, FONT_PLAIN_SIZE, MARGIN);
     }
 
-    public float addCenteredH1Bold(PDPageContentStream cos, float startY, String heading) throws IOException {
-        final float y = addCenteredParagraph(cos, MEDIA_BOX.getWidth() - 2 * MARGIN, startY, heading, FONT_BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
-        return y;
-    }
-
-    public float addCenteredH4Bold(PDPageContentStream cos, float startY, String heading) throws IOException {
-        final float y = addCenteredParagraph(cos, MEDIA_BOX.getWidth() - 2 * MARGIN, startY, heading, FONT_BOLD, FONT_H4_SIZE, LEADING_PERCENTAGE);
-        return y;
+    public void skrivH4Bold(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_BOLD, FONT_PLAIN_SIZE, MARGIN);
     }
 
 
-    public float addLeftHeading(String heading, PDPageContentStream cos, float startY) throws IOException {
-        cos.beginText();
-        cos.setFont(FONT_BOLD, FONT_H1_SIZE);
-        float startX = MARGIN;
-        cos.moveTextPositionByAmount(startX, startY);
-        cos.drawString(heading);
-        cos.endText();
-        return fontHeadingHeight;
+//    public static float addBulletPoint(String line, PDPageContentStream cos, float startY) throws IOException {
+//        return addLineOfRegularText("\u2022 " + line, cos, startY);
+//    }
+
+//    public static float addBulletList(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
+//        float yTotal = 0;
+//        for (String line : lines) {
+//            yTotal += addBulletPoint(line, cos, startY - yTotal);
+//        }
+//        return yTotal;
+//    }
+
+    public void addCenteredH1Bold(String heading) throws IOException {
+        addCenteredParagraph(heading, FONT_BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
     }
 
-    public float addDividerLine(PDPageContentStream cos, float startY) throws IOException {
-        cos.setLineWidth(1);
-        cos.moveTo(MARGIN, startY);
-        cos.lineTo(MEDIA_BOX.getWidth() - MARGIN, startY);
-        cos.closeAndStroke();
-        return 20;
+    public void addCenteredH4Bold(String heading) throws IOException {
+        addCenteredParagraph(heading, FONT_BOLD, FONT_H4_SIZE, LEADING_PERCENTAGE);
     }
 
 
-    public static float addParagraph(
-            PDPageContentStream contentStream,
-            float y,
+    public void addDividerLine() throws IOException {
+        this.currentStream.setLineWidth(1);
+        this.currentStream.moveTo(MARGIN, this.y);
+        this.currentStream.lineTo(MEDIA_BOX.getWidth() - MARGIN, this.y);
+        this.currentStream.closeAndStroke();
+    }
+
+
+    public void addParagraph(
             String text,
             PDFont font,
-            float fontSize, int margin
+            float fontSize,
+            int margin
     ) throws IOException {
 
         boolean justify = false;
 
-        List<String> lines = parseLines(text,WIDTH_OF_CONTENT_COLUMN , font, fontSize);
-        contentStream.setFont(font, fontSize);
-        contentStream.beginText();
-        contentStream.newLineAtOffset(margin, y);
+        List<String> lines = parseLines(text, font, fontSize);
+        this.currentStream.setFont(font, fontSize);
+        this.currentStream.beginText();
+        this.currentStream.newLineAtOffset(margin, this.y);
 
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -134,53 +179,56 @@ public class PdfGenerator {
                     }
                 }
             }
-            contentStream.setCharacterSpacing(charSpacing);
-            contentStream.showText(line);
-            contentStream.newLineAtOffset(0, -LEADING_PERCENTAGE * fontSize);
-        }
-        contentStream.endText();
+            this.currentStream.setCharacterSpacing(charSpacing);
+            this.currentStream.showText(line);
+            this.currentStream.newLineAtOffset(0, -LEADING_PERCENTAGE * fontSize);
 
-        return lines.size() * fontSize * LEADING_PERCENTAGE;
+            this.y -= fontSize * LEADING_PERCENTAGE;
+            if (this.y < 100) {
+                this.currentStream.endText();
+                this.continueOnNewPage();
+                this.currentStream.beginText();
+                this.currentStream.setFont(font, fontSize);
+                this.currentStream.newLineAtOffset(margin, this.y);
+            }
+        }
+        this.currentStream.endText();
     }
 
-    public static float addCenteredParagraph(
-            PDPageContentStream contentStream,
-            float width,
-            float sy,
+    public void addCenteredParagraph(
             String heading,
             PDFont font,
             float fontSize,
             float leadingPercentage
     ) throws IOException {
-        List<String> lines = parseLines(heading, width, font, fontSize);
-        contentStream.beginText();
-        contentStream.setFont(font, fontSize);
+        List<String> lines = parseLines(heading, font, fontSize);
+        this.currentStream.beginText();
+        this.currentStream.setFont(font, fontSize);
 
         float prevX = 0;
 
         for (int i = 0; i < lines.size(); i++) {
 
-            if (i == 0){
+            if (i == 0) {
                 float lineWidth = font.getStringWidth(lines.get(i)) / 1000 * fontSize;
                 float startX = (MEDIA_BOX.getWidth() - lineWidth) / 2;
-                contentStream.newLineAtOffset(startX, sy);
+                this.currentStream.newLineAtOffset(startX, this.y);
                 prevX = startX;
             } else {
                 float lineWidth = font.getStringWidth(lines.get(i)) / 1000 * fontSize;
                 float startX = (MEDIA_BOX.getWidth() - lineWidth) / 2;
-                contentStream.newLineAtOffset(startX-prevX, -leadingPercentage * fontSize);
+                this.currentStream.newLineAtOffset(startX - prevX, -leadingPercentage * fontSize);
                 prevX = startX;
             }
 
-            contentStream.showText(lines.get(i));
-
+            this.currentStream.showText(lines.get(i));
         }
-        contentStream.endText();
+        this.currentStream.endText();
 
-        return lines.size()*fontSize;
+        this.y -= lines.size() * fontSize;
     }
 
-    private static List<String> parseLines(String text, float width, PDFont font, float fontSize) throws IOException {
+    private static List<String> parseLines(String text, PDFont font, float fontSize) throws IOException {
         List<String> lines = new ArrayList<>();
         int lastSpace = -1;
         while (text.length() > 0) {
@@ -189,7 +237,7 @@ public class PdfGenerator {
                 spaceIndex = text.length();
             String subString = text.substring(0, spaceIndex);
             float size = fontSize * font.getStringWidth(subString) / 1000;
-            if (size > width) {
+            if (size > PdfGenerator.WIDTH_OF_CONTENT_COLUMN) {
                 if (lastSpace < 0) {
                     lastSpace = spaceIndex;
                 }
