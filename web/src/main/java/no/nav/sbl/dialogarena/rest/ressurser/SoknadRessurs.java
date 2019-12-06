@@ -121,6 +121,7 @@ public class SoknadRessurs {
         }
         result.put("brukerBehandlingId", opprettetBehandlingsId);
         response.addCookie(xsrfCookie(opprettetBehandlingsId));
+        response.addCookie(xsrfCookieMedBehandlingsid(opprettetBehandlingsId));
         return result;
     }
 
@@ -133,9 +134,15 @@ public class SoknadRessurs {
 
     private static Cookie xsrfCookie(String behandlingId) {
         Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
-        xsrfCookie.setPath(String.format("/sosialhjelp/soknad/skjema/%s", behandlingId));
+        xsrfCookie.setPath("/");
         xsrfCookie.setSecure(true);
         return xsrfCookie;
     }
 
+    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
+        xsrfCookie.setSecure(true);
+        return xsrfCookie;
+    }
 }
