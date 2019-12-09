@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isAlltidSendTilNavTestkommune;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isAlltidSendTilNavTestkommune;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isSendingTilFiksEnabled;
 import static no.nav.sbl.dialogarena.utils.NedetidUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -76,8 +76,7 @@ public class SoknadActions {
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
-        if (ServiceUtils.isRunningInProd()
-                || !isSendingTilFiksEnabled()
+        if (!isSendingTilFiksEnabled()
                 || soknadUnderArbeid == null
                 || isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
             log.info("BehandlingsId {} sendes til SvarUt.", behandlingsId);

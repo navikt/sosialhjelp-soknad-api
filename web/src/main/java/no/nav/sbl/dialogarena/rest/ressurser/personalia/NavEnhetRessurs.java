@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
@@ -37,7 +38,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Timed
 @Produces(APPLICATION_JSON)
 public class NavEnhetRessurs {
-    private static final Logger logger = LoggerFactory.getLogger(AdresseRessurs.class);
+    private static final Logger log = LoggerFactory.getLogger(NavEnhetRessurs.class);
     private static final String SPLITTER = ", ";
 
     @Inject
@@ -140,7 +141,7 @@ public class NavEnhetRessurs {
 
     private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
         if (navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
+            log.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
             return null;
         }
 
@@ -149,8 +150,8 @@ public class NavEnhetRessurs {
             return null;
         }
 
-        if (!ServiceUtils.isRunningInProd() && ServiceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-            logger.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
+        if (!ServiceUtils.isRunningInProd() && MockUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
+            log.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
             kommunenummer = "2352";
         }
 
