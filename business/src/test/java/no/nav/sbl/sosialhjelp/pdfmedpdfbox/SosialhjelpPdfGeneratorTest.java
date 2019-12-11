@@ -10,8 +10,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype;
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -138,6 +140,11 @@ public class SosialhjelpPdfGeneratorTest {
                                                         .withStillingsprosent(20)
                                                         .withStillingstype(Stillingstype.FAST_OG_VARIABEL)
                                         ))
+                                )
+                                .withKommentarTilArbeidsforhold(
+                                        new JsonKommentarTilArbeidsforhold()
+                                                .withKilde(JsonKildeBruker.BRUKER)
+                                                .withVerdi("Her skriver jeg litt om noen arbeidsforhold jeg har som ikke er systemverdi.")
                                 )
                 )
                 .withUtdanning(
