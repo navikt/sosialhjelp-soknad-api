@@ -355,7 +355,7 @@ public class KommuneTilNavEnhetMapper {
                     "4205",
                     "1579",
                     "4649",
-                    "4602
+                    "4602"
                 
             ));
 
