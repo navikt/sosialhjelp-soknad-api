@@ -6,9 +6,13 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StreamUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +57,7 @@ public class PdfGenerator {
     public PdfGenerator() throws IOException {
         this.currentStream = new PDPageContentStream(document, currentPage);
         this.y = calculateStartY();
+        this.addLogo();
     }
 
     public byte[] finish() throws IOException {
@@ -87,13 +92,6 @@ public class PdfGenerator {
         this.y = calculateStartY();
     }
 
-    public void addHeading(String heading, String navn, String fnr) throws IOException {
-        this.addCenteredH1Bold(heading);
-        this.addCenteredH4Bold(navn);
-        this.addCenteredH4Bold(fnr);
-        this.addDividerLine();
-    }
-
     public void addBlankLine(){
         this.y -= 20;
     }
@@ -119,8 +117,36 @@ public class PdfGenerator {
         this.addParagraph(tekst, FONT_BOLD, FONT_PLAIN_SIZE, MARGIN);
     }
 
+    public void skrivH1(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_PLAIN, FONT_H1_SIZE, MARGIN);
+    }
+
+    public void skrivH1Bold(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_BOLD, FONT_H1_SIZE, MARGIN);
+    }
+
+    public void skrivH2(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_PLAIN, FONT_H2_SIZE, MARGIN);
+    }
+
+    public void skrivH2Bold(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_BOLD, FONT_H2_SIZE, MARGIN);
+    }
+
+    public void skrivH3(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_PLAIN, FONT_H3_SIZE, MARGIN);
+    }
+
+    public void skrivH3Bold(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_BOLD, FONT_H3_SIZE, MARGIN);
+    }
+
+    public void skrivH4(String tekst) throws IOException {
+        this.addParagraph(tekst, FONT_PLAIN, FONT_H4_SIZE, MARGIN);
+    }
+
     public void skrivH4Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, FONT_BOLD, FONT_PLAIN_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H4_SIZE, MARGIN);
     }
 
 
@@ -255,4 +281,24 @@ public class PdfGenerator {
         return lines;
     }
 
+    public void addLogo() throws IOException {
+        PDImageXObject ximage = PDImageXObject.createFromByteArray(this.document, logo(), "logo");
+        float startX = (MEDIA_BOX.getWidth() - 99) / 2;
+        float offsetTop = 40;
+        this.currentStream.drawImage(ximage, 27, 765, 99, 62);
+    }
+
+    //
+    private static byte[] logo() {
+        try {
+            ClassPathResource classPathResource = new ClassPathResource("/pdf/nav-logo_alphaless.png");
+            InputStream inputStream = classPathResource.getInputStream();
+            byte[] bytes = StreamUtils.copyToByteArray(inputStream);
+            return bytes;
+        } catch (IOException e) {
+            // FIXME: Handle it
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
 }

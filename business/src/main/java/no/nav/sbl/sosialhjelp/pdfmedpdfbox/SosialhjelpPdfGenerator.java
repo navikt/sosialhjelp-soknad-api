@@ -7,16 +7,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StreamUtils;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.*;
@@ -41,14 +39,14 @@ public class SosialhjelpPdfGenerator {
             JsonSokernavn jsonSokernavn = jsonPersonalia.getNavn();// required
             String navn = jsonSokernavn.getFornavn() + " " + jsonSokernavn.getMellomnavn() + " " + jsonSokernavn.getEtternavn();
             String fnr = jsonPersonIdentifikator.getVerdi(); // required
-            pdf.addHeading(heading, navn, fnr);
 
-            // FIX logoen
-            // addLogo(doc, cos1, y);
+            leggTilHeading(pdf, heading, navn, fnr);
 
             leggTilPersonalia(pdf, jsonPersonalia);
             leggTilBegrunnelse(pdf, data.getBegrunnelse());
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning());
+            leggTilFamilie(pdf, data.getFamilie());
+
 
             return pdf.finish();
 
@@ -57,6 +55,13 @@ public class SosialhjelpPdfGenerator {
         }
     }
 
+    private void leggTilHeading(PdfGenerator pdf, String heading, String... undertittler) throws IOException {
+        pdf.addCenteredH1Bold(heading);
+        for (String undertittel : undertittler) {
+            pdf.addCenteredH4Bold(undertittel);
+        }
+        pdf.addDividerLine();
+    }
 
     private void leggTilPersonalia(PdfGenerator pdf, JsonPersonalia jsonPersonalia) throws IOException {
 
@@ -170,7 +175,7 @@ public class SosialhjelpPdfGenerator {
         if (arbeid != null && arbeid.getForhold() != null && arbeid.getForhold().size() > 0) {
 
             List<JsonArbeidsforhold> forholdsliste = arbeid.getForhold();
-            for ( JsonArbeidsforhold forhold : forholdsliste) {
+            for (JsonArbeidsforhold forhold : forholdsliste) {
                 if (forhold.getArbeidsgivernavn() != null) {
                     pdf.skrivTekst("Arbeidsgiver: " + forhold.getArbeidsgivernavn());
                 }
@@ -192,7 +197,13 @@ public class SosialhjelpPdfGenerator {
         } else {
             pdf.skrivTekst("Vi har ingen registrerte arbeidsforhold på deg fra Arbeidsgiver- og arbeidstakerregisteret siste tre månedene.");
         }
+        if (arbeid != null && arbeid.getKommentarTilArbeidsforhold() != null && arbeid.getKommentarTilArbeidsforhold().getVerdi() != null) {
+            pdf.addBlankLine();
+            pdf.skrivTekst("Kommentar til arbeidsforhold:");
+            pdf.skrivTekst(arbeid.getKommentarTilArbeidsforhold().getVerdi());
+        }
 
+        pdf.addBlankLine();
         pdf.skrivTekstBold("Utdanning");
         pdf.addBlankLine();
         pdf.skrivTekstBold("Er du skoleelev eller student?");
@@ -211,23 +222,26 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
     }
 
+    private void leggTilFamilie(PdfGenerator pdf, JsonFamilie familie) throws IOException {
 
+        // Familie
+//        pdf.skrivH4Bold("Familiesituasjon");
+        pdf.addBlankLine();
+        pdf.skrivTekstBold("Hva er sivilstatusen din?");
+        if (familie != null) {
 
-//    public float addLogo(PDDocument doc, PDPageContentStream cos, float startY) throws IOException {
-//        PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, NAV_LOGO, "logo");
-//        float startX = (MEDIA_BOX.getWidth() - 99) / 2;
-//        float offsetTop = 40;
-//        startY -= 62f / 2 + offsetTop;
-//        cos.drawImage(ximage, startX, startY, 99, 62);
-//        return 62 + offsetTop;
-//    }
-    private static byte[] logo() {
-        try {
-            return StreamUtils.copyToByteArray(new ClassPathResource("/pdf/nav-logo_alphaless.png").getInputStream());
-        } catch (IOException e) {
-            // FIXME: Handle it
-            e.printStackTrace();
+            // Sivilstatus
+
+            if (familie.getSivilstatus() != null) {
+
+            } else {
+//                pdf.skrivTekstKursiv("Ikke utfylt");
+            }
+
+            // FolkeregistrertMedEktefelleAvviksforklaring
+
+            // Forsørgerplikt
+
         }
-        return new byte[0];
     }
 }
