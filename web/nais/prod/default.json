@@ -63,6 +63,8 @@
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
     "VIRKSOMHET_PERSON_V3_ENDPOINTURL": "https://wasapp.adeo.no/tpsws/Person/v3",
     "VIRKSOMHET_PERSON_V3_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip"
+    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip",
+    "NEDETID_START": "27.12.2019 00:00:00",
+    "NEDETID_SLUTT": "01.01.2020 09:00:00"
   }
 }
