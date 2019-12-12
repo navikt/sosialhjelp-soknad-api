@@ -129,6 +129,7 @@ public class SoknadRessurs {
         }
         result.put("brukerBehandlingId", opprettetBehandlingsId);
         response.addCookie(xsrfCookie(opprettetBehandlingsId));
+        response.addCookie(xsrfCookieMedBehandlingsid(opprettetBehandlingsId));
         return result;
     }
 
@@ -146,4 +147,10 @@ public class SoknadRessurs {
         return xsrfCookie;
     }
 
+    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
+        xsrfCookie.setSecure(true);
+        return xsrfCookie;
+    }
 }

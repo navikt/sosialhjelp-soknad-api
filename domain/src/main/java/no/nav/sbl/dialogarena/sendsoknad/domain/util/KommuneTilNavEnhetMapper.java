@@ -160,6 +160,11 @@ public class KommuneTilNavEnhetMapper {
             .put("1941", "976835441")    // Skjervøy
             .put("0425", "974602970")    // Åsnes
             .put("0135", "974569906")    // Råde
+            .put("5406", "921770669")    // Nye Hammerfest
+            .put("4205", "921060440")    // Nye Lindesnes
+            .put("1579", "921133642")    // Hustadvika
+            .put("4649", "921060157")    // Stad
+            .put("4602", "820956532")    // Kinn
 
             .build();
 
@@ -345,7 +350,12 @@ public class KommuneTilNavEnhetMapper {
                     "1942",
                     "1941",
                     "0425",
-                    "0135"
+                    "0135",
+                    "5406",
+                    "4205",
+                    "1579",
+                    "4649",
+                    "4602"
                 
             ));
 

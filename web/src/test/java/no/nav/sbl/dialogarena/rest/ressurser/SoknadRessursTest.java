@@ -75,8 +75,8 @@ public class SoknadRessursTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
         ressurs.opprettSoknad(null, response, "");
-        verify(response).addCookie(cookie.capture());
-        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN);
+        verify(response,times(2)).addCookie(cookie.capture());
+        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN + "-null");
     }
 
     @Test
