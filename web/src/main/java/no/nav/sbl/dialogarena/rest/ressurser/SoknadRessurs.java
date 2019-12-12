@@ -67,6 +67,7 @@ public class SoknadRessurs {
     public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         response.addCookie(xsrfCookie(behandlingsId));
+        response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId));
         henvendelseService.oppdaterSistEndretDatoPaaMetadata(behandlingsId);
         return true;
     }
