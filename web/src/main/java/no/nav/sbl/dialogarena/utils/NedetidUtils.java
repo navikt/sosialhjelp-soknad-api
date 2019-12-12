@@ -21,7 +21,7 @@ public class NedetidUtils {
 
     private static LocalDateTime getNedetid(String propertyname) {
         String nedetid = System.getProperty(propertyname, null);
-        if (nedetid == null) return null;
+        if (nedetid == null || nedetid.isEmpty()) return null;
 
         try {
             return LocalDateTime.parse(nedetid, dateTimeFormatter);
