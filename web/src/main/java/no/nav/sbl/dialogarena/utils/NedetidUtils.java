@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 public class NedetidUtils {
     private static final Logger log = LoggerFactory.getLogger(NedetidUtils.class);
@@ -13,7 +14,10 @@ public class NedetidUtils {
     public final static String NEDETID_START = "nedetid.start";
     public final static String NEDETID_SLUTT = "nedetid.slutt";
     public final static String nedetidFormat = "dd.MM.yyyy HH:mm:ss";
+    public final static String humanreadableFormat = "EEEE dd.MM.yyyy 'kl.' HH:mm";
+    private final static Locale norwegianLocale = new Locale("nb", "NO");
     public final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(nedetidFormat);
+    public final static DateTimeFormatter humanreadableFormatter = DateTimeFormatter.ofPattern(humanreadableFormat, norwegianLocale);
 
     private static LocalDateTime getNedetid(String propertyname) {
         String nedetid = System.getProperty(propertyname, null);
@@ -30,6 +34,11 @@ public class NedetidUtils {
     public static String getNedetidAsStringOrNull(String propertyname) {
         LocalDateTime nedetid = getNedetid(propertyname);
         return nedetid == null ? null : nedetid.format(dateTimeFormatter);
+    }
+
+    public static String getNedetidAsHumanReadable(String propertyname) {
+        LocalDateTime nedetid = getNedetid(propertyname);
+        return nedetid == null ? null : nedetid.format(humanreadableFormatter);
     }
 
     public static boolean isInnenforPlanlagtNedetid() {

@@ -21,12 +21,13 @@ import static no.nav.sbl.dialogarena.utils.NedetidUtils.*;
 public class NedetidRessurs {
     private static final Logger log = LoggerFactory.getLogger(NedetidRessurs.class);
 
-
     @GET
     public NedetidFrontend hentNedetidInformasjon() {
         return new NedetidFrontend()
                 .withNedetidStart(getNedetidAsStringOrNull(NEDETID_START))
                 .withNedetidSlutt(getNedetidAsStringOrNull(NEDETID_SLUTT))
+                .withNedetidStartText(getNedetidAsHumanReadable(NEDETID_START))
+                .withNedetidSluttText(getNedetidAsHumanReadable(NEDETID_SLUTT))
                 .withIsNedetid(isInnenforNedetid())
                 .withIsPlanlagtNedetid(isInnenforPlanlagtNedetid());
     }
@@ -38,6 +39,8 @@ public class NedetidRessurs {
         public boolean isPlanlagtNedetid;
         public String nedetidStart;
         public String nedetidSlutt;
+        public String nedetidStartText;
+        public String nedetidSluttText;
 
         public NedetidFrontend withIsNedetid(boolean isNedetid) {
             this.isNedetid = isNedetid;
@@ -56,6 +59,16 @@ public class NedetidRessurs {
 
         public NedetidFrontend withNedetidSlutt(String nedetidSlutt) {
             this.nedetidSlutt = nedetidSlutt;
+            return this;
+        }
+
+        public NedetidFrontend withNedetidStartText(String nedetidStartText) {
+            this.nedetidStartText = nedetidStartText;
+            return this;
+        }
+
+        public NedetidFrontend withNedetidSluttText(String nedetidSluttText) {
+            this.nedetidSluttText = nedetidSluttText;
             return this;
         }
     }
