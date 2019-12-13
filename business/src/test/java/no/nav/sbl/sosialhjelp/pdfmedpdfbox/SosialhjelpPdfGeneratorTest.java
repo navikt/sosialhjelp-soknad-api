@@ -14,10 +14,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import org.junit.Before;
@@ -154,8 +153,25 @@ public class SosialhjelpPdfGeneratorTest {
                 .withFamilie(
                         new JsonFamilie()
                                 .withSivilstatus(
+//                                        new JsonSivilstatus()
+//                                                .withKilde(BRUKER)
+//                                                .withStatus(JsonSivilstatus.Status.GIFT)
+//                                                .withEktefelle(
+//                                                        new JsonEktefelle()
+//                                                                .withNavn(
+//                                                                        new JsonNavn()
+//                                                                                .withFornavn("Leia")
+//                                                                                .withMellomnavn("Mellomnavn")
+//                                                                                .withEtternavn("Skywalker")
+//                                                                )
+//                                                                .withPersonIdentifikator("0101195011223")
+//                                                )
+//                                                .withBorSammenMed(true)
+//                                        new JsonSivilstatus()
+//                                                .withKilde(BRUKER)
+//                                                .withStatus(JsonSivilstatus.Status.SKILT)
                                         new JsonSivilstatus()
-                                                .withKilde(BRUKER)
+                                                .withKilde(SYSTEM)
                                                 .withStatus(JsonSivilstatus.Status.GIFT)
                                                 .withEktefelle(
                                                         new JsonEktefelle()
@@ -167,9 +183,38 @@ public class SosialhjelpPdfGeneratorTest {
                                                                 )
                                                                 .withPersonIdentifikator("0101195011223")
                                                 )
-                                                .withBorSammenMed(true)
+                                                .withBorSammenMed(false)
+                                                .withEktefelleHarDiskresjonskode(true)
                                 )
+                                .withForsorgerplikt(
+                                        new JsonForsorgerplikt()
+                                                .withHarForsorgerplikt(
+                                                        new JsonHarForsorgerplikt()
+                                                                .withKilde(SYSTEM)
+                                                                .withVerdi(true)
+                                                )
+                                                .withAnsvar(
+                                                        Arrays.asList(
+                                                                new JsonAnsvar()
+                                                                        .withBarn(
+                                                                                new JsonBarn()
+                                                                                        .withNavn(
+                                                                                                new JsonNavn()
+                                                                                                        .withFornavn("Anakin")
+                                                                                                        .withEtternavn("Skywalker")
+                                                                                        )
+                                                                                .withFodselsdato("2000-01-01")
+                                                                                .withPersonIdentifikator("01010011223")
+                                                                        )
+                                                                        .withErFolkeregistrertSammen(
+                                                                                new JsonErFolkeregistrertSammen()
+                                                                                        .withKilde(JsonKildeSystem.SYSTEM)
+                                                                                        .withVerdi(true)
+                                                                        )
 
+                                                        )
+                                                )
+                                )
                 );
 
         final JsonSoknad jsonSoknad = new JsonSoknad().withData(data);
