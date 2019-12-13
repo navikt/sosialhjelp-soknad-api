@@ -12,9 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import org.apache.commons.lang3.LocaleUtils;
@@ -48,18 +46,7 @@ public class SosialhjelpPdfGenerator {
             JsonPersonIdentifikator jsonPersonIdentifikator = jsonPersonalia.getPersonIdentifikator(); // required
             JsonSokernavn jsonSokernavn = jsonPersonalia.getNavn();// required
 
-            String navn = "";
-            if (jsonSokernavn != null) {
-                if (jsonSokernavn.getFornavn() != null) {
-                    navn += jsonSokernavn.getFornavn();
-                }
-                if (jsonSokernavn.getMellomnavn() != null) {
-                    navn += " " + jsonSokernavn.getMellomnavn();
-                }
-                if (jsonSokernavn.getEtternavn() != null) {
-                    navn += " " + jsonSokernavn.getEtternavn();
-                }
-            }
+            String navn = getJsonSokerNavnTekst(jsonSokernavn);
 
             String fnr = jsonPersonIdentifikator.getVerdi(); // required
 
@@ -76,6 +63,10 @@ public class SosialhjelpPdfGenerator {
         } catch (IOException e) {
             throw new RuntimeException("Error while creating pdf", e);
         }
+    }
+
+    private String getJsonSokerNavnTekst(JsonSokernavn jsonSokernavn) {
+        return getNavnString(jsonSokernavn);
     }
 
     public void setNavMessageSource(NavMessageSource navMessageSource) {
@@ -211,21 +202,15 @@ public class SosialhjelpPdfGenerator {
 
             List<JsonArbeidsforhold> forholdsliste = arbeid.getForhold();
             for (JsonArbeidsforhold forhold : forholdsliste) {
-                if (forhold.getArbeidsgivernavn() != null) {
-                    pdf.skrivTekst(getTekst("arbeidsforhold.arbeidsgivernavn.label") + ": " + forhold.getArbeidsgivernavn());
-                }
+                skrivTekstMedGuard(pdf, forhold.getArbeidsgivernavn(), "arbeidsforhold.arbeidsgivernavn.label");
                 if (forhold.getStillingstype() != null) {
                     pdf.skrivTekst(getTekst("arbeidsforhold.stillingstype.label") + ": " + forhold.getStillingstype());
                 }
                 if (forhold.getStillingsprosent() != null) {
                     pdf.skrivTekst(getTekst("arbeidsforhold.stillingsprosent.label") + ": " + forhold.getStillingsprosent());
                 }
-                if (forhold.getFom() != null) {
-                    pdf.skrivTekst(getTekst("arbeidsforhold.fom.label") + ": " + forhold.getFom());
-                }
-                if (forhold.getTom() != null) {
-                    pdf.skrivTekst(getTekst("arbeidsforhold.tom.label") + ": " + forhold.getTom());
-                }
+                skrivTekstMedGuard(pdf, forhold.getFom(), "arbeidsforhold.fom.label");
+                skrivTekstMedGuard(pdf, forhold.getTom(), "arbeidsforhold.tom.label");
                 pdf.addBlankLine();
             }
 
@@ -271,20 +256,21 @@ public class SosialhjelpPdfGenerator {
             if (sivilstatus != null) {
                 JsonKilde kilde = sivilstatus.getKilde();
 
+                // System
                 if (kilde != null && kilde.equals(JsonKilde.SYSTEM)) {
-                    pdf.skrivTekstBold(getTekst("system.familie.sivilstatus.sporsmal"));
-                    pdf.skrivTekst(sivilstatus.getStatus().toString());
+                    JsonSivilstatus.Status status = sivilstatus.getStatus();
+                    if (status != null) {
+                        if (status.toString().equals("gift")) {
+                            pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift")); // Gift/registrert partner
 
-                    if (sivilstatus.getEktefelleHarDiskresjonskode() != null && sivilstatus.getEktefelleHarDiskresjonskode()) {
-                        pdf.skrivTekstBold(getTekst("system.familie.sivilstatus.ikkeTilgang.label"));
-                        pdf.skrivTekst(getTekst("system.familie.sivilstatus.diskresjonskode"));
-                    } else {
-                        pdf.skrivTekst("Burde se dette");
-                        pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift.ektefelle.navn"));
+                            leggTilEktefelle(pdf, sivilstatus);
+                        } else {
+                            pdf.skrivTekst(status.toString());
+                        }
                     }
-
                 }
 
+                // Bruker
                 if (kilde != null && kilde.equals(JsonKilde.BRUKER)) {
                     JsonSivilstatus.Status status = sivilstatus.getStatus();
 
@@ -293,53 +279,10 @@ public class SosialhjelpPdfGenerator {
                         if (status.toString().equals("gift")) {
                             pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift")); // Gift/registrert partner
 
-                            pdf.addBlankLine();
 
-                            pdf.skrivTekstBold(getTekst("familie.sivilstatus.gift.ektefelle.sporsmal"));
-                            JsonEktefelle ektefelle = sivilstatus.getEktefelle();
-                            if (ektefelle != null) {
-
-                                // Navn
-                                JsonNavn navn = ektefelle.getNavn();
-                                String fullstendigNavn = "";
-                                if (navn != null) {
-                                    if (navn.getFornavn() != null) {
-                                        fullstendigNavn += navn.getFornavn();
-                                    }
-                                    if (navn.getMellomnavn() != null) {
-                                        fullstendigNavn += " " + navn.getMellomnavn();
-                                    }
-                                    if (navn.getEtternavn() != null) {
-                                        fullstendigNavn += " " + navn.getEtternavn();
-                                    }
-                                }
-                                pdf.skrivTekst(
-                                        getTekst("familie.sivilstatus.gift.navn.label") + ": " + fullstendigNavn
-                                );
-
-                                // Fødselsnummer
-                                String personIdentifikator = ektefelle.getPersonIdentifikator();
-                                if (personIdentifikator != null) {
-                                    pdf.skrivTekst(getTekst("kontakt.system.personalia.fnr") + ": " + personIdentifikator);
-                                }
+                            leggTilEktefelle(pdf, sivilstatus);
 
 
-                            } else {
-                                pdf.skrivTekstKursiv(IKKE_UTFYLT);
-                            }
-
-                            // Bor sammen?
-                            pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal"));
-                            Boolean borSammenMed = sivilstatus.getBorSammenMed();
-                            if (borSammenMed != null) {
-                                if (borSammenMed) {
-                                    pdf.skrivTekstMedInnrykk(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.true"), INNRYKK_1);
-                                } else {
-                                    pdf.skrivTekstMedInnrykk(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.false"), INNRYKK_1);
-                                }
-                            } else {
-                                pdf.skrivTekstKursiv(IKKE_UTFYLT);
-                            }
                         } else {
                             pdf.skrivTekst(sivilstatus.getStatus().toString());
                         }
@@ -353,13 +296,133 @@ public class SosialhjelpPdfGenerator {
                 pdf.skrivTekstKursiv(IKKE_UTFYLT);
             }
 
+            pdf.addBlankLine();
+
+
+            // FolkeregistrertMedEktefelleAvviksforklaring
+
+
+            // Forsørgerplikt
+            JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
+            if (forsorgerplikt != null) {
+                JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
+                if (harForsorgerplikt != null && harForsorgerplikt.getVerdi()) {
+
+                    pdf.skrivTekstBold(getTekst("familie.barn.true.barn.sporsmal"));
+
+                    pdf.addBlankLine();
+
+                    List<JsonAnsvar> listeOverAnsvar = forsorgerplikt.getAnsvar();
+                    for (JsonAnsvar ansvar : listeOverAnsvar) {
+                        JsonBarn barn = ansvar.getBarn();
+
+                        // navn
+                        JsonNavn navnPaBarn = barn.getNavn();
+                        String navnPaBarnTekst = getJsonNavnTekst(navnPaBarn);
+                        pdf.skrivTekst(getTekst("familie.barn.true.barn.navn.label") + ": " + navnPaBarnTekst);
+
+                        // Fødselsdato
+                        String fodselsdato = barn.getFodselsdato();
+                        skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fnr");
+
+                        // Personnummer
+                        String personIdentifikator = barn.getPersonIdentifikator();
+                        skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
+
+                        // Samme folkeregistrerte adresse
+                        JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
+                        if (erFolkeregistrertSammen != null) {
+                            pdf.skrivTekst(getTekst("familierelasjon.samme_folkeregistrerte_adresse"));
+                            Boolean verdi = erFolkeregistrertSammen.getVerdi();
+                            if (verdi) {
+                                pdf.skrivTekstMedInnrykk("Ja", INNRYKK_1);
+                            } else {
+                                pdf.skrivTekstMedInnrykk("Nei", INNRYKK_1);
+                            }
+                        }
+
+
+
+                    }
+                }
+            }
+
+
         } else {
             pdf.skrivTekstKursiv(IKKE_UTFYLT);
         }
 
 
-        // FolkeregistrertMedEktefelleAvviksforklaring
 
-        // Forsørgerplikt
+
+    }
+
+    private void skrivTekstMedGuard(PdfGenerator pdf, String tekst, String key) throws IOException {
+        if (tekst != null) {
+            pdf.skrivTekst(getTekst(key) + ": " + tekst);
+        }
+    }
+
+    private void leggTilEktefelle(PdfGenerator pdf, JsonSivilstatus sivilstatus) throws IOException {
+        JsonEktefelle ektefelle = sivilstatus.getEktefelle();
+        Boolean ektefelleHarDiskresjonskode = sivilstatus.getEktefelleHarDiskresjonskode();
+
+        pdf.addBlankLine();
+        pdf.skrivTekstBold(getTekst("familie.sivilstatus.gift.ektefelle.sporsmal"));
+        if (!(ektefelleHarDiskresjonskode != null && ektefelleHarDiskresjonskode)) {
+
+
+            if (ektefelle != null) {
+
+                // Navn
+                JsonNavn navn = ektefelle.getNavn();
+                String fullstendigNavn = getJsonNavnTekst(navn);
+                pdf.skrivTekst(
+                        getTekst("familie.sivilstatus.gift.navn.label") + ": " + fullstendigNavn
+                );
+
+                // Fødselsnummer
+                String personIdentifikator = ektefelle.getPersonIdentifikator();
+                skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
+
+                // Bor sammen?
+                pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal"));
+                Boolean borSammenMed = sivilstatus.getBorSammenMed();
+                if (borSammenMed != null) {
+                    if (borSammenMed) {
+                        pdf.skrivTekstMedInnrykk(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.true"), INNRYKK_1);
+                    } else {
+                        pdf.skrivTekstMedInnrykk(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.false"), INNRYKK_1);
+                    }
+                } else {
+                    pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                }
+
+            } else {
+                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+            }
+        } else {
+            pdf.skrivTekst(getTekst("system.familie.sivilstatus.diskresjonskode"));
+        }
+    }
+
+    private String getJsonNavnTekst(JsonNavn navn) {
+        return getNavnString(navn);
+    }
+
+    private String getNavnString(JsonNavn navn) {
+        String fullstendigNavn = "";
+        if (navn != null) {
+            if (navn.getFornavn() != null) {
+                fullstendigNavn += navn.getFornavn();
+            }
+            if (navn.getMellomnavn() != null) {
+                fullstendigNavn += " " + navn.getMellomnavn();
+            }
+            if (navn.getEtternavn() != null) {
+                fullstendigNavn += " " + navn.getEtternavn();
+            }
+        }
+        return fullstendigNavn;
     }
 }
