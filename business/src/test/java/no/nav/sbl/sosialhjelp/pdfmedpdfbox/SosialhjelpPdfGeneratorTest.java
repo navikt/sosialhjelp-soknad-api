@@ -1,11 +1,11 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
@@ -14,60 +14,59 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
-import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceCharacteristicsDictionary;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import sun.security.ssl.Debug;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.ReflectionUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
+@ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class SosialhjelpPdfGeneratorTest {
 
-    @Mock
-    NavMessageSource messageSource;
-
-    @InjectMocks
     SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @Before
     public void setUp() {
-        Properties properties = new Properties();
-        properties.setProperty("personaliabolk.tittel", "personalia");
-        when(messageSource.getBundleFor(any(), any())).thenReturn(properties);
+        NavMessageSource navMessageSource = new NavMessageSource();
+
+
+        NavMessageSource.Bundle bundle = new NavMessageSource.Bundle(BUNDLE_NAME, "classpath:/" + BUNDLE_NAME);
+
+        NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", "classpath:/sendsoknad");
+
+        navMessageSource.setBasenames(fellesBundle, bundle);
+        navMessageSource.setDefaultEncoding("UTF-8");
+
+
+        sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
+        sosialhjelpPdfGenerator.setNavMessageSource(navMessageSource);
     }
 
     @Test
     public void testGenerate() {
         //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();
 
-        final Properties bundle = new NavMessageSource().getBundleFor("sendsoknad", new Locale("nb", "NO"));
 
         String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt" +
                 " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
@@ -89,7 +88,7 @@ public class SosialhjelpPdfGeneratorTest {
                                 .withNavn(
                                         new JsonSokernavn()
                                                 .withFornavn("Han")
-                                                .withMellomnavn("Mellomnavn")
+//                                                .withMellomnavn("Mellomnavn")
                                                 .withEtternavn("Solo")
                                 )
                                 .withStatsborgerskap(
@@ -151,6 +150,26 @@ public class SosialhjelpPdfGeneratorTest {
                         new JsonUtdanning()
 //                                .withErStudent(true)
 //                                .withStudentgrad(JsonUtdanning.Studentgrad.DELTID)
+                )
+                .withFamilie(
+                        new JsonFamilie()
+                                .withSivilstatus(
+                                        new JsonSivilstatus()
+                                                .withKilde(BRUKER)
+                                                .withStatus(JsonSivilstatus.Status.GIFT)
+                                                .withEktefelle(
+                                                        new JsonEktefelle()
+                                                                .withNavn(
+                                                                        new JsonNavn()
+                                                                                .withFornavn("Leia")
+                                                                                .withMellomnavn("Mellomnavn")
+                                                                                .withEtternavn("Skywalker")
+                                                                )
+                                                                .withPersonIdentifikator("0101195011223")
+                                                )
+                                                .withBorSammenMed(true)
+                                )
+
                 );
 
         final JsonSoknad jsonSoknad = new JsonSoknad().withData(data);
