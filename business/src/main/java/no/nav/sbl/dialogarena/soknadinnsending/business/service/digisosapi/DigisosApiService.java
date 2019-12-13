@@ -21,6 +21,7 @@ import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +47,9 @@ public class DigisosApiService {
 
     @Inject
     private PDFService pdfService;
+
+    @Inject
+    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @Inject
     private InnsendingService innSendingService;
@@ -111,7 +115,7 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
-        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
+        byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad());
 
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn("soknad.pdf")

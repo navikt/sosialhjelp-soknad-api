@@ -47,10 +47,10 @@ public class PDFFabrikk {
             renderer.getFontResolver().addFont("/fonts/modus/ModusSemiBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/arial/arial.ttf", "ArialSystem", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/arial/arialbd.ttf", "ArialSystem", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/ArialMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/ArialMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/Arial-BoldMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/Arial-BoldItalicMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/Arial-BoldMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/Arial-BoldMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/Arial-BoldItalicMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/Arial-BoldItalicMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.layout();
             renderer.setPDFVersion(PdfWriter.VERSION_1_4);
             renderer.createPDF(os, false, 0);
@@ -69,6 +69,6 @@ public class PDFFabrikk {
     }
     
     private static String inPdfBox(String path) {
-        return PDDocument.class.getResource(path).toString();
+        return PDFFabrikk.class.getResource(path).toString();
     }
 }

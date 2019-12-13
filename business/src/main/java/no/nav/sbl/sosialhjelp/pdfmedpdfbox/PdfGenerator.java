@@ -61,15 +61,12 @@ public class PdfGenerator {
     }
 
     public byte[] finish() throws IOException {
-
         // Add current page to document
         this.document.addPage(this.currentPage);
-
         // Close remaining streams
-        this.currentStream.close();
-
         // save document to byte array output stream and return byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.currentStream.close();
         this.document.save(baos);
         byte[] pdf;
         pdf = baos.toByteArray();
@@ -92,7 +89,7 @@ public class PdfGenerator {
         this.y = calculateStartY();
     }
 
-    public void addBlankLine(){
+    public void addBlankLine() {
         this.y -= 20;
     }
 
@@ -257,7 +254,7 @@ public class PdfGenerator {
     private static List<String> parseLines(String text, PDFont font, float fontSize) throws IOException {
         List<String> lines = new ArrayList<>();
         int lastSpace = -1;
-        while (text.length() > 0) {
+        while (text != null && text.length() > 0) {
             int spaceIndex = text.indexOf(' ', lastSpace + 1);
             if (spaceIndex < 0)
                 spaceIndex = text.length();

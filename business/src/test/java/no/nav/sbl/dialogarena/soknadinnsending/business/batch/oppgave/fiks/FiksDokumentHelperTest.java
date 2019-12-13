@@ -29,6 +29,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +63,7 @@ public class FiksDokumentHelperTest {
     private DokumentKrypterer dokumentKrypterer = mock(DokumentKrypterer.class);
     private InnsendingService innsendingService = mock(InnsendingService.class);
     private PDFService pdfService = mock(PDFService.class);
+    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator = mock(SosialhjelpPdfGenerator.class);
 
     private FiksDokumentHelper fiksDokumentHelper;
 
@@ -73,7 +75,7 @@ public class FiksDokumentHelperTest {
         when(pdfService.genererJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
-        fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, pdfService);
+        fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
     }
 
     @Test
@@ -160,7 +162,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void krypterOgOpprettByteDatasourceKryptererHvisSkalKryptereErTrue() {
-        fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService, pdfService);
+        fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
 
         ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(FILNAVN, DATA);
 

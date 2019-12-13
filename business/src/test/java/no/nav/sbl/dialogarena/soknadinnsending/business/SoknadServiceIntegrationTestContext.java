@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.time.Clock;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static org.mockito.Mockito.mock;
 
 @Import(value = {DatabaseTestContext.class})
