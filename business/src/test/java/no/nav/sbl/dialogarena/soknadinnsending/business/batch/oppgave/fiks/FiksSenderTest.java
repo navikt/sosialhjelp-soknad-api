@@ -14,6 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.*;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +53,8 @@ public class FiksSenderTest {
     InnsendingService innsendingService;
     @Mock
     PDFService pdfService;
+    @Mock
+    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     private FiksSender fiksSender;
 
@@ -73,7 +76,7 @@ public class FiksSenderTest {
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
 
         setProperty(FiksSender.KRYPTERING_DISABLED, "");
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
     }
 
     @Test
@@ -105,7 +108,7 @@ public class FiksSenderTest {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
