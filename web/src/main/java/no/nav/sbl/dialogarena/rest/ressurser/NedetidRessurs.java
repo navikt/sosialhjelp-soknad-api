@@ -28,6 +28,8 @@ public class NedetidRessurs {
                 .withNedetidSlutt(getNedetidAsStringOrNull(NEDETID_SLUTT))
                 .withNedetidStartText(getNedetidAsHumanReadable(NEDETID_START))
                 .withNedetidSluttText(getNedetidAsHumanReadable(NEDETID_SLUTT))
+                .withNedetidStartTextEn(getNedetidAsHumanReadableEn(NEDETID_START))
+                .withNedetidSluttTextEn(getNedetidAsHumanReadableEn(NEDETID_SLUTT))
                 .withIsNedetid(isInnenforNedetid())
                 .withIsPlanlagtNedetid(isInnenforPlanlagtNedetid());
     }
@@ -41,6 +43,8 @@ public class NedetidRessurs {
         public String nedetidSlutt;
         public String nedetidStartText;
         public String nedetidSluttText;
+        public String nedetidStartTextEn;
+        public String nedetidSluttTextEn;
 
         public NedetidFrontend withIsNedetid(boolean isNedetid) {
             this.isNedetid = isNedetid;
@@ -69,6 +73,16 @@ public class NedetidRessurs {
 
         public NedetidFrontend withNedetidSluttText(String nedetidSluttText) {
             this.nedetidSluttText = nedetidSluttText;
+            return this;
+        }
+
+        public NedetidFrontend withNedetidStartTextEn(String nedetidStartTextEn) {
+            this.nedetidStartTextEn = nedetidStartTextEn;
+            return this;
+        }
+
+        public NedetidFrontend withNedetidSluttTextEn(String nedetidSluttTextEn) {
+            this.nedetidSluttTextEn = nedetidSluttTextEn;
             return this;
         }
     }

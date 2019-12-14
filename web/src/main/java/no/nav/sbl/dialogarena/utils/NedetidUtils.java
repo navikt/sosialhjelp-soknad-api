@@ -15,9 +15,10 @@ public class NedetidUtils {
     public final static String NEDETID_SLUTT = "nedetid.slutt";
     public final static String nedetidFormat = "dd.MM.yyyy HH:mm:ss";
     public final static String humanreadableFormat = "EEEE dd.MM.yyyy 'kl.' HH:mm";
-    private final static Locale norwegianLocale = new Locale("nb", "NO");
+    public final static String humanreadableFormatEn = "EEEE d MMM yyyy 'at' HH:mm '(CET)'";
     public final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(nedetidFormat);
-    public final static DateTimeFormatter humanreadableFormatter = DateTimeFormatter.ofPattern(humanreadableFormat, norwegianLocale);
+    public final static DateTimeFormatter humanreadableFormatter = DateTimeFormatter.ofPattern(humanreadableFormat,  new Locale("nb", "NO"));
+    public final static DateTimeFormatter humanreadableFormatterEn = DateTimeFormatter.ofPattern(humanreadableFormatEn,  Locale.ENGLISH);
 
     private static LocalDateTime getNedetid(String propertyname) {
         String nedetid = System.getProperty(propertyname, null);
@@ -32,13 +33,19 @@ public class NedetidUtils {
     }
 
     public static String getNedetidAsStringOrNull(String propertyname) {
-        LocalDateTime nedetid = getNedetid(propertyname);
-        return nedetid == null ? null : nedetid.format(dateTimeFormatter);
+        return getNedetidAsFormattedStringOrNull(propertyname, dateTimeFormatter);
     }
 
     public static String getNedetidAsHumanReadable(String propertyname) {
+        return getNedetidAsFormattedStringOrNull(propertyname, humanreadableFormatter);
+    }
+
+    public static String getNedetidAsHumanReadableEn(String propertyname) {
+        return getNedetidAsFormattedStringOrNull(propertyname, humanreadableFormatterEn);
+    }
+    private static String getNedetidAsFormattedStringOrNull(String propertyname, DateTimeFormatter formatter) {
         LocalDateTime nedetid = getNedetid(propertyname);
-        return nedetid == null ? null : nedetid.format(humanreadableFormatter);
+        return nedetid == null ? null : nedetid.format(formatter);
     }
 
     public static boolean isInnenforPlanlagtNedetid() {
