@@ -6,8 +6,10 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
+import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -26,6 +28,8 @@ import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.NEDETID_SLUTT;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsStringOrNull;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
@@ -106,6 +110,10 @@ public class SoknadRessurs {
     @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
     public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @HeaderParam(value = AUTHORIZATION) String token) {
+        if (NedetidUtils.isInnenforNedetid()) {
+            throw new SoknadenHarNedetidException(String.format("Soknaden har nedetid fram til %s ", getNedetidAsStringOrNull(NEDETID_SLUTT)));
+        }
+
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
