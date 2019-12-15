@@ -42,16 +42,6 @@ function go_to_project_root() {
     cd $PROJECT_ROOT
 }
 
-function export_version() {
-    GIT_COMMIT_HASH=$(git log -n 1 --pretty=format:'%h')
-    GIT_COMMIT_DATE=$(git log -1 --pretty='%ad' --date=format:'%Y%m%d.%H%M')
-    export versjon="1.0_${GIT_COMMIT_DATE}_${GIT_COMMIT_HASH}"
-}
-
-function docker_login() {
-    echo "$REPO_PASSWORD" | docker login -u "$REPO_USERNAME" --password-stdin repo.adeo.no:5443
-}
-
 function set_version() {
     if [[ ${versjon+x} ]]; then
         mvn versions:set -U -DnewVersion=${versjon}
@@ -64,10 +54,6 @@ function revert_version() {
     fi
 }
 
-function package() {
-    mvn clean package
-}
-
 function publish() {
     mvn clean deploy --batch-mode -U
 }
@@ -76,14 +62,6 @@ function build_and_deploy_docker() {
     (
         docker build . -t docker.adeo.no:5000/sosialhjelp-soknad-api:${versjon}
         docker push docker.adeo.no:5000/sosialhjelp-soknad-api:${versjon}
-    )
-}
-
-
-function build_and_deploy_repo_adeo() {
-    (
-        docker build . -t repo.adeo.no:5443/sosialhjelp-soknad-api:${versjon} -f Dockerfile.jenkins
-        docker push repo.adeo.no:5443/sosialhjelp-soknad-api:${versjon}
     )
 }
 
@@ -270,10 +248,3 @@ build_and_deploy_docker
 update_nais_settings
 deploy_if_requested_by_committer
 revert_version
-
-# Med jenkins
-#go_to_project_root
-#export_version
-#docker_login
-#package
-#build_and_deploy_repo_adeo
