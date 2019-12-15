@@ -74,10 +74,18 @@ function publish() {
 
 function build_and_deploy_docker() {
     (
+        docker build . -t docker.adeo.no:5000/sosialhjelp-soknad-api:${versjon}
+        docker push docker.adeo.no:5000/sosialhjelp-soknad-api:${versjon}
+    )
+}
+
+
+function build_and_deploy_repo_adeo() {
+    (
         docker build . -t repo.adeo.no:5443/sosialhjelp-soknad-api:${versjon} -f Dockerfile.jenkins
         docker push repo.adeo.no:5443/sosialhjelp-soknad-api:${versjon}
     )
-} 
+}
 
 function update_nais_settings() {
     curl -v -s -S --user "${nexusUploader}" --upload-file web/nais.yaml "https://repo.adeo.no/repository/raw/nais/sosialhjelp-soknad-api/${versjon}/nais.yaml"
@@ -256,12 +264,16 @@ function deploy_if_requested_by_committer() {
 }
 
 go_to_project_root
-export_version
-docker_login
-#set_version
-package
-#publish
+set_version
+publish
 build_and_deploy_docker
-#update_nais_settings
-#deploy_if_requested_by_committer
-#revert_version
+update_nais_settings
+deploy_if_requested_by_committer
+revert_version
+
+# Med jenkins
+#go_to_project_root
+#export_version
+#docker_login
+#package
+#build_and_deploy_repo_adeo
