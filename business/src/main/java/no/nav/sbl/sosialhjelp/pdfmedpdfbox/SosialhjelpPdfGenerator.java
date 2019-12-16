@@ -339,29 +339,53 @@ public class SosialhjelpPdfGenerator {
                         JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
                         if (erFolkeregistrertSammen != null) {
                             pdf.skrivTekst(getTekst("familierelasjon.samme_folkeregistrerte_adresse"));
-                            Boolean verdi = erFolkeregistrertSammen.getVerdi();
-                            if (verdi) {
+                            Boolean erFolkeregistrertSammenVerdi = erFolkeregistrertSammen.getVerdi();
+                            if (erFolkeregistrertSammenVerdi) {
                                 pdf.skrivTekstMedInnrykk("Ja", INNRYKK_1);
+                                leggTilDeltBosted(pdf, ansvar, true);
                             } else {
                                 pdf.skrivTekstMedInnrykk("Nei", INNRYKK_1);
+                                leggTilDeltBosted(pdf, ansvar, false);
                             }
                         }
 
-                        // Har barnet delt bosted
-                        pdf.skrivTekst(getTekst("system.familie.barn.true.barn.deltbosted.sporsmal"));
-                        JsonHarDeltBosted harDeltBosted = ansvar.getHarDeltBosted();
-                        if (harDeltBosted != null && harDeltBosted.getVerdi() != null) {
-                            if (harDeltBosted.getVerdi()) {
-                                pdf.skrivTekst("Ja");
-                            } else {
-                                pdf.skrivTekst("Nei");
+
+                        pdf.addBlankLine();
+                    }
+
+                    pdf.addBlankLine();
+
+                    if (listeOverAnsvar.size() > 0) {
+
+                        // Mottar eller betaler du barnebidrag for ett eller flere av barna?
+                        pdf.skrivTekstBold(getTekst("familie.barn.true.barnebidrag.sporsmal"));
+
+                        JsonBarnebidrag barnebidrag = forsorgerplikt.getBarnebidrag();
+                        if (barnebidrag != null && barnebidrag.getVerdi() != null) {
+                            JsonBarnebidrag.Verdi barnebidragVerdi = barnebidrag.getVerdi();
+                            if (barnebidragVerdi != null) {
+
+                                switch (barnebidragVerdi) {
+                                    case BETALER:
+                                        pdf.skrivTekst(getTekst("familie.barn.true.barnebidrag.betaler"));
+                                        break;
+                                    case MOTTAR:
+                                        pdf.skrivTekst(getTekst("familie.barn.true.barnebidrag.mottar"));
+
+                                        break;
+                                    case BEGGE:
+                                        pdf.skrivTekst(getTekst("familie.barn.true.barnebidrag.begge"));
+                                        break;
+                                    case INGEN:
+                                        pdf.skrivTekst(getTekst("familie.barn.true.barnebidrag.ingen"));
+                                        break;
+                                }
                             }
                         } else {
                             pdf.skrivTekstKursiv(IKKE_UTFYLT);
                         }
-
-                        pdf.addBlankLine();
                     }
+
                 }
             }
 
@@ -371,8 +395,29 @@ public class SosialhjelpPdfGenerator {
         }
 
 
+    }
 
+    private void leggTilDeltBosted(PdfGenerator pdf, JsonAnsvar ansvar, Boolean erFolkeregistrertSammenVerdi) throws IOException {
+        // Har barnet delt bosted
+        pdf.skrivTekst(getTekst("system.familie.barn.true.barn.deltbosted.sporsmal"));
+        JsonHarDeltBosted harDeltBosted = ansvar.getHarDeltBosted();
+        if (harDeltBosted != null && harDeltBosted.getVerdi() != null) {
+            if (harDeltBosted.getVerdi()) {
+                pdf.skrivTekstMedInnrykk("Ja", INNRYKK_1);
 
+                JsonSamvarsgrad samvarsgrad = ansvar.getSamvarsgrad();
+                if (samvarsgrad != null && samvarsgrad.getVerdi() != null && !erFolkeregistrertSammenVerdi) {
+                    pdf.skrivTekst(getTekst("system.familie.barn.true.barn.grad.sporsmal"));
+                    Integer samvarsgradVerdi = samvarsgrad.getVerdi();
+                    pdf.skrivTekstMedInnrykk(samvarsgradVerdi + "%", INNRYKK_1);
+                }
+
+            } else {
+                pdf.skrivTekstMedInnrykk("Nei", INNRYKK_1);
+            }
+        } else {
+            pdf.skrivTekstKursiv(IKKE_UTFYLT);
+        }
     }
 
     private void leggTilBosituasjon(PdfGenerator pdf, JsonBosituasjon bosituasjon) throws IOException {
