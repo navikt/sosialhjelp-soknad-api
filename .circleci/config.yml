@@ -91,7 +91,7 @@ jobs:
                 --apikey="$NAIS_DEPLOY_APIKEY" \
                 --cluster="dev-gcp" \
                 --repository="$CIRCLE_PROJECT_REPONAME" \
-                --resource="web/nais.yaml" \
+                --resource="web/naiser.yaml" \
                 --vars="deployment.yaml" \
                 --wait=true
 #    docker:
