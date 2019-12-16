@@ -18,6 +18,7 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -68,6 +69,8 @@ public class SoknadActionsTest {
     SoknadMetadataRepository soknadMetadataRepository;
     @Inject
     DigisosApiService digisosApiService;
+    @Inject
+    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     ServletContext context = mock(ServletContext.class);
 
