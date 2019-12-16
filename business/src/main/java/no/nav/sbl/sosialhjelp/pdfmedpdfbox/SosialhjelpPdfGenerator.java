@@ -394,7 +394,7 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekstKursiv(IKKE_UTFYLT);
         }
 
-
+        pdf.addBlankLine();
     }
 
     private void leggTilDeltBosted(PdfGenerator pdf, JsonAnsvar ansvar, Boolean erFolkeregistrertSammenVerdi) throws IOException {
