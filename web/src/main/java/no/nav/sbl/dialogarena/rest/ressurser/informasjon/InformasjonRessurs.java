@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonServi
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 import org.apache.commons.lang3.LocaleUtils;
@@ -148,9 +147,6 @@ public class InformasjonRessurs {
     @GET
     @Path("/tilgjengelige_kommuner")
     public List<String> hentTilgjengeligeKommuner() {
-        if (NedetidUtils.isInnenforNedetid()) {
-            return new ArrayList<>();
-        }
         return KommuneTilNavEnhetMapper.getDigisoskommuner();
     }
 

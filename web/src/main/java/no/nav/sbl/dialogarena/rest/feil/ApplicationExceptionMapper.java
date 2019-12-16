@@ -10,7 +10,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBeg
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
-import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,9 +59,6 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
         } else if (e instanceof SendingTilKommuneErIkkeAktivertException) {
             logger.error(e.getMessage(), e);
             return status(SERVICE_UNAVAILABLE).type(APPLICATION_JSON).entity(new Feilmelding("innsending_ikke_aktivert", "Tjenesten er ikke aktivert hos kommunen")).build();
-        }else if (e instanceof SoknadenHarNedetidException) {
-            logger.warn(e.getMessage(), e);
-            return status(SERVICE_UNAVAILABLE).type(APPLICATION_JSON).entity(new Feilmelding("nedetid", "Søknaden har planlagt nedetid nå")).build();
         } else {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.error("REST-kall feilet", e);

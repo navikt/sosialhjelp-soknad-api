@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

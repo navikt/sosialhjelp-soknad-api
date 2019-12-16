@@ -36,7 +36,7 @@
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "false",
     "SOKNAD_BOSTOTTE_URL": "https://api-gw.oera.no/ekstern/husbanken/api/nav/minbostotte",
     "SOKNAD_BOSTOTTE_PING_URL": "https://api-gw.oera.no/ekstern/husbanken/api/nav/minbostotte/ping",
-    "SOKNAD_ETTERSENDING_ANTALLDAGER": "90",
+    "SOKNAD_ETTERSENDING_ANTALLDAGER": "120",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "false",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester.nav.no/soknadinnsending",
     "TPSWS_API_V1_URL": "https://api-gw.oera.no/tpsws/api/v1/",
@@ -63,8 +63,6 @@
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
     "VIRKSOMHET_PERSON_V3_ENDPOINTURL": "https://wasapp.adeo.no/tpsws/Person/v3",
     "VIRKSOMHET_PERSON_V3_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip",
-    "NEDETID_START": "27.12.2019 00:00:00",
-    "NEDETID_SLUTT": "01.01.2020 09:00:00"
+    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip"
   }
 }

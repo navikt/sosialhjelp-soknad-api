@@ -38,7 +38,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
         String fnr = SubjectHandler.getUserIdFromToken();
-        logger.info("Henter innsendte for fnr {}", fnr);
+        logger.debug("Henter innsendte for fnr {}", fnr);
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
 
@@ -50,7 +50,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
         String fnr = SubjectHandler.getUserIdFromToken();
-        logger.info("Henter ettersendelse for fnr {}", fnr);
+        logger.debug("Henter ettersendelse for fnr {}", fnr);
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
 
@@ -62,7 +62,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
         String fnr = SubjectHandler.getUserIdFromToken();
-        logger.info("Henter pabegynte for fnr {}", fnr);
+        logger.debug("Henter pabegynte for fnr {}", fnr);
 
         List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
 
@@ -74,7 +74,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Unprotected
     @Path("/ping")
     public PingRespons ping() {
-        logger.info("Ping for saksoversikt");
+        logger.debug("Ping for saksoversikt");
         return new PingRespons()
                 .withStatus(PingRespons.Status.OK)
                 .withMelding("Sosialhjelp Saksoversikt API er oppe");
