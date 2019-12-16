@@ -341,8 +341,20 @@ public class SosialhjelpPdfGenerator {
                             }
                         }
 
+                        // Har barnet delt bosted
+                        pdf.skrivTekst(getTekst("system.familie.barn.true.barn.deltbosted.sporsmal"));
+                        JsonHarDeltBosted harDeltBosted = ansvar.getHarDeltBosted();
+                        if (harDeltBosted != null && harDeltBosted.getVerdi() != null) {
+                            if (harDeltBosted.getVerdi()) {
+                                pdf.skrivTekst("Ja");
+                            } else {
+                                pdf.skrivTekst("Nei");
+                            }
+                        } else {
+                            pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                        }
 
-
+                        pdf.addBlankLine();
                     }
                 }
             }
