@@ -6,7 +6,7 @@ metadata:
   labels:
     team: digisos
 spec:
-  image: repo.adeo.no/sosialhjelp-soknad-api:{{version}}
+  image: repo.adeo.no:5443/sosialhjelp-soknad-api:{{version}}
   port: 8080
   liveness:
     path: /sosialhjelp/soknad-api/internal/isAlive
