@@ -1,0 +1,43 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: sosialhjelp-soknad-api
+  namespace: digisos
+  labels:
+    team: digisos
+spec:
+  image: repo.adeo.no:5443/sosialhjelp-soknad-api:{{version}}
+  port: 8080
+  liveness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+  replicas:
+    min: 2
+    max: 2
+  ingresses:
+    - "https://sosialhjelp-soknad-api.dev-nav.no"
+  resources:
+    limits:
+      cpu: 3000m
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 2Gi
+  env:
+    - name: FASIT_ENVIRONMENT_NAME
+      value: {{fasitEnvironment}}
+    - name: TILLATMOCK
+      value: "false"
+    - name: START_NORG_WITHMOCK
+      value: "false"
+{{#each env}}
+    - name: {{@key}}
+      value: "{{this}}"
+{{/each}}
