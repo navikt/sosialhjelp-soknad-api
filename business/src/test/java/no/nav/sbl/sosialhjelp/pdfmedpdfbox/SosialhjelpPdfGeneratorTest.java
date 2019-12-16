@@ -203,14 +203,31 @@ public class SosialhjelpPdfGeneratorTest {
                                                                                                         .withFornavn("Anakin")
                                                                                                         .withEtternavn("Skywalker")
                                                                                         )
-                                                                                .withFodselsdato("2000-01-01")
-                                                                                .withPersonIdentifikator("01010011223")
+                                                                                        .withFodselsdato("2000-01-01")
+                                                                                        .withPersonIdentifikator("01010011223")
+                                                                        )
+                                                                        .withErFolkeregistrertSammen(
+                                                                                new JsonErFolkeregistrertSammen()
+                                                                                        .withKilde(JsonKildeSystem.SYSTEM)
+                                                                                        .withVerdi(true)
+                                                                        ),
+                                                                new JsonAnsvar()
+                                                                        .withBarn(
+                                                                                new JsonBarn()
+                                                                                        .withNavn(
+                                                                                                new JsonNavn()
+                                                                                                        .withFornavn("Anakin")
+                                                                                                        .withEtternavn("Skywalker")
+                                                                                        )
+                                                                                        .withFodselsdato("2000-01-01")
+                                                                                        .withPersonIdentifikator("01010011223")
                                                                         )
                                                                         .withErFolkeregistrertSammen(
                                                                                 new JsonErFolkeregistrertSammen()
                                                                                         .withKilde(JsonKildeSystem.SYSTEM)
                                                                                         .withVerdi(true)
                                                                         )
+
 
                                                         )
                                                 )
