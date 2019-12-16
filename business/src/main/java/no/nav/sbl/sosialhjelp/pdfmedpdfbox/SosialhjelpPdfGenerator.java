@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
@@ -58,6 +59,7 @@ public class SosialhjelpPdfGenerator {
             leggTilBegrunnelse(pdf, data.getBegrunnelse());
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning());
             leggTilFamilie(pdf, data.getFamilie());
+            leggTilBosituasjon(pdf, data.getBosituasjon());
 
             System.out.println("pdf" + pdf);
 
@@ -371,6 +373,31 @@ public class SosialhjelpPdfGenerator {
 
 
 
+    }
+
+    private void leggTilBosituasjon(PdfGenerator pdf, JsonBosituasjon bosituasjon) throws IOException {
+        pdf.skrivH4Bold(getTekst("bosituasjonbolk.tittel"));
+        pdf.addBlankLine();
+
+        if (bosituasjon != null) {
+            pdf.skrivTekstBold(getTekst("bosituasjon.sporsmal"));
+            JsonBosituasjon.Botype botype = bosituasjon.getBotype();
+            if (botype != null) {
+                pdf.skrivTekst(getTekst("bosituasjon." + botype.value()));
+            } else {
+                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+            }
+
+            pdf.addBlankLine();
+
+            pdf.skrivTekstBold(getTekst("bosituasjon.antallpersoner.sporsmal"));
+            Integer antallPersoner = bosituasjon.getAntallPersoner();
+            if (antallPersoner != null) {
+                pdf.skrivTekst(antallPersoner.toString());
+            } else {
+                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+            }
+        }
     }
 
     private void skrivTekstMedGuard(PdfGenerator pdf, String tekst, String key) throws IOException {
