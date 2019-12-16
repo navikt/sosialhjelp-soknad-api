@@ -16,9 +16,6 @@ public class PDFService {
     @Inject
     private HtmlGenerator pdfTemplate;
 
-    @Inject
-    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
-
     public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending, String eier) {
         try {
             final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/kvittering/kvittering", erEttersending, eier);
