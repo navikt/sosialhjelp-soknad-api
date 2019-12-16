@@ -12,6 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -77,6 +78,7 @@ public class SosialhjelpPdfGeneratorTest {
 
 
         final JsonData data = new JsonData()
+
                 .withPersonalia(
                         new JsonPersonalia()
                                 .withPersonIdentifikator(
@@ -232,6 +234,12 @@ public class SosialhjelpPdfGeneratorTest {
                                                         )
                                                 )
                                 )
+
+                )
+                .withBosituasjon(
+                        new JsonBosituasjon()
+                                .withBotype(JsonBosituasjon.Botype.EIER)
+                                .withAntallPersoner(2)
                 );
 
         final JsonSoknad jsonSoknad = new JsonSoknad().withData(data);
