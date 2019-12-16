@@ -202,8 +202,8 @@ public class SosialhjelpPdfGeneratorTest {
                                                                                 new JsonBarn()
                                                                                         .withNavn(
                                                                                                 new JsonNavn()
-                                                                                                        .withFornavn("Anakin")
-                                                                                                        .withEtternavn("Skywalker")
+                                                                                                        .withFornavn("Kylo")
+                                                                                                        .withEtternavn("Ren")
                                                                                         )
                                                                                         .withFodselsdato("2000-01-01")
                                                                                         .withPersonIdentifikator("01010011223")
@@ -211,6 +211,11 @@ public class SosialhjelpPdfGeneratorTest {
                                                                         .withErFolkeregistrertSammen(
                                                                                 new JsonErFolkeregistrertSammen()
                                                                                         .withKilde(JsonKildeSystem.SYSTEM)
+                                                                                        .withVerdi(true)
+                                                                        )
+                                                                        .withHarDeltBosted(
+                                                                                new JsonHarDeltBosted()
+                                                                                        .withKilde(JsonKildeBruker.BRUKER)
                                                                                         .withVerdi(true)
                                                                         ),
                                                                 new JsonAnsvar()
@@ -218,8 +223,8 @@ public class SosialhjelpPdfGeneratorTest {
                                                                                 new JsonBarn()
                                                                                         .withNavn(
                                                                                                 new JsonNavn()
-                                                                                                        .withFornavn("Anakin")
-                                                                                                        .withEtternavn("Skywalker")
+                                                                                                        .withFornavn("Ben")
+                                                                                                        .withEtternavn("Solo")
                                                                                         )
                                                                                         .withFodselsdato("2000-01-01")
                                                                                         .withPersonIdentifikator("01010011223")
@@ -227,12 +232,27 @@ public class SosialhjelpPdfGeneratorTest {
                                                                         .withErFolkeregistrertSammen(
                                                                                 new JsonErFolkeregistrertSammen()
                                                                                         .withKilde(JsonKildeSystem.SYSTEM)
+                                                                                        .withVerdi(false)
+                                                                        )
+                                                                        .withHarDeltBosted(
+                                                                                new JsonHarDeltBosted()
+                                                                                        .withKilde(JsonKildeBruker.BRUKER)
                                                                                         .withVerdi(true)
+                                                                        )
+                                                                        .withSamvarsgrad(
+                                                                                new JsonSamvarsgrad()
+                                                                                        .withKilde(JsonKildeBruker.BRUKER)
+                                                                                        .withVerdi(42)
                                                                         )
 
 
                                                         )
                                                 )
+                                        .withBarnebidrag(
+                                                new JsonBarnebidrag()
+                                                .withKilde(JsonKildeBruker.BRUKER)
+                                                .withVerdi(JsonBarnebidrag.Verdi.MOTTAR)
+                                        )
                                 )
 
                 )
