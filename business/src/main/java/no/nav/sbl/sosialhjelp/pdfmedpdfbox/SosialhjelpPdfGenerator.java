@@ -33,10 +33,12 @@ public class SosialhjelpPdfGenerator {
     public static final String IKKE_UTFYLT = "Ikke utfylt";
 
     public byte[] generate(JsonInternalSoknad jsonInternalSoknad) {
+        System.out.println("Before try");
         try {
 
 
             PdfGenerator pdf = new PdfGenerator();
+            System.out.println("after generate");
 
             JsonData data = jsonInternalSoknad.getSoknad().getData();
             JsonPersonalia jsonPersonalia = data.getPersonalia(); // personalia er required
@@ -57,10 +59,12 @@ public class SosialhjelpPdfGenerator {
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning());
             leggTilFamilie(pdf, data.getFamilie());
 
+            System.out.println("pdf" + pdf);
 
             return pdf.finish();
 
         } catch (IOException e) {
+            System.out.println("EXCEPTION");
             throw new RuntimeException("Error while creating pdf", e);
         }
     }
