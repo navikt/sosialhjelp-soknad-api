@@ -13,6 +13,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,6 +43,9 @@ public class DigisosApiServiceTest {
     @Mock
     InnsendingService innsendingService;
 
+    @Mock
+    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+
     @InjectMocks
     private DigisosApiService digisosApiService;
 
@@ -61,6 +65,7 @@ public class DigisosApiServiceTest {
         when(pdfService.genererJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class))).thenReturn(new byte[]{1, 2, 3});
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
     }
 

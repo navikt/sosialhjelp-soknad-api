@@ -75,6 +75,7 @@ public class FiksDokumentHelperTest {
         when(pdfService.genererJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class))).thenReturn(new byte[]{1, 2, 3});
         fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
     }
 
