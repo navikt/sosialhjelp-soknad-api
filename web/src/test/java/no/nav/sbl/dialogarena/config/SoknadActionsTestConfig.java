@@ -14,6 +14,7 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGeneratorConfig;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.Import;
 import static org.mockito.Mockito.mock;
 
 @Configuration
-@Import(DummyHolderConfig.class)
+@Import({DummyHolderConfig.class, PdfGeneratorConfig.class})
 public class SoknadActionsTestConfig {
 
     @Bean
@@ -99,4 +100,6 @@ public class SoknadActionsTestConfig {
     public SoknadUnderArbeidRepository soknadUnderArbeidRepository() {
         return mock(SoknadUnderArbeidRepository.class);
     }
+
+
 }
