@@ -1,5 +1,5 @@
 {
-  "namespace": "q0",
+  "namespace": "digisos",
   "ingresses": [
     "https://sosialhjelp-soknad-api.dev-nav.no/sosialhjelp/soknad-api"
   ],
