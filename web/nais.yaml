@@ -23,7 +23,7 @@ spec:
     path: /prometheus
   replicas:
     min: 2
-    max: 2
+    max: 4
   webproxy: true
   vault:
     enabled: true
