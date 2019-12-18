@@ -18,6 +18,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import org.junit.Before;
@@ -34,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
@@ -260,6 +265,29 @@ public class SosialhjelpPdfGeneratorTest {
                         new JsonBosituasjon()
                                 .withBotype(JsonBosituasjon.Botype.EIER)
                                 .withAntallPersoner(2)
+                )
+                .withOkonomi(new JsonOkonomi()
+                    .withOpplysninger(new JsonOkonomiopplysninger()
+                            .withUtbetaling(Arrays.asList(
+                                    new JsonOkonomiOpplysningUtbetaling()
+                                        .withType("skatteetaten")
+                                        .withBrutto(2000.0)
+                                        .withPeriodeFom("01.08.2019")
+                                        .withPeriodeTom("31.08.2019")
+                                        .withSkattetrekk(25.0)
+                                        .withOrganisasjon(new JsonOrganisasjon().withNavn("The Millennium Falcon")),
+                                    new JsonOkonomiOpplysningUtbetaling()
+                                        .withType("navytelse")
+                                        .withBrutto(2000.0)
+                                        .withNetto(1500.0)
+                                        .withUtbetalingsdato("31.08.2019"),
+                                    new JsonOkonomiOpplysningUtbetaling()
+                                        .withType("husbanken")
+                                        .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND)
+                                        .withUtbetalingsdato("31.08.2019")
+                                        .withNetto(6000.0)
+                            ))
+                    )
                 );
 
         final JsonSoknad jsonSoknad = new JsonSoknad().withData(data);
