@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.soknadoversikt;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
@@ -48,6 +49,7 @@ public class SoknadOversiktRessurs {
         private String fiksDigisosId;
         private String soknadTittel;
         private String status;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
         private Date sistOppdatert;
         private Integer antallNyeOppgaver;
         private String kilde;
