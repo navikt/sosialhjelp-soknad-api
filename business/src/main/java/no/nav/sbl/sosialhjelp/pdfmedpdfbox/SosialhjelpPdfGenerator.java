@@ -1,6 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
@@ -11,9 +12,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import org.apache.commons.lang3.LocaleUtils;
@@ -22,6 +29,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_1;
 import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
@@ -60,6 +68,7 @@ public class SosialhjelpPdfGenerator {
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning());
             leggTilFamilie(pdf, data.getFamilie());
             leggTilBosituasjon(pdf, data.getBosituasjon());
+            leggTilInntektOgFormue(pdf, data.getOkonomi());
 
             System.out.println("pdf" + pdf);
 
@@ -442,6 +451,87 @@ public class SosialhjelpPdfGenerator {
             } else {
                 pdf.skrivTekstKursiv(IKKE_UTFYLT);
             }
+        }
+        pdf.addBlankLine();
+    }
+
+    private void leggTilInntektOgFormue(PdfGenerator pdf, JsonOkonomi okonomi) throws IOException {
+        pdf.skrivH4Bold(getTekst("inntektbolk.tittel"));
+        pdf.addBlankLine();
+
+        if (okonomi != null) {
+            List<JsonOkonomiOpplysningUtbetaling> utbetalinger = okonomi.getOpplysninger().getUtbetaling();
+
+            pdf.skrivTekstBold(getTekst("utbetalinger.inntekt.skattbar.tittel"));
+            List<JsonOkonomiOpplysningUtbetaling> skatteetaten = utbetalinger
+                    .stream()
+                    .filter(utbetaling -> utbetaling.getType().equalsIgnoreCase("skatteetaten"))
+                    .collect(Collectors.toList());
+
+            if (skatteetaten.isEmpty()) {
+                pdf.skrivTekst(getTekst("utbetalinger.inntekt.skattbar.ingen"));
+            } else {
+                skatteetaten
+                        .forEach(utbetaling -> {
+                            try {
+                                pdf.skrivTekstBold(getTekst("opplysninger.inntekt.undertittel"));
+                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.arbeidsgivernavn.label") + ": " + utbetaling.getOrganisasjon().getNavn());
+                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.periodeFom.label") + ": " + utbetaling.getPeriodeFom());
+                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.periodeTom.label") + ": " + utbetaling.getPeriodeTom());
+                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.brutto.label") + ": " + utbetaling.getBrutto());
+                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.skattetrekk.label") + ": " + utbetaling.getSkattetrekk());
+                            } catch (IOException e) {
+                                // Handle later
+                            }
+                        });
+            }
+            pdf.addBlankLine();
+
+            pdf.skrivTekstBold(getTekst("navytelser.sporsmal"));
+            List<JsonOkonomiOpplysningUtbetaling> navytelse = utbetalinger
+                    .stream()
+                    .filter(utbetaling -> utbetaling.getType().equalsIgnoreCase("navytelse"))
+                    .collect(Collectors.toList());
+            if (navytelse.isEmpty()) {
+                pdf.skrivTekst(getTekst("utbetalinger.ingen.true"));
+            } else {
+                navytelse
+                        .forEach(utbetaling -> {
+                            try {
+                                pdf.skrivTekstBold("Ytelse");
+                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.netto.label") + ": " + utbetaling.getNetto());
+                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.brutto.label") + ": " + utbetaling.getBrutto());
+                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.erutbetalt.label") + ": " + utbetaling.getUtbetalingsdato());
+                            } catch (IOException e) {
+                                // Handle later
+                            }
+                        });
+            }
+            pdf.addBlankLine();
+
+            // Legg til lånekassen dersom student
+
+            pdf.skrivTekstBold(getTekst("inntekt.bostotte.overskrift"));
+            List<JsonOkonomiOpplysningUtbetaling> husbanken = utbetalinger
+                    .stream()
+                    .filter(utbetaling -> utbetaling.getType().equalsIgnoreCase("husbanken"))
+                    .collect(Collectors.toList());
+            if (husbanken.isEmpty()) {
+                pdf.skrivTekst(getTekst("inntekt.bostotte.ikkefunnet"));
+            } else {
+                husbanken
+                        .forEach(utbetaling -> {
+                            try {
+                                pdf.skrivTekstBold(getTekst("inntekt.bostotte.utbetaling"));
+                                pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.mottaker") + ": " + utbetaling.getMottaker());
+                                pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.utbetalingsdato") + ": " + utbetaling.getUtbetalingsdato());
+                                pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.belop") + ": " + utbetaling.getNetto());
+                            } catch (IOException e) {
+                                //
+                            }
+                        });
+            }
+            pdf.addBlankLine();
         }
     }
 
