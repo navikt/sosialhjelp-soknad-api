@@ -133,7 +133,7 @@ workflows:
       - deploy_heroku:
           filters:
             branches:
-              only: master
+              only: fix/deploy-heroku
 #      - browser-test:
 #          requires:
 #            - deploy_heroku
