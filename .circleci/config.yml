@@ -56,7 +56,7 @@ jobs:
           name: Deploy on Heroku
           command: |
             heroku container:login
-            heroku container:push --recursive -a $CIRCLE_PROJECT_REPONAME
+            heroku container:push web --recursive -a $CIRCLE_PROJECT_REPONAME
             heroku container:release web -a $CIRCLE_PROJECT_REPONAME
 
   browser-test:
