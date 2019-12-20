@@ -72,7 +72,7 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
 
 
     private void nullstillNavEnhet() {
-        List<SoknadUnderArbeid> soknadUnderArbeidList = soknadUnderArbeidRepository.hentAlleSoknaderUnderArbeid();
+        List<SoknadUnderArbeid> soknadUnderArbeidList = soknadUnderArbeidRepository.hentAlleSoknaderUnderArbeidSiste15Dager();
         log.info("Forsøker å nullstille navenhet på {} påbegynte søknader", soknadUnderArbeidList.size());
 
         int antallNullstilte = 0;

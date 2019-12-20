@@ -122,8 +122,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public List<SoknadUnderArbeid> hentAlleSoknaderUnderArbeid() {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where STATUS = ?",
+    public List<SoknadUnderArbeid> hentAlleSoknaderUnderArbeidSiste15Dager() {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO > CURRENT_TIMESTAMP - (INTERVAL '15' DAY) and STATUS = ?",
                 new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
     }
 
