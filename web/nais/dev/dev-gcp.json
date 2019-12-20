@@ -72,7 +72,7 @@
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
-    "FASIT_ENVIRONMENT_NAME": "dev-gcp",
+    "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
     "START_NORG_WITHMOCK": "true"
   }
