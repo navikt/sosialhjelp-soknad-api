@@ -26,11 +26,12 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 
 @Service
-public class FjernNavenhetVedKommunesammenslaingSheduler {
-    private static final Logger log = getLogger(FjernNavenhetVedKommunesammenslaingSheduler.class);
+public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
+    private static final Logger log = getLogger(NullstillValgtNavenhetVedKommunesammenslaingSheduler.class);
 
-    private static final String KLOKKEN_TO_OM_NATTET_DEN_30_OG_31_DESEMBER = "00 02 30-31 12 *";
-    private static final String DEBUG_KLOKKE = "*/2 * 20 12 *";
+    private static final String KLOKKEN_TO_OM_NATTET_DEN_30_OG_31_DESEMBER = "00 02 30-31 12 * 2019";
+    private static final String DEBUG_KLOKKE = "*/2 * 20 12 * 2019";
+    private static final String DEBUG_KLOKKE2 = "42 * 20 12 * 2019";
 
     private LocalDateTime batchStartTime;
     private int vellykket;
