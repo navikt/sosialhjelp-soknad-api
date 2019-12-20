@@ -29,9 +29,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
     private static final Logger log = getLogger(NullstillValgtNavenhetVedKommunesammenslaingSheduler.class);
 
-    private static final String KLOKKEN_TO_OM_NATTET_DEN_30_OG_31_DESEMBER = "00 02 30-31 12 * 2019";
-    private static final String DEBUG_KLOKKE = "*/2 * 20 12 * 2019";
-    private static final String DEBUG_KLOKKE2 = "42 * 20 12 * 2019";
+    private static final String KLOKKEN_TO_OM_NATTET_DEN_30_OG_31_DESEMBER = "0 0 02 30-31 12 *";
+    private static final String DEBUG_KLOKKE  = "0 */2 * 20 12 *";
+    private static final String DEBUG_KLOKKE2 = "0 42 * 20 12 *";
 
     private LocalDateTime batchStartTime;
     private int vellykket;
@@ -40,7 +40,7 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Scheduled(cron = DEBUG_KLOKKE)
-    public void avbrytGamleSoknader() {
+    public void nullstillNavenhet() {
         if (ServiceUtils.isScheduledTasksDisabled()) {
             log.warn("Scheduler is disabled");
             return;
