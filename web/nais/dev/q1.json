@@ -8,7 +8,10 @@
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q1",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
-  "fasitEnvironment": "q1",
+  "minReplicas": "1",
+  "maxReplicas": "1",
+  "vaultEnabled": true,
+  "prometheusEnabled": true,
   "env": {
     "APPRES_CMS_URL": "https://appres-q1.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q1.oera.no/sbl/tjenester/system/",
@@ -66,6 +69,9 @@
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "true",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
     "NEDETID_START": "27.12.2019 00:00:00",
-    "NEDETID_SLUTT": "01.01.2020 09:00:00"
+    "NEDETID_SLUTT": "01.01.2020 09:00:00",
+    "FASIT_ENVIRONMENT_NAME": "q1",
+    "TILLATMOCK": "false",
+    "START_NORG_WITHMOCK": "false"
   }
 }

@@ -1,18 +1,20 @@
 {
-  "namespace": "q0",
+  "namespace": "digisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api-q0.nais.oera-q.local/",
-    "https://tjenester-q0.nav.no/sosialhjelp-soknad-api",
-    "https://www-q0.nav.no/sosialhjelp/soknad-api"
+    "https://sosialhjelp-soknad-api.labs.nais.io/sosialhjelp/soknad-api"
   ],
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q0",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
   "minReplicas": "1",
   "maxReplicas": "1",
-  "vaultEnabled": true,
-  "prometheusEnabled": true,
+  "vaultEnabled": false,
+  "prometheusEnabled": false,
   "env": {
+    "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockSoknadsosialhjelpServer",
+    "dockerWithDefaultMockActivated": "true",
+    "HEROKU": "true",
+    "PORT": "8181",
     "APPRES_CMS_URL": "https://appres-q0.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q0.oera.no/sbl/tjenester/system/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
@@ -70,8 +72,8 @@
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
-    "FASIT_ENVIRONMENT_NAME": "q0",
-    "TILLATMOCK": "false",
-    "START_NORG_WITHMOCK": "false"
+    "FASIT_ENVIRONMENT_NAME": "labs-gcp",
+    "TILLATMOCK": "true",
+    "START_NORG_WITHMOCK": "true"
   }
 }

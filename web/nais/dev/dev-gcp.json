@@ -6,7 +6,10 @@
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q0",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
-  "fasitEnvironment": "q0",
+  "minReplicas": "1",
+  "maxReplicas": "1",
+  "vaultEnabled": false,
+  "prometheusEnabled": false,
   "env": {
     "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockSoknadsosialhjelpServer",
     "dockerWithDefaultMockActivated": "true",
@@ -68,6 +71,9 @@
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
     "NEDETID_START": "",
-    "NEDETID_SLUTT": ""
+    "NEDETID_SLUTT": "",
+    "FASIT_ENVIRONMENT_NAME": "dev-gcp",
+    "TILLATMOCK": "true",
+    "START_NORG_WITHMOCK": "true"
   }
 }

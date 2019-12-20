@@ -6,7 +6,7 @@ metadata:
   labels:
     team: digisos
 spec:
-  image: repo.adeo.no:5443/sosialhjelp-soknad-api:{{version}}
+  image: docker.pkg.github.com/navikt/sosialhjelp-soknad-api/sosialhjelp-soknad-api:{{version}}
   port: 8080
   liveness:
     path: /sosialhjelp/soknad-api/internal/isAlive
@@ -19,14 +19,15 @@ spec:
     initialDelay: 60
     timeout: 1
   prometheus:
-    enabled: true
+    enabled: {{prometheusEnabled}}
     path: /prometheus
   replicas:
-    min: 2
-    max: 2
+    min: {{minReplicas}}
+    max: {{maxReplicas}}
   webproxy: true
   vault:
-    enabled: true
+    enabled: {{vaultEnabled}}
+{{#if vaultEnabled}}
     paths:
       - mountPath: /var/run/secrets/nais.io/vault
         kvPath: {{vaultKvPath}}
@@ -34,6 +35,7 @@ spec:
         kvPath: {{datasourceKvPath}}
       - mountPath: /var/run/secrets/nais.io/virksomhetssertifikat
         kvPath: {{virksomhetssertifikatKvPath}}
+{{/if}}
   ingresses:
 {{#each ingresses}}
     - "{{this}}"
@@ -46,12 +48,6 @@ spec:
       cpu: 200m
       memory: 2Gi
   env:
-    - name: FASIT_ENVIRONMENT_NAME
-      value: {{fasitEnvironment}}
-    - name: TILLATMOCK
-      value: "false"
-    - name: START_NORG_WITHMOCK
-      value: "false"
 {{#each env}}
     - name: {{@key}}
       value: "{{this}}"
