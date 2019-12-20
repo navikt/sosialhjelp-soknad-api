@@ -73,12 +73,17 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
 
     private void nullstillNavEnhet() {
         List<SoknadUnderArbeid> soknadUnderArbeidList = soknadUnderArbeidRepository.hentAlleSoknaderUnderArbeid();
+        log.info("Forsøker å nullstille navenhet på {} påbegynte søknader", soknadUnderArbeidList.size());
 
         int antallNullstilte = 0;
         for (SoknadUnderArbeid soknad : soknadUnderArbeidList) {
             if (!isMottakerNullstilt(soknad)) {
+                log.info("Forsøker å nullstille navenhet på behandlingsId{}", soknad.getBehandlingsId());
                 nullstillMottaker(soknad);
                 antallNullstilte++;
+                log.info("Ferdig med å nullstille navenhet på behandlingsId{}", soknad.getBehandlingsId());
+            } else {
+                log.info("Navenhet er allerede nullstilt på behandlingsid {}", soknad.getBehandlingsId());
             }
         }
 
