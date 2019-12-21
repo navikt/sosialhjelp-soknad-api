@@ -1,0 +1,21 @@
+name: Deploy
+on:
+  repository_dispatch:
+    types: [deploy_prod_tag]
+
+jobs:
+  deploy:
+    name: Deploy to prod-sbs
+    runs-on: ubuntu-latest
+    if: github.event.action == 'deploy_prod_tag'
+    container: navikt/deployment-cli:0.4.0
+    steps:
+      - uses: actions/checkout@v1
+      - name: Deploy to prod
+        run: |
+          TAG=$(jq -r '.client_payload.TAG' $GITHUB_EVENT_PATH)
+
+          deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/prod/default.json
+        env:
+          DEPLOYMENT_USERNAME: ${{ secrets.DEPLOYMENT_USERNAME }}
+          DEPLOYMENT_PASSWORD: ${{ secrets.DEPLOYMENT_PASSWORD }}
