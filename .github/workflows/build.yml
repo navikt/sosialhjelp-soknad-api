@@ -1,0 +1,44 @@
+name: Build
+on:
+  push:
+    branches:
+      - '**' # Build all branches
+    tags-ignore:
+      - '**' # Don't build any tags
+
+jobs:
+  build:
+    name: Build and push docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Login to GitHub package registry
+        run: |
+          echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_REPOSITORY} --password-stdin docker.pkg.github.com
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout CI scripts
+        run: |
+          git clone https://github.com/navikt/sosialhjelp-ci.git
+          echo "`pwd`/sosialhjelp-ci/bin:$PATH" > PATH
+      - name: Create docker image tags
+        run: |
+          export PATH=$(cat PATH)
+          PROJECT_NAME=$(echo $GITHUB_REPOSITORY | cut -d/ -f2)
+          echo $PROJECT_NAME > PROJECT_NAME
+          # FIXME: Remove version number substitution when GitHub Actions replaces CircleCI
+          echo "docker.pkg.github.com/$GITHUB_REPOSITORY/$PROJECT_NAME:$(create-artifact-version.sh | sed 's/^1.0/1.1/')" > DOCKER_TAG
+      - name: Build docker image
+        run: docker build -t $(cat DOCKER_TAG) .
+      - name: Create tag and release
+        run: |
+          export PATH=$(cat PATH)
+          # FIXME: Remove version number substitution when GitHub Actions replaces CircleCI
+          create-github-release.sh -p $(cat PROJECT_NAME) -t "$(create-artifact-version.sh | sed 's/^1.0/1.1/')" \
+              -c $GITHUB_SHA -m "$(format-commit-message.sh)" -a $GITHUB_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push docker image
+        run: |
+          cat DOCKER_TAG
+          docker push $(cat DOCKER_TAG)
