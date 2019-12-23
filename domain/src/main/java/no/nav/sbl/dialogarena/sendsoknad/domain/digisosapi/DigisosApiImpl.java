@@ -339,6 +339,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     static class VirksertCredentials {
         public String alias;
         public String password;
