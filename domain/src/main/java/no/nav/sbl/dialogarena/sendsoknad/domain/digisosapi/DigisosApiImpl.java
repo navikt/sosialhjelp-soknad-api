@@ -122,8 +122,12 @@ public class DigisosApiImpl implements DigisosApi {
             cacheTimestamp = LocalDateTime.now();
             return collect;
         } catch (Exception e) {
-            log.error("Hent kommuneinfo feiler", e);
-            return Collections.emptyMap();
+            if(cacheForKommuneinfo.get().isEmpty()) {
+                log.error("Hent kommuneinfo feiler og cache er tom!", e);
+                return Collections.emptyMap();
+            }
+            log.error("Hent kommuneinfo feiler og cache er gammel.", e);
+            return cacheForKommuneinfo.get();
         }
     }
 
@@ -335,6 +339,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     static class VirksertCredentials {
         public String alias;
         public String password;
