@@ -79,7 +79,7 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
         for (SoknadUnderArbeid soknad : soknadUnderArbeidList) {
             if (!isMottakerNullstilt(soknad)) {
                 log.info("Forsøker å nullstille navenhet på behandlingsId{}", soknad.getBehandlingsId());
-                //nullstillMottaker(soknad);
+                nullstillMottaker(soknad);
                 antallNullstilte++;
                 log.info("Ferdig med å nullstille navenhet på behandlingsId{}", soknad.getBehandlingsId());
             } else {
