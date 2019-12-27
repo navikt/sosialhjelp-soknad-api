@@ -31,12 +31,12 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
 
     private static final String KLOKKEN_TO_OM_NATTET_DEN_30_OG_31_DESEMBER = "0 0 02 30-31 12 *";
     private static final String DEBUG_KLOKKE  = "0 */2 * 27 12 *";
-    private static final String DEBUG_KLOKKE2 = "0 42 * 20 12 *";
+    private static final String DEBUG_KLOKKE2 = "* 20-30/5 17 27 12 *";
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Scheduled(cron = DEBUG_KLOKKE)
+    @Scheduled(cron = DEBUG_KLOKKE2)
     public void nullstillNavenhet() {
         if (ServiceUtils.isScheduledTasksDisabled()) {
             log.warn("Scheduler is disabled");
@@ -84,7 +84,7 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
         }
 
         log.info("Nullstilte valgt navenhet på {} av {} soknadUnerArbeid", antallNullstilte, soknadUnderArbeidList.size());
-        return soknadUnderArbeidList.size();
+        return antallNullstilte;
     }
 
     private boolean isMottakerNullstilt(SoknadUnderArbeid soknadUnderArbeid) {
