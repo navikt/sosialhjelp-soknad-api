@@ -117,6 +117,10 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         if (soknad != null) {
             soknad.setMottaker(new no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker());
+
+            if (soknad.getData() != null && soknad.getData().getPersonalia() != null && soknad.getData().getPersonalia().getOppholdsadresse() != null) {
+                soknad.getData().getPersonalia().getOppholdsadresse().setAdresseValg(null);
+            }
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.getEier());
