@@ -30,7 +30,7 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
     private static final Logger log = getLogger(NullstillValgtNavenhetVedKommunesammenslaingSheduler.class);
 
     private static final String KLOKKEN_TO_OM_NATTET_DEN_30_OG_31_DESEMBER = "0 0 02 30-31 12 *";
-    private static final String DEBUG_KLOKKE  = "0 */2 * 20 12 *";
+    private static final String DEBUG_KLOKKE  = "0 */2 * 27 12 *";
     private static final String DEBUG_KLOKKE2 = "0 42 * 20 12 *";
 
     private LocalDateTime batchStartTime;
