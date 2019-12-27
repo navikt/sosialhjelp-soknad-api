@@ -33,9 +33,6 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
     private static final String DEBUG_KLOKKE  = "0 */2 * 27 12 *";
     private static final String DEBUG_KLOKKE2 = "0 42 * 20 12 *";
 
-    private LocalDateTime batchStartTime;
-    private int vellykket;
-
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
@@ -46,15 +43,14 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
             return;
         }
 
-        batchStartTime = LocalDateTime.now();
-        vellykket = 0;
+        int vellykket = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             log.info("Starter nullstilling av valgt navenhet på påbegynte søknader");
             Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.nullstill.navenhet");
             batchTimer.start();
 
             try {
-                nullstillNavEnhet();
+                vellykket = nullstillNavEnhet();
             } catch (RuntimeException e) {
                 log.error("Nullstilling av navenhet feilet", e);
                 batchTimer.setFailed();
@@ -71,23 +67,24 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
     }
 
 
-    private void nullstillNavEnhet() {
+    private int nullstillNavEnhet() {
         List<SoknadUnderArbeid> soknadUnderArbeidList = soknadUnderArbeidRepository.hentAlleSoknaderUnderArbeidSiste15Dager();
         log.info("Forsøker å nullstille navenhet på {} påbegynte søknader", soknadUnderArbeidList.size());
 
         int antallNullstilte = 0;
         for (SoknadUnderArbeid soknad : soknadUnderArbeidList) {
             if (!isMottakerNullstilt(soknad)) {
-                log.info("Forsøker å nullstille navenhet på behandlingsId{}", soknad.getBehandlingsId());
+                log.info("Forsøker å nullstille navenhet på behandlingsId {}", soknad.getBehandlingsId());
                 nullstillMottaker(soknad);
                 antallNullstilte++;
-                log.info("Ferdig med å nullstille navenhet på behandlingsId{}", soknad.getBehandlingsId());
+                log.info("Ferdig med nullstille navenhet på behandlingsId {}", soknad.getBehandlingsId());
             } else {
                 log.info("Navenhet er allerede nullstilt på behandlingsid {}", soknad.getBehandlingsId());
             }
         }
 
         log.info("Nullstilte valgt navenhet på {} av {} soknadUnerArbeid", antallNullstilte, soknadUnderArbeidList.size());
+        return soknadUnderArbeidList.size();
     }
 
     private boolean isMottakerNullstilt(SoknadUnderArbeid soknadUnderArbeid) {
