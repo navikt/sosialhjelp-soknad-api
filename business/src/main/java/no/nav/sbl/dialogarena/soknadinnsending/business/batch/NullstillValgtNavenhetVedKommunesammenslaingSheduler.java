@@ -31,7 +31,7 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
 
     private static final String KLOKKEN_TO_OM_NATTET_DEN_30_OG_31_DESEMBER = "0 0 02 30-31 12 *";
     private static final String DEBUG_KLOKKE  = "0 */2 * 27 12 *";
-    private static final String DEBUG_KLOKKE2 = "* 0-20/5 15 28 12 *";
+    private static final String DEBUG_KLOKKE2 = "* 30-50/5 15 28 12 *";
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
