@@ -30,13 +30,12 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
     private static final Logger log = getLogger(NullstillValgtNavenhetVedKommunesammenslaingSheduler.class);
 
     private static final String KLOKKEN_TO_OM_NATTET_DEN_30_OG_31_DESEMBER = "0 0 02 30-31 12 *";
-    private static final String DEBUG_KLOKKE  = "0 */2 * 27 12 *";
-    private static final String DEBUG_KLOKKE2 = "0 30-50/5 16 28 12 *";
+    private static final String KLOKKEN_TO_OM_NATTET_DEN_29_DESEMBER = "0 0 02 29 12 *";
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Scheduled(cron = DEBUG_KLOKKE2)
+    @Scheduled(cron = KLOKKEN_TO_OM_NATTET_DEN_29_DESEMBER)
     public void nullstillNavenhet() {
         if (ServiceUtils.isScheduledTasksDisabled() || LocalDateTime.now().getYear() != 2019) {
             log.warn("Scheduler is disabled or year is not 2019");
@@ -75,7 +74,7 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
         for (SoknadUnderArbeid soknad : soknadUnderArbeidList) {
             if (!isMottakerNullstilt(soknad)) {
                 log.info("Forsøker å nullstille navenhet på behandlingsId {}", soknad.getBehandlingsId());
-                nullstillMottaker(soknad);
+                //nullstillMottaker(soknad); Tester at uthentinger går bra den 29. Legger til nullstillingen den 30 og 31 om alt går bra.
                 antallNullstilte++;
                 log.info("Ferdig med nullstille navenhet på behandlingsId {}", soknad.getBehandlingsId());
             } else {
