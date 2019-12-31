@@ -29,15 +29,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
     private static final Logger log = getLogger(NullstillValgtNavenhetVedKommunesammenslaingSheduler.class);
 
-    private static final String KLOKKEN_TO_OM_NATTET_DEN_29_30_OG_31_DESEMBER = "0 0 02 29-31 12 *";
+    private static final String KLOKKEN_SYV_DEN_1_JANUAR = "0 0 07 01 01 *";
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Scheduled(cron = KLOKKEN_TO_OM_NATTET_DEN_29_30_OG_31_DESEMBER)
+    @Scheduled(cron = KLOKKEN_SYV_DEN_1_JANUAR)
     public void nullstillNavenhet() {
-        if (ServiceUtils.isScheduledTasksDisabled() || LocalDateTime.now().getYear() != 2019) {
-            log.warn("Scheduler is disabled or year is not 2019");
+        if (ServiceUtils.isScheduledTasksDisabled() || LocalDateTime.now().getYear() != 2020) {
+            log.warn("Scheduler is disabled or year is not 2020");
             return;
         }
 
@@ -73,11 +73,8 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
         for (SoknadUnderArbeid soknad : soknadUnderArbeidList) {
             if (!isMottakerNullstilt(soknad)) {
                 log.info("Forsøker å nullstille navenhet på behandlingsId {}", soknad.getBehandlingsId());
-                if (LocalDateTime.now().getDayOfMonth() != 29) {
-                    // Tester at uthentinger går bra den 29. Lar nullstillingen skje den 30 og 31.
-                    nullstillMottaker(soknad);
-                    log.info("Ferdig med nullstille navenhet på behandlingsId {}", soknad.getBehandlingsId());
-                }
+                nullstillMottaker(soknad);
+                log.info("Ferdig med nullstille navenhet på behandlingsId {}", soknad.getBehandlingsId());
                 antallNullstilte++;
             } else {
                 log.debug("Navenhet er allerede nullstilt på behandlingsid {}", soknad.getBehandlingsId());
