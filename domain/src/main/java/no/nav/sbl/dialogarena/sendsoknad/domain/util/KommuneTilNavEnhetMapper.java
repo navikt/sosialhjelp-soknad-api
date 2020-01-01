@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -355,8 +354,85 @@ public class KommuneTilNavEnhetMapper {
                     "4205",
                     "1579",
                     "4649",
-                    "4602"
-                
+                    "4602",
+                    "3801", // Nytt Horten
+                    "4627", // Nytt Askøy
+                    "3807", // Nytt Skien
+                    "4601", // Nytt Bergen
+                    "1108", // Nytt Sandnes
+                    "3805", // Nytt Larvik
+                    "3403", // Nytt Hamar
+                    "3443", // Nytt Vestre Toten
+                    "3049", // Nytt Lier
+                    "3048", // Nytt Øvre Eiker
+                    "3053", // Nytt Jevnaker
+                    "4622", // Nytt Kvam
+                    "5422", // Nytt Balsfjord
+                    "5425", // Nytt Storfjord
+                    "3026", // Nytt Aurskog-Høland
+                    "4617", // Nytt Kvinnherad
+                    "3814", // Nytt Kragerø
+                    "3436", // Nytt Nord-Fron
+                    "3438", // Nytt Sør-Fron
+                    "3439", // Nytt Ringebu
+                    "3411", // Nytt Ringsaker
+                    "3419", // Nytt Valer i innlandet
+                    "4227", // Nytt Kvinesdal
+                    "3004", // Nytt Fredrikstad
+                    "3007", // Nytt Ringerike
+                    "3414", // Nytt Nord-Odal
+                    "4621", // Nytt Voss
+                    "5405", // Nytt Vadsø
+                    "3028", // Nytt Enebakk
+                    "3434", // Nytt Lom
+                    "3437", // Nytt Sel
+                    "3433", // Nytt Skjåk
+                    "4613", // Nytt Bømlo
+                    "3435", // Nytt Vågå
+                    "3407", // Nytt Gjøvik
+                    "4203", // Nytt Arendal
+                    "5402", // Nytt Harstad
+                    "3431", // Nytt Dovre
+                    "3432", // Nytt Lesja
+                    "5412", // Nytt Tjeldsund
+                    "3413", // Nytt Stange
+                    "5006", // Nytt Steinkjer
+                    "3019", // Nytt Vestby
+                    "4615", // Nytt Fitjar
+                    "3003", // Nytt Sarpsborg
+                    "4614", // Nytt Stord
+                    "3819", // Nytt Hjartdal
+                    "3808", // Nytt Notodden
+                    "3051", // Nytt Rollag
+                    "3050", // Nytt Flesberg
+                    "3052", // Nytt Nore og Uvdal
+                    "3006", // Nytt Kongsberg
+                    "3818", // Nytt Tinn
+                    "3420", // Nytt Elverum
+                    "3035", // Nytt Eidsvoll
+                    "3037", // Nytt Hurdal
+                    "3417", // Nytt Grue
+                    "3016", // Nytt Rakkestad
+                    "3034", // Nytt Nes (Akershus)
+                    "3032", // Nytt Gjendrum
+                    "3001", // Nytt Halden
+                    "3033", // Nytt Ullensaker
+                    "3036", // Nytt Nannestad
+                    "3447", // Nytt Søndre Land
+                    "3024", // Nytt Bærum
+                    "4638", // Nytt Høyanger
+                    "3401", // Nytt Kongsvinger
+                    "3415", // Nytt Sør-Odal
+                    "3022", // Nytt Frogn
+                    "3029", // Nytt Lørenskog
+                    "3416", // Nytt Eidskog
+                    "4648", // Nytt Bremager
+                    "4650", // Nytt Gloppen
+                    "4651", // Nytt Stryn
+                    "5428", // Nytt Nordreisa
+                    "5427", // Nytt Skjervøy
+                    "3418", // Nytt Åsnes
+                    "3017"  // Nytt Råde
             ));
 
 
