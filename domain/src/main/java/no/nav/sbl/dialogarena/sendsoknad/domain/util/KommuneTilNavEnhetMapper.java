@@ -168,6 +168,101 @@ public class KommuneTilNavEnhetMapper {
             .put("1579", "921133642")    // Hustadvika
             .put("4649", "921060157")    // Stad
             .put("4602", "820956532")    // Kinn
+            // Nye kommunenummer 2020
+            .put("3801", "974605171")    // Horten
+            .put("4627", "974600889")    // Askøy
+            .put("3807", "995509970")    // Skien
+            //.put("1204", "976829786")    // Arna, Bergen kommune                  // Må sjekkes i NORG
+            //.put("1209", "976830563")    // Bergenhus, Bergen kommune
+            //.put("1202", "976829948")    // Fana, Bergen kommune
+            //.put("1205", "976830032")    // Fyllingsdalen, Bergen kommune
+            //.put("1206", "976830121")    // Laksevåg, Bergen kommune
+            //.put("1210", "976830652")    // Ytrebygda, Bergen kommune
+            //.put("1208", "976830172")    // Årstad, Bergen kommune
+            //.put("1203", "976830784")    // Åsane, Bergen kommune
+            .put("1108", "874610712")    // Sandnes
+            .put("3805", "997784618")    // Larvik
+            .put("3403", "974623811")    // Hamar
+            .put("3443", "986838961")    // Vestre Toten
+            .put("3049", "974545861")    // Lier
+            .put("3048", "994952854")    // Øvre Eiker
+            .put("3053", "974596016")    // Jevnaker
+            //.put("1401", "974551918")    // Flora             // Må sjekkes
+            .put("4622", "944233199")    // Kvam
+            .put("5422", "921858361")    // Balsfjord  // NB: Tidligere på samme rad, med samme nummer
+            .put("5425", "921858361")    // Storfjord  // NB: Tidligere på samme rad, med samme nummer
+            .put("3026", "976637216")    // Aurskog-Høland
+            .put("4617", "993975192")    // Kvinnherad
+            .put("3814", "979525095")    // Kragerø
+            .put("3436", "974543303")    // Nord-Fron
+            .put("3438", "974543303")    // Sør-Fron
+            .put("3439", "974543303")    // Ringebu
+            .put("3411", "976639618")    // Ringsaker
+            .put("3419", "974550342")    // Våler (Hedmark)
+            .put("4227", "964964076")    // Kvinesdal
+            .put("3004", "993393851")    // Fredrikstad
+            .put("3007", "976820835")    // Ringerike
+            .put("3414", "964950768")    // Nord-Odal
+            .put("4621", "973951270")    // Voss
+            .put("5405", "974622238")    // Vadsø
+            //.put("1243", "992179457")    // Os (Hordaland)   // Må sjekkes
+            .put("3028", "974604175")    // Enebakk
+            //.put("1002", "964968519")    // Mandal           // Må sjekkes
+            .put("3434", "974592274")    // Lom
+            .put("3437", "974562294")    // Sel
+            .put("3433", "976641175")    // Skjåk
+            .put("4613", "834210622")    // Bømlo
+            .put("3435", "976641310")    // Vågå
+            .put("3407", "974567776")    // Gjøvik
+            .put("4203", "976825950")    // Arendal
+            .put("5402", "978608418")    // Harstad
+            .put("3431", "919059303")    // Dovre
+            .put("3432", "964949204")    // Lesja
+            //.put("1913", "959469326")    // Skånland          // Må sjekkes
+            .put("5412", "959469326")    // Tjelsund
+            .put("3413", "994743767")    // Stange
+            .put("5006", "983921000")    // Steinkjer  // NB tidligere en rad med Steinkjer Verran, Snåsa, Inderøy
+            //.put("1702", "983921000")    // Verran   // NB tidligere en rad med Steinkjer Verran, Snåsa, Inderøy   // Må sjekkes
+            .put("3019", "974574306")    // Vestby
+            .put("4615", "974575728")    // Fitjar
+            .put("3003", "974560593")    // Sarpsborg
+            .put("4614", "991459634")    // Stord
+            .put("3819", "973802003")    // Hjartdal
+            .put("3808", "984001797")    // Notodden
+            .put("3051", "964963282")    // Rollag        // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
+            .put("3050", "964963282")    // Flesberg      // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
+            .put("3052", "964963282")    // Nore og Uvdal // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
+            .put("3006", "974572486")    // Kongsberg
+            .put("3818", "874548472")    // Tinn
+            .put("3420", "976640322")    // Elverum
+            .put("3035", "974604442")    // Eidsvoll
+            .put("3037", "939780777")    // Hurdal
+            .put("3417", "964948143")    // Grue
+            //.put("1021", "964966931")    // Marnardal        // Må sjekkes
+            //.put("1548", "974545284")    // Fræna, Eide      // Må sjekkes
+            .put("3016", "997220838")    // Rakkestad
+            .put("3034", "976665589")    // Nes (Akershus)
+            .put("3032", "974547678")    // Gjerdrum
+            .put("3001", "959159092")    // Halden
+            .put("3033", "983870953")    // Ullensaker
+            .put("3036", "874604682")    // Nannestad
+            .put("3447", "974596393")    // Søndre Land
+            .put("3024", "974702401")    // Bærum
+            .put("4638", "976831322")    // Høyanger
+            .put("3401", "944117784")    // Kongsvinger
+            .put("3415", "874602612")    // Sør-Odal
+            .put("3022", "974600544")    // Frogn
+            .put("3029", "976637992")    // Lørenskog
+            .put("3416", "874602752")    // Eidskog
+            .put("4648", "973981749")    // Bremanger
+            //.put("1443", "974556154")    // Eid (Eid Selje)           // Må sjekkes
+            .put("4650", "976675185")    // Gloppen
+            .put("4651", "976831772")    // Stryn
+            //.put("1439", "942952880")    // Vågsøy                    // Må sjekkes
+            .put("5428", "974574101")    // Nordreisa
+            .put("5427", "976835441")    // Skjervøy
+            .put("3418", "974602970")    // Åsnes
+            .put("3017", "974569906")    // Råde
 
             .build();
 
