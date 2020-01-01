@@ -15,10 +15,14 @@ public class KommuneTilNavEnhetMapper {
 
     public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
             .put("0519", "Nord-Fron") // Sør-Fron
+            .put("3438", "Nord-Fron") // Sør-Fron (nytt kommunenummer)
             .put("0520", "Nord-Fron") // Ringebu
+            .put("3439", "Nord-Fron") // Ringebu (nytt kommunenummer)
             .put("0631", "Rollag")    // Flesberg
+            .put("3050", "Rollag")    // Flesberg (nytt kommunenummer)
             .put("0633", "Rollag")    // Nore og Uvdal
-            .put("1151", "Haugesund") // Utsira
+            .put("3052", "Rollag")    // Nore og Uvdal (nytt kommunenummer)
+            .put("1151", "Haugesund") // Utsira (samme kommunenummer etter 2020)
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
