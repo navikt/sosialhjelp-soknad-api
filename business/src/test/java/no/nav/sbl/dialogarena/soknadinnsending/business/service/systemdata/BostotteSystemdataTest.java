@@ -229,7 +229,13 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_dataFraDeSisteToManederBlirVistNarSisteManedErTom() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
+        LocalDate testDate;
+        if (LocalDate.now().getDayOfMonth() == 31) {
+            testDate = LocalDate.now().withDayOfMonth(1);
+        } else {
+            testDate = LocalDate.now().withDayOfMonth(1).minusMonths(1);
+        }
+        SakerDto sakerDto2 = lagSak(testDate, BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto2);
 

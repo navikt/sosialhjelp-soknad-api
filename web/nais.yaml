@@ -6,7 +6,7 @@ metadata:
   labels:
     team: digisos
 spec:
-  image: repo.adeo.no:5443/sosialhjelp-soknad-api:{{version}}
+  image: docker.pkg.github.com/navikt/sosialhjelp-soknad-api/sosialhjelp-soknad-api:{{version}}
   port: 8080
   liveness:
     path: /sosialhjelp/soknad-api/internal/isAlive
@@ -23,7 +23,7 @@ spec:
     path: /prometheus
   replicas:
     min: 2
-    max: 2
+    max: 4
   webproxy: true
   vault:
     enabled: true
