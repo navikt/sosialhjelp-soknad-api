@@ -175,7 +175,6 @@ public class PdfGenerator {
         this.currentStream.closeAndStroke();
     }
 
-
     public void addParagraph(
             String text,
             PDFont font,
