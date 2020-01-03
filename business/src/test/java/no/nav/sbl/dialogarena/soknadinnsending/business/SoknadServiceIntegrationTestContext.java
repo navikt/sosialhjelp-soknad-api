@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
@@ -18,6 +19,8 @@ import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;

@@ -1,11 +1,13 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
+import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
@@ -34,6 +36,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.ReflectionUtils;
 
+import javax.inject.Inject;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,12 +47,13 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sos
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class SosialhjelpPdfGeneratorTest {
 
-    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @Before
     public void setUp() {
@@ -66,6 +70,11 @@ public class SosialhjelpPdfGeneratorTest {
 
         sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
         sosialhjelpPdfGenerator.setNavMessageSource(navMessageSource);
+
+        Adressekodeverk adressekodeverk = mock(Adressekodeverk.class);
+        when(adressekodeverk.getLand("NOR")).thenReturn("Norsk");
+        TextHelpers textHelpers = new TextHelpers(navMessageSource, adressekodeverk);
+        sosialhjelpPdfGenerator.setTextHelpers(textHelpers);
     }
 
     @Test
@@ -98,7 +107,7 @@ public class SosialhjelpPdfGeneratorTest {
                                                 .withEtternavn("Solo")
                                 )
                                 .withStatsborgerskap(
-                                        new JsonStatsborgerskap().withVerdi("Norsk")
+                                        new JsonStatsborgerskap().withVerdi("NOR")
                                 )
                                 .withOppholdsadresse(
                                         new JsonGateAdresse()
@@ -108,6 +117,7 @@ public class SosialhjelpPdfGeneratorTest {
                                                 .withHusbokstav("Z")
                                                 .withPostnummer("1337")
                                                 .withPoststed("Andeby")
+                                                .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
                                 )
                                 .withFolkeregistrertAdresse(
                                         new JsonGateAdresse()
@@ -294,7 +304,7 @@ public class SosialhjelpPdfGeneratorTest {
         final JsonInternalSoknad jsonInternalSoknad = new JsonInternalSoknad().withSoknad(jsonSoknad);
 
 
-        byte[] bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad);
+        byte[] bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true);
 
         try {
             FileOutputStream out = new FileOutputStream("../temp/starcraft.pdf");

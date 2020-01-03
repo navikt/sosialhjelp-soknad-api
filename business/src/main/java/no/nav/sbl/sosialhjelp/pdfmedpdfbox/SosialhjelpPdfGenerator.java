@@ -4,10 +4,7 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
@@ -31,23 +28,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_1;
-import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
+import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.*;
 
 @Component
 public class SosialhjelpPdfGenerator {
 
     @Inject
     public NavMessageSource navMessageSource;
+
+    @Inject
+    public TextHelpers textHelpers;
+
     public static final String IKKE_UTFYLT = "Ikke utfylt";
 
     public byte[] generate(JsonInternalSoknad jsonInternalSoknad) {
-        System.out.println("Before try");
+        return generate(jsonInternalSoknad, false);
+    }
+
+    public byte[] generate(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) {
         try {
-
-
             PdfGenerator pdf = new PdfGenerator();
-            System.out.println("after generate");
 
             JsonData data = jsonInternalSoknad.getSoknad().getData();
             JsonPersonalia jsonPersonalia = data.getPersonalia(); // personalia er required
@@ -63,29 +63,32 @@ public class SosialhjelpPdfGenerator {
 
             leggTilHeading(pdf, heading, navn, fnr);
 
-            leggTilPersonalia(pdf, jsonPersonalia);
+            leggTilPersonalia(pdf, data.getPersonalia(), jsonInternalSoknad.getMidlertidigAdresse(), utvidetSoknad);
             leggTilBegrunnelse(pdf, data.getBegrunnelse());
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning());
             leggTilFamilie(pdf, data.getFamilie());
             leggTilBosituasjon(pdf, data.getBosituasjon());
             leggTilInntektOgFormue(pdf, data.getOkonomi());
 
-            System.out.println("pdf" + pdf);
+
 
             return pdf.finish();
 
         } catch (IOException e) {
-            System.out.println("EXCEPTION");
             throw new RuntimeException("Error while creating pdf", e);
         }
     }
 
     private String getJsonSokerNavnTekst(JsonSokernavn jsonSokernavn) {
-        return getNavnString(jsonSokernavn);
+        return getJsonNavnTekst(jsonSokernavn);
     }
 
     public void setNavMessageSource(NavMessageSource navMessageSource) {
         this.navMessageSource = navMessageSource;
+    }
+
+    public void setTextHelpers(TextHelpers textHelpers) {
+        this.textHelpers = textHelpers;
     }
 
     public String getTekst(String key) {
@@ -102,24 +105,35 @@ public class SosialhjelpPdfGenerator {
         pdf.addDividerLine();
     }
 
-    private void leggTilPersonalia(PdfGenerator pdf, JsonPersonalia jsonPersonalia) throws IOException {
+    private void leggTilPersonalia(PdfGenerator pdf, JsonPersonalia jsonPersonalia, JsonAdresse midlertidigAdresse, boolean utvidetSoknad) throws IOException {
 
         pdf.addBlankLine();
         pdf.skrivH4Bold(getTekst("kontakt.tittel"));
         pdf.addBlankLine();
 
+        if (utvidetSoknad) {
+            pdf.skrivH4Bold(getTekst("kontakt.system.personalia.sporsmal"));
+            skrivInfotekst(pdf, "kontakt.system.personalia.infotekst.tekst");
+        }
+
         // Statsborgerskap
         JsonStatsborgerskap jsonStatsborgerskap = jsonPersonalia.getStatsborgerskap();
         pdf.skrivTekstBold(getTekst("kontakt.system.personalia.statsborgerskap"));
-        if (jsonStatsborgerskap != null && jsonStatsborgerskap.getVerdi() != null) {
+        if (jsonStatsborgerskap != null) {
             String statsborgerskap = jsonPersonalia.getStatsborgerskap().getVerdi();
-            pdf.skrivTekst(statsborgerskap);
+            pdf.skrivTekst(textHelpers.fulltNavnForLand(statsborgerskap));
+        } else {
+            pdf.skrivTekst(textHelpers.fulltNavnForLand(null));
         }
         pdf.addBlankLine();
 
         // Adresse
-        pdf.skrivTekstBold(getTekst("kontakt.system.adresse"));
-        pdf.addBlankLine();
+        if (utvidetSoknad) {
+            pdf.skrivH4Bold(getTekst("soknadsmottaker.sporsmal"));
+            skrivHjelpetest(pdf, "soknadsmottaker.hjelpetekst.tekst");
+        } else {
+            pdf.skrivTekstBold(getTekst("kontakt.system.adresse"));
+        }
 
         if (jsonPersonalia.getFolkeregistrertAdresse() != null) {
             pdf.skrivTekst(getTekst("kontakt.system.oppholdsadresse.folkeregistrertAdresse"));
@@ -145,6 +159,7 @@ public class SosialhjelpPdfGenerator {
                     break;
             }
             pdf.skrivTekstMedInnrykk(folkeregistrertAdresseTekst, INNRYKK_2);
+            pdf.addBlankLine();
         }
 
         if (jsonPersonalia.getOppholdsadresse() != null) {
@@ -171,19 +186,66 @@ public class SosialhjelpPdfGenerator {
                     break;
             }
             pdf.skrivTekstMedInnrykk(oppholdsAdresseTekst, INNRYKK_2);
+            pdf.addBlankLine();
         }
 
-        pdf.addBlankLine();
+        if (utvidetSoknad) {
+            pdf.skrivTekst("Valgt adresse:");
+            JsonAdresseValg adresseValg = jsonPersonalia.getOppholdsadresse().getAdresseValg();
+            if (adresseValg == JsonAdresseValg.SOKNAD) {
+                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2);
+            } else {
+                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse." + adresseValg.value() + "Adresse"), INNRYKK_2);
+            }
+            pdf.addBlankLine();
+
+            pdf.skrivTekstBold("Svaralternativer:");
+            if (jsonPersonalia.getFolkeregistrertAdresse() != null) {
+                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.folkeregistrertAdresse"), INNRYKK_2);
+            }
+            if (midlertidigAdresse != null) {
+                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.midlertidigAdresse"), INNRYKK_2);
+                if (adresseValg == JsonAdresseValg.MIDLERTIDIG) {
+                    leggTilUtvidetInfoAdresse(pdf, jsonPersonalia.getOppholdsadresse());
+                } else {
+                    leggTilUtvidetInfoAdresse(pdf, midlertidigAdresse);
+                }
+            }
+            pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2);
+            pdf.addBlankLine();
+            skrivInfotekst(pdf, "kontakt.system.oppholdsadresse.hvorOppholder");
+        }
 
         // Telefonnummer
         JsonTelefonnummer jsonTelefonnummer = jsonPersonalia.getTelefonnummer();
         if (jsonTelefonnummer != null) {
-            pdf.skrivTekstBold(getTekst("kontakt.system.telefon.label"));
-            pdf.skrivTekst(getTekst("kontakt.telefon.label"));
-            pdf.skrivTekstMedInnrykk(jsonTelefonnummer.getVerdi(), INNRYKK_2);
-        }
+            if (jsonTelefonnummer.getKilde() == JsonKilde.SYSTEM) {
+                pdf.skrivTekstBold(getTekst("kontakt.system.telefoninfo.sporsmal"));
+                if (utvidetSoknad) {
+                    skrivInfotekst(pdf, "kontakt.system.telefoninfo.infotekst.tekst");
+                }
+                pdf.skrivTekst(getTekst("kontakt.system.telefon.label"));
+                pdf.skrivTekstMedInnrykk(jsonTelefonnummer.getVerdi(), INNRYKK_2);
+                pdf.addBlankLine();
+                if (utvidetSoknad) {
+                    skrivKnappTilgjengelig(pdf, "kontakt.system.telefon.endreknapp.label");
+                }
+            } else {
+                pdf.skrivTekstBold(getTekst("kontakt.telefon.sporsmal"));
+                pdf.skrivTekst(getTekst("kontakt.telefon.label"));
+                if (jsonTelefonnummer.getVerdi() == null || jsonTelefonnummer.getVerdi().isEmpty()) {
+                    pdf.skrivTekst(getTekst("oppsummering.ikkeutfylt"));
+                } else {
+                    pdf.skrivTekst(jsonTelefonnummer.getVerdi());
+                }
+                pdf.addBlankLine();
+                if (utvidetSoknad) {
+                    skrivKnappTilgjengelig(pdf, "systeminfo.avbrytendringknapp.label");
+                    skrivInfotekst(pdf, "kontakt.telefon.infotekst.tekst");
+                }
+            }
 
-        pdf.addBlankLine();
+        }
 
         // Kontonummer
         JsonKontonummer jsonKontonummer = jsonPersonalia.getKontonummer();
@@ -192,6 +254,12 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekst(getTekst("kontakt.kontonummer.label"));
             pdf.skrivTekstMedInnrykk(jsonKontonummer.getVerdi(), INNRYKK_2);
         }
+    }
+
+    private void leggTilUtvidetInfoAdresse(PdfGenerator pdf, JsonAdresse jsonAdresse) throws IOException {
+        JsonGateAdresse jsonGateAdresse = (JsonGateAdresse) jsonAdresse;
+        pdf.skrivTekstMedInnrykk(jsonGateAdresse.getGatenavn() + " " + jsonGateAdresse.getHusnummer() + "" + jsonGateAdresse.getHusbokstav(), INNRYKK_4);
+        pdf.skrivTekstMedInnrykk(jsonGateAdresse.getPostnummer() + " " + jsonGateAdresse.getPoststed(), INNRYKK_4);
     }
 
     private void leggTilBegrunnelse(PdfGenerator pdf, JsonBegrunnelse jsonBegrunnelse) throws IOException {
@@ -585,10 +653,6 @@ public class SosialhjelpPdfGenerator {
     }
 
     private String getJsonNavnTekst(JsonNavn navn) {
-        return getNavnString(navn);
-    }
-
-    private String getNavnString(JsonNavn navn) {
         String fullstendigNavn = "";
         if (navn != null) {
             if (navn.getFornavn() != null) {
@@ -602,5 +666,23 @@ public class SosialhjelpPdfGenerator {
             }
         }
         return fullstendigNavn;
+    }
+
+    private void skrivInfotekst(PdfGenerator pdf, String key) throws IOException {
+        pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"));
+        pdf.skrivTekst(getTekst(key));
+        pdf.addBlankLine();
+    }
+
+    private void skrivHjelpetest(PdfGenerator pdf, String key) throws IOException {
+        pdf.skrivTekstBold(getTekst("hjelpetekst.oppsummering.tittel"));
+        pdf.skrivTekst(getTekst(key));
+        pdf.addBlankLine();
+    }
+
+    private void skrivKnappTilgjengelig(PdfGenerator pdf, String key) throws IOException {
+        pdf.skrivTekstBold("Knapp tilgjengelig:");
+        pdf.skrivTekst(getTekst(key));
+        pdf.addBlankLine();
     }
 }
