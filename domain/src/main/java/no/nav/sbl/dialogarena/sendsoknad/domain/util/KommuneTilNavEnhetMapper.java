@@ -167,7 +167,7 @@ public class KommuneTilNavEnhetMapper {
             .put("4205", "993786810")    // Nye Lindesnes
             .put("1579", "921133642")    // Hustadvika
             .put("4649", "921060157")    // Stad
-            .put("4602", "820956532")    // Kinn
+            .put("4602", "974551918")    // Kinn
             // Nye kommunenummer 2020
             .put("3801", "974605171")    // Horten
             .put("4627", "974600889")    // Askøy
