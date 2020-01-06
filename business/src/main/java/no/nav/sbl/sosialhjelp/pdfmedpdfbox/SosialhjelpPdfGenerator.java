@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -244,15 +245,41 @@ public class SosialhjelpPdfGenerator {
                     skrivInfotekst(pdf, "kontakt.telefon.infotekst.tekst");
                 }
             }
-
         }
 
         // Kontonummer
         JsonKontonummer jsonKontonummer = jsonPersonalia.getKontonummer();
         if (jsonKontonummer != null) {
-            pdf.skrivTekstBold(getTekst("kontakt.kontonummer.harikke.sporsmal"));
-            pdf.skrivTekst(getTekst("kontakt.kontonummer.label"));
-            pdf.skrivTekstMedInnrykk(jsonKontonummer.getVerdi(), INNRYKK_2);
+            pdf.skrivTekstBold(getTekst("kontakt.kontonummer.sporsmal"));
+            if (utvidetSoknad && jsonKontonummer.getKilde() == JsonKilde.SYSTEM) {
+                skrivInfotekst(pdf, "kontakt.system.personalia.infotekst.tekst");
+            }
+            if (jsonKontonummer.getKilde() == JsonKilde.SYSTEM) {
+                pdf.skrivTekst(getTekst("kontakt.system.kontonummer.label"));
+            } else {
+                pdf.skrivTekst(getTekst("kontakt.kontonummer.label"));
+            }
+            if (jsonKontonummer.getHarIkkeKonto() != null && jsonKontonummer.getHarIkkeKonto()) {
+                pdf.skrivTekstMedInnrykk(getTekst("kontakt.kontonummer.harikke.true"), INNRYKK_2);
+            } else {
+                if (jsonKontonummer.getVerdi() == null || jsonKontonummer.getVerdi().isEmpty()) {
+                    pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                } else {
+                    pdf.skrivTekstMedInnrykk(jsonKontonummer.getVerdi(), INNRYKK_2);
+                }
+            }
+            pdf.addBlankLine();
+            if (utvidetSoknad) {
+                if (jsonKontonummer.getKilde() == JsonKilde.SYSTEM) {
+                    skrivKnappTilgjengelig(pdf, "kontakt.system.kontonummer.endreknapp.label");
+                } else {
+                    List<String> svaralternativer = new ArrayList<>(2);
+                    svaralternativer.add("kontakt.kontonummer.harikke");
+                    skrivSvaralternativer(pdf, svaralternativer);
+                    skrivKnappTilgjengelig(pdf, "systeminfo.avbrytendringknapp.label");
+                    skrivInfotekst(pdf, "kontakt.kontonummer.infotekst.tekst");
+                }
+            }
         }
     }
 
@@ -684,5 +711,12 @@ public class SosialhjelpPdfGenerator {
         pdf.skrivTekstBold("Knapp tilgjengelig:");
         pdf.skrivTekst(getTekst(key));
         pdf.addBlankLine();
+    }
+
+    private void skrivSvaralternativer(PdfGenerator pdf, List<String> keys) throws IOException {
+        pdf.skrivTekstBold("Svaralternativer:");
+        for (String key: keys) {
+            pdf.skrivTekstMedInnrykk(getTekst(key), INNRYKK_2);
+        }
     }
 }
