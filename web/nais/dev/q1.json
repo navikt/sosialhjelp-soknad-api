@@ -9,7 +9,7 @@
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
   "minReplicas": "1",
-  "maxReplicas": "1",
+  "maxReplicas": "2",
   "vaultEnabled": true,
   "prometheusEnabled": true,
   "env": {
