@@ -129,7 +129,7 @@ public class SosialhjelpPdfGeneratorTest {
                                                 .withPoststed("Andeby")
                                 )
                                 .withTelefonnummer(new JsonTelefonnummer().withVerdi("99887766").withKilde(JsonKilde.BRUKER))
-                                .withKontonummer(new JsonKontonummer().withKilde(SYSTEM).withVerdi("12345678903"))
+                                .withKontonummer(new JsonKontonummer().withKilde(BRUKER).withVerdi("12345678903"))
                 )
                 .withBegrunnelse(
                         new JsonBegrunnelse()
