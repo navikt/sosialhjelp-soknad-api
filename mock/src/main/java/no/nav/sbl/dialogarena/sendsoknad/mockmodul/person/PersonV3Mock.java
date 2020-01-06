@@ -32,14 +32,16 @@ public class PersonV3Mock {
             String postkodeNode = node.at("/person/bostedsadresse/strukturertAdresse/poststed/value").textValue();
             String kommunenr = node.at("/person/bostedsadresse/strukturertAdresse/kommunenummer").textValue();
             String husnr = node.at("/person/bostedsadresse/strukturertAdresse/husnummer").textValue();
+            String kontonummer = node.at("/person/bankkonto/bankkonto/bankkontonummer").textValue();
 
-            Person defaultPerson = getDefaultPerson();
+            Bruker defaultPerson = getDefaultPerson();
             Integer husnummer;
             try {
                 husnummer = Integer.valueOf(husnr);
             } catch (NumberFormatException e) {
                 husnummer = 0;
             }
+
             defaultPerson.setBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Gateadresse()
                             .withGatenavn(gatenavnNode)
                             .withPoststed(new Postnummer().withValue(postkodeNode))
@@ -47,7 +49,7 @@ public class PersonV3Mock {
                             .withHusnummer(husnummer)
                     )
             );
-
+            defaultPerson.setBankkonto(new BankkontoNorge().withBankkonto(new Bankkontonummer().withBankkontonummer(kontonummer)));
 
             responses.put(OidcFeatureToggleUtils.getUserId(), defaultPerson);
 
@@ -78,8 +80,8 @@ public class PersonV3Mock {
         return response;
     }
 
-    public static Person getDefaultPerson() {
-        Person person = genererPersonMedGyldigIdentOgNavn("01234567890", "Donald", "D.", "Mockmann");
+    public static Bruker getDefaultPerson() {
+        Bruker person = genererPersonMedGyldigIdentOgNavn("01234567890", "Donald", "D.", "Mockmann");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
@@ -92,8 +94,8 @@ public class PersonV3Mock {
     }
 
 
-    private static Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String mellomnavn, String etternavn) {
-        Person xmlPerson = new Person();
+    private static Bruker genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String mellomnavn, String etternavn) {
+        Bruker xmlPerson = new Bruker();
 
         Personnavn personnavn = new Personnavn();
         personnavn.setFornavn(fornavn);

@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 /**
  * Applikasjonskontekst for ear-modulen.
@@ -52,12 +50,6 @@ public class ApplicationConfig {
         return threadPoolTaskExecutor;
     }
 
-    @Bean
-    public MultipartResolver multipartResolver() {
-        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
-        commonsMultipartResolver.setMaxUploadSize(10 * 1024 * 1024);
-        return commonsMultipartResolver;
-    }
 
     @Bean
     public HtmlGenerator handleBarKjoerer() {

@@ -35,7 +35,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
             return getMergedProperties(locale).getProperties();
         }
     }
-    
+
     private Properties hentProperties(String propertiesFile, Locale locale) {
         final String localFile = calculateFilenameForLocale(propertiesFile, locale);
         final Properties properties = getProperties(localFile).getProperties();
@@ -43,7 +43,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         if (properties != null) {
             return properties;
         } else {
-            log.warn("Finner ikke tekster for {} for språkbundle {}.", propertiesFile, locale.getLanguage());
+            log.warn("Finner ikke tekster for {} for språkbundle {} for localefile {}.", propertiesFile, locale.getLanguage(), localFile);
             final Locale noLocale = new Locale("nb", "NO");
             if (locale.equals(noLocale)) {
                 throw new IllegalStateException("Kunne ikke laste tekster. Avbryter.");
