@@ -13,12 +13,10 @@ jobs:
       - uses: actions/checkout@v1
       - name: Deploy to dev
         run: |
-          MILJO=$(jq -r '.client_payload.MILJO' $GITHUB_EVENT_PATH)
-          TAG=$(jq -r '.client_payload.TAG' $GITHUB_EVENT_PATH)
-
           git checkout ${TAG}
-
           deployment-cli deploy create --cluster=${MILJO} --repository=${GITHUB_REPOSITORY} --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/dev/${MILJO}.json
         env:
+          MILJO: ${{ github.event.client_payload.MILJO }}
+          TAG: ${{ github.event.client_payload.TAG }}
           DEPLOYMENT_USERNAME: ${{ secrets.DEPLOYMENT_USERNAME }}
           DEPLOYMENT_PASSWORD: ${{ secrets.DEPLOYMENT_PASSWORD }}
