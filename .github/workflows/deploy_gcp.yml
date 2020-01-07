@@ -5,9 +5,9 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to dev-sbs
+    name: Deploy to GCP
     runs-on: ubuntu-latest
-    if: github.event.action == 'deploy_miljo_tag'
+    if: github.event.action == 'deploy_dev_gcp'
     container: navikt/deployment-cli:0.4.0
     steps:
       - uses: actions/checkout@v1
