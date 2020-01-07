@@ -133,11 +133,11 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build
-      - deploy_heroku:
-          filters:
-            branches:
-              only: master
+#      - build
+#      - deploy_heroku:
+#          filters:
+#            branches:
+#              only: master
 #      - browser-test:
 #          requires:
 #            - deploy_heroku
