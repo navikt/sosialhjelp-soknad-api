@@ -129,6 +129,23 @@ jobs:
           command: |
             deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/prod/default.json
 
+  deploy_gcp:
+    docker:
+      - image: navikt/deployment:v1
+    steps:
+      - checkout
+      - run:
+          name: Deploy til miljø i gcp
+          command: |
+            yq w web/nais/dev/${MILJO}.json version "${TAG}" > deployment.yaml
+            /app/deploy \
+                --apikey="$NAIS_DEPLOY_APIKEY" \
+                --cluster="${MILJO}" \
+                --repository="$CIRCLE_PROJECT_REPONAME" \
+                --resource="web/nais.yaml" \
+                --vars="deployment.yaml" \
+                --wait=true
+
 workflows:
   version: 2
   build_and_deploy:
