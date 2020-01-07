@@ -8,7 +8,7 @@ jobs:
     name: Deploy to GCP
     runs-on: ubuntu-latest
     if: github.event.action == 'deploy_dev_gcp'
-    container: navikt/deployment-cli:0.4.0
+    container: navikt/deployment:v1
     steps:
       - uses: actions/checkout@v1
       - name: Deploy to dev
