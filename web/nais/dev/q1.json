@@ -8,8 +8,8 @@
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q1",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
-  "minReplicas": "1",
-  "maxReplicas": "2",
+  "minReplicas": "2",
+  "maxReplicas": "4",
   "vaultEnabled": true,
   "prometheusEnabled": true,
   "env": {
