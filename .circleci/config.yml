@@ -129,15 +129,15 @@ jobs:
           command: |
             deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/prod/default.json
 
-workflows:
-  version: 2
-  build_and_deploy:
-    jobs:
+#workflows:
+#  version: 2
+#  build_and_deploy:
+#    jobs:
 #      - build
-      - deploy_heroku:
-          filters:
-            branches:
-              only: master
+#      - deploy_heroku:
+#          filters:
+#            branches:
+#              only: master
 #      - browser-test:
 #          requires:
 #            - deploy_heroku
