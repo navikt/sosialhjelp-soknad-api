@@ -14,7 +14,7 @@ jobs:
       - name: Deploy to dev
         run: |
           git checkout ${TAG}
-          /app/deploy --cluster=${MILJO} --repository=${GITHUB_REPOSITORY} --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/dev/${MILJO}.json
+          /app/deploy --cluster=${MILJO} --repository=${GITHUB_REPOSITORY} --team=digisos --resource=web/nais.yaml --var version=${TAG} --vars=web/nais/dev/${MILJO}.json
         env:
           MILJO: ${{ github.event.client_payload.MILJO }}
           TAG: ${{ github.event.client_payload.TAG }}
