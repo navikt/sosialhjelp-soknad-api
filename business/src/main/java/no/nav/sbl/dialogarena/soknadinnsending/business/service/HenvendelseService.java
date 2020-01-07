@@ -34,14 +34,15 @@ public class HenvendelseService {
         logger.info("Starter søknad");
 
         SoknadMetadata meta = new SoknadMetadata();
-        meta.id = soknadMetadataRepository.hentNesteId();
-        meta.behandlingsId = lagBehandlingsId(meta.id);
         meta.fnr = fnr;
         meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
         meta.skjema = SKJEMANUMMER;
         meta.status = SoknadInnsendingStatus.UNDER_ARBEID;
         meta.opprettetDato = LocalDateTime.now(clock);
         meta.sistEndretDato = LocalDateTime.now(clock);
+        meta.id = soknadMetadataRepository.hentNesteId();
+        meta.behandlingsId = lagBehandlingsId(meta.id);
+        logger.info("Startet søknad fikk behandlingsid {}", meta.behandlingsId);
 
         soknadMetadataRepository.opprett(meta);
 
