@@ -95,7 +95,6 @@ public class KommuneTilNavEnhetMapper {
             .put("2003", "974622238")    // Vadsø
             .put("1243", "992179457")    // Os (Hordaland)
             .put("0229", "974604175")    // Enebakk
-            .put("1002", "964968519")    // Mandal
             .put("0514", "974592274")    // Lom
             .put("0517", "974562294")    // Sel
             .put("0513", "976641175")    // Skjåk
@@ -126,9 +125,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0427", "976640322")    // Elverum
             .put("0237", "974604442")    // Eidsvoll
             .put("0239", "939780777")    // Hurdal
-            .put("1029", "964966664")    // Lindesnes
             .put("0423", "964948143")    // Grue
-            .put("1021", "964966931")    // Marnardal
             .put("1548", "974545284")    // Fræna, Eide
             .put("0128", "997220838")    // Rakkestad
             .put("0236", "976665589")    // Nes (Akershus)
@@ -164,7 +161,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0425", "974602970")    // Åsnes
             .put("0135", "974569906")    // Råde
             .put("5406", "921770669")    // Nye Hammerfest
-            .put("4205", "993786810")    // Nye Lindesnes
+            .put("1002", "921060440")    // Nye Lindesnes
             .put("1579", "921133642")    // Hustadvika
             .put("4649", "921060157")    // Stad
             .put("4602", "974551918")    // Kinn
@@ -207,7 +204,6 @@ public class KommuneTilNavEnhetMapper {
             .put("5405", "974622238")    // Vadsø
             //.put("1243", "992179457")    // Os (Hordaland)   // Må sjekkes
             .put("3028", "974604175")    // Enebakk
-            //.put("1002", "964968519")    // Mandal           // Må sjekkes
             .put("3434", "974592274")    // Lom
             .put("3437", "974562294")    // Sel
             .put("3433", "976641175")    // Skjåk
@@ -238,7 +234,6 @@ public class KommuneTilNavEnhetMapper {
             .put("3035", "974604442")    // Eidsvoll
             .put("3037", "939780777")    // Hurdal
             .put("3417", "964948143")    // Grue
-            //.put("1021", "964966931")    // Marnardal        // Må sjekkes
             //.put("1548", "974545284")    // Fræna, Eide      // Må sjekkes
             .put("3016", "997220838")    // Rakkestad
             .put("3034", "976665589")    // Nes (Akershus)
@@ -372,7 +367,6 @@ public class KommuneTilNavEnhetMapper {
                     "1243",
                     "2003",
                     "0229",
-                    "1002",
                     "0514",
                     "0517",
                     "0513",
@@ -408,9 +402,7 @@ public class KommuneTilNavEnhetMapper {
                     "0427",
                     "0237",
                     "0239",
-                    "1029",
                     "0423",
-                    "1021",
                     "1548",
                     "1551",
                     "0128",
