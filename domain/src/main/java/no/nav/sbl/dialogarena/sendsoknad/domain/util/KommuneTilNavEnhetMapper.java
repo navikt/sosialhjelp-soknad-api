@@ -161,7 +161,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0425", "974602970")    // Åsnes
             .put("0135", "974569906")    // Råde
             .put("5406", "921770669")    // Nye Hammerfest
-            .put("1002", "993786810")    // Nye Lindesnes
+            .put("1002", "921060440")    // Nye Lindesnes
             .put("1579", "921133642")    // Hustadvika
             .put("4649", "921060157")    // Stad
             .put("4602", "974551918")    // Kinn
