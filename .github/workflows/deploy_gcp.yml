@@ -15,7 +15,7 @@ jobs:
         run: |
           git checkout ${TAG}
           echo "DEBUG:"
-          echo "${GITHUB_REPOSITORY}" | wc -c
+          echo "${GITHUB_REPOSITORY}"
           echo "...done"
           /app/deploy \
               --actions \
