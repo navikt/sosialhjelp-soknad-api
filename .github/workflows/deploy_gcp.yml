@@ -20,7 +20,7 @@ jobs:
               --cluster="${MILJO}" \
               --apikey="${APIKEY}" \
               --resource="web/nais.yaml" \
-              --team=digisos \
+              --team=teamdigisos \
               --owner=navikt \
               --repository="${REPOSITORY_NAME}" \
               --var version=${TAG} \
