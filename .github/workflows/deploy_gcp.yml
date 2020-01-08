@@ -16,6 +16,7 @@ jobs:
           git checkout ${TAG}
           yq w web/nais/dev/${MILJO}.json version "${TAG}" > gcp.yaml
           /app/deploy \
+              --actions \
               --apikey="$NAIS_DEPLOY_APIKEY" \
               --cluster="${MILJO}" \
               --repository="$CIRCLE_PROJECT_REPONAME" \
