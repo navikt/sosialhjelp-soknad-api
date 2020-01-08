@@ -14,13 +14,16 @@ jobs:
       - name: Deploy to dev
         run: |
           git checkout ${TAG}
+          echo "${APIKEY}" | wc -c
           /app/deploy \
               --actions \
+              --print-payload \
               --cluster="${MILJO}" \
+              --apikey="${APIKEY}" \
               --resource="web/nais.yaml" \
               --var version=${TAG} \
               --vars="web/nais/dev/${MILJO}.json" \
-              --wait=true
+              --wait
 #          /app/deploy --cluster=${MILJO} --repository=${GITHUB_REPOSITORY} --team=digisos --resource=web/nais.yaml --var version=${TAG} --vars=web/nais/dev/${MILJO}.json
         env:
           MILJO: ${{ github.event.client_payload.MILJO }}
