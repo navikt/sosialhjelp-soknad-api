@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: Deploy on Heroku
         run: |
-          PROJECT_NAME=sosialhjelp-fagsystem-mock
+          PROJECT_NAME=sosialhjelp-soknad-api
           heroku container:login
           heroku container:push --recursive -a $PROJECT_NAME
           heroku container:release web -a $PROJECT_NAME
