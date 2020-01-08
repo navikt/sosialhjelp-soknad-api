@@ -14,13 +14,15 @@ jobs:
       - name: Deploy to dev
         run: |
           git checkout ${TAG}
-          echo "${APIKEY}" | wc -c
+          echo "DEBUG:"
+          echo "${GITHUB_REPOSITORY}" | wc -c
+          echo "...done"
           /app/deploy \
               --actions \
-              --print-payload \
               --cluster="${MILJO}" \
               --apikey="${APIKEY}" \
               --resource="web/nais.yaml" \
+              --repository=${GITHUB_REPOSITORY} \
               --var version=${TAG} \
               --vars="web/nais/dev/${MILJO}.json" \
               --wait
