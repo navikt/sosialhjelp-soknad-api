@@ -93,7 +93,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0418", "964950768")    // Nord-Odal
             .put("1235", "973951270")    // Voss
             .put("2003", "974622238")    // Vadsø
-            .put("1243", "992179457")    // Os (Hordaland)
+            .put("1243", "992179457")    // Bjørnafjorden
             .put("0229", "974604175")    // Enebakk
             .put("0514", "974592274")    // Lom
             .put("0517", "974562294")    // Sel
@@ -202,7 +202,6 @@ public class KommuneTilNavEnhetMapper {
             .put("3414", "964950768")    // Nord-Odal
             .put("4621", "973951270")    // Voss
             .put("5405", "974622238")    // Vadsø
-            //.put("1243", "992179457")    // Os (Hordaland)   // Må sjekkes
             .put("3028", "974604175")    // Enebakk
             .put("3434", "974592274")    // Lom
             .put("3437", "974562294")    // Sel
@@ -364,7 +363,7 @@ public class KommuneTilNavEnhetMapper {
                     "0605",
                     "0418",
                     "1235",
-                    "1243",
+                    "4624",
                     "2003",
                     "0229",
                     "0514",
