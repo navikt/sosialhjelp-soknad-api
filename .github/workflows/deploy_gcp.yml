@@ -14,8 +14,9 @@ jobs:
       - name: Deploy to dev
         run: |
           git checkout ${TAG}
+          REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | sed s/navikt\\///g)
           echo "DEBUG:"
-          echo "${GITHUB_REPOSITORY}"
+          echo "${REPOSITORY_NAME}"
           echo "...done"
           /app/deploy \
               --actions \
@@ -24,7 +25,7 @@ jobs:
               --resource="web/nais.yaml" \
               --team=digisos \
               --owner=navikt \
-              --repository="${GITHUB_REPOSITORY}" \
+              --repository="${REPOSITORY_NAME}" \
               --var version=${TAG} \
               --vars="web/nais/dev/${MILJO}.json" \
               --wait
