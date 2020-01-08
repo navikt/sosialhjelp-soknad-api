@@ -1,3 +1,8 @@
+![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Build/badge.svg?branch=master)
+![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Deploy%20Dev/badge.svg?)
+![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Deploy%20Prod/badge.svg?)
+![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Deploy%20GCP/badge.svg?)
+
 ## Sendsoknad
 
 ### Kjøring lokalt med mock
