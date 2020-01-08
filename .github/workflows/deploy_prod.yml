@@ -26,7 +26,7 @@ jobs:
             exit 1
           fi
 
-          deployment-cli deploy create --cluster=prod-sbs --repository=${GITHUB_REPOSITORY} --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/prod/default.json
+          deployment-cli deploy create --cluster=prod-sbs --repository=${GITHUB_REPOSITORY} --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/prod/default.json --await=300
         env:
           DEPLOYMENT_USERNAME: ${{ secrets.DEPLOYMENT_USERNAME }}
           DEPLOYMENT_PASSWORD: ${{ secrets.DEPLOYMENT_PASSWORD }}
