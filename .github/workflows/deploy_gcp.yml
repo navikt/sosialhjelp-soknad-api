@@ -23,7 +23,7 @@ jobs:
               --apikey="${APIKEY}" \
               --resource="web/nais.yaml" \
                --team=digisos \
-              --repository=${GITHUB_REPOSITORY} \
+              --repository="/${GITHUB_REPOSITORY}" \
               --var version=${TAG} \
               --vars="web/nais/dev/${MILJO}.json" \
               --wait
