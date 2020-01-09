@@ -15,6 +15,7 @@ jobs:
         run: |
           git checkout ${TAG}
           REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | sed s/navikt\\///g)
+          echo "$APIKEY" | wc -c
           /app/deploy \
               --actions \
               --cluster="${MILJO}" \
