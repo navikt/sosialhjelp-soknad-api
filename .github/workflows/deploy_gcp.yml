@@ -30,3 +30,4 @@ jobs:
           MILJO: ${{ github.event.client_payload.MILJO }}
           TAG: ${{ github.event.client_payload.TAG }}
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          PRINT_PAYLOAD: true
