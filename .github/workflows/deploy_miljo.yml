@@ -24,4 +24,3 @@ jobs:
         env:
           DEPLOYMENT_USERNAME: ${{ secrets.DEPLOYMENT_USERNAME }}
           DEPLOYMENT_PASSWORD: ${{ secrets.DEPLOYMENT_PASSWORD }}
-|
