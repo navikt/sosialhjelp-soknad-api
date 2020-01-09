@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>1.2019.10.14-11.26-d162453764a7</version>
+        <version>1.2020.01.08-12.57-62d0c889ddb5</version>
     </parent>
 
     <modules>
@@ -69,7 +69,7 @@
         <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
 
         <!-- Nav felles java-bibliotek -->
-        <nav-common.version>1.2019.10.14-11.26-d162453764a7</nav-common.version>
+        <nav-common.version>1.2020.01.08-12.57-62d0c889ddb5</nav-common.version>
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>4.1.9.RELEASE</spring.version>
