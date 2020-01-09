@@ -11,6 +11,8 @@ jobs:
     container: navikt/deployment-cli:0.4.0
     steps:
       - uses: actions/checkout@v1
+        with:
+          refs: ${TAG}
       - name: Deploy to dev
         run: |
           MILJO=$(jq -r '.client_payload.MILJO' $GITHUB_EVENT_PATH)
@@ -22,3 +24,4 @@ jobs:
         env:
           DEPLOYMENT_USERNAME: ${{ secrets.DEPLOYMENT_USERNAME }}
           DEPLOYMENT_PASSWORD: ${{ secrets.DEPLOYMENT_PASSWORD }}
+|
