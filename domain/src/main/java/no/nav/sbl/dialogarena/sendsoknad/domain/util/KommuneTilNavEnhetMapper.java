@@ -58,6 +58,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
             .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
             .put("1165", "973864203")    // Madla, Stavanger kommune
+            .put("1169", "874617512")    // Finnøy og Rennesøy, Stavanger kommune
             .put("1102", "874610712")    // Sandnes
             .put("1119", "976827961")    // Hå
             .put("1124", "948243113")    // Sola
