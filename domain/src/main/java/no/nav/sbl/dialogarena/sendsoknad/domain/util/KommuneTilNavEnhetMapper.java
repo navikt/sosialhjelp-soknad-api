@@ -58,7 +58,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
             .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
             .put("1165", "973864203")    // Madla, Stavanger kommune
-            .put("1169", "874617512")    // Finnøy og Rennesøy, Stavanger kommune
+            .put("1169", "874617512")    // Rennesøy og Finnøy, Stavanger kommune
             .put("1102", "874610712")    // Sandnes
             .put("1119", "976827961")    // Hå
             .put("1124", "948243113")    // Sola
@@ -74,16 +74,14 @@ public class KommuneTilNavEnhetMapper {
             .put("0624", "994952854")    // Øvre Eiker
             .put("1134", "974616998")    // Suldal
             .put("0532", "974596016")    // Jevnaker
-            .put("1401", "974551918")    // Flora
+            .put("1401", "974551918")    // Kinn
             .put("1238", "944233199")    // Kvam
             .put("1933", "921858361")    // Balsfjord og Storfjord
             .put("0221", "976637216")    // Aurskog-Høland
             .put("1224", "993975192")    // Kvinnherad
             .put("1824", "876834162")    // Vefsn
             .put("0815", "979525095")    // Kragerø
-            .put("0516", "974543303")    // Nord-Fron
-            .put("0519", "974543303")    // Sør-Fron
-            .put("0520", "974543303")    // Ringebu
+            .put("0516", "974543303")    // Nord-Fron, Sør-Fron, Ringebu
             .put("2004", "974601753")    // Hammerfest
             .put("1127", "988052310")    // Randaberg-Kvitsøy
             .put("0412", "976639618")    // Ringsaker
@@ -107,10 +105,9 @@ public class KommuneTilNavEnhetMapper {
             .put("0511", "919059303")    // Dovre
             .put("0512", "964949204")    // Lesja
             .put("1804", "983942962")    // Bodø
-            .put("1913", "959469326")    // Skånland
-            .put("1852", "959469326")    // Tjelsund
+            .put("1913", "959469326")    // Skånland, Tjelsund
             .put("0417", "994743767")    // Stange
-            .put("1702", "983921000")    // Steinkjer, Verran, Snåsa, Inderøy
+            .put("1702", "983921000")    // Steinkjer, Snåase-Snåsa, Inderøy
             .put("0211", "974574306")    // Vestby
             .put("1222", "974575728")    // Fitjar
             .put("1517", "978607063")    // Hareid
@@ -127,7 +124,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0237", "974604442")    // Eidsvoll
             .put("0239", "939780777")    // Hurdal
             .put("0423", "964948143")    // Grue
-            .put("1548", "974545284")    // Fræna, Eide
+            .put("1548", "974545284")    // Hustadvika
             .put("0128", "997220838")    // Rakkestad
             .put("0236", "976665589")    // Nes (Akershus)
             .put("0234", "974547678")    // Gjerdrum
@@ -150,7 +147,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0230", "976637992")    // Lørenskog
             .put("0420", "874602752")    // Eidskog
             .put("1438", "973981749")    // Bremanger
-            .put("1443", "974556154")    // Eid (Eid Selje)
+            .put("1443", "974556154")    // Stad
             .put("1445", "976675185")    // Gloppen
             .put("1449", "976831772")    // Stryn
             .put("1439", "942952880")    // Vågsøy
@@ -163,96 +160,11 @@ public class KommuneTilNavEnhetMapper {
             .put("0135", "974569906")    // Råde
             .put("5406", "921770669")    // Nye Hammerfest
             .put("1002", "921060440")    // Nye Lindesnes
-            .put("1579", "921133642")    // Hustadvika
-            .put("4649", "921060157")    // Stad
+           
+           
             .put("4602", "974551918")    // Kinn
             // Nye kommunenummer 2020
-            .put("3801", "974605171")    // Horten
-            .put("4627", "974600889")    // Askøy
-            .put("3807", "995509970")    // Skien
-            //.put("1204", "976829786")    // Arna, Bergen kommune                  // Må sjekkes i NORG
-            //.put("1209", "976830563")    // Bergenhus, Bergen kommune
-            //.put("1202", "976829948")    // Fana, Bergen kommune
-            //.put("1205", "976830032")    // Fyllingsdalen, Bergen kommune
-            //.put("1206", "976830121")    // Laksevåg, Bergen kommune
-            //.put("1210", "976830652")    // Ytrebygda, Bergen kommune
-            //.put("1208", "976830172")    // Årstad, Bergen kommune
-            //.put("1203", "976830784")    // Åsane, Bergen kommune
-            .put("1108", "874610712")    // Sandnes
-            .put("3805", "997784618")    // Larvik
-            .put("3403", "974623811")    // Hamar
-            .put("3443", "986838961")    // Vestre Toten
-            .put("3049", "974545861")    // Lier
-            .put("3048", "994952854")    // Øvre Eiker
-            .put("3053", "974596016")    // Jevnaker
-            //.put("1401", "974551918")    // Flora             // Må sjekkes
-            .put("4622", "944233199")    // Kvam
-            .put("5422", "921858361")    // Balsfjord  // NB: Tidligere på samme rad, med samme nummer
-            .put("5425", "921858361")    // Storfjord  // NB: Tidligere på samme rad, med samme nummer
-            .put("3026", "976637216")    // Aurskog-Høland
-            .put("4617", "993975192")    // Kvinnherad
-            .put("3814", "979525095")    // Kragerø
-            .put("3436", "974543303")    // Nord-Fron
-            .put("3438", "974543303")    // Sør-Fron
-            .put("3439", "974543303")    // Ringebu
-            .put("3411", "976639618")    // Ringsaker
-            .put("3419", "974550342")    // Våler (Hedmark)
-            .put("4227", "964964076")    // Kvinesdal
-            .put("3004", "993393851")    // Fredrikstad
-            .put("3007", "976820835")    // Ringerike
-            .put("3414", "964950768")    // Nord-Odal
-            .put("4621", "973951270")    // Voss
-            .put("5405", "974622238")    // Vadsø
-            .put("3028", "974604175")    // Enebakk
-            .put("3434", "974592274")    // Lom
-            .put("3437", "974562294")    // Sel
-            .put("3433", "976641175")    // Skjåk
-            .put("4613", "834210622")    // Bømlo
-            .put("3435", "976641310")    // Vågå
-            .put("3407", "974567776")    // Gjøvik
-            .put("4203", "976825950")    // Arendal
-            .put("5402", "978608418")    // Harstad
-            .put("3431", "919059303")    // Dovre
-            .put("3432", "964949204")    // Lesja
-            //.put("1913", "959469326")    // Skånland          // Må sjekkes
-            .put("5412", "959469326")    // Tjelsund
-            .put("3413", "994743767")    // Stange
-            .put("5006", "983921000")    // Steinkjer  // NB tidligere en rad med Steinkjer Verran, Snåsa, Inderøy
-            //.put("1702", "983921000")    // Verran   // NB tidligere en rad med Steinkjer Verran, Snåsa, Inderøy   // Må sjekkes
-            .put("3019", "974574306")    // Vestby
-            .put("4615", "974575728")    // Fitjar
-            .put("3003", "974560593")    // Sarpsborg
-            .put("4614", "991459634")    // Stord
-            .put("3819", "973802003")    // Hjartdal
-            .put("3808", "984001797")    // Notodden
-            .put("3051", "964963282")    // Rollag        // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
-            .put("3050", "964963282")    // Flesberg      // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
-            .put("3052", "964963282")    // Nore og Uvdal // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
-            .put("3006", "974572486")    // Kongsberg
-            .put("3818", "874548472")    // Tinn
-            .put("3420", "976640322")    // Elverum
-            .put("3035", "974604442")    // Eidsvoll
-            .put("3037", "939780777")    // Hurdal
-            .put("3417", "964948143")    // Grue
-            //.put("1548", "974545284")    // Fræna, Eide      // Må sjekkes
-            .put("3016", "997220838")    // Rakkestad
-            .put("3034", "976665589")    // Nes (Akershus)
-            .put("3032", "974547678")    // Gjerdrum
-            .put("3001", "959159092")    // Halden
-            .put("3033", "983870953")    // Ullensaker
-            .put("3036", "874604682")    // Nannestad
-            .put("3447", "974596393")    // Søndre Land
-            .put("3024", "974702401")    // Bærum
-            .put("4638", "976831322")    // Høyanger
-            .put("3401", "944117784")    // Kongsvinger
-            .put("3415", "874602612")    // Sør-Odal
-            .put("3022", "974600544")    // Frogn
-            .put("3029", "976637992")    // Lørenskog
-            .put("3416", "874602752")    // Eidskog
-            .put("4648", "973981749")    // Bremanger
-            //.put("1443", "974556154")    // Eid (Eid Selje)           // Må sjekkes
-            .put("4650", "976675185")    // Gloppen
-            .put("4651", "976831772")    // Stryn
+           
             //.put("1439", "942952880")    // Vågsøy                    // Må sjekkes
             .put("5428", "974574101")    // Nordreisa
             .put("5427", "976835441")    // Skjervøy
@@ -317,100 +229,35 @@ public class KommuneTilNavEnhetMapper {
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
             asList(
-                    "0701",
+                    
                     "0703",
                     "0717",
-                    "0806",
                     "1201",
                     "0301",
-                    "1247",
                     "5001",
                     "1103",
-                    "1102",
                     "1119",
                     "1124",
-                    "0712",
-                    "0403",
                     "1122",
-                    "0529",
-                    "0626",
                     "1866",
                     "1133",
                     "1135",
                     "1130",
-                    "0624",
                     "1134",
-                    "0532",
-                    "1401",
-                    "1238",
-                    "1939",
                     "5030",
-                    "1933",
                     "1939",
-                    "0221",
-                    "1224",
                     "1824",
-                    "0815",
                     "2004",
                     "1127",
                     "1144",
-                    "0516",
-                    "0519",
-                    "0520",
-                    "0412",
-                    "0426",
-                    "1037",
-                    "0106",
-                    "0605",
-                    "0418",
-                    "1235",
                     "4624",
-                    "2003",
-                    "0229",
-                    "0514",
-                    "0517",
-                    "0513",
-                    "0515",
-                    "1219",
-                    "0502",
-                    "0906",
-                    "1903",
-                    "0511",
-                    "0512",
                     "1804",
-                    "1913",
                     "1852",
-                    "0417",
-                    "5004",
-                    "5039",
                     "5041",
                     "5053",
-                    "0211",
-                    "1222",
                     "1517",
                     "1516",
                     "1514",
-                    "0105",
-                    "1221",
-                    "0827",
-                    "0807",
-                    "0633",
-                    "0604",
-                    "0826",
-                    "0631",
-                    "0632",
-                    "0427",
-                    "0237",
-                    "0239",
-                    "0423",
-                    "1548",
-                    "1551",
-                    "0128",
-                    "0236",
-                    "0234",
-                    "0101",
-                    "0235",
-                    "0238",
                     "1833",
                     "1149",
                     "1145",
@@ -420,19 +267,7 @@ public class KommuneTilNavEnhetMapper {
                     "1151",
                     "5031",
                     "1146",
-                    "0536",
-                    "0219",
-                    "1416",
-                    "0402",
-                    "0419",
-                    "0215",
                     "5037",
-                    "0230",
-                    "0420",
-                    "1438",
-                    "1443",
-                    "1445",
-                    "1449",
                     "1439",
                     "1505",
                     "1554",
@@ -443,9 +278,9 @@ public class KommuneTilNavEnhetMapper {
                     "0135",
                     "5406",
                     "4205",
-                    "1579",
-                    "4649",
-                    "4602",
+                    "1579",  // Hustadvika
+                    "4649",  // Stad
+                    "4602", // Kinn
                     "3801", // Nytt Horten
                     "4627", // Nytt Askøy
                     "3807", // Nytt Skien
@@ -467,7 +302,7 @@ public class KommuneTilNavEnhetMapper {
                     "3438", // Nytt Sør-Fron
                     "3439", // Nytt Ringebu
                     "3411", // Nytt Ringsaker
-                    "3419", // Nytt Valer i innlandet
+                    "3419", // Nytt Våler i innlandet
                     "4227", // Nytt Kvinesdal
                     "3004", // Nytt Fredrikstad
                     "3007", // Nytt Ringerike
@@ -505,7 +340,7 @@ public class KommuneTilNavEnhetMapper {
                     "3417", // Nytt Grue
                     "3016", // Nytt Rakkestad
                     "3034", // Nytt Nes (Akershus)
-                    "3032", // Nytt Gjendrum
+                    "3032", // Nytt Gjerdrum
                     "3001", // Nytt Halden
                     "3033", // Nytt Ullensaker
                     "3036", // Nytt Nannestad
