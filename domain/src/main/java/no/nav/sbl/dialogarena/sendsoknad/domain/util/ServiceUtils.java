@@ -52,14 +52,6 @@ public class ServiceUtils {
         return Boolean.valueOf(System.getProperty(IS_SENDING_TIL_DIGISOS_API_ENABLED, "false"));
     }
 
-    public static boolean isAlltidSendTilNavTestkommune(){
-        return Boolean.valueOf(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
-    }
-
-    public static boolean isAlltidHentKommuneInfoFraNavTestkommune(){
-        return Boolean.valueOf(System.getProperty(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
-    }
-
     public static String stripVekkFnutter(String tekstMedFnutt) {
         return tekstMedFnutt.replace("\"", "");
     }

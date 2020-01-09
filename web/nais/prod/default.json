@@ -7,7 +7,10 @@
   "vaultKvPath": " /kv/prod/sbs/sosialhjelp-soknad-api/default",
   "datasourceKvPath": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/prod/maskinporten",
-  "fasitEnvironment": "p",
+  "minReplicas": "2",
+  "maxReplicas": "4",
+  "vaultEnabled": true,
+  "prometheusEnabled": true,
   "env": {
     "APPRES_CMS_URL": "https://appres.nav.no",
     "ARBEID_REST_URL": "https://itjenester.oera.no/sbl/tjenester/system/",
@@ -58,11 +61,16 @@
     "VIRKSOMHET_PERSON_V1_ENDPOINTURL": "https://wasapp.adeo.no/tpsws/Person_v1",
     "VIRKSOMHET_PERSON_V1_SECURITYTOKEN": "SAML",
     "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip",
-    "IS_SENDING_TIL_DIGISOS_API_ENABLED": "false",
+    "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
     "VIRKSOMHET_PERSON_V3_ENDPOINTURL": "https://wasapp.adeo.no/tpsws/Person/v3",
     "VIRKSOMHET_PERSON_V3_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip"
+    "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip",
+    "NEDETID_START": "27.12.2019 00:00:00",
+    "NEDETID_SLUTT": "01.01.2020 09:00:00",
+    "FASIT_ENVIRONMENT_NAME": "p",
+    "TILLATMOCK": "false",
+    "START_NORG_WITHMOCK": "false"
   }
 }

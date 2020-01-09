@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
+import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
+@Timed
 public class BostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(BostotteImpl.class);
     private final BostotteConfig config;
@@ -52,7 +54,7 @@ public class BostotteImpl implements Bostotte {
 
     static Pingable opprettHusbankenPing(BostotteConfig config, RestOperations operations) {
         return new Pingable() {
-            Ping.PingMetadata metadata = new Ping.PingMetadata(config.getPingUrl(),"Husbanken API", false);
+            Ping.PingMetadata metadata = new Ping.PingMetadata(config.getPingUrl(), "Husbanken API", false);
 
             @Override
             public Ping ping() {
@@ -61,7 +63,7 @@ public class BostotteImpl implements Bostotte {
                             .header(config.getUsername(), config.getAppKey())
                             .build();
                     String result = operations.exchange(request, String.class).getBody();
-                    if(result.equalsIgnoreCase("pong")) {
+                    if (result.equalsIgnoreCase("pong")) {
                         return lyktes(metadata);
                     }
                 } catch (Exception e) {

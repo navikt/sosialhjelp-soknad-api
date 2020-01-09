@@ -96,7 +96,6 @@
         <jackson.version>2.10.0</jackson.version>
         <jackson-databind.version>2.10.0</jackson-databind.version>
         <filformat.version>1.2019.11.27-10.45-cf682907bdc8</filformat.version>
-        <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>1.8.16</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
         <httpclient.version>4.5.10</httpclient.version>
@@ -801,11 +800,6 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${commons-fileupload.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.collections</groupId>

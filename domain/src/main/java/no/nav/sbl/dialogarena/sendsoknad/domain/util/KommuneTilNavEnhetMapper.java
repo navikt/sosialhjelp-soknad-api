@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -16,10 +15,14 @@ public class KommuneTilNavEnhetMapper {
 
     public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
             .put("0519", "Nord-Fron") // Sør-Fron
+            .put("3438", "Nord-Fron") // Sør-Fron (nytt kommunenummer)
             .put("0520", "Nord-Fron") // Ringebu
+            .put("3439", "Nord-Fron") // Ringebu (nytt kommunenummer)
             .put("0631", "Rollag")    // Flesberg
+            .put("3050", "Rollag")    // Flesberg (nytt kommunenummer)
             .put("0633", "Rollag")    // Nore og Uvdal
-            .put("1151", "Haugesund") // Utsira
+            .put("3052", "Rollag")    // Nore og Uvdal (nytt kommunenummer)
+            .put("1151", "Haugesund") // Utsira (samme kommunenummer etter 2020)
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -55,6 +58,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1164", "976670531")    // Hillevåg og Hinna, Stavanger kommune
             .put("1162", "973864181")    // Hundvåg og Storhaug, Stavanger kommune
             .put("1165", "973864203")    // Madla, Stavanger kommune
+            .put("1169", "874617512")    // Finnøy og Rennesøy, Stavanger kommune
             .put("1102", "874610712")    // Sandnes
             .put("1119", "976827961")    // Hå
             .put("1124", "948243113")    // Sola
@@ -90,9 +94,8 @@ public class KommuneTilNavEnhetMapper {
             .put("0418", "964950768")    // Nord-Odal
             .put("1235", "973951270")    // Voss
             .put("2003", "974622238")    // Vadsø
-            .put("1243", "992179457")    // Os (Hordaland)
+            .put("1243", "992179457")    // Bjørnafjorden
             .put("0229", "974604175")    // Enebakk
-            .put("1002", "964968519")    // Mandal
             .put("0514", "974592274")    // Lom
             .put("0517", "974562294")    // Sel
             .put("0513", "976641175")    // Skjåk
@@ -123,9 +126,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0427", "976640322")    // Elverum
             .put("0237", "974604442")    // Eidsvoll
             .put("0239", "939780777")    // Hurdal
-            .put("1029", "964966664")    // Lindesnes
             .put("0423", "964948143")    // Grue
-            .put("1021", "964966931")    // Marnardal
             .put("1548", "974545284")    // Fræna, Eide
             .put("0128", "997220838")    // Rakkestad
             .put("0236", "976665589")    // Nes (Akershus)
@@ -160,6 +161,103 @@ public class KommuneTilNavEnhetMapper {
             .put("1941", "976835441")    // Skjervøy
             .put("0425", "974602970")    // Åsnes
             .put("0135", "974569906")    // Råde
+            .put("5406", "921770669")    // Nye Hammerfest
+            .put("1002", "921060440")    // Nye Lindesnes
+            .put("1579", "921133642")    // Hustadvika
+            .put("4649", "921060157")    // Stad
+            .put("4602", "974551918")    // Kinn
+            // Nye kommunenummer 2020
+            .put("3801", "974605171")    // Horten
+            .put("4627", "974600889")    // Askøy
+            .put("3807", "995509970")    // Skien
+            //.put("1204", "976829786")    // Arna, Bergen kommune                  // Må sjekkes i NORG
+            //.put("1209", "976830563")    // Bergenhus, Bergen kommune
+            //.put("1202", "976829948")    // Fana, Bergen kommune
+            //.put("1205", "976830032")    // Fyllingsdalen, Bergen kommune
+            //.put("1206", "976830121")    // Laksevåg, Bergen kommune
+            //.put("1210", "976830652")    // Ytrebygda, Bergen kommune
+            //.put("1208", "976830172")    // Årstad, Bergen kommune
+            //.put("1203", "976830784")    // Åsane, Bergen kommune
+            .put("1108", "874610712")    // Sandnes
+            .put("3805", "997784618")    // Larvik
+            .put("3403", "974623811")    // Hamar
+            .put("3443", "986838961")    // Vestre Toten
+            .put("3049", "974545861")    // Lier
+            .put("3048", "994952854")    // Øvre Eiker
+            .put("3053", "974596016")    // Jevnaker
+            //.put("1401", "974551918")    // Flora             // Må sjekkes
+            .put("4622", "944233199")    // Kvam
+            .put("5422", "921858361")    // Balsfjord  // NB: Tidligere på samme rad, med samme nummer
+            .put("5425", "921858361")    // Storfjord  // NB: Tidligere på samme rad, med samme nummer
+            .put("3026", "976637216")    // Aurskog-Høland
+            .put("4617", "993975192")    // Kvinnherad
+            .put("3814", "979525095")    // Kragerø
+            .put("3436", "974543303")    // Nord-Fron
+            .put("3438", "974543303")    // Sør-Fron
+            .put("3439", "974543303")    // Ringebu
+            .put("3411", "976639618")    // Ringsaker
+            .put("3419", "974550342")    // Våler (Hedmark)
+            .put("4227", "964964076")    // Kvinesdal
+            .put("3004", "993393851")    // Fredrikstad
+            .put("3007", "976820835")    // Ringerike
+            .put("3414", "964950768")    // Nord-Odal
+            .put("4621", "973951270")    // Voss
+            .put("5405", "974622238")    // Vadsø
+            .put("3028", "974604175")    // Enebakk
+            .put("3434", "974592274")    // Lom
+            .put("3437", "974562294")    // Sel
+            .put("3433", "976641175")    // Skjåk
+            .put("4613", "834210622")    // Bømlo
+            .put("3435", "976641310")    // Vågå
+            .put("3407", "974567776")    // Gjøvik
+            .put("4203", "976825950")    // Arendal
+            .put("5402", "978608418")    // Harstad
+            .put("3431", "919059303")    // Dovre
+            .put("3432", "964949204")    // Lesja
+            //.put("1913", "959469326")    // Skånland          // Må sjekkes
+            .put("5412", "959469326")    // Tjelsund
+            .put("3413", "994743767")    // Stange
+            .put("5006", "983921000")    // Steinkjer  // NB tidligere en rad med Steinkjer Verran, Snåsa, Inderøy
+            //.put("1702", "983921000")    // Verran   // NB tidligere en rad med Steinkjer Verran, Snåsa, Inderøy   // Må sjekkes
+            .put("3019", "974574306")    // Vestby
+            .put("4615", "974575728")    // Fitjar
+            .put("3003", "974560593")    // Sarpsborg
+            .put("4614", "991459634")    // Stord
+            .put("3819", "973802003")    // Hjartdal
+            .put("3808", "984001797")    // Notodden
+            .put("3051", "964963282")    // Rollag        // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
+            .put("3050", "964963282")    // Flesberg      // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
+            .put("3052", "964963282")    // Nore og Uvdal // NB tidligere en rad med Rollag, Flesberg, Nore og Uvdal
+            .put("3006", "974572486")    // Kongsberg
+            .put("3818", "874548472")    // Tinn
+            .put("3420", "976640322")    // Elverum
+            .put("3035", "974604442")    // Eidsvoll
+            .put("3037", "939780777")    // Hurdal
+            .put("3417", "964948143")    // Grue
+            //.put("1548", "974545284")    // Fræna, Eide      // Må sjekkes
+            .put("3016", "997220838")    // Rakkestad
+            .put("3034", "976665589")    // Nes (Akershus)
+            .put("3032", "974547678")    // Gjerdrum
+            .put("3001", "959159092")    // Halden
+            .put("3033", "983870953")    // Ullensaker
+            .put("3036", "874604682")    // Nannestad
+            .put("3447", "974596393")    // Søndre Land
+            .put("3024", "974702401")    // Bærum
+            .put("4638", "976831322")    // Høyanger
+            .put("3401", "944117784")    // Kongsvinger
+            .put("3415", "874602612")    // Sør-Odal
+            .put("3022", "974600544")    // Frogn
+            .put("3029", "976637992")    // Lørenskog
+            .put("3416", "874602752")    // Eidskog
+            .put("4648", "973981749")    // Bremanger
+            //.put("1443", "974556154")    // Eid (Eid Selje)           // Må sjekkes
+            .put("4650", "976675185")    // Gloppen
+            .put("4651", "976831772")    // Stryn
+            //.put("1439", "942952880")    // Vågsøy                    // Må sjekkes
+            .put("5428", "974574101")    // Nordreisa
+            .put("5427", "976835441")    // Skjervøy
+            .put("3418", "974602970")    // Åsnes
+            .put("3017", "974569906")    // Råde
 
             .build();
 
@@ -266,10 +364,9 @@ public class KommuneTilNavEnhetMapper {
                     "0605",
                     "0418",
                     "1235",
-                    "1243",
+                    "4624",
                     "2003",
                     "0229",
-                    "1002",
                     "0514",
                     "0517",
                     "0513",
@@ -305,9 +402,7 @@ public class KommuneTilNavEnhetMapper {
                     "0427",
                     "0237",
                     "0239",
-                    "1029",
                     "0423",
-                    "1021",
                     "1548",
                     "1551",
                     "0128",
@@ -345,8 +440,90 @@ public class KommuneTilNavEnhetMapper {
                     "1942",
                     "1941",
                     "0425",
-                    "0135"
-                
+                    "0135",
+                    "5406",
+                    "4205",
+                    "1579",
+                    "4649",
+                    "4602",
+                    "3801", // Nytt Horten
+                    "4627", // Nytt Askøy
+                    "3807", // Nytt Skien
+                    "4601", // Nytt Bergen
+                    "1108", // Nytt Sandnes
+                    "3805", // Nytt Larvik
+                    "3403", // Nytt Hamar
+                    "3443", // Nytt Vestre Toten
+                    "3049", // Nytt Lier
+                    "3048", // Nytt Øvre Eiker
+                    "3053", // Nytt Jevnaker
+                    "4622", // Nytt Kvam
+                    "5422", // Nytt Balsfjord
+                    "5425", // Nytt Storfjord
+                    "3026", // Nytt Aurskog-Høland
+                    "4617", // Nytt Kvinnherad
+                    "3814", // Nytt Kragerø
+                    "3436", // Nytt Nord-Fron
+                    "3438", // Nytt Sør-Fron
+                    "3439", // Nytt Ringebu
+                    "3411", // Nytt Ringsaker
+                    "3419", // Nytt Valer i innlandet
+                    "4227", // Nytt Kvinesdal
+                    "3004", // Nytt Fredrikstad
+                    "3007", // Nytt Ringerike
+                    "3414", // Nytt Nord-Odal
+                    "4621", // Nytt Voss
+                    "5405", // Nytt Vadsø
+                    "3028", // Nytt Enebakk
+                    "3434", // Nytt Lom
+                    "3437", // Nytt Sel
+                    "3433", // Nytt Skjåk
+                    "4613", // Nytt Bømlo
+                    "3435", // Nytt Vågå
+                    "3407", // Nytt Gjøvik
+                    "4203", // Nytt Arendal
+                    "5402", // Nytt Harstad
+                    "3431", // Nytt Dovre
+                    "3432", // Nytt Lesja
+                    "5412", // Nytt Tjeldsund
+                    "3413", // Nytt Stange
+                    "5006", // Nytt Steinkjer
+                    "3019", // Nytt Vestby
+                    "4615", // Nytt Fitjar
+                    "3003", // Nytt Sarpsborg
+                    "4614", // Nytt Stord
+                    "3819", // Nytt Hjartdal
+                    "3808", // Nytt Notodden
+                    "3051", // Nytt Rollag
+                    "3050", // Nytt Flesberg
+                    "3052", // Nytt Nore og Uvdal
+                    "3006", // Nytt Kongsberg
+                    "3818", // Nytt Tinn
+                    "3420", // Nytt Elverum
+                    "3035", // Nytt Eidsvoll
+                    "3037", // Nytt Hurdal
+                    "3417", // Nytt Grue
+                    "3016", // Nytt Rakkestad
+                    "3034", // Nytt Nes (Akershus)
+                    "3032", // Nytt Gjendrum
+                    "3001", // Nytt Halden
+                    "3033", // Nytt Ullensaker
+                    "3036", // Nytt Nannestad
+                    "3447", // Nytt Søndre Land
+                    "3024", // Nytt Bærum
+                    "4638", // Nytt Høyanger
+                    "3401", // Nytt Kongsvinger
+                    "3415", // Nytt Sør-Odal
+                    "3022", // Nytt Frogn
+                    "3029", // Nytt Lørenskog
+                    "3416", // Nytt Eidskog
+                    "4648", // Nytt Bremager
+                    "4650", // Nytt Gloppen
+                    "4651", // Nytt Stryn
+                    "5428", // Nytt Nordreisa
+                    "5427", // Nytt Skjervøy
+                    "3418", // Nytt Åsnes
+                    "3017"  // Nytt Råde
             ));
 
 

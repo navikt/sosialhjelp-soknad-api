@@ -8,7 +8,10 @@
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q0",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
-  "fasitEnvironment": "q0",
+  "minReplicas": "2",
+  "maxReplicas": "4",
+  "vaultEnabled": true,
+  "prometheusEnabled": true,
   "env": {
     "APPRES_CMS_URL": "https://appres-q0.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q0.oera.no/sbl/tjenester/system/",
@@ -63,7 +66,12 @@
     "VIRKSOMHET_PERSON_V3_SECURITYTOKEN": "SAML",
     "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
-    "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "true",
-    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false"
+    "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
+    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
+    "NEDETID_START": "",
+    "NEDETID_SLUTT": "",
+    "FASIT_ENVIRONMENT_NAME": "q0",
+    "TILLATMOCK": "false",
+    "START_NORG_WITHMOCK": "false"
   }
 }
