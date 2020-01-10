@@ -13,9 +13,9 @@ jobs:
       - uses: actions/checkout@v1
       - name: Deploy to dev
         run: |
+          echo "***   Deploying $TAG to $MILJO   ***"
           git checkout ${TAG}
           REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | sed s/navikt\\///g)
-          echo "$APIKEY" | wc -c
           /app/deploy \
               --actions \
               --cluster="${MILJO}" \
