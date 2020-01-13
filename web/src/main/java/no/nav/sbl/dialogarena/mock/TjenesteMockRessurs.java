@@ -98,7 +98,7 @@ public class TjenesteMockRessurs {
                 new JsonSoknad().withData(new JsonData().withPersonalia(new JsonPersonalia().withNavn(
                         new JsonSokernavn().withFornavn("Han").withEtternavn("Solo")
                 ))
-        )));
+        )), false);
 
         try {
             FileOutputStream out = new FileOutputStream("starcraft.pdf");

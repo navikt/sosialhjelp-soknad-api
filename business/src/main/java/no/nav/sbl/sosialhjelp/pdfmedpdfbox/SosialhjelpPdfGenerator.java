@@ -42,10 +42,6 @@ public class SosialhjelpPdfGenerator {
 
     public static final String IKKE_UTFYLT = "Ikke utfylt";
 
-    public byte[] generate(JsonInternalSoknad jsonInternalSoknad) {
-        return generate(jsonInternalSoknad, false);
-    }
-
     public byte[] generate(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) {
         try {
             PdfGenerator pdf = new PdfGenerator();

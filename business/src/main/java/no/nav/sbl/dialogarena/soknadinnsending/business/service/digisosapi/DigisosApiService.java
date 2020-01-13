@@ -115,8 +115,12 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
-        byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad());
-
+        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
+        try {
+            sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn("soknad.pdf")
                 .withMimetype("application/pdf")
@@ -154,6 +158,11 @@ public class DigisosApiService {
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+        try {
+            sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn("Soknad-juridisk.pdf")
