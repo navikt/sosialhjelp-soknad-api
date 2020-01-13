@@ -11,8 +11,9 @@ jobs:
     container: navikt/deployment:v1
     steps:
       - uses: actions/checkout@v1
-      - name: Deploy to dev
+      - name: Deploy to GCP
         run: |
+          echo "***   Deploying $TAG to $MILJO   ***"
           git checkout ${TAG}
           REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | sed s/navikt\\///g)
           /app/deploy \
@@ -30,3 +31,4 @@ jobs:
           MILJO: ${{ github.event.client_payload.MILJO }}
           TAG: ${{ github.event.client_payload.TAG }}
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          PRINT_PAYLOAD: true

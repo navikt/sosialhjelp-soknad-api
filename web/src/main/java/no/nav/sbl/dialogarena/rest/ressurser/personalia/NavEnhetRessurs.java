@@ -90,7 +90,7 @@ public class NavEnhetRessurs {
                 .withKommuneNr(kommunenummer)
                 .withIsMottakDeaktivert(!isDigisosKommune(kommunenummer))
                 .withIsMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer))
-                .withOrgnr(null) // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
+                .withOrgnr(KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.getEnhetsnummer())) // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
                 .withValgt(true);
     }
 
