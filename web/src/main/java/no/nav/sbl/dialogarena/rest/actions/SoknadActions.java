@@ -2,10 +2,19 @@ package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi.KommuneStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
+import no.nav.sbl.dialogarena.utils.NedetidUtils;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -16,8 +25,14 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isAlltidSendTilNavTestkommune;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isSendingTilFiksEnabled;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -29,12 +44,14 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class SoknadActions {
 
     private static final Logger log = getLogger(SoknadActions.class);
+    private static final String SVARUT = "SVARUT";
+    private static final String FIKS_DIGISOS_API = "FIKS_DIGISOS_API";
 
     @Inject
     private SoknadService soknadService;
 
     @Inject
-    private DigisosApi digisosApi;
+    private KommuneInfoService kommuneInfoService;
 
     @Inject
     private Tilgangskontroll tilgangskontroll;
@@ -42,30 +59,90 @@ public class SoknadActions {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Inject
+    private SoknadMetadataRepository soknadMetadataRepository;
+
+    @Inject
+    private DigisosApiService digisosApiService;
+
     @POST
     @Path("/send")
-    public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
+    public SendTilUrlFrontend sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
+        if (NedetidUtils.isInnenforNedetid()) {
+            throw new SoknadenHarNedetidException(String.format("Soknaden har nedetid fram til %s ", getNedetidAsStringOrNull(NEDETID_SLUTT)));
+        }
+
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        if (soknadUnderArbeid != null) {
-            try {
-                if (!soknadUnderArbeid.erEttersendelse()) {
-                    String kommunenummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
-                    KommuneStatus kommuneStatus = digisosApi.kommuneInfo(kommunenummer);
-                    log.info(String.format("Kommune: %s Status: %s", kommunenummer, kommuneStatus.name()));
-                }
-            } catch (Exception e) {
-                log.error("Feil ved henting av kommuneinfo ", e);
-            }
-//            if (!soknadUnderArbeid.erEttersendelse()) {
-//            if ((kommuneStatus != KommuneStatus.IKKE_PA_FIKS_ELLER_INNSYN) && false) {
-//                digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
-//                return;
-//            }
-//            }
+
+        if (!isSendingTilFiksEnabled()
+                || soknadUnderArbeid == null
+                || isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
+            log.info("BehandlingsId {} sendes til SvarUt.", behandlingsId);
+            soknadService.sendSoknad(behandlingsId);
+            return new SendTilUrlFrontend().withSendtTil(SVARUT).withId(behandlingsId);
+        }
+        if (soknadUnderArbeid.erEttersendelse()) {
+            log.error("Ettersendelse {} blir forsøkt sendt med soknad-api selv om den tiknyttede søknaden ble sendt til Fiks-Digisos-api. Dette skal ikke skje, disse skal sendes via innsyn-api.", behandlingsId);
+            throw new IllegalStateException("Ettersendelse på søknad sendt via fiks-digisos-api skal sendes via innsyn-api");
         }
 
-        soknadService.sendSoknad(behandlingsId);
+        log.info("BehandlingsId {} sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.", behandlingsId);
+        String kommunenummer = getKommunenummerOrMock(soknadUnderArbeid);
+        KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo(kommunenummer);
+        log.info("Kommune: {} Status: {}", kommunenummer, kommuneStatus);
+
+        switch (kommuneStatus) {
+            case MANGLER_KONFIGURASJON:
+            case HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT:
+                if (!KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer)) {
+                    throw new SendingTilKommuneErIkkeAktivertException(String.format("Sending til kommune %s er ikke aktivert og kommunen er ikke i listen over svarUt-kommuner", kommunenummer));
+                }
+                log.info("BehandlingsId {} sendes til SvarUt (sfa. Fiks-konfigurasjon).", behandlingsId);
+                soknadService.sendSoknad(behandlingsId);
+                return new SendTilUrlFrontend().withSendtTil(SVARUT).withId(behandlingsId);
+            case SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA:
+                log.info("BehandlingsId {} sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).", behandlingsId);
+                String digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer);
+                return new SendTilUrlFrontend().withSendtTil(FIKS_DIGISOS_API).withId(digisosId);
+            case SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER:
+                throw new SendingTilKommuneErMidlertidigUtilgjengeligException(String.format("Sending til kommune %s er midlertidig utilgjengelig.", kommunenummer));
+            default:
+                throw new SendingTilKommuneErMidlertidigUtilgjengeligException(String.format("Det mangler håndtering av case %s for kommunens konfigurasjon. Sending til kommune %s er midlertidig utilgjengelig.", kommuneStatus.name(), kommunenummer));
+        }
+    }
+
+    String getKommunenummerOrMock(SoknadUnderArbeid soknadUnderArbeid) {
+        if (!ServiceUtils.isRunningInProd() && isAlltidSendTilNavTestkommune()) {
+            log.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
+            return "2352";
+        } else {
+            return soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getKommunenummer();
+        }
+    }
+
+    private boolean isEttersendelsePaSoknadSendtViaSvarUt(SoknadUnderArbeid soknadUnderArbeid) {
+        if (!soknadUnderArbeid.erEttersendelse()) return false;
+
+        SoknadMetadata soknadensMetadata = soknadMetadataRepository.hent(soknadUnderArbeid.getTilknyttetBehandlingsId());
+        return soknadensMetadata != null && soknadensMetadata.status != SENDT_MED_DIGISOS_API;
+    }
+
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static final class SendTilUrlFrontend {
+        public String sendtTil;
+        public String id;
+
+        public SendTilUrlFrontend withSendtTil(String sendtTil) {
+            this.sendtTil = sendtTil;
+            return this;
+        }
+
+        public SendTilUrlFrontend withId(String id) {
+            this.id = id;
+            return this;
+        }
     }
 }

@@ -6,8 +6,10 @@ import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
+import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -26,9 +28,12 @@ import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.NEDETID_SLUTT;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsStringOrNull;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -62,6 +67,7 @@ public class SoknadRessurs {
     public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         response.addCookie(xsrfCookie(behandlingsId));
+        response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId));
         henvendelseService.oppdaterSistEndretDatoPaaMetadata(behandlingsId);
         return true;
     }
@@ -78,10 +84,10 @@ public class SoknadRessurs {
 
     @GET
     @Path("/{behandlingsId}/erSystemdataEndret")
-    public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId) {
+    public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        systemdata.update(soknadUnderArbeid);
+        systemdata.update(soknadUnderArbeid, token);
 
         final JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -89,11 +95,12 @@ public class SoknadRessurs {
 
         soknadUnderArbeidService.sortOkonomi(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi());
         soknadUnderArbeidService.sortOkonomi(notUpdatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi());
+        soknadUnderArbeidService.sortArbeid(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid());
+        soknadUnderArbeidService.sortArbeid(notUpdatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid());
 
-        if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)){
+        if (updatedJsonInternalSoknad.equals(notUpdatedJsonInternalSoknad)) {
             return false;
         } else {
-            soknadUnderArbeidService.logDifferences(notUpdatedSoknadUnderArbeid, soknadUnderArbeid, "Forskjell på systemdata i json: ");
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
             return true;
         }
@@ -102,12 +109,16 @@ public class SoknadRessurs {
     @POST
     @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response) {
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @HeaderParam(value = AUTHORIZATION) String token) {
+        if (NedetidUtils.isInnenforNedetid()) {
+            throw new SoknadenHarNedetidException(String.format("Soknaden har nedetid fram til %s ", getNedetidAsStringOrNull(NEDETID_SLUTT)));
+        }
+
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad();
+            opprettetBehandlingsId = soknadService.startSoknad(token);
         } else {
             final String eier = OidcFeatureToggleUtils.getUserId();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
@@ -119,6 +130,7 @@ public class SoknadRessurs {
         }
         result.put("brukerBehandlingId", opprettetBehandlingsId);
         response.addCookie(xsrfCookie(opprettetBehandlingsId));
+        response.addCookie(xsrfCookieMedBehandlingsid(opprettetBehandlingsId));
         return result;
     }
 
@@ -136,4 +148,10 @@ public class SoknadRessurs {
         return xsrfCookie;
     }
 
+    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
+        xsrfCookie.setSecure(true);
+        return xsrfCookie;
+    }
 }

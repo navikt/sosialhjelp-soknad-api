@@ -66,30 +66,30 @@ public class SoknadRessursTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
         ressurs.hentXsrfCookie(BEHANDLINGSID, response);
-        verify(response).addCookie(cookie.capture());
-        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN);
+        verify(response,times(2)).addCookie(cookie.capture());
+        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN + "-123");
     }
 
     @Test
     public void opprettingAvSoknadSkalSetteXsrfToken() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
-        ressurs.opprettSoknad(null, response);
-        verify(response).addCookie(cookie.capture());
-        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN);
+        ressurs.opprettSoknad(null, response, "");
+        verify(response,times(2)).addCookie(cookie.capture());
+        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN + "-null");
     }
 
     @Test
     public void opprettSoknadUtenBehandlingsidSkalStarteNySoknad() {
-        ressurs.opprettSoknad(null, mock(HttpServletResponse.class));
-        verify(soknadService).startSoknad();
+        ressurs.opprettSoknad(null, mock(HttpServletResponse.class), "");
+        verify(soknadService).startSoknad("");
     }
 
     @Test
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(anyString(), anyString())).thenReturn(Optional.empty());
-        ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class));
+        ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class), "");
         verify(soknadService).startEttersending(eq(BEHANDLINGSID));
     }
 
@@ -98,7 +98,7 @@ public class SoknadRessursTest {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(eq(BEHANDLINGSID), anyString())).thenReturn(
                 Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
-        ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class));
+        ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class), "");
         verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID));
     }
 }

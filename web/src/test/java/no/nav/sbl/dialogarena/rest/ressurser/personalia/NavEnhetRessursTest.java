@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
@@ -34,8 +35,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUti
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -69,11 +69,14 @@ public class NavEnhetRessursTest {
     private static final String ORGNR_2 = "987654321";
     private static final JsonSoknadsmottaker SOKNADSMOTTAKER = new JsonSoknadsmottaker()
             .withNavEnhetsnavn(ENHETSNAVN + ", " + KOMMUNENAVN)
-            .withEnhetsnummer(ENHETSNR);
+            .withEnhetsnummer(ENHETSNR)
+            .withKommunenummer(KOMMUNENR);
+
 
     private static final JsonSoknadsmottaker SOKNADSMOTTAKER_2 = new JsonSoknadsmottaker()
             .withNavEnhetsnavn(ENHETSNAVN_2 + ", " + KOMMUNENAVN_2)
-            .withEnhetsnummer(ENHETSNR_2);
+            .withEnhetsnummer(ENHETSNR_2)
+            .withKommunenummer(KOMMUNENR_2);
 
     private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG = new AdresseForslag();
     private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG_2 = new AdresseForslag();
@@ -113,6 +116,9 @@ public class NavEnhetRessursTest {
     @Mock
     private NorgService norgService;
 
+    @Mock
+    private KommuneInfoService kommuneInfoService;
+
     @InjectMocks
     private NavEnhetRessurs navEnhetRessurs;
 
@@ -147,6 +153,19 @@ public class NavEnhetRessursTest {
     }
 
     @Test
+    public void getValgtNavEnhetSkalReturnereEnhetRiktigKonvertert(){
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
+
+        NavEnhetFrontend navEnhetFrontend = navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID);
+
+        assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, SOKNADSMOTTAKER);
+        assertThat(navEnhetFrontend.valgt, is(true));
+    }
+
+    @Test
     public void getNavEnheterSkalReturnereTomListeNaarOppholdsadresseIkkeErValgt(){
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
@@ -159,6 +178,18 @@ public class NavEnhetRessursTest {
         List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
         assertTrue(navEnhetFrontends.isEmpty());
+    }
+
+    @Test
+    public void getValgtNavEnhetSkalReturnereNullNarOppholdsadresseIkkeErValgt(){
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
+
+        NavEnhetFrontend navEnhetFrontends = navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID);
+
+        assertNull(navEnhetFrontends);
     }
 
     @Test

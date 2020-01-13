@@ -81,6 +81,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-domain</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.nimbusds</groupId>
+                    <artifactId>lang-tag</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
@@ -88,7 +94,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
+            <artifactId>person-v3-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -202,11 +208,6 @@
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>

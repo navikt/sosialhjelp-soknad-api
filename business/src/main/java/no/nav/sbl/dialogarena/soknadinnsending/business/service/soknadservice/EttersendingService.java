@@ -29,7 +29,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sok
 
 @Component
 public class EttersendingService {
-    public static final int ETTERSENDELSE_FRIST_DAGER = 90;
+    public static final int ETTERSENDELSE_FRIST_DAGER = 120;
 
     @Inject
     HenvendelseService henvendelseService;

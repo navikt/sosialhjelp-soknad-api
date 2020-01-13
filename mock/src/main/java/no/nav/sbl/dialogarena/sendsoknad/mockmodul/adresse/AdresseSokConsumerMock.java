@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +25,39 @@ public class AdresseSokConsumerMock {
     public AdresseSokConsumer adresseRestService() {
         AdresseSokConsumer mock = mock(AdresseSokConsumer.class);
 
-        when(mock.sokAdresse(any(Sokedata.class))).thenAnswer((invocation) -> getOrCreateCurrentUserResponse());
-        when(mock.sokAdresse(anyString())).thenAnswer((invocation) -> getOrCreateCurrentUserResponse());
+        when(mock.sokAdresse(any(Sokedata.class))).thenAnswer(
+                invocation -> {
+                    Sokedata sokedata = (Sokedata) invocation.getArguments()[0];
+
+                    if ("test".equalsIgnoreCase(sokedata.adresse)) {
+                        return getTestRespons();
+                    }
+                    if ("teste".equalsIgnoreCase(sokedata.adresse)) {
+                        return getTest2Respons();
+                    }
+
+                    if (sokedata.adresse.contains("Dobbel")) {
+                        String adresse = sokedata.adresse.replace("gata", "");
+                        return getDobbelRespons(adresse, sokedata.postnummer);
+                    }
+
+                    if (sokedata.adresse.contains("gata")) {
+                        String adresse = sokedata.adresse.replace("gata", "");
+                        return getGataRespons(adresse, sokedata.postnummer);
+                    }
+
+                    return getOrCreateCurrentUserResponse();
+
+                });
+        when(mock.sokAdresse(anyString())).thenAnswer(
+                invocation -> {
+                    String sokeString = (String) invocation.getArguments()[0];
+                    if ("test".equalsIgnoreCase(sokeString)) {
+                        return getTestRespons();
+                    }
+
+                    return getOrCreateCurrentUserResponse();
+                });
 
         return mock;
     }
@@ -56,10 +87,69 @@ public class AdresseSokConsumerMock {
         a1.gatekode = "02081";
         a1.bydel = "120102";
 
-        response.adresseDataList = Arrays.asList(a1);
+        response.adresseDataList = Collections.singletonList(a1);
 
         return response;
     }
+
+    private static AdressesokRespons getGataRespons(String kommunenavn, String kommunenummer){
+        AdressesokRespons response = new AdressesokRespons();
+        response.adresseDataList.add(createAdresse(kommunenavn, kommunenummer));
+        return response;
+    }
+
+    private static AdressesokRespons getDobbelRespons(String kommunenavn, String postnummer){
+        AdressesokRespons response = new AdressesokRespons();
+        response.adresseDataList.add(createAdresse(kommunenavn, postnummer, postnummer));
+        response.adresseDataList.add(createAdresse(kommunenavn, Long.toString(Long.parseLong(postnummer) +1), postnummer));
+        return response;
+    }
+
+    private static AdressesokRespons getTestRespons(){
+        AdressesokRespons response = new AdressesokRespons();
+        response.adresseDataList.add(createAdresse("Fredrikstad", "0106"));
+        response.adresseDataList.add(createAdresse("Horten", "0701"));
+        response.adresseDataList.add(createAdresse("Halden", "0101"));
+        response.adresseDataList.add(createAdresse("Askøy", "1247"));
+        response.adresseDataList.add(createAdresse("Sarpsborg", "0105"));
+        response.adresseDataList.add(createAdresse("Bærum", "0219"));
+        response.adresseDataList.add(createAdresse("Hvaler", "0111"));
+        response.adresseDataList.add(createAdresse("Moss", "5001"));
+        response.adresseDataList.add(createAdresse("Rygge", "0136"));
+        response.adresseDataList.add(createAdresse("Hamar", "0403"));
+        return response;
+    }
+
+    private static AdressesokRespons getTest2Respons(){
+        AdressesokRespons response = new AdressesokRespons();
+        response.adresseDataList.add(createAdresse("Moss", "5001"));
+        response.adresseDataList.add(createAdresse("Rygge", "0136"));
+        response.adresseDataList.add(createAdresse("Hamar", "0403"));
+        response.adresseDataList.add(createAdresse("DobbelKommune", "2222"));
+        return response;
+    }
+
+    private static AdresseData createAdresse(String kommunenavn, String kommunenummer){
+        return createAdresse(kommunenavn, kommunenummer, kommunenummer);
+    }
+
+
+    private static AdresseData createAdresse(String kommunenavn, String kommunenummer, String postnummer){
+        final AdresseData a1 = new AdresseData();
+        a1.kommunenummer = kommunenummer;
+        a1.kommunenavn = kommunenavn;
+        a1.adressenavn = kommunenavn + "gata";
+        a1.husnummerFra = "0001";
+        a1.husnummerTil = "0010";
+        a1.postnummer = postnummer;
+        a1.poststed = kommunenavn;
+        a1.geografiskTilknytning = kommunenummer;
+        a1.gatekode = kommunenummer;
+        a1.bydel = kommunenummer;
+
+        return a1;
+    }
+
 
     public static void setAdresser(String jsonAdressesokRespons){
 

@@ -41,7 +41,7 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
             }
 
             return status(exception.getResponse().getStatus()).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Noe uventet feilet")).build();
-        } else if (e instanceof SamtidigOppdateringException){
+        } else if (e instanceof SamtidigOppdateringException) {
             logger.warn(e.getMessage(), e);
             return status(Response.Status.CONFLICT).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Samtidig oppdatering av søknad")).build();
         } else {

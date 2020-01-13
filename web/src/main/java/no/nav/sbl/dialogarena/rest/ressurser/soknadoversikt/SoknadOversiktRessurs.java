@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.soknadoversikt;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
@@ -13,7 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -48,9 +49,11 @@ public class SoknadOversiktRessurs {
         private String fiksDigisosId;
         private String soknadTittel;
         private String status;
-        private LocalDateTime sistOppdatert;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+        private Date sistOppdatert;
         private Integer antallNyeOppgaver;
         private String kilde;
+        private String url;
 
         public String getFiksDigisosId() {
             return fiksDigisosId;
@@ -64,7 +67,7 @@ public class SoknadOversiktRessurs {
             return status;
         }
 
-        public LocalDateTime getSistOppdatert() {
+        public Date getSistOppdatert() {
             return sistOppdatert;
         }
 
@@ -74,6 +77,10 @@ public class SoknadOversiktRessurs {
 
         public String getKilde() {
             return kilde;
+        }
+
+        public String getUrl() {
+            return url;
         }
 
         public SoknadOversikt withFiksDigisosId(String fiksDigisosId) {
@@ -91,7 +98,7 @@ public class SoknadOversiktRessurs {
             return this;
         }
 
-        public SoknadOversikt withSistOppdatert(LocalDateTime sistOppdatert) {
+        public SoknadOversikt withSistOppdatert(Date sistOppdatert) {
             this.sistOppdatert = sistOppdatert;
             return this;
         }
@@ -103,6 +110,11 @@ public class SoknadOversiktRessurs {
 
         public SoknadOversikt withKilde(String kilde) {
             this.kilde = kilde;
+            return this;
+        }
+
+        public SoknadOversikt withUrl(String url) {
+            this.url = url;
             return this;
         }
     }

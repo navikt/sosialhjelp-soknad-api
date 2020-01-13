@@ -34,6 +34,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
@@ -86,14 +87,14 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public Optional<SoknadUnderArbeid> hentSoknad(Long soknadId, String eier) {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
-                new SoknadUnderArbeidRowMapper(), eier, soknadId).stream().findFirst();
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ? and STATUS != ?",
+                new SoknadUnderArbeidRowMapper(), eier, soknadId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
     }
 
     @Override
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
-                new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS != ?",
+                new SoknadUnderArbeidRowMapper(), eier, behandlingsId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
         if (soknadUnderArbeidOptional.isPresent()) {
             return soknadUnderArbeidOptional.get();
         } else {
@@ -103,8 +104,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier) {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
-                new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS != ?",
+                new SoknadUnderArbeidRowMapper(), eier, behandlingsId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
     }
 
     @Override
@@ -117,6 +118,12 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     public List<SoknadUnderArbeid> hentForeldedeEttersendelser() {
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) " +
                         "and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
+                new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
+    }
+
+    @Override
+    public List<SoknadUnderArbeid> hentAlleSoknaderUnderArbeidSiste15Dager() {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO > CURRENT_TIMESTAMP - (INTERVAL '15' DAY) and STATUS = ?",
                 new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
     }
 

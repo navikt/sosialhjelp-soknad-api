@@ -136,7 +136,7 @@ public class VedleggMapper {
             case UTGIFTER_ANNET_BO:
             case UTGIFTER_BARN_FRITIDSAKTIVITETER:
                 return new VedleggRadFrontend().withBelop(utgift.getBelop())
-                        .withBeskrivelse(utgift.getTittel().substring(utgift.getTittel().indexOf(":") + 2));
+                        .withBeskrivelse(utgift.getTittel().substring(utgift.getTittel().indexOf(":") + 1) + " ");
             default:
                 return new VedleggRadFrontend().withBelop(utgift.getBelop());
         }

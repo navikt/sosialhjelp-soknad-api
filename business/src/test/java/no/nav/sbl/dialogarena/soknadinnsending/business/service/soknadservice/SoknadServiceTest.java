@@ -69,7 +69,7 @@ public class SoknadServiceTest {
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
-        soknadService.startSoknad();
+        soknadService.startSoknad("");
 
         String bruker = OidcFeatureToggleUtils.getUserId();
         verify(henvendelsesConnector).startSoknad(eq(bruker));
@@ -103,7 +103,7 @@ public class SoknadServiceTest {
 
         ArgumentCaptor<SoknadUnderArbeid> soknadUnderArbeidCaptor = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
-        verify(henvendelsesConnector, atLeastOnce()).oppdaterMetadataVedAvslutningAvSoknad(eq(behandlingsId), vedleggCaptor.capture(), soknadUnderArbeidCaptor.capture());
+        verify(henvendelsesConnector, atLeastOnce()).oppdaterMetadataVedAvslutningAvSoknad(eq(behandlingsId), vedleggCaptor.capture(), soknadUnderArbeidCaptor.capture(), eq(false));
         verify(oppgaveHandterer).leggTilOppgave(eq(behandlingsId), anyString());
 
         SoknadUnderArbeid capturedSoknadUnderArbeid = soknadUnderArbeidCaptor.getValue();
