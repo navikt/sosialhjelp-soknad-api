@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -125,7 +126,27 @@ public class InnsendingService {
         String orgnummer = internalSoknad.getMottaker().getOrganisasjonsnummer();
         String navEnhetsnavn = internalSoknad.getMottaker().getNavEnhetsnavn();
         if (isEmpty(orgnummer) || isEmpty(navEnhetsnavn)) {
-            throw new IllegalStateException("Søknadsmottaker mangler. orgnummer: " + orgnummer + ", navEnhetsnavn: " + navEnhetsnavn);
+
+            String soknadEnhetsnavn = "";
+            String soknadEnhetsnummer = "";
+            String soknadKommunenummer = "";
+            if (internalSoknad.getSoknad() != null && internalSoknad.getSoknad().getMottaker() != null) {
+                JsonSoknadsmottaker soknadsmottaker = internalSoknad.getSoknad().getMottaker();
+                soknadEnhetsnavn = soknadsmottaker.getNavEnhetsnavn();
+                soknadEnhetsnummer = soknadsmottaker.getEnhetsnummer();
+                soknadKommunenummer = soknadsmottaker.getKommunenummer();
+            }
+
+            throw new IllegalStateException(
+                    String.format("Søknadsmottaker mangler for behandlingsid %s. internal-orgnummer: %s, internal-navEnhetsnavn: %s. soknad-enhetsnavn: %s, soknad-enhetsnummer: %s, soknad-kommunenummer: %s. IsEttersendelse: %b",
+                            soknadUnderArbeid.getBehandlingsId(),
+                            orgnummer,
+                            navEnhetsnavn,
+                            soknadEnhetsnavn,
+                            soknadEnhetsnummer,
+                            soknadKommunenummer,
+                            soknadUnderArbeid.getTilknyttetBehandlingsId() != null
+                    ));
         }
 
         return new SendtSoknad()
