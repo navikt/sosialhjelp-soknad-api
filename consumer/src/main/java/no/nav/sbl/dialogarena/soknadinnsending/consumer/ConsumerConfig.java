@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
 import org.springframework.cache.annotation.EnableCaching;
@@ -49,7 +50,8 @@ public class ConsumerConfig {
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
             NorgRestConfig.class,
-            UtbetalingWSConfig.class
+            UtbetalingWSConfig.class,
+            OrganisasjonRestConfig.class
     })
     public static class WsServices {
     }

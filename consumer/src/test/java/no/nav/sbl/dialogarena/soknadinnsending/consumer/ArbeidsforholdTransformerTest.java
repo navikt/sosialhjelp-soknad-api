@@ -3,12 +3,16 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
 import javax.xml.datatype.DatatypeFactory;
 
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,9 +37,15 @@ import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResp
 @RunWith(MockitoJUnitRunner.class)
 public class ArbeidsforholdTransformerTest {
 
+    //todo: fjern webservice-avhengigheter på sikt
+
     public static final String ORGNUMMER = "1234567";
+
     @Mock
     private OrganisasjonV4 organisasjon;
+
+    @Mock
+    private OrganisasjonConsumer organisasjonConsumer;
 
     @InjectMocks
     private ArbeidsforholdTransformer arbeidsforholdTransformer;
@@ -46,6 +56,7 @@ public class ArbeidsforholdTransformerTest {
     public void setup() throws Exception {
         datatypeFactory = DatatypeFactory.newInstance();
         when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponse());
+        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgnoekkelinfoResponse());
     }
 
     private HentOrganisasjonResponse createOrgResponse() {
@@ -57,6 +68,11 @@ public class ArbeidsforholdTransformerTest {
         org.setNavn(value);
         response.setOrganisasjon(org);
         return response;
+    }
+
+    private OrganisasjonNoekkelinfoDto createOrgnoekkelinfoResponse() {
+        NavnDto navn = new NavnDto("Testesen A/S", "andre linje", null, null, null);
+        return new OrganisasjonNoekkelinfoDto(navn, ORGNUMMER);
     }
 
     @Test
@@ -72,6 +88,7 @@ public class ArbeidsforholdTransformerTest {
     @Test
     public void skalIgnorereNullVerdierIOrgNavn() throws Exception {
         when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponseWithNulls());
+        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithNulls());
         Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold());
         assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
     }
@@ -79,6 +96,14 @@ public class ArbeidsforholdTransformerTest {
     @Test
     public void skalIgnorereTommeStrengerIOrgNavn() throws Exception {
         when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponseWithEmptyStrings());
+        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithEmptyStrings());
+        Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold());
+        assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
+    }
+
+    @Test
+    public void skalIgnorereNullVerdierIOrgNavnREST() throws Exception {
+        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithNulls());
         Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold());
         assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
     }
@@ -168,4 +193,13 @@ public class ArbeidsforholdTransformerTest {
         return response;
     }
 
+    private OrganisasjonNoekkelinfoDto createOrgNoekkelinfoResponseWithNulls() {
+        NavnDto navn = new NavnDto("Testesen A/S", "andre linje", null, null, null);
+        return new OrganisasjonNoekkelinfoDto(navn, ORGNUMMER);
+    }
+
+    private OrganisasjonNoekkelinfoDto createOrgNoekkelinfoResponseWithEmptyStrings() {
+        NavnDto navn = new NavnDto("Testesen A/S", "andre linje", "", "", "");
+        return new OrganisasjonNoekkelinfoDto(navn, ORGNUMMER);
+    }
 }
