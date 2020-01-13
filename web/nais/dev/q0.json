@@ -74,6 +74,6 @@
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "false",
     "START_NORG_WITHMOCK": "false",
-    "EREG_REST_API_ENABLED": "false"
+    "EREG_API_ENABLED": "false"
   }
 }

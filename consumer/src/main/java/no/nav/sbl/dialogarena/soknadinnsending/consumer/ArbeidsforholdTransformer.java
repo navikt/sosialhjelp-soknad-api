@@ -25,6 +25,8 @@ import java.util.List;
 public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>,
         Function<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold> {
 
+    private static final String EREG_API_ENABLED = "ereg_api_enabled";
+
     @Inject
     @Named("organisasjonEndpoint")
     private OrganisasjonV4 organisasjonWebService;
@@ -71,6 +73,10 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
         return number != null ? number.longValue() : 0;
     }
 
+
+    public boolean brukEregRestApi() {
+        return Boolean.parseBoolean(System.getProperty(EREG_API_ENABLED, "false"));
+    }
 
     public String hentOrgNavn(String orgnr) {
         if (orgnr != null) {
