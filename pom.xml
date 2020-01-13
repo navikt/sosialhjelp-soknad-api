@@ -156,6 +156,7 @@
         <jsoup.version>1.11.3</jsoup.version>
         <oauth2-oidc-sdk.version>6.1.1</oauth2-oidc-sdk.version>
         <lang-tag.version>1.4.4</lang-tag.version>
+        <uap-java.version>1.4.0</uap-java.version>
     </properties>
 
     <dependencyManagement>
@@ -1285,6 +1286,12 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-client</artifactId>
                 <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.ua-parser</groupId>
+                <artifactId>uap-java</artifactId>
+                <version>${uap-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -465,6 +465,10 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ua-parser</groupId>
+            <artifactId>uap-java</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <finalName>soknadsosialhjelp-server</finalName>
