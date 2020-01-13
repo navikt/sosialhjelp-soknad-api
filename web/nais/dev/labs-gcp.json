@@ -17,6 +17,7 @@
     "PORT": "8080",
     "APPRES_CMS_URL": "https://appres-q0.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q0.oera.no/sbl/tjenester/system/",
+    "AAREG_API_BASEURL": "https://api-gw-q0.oera.no/aareg-services/api/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DIALOGARENA_NAVNOLINK_URL": "https://www-q0.nav.no",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
@@ -74,6 +75,7 @@
     "NEDETID_SLUTT": "",
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
-    "START_NORG_WITHMOCK": "true"
+    "START_NORG_WITHMOCK": "true",
+    "AAREG_API_ENABLED": "false"
   }
 }

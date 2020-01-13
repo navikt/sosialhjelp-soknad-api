@@ -14,6 +14,7 @@
   "env": {
     "APPRES_CMS_URL": "https://appres.nav.no",
     "ARBEID_REST_URL": "https://itjenester.oera.no/sbl/tjenester/system/",
+    "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DIALOGARENA_NAVNOLINK_URL": "https://www.nav.no",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
@@ -71,6 +72,7 @@
     "NEDETID_SLUTT": "01.01.2020 09:00:00",
     "FASIT_ENVIRONMENT_NAME": "p",
     "TILLATMOCK": "false",
-    "START_NORG_WITHMOCK": "false"
+    "START_NORG_WITHMOCK": "false",
+    "AAREG_API_ENABLED": "false"
   }
 }
