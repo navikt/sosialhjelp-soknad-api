@@ -1,18 +1,20 @@
 {
-  "namespace": "q0",
+  "namespace": "teamdigisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api-q0.nais.oera-q.local/",
-    "https://tjenester-q0.nav.no/sosialhjelp-soknad-api",
-    "https://www-q0.nav.no/sosialhjelp/soknad-api"
+    "https://sosialhjelp-soknad-api.labs.nais.io/sosialhjelp/soknad-api"
   ],
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q0",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
-  "minReplicas": "2",
-  "maxReplicas": "4",
-  "vaultEnabled": true,
-  "prometheusEnabled": true,
+  "minReplicas": "1",
+  "maxReplicas": "1",
+  "vaultEnabled": false,
+  "prometheusEnabled": false,
   "env": {
+    "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockSoknadsosialhjelpServer",
+    "dockerWithDefaultMockActivated": "true",
+    "HEROKU": "true",
+    "PORT": "8080",
     "APPRES_CMS_URL": "https://appres-q0.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q0.oera.no/sbl/tjenester/system/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
@@ -40,7 +42,7 @@
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "true",
     "SOKNAD_BOSTOTTE_URL": "https://api-gw-q0.oera.no/ekstern/husbanken/api/nav/minbostotte",
     "SOKNAD_BOSTOTTE_PING_URL": "https://api-gw-q0.oera.no/ekstern/husbanken/api/nav/minbostotte/ping",
-    "SOKNAD_ETTERSENDING_ANTALLDAGER": "120",
+    "SOKNAD_ETTERSENDING_ANTALLDAGER": "90",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester-q0.nav.no/soknadinnsending",
     "TPSWS_API_V1_URL": "https://api-gw-q0.oera.no/tpsws/api/v1/",
@@ -71,7 +73,7 @@
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
     "FASIT_ENVIRONMENT_NAME": "q0",
-    "TILLATMOCK": "false",
-    "START_NORG_WITHMOCK": "false"
+    "TILLATMOCK": "true",
+    "START_NORG_WITHMOCK": "true"
   }
 }

@@ -91,7 +91,7 @@ jobs:
           command: |
             git clone https://github.com/navikt/sosialhjelp-ci.git
             VERSION=$(sosialhjelp-ci/bin/create-artifact-version.sh)
-            deployment-cli deploy create --cluster=dev-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${VERSION} --vars=web/nais/dev/${MILJO}.json
+            deployment-cli deploy create --cluster=dev-sbs --repository=navikt/sosialhjelp-soknad-api --team=teamdigisos -r=web/nais.yaml --var version=${VERSION} --vars=web/nais/dev/${MILJO}.json
 
   deploy_miljo_tag:
     docker:
@@ -102,7 +102,7 @@ jobs:
       - run:
           name: Deploy versjon=${VERSION} til miljø=${MILJO} i dev-sbs
           command: |
-            deployment-cli deploy create --cluster=dev-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/dev/${MILJO}.json
+            deployment-cli deploy create --cluster=dev-sbs --repository=navikt/sosialhjelp-soknad-api --team=teamdigisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/dev/${MILJO}.json
 
 
   deploy_prod:
@@ -116,7 +116,7 @@ jobs:
           command: |
             git clone https://github.com/navikt/sosialhjelp-ci.git
             VERSION=$(sosialhjelp-ci/bin/create-artifact-version.sh)
-            deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${VERSION} --vars=web/nais/prod/default.json
+            deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=teamdigisos -r=web/nais.yaml --var version=${VERSION} --vars=web/nais/prod/default.json
 
   deploy_prod_tag:
     docker:
@@ -127,7 +127,24 @@ jobs:
       - run:
           name: Deploy versjon=${VERSION} til prod
           command: |
-            deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=digisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/prod/default.json
+            deployment-cli deploy create --cluster=prod-sbs --repository=navikt/sosialhjelp-soknad-api --team=teamdigisos -r=web/nais.yaml --var version=${TAG} --vars=web/nais/prod/default.json
+
+  deploy_gcp:
+    docker:
+      - image: navikt/deployment:v1
+    steps:
+      - checkout
+      - run:
+          name: Deploy til miljø i gcp
+          command: |
+            yq w web/nais/dev/${MILJO}.json version "${TAG}" > deployment.yaml
+            /app/deploy \
+                --apikey="$NAIS_DEPLOY_APIKEY" \
+                --cluster="${MILJO}" \
+                --repository="$CIRCLE_PROJECT_REPONAME" \
+                --resource="web/nais.yaml" \
+                --vars="deployment.yaml" \
+                --wait=true
 
 workflows:
   version: 2
