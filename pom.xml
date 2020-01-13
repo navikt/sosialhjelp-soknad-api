@@ -1292,6 +1292,12 @@
                 <groupId>com.github.ua-parser</groupId>
                 <artifactId>uap-java</artifactId>
                 <version>${uap-java.version}</version>
+
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
