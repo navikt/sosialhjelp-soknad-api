@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class SoknadMetadataRepositoryJdbcTest {
 
-    private static final String EIER = "21036612271";
+    private static final String EIER = "11111111111";
     private final int dagerGammelSoknad = 20;
     private final String behandlingsId = "1100AAAAA";
 

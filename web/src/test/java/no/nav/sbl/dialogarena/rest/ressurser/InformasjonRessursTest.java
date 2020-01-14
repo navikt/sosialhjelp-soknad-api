@@ -50,7 +50,7 @@ public class InformasjonRessursTest {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
 
-        when(personService.hentPerson(anyString())).thenReturn(new Person().withFnr("01018012345"));
+        when(personService.hentPerson(anyString())).thenReturn(new Person().withFnr("12312312345"));
     }
 
     @After
