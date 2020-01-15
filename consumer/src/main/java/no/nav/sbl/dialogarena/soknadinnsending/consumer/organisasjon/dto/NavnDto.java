@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class NavnDto {
@@ -14,7 +15,12 @@ public final class NavnDto {
 //    private String redigertnavn; // kunne kanskje brukt denne?
 
     @JsonCreator
-    public NavnDto(String navnelinje1, String navnelinje2, String navnelinje3, String navnelinje4, String navnelinje5) {
+    public NavnDto(
+            @JsonProperty("navnelinje1") String navnelinje1,
+            @JsonProperty("navnelinje2") String navnelinje2,
+            @JsonProperty("navnelinje3") String navnelinje3,
+            @JsonProperty("navnelinje4") String navnelinje4,
+            @JsonProperty("navnelinje5") String navnelinje5) {
         this.navnelinje1 = navnelinje1;
         this.navnelinje2 = navnelinje2;
         this.navnelinje3 = navnelinje3;
