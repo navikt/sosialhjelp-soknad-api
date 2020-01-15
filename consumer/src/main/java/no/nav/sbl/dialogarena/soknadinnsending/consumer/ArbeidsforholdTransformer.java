@@ -3,9 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.NavnDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
@@ -20,7 +18,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -36,7 +33,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     private OrganisasjonV4 organisasjonWebService;
 
     @Inject
-    private OrganisasjonConsumer organisasjonConsumer;
+    private OrganisasjonService organisasjonService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
 
@@ -88,24 +85,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     }
 
     private String hentOrgNavnRest(String orgnr) {
-        if (orgnr != null) {
-            try {
-                OrganisasjonNoekkelinfoDto noekkelinfo = organisasjonConsumer.hentOrganisasjonNoekkelinfo(orgnr);
-                if (noekkelinfo == null) {
-                    LOGGER.warn("Kunne ikke hente orgnr fra Ereg: " + orgnr);
-                    return orgnr;
-                }
-                NavnDto navn = noekkelinfo.getNavn();
-                List<String> list = new ArrayList<>(asList(navn.getNavnelinje1(), navn.getNavnelinje2(), navn.getNavnelinje3(), navn.getNavnelinje4(), navn.getNavnelinje5()));
-                list.removeAll(asList("", null)); // fjern tomme strenger og null (håndteres som "null")
-                return String.join(", ", list);
-            } catch (Exception e) {
-                LOGGER.warn("Kunne ikke hente orgnr fra Ereg: " + orgnr, e);
-                return orgnr;
-            }
-        } else {
-            return "";
-        }
+        return organisasjonService.hentOrgNavn(orgnr);
     }
 
     private String hentOrgNavnWebservice(String orgnr) {
