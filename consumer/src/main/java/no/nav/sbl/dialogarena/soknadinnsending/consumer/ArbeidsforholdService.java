@@ -2,6 +2,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import com.google.common.collect.Lists;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.OrganisasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.PeriodeDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.PersonDto;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerUgyldigInput;
@@ -15,30 +20,48 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.DatatypeFactory;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
 
 @Service
 public class ArbeidsforholdService {
 
+    private static final String AAREG_API_ENABLED = "aareg_api_enabled";
 
     @Inject
     @Named("arbeidEndpoint")
     private ArbeidsforholdV3 arbeidsforholdWebWervice;
 
     @Inject
+    private ArbeidsforholdConsumer arbeidsforholdConsumer;
+
+    @Inject
     private ArbeidsforholdTransformer arbeidsforholdTransformer;
 
     private static final Regelverker AA_ORDNINGEN = new Regelverker();
+
     static {
         AA_ORDNINGEN.setValue("A_ORDNINGEN");
     }
 
     private DatatypeFactory datatypeFactory = lagDatatypeFactory();
 
-
     public List<Arbeidsforhold> hentArbeidsforhold(String fodselsnummer, Sokeperiode soekeperiode) {
+        return brukAaregRestApi() ? hentArbeidsforholdRest(fodselsnummer) : hentArbeidsforholdWS(fodselsnummer, soekeperiode);
+    }
+
+    private List<Arbeidsforhold> hentArbeidsforholdRest(String fodselsnummer) {
+        List<ArbeidsforholdDto> arbeidsforholdDtoList = arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fodselsnummer);
+
+        return arbeidsforholdDtoList.stream()
+                .map(this::mapToDomain)
+                .collect(Collectors.toList());
+    }
+
+    private List<Arbeidsforhold> hentArbeidsforholdWS(String fodselsnummer, Sokeperiode soekeperiode) {
         try {
             FinnArbeidsforholdPrArbeidstakerRequest finnArbeidsforholdPrArbeidstakerRequest = lagArbeidsforholdRequest(fodselsnummer, lagPeriode(soekeperiode.fom, soekeperiode.tom));
 
@@ -50,9 +73,9 @@ public class ArbeidsforholdService {
         }
     }
 
-    private FinnArbeidsforholdPrArbeidstakerRequest lagArbeidsforholdRequest(String fodselsnummer, Periode periode ) {
+    private FinnArbeidsforholdPrArbeidstakerRequest lagArbeidsforholdRequest(String fodselsnummer, Periode periode) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
-            request.setArbeidsforholdIPeriode(periode);
+        request.setArbeidsforholdIPeriode(periode);
         request.setRapportertSomRegelverk(AA_ORDNINGEN);
         request.setIdent(lagIdent(fodselsnummer));
         return request;
@@ -72,11 +95,38 @@ public class ArbeidsforholdService {
         return periode;
     }
 
+    private boolean brukAaregRestApi() {
+        return Boolean.parseBoolean(System.getProperty(AAREG_API_ENABLED, "false"));
+    }
+
+    public Arbeidsforhold mapToDomain(ArbeidsforholdDto dto) {
+        Arbeidsforhold result = new Arbeidsforhold();
+        result.edagId = dto.getNavArbeidsforholdId();
+        result.orgnr = null;
+        result.arbeidsgivernavn = "";
+
+        if (dto.getArbeidsgiver() instanceof OrganisasjonDto) {
+            result.orgnr = ((OrganisasjonDto) dto.getArbeidsgiver()).getOrganisasjonsnummer();
+            result.arbeidsgivernavn = arbeidsforholdTransformer.hentOrgNavn(result.orgnr); // hent orgNavn fra Ereg
+        } else if (dto.getArbeidsgiver() instanceof PersonDto) {
+            result.arbeidsgivernavn = "Privatperson";
+        }
+
+        PeriodeDto periode = dto.getAnsettelsesperiode().getPeriode();
+        result.fom = periode.getFom().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        result.tom = periode.getTom().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+        dto.getArbeidsavtaler()
+                .forEach(arbeidsavtale -> {
+                    result.harFastStilling = true;
+                    result.fastStillingsprosent += Math.round(arbeidsavtale.getStillingsprosent());
+                });
+        return result;
+    }
+
     public static final class Sokeperiode {
 
         private final DateTime fom;
-
-
         private final DateTime tom;
 
         public Sokeperiode(DateTime fom, DateTime tom) {
@@ -88,11 +138,9 @@ public class ArbeidsforholdService {
             return fom;
         }
 
-
         public DateTime getTom() {
             return tom;
         }
-
 
     }
 }
