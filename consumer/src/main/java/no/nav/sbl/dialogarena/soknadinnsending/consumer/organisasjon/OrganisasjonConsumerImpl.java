@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
 import org.slf4j.Logger;
 
@@ -16,12 +14,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import static java.lang.System.getenv;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
 
-    private static final Logger logger = getLogger(NorgConsumerImpl.class);
+    private static final Logger logger = getLogger(OrganisasjonConsumerImpl.class);
+    private static final String SOSIALHJELP_SOKNAD_API_EREG_API_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_EREG_API_APIKEY_PASSWORD";
 
     private Client client;
     private String endpoint;
@@ -34,7 +32,7 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
     @Override
     public void ping() {
         // faker ping med OPTIONS-kall
-        Invocation.Builder request = lagRequest(endpoint + "v1/organisasjon/990983666/noekkelinfo");
+        Invocation.Builder request = client.target(endpoint + "v1/organisasjon/990983666/noekkelinfo").request();
         try (Response response = request.options()) {
             if (response.getStatus() != 200) {
                 logger.warn("Ping feilet mot Ereg: " + response.getStatus());
@@ -66,18 +64,13 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
     private Invocation.Builder lagRequest(String endpoint) {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv("SOSIALHJELP_SOKNAD_API_EREG_API_APIKEY");
+        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_EREG_API_APIKEY_PASSWORD);
 
         WebTarget b = client.target(endpoint);
 
-        if (isNotEmpty(apiKey)) {
-            return b.request()
-                    .header("Nav-Call-Id", callId)
-                    .header("Nav-Consumer-Id", consumerId)
-                    .header("x-nav-apiKey", apiKey);
-        }
         return b.request()
                 .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId);
+                .header("Nav-Consumer-Id", consumerId)
+                .header("x-nav-apiKey", apiKey);
     }
 }
