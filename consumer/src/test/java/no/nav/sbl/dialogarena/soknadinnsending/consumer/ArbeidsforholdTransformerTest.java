@@ -184,14 +184,4 @@ public class ArbeidsforholdTransformerTest {
         response.setOrganisasjon(org);
         return response;
     }
-
-    private OrganisasjonNoekkelinfoDto createOrgNoekkelinfoResponseWithNulls() {
-        NavnDto navn = new NavnDto("Testesen A/S", "andre linje", null, null, null);
-        return new OrganisasjonNoekkelinfoDto(navn, ORGNUMMER);
-    }
-
-    private OrganisasjonNoekkelinfoDto createOrgNoekkelinfoResponseWithEmptyStrings() {
-        NavnDto navn = new NavnDto("Testesen A/S", "andre linje", "", "", "");
-        return new OrganisasjonNoekkelinfoDto(navn, ORGNUMMER);
-    }
 }

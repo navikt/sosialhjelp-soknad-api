@@ -24,11 +24,19 @@ public class OrganisasjonServiceTest {
     private OrganisasjonService service;
 
     private String orgnr = "12345";
-    private OrganisasjonNoekkelinfoDto noekkelinfo = new OrganisasjonNoekkelinfoDto(new NavnDto("Testesen A/S", "andre linje", null, null, null), orgnr);
 
     @Test
-    public void skalHentOrgNavn() {
-        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(noekkelinfo);
+    public void skalHentOrgNavnMedNullINavnelinjer() {
+        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithNulls());
+
+        String orgNavn = service.hentOrgNavn(orgnr);
+
+        assertThat(orgNavn, equalTo("Testesen A/S, andre linje"));
+    }
+
+    @Test
+    public void skalHentOrgNavnMedTommeStringsINavnelinjer() {
+        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithEmptyStrings());
 
         String orgNavn = service.hentOrgNavn(orgnr);
 
@@ -58,5 +66,15 @@ public class OrganisasjonServiceTest {
         String orgNavn = service.hentOrgNavn(orgnr);
 
         assertThat(orgNavn, equalTo(orgnr));
+    }
+
+    private OrganisasjonNoekkelinfoDto createOrgNoekkelinfoResponseWithNulls() {
+        NavnDto navn = new NavnDto("Testesen A/S", "andre linje", null, null, null);
+        return new OrganisasjonNoekkelinfoDto(navn, orgnr);
+    }
+
+    private OrganisasjonNoekkelinfoDto createOrgNoekkelinfoResponseWithEmptyStrings() {
+        NavnDto navn = new NavnDto("Testesen A/S", "andre linje", "", "", "");
+        return new OrganisasjonNoekkelinfoDto(navn, orgnr);
     }
 }
