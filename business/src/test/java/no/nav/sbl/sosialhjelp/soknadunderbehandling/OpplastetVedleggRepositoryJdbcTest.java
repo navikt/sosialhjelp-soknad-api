@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 public class OpplastetVedleggRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
-    private static final String EIER2 = "10987654321";
+    private static final String EIER2 = "22222222222";
     private static final byte[] DATA = {1, 2, 3, 4};
     private static final String SHA512 = ServiceUtils.getSha512FromByteArray(DATA);
     private static final String TYPE = "bostotte|annetboutgift";

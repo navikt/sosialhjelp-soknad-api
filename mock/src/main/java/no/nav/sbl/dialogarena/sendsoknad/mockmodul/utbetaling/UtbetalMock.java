@@ -96,10 +96,10 @@ public class UtbetalMock {
         WSOrganisasjon dummyOrg = new WSOrganisasjon()
                 .withAktoerId("000000000");
         WSOrganisasjon dummyPerson = new WSOrganisasjon()
-                .withAktoerId("01010011111");
+                .withAktoerId("11111111111");
         WSBankkonto bankkonto = new WSBankkonto()
                 .withKontotype("Norsk bankkonto")
-                .withKontonummer("32902095534");
+                .withKontonummer("123456789123");
 
         return new WSHentUtbetalingsinformasjonResponse()
                 .withUtbetalingListe(

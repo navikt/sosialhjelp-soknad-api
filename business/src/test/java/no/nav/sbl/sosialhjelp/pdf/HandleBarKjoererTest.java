@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HandleBarKjoererTest {
-    private static final String FNR = "15038000000";
+    private static final String FNR = "11111111111";
     @InjectMocks
     private HandleBarKjoerer handleBarKjoerer;
     @InjectMocks

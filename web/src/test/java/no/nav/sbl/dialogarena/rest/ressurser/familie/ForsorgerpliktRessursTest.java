@@ -48,7 +48,7 @@ public class ForsorgerpliktRessursTest {
                     .withMellomnavn("Wolfgang")
                     .withEtternavn("Mozart"))
             .withFodselsdato("1756-01-27")
-            .withPersonIdentifikator("27015612345");
+            .withPersonIdentifikator("11111111111");
 
     private static final JsonBarn JSON_BARN_2 = new JsonBarn()
             .withKilde(JsonKilde.SYSTEM)
@@ -57,7 +57,7 @@ public class ForsorgerpliktRessursTest {
                     .withMellomnavn("van")
                     .withEtternavn("Beethoven"))
             .withFodselsdato("1770-12-16")
-            .withPersonIdentifikator("16127054321");
+            .withPersonIdentifikator("22222222222");
 
     @InjectMocks
     private ForsorgerpliktRessurs forsorgerpliktRessurs;
