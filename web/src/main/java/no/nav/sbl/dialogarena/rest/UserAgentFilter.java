@@ -28,8 +28,8 @@ public class UserAgentFilter extends OncePerRequestFilter {
                 String majorVersion = client.userAgent.major;
                 String os = client.os.family;
 
-                MetricsFactory.createEvent("soknad.user-agent").addFieldToReport("browser." + family + "." + majorVersion , 1).report();
-                MetricsFactory.createEvent("soknad.user-agent").addFieldToReport("os." + os + "." + client.os.major, 1).report();
+                MetricsFactory.createEvent("soknad.user-agent.browser." + family + "." + majorVersion).report();
+                MetricsFactory.createEvent("soknad.user-agent.os." + os + "." + client.os.major).report();
             } catch (Exception e) {
                 logger.info("Unable to parse User-Agent: {}", uaHeader);
             }
