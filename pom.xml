@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>1.2019.10.14-11.26-d162453764a7</version>
+        <version>1.2020.01.08-12.57-62d0c889ddb5</version>
     </parent>
 
     <modules>
@@ -69,14 +69,14 @@
         <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
 
         <!-- Nav felles java-bibliotek -->
-        <nav-common.version>1.2019.10.14-11.26-d162453764a7</nav-common.version>
+        <nav-common.version>1.2020.01.08-12.57-62d0c889ddb5</nav-common.version>
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>4.1.9.RELEASE</spring.version>
         <jetty.version>9.4.18.v20190429</jetty.version>
         <jersey.version>2.25.1</jersey.version>
         <oidc-support.version>0.2.18</oidc-support.version>
-        <nimbus-jose-jwt.version>7.8</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>8.4</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <jcip-annotations.version>1.0-1</jcip-annotations.version>
         <cxf.version>3.3.4</cxf.version>
@@ -97,7 +97,7 @@
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
-        <verapdf.version>1.12.1</verapdf.version>
+        <verapdf.version>1.14.105</verapdf.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.3.2</hsqldb.version>
         <hikaricp.version>3.4.1</hikaricp.version>
@@ -129,7 +129,7 @@
 
         <kryptering.version>1.0.5</kryptering.version>
         <jackson-annotations.version>2.10.0.pr2</jackson-annotations.version>
-        <streaming-klient.version>1.0.6</streaming-klient.version>
+        <streaming-klient.version>1.0.11</streaming-klient.version>
 
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>1.3</hamcrest.version>
