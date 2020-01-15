@@ -74,6 +74,7 @@
     "NEDETID_SLUTT": "",
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
-    "START_NORG_WITHMOCK": "true"
+    "START_NORG_WITHMOCK": "true",
+    "VIRKSERT_STI": "/var/run/secrets/nais.io/virksomhetssertifikat"
   }
 }

@@ -72,6 +72,7 @@
     "NEDETID_SLUTT": "01.01.2020 09:00:00",
     "FASIT_ENVIRONMENT_NAME": "q1",
     "TILLATMOCK": "false",
-    "START_NORG_WITHMOCK": "false"
+    "START_NORG_WITHMOCK": "false",
+    "VIRKSERT_STI": "/var/run/secrets/nais.io/virksomhetssertifikat"
   }
 }

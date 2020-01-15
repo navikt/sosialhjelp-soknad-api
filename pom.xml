@@ -1080,12 +1080,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-testcertificates</artifactId>
-                <version>${modig-testcertificates.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>no.digipost</groupId>
                 <artifactId>digg</artifactId>
                 <version>${digipost.digg.version}</version>
