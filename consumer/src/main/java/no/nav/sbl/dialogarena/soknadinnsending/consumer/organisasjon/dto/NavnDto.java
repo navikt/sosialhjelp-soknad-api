@@ -5,12 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NavnDto {
 
-    private final String navnelinje1;
-    private final String navnelinje2;
-    private final String navnelinje3;
-    private final String navnelinje4;
-    private final String navnelinje5;
+    private String navnelinje1;
+    private String navnelinje2;
+    private String navnelinje3;
+    private String navnelinje4;
+    private String navnelinje5;
 //    private String redigertnavn; // kunne kanskje brukt denne?
+
+
+    public NavnDto() {
+    }
 
     public NavnDto(String navnelinje1, String navnelinje2, String navnelinje3, String navnelinje4, String navnelinje5) {
         this.navnelinje1 = navnelinje1;
@@ -40,4 +44,23 @@ public class NavnDto {
         return navnelinje5;
     }
 
+    public void setNavnelinje1(String navnelinje1) {
+        this.navnelinje1 = navnelinje1;
+    }
+
+    public void setNavnelinje2(String navnelinje2) {
+        this.navnelinje2 = navnelinje2;
+    }
+
+    public void setNavnelinje3(String navnelinje3) {
+        this.navnelinje3 = navnelinje3;
+    }
+
+    public void setNavnelinje4(String navnelinje4) {
+        this.navnelinje4 = navnelinje4;
+    }
+
+    public void setNavnelinje5(String navnelinje5) {
+        this.navnelinje5 = navnelinje5;
+    }
 }

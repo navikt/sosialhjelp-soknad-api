@@ -8,6 +8,9 @@ public class OrganisasjonNoekkelinfoDto {
     private NavnDto navn;
     private String organisasjonsnummer;
 
+    public OrganisasjonNoekkelinfoDto() {
+    }
+
     public OrganisasjonNoekkelinfoDto(NavnDto navn, String organisasjonsnummer) {
         this.navn = navn;
         this.organisasjonsnummer = organisasjonsnummer;
@@ -22,4 +25,11 @@ public class OrganisasjonNoekkelinfoDto {
     }
 
 
+    public void setNavn(NavnDto navn) {
+        this.navn = navn;
+    }
+
+    public void setOrganisasjonsnummer(String organisasjonsnummer) {
+        this.organisasjonsnummer = organisasjonsnummer;
+    }
 }
