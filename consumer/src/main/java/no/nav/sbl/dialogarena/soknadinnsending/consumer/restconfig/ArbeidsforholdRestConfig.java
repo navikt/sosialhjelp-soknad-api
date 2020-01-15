@@ -1,0 +1,43 @@
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
+
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerImpl;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
+import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.rest.RestUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+
+@Configuration
+public class ArbeidsforholdRestConfig {
+
+    public static final String AAREG_KEY = "start.aareg.withmock";
+
+    @Value("${aareg_api_baseurl}")
+    private String endpoint;
+
+    @Bean
+    public ArbeidsforholdConsumer arbeidsforholdConsumer() {
+        ArbeidsforholdConsumer prod = new ArbeidsforholdConsumerImpl(RestUtils.createClient(), endpoint);
+        ArbeidsforholdConsumer mock = new ArbeidsforholdConsumerMock().arbeidsforholdConsumerMock();
+        return createSwitcher(prod, mock, AAREG_KEY, ArbeidsforholdConsumer.class);
+    }
+
+    @Bean
+    public Pingable arbeidsforholdRestPing() {
+        return () -> {
+            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Aareg", false);
+            try {
+                arbeidsforholdConsumer().ping();
+                return lyktes(metadata);
+            } catch (Exception e) {
+                return feilet(metadata, e);
+            }
+        };
+    }
+}
