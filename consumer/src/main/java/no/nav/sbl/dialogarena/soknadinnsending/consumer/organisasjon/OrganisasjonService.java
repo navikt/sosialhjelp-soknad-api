@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.NavnDto
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
+@Component
 public class OrganisasjonService {
 
     private static final Logger log = LoggerFactory.getLogger(OrganisasjonService.class);
