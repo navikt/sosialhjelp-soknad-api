@@ -85,10 +85,12 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     }
 
     private String hentOrgNavnRest(String orgnr) {
+        LOGGER.info("Bruker Ereg rest api");
         return organisasjonService.hentOrgNavn(orgnr);
     }
 
     private String hentOrgNavnWebservice(String orgnr) {
+        LOGGER.info("Bruker Ereg webservice");
         if (orgnr != null) {
             HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
             try {
