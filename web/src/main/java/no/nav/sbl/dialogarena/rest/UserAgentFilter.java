@@ -19,28 +19,33 @@ public class UserAgentFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        String uaHeader = request.getHeader("User-Agent");
-        try {
-            String requestPath = request.getRequestURI();
-            logger.info("RequestURI: {}", requestPath);
+        if (countUserAgentForRequest(request)) {
+            String uaHeader = request.getHeader("User-Agent");
+            try {
+                Parser parser = new Parser();
+                Client client = parser.parse(uaHeader);
+                String family = client.userAgent.family;
+                String majorVersion = client.userAgent.major;
+                String os = client.os.family;
 
-            Parser parser = new Parser();
-            Client client = parser.parse(uaHeader);
-            String family = client.userAgent.family;
-            String majorVersion = client.userAgent.major;
-            String os = client.os.family;
-            logger.info("family: {}, majorVersion: {}, os: {}", family, majorVersion, os);
-
-            Event browserEvent = MetricsFactory.createEvent("user-agent");
-            browserEvent.addFieldToReport("os", os);
-            browserEvent.addFieldToReport("browser", family);
-            browserEvent.addFieldToReport("majorVersion", majorVersion);
-            browserEvent.report();
-        } catch (Exception e) {
-            logger.info("Unable to parse User-Agent: {}", uaHeader);
+                MetricsFactory.createEvent("soknad.user-agent").addFieldToReport("browser." + family + "." + majorVersion , 1).report();
+                MetricsFactory.createEvent("soknad.user-agent").addFieldToReport("os." + os + "." + client.os.major, 1).report();
+            } catch (Exception e) {
+                logger.info("Unable to parse User-Agent: {}", uaHeader);
+            }
         }
-
         filterChain.doFilter(request, response);
+    }
+
+    private boolean countUserAgentForRequest(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        if (requestURI.contains("/internal/isAlive")) {
+            return false;
+        }
+        if (requestURI.contains("/metadata/ping")) {
+            return false;
+        }
+        return true;
     }
 
 }
