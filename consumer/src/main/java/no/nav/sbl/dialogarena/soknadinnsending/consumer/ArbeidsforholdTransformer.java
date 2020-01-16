@@ -1,41 +1,23 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.util.List;
-
-import static java.util.Arrays.asList;
 
 @Service
 public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>,
         Function<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold> {
 
-    private static final String EREG_API_ENABLED = "ereg_api_enabled";
-
-    @Inject
-    @Named("organisasjonEndpoint")
-    private OrganisasjonV4 organisasjonWebService;
-
     @Inject
     private OrganisasjonService organisasjonService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
 
     @Override
     public Arbeidsforhold transform(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
@@ -46,7 +28,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
 
         if (arbeidsforhold.getArbeidsgiver() instanceof Organisasjon) {
             result.orgnr = ((Organisasjon) arbeidsforhold.getArbeidsgiver()).getOrgnummer();
-            result.arbeidsgivernavn = hentOrgNavn(result.orgnr);
+            result.arbeidsgivernavn = organisasjonService.hentOrgNavn(result.orgnr);
         } else if (arbeidsforhold.getArbeidsgiver() instanceof HistoriskArbeidsgiverMedArbeidsgivernummer) {
             result.arbeidsgivernavn = ((HistoriskArbeidsgiverMedArbeidsgivernummer) arbeidsforhold.getArbeidsgiver()).getNavn();
         } else if (arbeidsforhold.getArbeidsgiver() instanceof Person) {
@@ -73,51 +55,6 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
 
     private Long nullSafe(BigDecimal number) {
         return number != null ? number.longValue() : 0;
-    }
-
-
-    public boolean brukEregRestApi() {
-        return Boolean.parseBoolean(System.getProperty(EREG_API_ENABLED, "false"));
-    }
-
-    public String hentOrgNavn(String orgnr) {
-        return brukEregRestApi() ? hentOrgNavnRest(orgnr) : hentOrgNavnWebservice(orgnr);
-    }
-
-    private String hentOrgNavnRest(String orgnr) {
-        LOGGER.info("Bruker Ereg rest api");
-        return organisasjonService.hentOrgNavn(orgnr);
-    }
-
-    private String hentOrgNavnWebservice(String orgnr) {
-        LOGGER.info("Bruker Ereg webservice");
-        if (orgnr != null) {
-            HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
-            try {
-                //Kan bare være ustrukturert navn.
-                no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon organisasjon = organisasjonWebService.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon();
-                if (organisasjon == null) {
-                    LOGGER.warn("Kunne ikke hente orgnr: " + orgnr);
-                    return orgnr;
-                }
-                List<String> orgNavn = ((UstrukturertNavn) organisasjon.getNavn()).getNavnelinje();
-                orgNavn.removeAll(asList("", null));
-                return Joiner.on(", ").join(orgNavn);
-            } catch (Exception ex) {
-                LOGGER.warn("Kunne ikke hente orgnr: " + orgnr, ex);
-                return orgnr;
-            }
-        } else {
-            return "";
-        }
-    }
-
-    private HentOrganisasjonRequest lagOrgRequest(String orgnr) {
-        HentOrganisasjonRequest hentOrganisasjonRequest = new HentOrganisasjonRequest();
-        hentOrganisasjonRequest.setOrgnummer(orgnr);
-        hentOrganisasjonRequest.setInkluderHierarki(false);
-        hentOrganisasjonRequest.setInkluderHistorikk(false);
-        return hentOrganisasjonRequest;
     }
 
     @Override
