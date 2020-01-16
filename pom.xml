@@ -1288,6 +1288,12 @@
                 <version>${jetty.version}</version>
             </dependency>
 
+            <!--
+                Snyk klager på sårbarhet i snakeyaml som er en avhengighet i uap-java.
+                Se https://snyk.io/vuln/SNYK-JAVA-ORGYAML-537645
+                uap-java bruker kun snakeyaml til å parse en yaml-fil med regexer brukt av biblioteket. Vi stoler på
+                denne filen. https://github.com/ua-parser/uap-core/blob/master/regexes.yaml
+            -->
             <dependency>
                 <groupId>com.github.ua-parser</groupId>
                 <artifactId>uap-java</artifactId>
