@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.rest;
 
-import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,6 @@ public class UserAgentFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         if (countUserAgentForRequest(request)) {
-            logger.info("counting ");
             String uaHeader = request.getHeader("User-Agent");
             try {
                 Parser parser = new Parser();
@@ -33,6 +31,9 @@ public class UserAgentFilter extends OncePerRequestFilter {
                         .addTagToReport("os-major-versjon", client.os.major)
                         .addTagToReport("device-family", client.device.family)
                         .report();
+                if (client.userAgent.family.equals("Other")) {
+                    logger.info("Request URI for browser: Other, {}", request.getRequestURI());
+                }
             } catch (Exception e) {
                 logger.info("Unable to parse User-Agent: {}", uaHeader);
             }
