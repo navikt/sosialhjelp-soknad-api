@@ -31,7 +31,7 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
 
     @Override
     public void ping() {
-        // faker ping med OPTIONS-kall
+        // faker ping med OPTIONS-kall til samme tjeneste med NAV ITs orgnr
         Invocation.Builder request = client.target(endpoint + "v1/organisasjon/990983666/noekkelinfo").request();
         try (Response response = request.options()) {
             if (response.getStatus() != 200) {
