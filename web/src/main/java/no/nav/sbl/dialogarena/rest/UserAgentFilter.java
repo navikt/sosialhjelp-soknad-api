@@ -24,12 +24,14 @@ public class UserAgentFilter extends OncePerRequestFilter {
             try {
                 Parser parser = new Parser();
                 Client client = parser.parse(uaHeader);
-                String family = client.userAgent.family;
-                String majorVersion = client.userAgent.major;
-                String os = client.os.family;
 
-                MetricsFactory.createEvent("soknad.user-agent.browser." + family + "." + majorVersion).report();
-                MetricsFactory.createEvent("soknad.user-agent.os." + os + "." + client.os.major).report();
+                MetricsFactory.createEvent("soknad.user-agent")
+                        .addFieldToReport("browser-family", client.userAgent.family)
+                        .addFieldToReport("browser-major-version", client.userAgent.major)
+                        .addFieldToReport("os-family", client.os.family)
+                        .addFieldToReport("os-major-versjon", client.os.major)
+                        .addFieldToReport("device-family", client.device.family)
+                        .report();
             } catch (Exception e) {
                 logger.info("Unable to parse User-Agent: {}", uaHeader);
             }
