@@ -1,15 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-
-import javax.xml.datatype.DatatypeFactory;
-
+import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,24 +19,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Aktoer;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.AnsettelsesPeriode;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsavtale;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Avloenningstyper;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Gyldighetsperiode;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Organisasjon;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
+import javax.xml.datatype.DatatypeFactory;
+import java.math.BigDecimal;
+
+import static java.lang.System.getProperties;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArbeidsforholdTransformerTest {
 
+    //todo: fjern webservice-avhengigheter på sikt
+
     public static final String ORGNUMMER = "1234567";
+
     @Mock
     private OrganisasjonV4 organisasjon;
+
+    @Mock
+    private OrganisasjonService organisasjonService;
 
     @InjectMocks
     private ArbeidsforholdTransformer arbeidsforholdTransformer;
@@ -46,6 +51,12 @@ public class ArbeidsforholdTransformerTest {
     public void setup() throws Exception {
         datatypeFactory = DatatypeFactory.newInstance();
         when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponse());
+        when(organisasjonService.hentOrgNavn(anyString())).thenReturn(createOrgnoekkelinfoResponse());
+    }
+
+    @After
+    public void tearDown() {
+        getProperties().setProperty("EREG_API_ENABLED", "true");
     }
 
     private HentOrganisasjonResponse createOrgResponse() {
@@ -59,6 +70,10 @@ public class ArbeidsforholdTransformerTest {
         return response;
     }
 
+    private String createOrgnoekkelinfoResponse() {
+        return "Testesen A/S, andre linje";
+    }
+
     @Test
     public void skalTransformereFastArbeidsforhold() {
         Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold("fast"));
@@ -68,16 +83,18 @@ public class ArbeidsforholdTransformerTest {
         assertThat(arbeidsforhold.tom, equalTo(null));
         assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
     }
-    
+
     @Test
-    public void skalIgnorereNullVerdierIOrgNavn() throws Exception {
+    public void skalIgnorereNullVerdierIOrgNavnWS() throws Exception {
+        getProperties().setProperty("EREG_API_ENABLED", "false");
         when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponseWithNulls());
         Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold());
         assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
     }
-    
+
     @Test
-    public void skalIgnorereTommeStrengerIOrgNavn() throws Exception {
+    public void skalIgnorereTommeStrengerIOrgNavnWS() throws Exception {
+        getProperties().setProperty("EREG_API_ENABLED", "false");
         when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponseWithEmptyStrings());
         Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold());
         assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
@@ -141,7 +158,7 @@ public class ArbeidsforholdTransformerTest {
         org.setOrgnummer(ORGNUMMER);
         return org;
     }
-    
+
     private HentOrganisasjonResponse createOrgResponseWithNulls() {
         HentOrganisasjonResponse response = new HentOrganisasjonResponse();
         no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon org = new no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon();
@@ -154,7 +171,7 @@ public class ArbeidsforholdTransformerTest {
         response.setOrganisasjon(org);
         return response;
     }
-    
+
     private HentOrganisasjonResponse createOrgResponseWithEmptyStrings() {
         HentOrganisasjonResponse response = new HentOrganisasjonResponse();
         no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon org = new no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon();
@@ -167,5 +184,4 @@ public class ArbeidsforholdTransformerTest {
         response.setOrganisasjon(org);
         return response;
     }
-
 }

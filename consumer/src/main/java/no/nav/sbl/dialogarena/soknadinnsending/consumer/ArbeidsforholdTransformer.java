@@ -3,11 +3,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -18,16 +18,22 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 @Service
 public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>,
         Function<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold> {
 
+    private static final String EREG_API_ENABLED = "ereg_api_enabled";
+
     @Inject
     @Named("organisasjonEndpoint")
     private OrganisasjonV4 organisasjonWebService;
+
+    @Inject
+    private OrganisasjonService organisasjonService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
 
@@ -38,14 +44,12 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
         result.orgnr = null;
         result.arbeidsgivernavn = "";
 
-        if(arbeidsforhold.getArbeidsgiver() instanceof Organisasjon) {
+        if (arbeidsforhold.getArbeidsgiver() instanceof Organisasjon) {
             result.orgnr = ((Organisasjon) arbeidsforhold.getArbeidsgiver()).getOrgnummer();
             result.arbeidsgivernavn = hentOrgNavn(result.orgnr);
-        }
-        else if (arbeidsforhold.getArbeidsgiver() instanceof HistoriskArbeidsgiverMedArbeidsgivernummer) {
+        } else if (arbeidsforhold.getArbeidsgiver() instanceof HistoriskArbeidsgiverMedArbeidsgivernummer) {
             result.arbeidsgivernavn = ((HistoriskArbeidsgiverMedArbeidsgivernummer) arbeidsforhold.getArbeidsgiver()).getNavn();
-        }
-        else if(arbeidsforhold.getArbeidsgiver() instanceof Person) {
+        } else if (arbeidsforhold.getArbeidsgiver() instanceof Person) {
             result.arbeidsgivernavn = "Privatperson";
         }
 
@@ -72,7 +76,21 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     }
 
 
+    public boolean brukEregRestApi() {
+        return Boolean.parseBoolean(System.getProperty(EREG_API_ENABLED, "false"));
+    }
+
     public String hentOrgNavn(String orgnr) {
+        return brukEregRestApi() ? hentOrgNavnRest(orgnr) : hentOrgNavnWebservice(orgnr);
+    }
+
+    private String hentOrgNavnRest(String orgnr) {
+        LOGGER.info("Bruker Ereg rest api");
+        return organisasjonService.hentOrgNavn(orgnr);
+    }
+
+    private String hentOrgNavnWebservice(String orgnr) {
+        LOGGER.info("Bruker Ereg webservice");
         if (orgnr != null) {
             HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
             try {
@@ -83,7 +101,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
                     return orgnr;
                 }
                 List<String> orgNavn = ((UstrukturertNavn) organisasjon.getNavn()).getNavnelinje();
-                orgNavn.removeAll(Arrays.asList("", null));
+                orgNavn.removeAll(asList("", null));
                 return Joiner.on(", ").join(orgNavn);
             } catch (Exception ex) {
                 LOGGER.warn("Kunne ikke hente orgnr: " + orgnr, ex);

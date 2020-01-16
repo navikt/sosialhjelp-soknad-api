@@ -200,6 +200,9 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
+
+        // todo: bruk ny OrganisajonConsumerMock, når arbeidsforholdMock er oppdatert
+
         logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
         if (jsonOrganisasjon != null){
             OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);

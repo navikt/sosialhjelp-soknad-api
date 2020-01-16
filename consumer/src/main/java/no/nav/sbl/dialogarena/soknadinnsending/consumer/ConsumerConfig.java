@@ -5,8 +5,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.ArbeidsforholdRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
 import org.springframework.cache.annotation.EnableCaching;
@@ -27,7 +29,8 @@ import static java.lang.System.setProperty;
         AdresseSokService.class,
         NorgService.class,
         UtbetalingService.class,
-        SkattbarInntektService.class
+        SkattbarInntektService.class,
+        OrganisasjonService.class
 })
 
 public class ConsumerConfig {
@@ -51,6 +54,7 @@ public class ConsumerConfig {
             AdresseSokRestConfig.class,
             NorgRestConfig.class,
             UtbetalingWSConfig.class,
+            OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class
     })
     public static class WsServices {
