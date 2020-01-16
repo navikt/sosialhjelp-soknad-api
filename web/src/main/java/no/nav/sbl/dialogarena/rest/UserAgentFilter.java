@@ -20,17 +20,18 @@ public class UserAgentFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         if (countUserAgentForRequest(request)) {
+            logger.info("counting ");
             String uaHeader = request.getHeader("User-Agent");
             try {
                 Parser parser = new Parser();
                 Client client = parser.parse(uaHeader);
 
                 MetricsFactory.createEvent("soknad.user-agent")
-                        .addFieldToReport("browser-family", client.userAgent.family)
-                        .addFieldToReport("browser-major-version", client.userAgent.major)
-                        .addFieldToReport("os-family", client.os.family)
-                        .addFieldToReport("os-major-versjon", client.os.major)
-                        .addFieldToReport("device-family", client.device.family)
+                        .addTagToReport("browser-family", client.userAgent.family)
+                        .addTagToReport("browser-major-version", client.userAgent.major)
+                        .addTagToReport("os-family", client.os.family)
+                        .addTagToReport("os-major-versjon", client.os.major)
+                        .addTagToReport("device-family", client.device.family)
                         .report();
             } catch (Exception e) {
                 logger.info("Unable to parse User-Agent: {}", uaHeader);
