@@ -46,7 +46,7 @@ public class UserAgentFilter extends OncePerRequestFilter {
         if (requestURI.contains("/internal/isAlive")) {
             return false;
         }
-        if (requestURI.contains("/metadata/ping")) {
+        if (requestURI.contains("/metadata")) {
             return false;
         }
         return true;
