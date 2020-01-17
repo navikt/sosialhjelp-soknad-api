@@ -64,8 +64,7 @@ public class DigisosApiImpl implements DigisosApi {
     private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
     private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
     private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
-    //private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
-    private static final int SENDING_TIL_FIKS_TIMEOUT = 1000; // 1 sekund (kun for test)
+    private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
