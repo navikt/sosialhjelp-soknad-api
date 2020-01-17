@@ -273,21 +273,20 @@ public class DigisosApiImpl implements DigisosApi {
                 String errorResponse = EntityUtils.toString(response.getEntity());
                 String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
                 if (fiksDigisosId != null) {
-                    log.error(String.format("Søknaden %s er allerede sendt til fiks-digisos-api med id %s. Ruter brukeren til innsynssiden", behandlingsId, fiksDigisosId), errorResponse);
+                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Ruter brukeren til innsynssiden. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
                     return fiksDigisosId;
                 }
 
-                log.error(String.format("%s: Opplasting av %s til FIKS digisos-api feilet:",
+                throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet med status %s og response: %s",
+                        behandlingsId,
                         response.getStatusLine().getReasonPhrase(),
-                        behandlingsId),
-                        errorResponse);
-                throw new IllegalStateException(String.format("Opplasting feilet for %s", behandlingsId));
+                        errorResponse));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
             log.info("Sendte inn søknad og fikk digisosid: {}", digisosId);
             return digisosId;
         } catch (IOException e) {
-            throw new IllegalStateException(String.format("Opplasting feilet for %s", behandlingsId), e);
+            throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet", behandlingsId), e);
         }
     }
 
