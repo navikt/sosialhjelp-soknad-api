@@ -14,7 +14,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-
 import java.util.List;
 
 import static java.lang.System.getenv;
@@ -23,7 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
     private static final Logger logger = getLogger(ArbeidsforholdConsumerImpl.class);
-    private static final String SOSIALHJELP_SOKNAD_API_AAREG_API_V_1_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_AAREG_API_V1_APIKEY_PASSWORD";
+    private static final String SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD";
 
     private Client client;
     private String endpoint;
@@ -38,7 +37,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREG_API_V_1_APIKEY_PASSWORD); //todo changeme
+        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
 
         // todo - funker ikke
         Invocation.Builder request = client.target(endpoint + "v1/").request()
@@ -85,7 +84,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREG_API_V_1_APIKEY_PASSWORD);
+        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
 
         return client.target(endpoint)
                 .queryParam("sporingsinformasjon", false)

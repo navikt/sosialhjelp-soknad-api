@@ -37,6 +37,8 @@ spec:
         kvPath: {{virksomhetssertifikatKvPath}}
       - mountPath: /apigw/eregapi
         kvPath: {{eregapi_apikey_kvPath}}
+      - mountPath: /apigw/aaregapi
+        kvPath: {{aaregapi_apikey_kvPath}}
 {{/if}}
   ingresses:
 {{#each ingresses}}

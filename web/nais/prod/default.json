@@ -8,6 +8,7 @@
   "datasourceKvPath": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/prod/maskinporten",
   "eregapi_apikey_kvPath": "apikey/apigw/prod/ereg.api/sosialhjelp-soknad-api",
+  "aaregapi_apikey_kvPath": "apikey/apigw/prod/aareg.api/sosialhjelp-soknad-api",
   "minReplicas": "2",
   "maxReplicas": "4",
   "vaultEnabled": true,
