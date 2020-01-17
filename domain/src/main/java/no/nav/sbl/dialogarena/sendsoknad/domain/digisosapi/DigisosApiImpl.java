@@ -228,7 +228,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
-    private String lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
+    private String lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String behandlingsId, String token) {
 
         List<FilForOpplasting<Object>> filer = new ArrayList<>();
 
@@ -260,7 +260,7 @@ public class DigisosApiImpl implements DigisosApi {
                 .build();
 
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().setDefaultRequestConfig(requestConfig).build()) {
-            HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
+            HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, behandlingsId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
             post.setHeader("Authorization", token);
@@ -271,20 +271,23 @@ public class DigisosApiImpl implements DigisosApi {
             CloseableHttpResponse response = client.execute(post);
             if (response.getStatusLine().getStatusCode() >= 300) {
                 String errorResponse = EntityUtils.toString(response.getEntity());
-                String digisosId = getDigisosIdFromResponse(errorResponse, navEkseternRefId);
-                if (digisosId != null) return digisosId;
+                String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
+                if (fiksDigisosId != null) {
+                    log.error(String.format("Søknaden %s er allerede sendt til fiks-digisos-api med id %s. Ruter brukeren til innsynssiden", behandlingsId, fiksDigisosId), errorResponse);
+                    return fiksDigisosId;
+                }
 
                 log.error(String.format("%s: Opplasting av %s til FIKS digisos-api feilet:",
                         response.getStatusLine().getReasonPhrase(),
-                        navEkseternRefId),
+                        behandlingsId),
                         errorResponse);
-                throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
+                throw new IllegalStateException(String.format("Opplasting feilet for %s", behandlingsId));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
             log.info("Sendte inn søknad og fikk digisosid: {}", digisosId);
             return digisosId;
         } catch (IOException e) {
-            throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
+            throw new IllegalStateException(String.format("Opplasting feilet for %s", behandlingsId), e);
         }
     }
 
