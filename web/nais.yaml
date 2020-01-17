@@ -35,6 +35,8 @@ spec:
         kvPath: {{datasourceKvPath}}
       - mountPath: /var/run/secrets/nais.io/virksomhetssertifikat
         kvPath: {{virksomhetssertifikatKvPath}}
+      - mountPath: /apigw/eregapi
+        kvPath: {{eregapi_apikey_kvPath}}
 {{/if}}
   ingresses:
 {{#each ingresses}}
