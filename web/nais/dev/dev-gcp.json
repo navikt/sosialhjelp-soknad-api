@@ -6,6 +6,7 @@
   "vaultKvPath": " /kv/preprod/sbs/sosialhjelp-soknad-api/q0",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
+  "eregapi_apikey_kvPath": "apikey/apigw/dev/ereg.api/sosialhjelp-soknad-api_q0",
   "minReplicas": "1",
   "maxReplicas": "1",
   "vaultEnabled": false,
