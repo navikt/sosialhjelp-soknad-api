@@ -44,7 +44,7 @@ public class SoknadActionsTest {
     public static final String SOKNADINNSENDING_ETTERSENDING_URL = "/soknadinnsending/ettersending";
     public static final String SAKSOVERSIKT_URL = "/saksoversikt";
     public static final String TESTKOMMUNE = "2352";
-    public static final String KOMMUNE_I_SVARUT_LISTEN = "0701";
+    public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
     private String EIER;
 
     @Inject

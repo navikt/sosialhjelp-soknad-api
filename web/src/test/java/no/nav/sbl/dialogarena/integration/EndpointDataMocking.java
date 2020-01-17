@@ -50,7 +50,7 @@ public class EndpointDataMocking {
         Person person = new Person();
         Person barn = new Person();
         NorskIdent norskIdent = new NorskIdent();
-        norskIdent.setIdent("04031659235");
+        norskIdent.setIdent("04031659235"); // Ikke ekte person
         barn.setIdent(norskIdent);
         barn.setFoedselsdato(foedselsdato);
         familierelasjon.setTilPerson(barn);

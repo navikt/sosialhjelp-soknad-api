@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class AvbrytAutomatiskSchedulerTest {
 
-    private static final String EIER = "21036612271";
+    private static final String EIER = "11111111111";
     private static final String BEHANDLINGS_ID = "1100AAAAA";
     private static final int DAGER_GAMMEL_SOKNAD = 14;
 

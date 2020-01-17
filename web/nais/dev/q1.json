@@ -42,7 +42,7 @@
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "true",
     "SOKNAD_BOSTOTTE_URL": "https://api-gw-q1.oera.no/ekstern/husbanken/api/nav/minbostotte",
     "SOKNAD_BOSTOTTE_PING_URL": "https://api-gw-q1.oera.no/ekstern/husbanken/api/nav/minbostotte/ping",
-    "SOKNAD_ETTERSENDING_ANTALLDAGER": "90",
+    "SOKNAD_ETTERSENDING_ANTALLDAGER": "120",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester-q1.nav.no/esso/saml2/jsp/spSSOInit.jsp?metaAlias=/sp&idpEntityID=idporten-ver1.difi.no-v3&NameIDFormat=transient&AuthLevel=4&goto=https://tjenester-q1.nav.no/soknadinnsending",
     "TPSWS_API_V1_URL": "https://api-gw-q1.oera.no/tpsws/api/v1/",
