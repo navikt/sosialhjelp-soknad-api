@@ -45,6 +45,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
@@ -268,8 +270,14 @@ public class DigisosApiImpl implements DigisosApi {
             post.setEntity(entitybuilder.build());
             CloseableHttpResponse response = client.execute(post);
             if (response.getStatusLine().getStatusCode() >= 300) {
-                log.warn(response.getStatusLine().getReasonPhrase());
-                log.warn(EntityUtils.toString(response.getEntity()));
+                String errorResponse = EntityUtils.toString(response.getEntity());
+                String digisosId = getDigisosIdFromResponse(errorResponse, navEkseternRefId);
+                if (digisosId != null) return digisosId;
+
+                log.error(String.format("%s: Opplasting av %s til FIKS digisos-api feilet:",
+                        response.getStatusLine().getReasonPhrase(),
+                        navEkseternRefId),
+                        errorResponse);
                 throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
@@ -278,6 +286,17 @@ public class DigisosApiImpl implements DigisosApi {
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
         }
+    }
+
+    static String getDigisosIdFromResponse(String errorResponse, String behandlingsId) {
+        if (errorResponse != null && errorResponse.contains(behandlingsId) && errorResponse.contains("finnes allerede")) {
+            Pattern p = Pattern.compile("^.*?message.*([0-9a-fA-F]{8}[-]?(?:[0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}).*?$");
+            Matcher m = p.matcher(errorResponse);
+            if (m.matches()) {
+                return m.group(1);
+            }
+        }
+        return null;
     }
 
     private String getJson(FilForOpplasting<Object> objectFilForOpplasting) {
