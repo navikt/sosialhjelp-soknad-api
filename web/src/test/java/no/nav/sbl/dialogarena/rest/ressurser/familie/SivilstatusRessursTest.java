@@ -43,7 +43,7 @@ public class SivilstatusRessursTest {
                     .withMellomnavn("Thaddeus Crane")
                     .withEtternavn("Pennyworth"))
             .withFodselsdato("1940-01-01")
-            .withPersonIdentifikator("01014012345");
+            .withPersonIdentifikator("11111111111");
 
     private static final EktefelleFrontend EKTEFELLE_FRONTEND = new EktefelleFrontend()
             .withNavn(new NavnFrontend("Alfred", "Thaddeus Crane", "Pennyworth"))
