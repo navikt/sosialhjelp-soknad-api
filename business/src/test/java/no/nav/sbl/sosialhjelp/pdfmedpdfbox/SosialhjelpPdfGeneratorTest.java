@@ -73,7 +73,9 @@ public class SosialhjelpPdfGeneratorTest {
 
         Adressekodeverk adressekodeverk = mock(Adressekodeverk.class);
         when(adressekodeverk.getLand("NOR")).thenReturn("Norsk");
-        TextHelpers textHelpers = new TextHelpers(navMessageSource, adressekodeverk);
+        TextHelpers textHelpers = new TextHelpers();
+        textHelpers.setNavMessageSource(navMessageSource);
+        textHelpers.setAdressekodeverk(adressekodeverk);
         sosialhjelpPdfGenerator.setTextHelpers(textHelpers);
     }
 
