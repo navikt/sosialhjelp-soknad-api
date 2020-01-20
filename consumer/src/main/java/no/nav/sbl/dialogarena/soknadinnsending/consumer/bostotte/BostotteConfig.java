@@ -16,12 +16,6 @@ public class BostotteConfig {
     @Value("${soknad.bostotte.url}")
     private String uri = "";
 
-    @Value("${soknad.bostotte.husbanken.app.key}")
-    private String appKey = "appKey";
-
-    @Value("${soknad.bostotte.husbanken.username}")
-    private String username = "username";
-
     @Value("${soknad.bostotte.ping.url}")
     private String pingUrl;
 
@@ -52,14 +46,6 @@ public class BostotteConfig {
 
     public String getUri() {
         return uri;
-    }
-
-    public String getAppKey() {
-        return appKey;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public String getPingUrl() {

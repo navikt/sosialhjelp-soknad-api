@@ -49,8 +49,6 @@ public class BostotteImplTest {
     @Before
     public void setUp() {
         when(config.getUri()).thenReturn("uri");
-        when(config.getUsername()).thenReturn("username");
-        when(config.getAppKey()).thenReturn("appKey");
     }
 
     @Test
