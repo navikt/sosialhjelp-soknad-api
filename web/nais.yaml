@@ -41,6 +41,8 @@ spec:
         kvPath: {{norg2_apikey_kvPath}}
       - mountPath: /apigw/husbankenapi
         kvPath: {{husbanken_apikey_kvPath}}
+      - mountPath: /apigw/skatt_inntektsmottakerapi
+        kvPath: {{skatt_inntektsmottakerapi_apikey_kvPath}}
 {{/if}}
   ingresses:
 {{#each ingresses}}
