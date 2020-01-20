@@ -35,14 +35,10 @@ spec:
         kvPath: {{datasourceKvPath}}
       - mountPath: /var/run/secrets/nais.io/virksomhetssertifikat
         kvPath: {{virksomhetssertifikatKvPath}}
-      - mountPath: /apigw/tpswsapi
-        kvPath: {{tpsws_apikey_kvPath}}
-      - mountPath: /apigw/norg2api
-        kvPath: {{norg2_apikey_kvPath}}
-      - mountPath: /apigw/husbankenapi
-        kvPath: {{husbanken_apikey_kvPath}}
-      - mountPath: /apigw/skatt_inntektsmottakerapi
-        kvPath: {{skatt_inntektsmottakerapi_apikey_kvPath}}
+{{#each apikeyPaths}}
+      - mountPath: {{@key}}
+        kvPath: {{this}}
+{{/each}}
 {{/if}}
   ingresses:
 {{#each ingresses}}
