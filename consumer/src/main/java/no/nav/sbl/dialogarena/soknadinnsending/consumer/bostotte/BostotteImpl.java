@@ -23,7 +23,7 @@ import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 @Timed
 public class BostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(BostotteImpl.class);
-    private static final String SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD = "x-nav-apiKey";
+    private static final String SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD";
     private final BostotteConfig config;
     private final RestOperations operations;
 
