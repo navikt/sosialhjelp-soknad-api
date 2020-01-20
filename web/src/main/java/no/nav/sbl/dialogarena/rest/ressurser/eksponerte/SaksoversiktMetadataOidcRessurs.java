@@ -64,10 +64,15 @@ public class SaksoversiktMetadataOidcRessurs {
         String fnr = SubjectHandler.getUserIdFromToken();
         logger.debug("Henter metadata for pabegynte med oidc");
 
-        List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
+        try {
+            List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
 
-        return new PabegynteSoknaderRespons()
-                .withPabegynteSoknader(pabegynte);
+            return new PabegynteSoknaderRespons()
+                    .withPabegynteSoknader(pabegynte);
+        } catch (Exception e) {
+            logger.error(String.format("Uthenting av påbegynte søknader feilet. Var fnr tom? %s", fnr == null || fnr.equals("")), e) ;
+            throw e;
+        }
     }
 
     @GET
