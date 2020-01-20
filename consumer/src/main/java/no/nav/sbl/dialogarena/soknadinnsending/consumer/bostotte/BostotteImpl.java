@@ -36,9 +36,10 @@ public class BostotteImpl implements Bostotte {
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til) {
         try {
+            String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
             RequestEntity<Void> request = RequestEntity.get(uri.build())
-                    .header("x-nav-apiKey", getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD))
+                    .header("x-nav-apiKey", apikey)
                     .header("Authorization", token)
                     .build();
             return operations.exchange(request, BostotteDto.class).getBody();
@@ -61,8 +62,9 @@ public class BostotteImpl implements Bostotte {
             @Override
             public Ping ping() {
                 try {
+                    String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
                     RequestEntity<Void> request = RequestEntity.get(UriBuilder.fromPath(config.getPingUrl()).build())
-                            .header("x-nav-apiKey", getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD))
+                            .header("x-nav-apiKey", apikey)
                             .build();
                     String result = operations.exchange(request, String.class).getBody();
                     if (result.equalsIgnoreCase("pong")) {
