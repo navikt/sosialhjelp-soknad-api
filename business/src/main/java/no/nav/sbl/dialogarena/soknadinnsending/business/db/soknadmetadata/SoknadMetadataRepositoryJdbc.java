@@ -19,7 +19,6 @@ import java.util.Optional;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 
 @Component
-@Transactional
 public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadMetadataRepository {
 
     private RowMapper<SoknadMetadata> soknadMetadataRowMapper = (rs, rowNum) -> {
@@ -51,6 +50,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long.class);
     }
 
+    @Transactional
     @Override
     public void opprett(SoknadMetadata metadata) {
         getJdbcTemplate().update("INSERT INTO soknadmetadata (id, behandlingsid, tilknyttetBehandlingsId, skjema, " +
@@ -73,6 +73,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 SQLUtils.tidTilTimestamp(metadata.innsendtDato));
     }
 
+    @Transactional
     @Override
     public void oppdater(SoknadMetadata metadata) {
         getJdbcTemplate().update("UPDATE soknadmetadata SET tilknyttetBehandlingsId = ?, skjema = ?, " +
@@ -106,6 +107,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return null;
     }
 
+    @Transactional
     @Override
     public Optional<SoknadMetadata> hentForBatch(int antallDagerGammel) {
         LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
@@ -125,6 +127,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         }
     }
 
+    @Transactional
     @Override
     public Optional<SoknadMetadata> hentEldreEnn(int antallDagerGammel) {
         LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
@@ -144,6 +147,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         }
     }
 
+    @Transactional
     @Override
     public void leggTilbakeBatch(Long id) {
         String update = "UPDATE soknadmetadata set batchstatus = 'LEDIG' WHERE id = ?";
@@ -174,6 +178,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidsgrense));
     }
 
+    @Transactional
     @Override
     public void slettSoknadMetaData(String behandlingsId, String eier) {
         getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE fnr = ? AND behandlingsid = ?", eier, behandlingsId);

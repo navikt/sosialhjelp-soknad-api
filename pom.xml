@@ -105,7 +105,7 @@
         <ehcache.version>2.10.4</ehcache.version>
         <woodstox-core-asl.version>4.4.0</woodstox-core-asl.version>
         <joda-time.version>2.7</joda-time.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <gson.version>2.3.1</gson.version>
         <commons-codec.version>1.10</commons-codec.version>
         <commons-io.version>2.4</commons-io.version>
@@ -766,10 +766,14 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
