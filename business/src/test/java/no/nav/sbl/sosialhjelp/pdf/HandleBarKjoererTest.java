@@ -21,10 +21,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HandleBarKjoererTest {
-    private static final String FNR = "15038000000";
+    private static final String FNR = "11111111111";
     @InjectMocks
     private HandleBarKjoerer handleBarKjoerer;
-
     @InjectMocks
     private HentTekstHelper hentTekstHelper;
     @InjectMocks
@@ -73,5 +72,12 @@ public class HandleBarKjoererTest {
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad(FNR), false);
 
         assertThat(html, containsString(FNR));
+    }
+
+    @Test
+    public void skalTaBortUgyldigeTegn() throws IOException {
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad("FNR\b\ntrall"), false);
+
+        assertThat(html, containsString("FNR\ntrall"));
     }
 }

@@ -37,17 +37,14 @@ public class SoknadInnsendingDBConfig {
 
     @Bean
     public Pingable dbPing() {
-        return new Pingable() {
-            @Override
-            public Ping ping() {
-                PingMetadata metadata = new PingMetadata("jdbc/SoknadInnsendingDS", "JDBC:Sendsøknad Database", true);
-                try {
-                    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
-                    jdbcTemplate.queryForList("select * from dual");
-                    return lyktes(metadata);
-                } catch (Exception e) {
-                    return feilet(metadata, e);
-                }
+        return () -> {
+            PingMetadata metadata = new PingMetadata("jdbc/SoknadInnsendingDS", "JDBC:Sendsøknad Database", true);
+            try {
+                JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
+                jdbcTemplate.queryForList("select * from dual");
+                return lyktes(metadata);
+            } catch (Exception e) {
+                return feilet(metadata, e);
             }
         };
     }

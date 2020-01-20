@@ -29,7 +29,7 @@ import static org.junit.Assert.assertThat;
 public class SoknadUnderArbeidRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
-    private static final String EIER2 = "10987654321";
+    private static final String EIER2 = "22222222222";
     private static final String BEHANDLINGSID = "1100020";
     private static final String TILKNYTTET_BEHANDLINGSID = "4567";
     private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);

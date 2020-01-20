@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class SlettLoggSchedulerTest {
 
-    private static final String EIER = "21036612271";
+    private static final String EIER = "11111111111";
     private static final int DAGER_GAMMEL_SOKNAD = 365;
     private static final String BEHANDLINGS_ID = "1100AAAAA";
 

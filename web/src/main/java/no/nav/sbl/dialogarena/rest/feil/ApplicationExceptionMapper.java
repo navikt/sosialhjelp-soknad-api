@@ -50,10 +50,10 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             logger.info("REST-kall feilet: " + e.getMessage(), e);
         } else if (e instanceof TjenesteUtilgjengeligException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
-            logger.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig");
+            logger.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e);
         } else if (e instanceof SikkerhetsBegrensningException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
-            logger.warn("REST-kall feilet: Sikkerhetsbegrensning");
+            logger.warn("REST-kall feilet: Sikkerhetsbegrensning", e);
         } else if (e instanceof SendingTilKommuneErMidlertidigUtilgjengeligException) {
             logger.error(e.getMessage(), e);
             return status(SERVICE_UNAVAILABLE).type(APPLICATION_JSON).entity(new Feilmelding("innsending_midlertidig_utilgjengelig", "Tjenesten er midlertidig utilgjengelig hos kommunen")).build();
