@@ -22,7 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
     private static final Logger logger = getLogger(AdresseSokConsumerImpl.class);
-    public static final String SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD";
+    private static final String SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD";
 
     private Function<Sokedata, RestCallContext> restCallContextSelector;
     private String endpoint;
