@@ -5,23 +5,28 @@ import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGeneratorConfig;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
+import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import java.time.Clock;
 
 import static org.mockito.Mockito.mock;
 
@@ -61,12 +66,7 @@ public class SoknadActionsTestConfig {
 
     @Bean
     public InnsendingService innsendingService() {
-        return null;
-    }
-
-    @Bean
-    public SystemdataUpdater systemdataUpdater() {
-        return null;
+        return mock(InnsendingService.class);
     }
 
     @Bean
@@ -119,4 +119,48 @@ public class SoknadActionsTestConfig {
         return mock(Adressekodeverk.class);
     }
 
+    @Bean
+    public HenvendelseService henvendelseService() {
+        return new HenvendelseService();
+    }
+
+    @Bean
+    public Clock clock() {
+        return mock(Clock.class);
+    }
+
+    @Bean
+    public TransactionTemplate transactionTemplate() {
+        return mock(TransactionTemplate.class);
+    }
+
+    @Bean
+    public SendtSoknadRepository sendtSoknadRepository() {
+        return mock(SendtSoknadRepository.class);
+    }
+
+    @Bean
+    public OpplastetVedleggRepository opplastetVedleggRepository() {
+        return mock(OpplastetVedleggRepository.class);
+    }
+
+    @Bean
+    public SoknadUnderArbeidService soknadUnderArbeidService() {
+        return mock(SoknadUnderArbeidService.class);
+    }
+
+    @Bean
+    public EttersendingService ettersendingService() {
+        return mock(EttersendingService.class);
+    }
+
+    @Bean
+    public SystemdataUpdater systemdataUpdater() {
+        return mock(SystemdataUpdater.class);
+    }
+
+    @Bean
+    public Systemdata systemdata() {
+        return mock(Systemdata.class);
+    }
 }
