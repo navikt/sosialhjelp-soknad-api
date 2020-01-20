@@ -3,10 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +31,7 @@ public class SoknadMetadataRepositoryJdbcTest {
     private SoknadMetadataRepository soknadMetadataRepository;
 
     @Inject
-    private TestSupport support;
+    private RepositoryTestSupport support;
 
     @After
     public void teardown() {
