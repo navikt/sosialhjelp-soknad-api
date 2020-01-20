@@ -16,12 +16,14 @@ import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import java.time.LocalDate;
 
+import static java.lang.System.getenv;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Timed
 public class BostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(BostotteImpl.class);
+    private static final String SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD = "x-nav-apiKey";
     private final BostotteConfig config;
     private final RestOperations operations;
 
@@ -36,7 +38,7 @@ public class BostotteImpl implements Bostotte {
         try {
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
             RequestEntity<Void> request = RequestEntity.get(uri.build())
-                    .header(config.getUsername(), config.getAppKey())
+                    .header("x-nav-apiKey", getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD))
                     .header("Authorization", token)
                     .build();
             return operations.exchange(request, BostotteDto.class).getBody();
@@ -60,7 +62,7 @@ public class BostotteImpl implements Bostotte {
             public Ping ping() {
                 try {
                     RequestEntity<Void> request = RequestEntity.get(UriBuilder.fromPath(config.getPingUrl()).build())
-                            .header(config.getUsername(), config.getAppKey())
+                            .header("x-nav-apiKey", getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD))
                             .build();
                     String result = operations.exchange(request, String.class).getBody();
                     if (result.equalsIgnoreCase("pong")) {
