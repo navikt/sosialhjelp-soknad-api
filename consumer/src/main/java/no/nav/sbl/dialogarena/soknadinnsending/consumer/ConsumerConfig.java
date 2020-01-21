@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.Organisasjo
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
 import org.springframework.cache.annotation.EnableCaching;
@@ -55,7 +56,8 @@ public class ConsumerConfig {
             NorgRestConfig.class,
             UtbetalingWSConfig.class,
             OrganisasjonRestConfig.class,
-            ArbeidsforholdRestConfig.class
+            ArbeidsforholdRestConfig.class,
+            STSTokenRestConfig.class
     })
     public static class WsServices {
     }
