@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 public class SkattbarInntektService {
+    private static final String SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD";
     @Value("${skatteetaten.inntektsmottaker.url}")
     private String endpoint;
     private static Logger log = LoggerFactory.getLogger(SkattbarInntektService.class);
@@ -85,7 +86,7 @@ public class SkattbarInntektService {
     }
 
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
-        String apiKey = getenv("SRVSOKNADSOSIALHJELP_SERVER_INNTEKTSMOTTAKER_CREDENTIALS_PASSWORD");
+        String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         WebTarget b = executionContext.getClient().target(String.format("%s%s/oppgave/inntekt", endpoint, sokedata.identifikator))
                 .queryParam("fraOgMed", sokedata.fom.format(formatter))
