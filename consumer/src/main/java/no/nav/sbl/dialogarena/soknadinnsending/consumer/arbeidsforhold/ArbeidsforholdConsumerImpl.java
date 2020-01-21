@@ -4,8 +4,11 @@ import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
+import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
@@ -16,7 +19,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static java.lang.System.getenv;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
@@ -27,6 +29,9 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
     private Client client;
     private String endpoint;
+
+    @Inject
+    private STSConsumer stsConsumer;
 
     public ArbeidsforholdConsumerImpl(Client client, String endpoint) {
         this.client = client;
@@ -80,17 +85,16 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     private Invocation.Builder lagRequest(String endpoint, String fodselsnummer) {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
+        FssToken fssToken = stsConsumer.getFSSToken();
 
         return client.target(endpoint)
                 .queryParam("sporingsinformasjon", false)
                 .queryParam("regeverk", A_ORDNINGEN)
                 .request()
+                .header("Authorization", OidcFeatureToggleUtils.getToken()) // brukers token?
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
-                .header("Nav-Consumer-Token", "Bearer fss-token") //todo Bearer token fra fss (?)
-                .header("Nav-Personident", fodselsnummer)
-                .header("x-nav-apiKey", apiKey);
+                .header("Nav-Consumer-Token", BEARER + fssToken.getAccessToken())
+                .header("Nav-Personident", fodselsnummer);
     }
 }
