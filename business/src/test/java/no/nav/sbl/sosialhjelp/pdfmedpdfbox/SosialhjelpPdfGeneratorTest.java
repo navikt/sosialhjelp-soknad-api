@@ -27,6 +27,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -79,6 +80,8 @@ public class SosialhjelpPdfGeneratorTest {
         sosialhjelpPdfGenerator.setTextHelpers(textHelpers);
     }
 
+    // TODO: Skrive bedre tester for generering av pdf med pdfbox
+    @Ignore("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
     @Test
     public void testGenerate() {
         //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();

@@ -27,12 +27,16 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.*;
+import static org.apache.cxf.common.logging.LogUtils.getLogger;
 
 @Component
 public class SosialhjelpPdfGenerator {
+
+    private final Logger logger = getLogger(SosialhjelpPdfGenerator.class);
 
     @Inject
     public NavMessageSource navMessageSource;
@@ -562,7 +566,11 @@ public class SosialhjelpPdfGenerator {
                         .forEach(utbetaling -> {
                             try {
                                 pdf.skrivTekstBold(getTekst("opplysninger.inntekt.undertittel"));
-                                pdf.skrivTekst(getTekst("utbetalinger.utbetaling.arbeidsgivernavn.label") + ": " + utbetaling.getOrganisasjon().getNavn());
+                                if (utbetaling.getOrganisasjon() != null) {
+                                    pdf.skrivTekst(getTekst("utbetalinger.utbetaling.arbeidsgivernavn.label") + ": " + utbetaling.getOrganisasjon().getNavn());
+                                } else {
+                                    logger.info("utbetaling.getOrganisasjon() == null");
+                                }
                                 pdf.skrivTekst(getTekst("utbetalinger.utbetaling.periodeFom.label") + ": " + utbetaling.getPeriodeFom());
                                 pdf.skrivTekst(getTekst("utbetalinger.utbetaling.periodeTom.label") + ": " + utbetaling.getPeriodeTom());
                                 pdf.skrivTekst(getTekst("utbetalinger.utbetaling.brutto.label") + ": " + utbetaling.getBrutto());
