@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientRequestFilter;
+
+import static java.lang.System.getenv;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
@@ -17,13 +21,14 @@ import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 public class ArbeidsforholdRestConfig {
 
     public static final String AAREG_KEY = "start.aareg.withmock";
+    private static final String SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD";
 
     @Value("${aareg_api_baseurl}")
     private String endpoint;
 
     @Bean
     public ArbeidsforholdConsumer arbeidsforholdConsumer() {
-        ArbeidsforholdConsumer prod = new ArbeidsforholdConsumerImpl(RestUtils.createClient(), endpoint);
+        ArbeidsforholdConsumer prod = new ArbeidsforholdConsumerImpl(arbeidsforholdClient(), endpoint);
         ArbeidsforholdConsumer mock = new ArbeidsforholdConsumerMock().arbeidsforholdConsumerMock();
         return createSwitcher(prod, mock, AAREG_KEY, ArbeidsforholdConsumer.class);
     }
@@ -39,5 +44,11 @@ public class ArbeidsforholdRestConfig {
                 return feilet(metadata, e);
             }
         };
+    }
+
+    private Client arbeidsforholdClient(){
+        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
+        return RestUtils.createClient()
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey));
     }
 }

@@ -22,7 +22,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
     private static final Logger logger = getLogger(ArbeidsforholdConsumerImpl.class);
-    private static final String SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD";
+    private static final String A_ORDNINGEN = "A_ORDNINGEN";
+    private static final String BEARER = "Bearer ";
 
     private Client client;
     private String endpoint;
@@ -37,17 +38,13 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
-
-        // todo - funker ikke
         Invocation.Builder request = client.target(endpoint + "v1/").request()
                 .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
-                .header("x-nav-apiKey", apiKey);
+                .header("Nav-Consumer-Id", consumerId);
 
         try (Response response = request.options()) {
             if (response.getStatus() != 200) {
-                throw new RuntimeException("Feil statuskode ved ping mot Arbeidsforhold_v1: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+                throw new RuntimeException("Feil statuskode ved ping mot aareg.api: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
             }
         }
     }
@@ -57,7 +54,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
         Invocation.Builder request = lagRequest(endpoint + "v1/arbeidstaker/arbeidsforhold", fodselsnummer);
         try (Response response = request.get()) {
             if (response.getStatus() != 200) {
-                logger.warn("Feil statuskode ved kall mot Arbeidsforhold_v1: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+                logger.warn("Feil statuskode ved kall mot aareg.api: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
                 return null;
             }
             return response.readEntity(new GenericType<List<ArbeidsforholdDto>>() {
@@ -88,7 +85,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
         return client.target(endpoint)
                 .queryParam("sporingsinformasjon", false)
-                .queryParam("regeverk", "A_ORDNINGEN")
+                .queryParam("regeverk", A_ORDNINGEN)
                 .request()
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
