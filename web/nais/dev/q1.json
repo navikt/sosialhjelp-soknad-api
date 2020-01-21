@@ -14,7 +14,8 @@
     "/apigw/husbankenapi": "/apikey/apigw/dev/ekstern.husbanken.bostotte/sosialhjelp-soknad-api_q1",
     "/apigw/skatt_inntektsmottakerapi": "/apikey/apigw/dev/eksternapp.skatt.datasamarbeid.api.inntektsmottaker/soknadsosialhjelp-server_q1",
     "/apigw/eregapi": "apikey/apigw/dev/ereg.api/sosialhjelp-soknad-api_q1",
-    "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1"
+    "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1",
+    "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1"
   },
   "minReplicas": "2",
   "maxReplicas": "4",
@@ -53,6 +54,7 @@
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "120",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester-q1.nav.no/esso/saml2/jsp/spSSOInit.jsp?metaAlias=/sp&idpEntityID=idporten-ver1.difi.no-v3&NameIDFormat=transient&AuthLevel=4&goto=https://tjenester-q1.nav.no/soknadinnsending",
+    "STS_APIGW_URL": "https://api-gw-q1.oera.no/security-token-service/rest/v1/sts/token/",
     "TPSWS_API_V1_URL": "https://api-gw-q1.oera.no/tpsws/api/v1/",
     "UTBETALING_V1_ENDPOINTURL": "https://wasapp-q1.adeo.no/nav-utbetaldata-ws/virksomhet/Utbetaling_v1",
     "UTBETALING_V1_SECURITYTOKEN": "SAML",
