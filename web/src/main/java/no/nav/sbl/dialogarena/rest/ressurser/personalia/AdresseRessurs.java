@@ -61,9 +61,11 @@ public class AdresseRessurs {
 
     @PUT
     public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresserFrontend adresserFrontend) {
-        logger.info("SOK-DEBUG PUT 1: adresserFrontend: adresselinjer {},  ||  heile {}",
-                adresserFrontend.folkeregistrert.gateadresse.adresselinjer.get(0),
-                adresserFrontend.toString());
+        if (adresserFrontend != null && adresserFrontend.folkeregistrert != null && adresserFrontend.folkeregistrert.gateadresse != null && adresserFrontend.folkeregistrert.gateadresse.adresselinjer != null && adresserFrontend.folkeregistrert.gateadresse.adresselinjer.size() > 0 ) {
+            logger.info("SOK-DEBUG PUT 1: adresserFrontend: adresselinjer {},  ||  heile {}",
+                    adresserFrontend.folkeregistrert.gateadresse.adresselinjer.get(0),
+                    adresserFrontend.toString());
+        }
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
