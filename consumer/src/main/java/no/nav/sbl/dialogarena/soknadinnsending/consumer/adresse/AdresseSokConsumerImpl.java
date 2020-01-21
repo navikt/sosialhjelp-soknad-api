@@ -50,17 +50,20 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         final Invocation.Builder request = lagRequest(executionContext, sokedata, sokedata.soketype.toTpsKode());
 
         AdressesokRespons adressesokRespons = RestCallUtils.performRequestUsingContext(executionContext, () -> sokAdresseMotTjeneste(sokedata, request));
-        logger.info("SOK-DEBUG 2: adressesokRespons: GT {}, kommunenummer {}, kommunenavn {}, adressenavn {}, husnummer {}, poststed {}, bydel {}, gatekode {}.  ||| heile:  {}",
-                adressesokRespons.adresseDataList.get(0).geografiskTilknytning,
-                adressesokRespons.adresseDataList.get(0).kommunenummer,
-                adressesokRespons.adresseDataList.get(0).kommunenavn,
-                adressesokRespons.adresseDataList.get(0).adressenavn,
-                adressesokRespons.adresseDataList.get(0).husnummer,
-                adressesokRespons.adresseDataList.get(0).poststed,
-                adressesokRespons.adresseDataList.get(0).bydel,
-                adressesokRespons.adresseDataList.get(0).gatekode,
-                adressesokRespons.toString()
-        );
+        logger.info("SOK-DEBUG 2: adressesokRespons: antall treff: {}", adressesokRespons.adresseDataList.size());
+        if (adressesokRespons.adresseDataList.size() > 0) {
+            logger.info("SOK-DEBUG 2.1: adressesokRespons: GT {}, kommunenummer {}, kommunenavn {}, adressenavn {}, husnummer {}, poststed {}, bydel {}, gatekode {}.  ||| heile:  {}",
+                    adressesokRespons.adresseDataList.get(0).geografiskTilknytning,
+                    adressesokRespons.adresseDataList.get(0).kommunenummer,
+                    adressesokRespons.adresseDataList.get(0).kommunenavn,
+                    adressesokRespons.adresseDataList.get(0).adressenavn,
+                    adressesokRespons.adresseDataList.get(0).husnummer,
+                    adressesokRespons.adresseDataList.get(0).poststed,
+                    adressesokRespons.adresseDataList.get(0).bydel,
+                    adressesokRespons.adresseDataList.get(0).gatekode,
+                    adressesokRespons.toString()
+            );
+        }
         return adressesokRespons;
     }
     
