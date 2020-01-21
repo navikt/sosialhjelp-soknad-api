@@ -119,7 +119,7 @@ public class DigisosApiService {
         try {
             sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn("Kunne ikke generere soknad.pdf", e);
         }
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn("soknad.pdf")
@@ -161,7 +161,7 @@ public class DigisosApiService {
         try {
             sosialhjelpPdfGenerator.generate(internalSoknad, true);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
         }
 
         return new FilOpplasting(new FilMetadata()

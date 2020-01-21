@@ -54,7 +54,7 @@ public class SosialhjelpPdfGenerator {
             JsonPersonIdentifikator jsonPersonIdentifikator = jsonPersonalia.getPersonIdentifikator(); // required
             JsonSokernavn jsonSokernavn = jsonPersonalia.getNavn();// required
 
-            String navn = getJsonSokerNavnTekst(jsonSokernavn);
+            String navn = getJsonNavnTekst(jsonSokernavn);
 
             String fnr = jsonPersonIdentifikator.getVerdi(); // required
 
@@ -74,10 +74,6 @@ public class SosialhjelpPdfGenerator {
         } catch (IOException e) {
             throw new RuntimeException("Error while creating pdf", e);
         }
-    }
-
-    private String getJsonSokerNavnTekst(JsonSokernavn jsonSokernavn) {
-        return getJsonNavnTekst(jsonSokernavn);
     }
 
     public void setNavMessageSource(NavMessageSource navMessageSource) {

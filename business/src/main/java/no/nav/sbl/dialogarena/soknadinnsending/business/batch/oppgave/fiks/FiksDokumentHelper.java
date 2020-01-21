@@ -84,7 +84,7 @@ public class FiksDokumentHelper {
         try {
             sosialhjelpPdfGenerator.generate(internalSoknad, false);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Kunne ikke generere Soknad.pdf", e);
         }
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadPdf);
@@ -102,7 +102,7 @@ public class FiksDokumentHelper {
         try {
             sosialhjelpPdfGenerator.generate(internalSoknad, true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
         }
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);

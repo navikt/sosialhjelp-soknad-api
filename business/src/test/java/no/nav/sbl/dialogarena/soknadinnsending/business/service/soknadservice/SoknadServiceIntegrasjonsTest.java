@@ -43,16 +43,12 @@ public class SoknadServiceIntegrasjonsTest {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @InjectMocks
-    private DigisosApiService digisosApiService;
-
-    @Mock
-    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    @Inject
+    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
-
     }
 
     @Before
@@ -63,7 +59,6 @@ public class SoknadServiceIntegrasjonsTest {
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
     }
 
-    @Ignore("Ignoreres midlertdig mens vi utvikler ny pdf")
     @Test
     public void avbrytSoknadSletterSoknadenFraLokalDb() {
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);

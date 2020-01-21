@@ -74,7 +74,6 @@ public class PdfGenerator {
     }
 
     private void continueOnNewPage() throws IOException {
-
         // add page to doc
         this.document.addPage(this.currentPage);
 
@@ -145,19 +144,6 @@ public class PdfGenerator {
     public void skrivH4Bold(String tekst) throws IOException {
         this.addParagraph(tekst, FONT_BOLD, FONT_H4_SIZE, MARGIN);
     }
-
-
-//    public static float addBulletPoint(String line, PDPageContentStream cos, float startY) throws IOException {
-//        return addLineOfRegularText("\u2022 " + line, cos, startY);
-//    }
-
-//    public static float addBulletList(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
-//        float yTotal = 0;
-//        for (String line : lines) {
-//            yTotal += addBulletPoint(line, cos, startY - yTotal);
-//        }
-//        return yTotal;
-//    }
 
     public void addCenteredH1Bold(String heading) throws IOException {
         addCenteredParagraph(heading, FONT_BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
@@ -284,7 +270,6 @@ public class PdfGenerator {
         this.currentStream.drawImage(ximage, 27, 765, 99, 62);
     }
 
-    //
     private static byte[] logo() {
         try {
             ClassPathResource classPathResource = new ClassPathResource("/pdf/nav-logo_alphaless.png");

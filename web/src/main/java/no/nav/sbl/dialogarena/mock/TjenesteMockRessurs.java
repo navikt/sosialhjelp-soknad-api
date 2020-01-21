@@ -68,12 +68,6 @@ public class TjenesteMockRessurs {
     private InnsendingService innsendingService;
     @Inject
     private FiksSender fiksSender;
-    @Inject
-    private NavMessageSource messageSource;
-    @Inject
-    private SoknadService soknadService;
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
@@ -88,9 +82,6 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-
-//        final String fnr = OidcFeatureToggleUtils.getUserId();
-//        final JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, fnr).getJsonInternalSoknad();
 
         SosialhjelpPdfGenerator sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
 

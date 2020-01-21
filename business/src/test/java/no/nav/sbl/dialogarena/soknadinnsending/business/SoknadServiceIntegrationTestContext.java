@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
@@ -157,5 +158,20 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     VirusScanner virusScanner() {
         return mock(VirusScanner.class);
+    }
+
+    @Bean
+    SosialhjelpPdfGenerator sosialhjelpPdfGenerator() {
+        return mock(SosialhjelpPdfGenerator.class);
+    }
+
+    @Bean
+    TextHelpers textHelpers() {
+        return mock(TextHelpers.class);
+    }
+
+    @Bean
+    Adressekodeverk adressekodeverk() {
+        return mock(Adressekodeverk.class);
     }
 }
