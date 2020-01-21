@@ -8,6 +8,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @Component
 public class SoknadsmottakerService {
+    private static final Logger log = LoggerFactory.getLogger(SoknadsmottakerService.class);
 
     @Inject
     private AdresseSokService adresseSokService;
@@ -56,6 +59,11 @@ public class SoknadsmottakerService {
             return adresseSokService.sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenummer));
         } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
             final JsonGateAdresse gateAdresse = (JsonGateAdresse) adresse;
+            log.info("SOK-DEBUG PUT 2: før adresseSokService.sokEtterAdresser: gatenavn {}, husnummer {}, postnummer {}, poststed {} ",
+                    gateAdresse.getGatenavn(),
+                    gateAdresse.getHusnummer(),
+                    gateAdresse.getPostnummer(),
+                    gateAdresse.getPoststed());
             final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
                     .withSoketype(Soketype.EKSAKT)
                     .withAdresse(gateAdresse.getGatenavn())
@@ -65,13 +73,18 @@ public class SoknadsmottakerService {
                     .withPoststed(gateAdresse.getPoststed())
             );
 
+            log.info("SOK-DEBUG PUT 3: adresser resultat antall: {}", adresser.size());
+
             if (adresser.size() <= 1) {
                 return adresser;
             }
+            log.info("SOK-DEBUG PUT 3.5: Er visst flere enn en");
 
             if (hasIkkeUnikGate(adresser)) {
+                log.info("SOK-DEBUG PUT 3.6: har ikke unik adresse");
                 return Collections.emptyList();
             }
+            log.info("SOK-DEBUG PUT 3.7: har unik adresse");
 
             return adresser;
         } else {

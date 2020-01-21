@@ -128,6 +128,18 @@ public class NavEnhetRessurs {
         JsonPersonalia personalia = soknad.getData().getPersonalia();
 
         List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
+
+        log.info("SOK-DEBUG PUT 4: adresseForslag (hentet fra: antall: {}, Første GT {}, kommunenavn {}, kommunenummer {}, adresse {}, postnummer {}, poststed {}, bydel {}, gatekode {} ",
+                adresseForslagene.size(),
+                adresseForslagene.get(0).geografiskTilknytning,
+                adresseForslagene.get(0).kommunenavn,
+                adresseForslagene.get(0).kommunenummer,
+                adresseForslagene.get(0).adresse,
+                adresseForslagene.get(0).postnummer,
+                adresseForslagene.get(0).poststed,
+                adresseForslagene.get(0).bydel,
+                adresseForslagene.get(0).gatekode);
+
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet

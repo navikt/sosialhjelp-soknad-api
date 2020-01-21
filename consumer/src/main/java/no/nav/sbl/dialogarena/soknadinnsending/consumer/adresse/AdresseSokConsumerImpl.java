@@ -45,10 +45,23 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public AdressesokRespons sokAdresse(Sokedata sokedata) {
+        logger.info("SOK-DEBUG 1: sokedata: {}", sokedata.toString());
         final RestCallContext executionContext = restCallContextSelector.apply(sokedata);
         final Invocation.Builder request = lagRequest(executionContext, sokedata, sokedata.soketype.toTpsKode());
 
-        return RestCallUtils.performRequestUsingContext(executionContext, () -> sokAdresseMotTjeneste(sokedata, request));
+        AdressesokRespons adressesokRespons = RestCallUtils.performRequestUsingContext(executionContext, () -> sokAdresseMotTjeneste(sokedata, request));
+        logger.info("SOK-DEBUG 2: adressesokRespons: GT {}, kommunenummer {}, kommunenavn {}, adressenavn {}, husnummer {}, poststed {}, bydel {}, gatekode {}.  ||| heile:  {}",
+                adressesokRespons.adresseDataList.get(0).geografiskTilknytning,
+                adressesokRespons.adresseDataList.get(0).kommunenummer,
+                adressesokRespons.adresseDataList.get(0).kommunenavn,
+                adressesokRespons.adresseDataList.get(0).adressenavn,
+                adressesokRespons.adresseDataList.get(0).husnummer,
+                adressesokRespons.adresseDataList.get(0).poststed,
+                adressesokRespons.adresseDataList.get(0).bydel,
+                adressesokRespons.adresseDataList.get(0).gatekode,
+                adressesokRespons.toString()
+        );
+        return adressesokRespons;
     }
     
     @Override

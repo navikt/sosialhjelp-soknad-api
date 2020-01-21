@@ -19,6 +19,7 @@ public class NorgService {
     private NorgConsumer norgConsumer;
 
     public NavEnhet finnEnhetForGt(String gt) {
+        logger.info("SOK-DEBUG PUT 5: finnEnhetForGt {}", gt);
         if (gt == null || !gt.matches("^[0-9]+$")) {
             throw new IllegalArgumentException("GT ikke på gyldig format: " + gt);
         }
@@ -28,6 +29,18 @@ public class NorgService {
             logger.warn("Kunne ikke finne NorgEnhet for gt: " + gt);
             return null;
         }
+
+        logger.info("SOK-DEBUG PUT 6: rsNorgEnhet: navn {}, enhetnr {}   |||   enhetId {}, orgnr {}, sosialtjeneste {}, orgNrTilKommunaltNavKontor {}, orgNivaa {}, status {}, type {}, antallRessurser {}",
+                rsNorgEnhet.navn,
+                rsNorgEnhet.enhetNr,
+                rsNorgEnhet.enhetId,
+                rsNorgEnhet.organisasjonsnummer,
+                rsNorgEnhet.sosialeTjenester,
+                rsNorgEnhet.orgNrTilKommunaltNavKontor,
+                rsNorgEnhet.orgNivaa,
+                rsNorgEnhet.status,
+                rsNorgEnhet.type,
+                rsNorgEnhet.antallRessurser);
 
         NavEnhet enhet = new NavEnhet();
         enhet.enhetNr = rsNorgEnhet.enhetNr;
@@ -40,10 +53,13 @@ public class NorgService {
             Dette er en midlertidig fix for å få denne casen til å fungere.
             */
             enhet.sosialOrgnr = "974592274";
+            logger.info("SOK-DEBUG PUT 7.1: Spesialcase 1  sosialOrgnr {}", enhet.sosialOrgnr);
         } else if (rsNorgEnhet.enhetNr.equals("0511")  && gt.equals("0512")){
             enhet.sosialOrgnr = "964949204";
+            logger.info("SOK-DEBUG PUT 7.2: Spesialcase 2  sosialOrgnr {}", enhet.sosialOrgnr);
         } else {
             enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
+            logger.info("SOK-DEBUG PUT 7: sosialOrgnr {}", enhet.sosialOrgnr);
         }
 
 
