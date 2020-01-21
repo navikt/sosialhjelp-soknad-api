@@ -86,14 +86,15 @@ public class AdresseRessurs {
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
         List<NavEnhetRessurs.NavEnhetFrontend> soknadsmottaker = navEnhetRessurs.findSoknadsmottaker(soknad.getJsonInternalSoknad().getSoknad(), adresserFrontend.valg.toString(), null);
-        logger.info("SOK-DEBUG PUT 8 (siste): soknadsmottaker: antall: {} enhetsnavn {}, enhetnr {}, kommunenavn {}, kommunenummer {}, orgnr {}",
-                soknadsmottaker.size(),
-                soknadsmottaker.get(0).enhetsnavn,
-                soknadsmottaker.get(0).enhetsnr,
-                soknadsmottaker.get(0).kommunenavn,
-                soknadsmottaker.get(0).kommuneNr,
-                soknadsmottaker.get(0).orgnr);
-
+        if (soknadsmottaker.size() > 0) {
+            logger.info("SOK-DEBUG PUT 8 (siste): soknadsmottaker: antall: {} enhetsnavn {}, enhetnr {}, kommunenavn {}, kommunenummer {}, orgnr {}",
+                    soknadsmottaker.size(),
+                    soknadsmottaker.get(0).enhetsnavn,
+                    soknadsmottaker.get(0).enhetsnr,
+                    soknadsmottaker.get(0).kommunenavn,
+                    soknadsmottaker.get(0).kommuneNr,
+                    soknadsmottaker.get(0).orgnr);
+        }
         return soknadsmottaker;
     }
 
