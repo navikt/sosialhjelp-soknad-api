@@ -15,12 +15,6 @@ public class TextHelpers {
     @Inject
     private Adressekodeverk adressekodeverk;
 
-    /*@Inject
-    TextHelpers(NavMessageSource navMessageSource, Adressekodeverk adressekodeverk) {
-        this.navMessageSource = navMessageSource;
-        this.adressekodeverk = adressekodeverk;
-    }*/
-
     public void setNavMessageSource(NavMessageSource navMessageSource) {
         this.navMessageSource = navMessageSource;
     }
