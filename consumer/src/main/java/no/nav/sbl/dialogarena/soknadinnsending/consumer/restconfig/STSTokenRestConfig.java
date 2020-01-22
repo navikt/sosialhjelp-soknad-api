@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
-import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.rest.RestUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +21,8 @@ import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 public class STSTokenRestConfig {
 
     private static final String SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD";
+    private static final String SRVSOKNADSOSIALHJELP_SERVER_USERNAME = "SRVSOKNADSOSIALHJELP_SERVER_USERNAME";
+    private static final String SRVSOKNADSOSIALHJELP_SERVER_PASSWORD = "SRVSOKNADSOSIALHJELP_SERVER_PASSWORD";
 
     @Value("${securitytokenservice_apigw_url}")
     private String endpoint;
@@ -51,8 +52,8 @@ public class STSTokenRestConfig {
     }
 
     private String getBasicAuthentication() {
-        String username = System.getProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
-        String password = System.getProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD);
+        String username = System.getenv(SRVSOKNADSOSIALHJELP_SERVER_USERNAME);
+        String password = System.getenv(SRVSOKNADSOSIALHJELP_SERVER_PASSWORD);
         if (username == null || password == null) {
             throw new RuntimeException("Username eller password er ikke tilgjengelig.");
         }
