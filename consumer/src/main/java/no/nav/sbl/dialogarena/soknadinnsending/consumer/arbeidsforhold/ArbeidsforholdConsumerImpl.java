@@ -55,6 +55,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     public List<ArbeidsforholdDto> finnArbeidsforholdForArbeidstaker(String fodselsnummer) {
         Invocation.Builder request = lagRequest(endpoint + "v1/arbeidstaker/arbeidsforhold", fodselsnummer);
         try (Response response = request.get()) {
+            logger.info("response: {}", response.getStatusInfo());
             return response.readEntity(new GenericType<List<ArbeidsforholdDto>>() {
             });
         } catch (BadRequestException e) {

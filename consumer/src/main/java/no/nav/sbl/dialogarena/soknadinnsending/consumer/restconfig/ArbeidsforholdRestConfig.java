@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
@@ -28,6 +30,10 @@ public class ArbeidsforholdRestConfig {
     @Value("${aareg_api_baseurl}")
     private String endpoint;
 
+    private static ObjectMapper arbeidsforholdObjectMapper = new ObjectMapper()
+//            .enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+
     @Bean
     public ArbeidsforholdConsumer arbeidsforholdConsumer() {
         ArbeidsforholdConsumer prod = new ArbeidsforholdConsumerImpl(arbeidsforholdClient(), endpoint);
@@ -52,11 +58,13 @@ public class ArbeidsforholdRestConfig {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey))
+                // kan muligens fjernes
                 .register((ClientResponseFilter) (requestContext, responseContext) -> {
                     if (responseContext instanceof ClientResponse) {
                         ClientResponse response = (ClientResponse) responseContext;
                         response.bufferEntity();
                     }
-                });
+                })
+                .register(arbeidsforholdObjectMapper);
     }
 }
