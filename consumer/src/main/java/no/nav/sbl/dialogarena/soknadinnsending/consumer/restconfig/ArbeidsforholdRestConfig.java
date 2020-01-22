@@ -5,12 +5,14 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.Arbeidsfo
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.rest.RestUtils;
+import org.glassfish.jersey.client.ClientResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.client.ClientResponseFilter;
 
 import static java.lang.System.getenv;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
@@ -46,9 +48,15 @@ public class ArbeidsforholdRestConfig {
         };
     }
 
-    private Client arbeidsforholdClient(){
+    private Client arbeidsforholdClient() {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey));
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey))
+                .register((ClientResponseFilter) (requestContext, responseContext) -> {
+                    if (responseContext instanceof ClientResponse) {
+                        ClientResponse response = (ClientResponse) responseContext;
+                        response.bufferEntity();
+                    }
+                });
     }
 }
