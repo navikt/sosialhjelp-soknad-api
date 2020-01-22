@@ -9,10 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
+import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
@@ -49,7 +46,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
         try (Response response = request.options()) {
             if (response.getStatus() != 200) {
-                throw new RuntimeException("Feil statuskode ved ping mot aareg.api: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+                throw new RuntimeException("Aareg.api - Feil statuskode ved ping: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
             }
         }
     }
@@ -58,26 +55,25 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     public List<ArbeidsforholdDto> finnArbeidsforholdForArbeidstaker(String fodselsnummer) {
         Invocation.Builder request = lagRequest(endpoint + "v1/arbeidstaker/arbeidsforhold", fodselsnummer);
         try (Response response = request.get()) {
-            if (response.getStatus() != 200) {
-                logger.warn("Feil statuskode ved kall mot aareg.api: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
-                return null;
-            }
             return response.readEntity(new GenericType<List<ArbeidsforholdDto>>() {
             });
         } catch (BadRequestException e) {
-            logger.warn("Ugyldig(e) parameter(e) i request");
+            logger.warn("Aareg.api - 400 - Ugyldig(e) parameter(e) i request");
             return null;
         } catch (NotAuthorizedException e) {
-            logger.warn("Token mangler eller er ugyldig");
+            logger.warn("Aareg.api - 401 - Token mangler eller er ugyldig");
             return null;
         } catch (ForbiddenException e) {
-            logger.warn("Ingen tilgang til forespurt ressurs");
+            logger.warn("Aareg.api - 403 - Ingen tilgang til forespurt ressurs");
             return null;
         } catch (NotFoundException e) {
-            logger.warn("Fant ikke arbeidsforhold for bruker");
+            logger.warn("Aareg.api - 404 - Fant ikke arbeidsforhold for bruker");
             return null;
-        } catch (RuntimeException e) {
-            logger.warn("Noe uventet feilet ved kall til Arbeidsforhold_v1", e);
+        } catch (ServiceUnavailableException | InternalServerErrorException e) {
+            logger.warn("Aareg.api - " + e.getResponse().getStatus() + " - Tjenesten er ikke tilgjengelig", e);
+            throw new TjenesteUtilgjengeligException("AAREG", e);
+        } catch (Exception e) {
+            logger.warn("Aareg.api - Noe uventet feilet", e);
             throw new TjenesteUtilgjengeligException("AAREG", e);
         }
     }
