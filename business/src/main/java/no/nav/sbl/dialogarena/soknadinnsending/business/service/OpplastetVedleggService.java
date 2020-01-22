@@ -133,7 +133,7 @@ public class OpplastetVedleggService {
                 .replace("Ø", "O")
                 .replace("Å", "A");
 
-        filnavn = filnavn.replaceAll("[^a-zA-Z0-9_-]", "");
+        filnavn = filnavn.replaceAll("[^a-zA-Z0-9_%-]", "");
 
         if (filnavn.length() > 50) {
             filnavn = filnavn.substring(0, 50);

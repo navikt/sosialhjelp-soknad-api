@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class InntektSystemdataOrganisasjonsnummerTest {
     private UtbetalingService utbetalingService;
 
     @Mock
-    ArbeidsforholdTransformer arbeidsforholdTransformer;
+    OrganisasjonService organisasjonService;
 
     @Mock
     SkattbarInntektService skattbarInntektService;
