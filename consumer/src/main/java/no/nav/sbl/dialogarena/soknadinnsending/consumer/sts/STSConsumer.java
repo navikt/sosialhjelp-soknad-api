@@ -4,6 +4,8 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import org.slf4j.Logger;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
@@ -47,6 +49,12 @@ public class STSConsumer {
 
         try (Response response = request.get()) {
             return readFssToken(response);
+        } catch (NotAuthorizedException e) {
+            logger.warn("STS gir 401 unauthorized", e);
+            throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
+        } catch (BadRequestException e) {
+            logger.warn("STS gir 400 bad request", e);
+            throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
         } catch (Exception e) {
             logger.warn("Noe feil skjedde ved henting av token fra STS i FSS.");
             throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
