@@ -134,7 +134,6 @@ public class OpplastetVedleggService {
         }
 
         try {
-            logger.info("filnavn: {}", filnavn);
             filnavn = URLDecoder.decode(filnavn, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
             logger.warn("Klarte ikke å URIdecode fil med navn {}", filnavn, e);
