@@ -72,7 +72,7 @@ public class OpplastetVedleggServiceTest {
         assertEquals("etkjempelangtfilnavn123456789012345678901234567890-5c2a1cea.jpg", truncate);
 
         String medSpesialTegn = opplastetVedleggService.lagFilnavn("en.filmedææå()ogmyerartsjø.png", "image/jpeg", "abc-ef05");
-        assertEquals("enfilmedeeaogmyerartsjo-abc.jpg", medSpesialTegn);
+        assertEquals("enfilmedææåogmyerartsjø-abc.jpg", medSpesialTegn);
 
     }
 
