@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
+import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
@@ -14,6 +15,9 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGeneratorConfig;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +26,7 @@ import org.springframework.context.annotation.Import;
 import static org.mockito.Mockito.mock;
 
 @Configuration
-@Import(DummyHolderConfig.class)
+@Import({DummyHolderConfig.class, PdfGeneratorConfig.class})
 public class SoknadActionsTestConfig {
 
     @Bean
@@ -81,6 +85,11 @@ public class SoknadActionsTestConfig {
     }
 
     @Bean
+    public SosialhjelpPdfGenerator sosialhjelpPdfGenerator() {
+        return mock(SosialhjelpPdfGenerator.class);
+    }
+
+    @Bean
     public Tilgangskontroll tilgangskontroll() {
         return mock(Tilgangskontroll.class);
     }
@@ -99,4 +108,15 @@ public class SoknadActionsTestConfig {
     public SoknadUnderArbeidRepository soknadUnderArbeidRepository() {
         return mock(SoknadUnderArbeidRepository.class);
     }
+
+    @Bean
+    public TextHelpers textHelpers() {
+        return mock(TextHelpers.class);
+    }
+
+    @Bean
+    public Adressekodeverk adressekodeverk() {
+        return mock(Adressekodeverk.class);
+    }
+
 }
