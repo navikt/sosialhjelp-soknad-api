@@ -85,9 +85,9 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
         return client.target(endpoint)
                 .queryParam("sporingsinformasjon", false)
-                .queryParam("regeverk", A_ORDNINGEN)
+                .queryParam("regelverk", A_ORDNINGEN)
                 .request()
-                .header("Authorization", OidcFeatureToggleUtils.getToken()) // brukers token?
+                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken()) // brukers token?
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .header("Nav-Consumer-Token", BEARER + fssToken.getAccessToken())
