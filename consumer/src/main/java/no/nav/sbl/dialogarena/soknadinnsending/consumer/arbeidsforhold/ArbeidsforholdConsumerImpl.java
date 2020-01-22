@@ -14,8 +14,10 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDate;
 import java.util.List;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
@@ -83,15 +85,42 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         FssToken fssToken = stsConsumer.getFSSToken();
+        Sokeperiode sokeperiode = lagSokePeriode();
 
         return client.target(endpoint)
                 .queryParam("sporingsinformasjon", false)
                 .queryParam("regelverk", A_ORDNINGEN)
+                .queryParam("ansettelsesperiodeFom", sokeperiode.fom.format(ISO_LOCAL_DATE))
+                .queryParam("ansettelsesperiodeTom", sokeperiode.tom.format(ISO_LOCAL_DATE))
                 .request()
-                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken()) // brukers token?
+                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken()) // brukers token
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .header("Nav-Consumer-Token", BEARER + fssToken.getAccessToken())
                 .header("Nav-Personident", fodselsnummer);
+    }
+
+    private Sokeperiode lagSokePeriode(){
+        return new Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now());
+    }
+
+    private static final class Sokeperiode {
+
+        private final LocalDate fom;
+        private final LocalDate tom;
+
+        public Sokeperiode(LocalDate fom, LocalDate tom) {
+            this.fom = fom;
+            this.tom = tom;
+        }
+
+        public LocalDate getFom() {
+            return fom;
+        }
+
+        public LocalDate getTom() {
+            return tom;
+        }
+
     }
 }
