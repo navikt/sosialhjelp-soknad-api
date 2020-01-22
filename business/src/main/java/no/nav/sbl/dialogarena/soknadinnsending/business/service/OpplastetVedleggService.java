@@ -15,12 +15,16 @@ import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +32,12 @@ import java.util.Map;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class OpplastetVedleggService {
+
+    private static final Logger logger = getLogger(OpplastetVedleggService.class);
 
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
@@ -70,6 +77,12 @@ public class OpplastetVedleggService {
                 .withSha512(sha512);
 
         filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
+        try {
+            filnavn = URLDecoder.decode(filnavn, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            logger.warn("Klarte ikke å URIdecode fil med navn {}", filnavn, e);
+        }
+
         opplastetVedlegg.withFilnavn(filnavn);
 
         String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
