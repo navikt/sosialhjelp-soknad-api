@@ -9,13 +9,13 @@ public class FssToken {
 
     private String accessToken;
     private String tokenType;
-    private String expiresIn;
+    private Long expiresIn;
 
     @JsonCreator
     public FssToken(
             @JsonProperty(value = "access_token", required = true) String accessToken,
             @JsonProperty(value = "token_type", required = true) String tokenType,
-            @JsonProperty(value = "expires_in", required = true) String expiresIn) {
+            @JsonProperty(value = "expires_in", required = true) Long expiresIn) {
         this.accessToken = accessToken;
         this.tokenType = tokenType;
         this.expiresIn = expiresIn;
@@ -29,7 +29,7 @@ public class FssToken {
         return tokenType;
     }
 
-    public String getExpiresIn() {
+    public Long getExpiresIn() {
         return expiresIn;
     }
 }

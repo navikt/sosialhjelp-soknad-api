@@ -10,7 +10,7 @@ public class FssTokenTest {
 
     @Test
     public void skalDeserialisereFssToken() throws JsonProcessingException {
-        String json = "{\"access_token\":\"asd\",\"token_type\":\"fgh\",\"expires_in\":\"jkl\"}";
+        String json = "{\"access_token\":\"asd\",\"token_type\":\"fgh\",\"expires_in\":1234}";
 
         FssToken fssToken = new ObjectMapper()
                 .readerFor(FssToken.class)
