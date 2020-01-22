@@ -1,20 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.rest.RestUtils;
-import org.glassfish.jersey.client.ClientResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.ClientResponseFilter;
 
 import static java.lang.System.getenv;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
@@ -30,9 +26,9 @@ public class ArbeidsforholdRestConfig {
     @Value("${aareg_api_baseurl}")
     private String endpoint;
 
-    private static ObjectMapper arbeidsforholdObjectMapper = new ObjectMapper()
-//            .enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+//    private static ObjectMapper arbeidsforholdObjectMapper = new ObjectMapper()
+////            .enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+//            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
     @Bean
     public ArbeidsforholdConsumer arbeidsforholdConsumer() {
@@ -58,13 +54,6 @@ public class ArbeidsforholdRestConfig {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey))
-                // kan muligens fjernes
-                .register((ClientResponseFilter) (requestContext, responseContext) -> {
-                    if (responseContext instanceof ClientResponse) {
-                        ClientResponse response = (ClientResponse) responseContext;
-                        response.bufferEntity();
-                    }
-                })
-                .register(arbeidsforholdObjectMapper);
+                .register(new ErrorResponseFilter());
     }
 }
