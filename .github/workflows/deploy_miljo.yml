@@ -11,7 +11,7 @@ jobs:
     container: navikt/deployment-cli:0.4.0
     steps:
       - uses: actions/checkout@v1
-      - name: Deploy to dev
+      - name: Deploy to dev - test 1 github.event.client_payload.MILJO 2 github.event.client_payload.TAG 3 github.event.client_payload
         run: |
           MILJO=$(jq -r '.client_payload.MILJO' $GITHUB_EVENT_PATH)
           TAG=$(jq -r '.client_payload.TAG' $GITHUB_EVENT_PATH)
