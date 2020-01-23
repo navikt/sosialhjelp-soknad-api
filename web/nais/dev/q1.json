@@ -2,7 +2,6 @@
   "namespace": "q1",
   "ingresses": [
     "https://sosialhjelp-soknad-api-q1.nais.oera-q.local/",
-    "https://tjenester-q1.nav.no/sosialhjelp-soknad-api",
     "https://www-q1.nav.no/sosialhjelp/soknad-api"
   ],
   "vaultKvPath": "/kv/preprod/sbs/sosialhjelp-soknad-api/q1",
