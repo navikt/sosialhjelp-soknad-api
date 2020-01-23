@@ -94,7 +94,7 @@ public class ArbeidsforholdService {
         dto.getArbeidsavtaler()
                 .forEach(arbeidsavtale -> {
                     result.harFastStilling = true;
-                    result.fastStillingsprosent += Math.round(arbeidsavtale.getStillingsprosent());
+                    result.fastStillingsprosent += (long) arbeidsavtale.getStillingsprosent(); // Hvorfor er "fastStillingsprosent" long?
                 });
         return result;
     }
