@@ -53,7 +53,7 @@ public class ArbeidsforholdRestConfig {
     private Client arbeidsforholdClient() {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey))
-                .register(new ErrorResponseFilter());
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey));
+//                .register(new ErrorResponseFilter());
     }
 }

@@ -56,10 +56,10 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     @Override
     public List<ArbeidsforholdDto> finnArbeidsforholdForArbeidstaker(String fodselsnummer) {
         Invocation.Builder request = lagRequest(endpoint + "v1/arbeidstaker/arbeidsforhold", fodselsnummer);
-        try (Response response = request.get()) {
-            logger.info("response: {}", response.getStatusInfo());
-            return response.readEntity(new GenericType<List<ArbeidsforholdDto>>() {
-            });
+        try {
+            List<ArbeidsforholdDto> response = request.get(new GenericType<List<ArbeidsforholdDto>>() {});
+//            logger.info("response: {}", response.getStatusInfo());
+            return response;
         } catch (BadRequestException e) {
             logger.warn("Aareg.api - 400 - Ugyldig(e) parameter(e) i request");
             return null;
