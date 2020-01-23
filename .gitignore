@@ -10,6 +10,7 @@ tekster/src/main/resources/.idea/
 /projectFilesBackup/
 rebel.xml
 target
+temp
 
 *.project
 *.settings

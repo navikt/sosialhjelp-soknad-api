@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
@@ -18,6 +20,8 @@ import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -31,6 +35,7 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.time.Clock;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static org.mockito.Mockito.mock;
 
 @Import(value = {DatabaseTestContext.class})
@@ -153,5 +158,20 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     VirusScanner virusScanner() {
         return mock(VirusScanner.class);
+    }
+
+    @Bean
+    SosialhjelpPdfGenerator sosialhjelpPdfGenerator() {
+        return mock(SosialhjelpPdfGenerator.class);
+    }
+
+    @Bean
+    TextHelpers textHelpers() {
+        return mock(TextHelpers.class);
+    }
+
+    @Bean
+    Adressekodeverk adressekodeverk() {
+        return mock(Adressekodeverk.class);
     }
 }

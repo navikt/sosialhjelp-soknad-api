@@ -3,12 +3,13 @@ package no.nav.sbl.sosialhjelp.pdf;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import org.apache.pdfbox.PDFBox;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
@@ -46,10 +47,10 @@ public class PDFFabrikk {
             renderer.getFontResolver().addFont("/fonts/modus/ModusSemiBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/arial/arial.ttf", "ArialSystem", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/arial/arialbd.ttf", "ArialSystem", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/ArialMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/ArialMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/Arial-BoldMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/Arial-BoldItalicMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/Arial-BoldMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/Arial-BoldMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/Arial-BoldItalicMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/Arial-BoldItalicMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.layout();
             renderer.setPDFVersion(PdfWriter.VERSION_1_4);
             renderer.createPDF(os, false, 0);
@@ -68,6 +69,6 @@ public class PDFFabrikk {
     }
     
     private static String inPdfBox(String path) {
-        return PDFBox.class.getResource(path).toString();
+        return PDFFabrikk.class.getResource(path).toString();
     }
 }
