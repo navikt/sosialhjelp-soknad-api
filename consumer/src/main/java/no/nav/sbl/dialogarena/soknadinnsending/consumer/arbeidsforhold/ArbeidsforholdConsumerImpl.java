@@ -57,23 +57,21 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     public List<ArbeidsforholdDto> finnArbeidsforholdForArbeidstaker(String fodselsnummer) {
         Invocation.Builder request = lagRequest(endpoint + "v1/arbeidstaker/arbeidsforhold", fodselsnummer);
         try {
-            List<ArbeidsforholdDto> response = request.get(new GenericType<List<ArbeidsforholdDto>>() {});
-//            logger.info("response: {}", response.getStatusInfo());
-            return response;
+            return request.get(new GenericType<List<ArbeidsforholdDto>>() {});
         } catch (BadRequestException e) {
-            logger.warn("Aareg.api - 400 - Ugyldig(e) parameter(e) i request");
+            logger.warn("Aareg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request", e);
             return null;
         } catch (NotAuthorizedException e) {
-            logger.warn("Aareg.api - 401 - Token mangler eller er ugyldig");
+            logger.warn("Aareg.api - 401 Unauthorized- Token mangler eller er ugyldig", e);
             return null;
         } catch (ForbiddenException e) {
-            logger.warn("Aareg.api - 403 - Ingen tilgang til forespurt ressurs");
+            logger.warn("Aareg.api - 403 Forbidden - Ingen tilgang til forespurt ressurs", e);
             return null;
         } catch (NotFoundException e) {
-            logger.warn("Aareg.api - 404 - Fant ikke arbeidsforhold for bruker");
+            logger.warn("Aareg.api - 404 Not Found- Fant ikke arbeidsforhold for bruker", e);
             return null;
         } catch (ServiceUnavailableException | InternalServerErrorException e) {
-            logger.warn("Aareg.api - " + e.getResponse().getStatus() + " - Tjenesten er ikke tilgjengelig", e);
+            logger.warn("Aareg.api - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
             throw new TjenesteUtilgjengeligException("AAREG", e);
         } catch (Exception e) {
             logger.warn("Aareg.api - Noe uventet feilet", e);

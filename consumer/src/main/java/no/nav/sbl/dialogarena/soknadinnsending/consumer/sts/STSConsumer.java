@@ -2,11 +2,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.sts;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ProcessingException;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
@@ -47,14 +49,17 @@ public class STSConsumer {
     public FssToken getFSSToken() {
         Invocation.Builder request = lagRequest();
 
-        try (Response response = request.get()) {
-            return readFssToken(response);
+        try {
+            return request.get(FssToken.class);
         } catch (NotAuthorizedException e) {
-            logger.warn("STS gir 401 unauthorized", e);
-            throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
+            logger.warn("STS - 401 unauthorized", e);
+            throw new ApplicationException("STS - 401 Unauthorized. Endpoint=" + endpoint, e);
         } catch (BadRequestException e) {
-            logger.warn("STS gir 400 bad request", e);
-            throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
+            logger.warn("STS - 400 bad request", e);
+            throw new ApplicationException("STS - 400 bad request. Endpoint=" + endpoint, e);
+        } catch (ServerErrorException e) {
+            logger.warn("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+            throw new TjenesteUtilgjengeligException("STS", e);
         } catch (Exception e) {
             logger.warn("Noe feil skjedde ved henting av token fra STS i FSS.");
             throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
