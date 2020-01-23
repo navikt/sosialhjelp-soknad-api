@@ -21,6 +21,7 @@ import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +47,9 @@ public class DigisosApiService {
 
     @Inject
     private PDFService pdfService;
+
+    @Inject
+    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @Inject
     private InnsendingService innSendingService;
@@ -112,7 +116,11 @@ public class DigisosApiService {
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
         byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
-
+        try {
+            sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+        } catch (Exception e) {
+            log.warn("Kunne ikke generere soknad.pdf", e);
+        }
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn("soknad.pdf")
                 .withMimetype("application/pdf")
@@ -150,6 +158,11 @@ public class DigisosApiService {
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+        try {
+            sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        } catch (Exception e) {
+            log.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
+        }
 
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn("Soknad-juridisk.pdf")

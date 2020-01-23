@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdTransformer;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGeneratorConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -38,7 +39,8 @@ import org.springframework.context.annotation.Import;
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,
         FamilieSystemdata.class,
-        BostotteSystemdata.class
+        BostotteSystemdata.class,
+        PdfGeneratorConfig.class
 })
 public class BusinessConfig {
 

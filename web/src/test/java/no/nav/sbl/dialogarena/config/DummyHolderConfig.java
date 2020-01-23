@@ -25,11 +25,6 @@ public class DummyHolderConfig {
     }
 
     @Bean
-    public HenvendelseService henvendelseService() {
-        return null;
-    }
-
-    @Bean
     public EttersendingService ettersendingService() {
         return null;
     }
