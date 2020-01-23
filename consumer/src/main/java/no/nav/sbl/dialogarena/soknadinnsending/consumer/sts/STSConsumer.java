@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
@@ -42,7 +41,6 @@ public class STSConsumer {
                     throw new RuntimeException("Feil statuskode ved ping mot STS: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
                 }
             }
-
         }
     }
 
@@ -71,17 +69,5 @@ public class STSConsumer {
                 .queryParam("grant_type", "client_credentials")
                 .queryParam("scope", "openid")
                 .request();
-    }
-
-    private FssToken readFssToken(Response response) {
-        try {
-            return response.readEntity(FssToken.class);
-        } catch (ProcessingException e) {
-            throw new RuntimeException("Prosesseringsfeil på FSSToken-respons.", e);
-        } catch (IllegalStateException e) {
-            throw new RuntimeException("Ulovlig tilstand på FSSToken-respons.", e);
-        } catch (Exception e) {
-            throw new RuntimeException("Uventet feil på FSSToken-respons.", e);
-        }
     }
 }
