@@ -314,7 +314,7 @@ public class SosialhjelpPdfGenerator {
             skrivInfotekst(pdf, "arbeidsforhold.infotekst");
         }
 
-        if (arbeid != null && arbeid.getForhold() != null && arbeid.getForhold().size() > 0) {
+        if (arbeid != null && arbeid.getForhold() != null) {
             for (JsonArbeidsforhold forhold : arbeid.getForhold()) {
                 skrivTekstMedGuard(pdf, forhold.getArbeidsgivernavn(), "arbeidsforhold.arbeidsgivernavn.label");
                 if (forhold.getArbeidsgivernavn() != null) {
