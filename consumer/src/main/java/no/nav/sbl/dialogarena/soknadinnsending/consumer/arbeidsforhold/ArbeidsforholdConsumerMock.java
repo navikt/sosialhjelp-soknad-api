@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +46,7 @@ public class ArbeidsforholdConsumerMock {
         try {
             ObjectMapper mapper = new ObjectMapper()
                     .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                    .addMixIn(OpplysningspliktigArbeidsgiverDto.class, OpplysningspliktigArbeidsgiverMixIn.class);
+                    .addMixIn(OpplysningspliktigArbeidsgiverDto.class, OpplysningspliktigArbeidsgiverDtoMixIn.class);
 
             List<ArbeidsforholdDto> response = mapper.readValue(arbeidsforholdData, new TypeReference<List<ArbeidsforholdDto>>() {
             });
@@ -85,14 +83,6 @@ public class ArbeidsforholdConsumerMock {
                         .build())
                 .withNavArbeidsforholdId(1234L)
                 .build();
-    }
-
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
-    @JsonSubTypes({
-            @JsonSubTypes.Type(value = OrganisasjonDto.class, name = "Organisasjon"),
-            @JsonSubTypes.Type(value = PersonDto.class, name = "Person")
-    })
-    private interface OpplysningspliktigArbeidsgiverMixIn {
     }
 
 }

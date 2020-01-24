@@ -1,8 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.OpplysningspliktigArbeidsgiverDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.OpplysningspliktigArbeidsgiverDtoMixIn;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.rest.RestUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +29,12 @@ public class ArbeidsforholdRestConfig {
 
     @Value("${aareg_api_baseurl}")
     private String endpoint;
+
+    private ObjectMapper arbeidsforholdMapper() {
+        return new ObjectMapper()
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .addMixIn(OpplysningspliktigArbeidsgiverDto.class, OpplysningspliktigArbeidsgiverDtoMixIn.class);
+    }
 
     @Bean
     public ArbeidsforholdConsumer arbeidsforholdConsumer() {
@@ -49,6 +59,7 @@ public class ArbeidsforholdRestConfig {
     private Client arbeidsforholdClient() {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey));
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey))
+                .register(arbeidsforholdMapper());
     }
 }
