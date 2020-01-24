@@ -270,7 +270,9 @@ public class DigisosApiImpl implements DigisosApi {
             post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
 
             post.setEntity(entitybuilder.build());
+            long startTime = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(post);
+            long endTime = System.currentTimeMillis();
             if (response.getStatusLine().getStatusCode() >= 300) {
                 String errorResponse = EntityUtils.toString(response.getEntity());
                 String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
@@ -279,8 +281,9 @@ public class DigisosApiImpl implements DigisosApi {
                     return fiksDigisosId;
                 }
 
-                throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet med status %s og response: %s",
+                throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet etter %s ms med status %s og response: %s",
                         behandlingsId,
+                        endTime - startTime,
                         response.getStatusLine().getReasonPhrase(),
                         errorResponse));
             }
