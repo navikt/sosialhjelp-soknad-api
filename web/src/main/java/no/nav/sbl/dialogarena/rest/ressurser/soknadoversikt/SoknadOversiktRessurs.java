@@ -38,7 +38,7 @@ public class SoknadOversiktRessurs {
         String fnr = SubjectHandler.getUserIdFromToken();
         logger.debug("Henter alle søknader for fnr {}", fnr);
 
-        List<SoknadOversikt> soknader = service.hentAlleSoknaderFor(fnr);
+        List<SoknadOversikt> soknader = service.hentSvarUtSoknaderFor(fnr);
         logger.debug("Hentet {} søknader for bruker", soknader.size());
 
         return soknader;
