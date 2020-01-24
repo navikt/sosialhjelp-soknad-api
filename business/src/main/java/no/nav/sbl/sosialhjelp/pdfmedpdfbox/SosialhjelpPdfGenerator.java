@@ -1,7 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
@@ -9,14 +8,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
-import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
-import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
@@ -68,7 +63,7 @@ public class SosialhjelpPdfGenerator {
             leggTilBegrunnelse(pdf, data.getBegrunnelse());
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning(), utvidetSoknad);
             leggTilFamilie(pdf, data.getFamilie());
-            leggTilBosituasjon(pdf, data.getBosituasjon());
+            leggTilBosituasjon(pdf, data.getBosituasjon(), utvidetSoknad);
             leggTilInntektOgFormue(pdf, data.getOkonomi());
 
             return pdf.finish();
@@ -551,7 +546,7 @@ public class SosialhjelpPdfGenerator {
         }
     }
 
-    private void leggTilBosituasjon(PdfGenerator pdf, JsonBosituasjon bosituasjon) throws IOException {
+    private void leggTilBosituasjon(PdfGenerator pdf, JsonBosituasjon bosituasjon, boolean utvidetSoknad) throws IOException {
         pdf.skrivH4Bold(getTekst("bosituasjonbolk.tittel"));
         pdf.addBlankLine();
 
@@ -559,19 +554,43 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekstBold(getTekst("bosituasjon.sporsmal"));
             JsonBosituasjon.Botype botype = bosituasjon.getBotype();
             if (botype != null) {
-                pdf.skrivTekst(getTekst("bosituasjon." + botype.value()));
+                String tekst = getTekst("bosituasjon." + botype.value());
+                if (tekst.isEmpty()) {
+                        pdf.skrivTekst(getTekst("bosituasjon.annet.botype." + botype.value()));
+                } else {
+                    pdf.skrivTekst(tekst);
+                }
             } else {
-                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                skrivIkkeUtfylt(pdf);
             }
-
             pdf.addBlankLine();
+
+            if (utvidetSoknad) {
+                List<String> svaralternativer = new ArrayList<>(5);
+                svaralternativer.add("bosituasjon.eier");
+                svaralternativer.add("bosituasjon.kommunal");
+                svaralternativer.add("bosituasjon.leier");
+                svaralternativer.add("bosituasjon.ingen");
+                svaralternativer.add("bosituasjon.annet");
+                skrivSvaralternativer(pdf, svaralternativer);
+
+                pdf.skrivTekstBold(getTekst("bosituasjon.annet"));
+                List<String> andreAlternativer = new ArrayList<>();
+                andreAlternativer.add("bosituasjon.annet.botype.foreldre");
+                andreAlternativer.add("bosituasjon.annet.botype.familie");
+                andreAlternativer.add("bosituasjon.annet.botype.venner");
+                andreAlternativer.add("bosituasjon.annet.botype.institusjon");
+                andreAlternativer.add("bosituasjon.annet.botype.fengsel");
+                andreAlternativer.add("bosituasjon.annet.botype.krisesenter");
+                skrivSvaralternativer(pdf, andreAlternativer);
+            }
 
             pdf.skrivTekstBold(getTekst("bosituasjon.antallpersoner.sporsmal"));
             Integer antallPersoner = bosituasjon.getAntallPersoner();
             if (antallPersoner != null) {
                 pdf.skrivTekst(antallPersoner.toString());
             } else {
-                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                skrivIkkeUtfylt(pdf);
             }
         }
         pdf.addBlankLine();
