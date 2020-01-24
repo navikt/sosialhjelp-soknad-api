@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,8 +101,7 @@ public class ArbeidsforholdServiceTest {
                 "arbeidsforholdId",
                 erArbeidsgiverOrganisasjon ? createArbeidsgiverOrganisasjon() : createArbeidsgiverPerson(),
                 createArbeidstaker(),
-                1337L,
-                createOpplysningspliktig());
+                1337L);
     }
 
     private ArbeidsforholdDto createArbeidsforholdMedFlereArbeidsavtaler(double... stillingsprosenter) {
@@ -118,20 +116,11 @@ public class ArbeidsforholdServiceTest {
                 "arbeidsforholdId",
                 createArbeidsgiverOrganisasjon(),
                 createArbeidstaker(),
-                1337L,
-                createOpplysningspliktig());
+                1337L);
     }
 
     private ArbeidsavtaleDto createArbeidsavtale(double stillingsprosent) {
-        return new ArbeidsavtaleDto(1.0, "arbeidstidsordning", 2.0, createBruksperiode(), createGyldighetsperiode(), "sistLoennsendring", "sistStillingsendring", stillingsprosent, "yrke");
-    }
-
-    private BruksperiodeDto createBruksperiode() {
-        return new BruksperiodeDto(LocalDateTime.now().minusMonths(1), LocalDateTime.now());
-    }
-
-    private GyldighetsperiodeDto createGyldighetsperiode() {
-        return new GyldighetsperiodeDto(LocalDate.now().minusMonths(1), LocalDate.now());
+        return new ArbeidsavtaleDto(stillingsprosent);
     }
 
     private OrganisasjonDto createArbeidsgiverOrganisasjon() {
@@ -144,9 +133,5 @@ public class ArbeidsforholdServiceTest {
 
     private PersonDto createArbeidstaker() {
         return new PersonDto("arbeidstaker_fnr", "aktoerid");
-    }
-
-    private OrganisasjonDto createOpplysningspliktig() {
-        return new OrganisasjonDto("opplysningspliktig orgnr");
     }
 }
