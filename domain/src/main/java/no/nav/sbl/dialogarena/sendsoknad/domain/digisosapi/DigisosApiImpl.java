@@ -115,8 +115,10 @@ public class DigisosApiImpl implements DigisosApi {
             long startTime = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(http);
             long endTime = System.currentTimeMillis();
-            if (endTime - startTime > 2000) {
+            if (endTime - startTime > 8000) {
                 log.error("Timer: Sende fiks-request: {} ms", endTime - startTime);
+            } else if (endTime - startTime > 2000) {
+                log.warn("Timer: Sende fiks-request: {} ms", endTime - startTime);
             }
 
             String content = EntityUtils.toString(response.getEntity());
