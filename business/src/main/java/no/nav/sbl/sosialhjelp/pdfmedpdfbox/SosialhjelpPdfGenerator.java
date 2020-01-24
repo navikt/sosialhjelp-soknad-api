@@ -231,7 +231,7 @@ public class SosialhjelpPdfGenerator {
                 pdf.skrivTekstBold(getTekst("kontakt.telefon.sporsmal"));
                 pdf.skrivTekst(getTekst("kontakt.telefon.label"));
                 if (jsonTelefonnummer.getVerdi() == null || jsonTelefonnummer.getVerdi().isEmpty()) {
-                    pdf.skrivTekst(getTekst("oppsummering.ikkeutfylt"));
+                    skrivIkkeUtfylt(pdf);
                 } else {
                     pdf.skrivTekst(jsonTelefonnummer.getVerdi());
                 }
@@ -289,11 +289,21 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
         pdf.skrivH4Bold(getTekst("begrunnelsebolk.tittel"));
         pdf.addBlankLine();
+
         pdf.skrivTekstBold(getTekst("begrunnelse.hva.sporsmal"));
-        pdf.skrivTekst(jsonBegrunnelse.getHvaSokesOm());
+        if (jsonBegrunnelse.getHvaSokesOm() == null || jsonBegrunnelse.getHvaSokesOm().isEmpty()) {
+            skrivIkkeUtfylt(pdf);
+        } else {
+            pdf.skrivTekst(jsonBegrunnelse.getHvaSokesOm());
+        }
         pdf.addBlankLine();
+
         pdf.skrivTekstBold(getTekst("begrunnelse.hvorfor.sporsmal"));
-        pdf.skrivTekst(jsonBegrunnelse.getHvorforSoke());
+        if (jsonBegrunnelse.getHvorforSoke() == null || jsonBegrunnelse.getHvorforSoke().isEmpty()) {
+            skrivIkkeUtfylt(pdf);
+        } else {
+            pdf.skrivTekst(jsonBegrunnelse.getHvorforSoke());
+        }
         pdf.addBlankLine();
     }
 
@@ -718,5 +728,9 @@ public class SosialhjelpPdfGenerator {
         for (String key: keys) {
             pdf.skrivTekstMedInnrykk(getTekst(key), INNRYKK_2);
         }
+    }
+
+    private void skrivIkkeUtfylt(PdfGenerator pdf) throws IOException {
+        pdf.skrivTekst(getTekst("oppsummering.ikkeutfylt"));
     }
 }
