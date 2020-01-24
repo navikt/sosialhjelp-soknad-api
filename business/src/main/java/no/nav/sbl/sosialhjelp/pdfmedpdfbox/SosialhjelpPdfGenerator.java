@@ -535,7 +535,7 @@ public class SosialhjelpPdfGenerator {
             if (botype != null) {
                 String tekst = getTekst("bosituasjon." + botype.value());
                 if (tekst.isEmpty()) {
-                        pdf.skrivTekst(getTekst("osituasjon.annet.botype." + botype.value()));
+                        pdf.skrivTekst(getTekst("bosituasjon.annet.botype." + botype.value()));
                 } else {
                     pdf.skrivTekst(tekst);
                 }
