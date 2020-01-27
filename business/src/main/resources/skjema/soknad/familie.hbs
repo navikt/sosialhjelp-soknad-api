@@ -22,7 +22,9 @@
                 {{> skjema/soknad/familie_har_barn}}
             {{else}}
                 {{#if @root.utvidetSoknad}}
-                    {{{hentTekst "familierelasjon.ingen_registrerte_barn"}}}
+                    {{!--{hentTekst "familierelasjon.ingen_registrerte_barn"}--}}
+                    {{{{hentTekst "familierelasjon.ingen_registrerte_barn_tittel"}}}}
+                    {{{{hentTekst "familierelasjon.ingen_registrerte_barn_tekst"}}}}
                 {{/if}}
             {{/if}}
         </ul>

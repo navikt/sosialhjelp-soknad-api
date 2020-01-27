@@ -81,7 +81,7 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     // TODO: Skrive bedre tester for generering av pdf med pdfbox
-    @Ignore("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
+    //@Ignore("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
     @Test
     public void testGenerate() {
         //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();

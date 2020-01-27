@@ -24,6 +24,7 @@ import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,7 @@ public class SosialhjelpPdfGenerator {
             leggTilPersonalia(pdf, data.getPersonalia(), jsonInternalSoknad.getMidlertidigAdresse(), utvidetSoknad);
             leggTilBegrunnelse(pdf, data.getBegrunnelse());
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning());
-            leggTilFamilie(pdf, data.getFamilie());
+            leggTilFamilie(pdf, data.getFamilie(), utvidetSoknad);
             leggTilBosituasjon(pdf, data.getBosituasjon());
             leggTilInntektOgFormue(pdf, data.getOkonomi());
 
@@ -349,14 +350,13 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
     }
 
-    private void leggTilFamilie(PdfGenerator pdf, JsonFamilie familie) throws IOException {
+    private void leggTilFamilie(PdfGenerator pdf, JsonFamilie familie, boolean utvidetSoknad) throws IOException {
 
         // Familie
         pdf.skrivH4Bold(getTekst("familiebolk.tittel"));
         pdf.addBlankLine();
         pdf.skrivTekstBold(getTekst("familie.sivilstatus.sporsmal"));
         if (familie != null) {
-
             // Sivilstatus
             JsonSivilstatus sivilstatus = familie.getSivilstatus();
             if (sivilstatus != null) {
@@ -398,6 +398,17 @@ public class SosialhjelpPdfGenerator {
                     }
                 }
 
+                if(utvidetSoknad){
+                    JsonSivilstatus.Status status = sivilstatus.getStatus();
+                    if(status != null){
+                        if(status.toString().equals("gift")){
+                            if(!sivilstatus.getEktefelleHarDiskresjonskode()){
+                                pdf.skrivTekstBold(getTekst("system.familie.sivilstatus.informasjonspanel.tittel"));
+                                pdf.skrivTekst(getTekst("system.familie.sivilstatus.informasjonspanel.tekst"));
+                            }
+                        }
+                    }
+                }
             } else {
                 pdf.skrivTekstKursiv(IKKE_UTFYLT);
             }
@@ -408,6 +419,9 @@ public class SosialhjelpPdfGenerator {
             // FolkeregistrertMedEktefelleAvviksforklaring
 
 
+            if(utvidetSoknad){
+                pdf.skrivTekstBold(getTekst("familierelasjon.faktum.sporsmal"));
+            }
             // Forsørgerplikt
             JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
             if (forsorgerplikt != null) {
@@ -487,6 +501,12 @@ public class SosialhjelpPdfGenerator {
                     }
 
                 }
+            }
+
+            if(utvidetSoknad){
+                //pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn"));
+                pdf.skrivH3(getTekst("familierelasjon.ingen_registerte_barn_tittel"));
+                pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn_tekst"));
             }
 
 
