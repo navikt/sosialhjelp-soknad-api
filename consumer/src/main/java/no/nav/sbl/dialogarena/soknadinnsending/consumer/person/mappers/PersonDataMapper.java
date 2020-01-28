@@ -237,12 +237,6 @@ public class PersonDataMapper {
             return ofNullable(bankkontoNorge.getBankkonto())
                     .map(no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkontonummer::getBankkontonummer)
                     .orElse(null);
-        } else if (bankkonto instanceof no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoUtland) {
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoUtland wsBankkontoUtland =
-                    (no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoUtland) bankkonto;
-            return ofNullable(wsBankkontoUtland.getBankkontoUtland())
-                    .map(no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontonummerUtland::getBankkontonummer)
-                    .orElse(null);
         }
         return null;
     }

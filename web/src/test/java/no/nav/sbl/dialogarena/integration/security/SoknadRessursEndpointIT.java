@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SoknadRessursEndpointIT extends AbstractSecurityIT {
-    public static final String ANNEN_BRUKER = "12345679811";
+    public static final String ANNEN_BRUKER = "12345678901";
 
     @BeforeClass
     public static void beforeClass() throws Exception {

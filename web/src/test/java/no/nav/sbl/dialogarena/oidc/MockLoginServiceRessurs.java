@@ -26,7 +26,7 @@ public class MockLoginServiceRessurs {
     @Path("/cookie")
     @GET
     public Response addCookie(
-            @QueryParam("subject") @DefaultValue("23079403598") String subject,
+            @QueryParam("subject") @DefaultValue("26104500284") String subject, // Testbrukeren Nathalie (ikke ekte person)
             @QueryParam("cookiename") @DefaultValue("localhost-idtoken") String cookieName,
             @QueryParam("redirect") String redirect,
             @Context HttpServletResponse response) {

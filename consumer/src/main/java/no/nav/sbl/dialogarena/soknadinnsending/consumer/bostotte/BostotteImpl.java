@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
+import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.slf4j.Logger;
@@ -15,11 +16,14 @@ import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import java.time.LocalDate;
 
+import static java.lang.System.getenv;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
+@Timed
 public class BostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(BostotteImpl.class);
+    private static final String SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD";
     private final BostotteConfig config;
     private final RestOperations operations;
 
@@ -32,9 +36,10 @@ public class BostotteImpl implements Bostotte {
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til) {
         try {
+            String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
             RequestEntity<Void> request = RequestEntity.get(uri.build())
-                    .header(config.getUsername(), config.getAppKey())
+                    .header("x-nav-apiKey", apikey)
                     .header("Authorization", token)
                     .build();
             return operations.exchange(request, BostotteDto.class).getBody();
@@ -52,16 +57,17 @@ public class BostotteImpl implements Bostotte {
 
     static Pingable opprettHusbankenPing(BostotteConfig config, RestOperations operations) {
         return new Pingable() {
-            Ping.PingMetadata metadata = new Ping.PingMetadata(config.getPingUrl(),"Husbanken API", false);
+            Ping.PingMetadata metadata = new Ping.PingMetadata(config.getPingUrl(), "Husbanken API", false);
 
             @Override
             public Ping ping() {
                 try {
+                    String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
                     RequestEntity<Void> request = RequestEntity.get(UriBuilder.fromPath(config.getPingUrl()).build())
-                            .header(config.getUsername(), config.getAppKey())
+                            .header("x-nav-apiKey", apikey)
                             .build();
                     String result = operations.exchange(request, String.class).getBody();
-                    if(result.equalsIgnoreCase("pong")) {
+                    if (result.equalsIgnoreCase("pong")) {
                         return lyktes(metadata);
                     }
                 } catch (Exception e) {

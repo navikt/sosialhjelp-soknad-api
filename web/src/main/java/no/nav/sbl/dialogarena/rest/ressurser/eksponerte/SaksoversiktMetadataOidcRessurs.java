@@ -38,7 +38,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
         String fnr = SubjectHandler.getUserIdFromToken();
-        logger.debug("Henter innsendte for fnr {}", fnr);
+        logger.debug("Henter metadata for innsendte soknader med oidc");
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
 
@@ -50,7 +50,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
         String fnr = SubjectHandler.getUserIdFromToken();
-        logger.debug("Henter ettersendelse for fnr {}", fnr);
+        logger.debug("Henter metadata for ettersendelse med oidc");
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
 
@@ -62,19 +62,24 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
         String fnr = SubjectHandler.getUserIdFromToken();
-        logger.debug("Henter pabegynte for fnr {}", fnr);
+        logger.debug("Henter metadata for pabegynte med oidc");
 
-        List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
+        try {
+            List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
 
-        return new PabegynteSoknaderRespons()
-                .withPabegynteSoknader(pabegynte);
+            return new PabegynteSoknaderRespons()
+                    .withPabegynteSoknader(pabegynte);
+        } catch (Exception e) {
+            logger.error(String.format("Uthenting av påbegynte søknader feilet. Var fnr tom? %s", fnr == null || fnr.equals("")), e) ;
+            throw e;
+        }
     }
 
     @GET
     @Unprotected
     @Path("/ping")
     public PingRespons ping() {
-        logger.debug("Ping for saksoversikt");
+        logger.debug("Ping for saksoversikt med oidc");
         return new PingRespons()
                 .withStatus(PingRespons.Status.OK)
                 .withMelding("Sosialhjelp Saksoversikt API er oppe");

@@ -26,7 +26,7 @@ public class PersonDataMapperTest {
     private static final String ETTERNAVN = "Etternavn";
     private static final String SAMMENSATT_NAVN = "Fornavn Mellomnavn Etternavn";
     private static final String SAMMENSATT_NAVN_UTEN_MELLOMNAVN = "Fornavn Etternavn";
-    private static final String FNR = "21098691736";
+    private static final String FNR = "21098691736"; // Ikke ekte person
     private static final int FODSELSAR = 1986;
     private static final int FODSELSMANED = 9;
     private static final int FODSELSDAG = 21;
@@ -34,14 +34,14 @@ public class PersonDataMapperTest {
     private static final String FORNAVN_BARN = "Fornavn1";
     private static final String MELLOMNAVN_BARN = "Mellomnavn1";
     private static final String ETTERNAVN_BARN = "Etternavn1";
-    private static final String FNR_BARN = "010206691736";
+    private static final String FNR_BARN = "010206691736"; // Ikke ekte person
     private static final int FODSELSAR_BARN = 2006;
     private static final int FODSELSMANED_BARN = 2;
     private static final int FODSELSDAG_BARN = 1;
     private static final String FORNAVN_BARN2 = "Fornavn2";
     private static final String MELLOMNAVN_BARN2 = "Mellomnavn2";
     private static final String ETTERNAVN_BARN2 = "Etternavn2";
-    private static final String FNR_BARN2 = "030210691736";
+    private static final String FNR_BARN2 = "030210691736"; // Ikke ekte person
     private static final int FODSELSAR_BARN2 = 2010;
     private static final int FODSELSMANED_BARN2 = 2;
     private static final int FODSELSDAG_BARN2 = 3;

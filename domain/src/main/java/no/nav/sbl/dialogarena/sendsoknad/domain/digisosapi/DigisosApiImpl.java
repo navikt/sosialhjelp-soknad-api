@@ -19,6 +19,7 @@ import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
@@ -44,6 +45,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
@@ -63,6 +66,7 @@ public class DigisosApiImpl implements DigisosApi {
     private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
     private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
     private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
+    private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
@@ -111,8 +115,10 @@ public class DigisosApiImpl implements DigisosApi {
             long startTime = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(http);
             long endTime = System.currentTimeMillis();
-            if (endTime - startTime > 2000) {
+            if (endTime - startTime > 8000) {
                 log.error("Timer: Sende fiks-request: {} ms", endTime - startTime);
+            } else if (endTime - startTime > 2000) {
+                log.warn("Timer: Sende fiks-request: {} ms", endTime - startTime);
             }
 
             String content = EntityUtils.toString(response.getEntity());
@@ -122,8 +128,12 @@ public class DigisosApiImpl implements DigisosApi {
             cacheTimestamp = LocalDateTime.now();
             return collect;
         } catch (Exception e) {
-            log.error("Hent kommuneinfo feiler", e);
-            return Collections.emptyMap();
+            if(cacheForKommuneinfo.get().isEmpty()) {
+                log.error("Hent kommuneinfo feiler og cache er tom!", e);
+                return Collections.emptyMap();
+            }
+            log.error("Hent kommuneinfo feiler og cache er gammel.", e);
+            return cacheForKommuneinfo.get();
         }
     }
 
@@ -220,7 +230,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
-    private String lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String navEkseternRefId, String token) {
+    private String lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String behandlingsId, String token) {
 
         List<FilForOpplasting<Object>> filer = new ArrayList<>();
 
@@ -245,8 +255,14 @@ public class DigisosApiImpl implements DigisosApi {
             entitybuilder.addBinaryBody(objectFilForOpplasting.getFilnavn(), objectFilForOpplasting.getData(), ContentType.APPLICATION_OCTET_STREAM, objectFilForOpplasting.getFilnavn());
         }
 
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-            HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, navEkseternRefId));
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(SENDING_TIL_FIKS_TIMEOUT)
+                .setConnectionRequestTimeout(SENDING_TIL_FIKS_TIMEOUT)
+                .setSocketTimeout(SENDING_TIL_FIKS_TIMEOUT)
+                .build();
+
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().setDefaultRequestConfig(requestConfig).build()) {
+            HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, behandlingsId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
             post.setHeader("Authorization", token);
@@ -254,18 +270,40 @@ public class DigisosApiImpl implements DigisosApi {
             post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
 
             post.setEntity(entitybuilder.build());
+            long startTime = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(post);
+            long endTime = System.currentTimeMillis();
             if (response.getStatusLine().getStatusCode() >= 300) {
-                log.warn(response.getStatusLine().getReasonPhrase());
-                log.warn(EntityUtils.toString(response.getEntity()));
-                throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId));
+                String errorResponse = EntityUtils.toString(response.getEntity());
+                String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
+                if (fiksDigisosId != null) {
+                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Ruter brukeren til innsynssiden. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
+                    return fiksDigisosId;
+                }
+
+                throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet etter %s ms med status %s og response: %s",
+                        behandlingsId,
+                        endTime - startTime,
+                        response.getStatusLine().getReasonPhrase(),
+                        errorResponse));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
             log.info("Sendte inn søknad og fikk digisosid: {}", digisosId);
             return digisosId;
         } catch (IOException e) {
-            throw new IllegalStateException(String.format("Opplasting feilet for %s", navEkseternRefId), e);
+            throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet", behandlingsId), e);
         }
+    }
+
+    static String getDigisosIdFromResponse(String errorResponse, String behandlingsId) {
+        if (errorResponse != null && errorResponse.contains(behandlingsId) && errorResponse.contains("finnes allerede")) {
+            Pattern p = Pattern.compile("^.*?message.*([0-9a-fA-F]{8}[-]?(?:[0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}).*?$");
+            Matcher m = p.matcher(errorResponse);
+            if (m.matches()) {
+                return m.group(1);
+            }
+        }
+        return null;
     }
 
     private String getJson(FilForOpplasting<Object> objectFilForOpplasting) {
@@ -335,6 +373,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     static class VirksertCredentials {
         public String alias;
         public String password;

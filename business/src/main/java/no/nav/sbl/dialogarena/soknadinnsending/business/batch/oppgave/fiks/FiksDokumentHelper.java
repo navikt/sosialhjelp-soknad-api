@@ -15,6 +15,7 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.slf4j.Logger;
 
@@ -36,12 +37,14 @@ public class FiksDokumentHelper {
     private DokumentKrypterer dokumentKrypterer;
     private InnsendingService innsendingService;
     private PDFService pdfService;
+    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
-    public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService, PDFService pdfService) {
+    public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService, PDFService pdfService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
         this.skalKryptere = skalKryptere;
         this.dokumentKrypterer = dokumentKrypterer;
         this.innsendingService = innsendingService;
         this.pdfService = pdfService;
+        this.sosialhjelpPdfGenerator = sosialhjelpPdfGenerator;
 
         mapper = new ObjectMapper();
         mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
@@ -78,6 +81,11 @@ public class FiksDokumentHelper {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
         byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(internalSoknad, "/");
+        try {
+            sosialhjelpPdfGenerator.generate(internalSoknad, false);
+        } catch (Exception e) {
+            logger.warn("Kunne ikke generere Soknad.pdf", e);
+        }
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadPdf);
         return new Dokument()
@@ -91,6 +99,11 @@ public class FiksDokumentHelper {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
         byte[] juridiskPdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+        try {
+            sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        } catch (Exception e) {
+            logger.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
+        }
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
         return new Dokument()

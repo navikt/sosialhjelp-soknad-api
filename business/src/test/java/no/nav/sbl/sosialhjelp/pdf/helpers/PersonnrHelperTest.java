@@ -28,16 +28,16 @@ public class PersonnrHelperTest {
     @Test
     public void skalHentePersonnr() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
-        ektefelle.setPersonIdentifikator("15059512345");
+        ektefelle.setPersonIdentifikator("65432112345"); // Ikke ekte person
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
         assertThat(compiled, is("Personnr: 12345"));
     }
-    
+
     @Test
     public void skalHenteTomStrengForUgyldigPersonIdentifikator() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
-        ektefelle.setPersonIdentifikator("1505951234");
+        ektefelle.setPersonIdentifikator("1231231234");
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
         assertThat(compiled, is("Personnr: "));
@@ -47,7 +47,7 @@ public class PersonnrHelperTest {
 
         assertThat(compiled, is("Personnr: "));
     }
-    
+
     @Test
     public void skalHenteTomStrengForPersonIdentifikatorLikNull() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();

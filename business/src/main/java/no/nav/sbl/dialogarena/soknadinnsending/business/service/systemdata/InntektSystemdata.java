@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -39,7 +39,7 @@ public class InntektSystemdata implements Systemdata {
     SkattbarInntektService skattbarInntektService;
 
     @Inject
-    ArbeidsforholdTransformer arbeidsforholdTransformer;
+    OrganisasjonService organisasjonService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -94,7 +94,7 @@ public class InntektSystemdata implements Systemdata {
 
         if (orgnummer.matches("\\d{9}")) {
             return new JsonOrganisasjon()
-                    .withNavn(arbeidsforholdTransformer.hentOrgNavn(orgnummer))
+                    .withNavn(organisasjonService.hentOrgNavn(orgnummer))
                     .withOrganisasjonsnummer(orgnummer);
         }
 

@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.soknadoversikt;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
@@ -37,7 +38,7 @@ public class SoknadOversiktRessurs {
         String fnr = SubjectHandler.getUserIdFromToken();
         logger.debug("Henter alle søknader for fnr {}", fnr);
 
-        List<SoknadOversikt> soknader = service.hentAlleSoknaderFor(fnr);
+        List<SoknadOversikt> soknader = service.hentSvarUtSoknaderFor(fnr);
         logger.debug("Hentet {} søknader for bruker", soknader.size());
 
         return soknader;
@@ -48,6 +49,7 @@ public class SoknadOversiktRessurs {
         private String fiksDigisosId;
         private String soknadTittel;
         private String status;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
         private Date sistOppdatert;
         private Integer antallNyeOppgaver;
         private String kilde;

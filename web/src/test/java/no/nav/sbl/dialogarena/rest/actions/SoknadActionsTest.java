@@ -14,10 +14,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -26,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
@@ -41,7 +45,7 @@ public class SoknadActionsTest {
     public static final String SOKNADINNSENDING_ETTERSENDING_URL = "/soknadinnsending/ettersending";
     public static final String SAKSOVERSIKT_URL = "/saksoversikt";
     public static final String TESTKOMMUNE = "2352";
-    public static final String KOMMUNE_I_SVARUT_LISTEN = "0701";
+    public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
     private String EIER;
 
     @Inject
@@ -68,6 +72,8 @@ public class SoknadActionsTest {
     SoknadMetadataRepository soknadMetadataRepository;
     @Inject
     DigisosApiService digisosApiService;
+    @Inject
+    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     ServletContext context = mock(ServletContext.class);
 
@@ -87,7 +93,19 @@ public class SoknadActionsTest {
     public void tearDown() {
         System.clearProperty("digisosapi.sending.alltidTilTestkommune.enable");
         System.clearProperty("digisosapi.sending.enable");
+        System.clearProperty(NedetidUtils.NEDETID_START);
+        System.clearProperty(NedetidUtils.NEDETID_SLUTT);
 
+    }
+
+    @Test(expected = SoknadenHarNedetidException.class)
+    public void sendSoknadINedetidSkalKasteException() {
+        System.setProperty(NedetidUtils.NEDETID_START, LocalDateTime.now().minusDays(1).format(NedetidUtils.dateTimeFormatter));
+        System.setProperty(NedetidUtils.NEDETID_SLUTT, LocalDateTime.now().plusDays(2).format(NedetidUtils.dateTimeFormatter));
+        actions.sendSoknad("behandlingsId", context, "");
+
+        verify(soknadService, times(0)).sendSoknad(any());
+        verify(digisosApiService, times(0)).sendSoknad(any(), any(), any());
     }
 
     @Test

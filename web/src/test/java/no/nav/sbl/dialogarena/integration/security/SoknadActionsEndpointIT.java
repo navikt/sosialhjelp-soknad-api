@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
-    private static final String ANNEN_BRUKER = "01010112345";
+    private static final String DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN = "04031659235"; // Ikke ekteperson
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -34,7 +34,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     public void sendSoknad_skalGiForbiddenMedAnnenBruker() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
-        SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
+        SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN);
 
         Response responseForAnnenBruker = sendPostRequest(soknadTester, subUrl, Entity.json(""), signedJWTforAnnenBruker.serialize(), null);
 

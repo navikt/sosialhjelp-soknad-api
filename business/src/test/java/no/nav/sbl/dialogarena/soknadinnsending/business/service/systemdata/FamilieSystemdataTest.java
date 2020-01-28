@@ -48,7 +48,7 @@ public class FamilieSystemdataTest {
             .withFornavn("Av")
             .withMellomnavn("Og")
             .withEtternavn("På")
-            .withFnr("01029312345")
+            .withFnr("11111111111")
             .withFodselsdato(LocalDate.parse("1993-02-01"));
 
     private static final Ektefelle TOM_EKTEFELLE = new Ektefelle()
@@ -62,7 +62,7 @@ public class FamilieSystemdataTest {
     private static final String MELLOMNAVN_BARN = "Rød På";
     private static final String ETTERNAVN_BARN = "Nesen";
     private static final LocalDate FODSELSDATO_BARN = LocalDate.parse("2001-02-03");
-    private static final String FNR_BARN = "03020154321";
+    private static final String FNR_BARN = "22222222222";
     private static final boolean ER_FOLKEREGISTRERT_SAMMEN_BARN = true;
     private static final boolean HAR_DELT_BOSTED_BARN = true;
 
@@ -70,7 +70,7 @@ public class FamilieSystemdataTest {
     private static final String MELLOMNAVN_BARN_2 = "Vei";
     private static final String ETTERNAVN_BARN_2= "Herkommerjeg";
     private static final LocalDate FODSELSDATO_BARN_2 = LocalDate.parse("2003-02-01");
-    private static final String FNR_BARN_2 = "01020312345";
+    private static final String FNR_BARN_2 = "33333333333";
     private static final boolean ER_FOLKEREGISTRERT_SAMMEN_BARN_2 = false;
     private static final Integer SAMVARSGRAD_BARN_2 = 25;
 
