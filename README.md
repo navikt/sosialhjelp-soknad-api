@@ -3,7 +3,7 @@
 ![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Deploy%20Prod/badge.svg?)
 ![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Deploy%20GCP/badge.svg?)
 
-## Sendsoknad
+## Sosialhjelp-soknad-api
 
 ### Kjøring lokalt med mock
 Bruk MockSoknadsosialhjelpServer istedenfor DevSoknadsosialhjelpServer.
