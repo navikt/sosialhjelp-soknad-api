@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
@@ -51,7 +51,7 @@ public class PersonV3Mock {
             );
             defaultPerson.setBankkonto(new BankkontoNorge().withBankkonto(new Bankkontonummer().withBankkontonummer(kontonummer)));
 
-            responses.put(OidcFeatureToggleUtils.getUserId(), defaultPerson);
+            responses.put(SubjectHandler.getUserIdFromToken(), defaultPerson);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class PersonV3Mock {
         PersonV3 mock = mock(PersonV3.class);
 
         try {
-            when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(OidcFeatureToggleUtils.getUserId()));
+            when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(SubjectHandler.getUserIdFromToken()));
         } catch (HentPersonPersonIkkeFunnet hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
         } catch (HentPersonSikkerhetsbegrensning hentPersonSikkerhetsbegrensning) {

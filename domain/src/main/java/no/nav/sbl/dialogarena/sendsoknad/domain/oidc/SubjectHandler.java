@@ -19,7 +19,8 @@ public class SubjectHandler {
     }
 
     public static String getConsumerId() {
-        return subjectHandlerService.getConsumerId();
+        String consumerId = subjectHandlerService.getConsumerId();
+        return consumerId != null ? consumerId : "srvsoknadsosialhje";
     }
 
     public static SubjectHandlerService getSubjectHandlerService() {

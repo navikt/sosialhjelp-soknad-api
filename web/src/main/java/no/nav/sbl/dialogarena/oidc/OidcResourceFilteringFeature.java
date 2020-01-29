@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.oidc;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.security.oidc.jaxrs.OidcContainerRequestFilter;
 import org.glassfish.jersey.server.wadl.processor.OptionsMethodProcessor;
@@ -19,7 +18,7 @@ public class OidcResourceFilteringFeature implements DynamicFeature {
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-        if( !OidcFeatureToggleUtils.isRunningWithOidc() || isWhitelistedInProd(resourceInfo) || isWhitelistedWhenNotRunningInProd()) {
+        if( isWhitelistedInProd(resourceInfo) || isWhitelistedWhenNotRunningInProd()) {
             return;
         }
         context.register(OidcContainerRequestFilter.class);

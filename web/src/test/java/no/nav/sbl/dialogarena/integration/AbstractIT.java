@@ -9,7 +9,6 @@ import org.junit.BeforeClass;
 import java.io.File;
 
 import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 
@@ -19,10 +18,6 @@ public abstract class AbstractIT {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        beforeClass(false);
-    }
-
-    public static void beforeClass(boolean isRunningWithOidc) throws Exception {
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
         System.setProperty("environment.name", "t1");
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
@@ -33,7 +28,6 @@ public abstract class AbstractIT {
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // pga saksoversikt uten oidc.
         setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
-        setProperty(IS_RUNNING_WITH_OIDC, isRunningWithOidc ? "true" : "false");
         jetty.start();
     }
 

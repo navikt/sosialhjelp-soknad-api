@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.mock;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.PostAdresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
@@ -135,7 +135,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserIdFromToken();
         SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
         PostAdresse fakeAdresse = new PostAdresse()
                 .withNavn(sendtSoknad.getNavEnhetsnavn())
@@ -180,7 +180,7 @@ public class TjenesteMockRessurs {
     @GET
     @Path("/session")
     public Response getSession() {
-        return Response.ok(new SessionResponse(OidcFeatureToggleUtils.getUserId())).build();
+        return Response.ok(new SessionResponse(SubjectHandler.getUserIdFromToken())).build();
     }
 
     @POST
@@ -191,7 +191,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+        fnr = SubjectHandler.getUserIdFromToken() != null ? SubjectHandler.getUserIdFromToken() : fnr;
         logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med fnr: " + fnr);
         if (jsonTelefonnummer != null){
             DkifMock.setTelefonnummer(jsonTelefonnummer, fnr);
@@ -284,7 +284,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+        fnr = SubjectHandler.getUserIdFromToken() != null ? SubjectHandler.getUserIdFromToken() : fnr;
         MockBostotteImpl.setBostotteData(fnr, bostotteJson);
     }
 }

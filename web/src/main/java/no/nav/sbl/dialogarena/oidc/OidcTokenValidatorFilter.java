@@ -8,8 +8,6 @@ import javax.inject.Inject;
 import javax.servlet.*;
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.isRunningWithOidc;
-
 public class OidcTokenValidatorFilter implements Filter {
 
     @Inject
@@ -22,7 +20,7 @@ public class OidcTokenValidatorFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if (!isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
+        if (MockUtils.isTillatMockRessurs()) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             jaxrsOIDCTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain);

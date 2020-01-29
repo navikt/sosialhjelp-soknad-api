@@ -6,7 +6,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
@@ -80,7 +80,7 @@ public class SoknadService {
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
 
-        String aktorId = OidcFeatureToggleUtils.getUserId();
+        String aktorId = SubjectHandler.getUserIdFromToken();
         Timer henvendelseTimer = createDebugTimer("startHenvendelse", mainUid);
         String behandlingsId = henvendelseService.startSoknad(aktorId);
         henvendelseTimer.stop();
@@ -113,7 +113,7 @@ public class SoknadService {
 
     @Transactional
     public void sendSoknad(String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        final String eier = SubjectHandler.getUserIdFromToken();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()){
             logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
@@ -135,7 +135,7 @@ public class SoknadService {
 
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserIdFromToken();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
         if (soknadUnderArbeidOptional.isPresent()){
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
