@@ -1,5 +1,8 @@
 {{#if @root.utvidetSoknad}}
-    {{{hentTekstMedParametere "familierelasjon.ingress" "antallBarn" forsorgerplikt.ansvar.size}}}
+    {{!--{hentTekstMedParametere "familierelasjon.ingress" "antallBarn" forsorgerplikt.ansvar.size}--}}
+    {{{hentTekst "familierelasjon.ingress_folkeregisteret"}}}
+    {{{hentTekst "familierelasjon.ingress_forsorger"}}}
+    {{{hentTekstMedParametere "antallBarn" forsorgerplikt.ansvar.size}}}
 {{/if}}
 {{#each forsorgerplikt.ansvar}}
     {{#unless barn.harDiskresjonskode}}
