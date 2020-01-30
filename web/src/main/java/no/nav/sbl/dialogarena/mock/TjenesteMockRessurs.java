@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.mock;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.PostAdresse;
@@ -56,6 +58,8 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMo
 public class TjenesteMockRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(TjenesteMockRessurs.class);
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Inject
     private CacheManager cacheManager;
@@ -211,26 +215,28 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/arbeid")
-    public void setArbeidsforholdJson(@RequestBody String arbeidsforholdData) {
+    public void setArbeidsforholdJson(@RequestBody String arbeidsforholdData) throws JsonProcessingException {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter arbeidsforhold med data: " + arbeidsforholdData);
-        ArbeidsforholdConsumerMock.setArbeidsforhold(arbeidsforholdData);
+        String strippedArbeidsforhold = mapper.readTree(arbeidsforholdData).get("arbeidsforhold").toString();
+        ArbeidsforholdConsumerMock.setArbeidsforhold(strippedArbeidsforhold);
         clearCache();
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/organisasjon")
-    public void setOrganisasjon(@RequestBody String jsonOrganisasjon) {
+    public void setOrganisasjon(@RequestBody String jsonOrganisasjon) throws JsonProcessingException {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
         logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
-        if (jsonOrganisasjon != null) {
-            OrganisasjonConsumerMock.setOrganisasjon(jsonOrganisasjon);
+        if (jsonOrganisasjon != null && mapper.readTree(jsonOrganisasjon).has("organisasjon")) {
+            String strippedOrganisasjon = mapper.readTree(jsonOrganisasjon).get("organisasjon").toString();
+            OrganisasjonConsumerMock.setOrganisasjon(strippedOrganisasjon);
         } else {
             OrganisasjonConsumerMock.resetOrganisasjon();
         }

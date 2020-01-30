@@ -24,12 +24,12 @@ public class OrganisasjonConsumerMock {
         OrganisasjonConsumer mock = mock(OrganisasjonConsumer.class);
 
         when(mock.hentOrganisasjonNoekkelinfo(anyString()))
-                .thenAnswer(OrganisasjonConsumerMock::getDefaultOrganisasjonResponse);
+                .thenAnswer(OrganisasjonConsumerMock::getOrDefaultOrganisasjonResponse);
 
         return mock;
     }
 
-    private static OrganisasjonNoekkelinfoDto getDefaultOrganisasjonResponse(InvocationOnMock invocationOnMock) {
+    private static OrganisasjonNoekkelinfoDto getOrDefaultOrganisasjonResponse(InvocationOnMock invocationOnMock) {
         OrganisasjonNoekkelinfoDto response = responses.get(OidcFeatureToggleUtils.getUserId());
         if (response == null) {
             response = getDefaultNoekkelinfo();
