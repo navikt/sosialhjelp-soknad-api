@@ -66,7 +66,6 @@ public class ArbeidsforholdService {
     }
 
     private List<Arbeidsforhold> hentArbeidsforholdRest(String fnr) {
-        log.info("Bruker aareg-api");
         List<ArbeidsforholdDto> arbeidsforholdDtos = arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr);
 
         return arbeidsforholdDtos.stream()
@@ -101,7 +100,6 @@ public class ArbeidsforholdService {
 
     // webservice start
     private List<Arbeidsforhold> hentArbeidsforholdWS(String fodselsnummer, Sokeperiode soekeperiode) {
-        log.info("Bruker aareg webservice");
         try {
             FinnArbeidsforholdPrArbeidstakerRequest finnArbeidsforholdPrArbeidstakerRequest = lagArbeidsforholdRequest(fodselsnummer, lagPeriode(soekeperiode.fom, soekeperiode.tom));
 
