@@ -27,12 +27,4 @@ public class PeriodeDto {
     public LocalDate getTom() {
         return tom;
     }
-
-//    public void setFom(LocalDate fom) {
-//        this.fom = fom;
-//    }
-//
-//    public void setTom(LocalDate tom) {
-//        this.tom = tom;
-//    }
 }

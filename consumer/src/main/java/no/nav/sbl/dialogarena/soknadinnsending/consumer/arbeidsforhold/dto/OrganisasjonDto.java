@@ -26,12 +26,4 @@ public class OrganisasjonDto extends OpplysningspliktigArbeidsgiverDto {
     public String getType() {
         return type;
     }
-
-//    public void setOrganisasjonsnummer(String organisasjonsnummer) {
-//        this.organisasjonsnummer = organisasjonsnummer;
-//    }
-//
-//    public void setType(String type) {
-//        this.type = type;
-//    }
 }
