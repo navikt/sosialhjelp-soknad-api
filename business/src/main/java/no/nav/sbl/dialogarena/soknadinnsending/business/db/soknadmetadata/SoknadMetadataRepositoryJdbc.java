@@ -40,6 +40,8 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return m;
     };
 
+    private RowMapper<Integer> antallRowMapper = (rs, rowNum) -> rs.getInt("antall");
+
     @Inject
     public void setDS(DataSource ds) {
         super.setDataSource(ds);
@@ -158,6 +160,16 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     public List<SoknadMetadata> hentBehandlingskjede(String behandlingsId) {
         String select = "SELECT * FROM soknadmetadata WHERE TILKNYTTETBEHANDLINGSID = ?";
         return getJdbcTemplate().query(select, soknadMetadataRowMapper, behandlingsId);
+    }
+
+    @Override
+    public int hentAntallInnsendteSoknaderEtterTidspunkt(String fnr, LocalDateTime tidspunkt) {
+        String select = "SELECT count(*) as antall FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?";
+        try {
+            return getJdbcTemplate().queryForObject(select, antallRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidspunkt));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override

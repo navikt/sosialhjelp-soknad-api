@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,10 +93,25 @@ public class EttersendingService {
         if (soknad.status != FERDIG) {
             throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er innsendt");
         } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER))) {
-            long dagerEtterFrist = DAYS.between(soknad.innsendtDato, LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER));
-            throw new EttersendelseSendtForSentException(String.format("Kan ikke starte ettersendelse %d dager etter frist", dagerEtterFrist));
+            throwDetailedExceptionForEttersendelserEtterFrist(soknad);
         }
         return soknad;
+    }
+
+    private void throwDetailedExceptionForEttersendelserEtterFrist(SoknadMetadata soknad) {
+        long dagerEtterFrist = DAYS.between(soknad.innsendtDato, LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER));
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        long antallEttersendelser = hentAntallEttersendelserSendtPaSoknad(soknad.behandlingsId);
+        long antallNyereSoknader = henvendelseService.hentAntallInnsendteSoknaderEtterTidspunkt(soknad.fnr, soknad.innsendtDato);
+        throw new EttersendelseSendtForSentException(
+                String.format("Kan ikke starte ettersendelse %d dager etter frist, dagens dato: %s, soknadens dato: %s, frist(%d dager): %s. Antall ettersendelser som er sendt på denne søknaden tidligere er: %d. Antall nyere søknader denne brukeren har: %d",
+                        dagerEtterFrist,
+                        LocalDateTime.now().format(dateTimeFormatter),
+                        soknad.innsendtDato.format(dateTimeFormatter),
+                        ETTERSENDELSE_FRIST_DAGER,
+                        LocalDateTime.now().minusDays(ETTERSENDELSE_FRIST_DAGER).format(dateTimeFormatter),
+                        antallEttersendelser,
+                        antallNyereSoknader));
     }
 
     public SoknadMetadata hentNyesteSoknadIKjede(SoknadMetadata originalSoknad) {
@@ -104,6 +120,12 @@ public class EttersendingService {
                 .sorted(Comparator.comparing((SoknadMetadata o) -> o.innsendtDato).reversed())
                 .findFirst()
                 .orElse(originalSoknad);
+    }
+
+    public long hentAntallEttersendelserSendtPaSoknad(String behandlingsId) {
+        return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
+                .filter(e -> e.status == FERDIG)
+                .count();
     }
 
     protected List<VedleggMetadata> lagListeOverVedlegg(SoknadMetadata nyesteSoknad) {
