@@ -24,7 +24,7 @@
   "env": {
     "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockSoknadsosialhjelpServer",
     "dockerWithDefaultMockActivated": "true",
-    "HEROKU": "true",
+    "GCP": "true",
     "PORT": "8080",
     "APPRES_CMS_URL": "https://appres-q0.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q0.oera.no/sbl/tjenester/system/",

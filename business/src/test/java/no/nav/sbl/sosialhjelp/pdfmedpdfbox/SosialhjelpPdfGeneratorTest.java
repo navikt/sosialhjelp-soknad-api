@@ -149,6 +149,7 @@ public class SosialhjelpPdfGeneratorTest {
                                                         .withArbeidsgivernavn("Blizzard")
                                                         .withKilde(SYSTEM)
                                                         .withFom("2000-01-01")
+                                                        .withTom("2000-02-01")
                                                         .withOverstyrtAvBruker(false)
                                                         .withStillingsprosent(100)
                                                         .withStillingstype(Stillingstype.FAST),
@@ -169,8 +170,8 @@ public class SosialhjelpPdfGeneratorTest {
                 )
                 .withUtdanning(
                         new JsonUtdanning()
-//                                .withErStudent(true)
-//                                .withStudentgrad(JsonUtdanning.Studentgrad.DELTID)
+                                .withErStudent(true)
+                                .withStudentgrad(JsonUtdanning.Studentgrad.DELTID)
                 )
                 .withFamilie(
                         new JsonFamilie()

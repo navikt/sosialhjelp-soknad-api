@@ -21,8 +21,8 @@ public class ShutdownHook extends Thread {
         @Override
         public void run() {
             try {
-                LOGGER.info("shutdown initialized for sosialhjelp-soknad-api, allowing incoming requests for 5 seconds before continuing");
-                Thread.sleep(5000L);
+                LOGGER.info("shutdown initialized for sosialhjelp-soknad-api, allowing incoming requests for 7 seconds before continuing");
+                Thread.sleep(7000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
