@@ -2,11 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.OpplysningspliktigArbeidsgiverDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.OpplysningspliktigArbeidsgiverDtoMixIn;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.rest.RestUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ public class ArbeidsforholdRestConfig {
     private ObjectMapper arbeidsforholdMapper() {
         return new ObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                .addMixIn(OpplysningspliktigArbeidsgiverDto.class, OpplysningspliktigArbeidsgiverDtoMixIn.class);
+                .registerModule(new JavaTimeModule());
     }
 
     @Bean

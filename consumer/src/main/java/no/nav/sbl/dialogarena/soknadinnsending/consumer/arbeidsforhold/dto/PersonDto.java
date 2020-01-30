@@ -1,23 +1,24 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(builder = PersonDto.Builder.class)
 public class PersonDto extends OpplysningspliktigArbeidsgiverDto {
 
-    private final String offentligIdent;
-    private final String aktoerId;
+    private String offentligIdent;
+    private String aktoerId;
+    private String type;
 
-    public PersonDto(String offentligIdent, String aktoerId) {
+    @JsonCreator
+    public PersonDto(
+            @JsonProperty("offentligIdent") String offentligIdent,
+            @JsonProperty("aktoerId") String aktoerId,
+            @JsonProperty("type") String type) {
         this.offentligIdent = offentligIdent;
         this.aktoerId = aktoerId;
-    }
-
-    public PersonDto.Builder builder() {
-        return new PersonDto.Builder();
+        this.type = type;
     }
 
     public String getOffentligIdent() {
@@ -28,28 +29,8 @@ public class PersonDto extends OpplysningspliktigArbeidsgiverDto {
         return aktoerId;
     }
 
-    @Override
     public String getType() {
-        return "Organisasjon";
+        return type;
     }
 
-    @JsonPOJOBuilder(buildMethodName = "build", withPrefix = "with")
-    public static class Builder {
-        private String offentligIdent;
-        private String aktoerId;
-
-        public PersonDto.Builder withOffentligIdent(String offentligIdent) {
-            this.offentligIdent = offentligIdent;
-            return this;
-        }
-
-        public PersonDto.Builder withAktoerId(String aktoerId) {
-            this.aktoerId = aktoerId;
-            return this;
-        }
-
-        public PersonDto build() {
-            return new PersonDto(offentligIdent, aktoerId);
-        }
-    }
 }

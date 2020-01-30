@@ -1,43 +1,37 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(builder = OrganisasjonDto.Builder.class)
 public class OrganisasjonDto extends OpplysningspliktigArbeidsgiverDto {
 
-    private final String organisasjonsnummer;
+    private String organisasjonsnummer;
+    private String type;
 
-    public OrganisasjonDto(String organisasjonsnummer) {
+    @JsonCreator
+    public OrganisasjonDto(
+            @JsonProperty("organisasjonsnummer") String organisasjonsnummer,
+            @JsonProperty("type") String type) {
         this.organisasjonsnummer = organisasjonsnummer;
-    }
-
-    public OrganisasjonDto.Builder builder() {
-        return new OrganisasjonDto.Builder();
+        this.type = type;
     }
 
     public String getOrganisasjonsnummer() {
         return organisasjonsnummer;
     }
 
-    @Override
     public String getType() {
-        return "Organisasjon";
+        return type;
     }
 
-    @JsonPOJOBuilder(buildMethodName = "build", withPrefix = "with")
-    public static class Builder {
-        private String organisasjonsnummer;
-
-        public OrganisasjonDto.Builder withOrganisasjonsnummer(String organisasjonsnummer) {
-            this.organisasjonsnummer = organisasjonsnummer;
-            return this;
-        }
-
-        public OrganisasjonDto build() {
-            return new OrganisasjonDto(organisasjonsnummer);
-        }
-    }
+//    public void setOrganisasjonsnummer(String organisasjonsnummer) {
+//        this.organisasjonsnummer = organisasjonsnummer;
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
 }

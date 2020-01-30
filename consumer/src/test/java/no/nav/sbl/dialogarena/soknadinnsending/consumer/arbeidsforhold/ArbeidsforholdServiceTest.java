@@ -124,14 +124,14 @@ public class ArbeidsforholdServiceTest {
     }
 
     private OrganisasjonDto createArbeidsgiverOrganisasjon() {
-        return new OrganisasjonDto(orgnr);
+        return new OrganisasjonDto(orgnr, "Organisasjon");
     }
 
     private PersonDto createArbeidsgiverPerson() {
-        return new PersonDto("arbeidsgiver_fnr", "aktoerid");
+        return new PersonDto("arbeidsgiver_fnr", "aktoerid", "Person");
     }
 
     private PersonDto createArbeidstaker() {
-        return new PersonDto("arbeidstaker_fnr", "aktoerid");
+        return new PersonDto("arbeidstaker_fnr", "aktoerid", "Person");
     }
 }
