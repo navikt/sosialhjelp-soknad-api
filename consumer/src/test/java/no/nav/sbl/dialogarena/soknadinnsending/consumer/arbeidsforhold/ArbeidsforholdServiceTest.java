@@ -55,7 +55,7 @@ public class ArbeidsforholdServiceTest {
 
     @Test
     public void skalMappeDtoTilArbeidsforhold() {
-        when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true)));
+        when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true, fom, tom)));
 
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr, null);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
@@ -71,7 +71,7 @@ public class ArbeidsforholdServiceTest {
 
     @Test
     public void skalSetteArbeidsgivernavnTilOrgnrHvisArbeidsgiverErOrganisasjon() {
-        when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(false)));
+        when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(false, fom, tom)));
 
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr, null);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
@@ -92,7 +92,23 @@ public class ArbeidsforholdServiceTest {
         assertEquals(57L, arbeidsforhold.fastStillingsprosent.longValue());
     }
 
-    private ArbeidsforholdDto createArbeidsforhold(boolean erArbeidsgiverOrganisasjon) {
+    @Test
+    public void ansettelsesperiodeTomKanVæreNull() {
+        when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true, fom, null)));
+
+        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr, null);
+        Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
+
+        assertEquals(orgNavn, arbeidsforhold.arbeidsgivernavn);
+        assertTrue(arbeidsforhold.harFastStilling);
+        assertEquals(100L, arbeidsforhold.fastStillingsprosent.longValue());
+        assertEquals(orgnr, arbeidsforhold.orgnr);
+        assertEquals(fom.format(DateTimeFormatter.ISO_LOCAL_DATE), arbeidsforhold.fom);
+        assertNull(arbeidsforhold.tom);
+        assertEquals(1337L, arbeidsforhold.edagId.longValue());
+    }
+
+    private ArbeidsforholdDto createArbeidsforhold(boolean erArbeidsgiverOrganisasjon, LocalDate fom, LocalDate tom) {
         AnsettelsesperiodeDto ansettelsesperiodeDto = new AnsettelsesperiodeDto(new PeriodeDto(fom, tom));
         ArbeidsavtaleDto arbeidsavtaleDto = createArbeidsavtale(100.0);
         return new ArbeidsforholdDto(
