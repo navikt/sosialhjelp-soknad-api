@@ -87,6 +87,7 @@ public class ArbeidsforholdService {
         }
 
         PeriodeDto periode = dto.getAnsettelsesperiode().getPeriode();
+        log.info("Ansettelsesperiode: fom: {} - tom: {}", periode.getFom(), periode.getTom());
         result.fom = periode.getFom().format(DateTimeFormatter.ISO_LOCAL_DATE);
         result.tom = periode.getTom() != null ? periode.getTom().format(DateTimeFormatter.ISO_LOCAL_DATE) : null;
 
