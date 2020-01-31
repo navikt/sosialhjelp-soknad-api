@@ -66,9 +66,6 @@
     "VIRKSOMHET_KODEVERK_V2_ENDPOINTURL": "https://kodeverk.nais.preprod.local/ws/kodeverk/v2",
     "VIRKSOMHET_KODEVERK_V2_SECURITYTOKEN": "NONE",
     "VIRKSOMHET_KODEVERK_V2_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-kodeverk-v2-tjenestespesifikasjon/2.0.0/nav-fim-kodeverk-v2-tjenestespesifikasjon-2.0.0.zip",
-    "VIRKSOMHET_ORGANISASJON_V4_ENDPOINTURL": "https://modapp-q0.adeo.no/ereg/ws/OrganisasjonService/v4",
-    "VIRKSOMHET_ORGANISASJON_V4_SECURITYTOKEN": "SAML",
-    "VIRKSOMHET_ORGANISASJON_V4_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-organisasjon-v4-tjenestespesifikasjon/1.0.4/nav-fim-organisasjon-v4-tjenestespesifikasjon-1.0.4.zip",
     "VIRKSOMHET_PERSON_V1_ENDPOINTURL": "https://wasapp-q0.adeo.no/tpsws/Person_v1",
     "VIRKSOMHET_PERSON_V1_SECURITYTOKEN": "SAML",
     "VIRKSOMHET_PERSON_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/fim/nav-fim-person-v1-tjenestespesifikasjon/1.0.4/nav-fim-person-v1-tjenestespesifikasjon-1.0.4.zip",
@@ -82,7 +79,6 @@
     "NEDETID_SLUTT": "",
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
-    "START_NORG_WITHMOCK": "true",
-    "EREG_API_ENABLED": "false"
+    "START_NORG_WITHMOCK": "true"
   }
 }

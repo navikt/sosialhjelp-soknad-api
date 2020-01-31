@@ -43,7 +43,6 @@ public class ConsumerConfig {
     @Profile("!integration")
     @Import({
             ArbeidWSConfig.class,
-            OrganisasjonWSConfig.class,
             DkifWSConfig.class,
             DigisosApiRestConfig.class,
             KodeverkWSConfig.class,
