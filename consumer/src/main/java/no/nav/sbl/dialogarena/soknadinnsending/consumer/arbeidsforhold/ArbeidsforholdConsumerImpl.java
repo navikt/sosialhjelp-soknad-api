@@ -22,7 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
-    private static final Logger logger = getLogger(ArbeidsforholdConsumerImpl.class);
+    private static final Logger log = getLogger(ArbeidsforholdConsumerImpl.class);
     private static final String A_ORDNINGEN = "A_ORDNINGEN";
     private static final String BEARER = "Bearer ";
 
@@ -57,24 +57,27 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     public List<ArbeidsforholdDto> finnArbeidsforholdForArbeidstaker(String fodselsnummer) {
         Invocation.Builder request = lagRequest(endpoint + "v1/arbeidstaker/arbeidsforhold", fodselsnummer);
         try {
-            return request.get(new GenericType<List<ArbeidsforholdDto>>() {});
+            List<ArbeidsforholdDto> arbeidsforholds = request.get(new GenericType<List<ArbeidsforholdDto>>() {
+            });
+            log.info("Hentet arbeidsforhold fra aareg.api");
+            return arbeidsforholds;
         } catch (BadRequestException e) {
-            logger.warn("Aareg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request", e);
+            log.warn("Aareg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request", e);
             return null;
         } catch (NotAuthorizedException e) {
-            logger.warn("Aareg.api - 401 Unauthorized- Token mangler eller er ugyldig", e);
+            log.warn("Aareg.api - 401 Unauthorized- Token mangler eller er ugyldig", e);
             return null;
         } catch (ForbiddenException e) {
-            logger.warn("Aareg.api - 403 Forbidden - Ingen tilgang til forespurt ressurs", e);
+            log.warn("Aareg.api - 403 Forbidden - Ingen tilgang til forespurt ressurs", e);
             return null;
         } catch (NotFoundException e) {
-            logger.warn("Aareg.api - 404 Not Found- Fant ikke arbeidsforhold for bruker", e);
+            log.warn("Aareg.api - 404 Not Found- Fant ikke arbeidsforhold for bruker", e);
             return null;
         } catch (ServiceUnavailableException | InternalServerErrorException e) {
-            logger.warn("Aareg.api - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+            log.warn("Aareg.api - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
             throw new TjenesteUtilgjengeligException("AAREG", e);
         } catch (Exception e) {
-            logger.warn("Aareg.api - Noe uventet feilet", e);
+            log.warn("Aareg.api - Noe uventet feilet", e);
             throw new TjenesteUtilgjengeligException("AAREG", e);
         }
     }
