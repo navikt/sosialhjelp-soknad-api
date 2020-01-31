@@ -84,7 +84,7 @@
     "FASIT_ENVIRONMENT_NAME": "p",
     "TILLATMOCK": "false",
     "START_NORG_WITHMOCK": "false",
-    "EREG_API_ENABLED": "false",
+    "EREG_API_ENABLED": "true",
     "AAREG_API_ENABLED": "false"
   }
 }
