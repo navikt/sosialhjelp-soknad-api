@@ -93,7 +93,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         return new JsonArbeidsforhold()
                 .withArbeidsgivernavn(arbeidsforhold.arbeidsgivernavn)
                 .withFom(arbeidsforhold.fom)
-                .withTom(arbeidsforhold.tom == null ? "" : arbeidsforhold.tom)
+                .withTom(arbeidsforhold.tom)
                 .withKilde(JsonKilde.SYSTEM)
                 .withStillingsprosent(Math.toIntExact(arbeidsforhold.fastStillingsprosent))
                 .withStillingstype(tilJsonStillingstype(arbeidsforhold.harFastStilling))
