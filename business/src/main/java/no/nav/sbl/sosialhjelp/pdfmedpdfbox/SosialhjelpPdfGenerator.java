@@ -539,7 +539,6 @@ public class SosialhjelpPdfGenerator {
             }
             else{
                 if(utvidetSoknad){
-                    //pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn"));
                     pdf.skrivH3(getTekst("familierelasjon.ingen_registerte_barn_tittel"));
                     pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn_tekst"));
                 }
