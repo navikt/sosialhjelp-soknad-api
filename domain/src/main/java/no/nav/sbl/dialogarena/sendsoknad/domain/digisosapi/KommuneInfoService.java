@@ -22,7 +22,7 @@ public class KommuneInfoService {
                 .getOrDefault(kommunenummer, new KommuneInfo())
                 .getKanMottaSoknader();
         if (ServiceUtils.isRunningInProd() && kanMottaSoknader) {
-            log.error("Kommune {} har aktivert Digisos i Fiks konfigurasjonen. (Dette er ingen feil, men kanskje litt overraskende?)", kommunenummer);
+            log.info("Kommune {} har aktivert Digisos i Fiks konfigurasjonen. (Dette er ingen feil, men kanskje litt overraskende?)", kommunenummer);
         }
         return kanMottaSoknader;
     }

@@ -161,9 +161,15 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
 
     @Override
-    public List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr) {
+    public List<SoknadMetadata> hentSvarUtInnsendteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
+    }
+
+    @Override
+    public List<SoknadMetadata> hentAlleInnsendteSoknaderForBruker(String fnr) {
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name(), SoknadInnsendingStatus.SENDT_MED_DIGISOS_API.name());
     }
 
     @Override
@@ -173,9 +179,9 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
     @Override
     public List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime tidsgrense) {
-        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
-                fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidsgrense));
+                fnr, SoknadInnsendingStatus.FERDIG.name(), SoknadInnsendingStatus.SENDT_MED_DIGISOS_API.name(), tidTilTimestamp(tidsgrense));
     }
 
     @Transactional

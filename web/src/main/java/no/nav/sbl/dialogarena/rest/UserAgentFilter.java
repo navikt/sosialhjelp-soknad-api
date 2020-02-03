@@ -29,7 +29,6 @@ public class UserAgentFilter extends OncePerRequestFilter {
                         .addTagToReport("browser-major-version", client.userAgent.major)
                         .addTagToReport("os-family", client.os.family)
                         .addTagToReport("os-major-versjon", client.os.major)
-                        .addTagToReport("device-family", client.device.family)
                         .report();
                 if (client.userAgent.family.equals("Other")) {
                     logger.info("Request URI for browser: Other, {}", request.getRequestURI());

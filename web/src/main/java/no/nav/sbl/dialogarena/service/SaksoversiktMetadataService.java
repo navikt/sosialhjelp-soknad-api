@@ -46,7 +46,7 @@ public class SaksoversiktMetadataService {
     public List<InnsendtSoknad> hentInnsendteSoknaderForFnr(String fnr) {
         Properties bundle = getBundle();
 
-        List<SoknadMetadata> soknader = soknadMetadataRepository.hentInnsendteSoknaderForBruker(fnr);
+        List<SoknadMetadata> soknader = soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr);
 
         return soknader.stream().map(soknad ->
                 new InnsendtSoknad()

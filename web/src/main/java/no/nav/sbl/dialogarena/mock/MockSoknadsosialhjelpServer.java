@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class MockSoknadsosialhjelpServer {
 
-    private static final int PORT = isRunningOnHeroku() ? Integer.parseInt(System.getenv("PORT")) : 8181;
+    private static final int PORT = isRunningOnGCP() ? Integer.parseInt(System.getenv("PORT")) : 8181;
 
     public static void main(String[] args) throws Exception {
         System.setProperty("tillatMockRessurs", "true");
@@ -16,14 +16,14 @@ public class MockSoknadsosialhjelpServer {
         File override = new File(Objects.requireNonNull(MockSoknadsosialhjelpServer.class.getClassLoader().getResource("override-web-mock.xml")).getFile());
         SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, override, "/sosialhjelp/soknad-api", null);
 
-        if (!isRunningOnHeroku()) {
+        if (!isRunningOnGCP()) {
             System.setProperty("sendsoknad.datadir", System.getProperty("user.home") + "/kodeverk/sendsoknad");
         }
 
         server.start();
     }
 
-    private static boolean isRunningOnHeroku(){
-        return System.getenv("HEROKU") != null && Boolean.parseBoolean(System.getenv("HEROKU"));
+    private static boolean isRunningOnGCP(){
+        return System.getenv("GCP") != null && Boolean.parseBoolean(System.getenv("GCP"));
     }
 }

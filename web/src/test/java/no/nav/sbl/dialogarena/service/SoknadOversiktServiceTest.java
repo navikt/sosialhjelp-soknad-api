@@ -46,10 +46,10 @@ public class SoknadOversiktServiceTest {
 
     @Test
     public void hentAlleSoknaderForBruker() {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBruker("12345"))
+        when(soknadMetadataRepository.hentSvarUtInnsendteSoknaderForBruker("12345"))
                 .thenReturn(singletonList(soknadMetadata));
 
-        List<SoknadOversikt> resultat = service.hentAlleSoknaderFor("12345");
+        List<SoknadOversikt> resultat = service.hentSvarUtSoknaderFor("12345");
 
         assertEquals(1, resultat.size());
         SoknadOversikt soknad = resultat.get(0);

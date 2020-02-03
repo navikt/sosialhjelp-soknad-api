@@ -42,27 +42,6 @@ jobs:
             echo $DOCKER_TAG
             docker push $DOCKER_TAG
 
-  deploy_heroku:
-    docker:
-      - image: docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.1.1
-        auth:
-          username: $DEPLOYMENT_USERNAME
-          password: $DEPLOYMENT_PASSWORD
-    steps:
-      - checkout
-      - run:
-          name: GitHub package registry login
-          command: |
-            echo "$DEPLOYMENT_PASSWORD" | docker login -u "$DEPLOYMENT_USERNAME" --password-stdin docker.pkg.github.com
-      - setup_remote_docker:
-          docker_layer_caching: false
-      - run:
-          name: Deploy on Heroku
-          command: |
-            heroku container:login
-            heroku container:push web --recursive -a $CIRCLE_PROJECT_REPONAME
-            heroku container:release web -a $CIRCLE_PROJECT_REPONAME
-
   browser-test:
     docker:
       - image: circleci/node:10
@@ -151,10 +130,3 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - deploy_heroku:
-          filters:
-            branches:
-              only: master
-#      - browser-test:
-#          requires:
-#            - deploy_heroku
