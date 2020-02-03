@@ -6,27 +6,23 @@ import no.ks.svarut.servicesv9.PostAdresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.DkifConsumerMock;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.Unprotected;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -44,7 +40,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -77,7 +72,7 @@ public class TjenesteMockRessurs {
 
     @GET
     @Path("/pdfboxtest")
-    public void generatePdfAndSaveToDisk(){
+    public void generatePdfAndSaveToDisk() {
 
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
@@ -88,8 +83,8 @@ public class TjenesteMockRessurs {
         byte[] bytes = sosialhjelpPdfGenerator.generate(new JsonInternalSoknad().withSoknad(
                 new JsonSoknad().withData(new JsonData().withPersonalia(new JsonPersonalia().withNavn(
                         new JsonSokernavn().withFornavn("Han").withEtternavn("Solo")
-                ))
-        )), false);
+                        ))
+                )), false);
 
         try {
             FileOutputStream out = new FileOutputStream("starcraft.pdf");
@@ -172,6 +167,7 @@ public class TjenesteMockRessurs {
 
     class SessionResponse {
         public String uid;
+
         SessionResponse(String uid) {
             this.uid = uid;
         }
@@ -186,17 +182,17 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/telefon")
-    public void setTelefon(@RequestBody JsonTelefonnummer jsonTelefonnummer, @QueryParam("fnr") String fnr ) {
+    public void setTelefon(@RequestBody JsonTelefonnummer jsonTelefonnummer, @QueryParam("fnr") String fnr) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
         fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
         logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med fnr: " + fnr);
-        if (jsonTelefonnummer != null){
-            DkifMock.setTelefonnummer(jsonTelefonnummer, fnr);
+        if (jsonTelefonnummer != null) {
+            DkifConsumerMock.setTelefonnummer(jsonTelefonnummer.getVerdi(), fnr);
         } else {
-            DkifMock.resetTelefonnummer(fnr);
+            DkifConsumerMock.resetTelefonnummer(fnr);
         }
         clearCache();
     }
@@ -235,7 +231,7 @@ public class TjenesteMockRessurs {
         // todo: bruk ny OrganisajonConsumerMock, når arbeidsforholdMock er oppdatert
 
         logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
-        if (jsonOrganisasjon != null){
+        if (jsonOrganisasjon != null) {
             OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
         } else {
             OrganisasjonMock.resetOrganisasjon();

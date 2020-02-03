@@ -2,11 +2,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
@@ -29,7 +31,8 @@ import static java.lang.System.setProperty;
         NorgService.class,
         UtbetalingService.class,
         SkattbarInntektService.class,
-        OrganisasjonService.class
+        OrganisasjonService.class,
+        DkifService.class
 })
 
 public class ConsumerConfig {
@@ -53,7 +56,8 @@ public class ConsumerConfig {
             AdresseSokRestConfig.class,
             NorgRestConfig.class,
             UtbetalingWSConfig.class,
-            OrganisasjonRestConfig.class
+            OrganisasjonRestConfig.class,
+            DkifRestConfig.class
     })
     public static class WsServices {
     }
