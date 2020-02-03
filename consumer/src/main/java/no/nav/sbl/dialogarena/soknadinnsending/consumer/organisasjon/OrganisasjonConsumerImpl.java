@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -43,20 +44,19 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
     @Override
     public OrganisasjonNoekkelinfoDto hentOrganisasjonNoekkelinfo(String orgnr) {
         Invocation.Builder request = lagRequest(endpoint + "v1/organisasjon/" + orgnr + "/noekkelinfo");
-        try (Response response = request.get()) {
-            if (response.getStatus() != 200) {
-                logger.warn("Feil statuskode ved kall mot Ereg: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
-                return null;
-            }
-            return response.readEntity(OrganisasjonNoekkelinfoDto.class);
+        try {
+            return request.get(OrganisasjonNoekkelinfoDto.class);
         } catch (NotFoundException e) {
-            logger.warn("Fant ikke forespurt(e) entitet(er)");
+            logger.warn("Ereg.api - 404 Not Found - Fant ikke forespurt(e) entitet(er)");
             return null;
         } catch (BadRequestException e) {
-            logger.warn("Ugyldig(e) parameter(e) i request");
+            logger.warn("Ereg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request");
             return null;
-        } catch (RuntimeException e) {
-            logger.warn("Noe uventet feilet ved kall til Ereg API", e);
+        } catch (ServerErrorException e) {
+            logger.warn("Ereg.api - {} {} - Tjenesten er utilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+            throw new TjenesteUtilgjengeligException("EREG", e);
+        } catch (Exception e) {
+            logger.warn("Ereg.api - Noe uventet feilet", e);
             throw new TjenesteUtilgjengeligException("EREG", e);
         }
     }
