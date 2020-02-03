@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,11 +11,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.System.getProperties;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.*;
@@ -25,12 +24,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArbeidsforholdServiceTest {
-
-    @Mock
-    private ArbeidsforholdV3 arbeidsforholdV3;
-
-    @Mock
-    private ArbeidsforholdTransformer arbeidsforholdTransformer;
 
     @Mock
     private ArbeidsforholdConsumer arbeidsforholdConsumer;
@@ -64,8 +57,8 @@ public class ArbeidsforholdServiceTest {
         assertTrue(arbeidsforhold.harFastStilling);
         assertEquals(100L, arbeidsforhold.fastStillingsprosent.longValue());
         assertEquals(orgnr, arbeidsforhold.orgnr);
-        assertEquals(fom.format(DateTimeFormatter.ISO_LOCAL_DATE), arbeidsforhold.fom);
-        assertEquals(tom.format(DateTimeFormatter.ISO_LOCAL_DATE), arbeidsforhold.tom);
+        assertEquals(fom.format(ISO_LOCAL_DATE), arbeidsforhold.fom);
+        assertEquals(tom.format(ISO_LOCAL_DATE), arbeidsforhold.tom);
         assertEquals(1337L, arbeidsforhold.edagId.longValue());
     }
 
@@ -103,7 +96,7 @@ public class ArbeidsforholdServiceTest {
         assertTrue(arbeidsforhold.harFastStilling);
         assertEquals(100L, arbeidsforhold.fastStillingsprosent.longValue());
         assertEquals(orgnr, arbeidsforhold.orgnr);
-        assertEquals(fom.format(DateTimeFormatter.ISO_LOCAL_DATE), arbeidsforhold.fom);
+        assertEquals(fom.format(ISO_LOCAL_DATE), arbeidsforhold.fom);
         assertNull(arbeidsforhold.tom);
         assertEquals(1337L, arbeidsforhold.edagId.longValue());
     }

@@ -17,6 +17,8 @@ public class FssTokenTest {
                 .readValue(json);
 
         assertEquals("asd", fssToken.getAccessToken());
+        assertEquals("fgh", fssToken.getTokenType());
+        assertEquals(1234L, fssToken.getExpiresIn().longValue());
     }
 
 }
