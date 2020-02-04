@@ -2,9 +2,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.DkifService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.DkifService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;

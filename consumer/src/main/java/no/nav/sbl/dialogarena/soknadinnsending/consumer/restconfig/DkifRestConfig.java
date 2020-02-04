@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.DkifConsumer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.DkifConsumerImpl;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.DkifConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.DkifConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.DkifConsumerImpl;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.DkifConsumerMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.rest.RestUtils;
 import org.springframework.beans.factory.annotation.Value;

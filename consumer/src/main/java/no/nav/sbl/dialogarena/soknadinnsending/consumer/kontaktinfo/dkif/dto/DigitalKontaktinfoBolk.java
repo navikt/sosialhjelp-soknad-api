@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dto;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

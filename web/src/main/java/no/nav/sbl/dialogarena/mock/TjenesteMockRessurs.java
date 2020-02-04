@@ -13,7 +13,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.DkifConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.DkifConsumerMock;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
