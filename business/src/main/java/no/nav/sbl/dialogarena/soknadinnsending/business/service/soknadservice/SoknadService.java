@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
@@ -74,8 +75,11 @@ public class SoknadService {
     @Inject
     private SystemdataUpdater systemdata;
 
+    @Inject
+    private TextService textService;
+
     @Transactional
-    public String startSoknad(String token) {
+    public String startSoknad(String token, boolean harSamtykke) {
         String mainUid = randomUUID().toString();
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
@@ -97,7 +101,11 @@ public class SoknadService {
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now())
-                .withSistEndretDato(LocalDateTime.now());
+                .withSistEndretDato(LocalDateTime.now())
+                .withOppstartsSamtykke(harSamtykke,
+                        textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
+                        textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke")
+                );
 
         systemdata.update(soknadUnderArbeid, token);
 

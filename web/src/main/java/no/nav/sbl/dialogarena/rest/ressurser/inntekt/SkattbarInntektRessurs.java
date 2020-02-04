@@ -2,18 +2,21 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.*;
@@ -21,7 +24,11 @@ import java.util.*;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeBekreftelserIfPresent;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
@@ -31,7 +38,16 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATT
 public class SkattbarInntektRessurs {
 
     @Inject
+    private Tilgangskontroll tilgangskontroll;
+
+    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Inject
+    private SkattetatenSystemdata skattetatenSystemdata;
+
+    @Inject
+    private TextService textService;
 
     @GET
     public SkattbarInntektFrontend hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
@@ -49,7 +65,34 @@ public class SkattbarInntektRessurs {
 
         return new SkattbarInntektFrontend()
                 .withInntektFraSkatteetaten(organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger))
-                .withInntektFraSkatteetatenFeilet(soknad.getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet());
+                .withInntektFraSkatteetatenFeilet(soknad.getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet())
+                .withInntektFraSkatteetatenSamtykke(hentSamtykkeFraSoknad(soknad));
+    }
+
+    @POST
+    @Path(value = "/samtykke")
+    public void updateSamtykke(@PathParam("behandlingsId") String behandlingsId, boolean samtykke,
+                               @HeaderParam(value = AUTHORIZATION) String token) {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+
+        boolean lagretSamtykke = hentSamtykkeFraSoknad(soknad.getJsonInternalSoknad());
+
+        removeBekreftelserIfPresent(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE);
+        setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"));
+
+        if(samtykke != lagretSamtykke) {
+            skattetatenSystemdata.updateSystemdataIn(soknad, token);
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        }
+    }
+
+    private boolean hentSamtykkeFraSoknad(JsonInternalSoknad soknad) {
+        return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals(UTBETALING_SKATTEETATEN_SAMTYKKE))
+                .anyMatch(JsonOkonomibekreftelse::getVerdi);
     }
 
     private List<SkattbarInntektOgForskuddstrekk> organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger) {
@@ -168,6 +211,7 @@ public class SkattbarInntektRessurs {
     public static final class SkattbarInntektFrontend {
         public List<SkattbarInntektOgForskuddstrekk> inntektFraSkatteetaten;
         public Boolean inntektFraSkatteetatenFeilet;
+        public Boolean samtykke;
 
         public SkattbarInntektFrontend withInntektFraSkatteetaten(List<SkattbarInntektOgForskuddstrekk> inntektFraSkatteetaten) {
             this.inntektFraSkatteetaten = inntektFraSkatteetaten;
@@ -176,6 +220,10 @@ public class SkattbarInntektRessurs {
 
         public SkattbarInntektFrontend withInntektFraSkatteetatenFeilet(Boolean inntektFraSkatteetatenFeilet) {
             this.inntektFraSkatteetatenFeilet = inntektFraSkatteetatenFeilet;
+            return this;
+        }
+        public SkattbarInntektFrontend withInntektFraSkatteetatenSamtykke(Boolean samtykke) {
+            this.samtykke = samtykke;
             return this;
         }
     }

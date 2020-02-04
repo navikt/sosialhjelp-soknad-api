@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -47,9 +48,11 @@ public class SoknadServiceTest {
     @Mock
     private SystemdataUpdater systemdataUpdater;
     @Mock
-    SoknadMetricsService soknadMetricsService;
+    private SoknadMetricsService soknadMetricsService;
     @Mock
-    InnsendingService innsendingService;
+    private InnsendingService innsendingService;
+    @Mock
+    private TextService textService;
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
@@ -69,7 +72,7 @@ public class SoknadServiceTest {
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
-        soknadService.startSoknad("");
+        soknadService.startSoknad("", true);
 
         String bruker = OidcFeatureToggleUtils.getUserId();
         verify(henvendelsesConnector).startSoknad(eq(bruker));

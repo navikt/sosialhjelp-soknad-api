@@ -82,7 +82,7 @@ public class SoknadRessursTest {
     @Test
     public void opprettSoknadUtenBehandlingsidSkalStarteNySoknad() {
         ressurs.opprettSoknad(null, mock(HttpServletResponse.class), "");
-        verify(soknadService).startSoknad("");
+        verify(soknadService).startSoknad("", false);
     }
 
     @Test

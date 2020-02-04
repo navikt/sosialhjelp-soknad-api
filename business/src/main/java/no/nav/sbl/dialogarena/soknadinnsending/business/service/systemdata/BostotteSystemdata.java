@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 
 @Component
@@ -35,7 +36,7 @@ public class BostotteSystemdata implements Systemdata {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         fjernGamleHusbankenData(okonomi.getOpplysninger());
-        if(soknadUnderArbeid.getHarBostotteSamtykke()) {
+        if(okonomi.getOpplysninger().getBekreftelse().stream().anyMatch(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE) && bekreftelse.getVerdi())) {
             String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
             BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
             if (bostotteDto != null) {

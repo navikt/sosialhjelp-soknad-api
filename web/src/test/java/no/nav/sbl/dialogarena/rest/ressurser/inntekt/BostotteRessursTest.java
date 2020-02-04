@@ -5,9 +5,12 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BostotteSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
@@ -29,9 +32,9 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
@@ -49,6 +52,9 @@ public class BostotteRessursTest {
 
     @Mock
     private Tilgangskontroll tilgangskontroll;
+
+    @Mock
+    private BostotteSystemdata bostotteSystemdata;
 
     @Mock
     private TextService textService;
@@ -107,7 +113,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = new BostotteRessurs.BostotteFrontend();
         bostotteFrontend.setBekreftelse(true);
-        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend);
+        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token");
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
@@ -132,7 +138,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = new BostotteRessurs.BostotteFrontend();
         bostotteFrontend.setBekreftelse(false);
-        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend);
+        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token");
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
@@ -184,6 +190,75 @@ public class BostotteRessursTest {
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
         Assertions.assertThat(bostotteFrontend.saker).hasSize(0);
+    }
+
+    @Test
+    public void bostotte_skalGiSamtykke() {
+        SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+
+        bostotteRessurs.updateSamtykke(BEHANDLINGSID, true, "token");
+
+        // Sjekker kaller til bostotteSystemdata
+        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(bostotteSystemdata).updateSystemdataIn(argument.capture(), anyString());
+        JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
+        Assertions.assertThat(fangetBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        Assertions.assertThat(fangetBekreftelse.getVerdi()).isTrue();
+
+        // Sjekker lagring av soknaden
+        SoknadUnderArbeid spartSoknad = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        Assertions.assertThat(spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
+        JsonOkonomibekreftelse spartBekreftelse = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().get(0);
+        Assertions.assertThat(spartBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        Assertions.assertThat(spartBekreftelse.getVerdi()).isTrue();
+    }
+
+    @Test
+    public void bostotte_skalTaBortSamtykke() {
+        SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
+        JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+        setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "");
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+
+        bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token");
+
+        // Sjekker kaller til bostotteSystemdata
+        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(bostotteSystemdata).updateSystemdataIn(argument.capture(), anyString());
+        JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
+        Assertions.assertThat(fangetBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        Assertions.assertThat(fangetBekreftelse.getVerdi()).isFalse();
+
+        // Sjekker lagring av soknaden
+        SoknadUnderArbeid spartSoknad = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
+        JsonOkonomiopplysninger sparteOpplysninger = spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+        Assertions.assertThat(sparteOpplysninger.getBekreftelse()).hasSize(1);
+        JsonOkonomibekreftelse spartBekreftelse = sparteOpplysninger.getBekreftelse().get(0);
+        Assertions.assertThat(spartBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        Assertions.assertThat(spartBekreftelse.getVerdi()).isFalse();
+    }
+
+    @Test
+    public void bostotte_skalIkkeForandreSamtykke() {
+        SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+
+        bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token");
+
+        // Sjekker kaller til bostotteSystemdata
+        verify(bostotteSystemdata, times(0)).updateSystemdataIn(any(), anyString());
+
+        // Sjekker lagring av soknaden
+        verify(soknadUnderArbeidRepository, times(0)).oppdaterSoknadsdata(any(), anyString());
+
+        // Sjekker soknaden
+        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
+        JsonOkonomibekreftelse bekreftelse = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().get(0);
+        Assertions.assertThat(bekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        Assertions.assertThat(bekreftelse.getVerdi()).isFalse();
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

@@ -2,10 +2,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedtaksstatus.AVSLAG;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,8 +41,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertMedUtbetalingFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         BostotteMottaker mottaker = BostotteMottaker.HUSSTAND;
         BigDecimal netto = BigDecimal.valueOf(10000.5);
         LocalDate utbetalingsDato = LocalDate.now();
@@ -63,8 +66,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertMedToUtbetalingerFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         BostotteMottaker mottaker = BostotteMottaker.HUSSTAND;
         BigDecimal netto1 = BigDecimal.valueOf(10000);
         BigDecimal netto2 = BigDecimal.valueOf(20000);
@@ -91,8 +94,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertMedSakFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto);
@@ -119,8 +122,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertMedToSakerFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
         SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
@@ -152,8 +155,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
 
         // Mock:
         when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(null);
@@ -170,8 +173,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_saker_henterIkkeBostotteUtenSamtykke() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(false);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
         SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto);
@@ -191,8 +194,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_saker_fjernerGammelBostotteNarViIkkeHarSamtykke() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid1 = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid1.getJsonInternalSoknad(), true);
         SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto);
@@ -208,7 +211,8 @@ public class BostotteSystemdataTest {
         assertThat(saker1).hasSize(1);
 
         // Kjøring:
-        SoknadUnderArbeid soknadUnderArbeid2 = soknadUnderArbeid1.withBostotteSamtykke(false);
+        SoknadUnderArbeid soknadUnderArbeid2 = soknadUnderArbeid1;
+        setSammtykke(soknadUnderArbeid2.getJsonInternalSoknad(), false);
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid2, "");
 
         List<JsonBostotteSak> saker2 = soknadUnderArbeid2.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
@@ -219,8 +223,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_saker_bipersonerBlirFiltrertBort() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
         SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.BIPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
@@ -244,8 +248,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_utbetalinger_bipersonerBlirFiltrertBort() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         UtbetalingerDto utbetalingerDto1 = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusMonths(1), BostotteRolle.HOVEDPERSON);
         UtbetalingerDto utbetalingerDto2 = new UtbetalingerDto().with(BostotteMottaker.HUSSTAND, BigDecimal.valueOf(20000), LocalDate.now().minusMonths(1), BostotteRolle.BIPERSON);
         BostotteDto bostotteDto = new BostotteDto()
@@ -269,8 +273,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_bareDataFraSisteManedBlirVist() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
         SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
@@ -294,8 +298,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_dataFraDeSisteToManederBlirVistNarSisteManedErTom() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         LocalDate testDate;
         if (LocalDate.now().getDayOfMonth() == 31) {
             testDate = LocalDate.now().withDayOfMonth(1);
@@ -323,8 +327,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_utbetalinger_henterIkkeBostotteUtenSamtykke() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(false);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
         UtbetalingerDto utbetalingerDto = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusMonths(1), BostotteRolle.HOVEDPERSON);
         BostotteDto bostotteDto = new BostotteDto()
                 .withUtbetaling(utbetalingerDto);
@@ -344,8 +348,8 @@ public class BostotteSystemdataTest {
     public void updateSystemdata_utbetalinger_fjernerGammelBostotteNarViIkkeHarSamtykke() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid1 = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBostotteSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSammtykke(soknadUnderArbeid1.getJsonInternalSoknad(), true);
         UtbetalingerDto utbetalingerDto = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusMonths(1), BostotteRolle.HOVEDPERSON);
         BostotteDto bostotteDto = new BostotteDto()
                 .withUtbetaling(utbetalingerDto);
@@ -361,7 +365,8 @@ public class BostotteSystemdataTest {
         assertThat(utbetalinger1).hasSize(1);
 
         // Kjøring:
-        SoknadUnderArbeid soknadUnderArbeid2 = soknadUnderArbeid1.withBostotteSamtykke(false);
+        SoknadUnderArbeid soknadUnderArbeid2 = soknadUnderArbeid1;
+        setSammtykke(soknadUnderArbeid2.getJsonInternalSoknad(), false);
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid2, "");
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger2 = soknadUnderArbeid1.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
@@ -374,6 +379,17 @@ public class BostotteSystemdataTest {
             vedtakDto = new VedtakDto().with(kode, beskrivelse, vedtaksstatus.toString());
         }
         return new SakerDto().with(saksDato.getMonthValue(), saksDato.getYear(), status, vedtakDto, rolle);
+    }
+
+    private void setSammtykke(JsonInternalSoknad jsonInternalSoknad, boolean harSamtykke) {
+        List<JsonOkonomibekreftelse> bekreftelser = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
+        bekreftelser.removeIf(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE));
+        bekreftelser
+                .add(new JsonOkonomibekreftelse().withKilde(JsonKilde.SYSTEM)
+                        .withType(BOSTOTTE_SAMTYKKE)
+                        .withVerdi(harSamtykke)
+                        .withTittel("beskrivelse"));
+
     }
 
     private void assertThatUtbetalingErKorrekt(BostotteMottaker mottaker, BigDecimal netto, JsonOkonomiOpplysningUtbetaling utbetaling, LocalDate utbetalingsDato) {

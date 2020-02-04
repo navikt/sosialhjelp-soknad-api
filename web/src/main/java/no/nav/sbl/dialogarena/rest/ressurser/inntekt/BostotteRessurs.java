@@ -4,10 +4,12 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BostotteSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -23,11 +25,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
@@ -43,6 +44,9 @@ public class BostotteRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
+    private BostotteSystemdata bostotteSystemdata;
+
+    @Inject
     private TextService textService;
 
     @GET
@@ -54,21 +58,18 @@ public class BostotteRessurs {
 
         if (opplysninger.getBekreftelse() != null) {
             setBekreftelseOnBostotteFrontend(opplysninger, bostotteFrontend);
+            setSamtykkeOnBostotteFrontend(opplysninger, bostotteFrontend);
         }
 
-        if(soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBostotte() == null) {
-            // TODO: 2019-11-25 pcn: Denne er her midlertidig for å fange opp søknader som er started før bostøtte ble rullet ut.
-            bostotteFrontend.setStotteFraHusbankenFeilet(true);
-        } else {
-            bostotteFrontend.setUtbetalinger(mapToUtbetalinger(soknad));
-            bostotteFrontend.setSaksStatuser(mapToUtSaksStatuser(soknad));
-            bostotteFrontend.setStotteFraHusbankenFeilet(soknad.getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet());
-        }
+        bostotteFrontend.setUtbetalinger(mapToUtbetalinger(soknad));
+        bostotteFrontend.setSaksStatuser(mapToUtSaksStatuser(soknad));
+        bostotteFrontend.setStotteFraHusbankenFeilet(soknad.getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet());
         return bostotteFrontend;
     }
 
     @PUT
-    public void updateBostotte(@PathParam("behandlingsId") String behandlingsId, BostotteFrontend bostotteFrontend) {
+    public void updateBostotte(@PathParam("behandlingsId") String behandlingsId, BostotteFrontend bostotteFrontend,
+                               @HeaderParam(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -89,11 +90,41 @@ public class BostotteRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
+    @POST
+    @Path(value = "/samtykke")
+    public void updateSamtykke(@PathParam("behandlingsId") String behandlingsId, boolean samtykke,
+                               @HeaderParam(value = AUTHORIZATION) String token) {
+        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+
+        boolean lagretSamtykke = hentSamtykkeFraSoknad(opplysninger);
+
+        removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE);
+        setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"));
+
+        if(samtykke != lagretSamtykke) {
+            bostotteSystemdata.updateSystemdataIn(soknad, token);
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        }
+    }
+
+    private boolean hentSamtykkeFraSoknad(JsonOkonomiopplysninger opplysninger) {
+        return opplysninger.getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals(BOSTOTTE_SAMTYKKE))
+                .anyMatch(JsonOkonomibekreftelse::getVerdi);
+    }
+
     private void setBekreftelseOnBostotteFrontend(JsonOkonomiopplysninger opplysninger, BostotteFrontend bostotteFrontend) {
         opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals(BOSTOTTE))
                 .findFirst()
                 .ifPresent(jsonOkonomibekreftelse -> bostotteFrontend.setBekreftelse(jsonOkonomibekreftelse.getVerdi()));
+    }
+
+    private void setSamtykkeOnBostotteFrontend(JsonOkonomiopplysninger opplysninger, BostotteFrontend bostotteFrontend) {
+        bostotteFrontend.setSamtykke(hentSamtykkeFraSoknad(opplysninger));
     }
 
     private List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalinger(JsonInternalSoknad soknad) {
@@ -112,12 +143,17 @@ public class BostotteRessurs {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BostotteFrontend {
         public Boolean bekreftelse;
+        public Boolean samtykke;
         public List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
         public List<JsonBostotteSak> saker;
         public Boolean stotteFraHusbankenFeilet;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
+        }
+
+        public void setSamtykke(Boolean samtykke) {
+            this.samtykke = samtykke;
         }
 
         public void setUtbetalinger(List<JsonOkonomiOpplysningUtbetaling> utbetalinger) {

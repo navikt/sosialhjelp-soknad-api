@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.junit.After;
 import org.junit.Before;
@@ -26,6 +27,7 @@ import java.util.List;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.UtbetalingerFraNavSystemdata.tilIntegerMedAvrunding;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
@@ -133,8 +135,8 @@ public class UtbetalingerFraSkatteetatenTest {
     @Test
     public void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withSkattemeldingSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         List<Utbetaling> skattbare_utbetalinger = Arrays.asList(SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_ANNEN);
         when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(skattbare_utbetalinger);
 
@@ -152,8 +154,8 @@ public class UtbetalingerFraSkatteetatenTest {
     @Test
     public void skalKunInkludereGyldigeOrganisasjonsnummer() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withSkattemeldingSamtykke(true);
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         List<Utbetaling> skattbare_utbetalinger = Arrays.asList(SKATTBAR_UTBETALING_ANNEN, SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_FRA_PRIVATPERSON);
         when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(skattbare_utbetalinger);
 
@@ -173,8 +175,8 @@ public class UtbetalingerFraSkatteetatenTest {
     @Test
     public void skalOppdatereUtbetalingerUtenAAOverskriveBrukerUtfylteUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
-                .withSkattemeldingSamtykke(true);
+                .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
         when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(utbetalinger);
 
@@ -193,8 +195,8 @@ public class UtbetalingerFraSkatteetatenTest {
     @Test
     public void skalIkkeHenteUtbetalingerUtenSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
-                .withSkattemeldingSamtykke(false);
+                .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
         List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
         when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(utbetalinger);
 
@@ -212,8 +214,8 @@ public class UtbetalingerFraSkatteetatenTest {
     @Test
     public void skalFjerneUtbetalingerNarViIkkeHarSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
-                .withSkattemeldingSamtykke(true);
+                .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
         when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(utbetalinger);
 
@@ -230,9 +232,9 @@ public class UtbetalingerFraSkatteetatenTest {
         assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING_ANNEN, utbetalingA_1, UTBETALING_SKATTEETATEN);
 
         //TEST:
-        SoknadUnderArbeid soknadUnderArbeidUtenSamtykke = soknadUnderArbeid.withSkattemeldingSamtykke(false);
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeidUtenSamtykke, "");
-        List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalingerB = soknadUnderArbeidUtenSamtykke.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalingerB = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetalingB = jsonUtbetalingerB.get(0);
 
         assertThat(utbetalingB.getKilde(), is(JsonKilde.BRUKER));
@@ -243,9 +245,20 @@ public class UtbetalingerFraSkatteetatenTest {
     private JsonInternalSoknad createJsonInternalSoknadWithUtbetalinger() {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = new ArrayList<>();
+        setSamtykke(jsonInternalSoknad, true);
         jsonUtbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING);
         jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().withUtbetaling(jsonUtbetalinger);
         return jsonInternalSoknad;
+    }
+
+    private void setSamtykke(JsonInternalSoknad jsonInternalSoknad, boolean harSamtykke) {
+        List<JsonOkonomibekreftelse> bekreftelser = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
+        bekreftelser.removeIf(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN_SAMTYKKE));
+        bekreftelser
+                .add(new JsonOkonomibekreftelse().withKilde(JsonKilde.SYSTEM)
+                        .withType(UTBETALING_SKATTEETATEN_SAMTYKKE)
+                        .withVerdi(harSamtykke)
+                        .withTittel("beskrivelse"));
     }
 
     private void assertThatUtbetalingIsCorrectlyConverted(Utbetaling utbetaling, JsonOkonomiOpplysningUtbetaling jsonUtbetaling, String type) {

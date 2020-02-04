@@ -110,6 +110,10 @@ public class OkonomiMapper {
         utbetalinger.removeIf(utbetaling -> utbetaling.getType().equals(type));
     }
 
+    public static void removeBekreftelserIfPresent(JsonOkonomiopplysninger opplysninger, String type) {
+        opplysninger.getBekreftelse().removeIf(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(type));
+    }
+
     public static void addFormueIfCheckedElseDeleteInOversikt(List<JsonOkonomioversiktFormue> formuer, String type, String tittel, boolean isChecked) {
         if (isChecked){
             addFormueIfNotPresentInOversikt(formuer, type, tittel);
