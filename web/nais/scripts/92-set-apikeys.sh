@@ -4,3 +4,4 @@ export SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD=$(cat /apigw/norg2a
 export SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD=$(cat /apigw/husbankenapi/x-nav-apiKey)
 export SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD=$(cat /apigw/skatt_inntektsmottakerapi/x-nav-apiKey)
 export SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD=$(cat /apigw/eregapi/x-nav-apiKey)
+export SOSIALHJELP_SOKNAD_API_DKFIAPI_APIKEY_PASSWORD=$(cat /apigw/dkifapi/x-nav-apiKey)

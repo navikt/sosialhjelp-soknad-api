@@ -11,7 +11,8 @@
     "/apigw/norg2api": "/apikey/apigw/dev/norg2.api.v1/soknadsosialhjelp-server_q0",
     "/apigw/husbankenapi": "/apikey/apigw/dev/ekstern.husbanken.bostotte/sosialhjelp-soknad-api_q0",
     "/apigw/skatt_inntektsmottakerapi": "/apikey/apigw/dev/eksternapp.skatt.datasamarbeid.api.inntektsmottaker/soknadsosialhjelp-server_q0",
-    "/apigw/eregapi": "apikey/apigw/dev/ereg.api/sosialhjelp-soknad-api_q0"
+    "/apigw/eregapi": "apikey/apigw/dev/ereg.api/sosialhjelp-soknad-api_q0",
+    "/apigw/dkifapi": "apikey/apigw/dev/dkif.api/sosialhjelp-soknad-api_q0"
   },
   "minReplicas": "1",
   "maxReplicas": "1",
@@ -28,6 +29,7 @@
     "DIALOGARENA_NAVNOLINK_URL": "https://www-q0.nav.no",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
     "DITTNAV_LINK_URL": "https://tjenester-q0.nav.no/dittnav/",
+    "DKIF_API_BASEURL": "https://api-gw-q0.oera.no/dkif/api/",
     "DOKUMENTINNSENDING_SMTPSERVER_HOST": "smtp.preprod.local",
     "DOKUMENTINNSENDING_SMTPSERVER_PORT": "25",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "https://api-gw-q0.oera.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/",
@@ -83,6 +85,7 @@
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
     "START_NORG_WITHMOCK": "true",
-    "EREG_API_ENABLED": "false"
+    "EREG_API_ENABLED": "false",
+    "DKIF_API_ENABLED": "false"
   }
 }
