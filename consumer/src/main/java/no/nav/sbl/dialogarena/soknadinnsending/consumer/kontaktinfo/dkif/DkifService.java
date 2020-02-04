@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DkifService {
 
-    private static final Logger log = LoggerFactory.getLogger(DkifService.class);
     private static final String DKIF_API_ENABLED = "dkif_api_enabled";
 
     private DkifConsumer consumer;
@@ -23,8 +22,8 @@ public class DkifService {
         return Boolean.parseBoolean(System.getProperty(DKIF_API_ENABLED, "false"));
     }
 
-    public String hentMobiltelefonnummer(String orgnr) {
-        return brukDkifApi() ? hentMobiltelefonnummerRest(orgnr) : hentMobiltelefonnummerWS(orgnr);
+    public String hentMobiltelefonnummer(String ident) {
+        return brukDkifApi() ? hentMobiltelefonnummerRest(ident) : hentMobiltelefonnummerWS(ident);
     }
 
     private String hentMobiltelefonnummerRest(String ident) {
