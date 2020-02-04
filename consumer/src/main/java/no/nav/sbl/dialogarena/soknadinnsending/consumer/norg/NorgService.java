@@ -32,7 +32,7 @@ public class NorgService {
         NavEnhet enhet = new NavEnhet();
         enhet.enhetNr = rsNorgEnhet.enhetNr;
         enhet.navn = rsNorgEnhet.navn;
-        if (rsNorgEnhet.enhetNr.equals("0513")  && gt.equals("0514")){
+        if (rsNorgEnhet.enhetNr.equals("0513")  && gt.equals("3434")){
             /*
             Jira sak 1200
 
@@ -40,7 +40,7 @@ public class NorgService {
             Dette er en midlertidig fix for å få denne casen til å fungere.
             */
             enhet.sosialOrgnr = "974592274";
-        } else if (rsNorgEnhet.enhetNr.equals("0511")  && gt.equals("0512")){
+        } else if (rsNorgEnhet.enhetNr.equals("0511")  && gt.equals("3432")){
             enhet.sosialOrgnr = "964949204";
         } else {
             enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
