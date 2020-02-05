@@ -31,7 +31,7 @@ public class DkifConsumerImpl implements DkifConsumer {
 
     @Override
     public void ping() {
-        Invocation.Builder request = client.target(endpoint + "api/ping").request();
+        Invocation.Builder request = client.target(endpoint + "ping").request();
         try (Response response = request.get()) {
             if (response.getStatus() != 200) {
                 logger.warn("Ping feilet mot Dkif: " + response.getStatus());
@@ -41,10 +41,9 @@ public class DkifConsumerImpl implements DkifConsumer {
 
     @Override
     public DigitalKontaktinfoBolk hentDigitalKontaktinfo(String ident) {
-        Invocation.Builder request = lagRequest(endpoint + "api/v1/personer/kontaktinformasjon", ident);
+        Invocation.Builder request = lagRequest(endpoint + "v1/personer/kontaktinformasjon", ident);
         try {
-            DigitalKontaktinfoBolk digitalKontaktinfoBolk = request.get(DigitalKontaktinfoBolk.class);
-            return digitalKontaktinfoBolk;
+            return request.get(DigitalKontaktinfoBolk.class);
         } catch (NotAuthorizedException e) {
             logger.warn("Dkif-api - 401 Unauthorized - {}", e.getMessage());
             return null;
