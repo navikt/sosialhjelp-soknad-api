@@ -83,6 +83,6 @@
     "TILLATMOCK": "false",
     "START_NORG_WITHMOCK": "false",
     "EREG_API_ENABLED": "true",
-    "DKFI_API_ENABLED": "false"
+    "DKIF_API_ENABLED": "false"
   }
 }
