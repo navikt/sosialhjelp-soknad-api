@@ -62,17 +62,21 @@ public class ArbeidsforholdService {
     }
 
     public List<Arbeidsforhold> hentArbeidsforhold(String fodselsnummer, no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService.Sokeperiode soekeperiode) {
-        return brukAaregRestApi() ? hentArbeidsforholdRest(fodselsnummer) : hentArbeidsforholdWS(fodselsnummer, soekeperiode);
+        return brukAaregRestApi() ? hentArbeidsforholdRest(fodselsnummer, soekeperiode) : hentArbeidsforholdWS(fodselsnummer, soekeperiode);
     }
 
-    private List<Arbeidsforhold> hentArbeidsforholdRest(String fnr) {
-        List<ArbeidsforholdDto> arbeidsforholdDtos = arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr);
+    private List<Arbeidsforhold> hentArbeidsforholdRest(String fnr, no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService.Sokeperiode soekeperiode) {
+        try {
+            List<ArbeidsforholdDto> arbeidsforholdDtos = arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr);
+            log.info("Hentet {} arbeidsforhold fra aareg", arbeidsforholdDtos.size());
 
-        log.info("Hentet {} arbeidsforhold fra aareg", arbeidsforholdDtos.size());
-
-        return arbeidsforholdDtos.stream()
-                .map(this::mapToDomain)
-                .collect(Collectors.toList());
+            return arbeidsforholdDtos.stream()
+                    .map(this::mapToDomain)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.warn("Noe feilet mot aareg.api -> bruker arbeidsforhold_v3 webservice som fallback");
+            return hentArbeidsforholdWS(fnr, soekeperiode);
+        }
     }
 
     public Arbeidsforhold mapToDomain(ArbeidsforholdDto dto) {
