@@ -80,6 +80,6 @@
     "TILLATMOCK": "true",
     "START_NORG_WITHMOCK": "true",
     "EREG_API_ENABLED": "false",
-    "AAREG_API_ENABLED": "false"
+    "AAREG_API_ENABLED": "true"
   }
 }
