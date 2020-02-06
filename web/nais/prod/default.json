@@ -14,7 +14,9 @@
     "/apigw/skatt_inntektsmottakerapi": "/apikey/apigw/prod/eksternapp.skatt.datasamarbeid.api.inntektsmottaker/soknadsosialhjelp-server",
     "/apigw/eregapi": "apikey/apigw/prod/ereg.api/sosialhjelp-soknad-api",
     "/apigw/aaregapi": "apikey/apigw/prod/aareg.api/sosialhjelp-soknad-api",
-    "/apigw/securitytokenservicetoken": "apikey/apigw/prod/security-token-service-token/sosialhjelp-soknad-api"
+    "/apigw/securitytokenservicetoken": "apikey/apigw/prod/security-token-service-token/sosialhjelp-soknad-api",
+    "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/prod/srvsoknadsosialhjelp-server",
+    "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/prod/srvsoknadsosialhjelp-server-sbs"
   },
   "minReplicas": "2",
   "maxReplicas": "4",
