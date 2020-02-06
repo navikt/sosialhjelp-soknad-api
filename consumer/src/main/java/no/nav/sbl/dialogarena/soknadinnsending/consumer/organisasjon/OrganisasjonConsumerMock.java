@@ -24,21 +24,21 @@ public class OrganisasjonConsumerMock {
         OrganisasjonConsumer mock = mock(OrganisasjonConsumer.class);
 
         when(mock.hentOrganisasjonNoekkelinfo(anyString()))
-                .thenAnswer(OrganisasjonConsumerMock::getOrDefaultOrganisasjonResponse);
+                .thenAnswer(OrganisasjonConsumerMock::getFromMapOrDefaultOrganisasjonNoekkelinfo);
 
         return mock;
     }
 
-    private static OrganisasjonNoekkelinfoDto getOrDefaultOrganisasjonResponse(InvocationOnMock invocationOnMock) {
+    private static OrganisasjonNoekkelinfoDto getFromMapOrDefaultOrganisasjonNoekkelinfo(InvocationOnMock invocationOnMock) {
         OrganisasjonNoekkelinfoDto response = responses.get(OidcFeatureToggleUtils.getUserId());
         if (response == null) {
-            response = getDefaultNoekkelinfo();
+            response = getDefaultOrganisasjonNoekkelinfo();
             responses.put(OidcFeatureToggleUtils.getUserId(), response);
         }
         return response;
     }
 
-    private static OrganisasjonNoekkelinfoDto getDefaultNoekkelinfo() {
+    private static OrganisasjonNoekkelinfoDto getDefaultOrganisasjonNoekkelinfo() {
         return new OrganisasjonNoekkelinfoDto(
                 new NavnDto("NAV MOCK AS", null, null, null, null),
                 orgnrMock);
@@ -60,6 +60,6 @@ public class OrganisasjonConsumerMock {
     }
 
     public static void resetOrganisasjon() {
-        responses.replace(OidcFeatureToggleUtils.getUserId(), getDefaultNoekkelinfo());
+        responses.replace(OidcFeatureToggleUtils.getUserId(), getDefaultOrganisasjonNoekkelinfo());
     }
 }

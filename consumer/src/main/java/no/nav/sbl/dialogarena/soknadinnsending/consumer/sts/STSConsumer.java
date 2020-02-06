@@ -1,13 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.sts;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.ServerErrorException;
+import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
@@ -23,7 +20,7 @@ public class STSConsumer {
     private String endpoint;
 
     public STSConsumer(Client client, String endpoint) {
-        if (MockUtils.isTillatMockRessurs()) {
+        if (isTillatMockRessurs()) {
             return;
         }
         this.client = client;
@@ -49,12 +46,18 @@ public class STSConsumer {
 
         try {
             return request.get(FssToken.class);
-        } catch (NotAuthorizedException e) {
-            logger.warn("STS - 401 unauthorized", e);
-            throw new ApplicationException("STS - 401 Unauthorized. Endpoint=" + endpoint, e);
         } catch (BadRequestException e) {
             logger.warn("STS - 400 bad request", e);
             throw new ApplicationException("STS - 400 bad request. Endpoint=" + endpoint, e);
+        } catch (NotAuthorizedException e) {
+            logger.warn("STS - 401 unauthorized", e);
+            throw new ApplicationException("STS - 401 Unauthorized. Endpoint=" + endpoint, e);
+        } catch (ForbiddenException e) {
+            logger.warn("STS - 401 unauthorized", e);
+            throw new ApplicationException("STS - 403 Forbidden. Endpoint=" + endpoint, e);
+        } catch (NotFoundException e) {
+            logger.warn("STS - 401 unauthorized", e);
+            throw new ApplicationException("STS - 404 Not Found. Endpoint=" + endpoint, e);
         } catch (ServerErrorException e) {
             logger.warn("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
             throw new TjenesteUtilgjengeligException("STS", e);
