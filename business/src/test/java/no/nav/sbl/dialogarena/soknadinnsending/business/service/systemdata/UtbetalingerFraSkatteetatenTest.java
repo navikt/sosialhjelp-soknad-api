@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -112,7 +112,7 @@ public class UtbetalingerFraSkatteetatenTest {
     OrganisasjonService organisasjonService;
 
     @Mock
-    ArbeidsforholdTransformer arbeidsforholdTransformer;
+    ArbeidsforholdService arbeidsforholdService;
 
     @InjectMocks
     private SkattetatenSystemdata skattetatenSystemdata;
