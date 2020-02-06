@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Import;
         SystemdataUpdater.class,
         KontonummerSystemdata.class,
         TelefonnummerSystemdata.class,
-        InntektSystemdata.class,
+        UtbetalingerFraNavSystemdata.class,
         ArbeidsforholdSystemdata.class,
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,

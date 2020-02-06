@@ -34,18 +34,22 @@ public class BostotteSystemdata implements Systemdata {
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
-        String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
         fjernGamleHusbankenData(okonomi.getOpplysninger());
-        BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
-        if (bostotteDto != null) {
-            boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
-            List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
-            okonomi.getOpplysninger().getUtbetaling().addAll(jsonBostotteUtbetalinger);
-            List<JsonBostotteSak> jsonSaksStatuser = mapToBostotteSaker(bostotteDto, trengerViDataFraDeSiste60Dager);
-            okonomi.getOpplysninger().getBostotte().getSaker().addAll(jsonSaksStatuser);
+        if(soknadUnderArbeid.getHarBostotteSamtykke()) {
+            String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
+            BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
+            if (bostotteDto != null) {
+                boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
+                List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
+                okonomi.getOpplysninger().getUtbetaling().addAll(jsonBostotteUtbetalinger);
+                List<JsonBostotteSak> jsonSaksStatuser = mapToBostotteSaker(bostotteDto, trengerViDataFraDeSiste60Dager);
+                okonomi.getOpplysninger().getBostotte().getSaker().addAll(jsonSaksStatuser);
+                soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
+            } else {
+                soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
+            }
+        } else { // Ikke samtykke!!!
             soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
-        } else {
-            soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
         }
     }
 

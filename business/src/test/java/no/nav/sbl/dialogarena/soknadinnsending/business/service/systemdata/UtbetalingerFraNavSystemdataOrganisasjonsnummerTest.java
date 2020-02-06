@@ -13,7 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InntektSystemdataOrganisasjonsnummerTest {
+public class UtbetalingerFraNavSystemdataOrganisasjonsnummerTest {
 
     @Mock
     private UtbetalingService utbetalingService;
@@ -25,13 +25,13 @@ public class InntektSystemdataOrganisasjonsnummerTest {
     SkattbarInntektService skattbarInntektService;
 
     @InjectMocks
-    private InntektSystemdata inntektSystemdata;
+    private UtbetalingerFraNavSystemdata utbetalingerFraNavSystemdata;
 
 
     @Test
     public void skalReturnereOrganisasjonOmGyldigOrganisasjonsnummer() {
         String organisasjonsnummer = "089640782";
-        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(organisasjonsnummer);
+        JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(organisasjonsnummer);
         assertNotNull(result);
         assertEquals(organisasjonsnummer, result.getOrganisasjonsnummer());
     }
@@ -39,28 +39,28 @@ public class InntektSystemdataOrganisasjonsnummerTest {
     @Test
     public void skalReturnereNullOmOrganisasjonsnummerInneholderTekst() {
         String organisasjonsnummer = "o89640782";
-        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(organisasjonsnummer);
+        JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(organisasjonsnummer);
         assertNull(result);
     }
 
     @Test
     public void skalReturnereNullOmForKortOrganisasjonsnummer() {
         String nummer = "12345678";
-        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(nummer);
+        JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(nummer);
         assertNull(result);
     }
 
     @Test
     public void skalReturnereNullOmForLangtOrganisasjonsnummer() {
         String nummer = "1234567890";
-        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(nummer);
+        JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(nummer);
         assertNull(result);
     }
 
     @Test
     public void skalReturnereOrganisasjonUtenNummerVedPersonnummer() {
         String personnummer = "01010011111";
-        JsonOrganisasjon result = inntektSystemdata.mapToJsonOrganisasjon(personnummer);
+        JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(personnummer);
         assertNull(result);
     }
 }
