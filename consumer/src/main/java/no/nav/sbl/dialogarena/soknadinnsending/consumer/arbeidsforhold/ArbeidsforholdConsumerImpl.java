@@ -42,6 +42,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
+        //FIXME: aareg.api vil få dedikert ping-endepunkt på sikt. Frem til det er på fungerer ikke denne pingen :(
         Invocation.Builder request = client.target(endpoint + "v1/").request()
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId);
