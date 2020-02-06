@@ -68,6 +68,8 @@ public class ArbeidsforholdService {
     private List<Arbeidsforhold> hentArbeidsforholdRest(String fnr) {
         List<ArbeidsforholdDto> arbeidsforholdDtos = arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr);
 
+        log.info("Hentet {} arbeidsforhold fra aareg", arbeidsforholdDtos.size());
+
         return arbeidsforholdDtos.stream()
                 .map(this::mapToDomain)
                 .collect(Collectors.toList());
