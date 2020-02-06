@@ -50,7 +50,7 @@ public class ArbeidsforholdRestConfig {
                 arbeidsforholdConsumer().ping();
                 return lyktes(metadata);
             } catch (Exception e) {
-                return feilet(metadata, e);
+                return feilet(metadata,"Ping feiler: aareg.api har ikke dedikert ping-endepunkt enda.", e);
             }
         };
     }
