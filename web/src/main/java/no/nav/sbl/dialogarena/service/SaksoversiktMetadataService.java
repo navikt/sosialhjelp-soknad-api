@@ -83,14 +83,14 @@ public class SaksoversiktMetadataService {
         Properties bundle = getBundle();
         LocalDateTime ettersendelseFrist = LocalDateTime.now(clock)
                 .minusDays(ETTERSENDELSE_FRIST_DAGER);
-        DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+        DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy");
 
         List<SoknadMetadata> soknader = soknadMetadataRepository.hentSoknaderForEttersending(fnr, ettersendelseFrist);
 
         return soknader.stream().map(soknad ->
             new EttersendingsSoknad()
                 .withBehandlingsId(soknad.behandlingsId)
-                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn") + " (" + soknad.innsendtDato.format(datoFormatter) + ")")
+                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn") + " (" + soknad.innsendtDato.format(datoFormatter) +  ")")
                 .withLenke(lagEttersendelseLenke(soknad.behandlingsId))
                 .withVedlegg(finnManglendeVedlegg(soknad, bundle))
         ).collect(toList());

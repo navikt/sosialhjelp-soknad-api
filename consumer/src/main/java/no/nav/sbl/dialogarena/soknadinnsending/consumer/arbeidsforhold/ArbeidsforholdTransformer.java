@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
 
 import com.google.common.base.Function;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;

@@ -21,7 +21,6 @@ public class OrganisasjonService {
     private OrganisasjonConsumer organisasjonConsumer;
 
     public String hentOrgNavn(String orgnr) {
-        log.info("Bruker Ereg rest api");
         if (orgnr != null) {
             try {
                 OrganisasjonNoekkelinfoDto noekkelinfo = organisasjonConsumer.hentOrganisasjonNoekkelinfo(orgnr);
