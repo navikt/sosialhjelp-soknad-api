@@ -39,7 +39,6 @@ public class OrganisasjonService {
     }
 
     private String hentOrgNavnRest(String orgnr) {
-        log.info("Bruker Ereg rest api");
         if (orgnr != null) {
             try {
                 OrganisasjonNoekkelinfoDto noekkelinfo = organisasjonConsumer.hentOrganisasjonNoekkelinfo(orgnr);
@@ -61,7 +60,6 @@ public class OrganisasjonService {
     }
 
     private String hentOrgNavnWebservice(String orgnr) {
-        log.info("Bruker Ereg webservice");
         if (orgnr != null) {
             HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
             try {

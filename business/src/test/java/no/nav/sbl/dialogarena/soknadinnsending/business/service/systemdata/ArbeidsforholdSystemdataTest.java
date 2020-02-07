@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
@@ -74,7 +74,7 @@ public class ArbeidsforholdSystemdataTest {
     private ArbeidsforholdSystemdata arbeidsforholdSystemdata;
 
     @InjectMocks
-    private InntektSystemdata inntektSystemdata;
+    private SkattetatenSystemdata skattetatenSystemdata;
 
     @Test
     public void skalOppdatereArbeidsforhold() {
@@ -97,7 +97,9 @@ public class ArbeidsforholdSystemdataTest {
 
     @Test
     public void skalLeggeTilInntektForLonnslipp() {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+                .withSkattemeldingSamtykke(true);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
         List<Arbeidsforhold> arbeidsforholdList = Collections.singletonList(ARBEIDSFORHOLD_LONNSLIPP);
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
@@ -105,7 +107,7 @@ public class ArbeidsforholdSystemdataTest {
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
         System.setProperty("tillatmock", "true");
         skattbarInntektService.mockFil = "TULL";
-        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
         System.setProperty("tillatmock", "false");
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -119,7 +121,9 @@ public class ArbeidsforholdSystemdataTest {
 
     @Test
     public void skalLeggeTilUtbetalingForSluttoppgjor() {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+                .withSkattemeldingSamtykke(true);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
         List<Arbeidsforhold> arbeidsforholdList = Collections.singletonList(ARBEIDSFORHOLD_SLUTTOPPGJOR);
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
@@ -127,7 +131,7 @@ public class ArbeidsforholdSystemdataTest {
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
         System.setProperty("tillatmock", "true");
         skattbarInntektService.mockFil = "TULL";
-        inntektSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         System.setProperty("tillatmock", "false");
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");

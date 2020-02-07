@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
@@ -23,20 +22,16 @@ import java.util.stream.Collectors;
 import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class InntektSystemdata implements Systemdata {
-    public static final Logger log = getLogger(InntektSystemdata.class);
+public class UtbetalingerFraNavSystemdata implements Systemdata {
+    public static final Logger log = getLogger(UtbetalingerFraNavSystemdata.class);
 
     @Inject
     UtbetalingService utbetalingService;
-
-    @Inject
-    SkattbarInntektService skattbarInntektService;
 
     @Inject
     OrganisasjonService organisasjonService;
@@ -46,47 +41,30 @@ public class InntektSystemdata implements Systemdata {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();
-        List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerNav = innhentNavSystemregistrertInntekt(personIdentifikator);
-        List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
 
         fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
+
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setUtbetalingerFraNavFeilet(false);
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
+        List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerNav = innhentNavSystemregistrertInntekt(personIdentifikator);
         if (systemUtbetalingerNav == null) {
             soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setUtbetalingerFraNavFeilet(true);
         } else {
             okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerNav);
         }
-
-        if (systemUtbetalingerSkattbar == null) {
-            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
-        } else {
-            okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar);
-        }
     }
 
     private void fjernGamleUtbetalinger(List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger) {
         okonomiOpplysningUtbetalinger.removeIf(
-                utbetaling -> utbetaling.getType().equalsIgnoreCase(UTBETALING_NAVYTELSE) ||
-                        utbetaling.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN));
+                utbetaling -> utbetaling.getType().equalsIgnoreCase(UTBETALING_NAVYTELSE));
     }
 
-    public List<JsonOkonomiOpplysningUtbetaling> innhentNavSystemregistrertInntekt(String personIdentifikator) {
+    private List<JsonOkonomiOpplysningUtbetaling> innhentNavSystemregistrertInntekt(String personIdentifikator) {
         List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
 
         if (utbetalinger == null) {
             return null;
         }
-        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, UTBETALING_NAVYTELSE)).collect(Collectors.toList());
-    }
-
-    public List<JsonOkonomiOpplysningUtbetaling> innhentSkattbarSystemregistrertInntekt(String personIdentifikator) {
-        List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt(personIdentifikator);
-
-        if (utbetalinger == null) {
-            return null;
-        }
-        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling, UTBETALING_SKATTEETATEN)).collect(Collectors.toList());
+        return utbetalinger.stream().map(this::mapToJsonOkonomiOpplysningUtbetaling).collect(Collectors.toList());
     }
 
     JsonOrganisasjon mapToJsonOrganisasjon(String orgnummer) {
@@ -107,10 +85,10 @@ public class InntektSystemdata implements Systemdata {
         return null;
     }
 
-    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(Utbetaling utbetaling, String type) {
+    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(Utbetaling utbetaling) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
-                .withType(type)
+                .withType(UTBETALING_NAVYTELSE)
                 .withTittel(utbetaling.tittel)
                 .withBelop(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto)))
                 .withNetto(utbetaling.netto)

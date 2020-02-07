@@ -90,16 +90,14 @@ public class KommuneTilNavEnhetMapper {
             .put("2003", "974622238")    // Vadsø
             .put("1243", "992179457")    // Bjørnafjorden
             .put("0229", "974604175")    // Enebakk
-            .put("0514", "974592274")    // Lom
             .put("0517", "974562294")    // Sel
-            .put("0513", "976641175")    // Skjåk
+            .put("0513", "976641175")    // Lom-Skjåk
             .put("1219", "834210622")    // Bømlo
             .put("0515", "976641310")    // Vågå
             .put("0502", "974567776")    // Gjøvik
             .put("0906", "976825950")    // Arendal
             .put("1903", "978608418")    // Harstad
-            .put("0511", "919059303")    // Dovre
-            .put("0512", "964949204")    // Lesja
+            .put("0511", "919059303")    // Lesja-Dovre
             .put("1804", "983942962")    // Bodø
             .put("1913", "959469326")    // Skånland, Tjelsund
             .put("0417", "994743767")    // Stange
