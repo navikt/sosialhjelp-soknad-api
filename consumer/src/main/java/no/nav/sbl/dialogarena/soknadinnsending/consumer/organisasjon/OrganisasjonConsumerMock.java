@@ -62,23 +62,4 @@ public class OrganisasjonConsumerMock {
     public static void resetOrganisasjon() {
         responses.replace(OidcFeatureToggleUtils.getUserId(), getDefaultOrganisasjonNoekkelinfo());
     }
-
-    public static void setOrganisasjon(String jsonOrganisasjon) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            OrganisasjonNoekkelinfoDto response = mapper.readValue(jsonOrganisasjon, OrganisasjonNoekkelinfoDto.class);
-
-            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
-                responses.put(OidcFeatureToggleUtils.getUserId(), response);
-            } else {
-                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void resetOrganisasjon() {
-        responses.replace(OidcFeatureToggleUtils.getUserId(), getDefaultNoekkelinfo());
-    }
 }

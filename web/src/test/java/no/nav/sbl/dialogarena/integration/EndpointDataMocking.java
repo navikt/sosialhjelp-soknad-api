@@ -1,9 +1,6 @@
 package no.nav.sbl.dialogarena.integration;
 
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
@@ -15,7 +12,6 @@ import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
-import org.mockito.Mockito;
 
 import javax.xml.datatype.DatatypeFactory;
 
@@ -31,7 +27,6 @@ public class EndpointDataMocking {
         mockPersonEndpoint();
         mockPersonV3Endpoint();
         mockDkifService();
-        mockArbeidsForholdService();
     }
 
     static void mockPersonEndpoint() throws Exception {
@@ -59,7 +54,7 @@ public class EndpointDataMocking {
         person.setFoedselsdato(foedselsdato);
         hentKjerneinformasjonResponse.setPerson(person);
 
-        Mockito.when(personEndpoint.hentKjerneinformasjon(any())).thenReturn(hentKjerneinformasjonResponse);
+        when(personEndpoint.hentKjerneinformasjon(any())).thenReturn(hentKjerneinformasjonResponse);
     }
 
     static void mockPersonV3Endpoint() throws Exception {
@@ -75,17 +70,11 @@ public class EndpointDataMocking {
 
     static void mockDkifService() throws Exception {
         DigitalKontaktinformasjonV1 dkif = IntegrationConfig.getMocked("dkifService");
-        Mockito.when(dkif.hentDigitalKontaktinformasjon(any())).thenReturn(
+        when(dkif.hentDigitalKontaktinformasjon(any())).thenReturn(
                 new WSHentDigitalKontaktinformasjonResponse()
                         .withDigitalKontaktinformasjon(new WSKontaktinformasjon()
                                 .withEpostadresse(new WSEpostadresse().withValue(""))
                         )
         );
-    }
-
-    static void mockArbeidsForholdService() throws Exception {
-        ArbeidsforholdV3 arbeidEndpont = IntegrationConfig.getMocked("arbeidEndpoint");
-        Mockito.when(arbeidEndpont.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class)))
-                .thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
     }
 }

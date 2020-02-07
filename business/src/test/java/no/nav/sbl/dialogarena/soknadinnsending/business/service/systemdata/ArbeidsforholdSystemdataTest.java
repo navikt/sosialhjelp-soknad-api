@@ -30,7 +30,6 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -80,7 +79,7 @@ public class ArbeidsforholdSystemdataTest {
     public void skalOppdatereArbeidsforhold() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<Arbeidsforhold> arbeidsforholdList = Arrays.asList(ARBEIDSFORHOLD_LONNSLIPP, ARBEIDSFORHOLD_SLUTTOPPGJOR);
-        when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
+        when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(arbeidsforholdList);
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -102,7 +101,7 @@ public class ArbeidsforholdSystemdataTest {
                 .withSkattemeldingSamtykke(true);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
         List<Arbeidsforhold> arbeidsforholdList = Collections.singletonList(ARBEIDSFORHOLD_LONNSLIPP);
-        when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
+        when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
         System.setProperty("tillatmock", "true");
@@ -126,7 +125,7 @@ public class ArbeidsforholdSystemdataTest {
                 .withSkattemeldingSamtykke(true);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
         List<Arbeidsforhold> arbeidsforholdList = Collections.singletonList(ARBEIDSFORHOLD_SLUTTOPPGJOR);
-        when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
+        when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
         System.setProperty("tillatmock", "true");
@@ -147,7 +146,7 @@ public class ArbeidsforholdSystemdataTest {
     @Test
     public void skalFjerneArbeidsforholdOgFjerneUtbetalingOgInntekt() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp());
-        when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(new ArrayList<>());
+        when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(new ArrayList<>());
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
 

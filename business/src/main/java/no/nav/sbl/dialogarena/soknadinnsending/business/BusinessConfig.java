@@ -12,7 +12,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Sy
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdTransformer;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGeneratorConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -26,7 +25,6 @@ import org.springframework.context.annotation.Import;
         ServiceConfig.class,
         ServicesApplicationConfig.class,
         ArbeidsforholdService.class,
-        ArbeidsforholdTransformer.class,
         OppgaveHandtererImpl.class,
         AvbrytAutomatiskSheduler.class,
         NullstillValgtNavenhetVedKommunesammenslaingSheduler.class,
