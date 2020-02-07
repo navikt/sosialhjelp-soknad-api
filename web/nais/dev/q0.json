@@ -56,7 +56,7 @@
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "120",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester-q0.nav.no/soknadinnsending",
-    "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q0.oera.no/security-token-service/v1/sts/token",
+    "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q0.oera.no/security-token-service/rest/v1/sts/token",
     "TPSWS_API_V1_URL": "https://api-gw-q0.oera.no/tpsws/api/v1/",
     "UTBETALING_V1_ENDPOINTURL": "https://wasapp-q0.adeo.no/nav-utbetaldata-ws/virksomhet/Utbetaling_v1",
     "UTBETALING_V1_SECURITYTOKEN": "SAML",
