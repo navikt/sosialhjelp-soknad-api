@@ -10,7 +10,6 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig.SRVSOKNADSOSIALHJELP_SERVER_USERNAME;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class STSConsumer {
@@ -51,8 +50,7 @@ public class STSConsumer {
             logger.warn("STS - 400 Bad Request", e);
             throw new ApplicationException("STS - 400 bad request. Endpoint=" + endpoint, e);
         } catch (NotAuthorizedException e) {
-            logger.warn("brukernavn: " + System.getenv(SRVSOKNADSOSIALHJELP_SERVER_USERNAME));
-            logger.warn("STS - 401 unauthorized - {}", e.getMessage(), e);
+            logger.warn("STS - 401 unauthorized", e);
             throw new ApplicationException("STS - 401 Unauthorized. Endpoint=" + endpoint, e);
         } catch (ForbiddenException e) {
             logger.warn("STS - 403 Forbidden", e);
