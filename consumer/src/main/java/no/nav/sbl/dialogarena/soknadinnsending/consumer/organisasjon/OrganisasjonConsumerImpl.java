@@ -14,13 +14,11 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import static java.lang.System.getenv;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
 
     private static final Logger logger = getLogger(OrganisasjonConsumerImpl.class);
-    private static final String SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD";
 
     private Client client;
     private String endpoint;
@@ -64,13 +62,11 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
     private Invocation.Builder lagRequest(String endpoint) {
         String consumerId = OidcFeatureToggleUtils.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD);
 
         WebTarget b = client.target(endpoint);
 
         return b.request()
                 .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
-                .header("x-nav-apiKey", apiKey);
+                .header("Nav-Consumer-Id", consumerId);
     }
 }
