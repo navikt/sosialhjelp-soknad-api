@@ -29,8 +29,6 @@
     "DIALOGARENA_NAVNOLINK_URL": "https://www.nav.no",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
     "DITTNAV_LINK_URL": "https://tjenester.nav.no/dittnav/",
-    "DOKUMENTINNSENDING_SMTPSERVER_HOST": "smtp.adeo.no",
-    "DOKUMENTINNSENDING_SMTPSERVER_PORT": "25",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "https://api-gw.oera.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/",
     "EKSTERN_KS_SVARUT_V1_ENDPOINTURL": "https://pep-gw.oera.no:9443/ekstern/ks/svarUt/v1",
     "EKSTERN_KS_SVARUT_V1_SECURITYTOKEN": "SAML",
