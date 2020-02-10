@@ -25,7 +25,6 @@
   "prometheusEnabled": true,
   "env": {
     "APPRES_CMS_URL": "https://appres-q1.nav.no",
-    "ARBEID_REST_URL": "https://itjenester-q1.oera.no/sbl/tjenester/system/",
     "AAREG_API_BASEURL": "https://api-gw-q1.oera.no/aareg-services/api/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DIALOGARENA_NAVNOLINK_URL": "https://www-q1.nav.no",
