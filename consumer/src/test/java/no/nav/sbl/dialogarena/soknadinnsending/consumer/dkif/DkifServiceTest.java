@@ -1,8 +1,8 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.dto.DigitalKontaktinfo;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.dto.DigitalKontaktinfoBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.dto.Feil;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfo;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.Feil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

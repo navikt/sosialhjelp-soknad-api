@@ -1,8 +1,8 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.dto.DigitalKontaktinfo;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.dto.DigitalKontaktinfoBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfo;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,9 +1,9 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.dto.DigitalKontaktinfoBolk;
 import org.slf4j.Logger;
 
 import javax.ws.rs.ForbiddenException;

@@ -1,7 +1,7 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.dto.DigitalKontaktinfoBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
