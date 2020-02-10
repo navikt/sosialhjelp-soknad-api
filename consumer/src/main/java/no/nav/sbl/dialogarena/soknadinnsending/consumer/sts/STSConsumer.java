@@ -10,6 +10,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig.SRVSOKNADSOSIALHJELP_SERVER_USERNAME;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class STSConsumer {
@@ -47,16 +48,17 @@ public class STSConsumer {
         try {
             return request.get(FssToken.class);
         } catch (BadRequestException e) {
-            logger.warn("STS - 400 bad request", e);
+            logger.warn("STS - 400 Bad Request", e);
             throw new ApplicationException("STS - 400 bad request. Endpoint=" + endpoint, e);
         } catch (NotAuthorizedException e) {
-            logger.warn("STS - 401 unauthorized", e);
+            logger.warn("brukernavn: " + System.getenv(SRVSOKNADSOSIALHJELP_SERVER_USERNAME));
+            logger.warn("STS - 401 unauthorized - {}", e.getMessage(), e);
             throw new ApplicationException("STS - 401 Unauthorized. Endpoint=" + endpoint, e);
         } catch (ForbiddenException e) {
-            logger.warn("STS - 401 unauthorized", e);
+            logger.warn("STS - 403 Forbidden", e);
             throw new ApplicationException("STS - 403 Forbidden. Endpoint=" + endpoint, e);
         } catch (NotFoundException e) {
-            logger.warn("STS - 401 unauthorized", e);
+            logger.warn("STS - 404 Not Found", e);
             throw new ApplicationException("STS - 404 Not Found. Endpoint=" + endpoint, e);
         } catch (ServerErrorException e) {
             logger.warn("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
