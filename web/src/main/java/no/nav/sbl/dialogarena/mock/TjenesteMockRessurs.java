@@ -1,18 +1,21 @@
 package no.nav.sbl.dialogarena.mock;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.PostAdresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.dkif.DkifConsumerMock;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -56,6 +59,8 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMo
 public class TjenesteMockRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(TjenesteMockRessurs.class);
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Inject
     private CacheManager cacheManager;
@@ -211,30 +216,30 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/arbeid")
-    public void setArbeidsforholdJson(@RequestBody String arbeidsforholdData) {
+    public void setArbeidsforholdJson(@RequestBody String arbeidsforholdData) throws JsonProcessingException {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter arbeidsforhold med data: " + arbeidsforholdData);
-        ArbeidsforholdMock.setArbeidsforhold(arbeidsforholdData);
+        String strippedArbeidsforhold = mapper.readTree(arbeidsforholdData).get("arbeidsforhold").toString();
+        ArbeidsforholdConsumerMock.setArbeidsforhold(strippedArbeidsforhold);
         clearCache();
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/organisasjon")
-    public void setOrganisasjon(@RequestBody String jsonOrganisasjon) {
+    public void setOrganisasjon(@RequestBody String jsonOrganisasjon) throws JsonProcessingException {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        // todo: bruk ny OrganisajonConsumerMock, når arbeidsforholdMock er oppdatert
-
         logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
-        if (jsonOrganisasjon != null) {
-            OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
+        if (jsonOrganisasjon != null && mapper.readTree(jsonOrganisasjon).has("organisasjon")) {
+            String strippedOrganisasjon = mapper.readTree(jsonOrganisasjon).get("organisasjon").toString();
+            OrganisasjonConsumerMock.setOrganisasjon(strippedOrganisasjon);
         } else {
-            OrganisasjonMock.resetOrganisasjon();
+            OrganisasjonConsumerMock.resetOrganisasjon();
         }
         clearCache();
     }

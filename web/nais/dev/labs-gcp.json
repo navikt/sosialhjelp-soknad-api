@@ -6,7 +6,7 @@
   "vaultKvPath": "/kv/preprod/sbs/sosialhjelp-soknad-api/q0",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
   "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
-  "apiKeyPaths": {},
+  "secretKvPaths": {},
   "minReplicas": "1",
   "maxReplicas": "1",
   "vaultEnabled": false,
@@ -18,6 +18,7 @@
     "PORT": "8080",
     "APPRES_CMS_URL": "https://appres-q0.nav.no",
     "ARBEID_REST_URL": "https://itjenester-q0.oera.no/sbl/tjenester/system/",
+    "AAREG_API_BASEURL": "https://api-gw-q0.oera.no/aareg-services/api/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DIALOGARENA_NAVNOLINK_URL": "https://www-q0.nav.no",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
@@ -48,6 +49,7 @@
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "90",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SOKNADINNSENDING_LINK_URL": "https://tjenester-q0.nav.no/soknadinnsending",
+    "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q0.oera.no/security-token-service/rest/v1/sts/token",
     "TPSWS_API_V1_URL": "https://api-gw-q0.oera.no/tpsws/api/v1/",
     "UTBETALING_V1_ENDPOINTURL": "https://wasapp-q0.adeo.no/nav-utbetaldata-ws/virksomhet/Utbetaling_v1",
     "UTBETALING_V1_SECURITYTOKEN": "SAML",
@@ -79,6 +81,7 @@
     "TILLATMOCK": "true",
     "START_NORG_WITHMOCK": "true",
     "EREG_API_ENABLED": "false",
+    "AAREG_API_ENABLED": "true",
     "DKIF_API_ENABLED": "false"
   }
 }
