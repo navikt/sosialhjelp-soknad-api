@@ -16,14 +16,11 @@ public class InformasjonService implements Miljovariabler {
     @Value("${soknad.ettersending.antalldager}")
     private String antallDager;
 
-    private String sporsmalsvarUrl = "";
-
     public Map<String,String> hentMiljovariabler() {
         Map<String, String> result = new HashMap<>();
 
         result.put("saksoversikt.link.url", saksoversiktUrl);
         result.put("dittnav.link.url", dittnavUrl);
-        result.put("modia.url", sporsmalsvarUrl);
         result.put("soknad.ettersending.antalldager", antallDager);
 
         result.putAll(getTestSpesifikkConfig());
