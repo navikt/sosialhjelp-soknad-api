@@ -33,11 +33,16 @@ public class DkifService {
 
     private String hentMobiltelefonnummerRest(String ident) {
         DigitalKontaktinfoBolk digitalKontaktinfoBolk = consumer.hentDigitalKontaktinfo(ident);
-        if (digitalKontaktinfoBolk == null || digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().getMobiltelefonnummer() == null) {
-            log.warn("Dkif.api - response er null, eller inneholder ikke mobiltelefonnummer");
+        if (digitalKontaktinfoBolk == null) {
+            log.warn("Dkif.api - response er null");
             return null;
-        } else if ( digitalKontaktinfoBolk.getFeil() != null) {
+        }
+        if ( digitalKontaktinfoBolk.getFeil() != null) {
             log.warn("Dkif.api - response har feil - {}", digitalKontaktinfoBolk.getFeil().getMelding());
+            return null;
+        }
+        if (digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().getMobiltelefonnummer() == null) {
+            log.warn("Dkif.api - kontaktinfo er null, eller inneholder ikke mobiltelefonnummer");
             return null;
         }
         log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().getMobiltelefonnummer());
