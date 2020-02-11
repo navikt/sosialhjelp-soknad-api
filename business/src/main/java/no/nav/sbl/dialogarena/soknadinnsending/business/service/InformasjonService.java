@@ -13,8 +13,6 @@ public class InformasjonService implements Miljovariabler {
     private String saksoversiktUrl;
     @Value("${dialogarena.navnolink.url}")
     private String navNoUrl;
-    @Value("${soknad.skjemaveileder.url}")
-    private String skjemaveilederUrl;
     @Value("${soknad.alderspensjon.url}")
     private String alderspensjonUrl;
     @Value("${soknad.reelarbeidsoker.url}")
@@ -40,7 +38,6 @@ public class InformasjonService implements Miljovariabler {
         result.put("saksoversikt.link.url", saksoversiktUrl);
         result.put("dittnav.link.url", dittnavUrl);
         result.put("dialogarena.navnolink.url", navNoUrl);
-        result.put("soknad.skjemaveileder.url", skjemaveilederUrl);
         result.put("soknad.alderspensjon.url", alderspensjonUrl);
         result.put("soknad.reelarbeidsoker.url", reelarbeidsokerUrl);
         result.put("dialogarena.cms.url", appresUrl);

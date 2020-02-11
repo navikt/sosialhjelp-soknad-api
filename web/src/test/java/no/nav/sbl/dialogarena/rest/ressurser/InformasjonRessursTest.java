@@ -66,7 +66,6 @@ public class InformasjonRessursTest {
         assertThat(miljovariabler.containsKey("saksoversikt.link.url")).isTrue();
         assertThat(miljovariabler.containsKey("dittnav.link.url")).isTrue();
         assertThat(miljovariabler.containsKey("dialogarena.navnolink.url")).isTrue();
-        assertThat(miljovariabler.containsKey("soknad.skjemaveileder.url")).isTrue();
         assertThat(miljovariabler.containsKey("soknad.alderspensjon.url")).isTrue();
         assertThat(miljovariabler.containsKey("soknad.reelarbeidsoker.url")).isTrue();
         assertThat(miljovariabler.containsKey("dialogarena.cms.url")).isTrue();
