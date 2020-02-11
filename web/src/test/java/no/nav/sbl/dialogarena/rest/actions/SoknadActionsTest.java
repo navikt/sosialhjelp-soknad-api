@@ -45,7 +45,6 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
 
-    public static final String SAKSOVERSIKT_URL = "/saksoversikt";
     public static final String TESTKOMMUNE = "2352";
     public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
     private String EIER;
@@ -81,7 +80,6 @@ public class SoknadActionsTest {
 
     @Before
     public void setUp() {
-        System.setProperty("saksoversikt.link.url", SAKSOVERSIKT_URL);
         System.setProperty("authentication.isRunningWithOidc", "true");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         reset(tekster);

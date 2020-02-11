@@ -39,7 +39,6 @@
     "IDPORTEN_CONFIG_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "LOGINSERVICE_URL": "https://loginservice-q.nav.no/login",
     "NORG2_API_V1_URL": "https://api-gw-q1.oera.no/norg2/api/v1/",
-    "SAKSOVERSIKT_LINK_URL": "https://tjenester-q1.nav.no/saksoversikt",
     "SCHEDULER_DISABLE": "false",
     "SECURITYTOKENSERVICE_URL": "https://sts-q1.oera-q.local/SecurityTokenServiceProvider/",
     "SERVICEGATEWAY_URL": "https://service-gw-q1.oera-q.local/",

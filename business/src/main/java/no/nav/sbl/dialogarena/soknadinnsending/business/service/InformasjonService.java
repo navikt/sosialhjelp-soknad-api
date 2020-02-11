@@ -9,8 +9,6 @@ import java.util.Map;
 @Component
 public class InformasjonService implements Miljovariabler {
 
-    @Value("${saksoversikt.link.url}")
-    private String saksoversiktUrl;
     @Value("${dittnav.link.url}")
     private String dittnavUrl;
     @Value("${soknad.ettersending.antalldager}")
@@ -19,7 +17,6 @@ public class InformasjonService implements Miljovariabler {
     public Map<String,String> hentMiljovariabler() {
         Map<String, String> result = new HashMap<>();
 
-        result.put("saksoversikt.link.url", saksoversiktUrl);
         result.put("dittnav.link.url", dittnavUrl);
         result.put("soknad.ettersending.antalldager", antallDager);
 
