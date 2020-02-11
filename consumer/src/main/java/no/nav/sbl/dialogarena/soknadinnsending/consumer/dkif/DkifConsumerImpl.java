@@ -45,16 +45,16 @@ public class DkifConsumerImpl implements DkifConsumer {
         try {
             return request.get(DigitalKontaktinfoBolk.class);
         } catch (NotAuthorizedException e) {
-            logger.warn("Dkif-api - 401 Unauthorized - {}", e.getMessage());
+            logger.warn("Dkif.api - 401 Unauthorized - {}", e.getMessage());
             return null;
         } catch (ForbiddenException e) {
-            logger.warn("Dkif-api - 403 Forbidden - {}", e.getMessage());
+            logger.warn("Dkif.api - 403 Forbidden - {}", e.getMessage());
             return null;
         } catch (NotFoundException e) {
             logger.warn("Dkif.api - 404 Not Found - {}", e.getMessage());
             return null;
         } catch (RuntimeException e) {
-            logger.warn("Noe uventet feilet ved kall til Dkif API", e);
+            logger.warn("Dkif.api - Noe uventet feilet", e);
             throw new TjenesteUtilgjengeligException("Dkif", e);
         }
     }
