@@ -25,7 +25,6 @@
   "env": {
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
-    "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
     "DITTNAV_LINK_URL": "https://tjenester.nav.no/dittnav/",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "https://api-gw.oera.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/",
     "EKSTERN_KS_SVARUT_V1_ENDPOINTURL": "https://pep-gw.oera.no:9443/ekstern/ks/svarUt/v1",
