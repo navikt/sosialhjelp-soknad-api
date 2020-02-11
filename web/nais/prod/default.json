@@ -23,7 +23,6 @@
   "vaultEnabled": true,
   "prometheusEnabled": true,
   "env": {
-    "APPRES_CMS_URL": "https://appres.nav.no",
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",

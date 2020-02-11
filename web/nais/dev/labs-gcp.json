@@ -16,7 +16,6 @@
     "dockerWithDefaultMockActivated": "true",
     "GCP": "true",
     "PORT": "8080",
-    "APPRES_CMS_URL": "https://appres-q0.nav.no",
     "AAREG_API_BASEURL": "https://api-gw-q0.oera.no/aareg-services/api/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DINEUTBETALINGER_LINK_URL": "http://www.nav.no",
