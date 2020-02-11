@@ -18,13 +18,9 @@ public class KommuneInfoService {
     private DigisosApi digisosApi;
 
     public boolean kanMottaSoknader(String kommunenummer) {
-        boolean kanMottaSoknader = digisosApi.hentKommuneInfo()
+        return digisosApi.hentKommuneInfo()
                 .getOrDefault(kommunenummer, new KommuneInfo())
                 .getKanMottaSoknader();
-        if (ServiceUtils.isRunningInProd() && kanMottaSoknader) {
-            log.info("Kommune {} har aktivert Digisos i Fiks konfigurasjonen. (Dette er ingen feil, men kanskje litt overraskende?)", kommunenummer);
-        }
-        return kanMottaSoknader;
     }
 
     public boolean harMidlertidigDeaktivertMottak(String kommunenummer) {

@@ -138,15 +138,14 @@ public class DigisosApiImpl implements DigisosApi {
     }
 
     @Override
-    public String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
-        log.info("Starter kryptering av filer, skal sende til {} {}", kommunenr, navEkseternRefId);
+    public String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String behandlingsId, String token) {
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         String digisosId;
         try {
             X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
             digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
-                    .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
+                    .collect(Collectors.toList()), kommunenr, behandlingsId, token);
 
             waitForFutures(krypteringFutureList);
 
@@ -277,7 +276,7 @@ public class DigisosApiImpl implements DigisosApi {
                 String errorResponse = EntityUtils.toString(response.getEntity());
                 String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
                 if (fiksDigisosId != null) {
-                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Ruter brukeren til innsynssiden. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
+                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
                     return fiksDigisosId;
                 }
 
@@ -288,7 +287,7 @@ public class DigisosApiImpl implements DigisosApi {
                         errorResponse));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
-            log.info("Sendte inn søknad og fikk digisosid: {}", digisosId);
+            log.info("Sendte inn søknad {} og fikk digisosid: {}", behandlingsId, digisosId);
             return digisosId;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet", behandlingsId), e);
