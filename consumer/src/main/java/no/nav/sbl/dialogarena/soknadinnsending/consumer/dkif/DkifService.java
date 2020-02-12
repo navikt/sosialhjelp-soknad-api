@@ -37,8 +37,8 @@ public class DkifService {
             log.warn("Dkif.api - response er null");
             return null;
         }
-        if ( digitalKontaktinfoBolk.getFeil() != null) {
-            log.warn("Dkif.api - response har feil - {}", digitalKontaktinfoBolk.getFeil().getMelding());
+        if (digitalKontaktinfoBolk.getFeil() != null) {
+            log.warn("Dkif.api - response inneholder feil - {}", digitalKontaktinfoBolk.getFeil().getMelding());
             return null;
         }
         if (digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().getMobiltelefonnummer() == null) {
