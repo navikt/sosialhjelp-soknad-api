@@ -146,7 +146,10 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         opprinneligVersjon,
                         UNDER_ARBEID.toString());
         if (antallOppdaterteRader == 0) {
-            SoknadUnderArbeid soknadIDb = hentSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier()).orElseThrow(IllegalStateException::new);
+            SoknadUnderArbeid soknadIDb = hentSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier()).orElseThrow(() -> new IllegalStateException(
+                            String.format("Ingen soknadUnderArbeid funnet for %s, med status %s ",
+                                    soknadUnderArbeid.getBehandlingsId(),
+                                    soknadUnderArbeid.getInnsendingStatus())));
             if (Arrays.equals(mapJsonSoknadInternalTilFil(soknadIDb.getJsonInternalSoknad()), data)) {
                 return;
             }

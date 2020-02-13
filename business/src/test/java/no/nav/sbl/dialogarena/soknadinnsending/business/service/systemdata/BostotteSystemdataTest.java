@@ -327,7 +327,7 @@ public class BostotteSystemdataTest {
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         LocalDate testDate;
-        if (LocalDate.now().getDayOfMonth() == 31) {
+        if (LocalDate.now().getDayOfMonth() >= 30) {
             testDate = LocalDate.now().withDayOfMonth(1);
         } else {
             testDate = LocalDate.now().withDayOfMonth(1).minusMonths(1);

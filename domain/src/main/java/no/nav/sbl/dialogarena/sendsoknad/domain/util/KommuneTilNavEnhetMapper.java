@@ -90,16 +90,14 @@ public class KommuneTilNavEnhetMapper {
             .put("2003", "974622238")    // Vadsø
             .put("1243", "992179457")    // Bjørnafjorden
             .put("0229", "974604175")    // Enebakk
-            .put("0514", "974592274")    // Lom
             .put("0517", "974562294")    // Sel
-            .put("0513", "976641175")    // Skjåk
+            .put("0513", "976641175")    // Lom-Skjåk
             .put("1219", "834210622")    // Bømlo
             .put("0515", "976641310")    // Vågå
             .put("0502", "974567776")    // Gjøvik
             .put("0906", "976825950")    // Arendal
             .put("1903", "978608418")    // Harstad
-            .put("0511", "919059303")    // Dovre
-            .put("0512", "964949204")    // Lesja
+            .put("0511", "919059303")    // Lesja-Dovre
             .put("1804", "983942962")    // Bodø
             .put("1913", "959469326")    // Skånland, Tjelsund
             .put("0417", "994743767")    // Stange
@@ -196,19 +194,20 @@ public class KommuneTilNavEnhetMapper {
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(
             asList(
-                    "0701",
-                    "0703",
-                    "0717",
-                    "1201",
-                    "0301",
-                    "1247",
-                    "0219",
-                    "5001",
-                    "1103",
-                    "0403",
-                    "0516",
-                    "0519",
-                    "0520"
+                    "3801", // Nytt Horten
+                    "0701", // Gammel Horten (1988-2020)
+                    "0703", // Gammel Horten (1858-1988)
+                    "0717", // Gammel Horten (1838-1858) (Borre)
+                    "4601", // Nytt Bergen
+                    "0301", // Oslo
+                    "4627", // Nytt Askøy
+                    "3024", // Nytt Bærum
+                    "5001", // Trondheim
+                    "1103", // Stavanger
+                    "3403", // Nytt Hamar
+                    "3436", // Nytt Nord-Fron
+                    "3438", // Nytt Sør-Fron
+                    "3439"  // Nytt Ringebu
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
