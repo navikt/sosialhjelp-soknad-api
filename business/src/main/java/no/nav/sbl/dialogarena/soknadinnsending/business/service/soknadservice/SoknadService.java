@@ -11,6 +11,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHan
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BostotteSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
@@ -34,6 +36,7 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +50,11 @@ import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeBekreftelserIfPresent;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -57,6 +64,7 @@ public class SoknadService {
 
     @Inject
     private HenvendelseService henvendelseService;
+
     @Inject
     private OppgaveHandterer oppgaveHandterer;
 
@@ -76,10 +84,16 @@ public class SoknadService {
     private SystemdataUpdater systemdata;
 
     @Inject
+    private BostotteSystemdata bostotteSystemdata;
+
+    @Inject
+    private SkattetatenSystemdata skattetatenSystemdata;
+
+    @Inject
     private TextService textService;
 
     @Transactional
-    public String startSoknad(String token, boolean harSamtykke) {
+    public String startSoknad(String token) {
         String mainUid = randomUUID().toString();
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
@@ -101,11 +115,7 @@ public class SoknadService {
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now())
-                .withSistEndretDato(LocalDateTime.now())
-                .withOppstartsSamtykke(harSamtykke,
-                        textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
-                        textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke")
-                );
+                .withSistEndretDato(LocalDateTime.now());
 
         systemdata.update(soknadUnderArbeid, token);
 
@@ -152,6 +162,22 @@ public class SoknadService {
         }
     }
 
+    @Transactional
+    public void oppdaterSamtykker(String behandlingsId, boolean harBostotteSamtykke, boolean harSkatteetatenSamtykke, String token) {
+        final String eier = OidcFeatureToggleUtils.getUserId();
+        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        JsonOkonomi okonomi = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
+        removeBekreftelserIfPresent(okonomi.getOpplysninger(), BOSTOTTE_SAMTYKKE);
+        removeBekreftelserIfPresent(okonomi.getOpplysninger(), UTBETALING_SKATTEETATEN_SAMTYKKE);
+        setBekreftelse(okonomi.getOpplysninger(), BOSTOTTE_SAMTYKKE, harBostotteSamtykke,
+                "Samtykke gitt ved opphenting av påbegynt soknad. " + DateTime.now().toDateTimeISO());
+        setBekreftelse(okonomi.getOpplysninger(), UTBETALING_SKATTEETATEN_SAMTYKKE, harSkatteetatenSamtykke,
+                "Samtykke gitt ved opphenting av påbegynt soknad. " + DateTime.now().toDateTimeISO());
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+    }
+
     public String startEttersending(String behandlingsIdSoknad) {
         return ettersendingService.start(behandlingsIdSoknad);
     }
@@ -194,6 +220,7 @@ public class SoknadService {
                                         .withUtbetaling(new ArrayList<>())
                                         .withUtgift(new ArrayList<>())
                                         .withBostotte(new JsonBostotte())
+                                        .withBekreftelse(new ArrayList<>())
                                 )
                                 .withOversikt(new JsonOkonomioversikt()
                                         .withInntekt(new ArrayList<>())

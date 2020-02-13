@@ -2,14 +2,9 @@ package no.nav.sbl.sosialhjelp.domain;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class SoknadUnderArbeid {
@@ -119,23 +114,6 @@ public class SoknadUnderArbeid {
 
     public SoknadUnderArbeid withJsonInternalSoknad(JsonInternalSoknad jsonInternalSoknad) {
         this.jsonInternalSoknad = jsonInternalSoknad;
-        return this;
-    }
-
-    public SoknadUnderArbeid withOppstartsSamtykke(boolean harSamtykke, String bostotteSamtykkeTekst, String skatteetatenSamtykkeTekst) {
-        List<JsonOkonomibekreftelse> bekreftelser = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
-        bekreftelser.add(new JsonOkonomibekreftelse()
-                .withKilde(JsonKilde.SYSTEM)
-                .withType(BOSTOTTE_SAMTYKKE)
-                .withVerdi(harSamtykke)
-                .withTittel(bostotteSamtykkeTekst)
-        );
-        bekreftelser.add(new JsonOkonomibekreftelse()
-                .withKilde(JsonKilde.SYSTEM)
-                .withType(UTBETALING_SKATTEETATEN_SAMTYKKE)
-                .withVerdi(harSamtykke)
-                .withTittel(skatteetatenSamtykkeTekst)
-        );
         return this;
     }
 }

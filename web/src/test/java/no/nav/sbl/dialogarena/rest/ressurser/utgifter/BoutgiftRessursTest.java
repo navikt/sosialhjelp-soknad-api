@@ -28,6 +28,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -117,6 +118,9 @@ public class BoutgiftRessursTest {
                 new JsonBostotte().withSaker(asList(new JsonBostotteSak().withType(UTBETALING_HUSBANKEN))));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setUtbetaling(
                 asList(new JsonOkonomiOpplysningUtbetaling().withType(UTBETALING_HUSBANKEN)));
+        setBekreftelse(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger(),
+                BOSTOTTE_SAMTYKKE, true, "Test samtykke!");
+
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
@@ -128,8 +132,23 @@ public class BoutgiftRessursTest {
     public void getBoutgifterSkalReturnereSkalViseInfoLikTrueDersomHusbankenErNedeOgManSvarerNeiTilBostotte(){
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
+        setBekreftelse(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger(),
+                BOSTOTTE_SAMTYKKE, true, "Test samtykke!");
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBekreftelse(
                 asList(new JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE).withVerdi(false)));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
+
+        BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
+
+        assertTrue(boutgifterFrontend.skalViseInfoVedBekreftelse);
+    }
+
+    @Test
+    public void getBoutgifterSkalReturnereSkalViseInfoLikTrueDersomViMAnglerSamtykkeOgManSvarerNeiTilBostotte(){
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBekreftelse(
+                asList(new JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE).withVerdi(false),
+                        new JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE_SAMTYKKE).withVerdi(false)));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);

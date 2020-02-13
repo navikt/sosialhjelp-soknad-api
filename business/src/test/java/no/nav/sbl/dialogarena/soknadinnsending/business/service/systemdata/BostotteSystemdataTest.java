@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -166,6 +167,31 @@ public class BostotteSystemdataTest {
 
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
         assertThat(saker).isEmpty();
+        assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isTrue();
+    }
+
+    @Test
+    public void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
+        // Variabler:
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        JsonOkonomiopplysninger opplysninger =
+                soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+        opplysninger.getBostotte().getSaker().add(
+                new JsonBostotteSak()
+                        .withType(UTBETALING_HUSBANKEN)
+                        .withKilde(JsonKildeSystem.SYSTEM)
+                        .withStatus(BostotteStatus.UNDER_BEHANDLING.toString()));
+        setSammtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
+
+        // Mock:
+        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(null);
+
+        // Kjøring:
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        List<JsonBostotteSak> saker = opplysninger.getBostotte().getSaker();
+        assertThat(saker).hasSize(1);
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isTrue();
     }
 

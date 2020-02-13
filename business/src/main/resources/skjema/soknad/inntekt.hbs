@@ -228,7 +228,7 @@
                 {{/if}}
 
                 <h3>{{hentTekst "inntekt.bostotte.overskrift"}}</h3>
-                {{#if @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
+                {{#manglerSamtykkeEllerSant "bostotte_samtykke" @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
                     {{#hentOkonomiBekreftelse "bostotte"}}
                         <h4>{{hentTekst "inntekt.bostotte.sporsmal.sporsmal"}}</h4>
                         <li>
@@ -257,10 +257,22 @@
                             {{{hentSvaralternativer "inntekt.bostotte.sporsmal"}}}
                         </li>
                     {{/if}}
-                    <div class="verdi verdi--tekst">
-                        Kunne ikke hente status fra Husbanken
-                    </div>
+                    {{#if @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
+                        <div class="verdi verdi--tekst">
+                            Kunne ikke hente status fra Husbanken
+                        </div>
+                    {{/if}}
+                    {{#manglerSamtykkeEllerSant "bostotte_samtykke" false}}
+                        <div class="verdi verdi--tekst">
+                            Mangler samtykke til å hente ned info fra Husbanken
+                        </div>
+                    {{/manglerSamtykkeEllerSant}}
                 {{else}}
+                    {{#if @root.utvidetSoknad}}
+                        <div class="verdi verdi--tekst">
+                            Har gitt samtykke til å hente ned info fra Husbanken
+                        </div>
+                    {{/if}}
                     {{#if @root.utvidetSoknad}}
                         {{{ settInnInfotekst "inntekt.bostotte.infotekst.tekst" }}}
                     {{/if}}
@@ -341,7 +353,7 @@
                             </li>
                         {{/hvisUtbetalingFinnes}}
                     {{/erListeTom}}
-                {{/if}}
+                {{/manglerSamtykkeEllerSant}}
 
                 <h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>
                 {{#if @root.utvidetSoknad}}

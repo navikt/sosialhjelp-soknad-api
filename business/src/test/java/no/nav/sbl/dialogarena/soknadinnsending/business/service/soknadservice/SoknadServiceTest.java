@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHan
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -31,6 +32,8 @@ import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -72,12 +75,20 @@ public class SoknadServiceTest {
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
-        soknadService.startSoknad("", true);
+        soknadService.startSoknad("");
 
         String bruker = OidcFeatureToggleUtils.getUserId();
         verify(henvendelsesConnector).startSoknad(eq(bruker));
-        verify(soknadUnderArbeidRepository).opprettSoknad(any(SoknadUnderArbeid.class), eq(bruker));
+        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(soknadUnderArbeidRepository).opprettSoknad(argument.capture(), eq(bruker));
+        List<JsonOkonomibekreftelse> bekreftelser = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
+        assertThat(bekreftelser.stream().anyMatch(bekreftelse -> harBekreftelseFor(bekreftelse, UTBETALING_SKATTEETATEN_SAMTYKKE))).isFalse();
+        assertThat(bekreftelser.stream().anyMatch(bekreftelse -> harBekreftelseFor(bekreftelse, BOSTOTTE_SAMTYKKE))).isFalse();
         DateTimeUtils.setCurrentMillisSystem();
+    }
+
+    private boolean harBekreftelseFor(JsonOkonomibekreftelse bekreftelse, String bekreftelsesType) {
+        return bekreftelse.getVerdi() && bekreftelse.getType().equalsIgnoreCase(bekreftelsesType);
     }
 
     @Test

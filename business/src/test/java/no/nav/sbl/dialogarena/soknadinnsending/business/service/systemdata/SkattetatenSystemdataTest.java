@@ -34,7 +34,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UtbetalingerFraSkatteetatenTest {
+public class SkattetatenSystemdataTest {
     private static final String EIER = "12345678901";
 
     private static final JsonOkonomiOpplysningUtbetaling JSON_OKONOMI_OPPLYSNING_UTBETALING = new JsonOkonomiOpplysningUtbetaling()
@@ -240,6 +240,30 @@ public class UtbetalingerFraSkatteetatenTest {
         assertThat(utbetalingB.getKilde(), is(JsonKilde.BRUKER));
         assertThat(utbetalingB.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
         assertThat(jsonUtbetalingerB.size(), is(1));
+    }
+
+    @Test
+    public void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
+        // Variabler:
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad()
+                .getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
+        utbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING);
+
+        // Mock:
+        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(null);
+
+        // Kjøring:
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        assertThat(utbetalinger.size(), is(1));
+        JsonOkonomiOpplysningUtbetaling utbetaling = utbetalinger.get(0);
+        assertThat(utbetaling.getKilde(), is(JSON_OKONOMI_OPPLYSNING_UTBETALING.getKilde()));
+        assertThat(utbetaling.getType(), is(JSON_OKONOMI_OPPLYSNING_UTBETALING.getType()));
+        assertThat(utbetaling.getBelop(), is(JSON_OKONOMI_OPPLYSNING_UTBETALING.getBelop()));
+        assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet(), is(true));
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithUtbetalinger() {

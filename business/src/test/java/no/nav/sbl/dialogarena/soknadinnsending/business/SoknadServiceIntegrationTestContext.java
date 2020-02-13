@@ -13,6 +13,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedlegg
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BostotteSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -25,6 +31,7 @@ import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,10 +39,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sql.DataSource;
 import java.time.Clock;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static org.mockito.Mockito.mock;
 
 @Import(value = {DatabaseTestContext.class})
@@ -179,4 +186,41 @@ public class SoknadServiceIntegrationTestContext {
     Adressekodeverk adressekodeverk() {
         return mock(Adressekodeverk.class);
     }
+
+    @Bean
+    public BostotteSystemdata bostotteSystemdata() {
+        return mock(BostotteSystemdata.class);
+    }
+
+    @Bean
+    public Bostotte bostotte() {
+        return mock(Bostotte.class);
+    }
+
+    @Bean
+    public SkattetatenSystemdata skattetatenSystemdata() {
+        return mock(SkattetatenSystemdata.class);
+    }
+
+    @Bean
+    public SkattbarInntektService skattbarInntektService() {
+        return mock(SkattbarInntektService.class);
+    }
+
+    @Bean
+    public OrganisasjonService organisasjonService() {
+        return mock(OrganisasjonService.class);
+    }
+
+    @Bean
+    public OrganisasjonConsumer organisasjonConsumer() {
+        return mock(OrganisasjonConsumer.class);
+    }
+
+    @Bean
+    @Named("organisasjonEndpoint")
+    public OrganisasjonV4 organisasjonV4() {
+        return mock(OrganisasjonV4.class);
+    }
+
 }

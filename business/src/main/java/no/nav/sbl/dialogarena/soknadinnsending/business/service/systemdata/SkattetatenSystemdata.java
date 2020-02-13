@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
@@ -27,7 +26,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class SkattetatenSystemdata implements Systemdata {
+public class SkattetatenSystemdata {
     public static final Logger log = getLogger(SkattetatenSystemdata.class);
 
     @Inject
@@ -36,22 +35,23 @@ public class SkattetatenSystemdata implements Systemdata {
     @Inject
     OrganisasjonService organisasjonService;
 
-    @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();
 
-        fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
-
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
         if(jsonData.getOkonomi().getOpplysninger().getBekreftelse().stream().anyMatch(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN_SAMTYKKE) && bekreftelse.getVerdi())) {
             List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
             if (systemUtbetalingerSkattbar == null) {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
             } else {
+                fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
                 okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar);
+                soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
             }
+        } else { // Ikke samtykke!!!
+            fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
+            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
         }
     }
 

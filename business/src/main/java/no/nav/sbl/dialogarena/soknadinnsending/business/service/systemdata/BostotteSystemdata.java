@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRolle;
@@ -27,19 +26,18 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKK
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 
 @Component
-public class BostotteSystemdata implements Systemdata {
+public class BostotteSystemdata {
     @Inject
     private Bostotte bostotte;
 
-    @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
-        fjernGamleHusbankenData(okonomi.getOpplysninger());
         if(okonomi.getOpplysninger().getBekreftelse().stream().anyMatch(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE) && bekreftelse.getVerdi())) {
             String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
             BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
             if (bostotteDto != null) {
+                fjernGamleHusbankenData(okonomi.getOpplysninger());
                 boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
                 List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
                 okonomi.getOpplysninger().getUtbetaling().addAll(jsonBostotteUtbetalinger);
@@ -50,6 +48,7 @@ public class BostotteSystemdata implements Systemdata {
                 soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
             }
         } else { // Ikke samtykke!!!
+            fjernGamleHusbankenData(okonomi.getOpplysninger());
             soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
         }
     }
