@@ -200,6 +200,7 @@ public class KommuneTilNavEnhetMapper {
                     "0717", // Gammel Horten (1838-1858) (Borre)
                     "4601", // Nytt Bergen
                     "0301", // Oslo
+                    "1201", // Mock-data Oslo
                     "4627", // Nytt Askøy
                     "3024", // Nytt Bærum
                     "5001", // Trondheim
