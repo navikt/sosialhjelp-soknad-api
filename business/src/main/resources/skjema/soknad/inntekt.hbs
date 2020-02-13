@@ -5,10 +5,18 @@
             {{#with opplysninger}}
 
                 <h3>{{hentTekst "utbetalinger.inntekt.skattbar.tittel"}}</h3>
-                {{#if @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
-                    <div class="verdi verdi--tekst">
-                        Kunne ikke hente utbetalinger fra Skatteetaten
-                    </div>
+                {{#manglerSamtykkeEllerSant "skatteetaten_samtykke" @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
+                    {{#manglerSamtykkeEllerSant "skatteetaten_samtykke" false}}
+                        <div class="verdi verdi--tekst">
+                            Mangler samtykke til å hente ned info fra Skatteetaten
+                        </div>
+                    {{else}}
+                        {{#if @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
+                            <div class="verdi verdi--tekst">
+                                Kunne ikke hente utbetalinger fra Skatteetaten
+                            </div>
+                        {{/if}}
+                    {{/manglerSamtykkeEllerSant}}
                 {{else}}
                     {{#if @root.utvidetSoknad}}
                         {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
@@ -96,7 +104,7 @@
                             </span>
                         </li>
                     {{/hvisUtbetalingFinnes}}
-                {{/if}}
+                {{/manglerSamtykkeEllerSant}}
 
                 <h3>{{hentTekst "navytelser.sporsmal"}}</h3>
                 {{#if @root.utvidetSoknad}}

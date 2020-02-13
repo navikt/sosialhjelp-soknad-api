@@ -32,11 +32,10 @@ public class ManglerSamtykkeEllerSantHelper extends RegistryAwareHelper<String> 
             Boolean verdi = bekreftelse.get().getVerdi();
             if(!verdi)
                 return options.fn(this);
-//            Context.Builder contextMedVariabel = Context.newBuilder(options.context, options.context.model())
-//                    .combine("verdi", verdi);
-//            return createReturnVariable(options, !verdi);
+            else
+                return options.inverse(this);
         }
-        return options.inverse(this);
+        return options.fn(this);
     }
 
     private CharSequence createReturnVariable(Options options, Boolean verdi) throws IOException {
