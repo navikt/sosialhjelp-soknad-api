@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -10,9 +13,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -22,7 +22,10 @@ import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -42,8 +45,6 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
 
-    public static final String SOKNADINNSENDING_ETTERSENDING_URL = "/soknadinnsending/ettersending";
-    public static final String SAKSOVERSIKT_URL = "/saksoversikt";
     public static final String TESTKOMMUNE = "2352";
     public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
     private String EIER;
@@ -79,8 +80,6 @@ public class SoknadActionsTest {
 
     @Before
     public void setUp() {
-        System.setProperty("soknadinnsending.ettersending.path", SOKNADINNSENDING_ETTERSENDING_URL);
-        System.setProperty("saksoversikt.link.url", SAKSOVERSIKT_URL);
         System.setProperty("authentication.isRunningWithOidc", "true");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         reset(tekster);
