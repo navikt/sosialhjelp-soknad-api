@@ -321,7 +321,7 @@ public class SosialhjelpPdfGeneratorTest {
         }
     }
 
-    //@Ignore("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
+    @Ignore("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
     @Test
     public void testGenerateNoDisk() {
         //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();
