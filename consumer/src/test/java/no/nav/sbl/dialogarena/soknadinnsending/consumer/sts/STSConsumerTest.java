@@ -12,6 +12,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -34,7 +36,7 @@ public class STSConsumerTest {
         when(client.target(anyString())).thenReturn(webTarget);
         when(webTarget.queryParam(anyString(), any())).thenReturn(webTarget);
         when(webTarget.request()).thenReturn(request);
-        when(request.get(FssToken.class)).thenReturn(new FssToken("asdf", "type", 9999L));
+        when(request.get(FssToken.class)).thenReturn(new FssToken("asdf", "type", 3600L));
     }
 
     @Test
@@ -43,7 +45,8 @@ public class STSConsumerTest {
 
         assertThat(fssToken.getAccessToken()).isEqualTo("asdf");
         assertThat(fssToken.getTokenType()).isEqualTo("type");
-        assertThat(fssToken.getExpiresIn()).isEqualTo(9999L);
+        assertThat(fssToken.getExpiresIn()).isEqualTo(3600L);
+        assertFalse(fssToken.isExpired());
     }
 
     @Test
@@ -66,19 +69,22 @@ public class STSConsumerTest {
     @Test
     public void utgattTokenSkalTriggeRenew() {
         // token som har gått ut
-        when(request.get(FssToken.class)).thenReturn(new FssToken("asdf", "type", -100L));
+        when(request.get(FssToken.class)).thenReturn(new FssToken("asdf", "type", 59L));
 
         FssToken first = consumer.getFSSToken();
 
         verify(request, times(1)).get(FssToken.class);
         verify(client, times(1)).target(anyString());
+        assertTrue(first.isExpired());
 
-        when(request.get(FssToken.class)).thenReturn(new FssToken("qwer", "type", 9999L));
+        // token som er ikke har gått ut
+        when(request.get(FssToken.class)).thenReturn(new FssToken("qwer", "type", 61L));
 
         FssToken second = consumer.getFSSToken();
 
         verify(request, times(2)).get(FssToken.class);
         verify(client, times(2)).target(anyString());
+        assertFalse(second.isExpired());
 
         assertThat(second).isNotEqualTo(first);
     }

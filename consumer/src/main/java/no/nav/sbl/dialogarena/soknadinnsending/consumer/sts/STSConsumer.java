@@ -8,7 +8,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
-import java.time.LocalDateTime;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -80,12 +79,7 @@ public class STSConsumer {
         if (fssToken == null) {
             return true;
         }
-        return isExpired(fssToken);
-    }
-
-    private boolean isExpired(FssToken fssToken) {
-        LocalDateTime expirationTime = LocalDateTime.now().plusSeconds(fssToken.getExpiresIn() - 60L);
-        return expirationTime.isBefore(LocalDateTime.now());
+        return fssToken.isExpired();
     }
 
     private Invocation.Builder lagRequest() {
