@@ -46,6 +46,7 @@ public class STSConsumer {
 
     public FssToken getFSSToken() {
         if (shouldRenew(cachedFssToken)) {
+            logger.info("Henter nytt STSToken");
             Invocation.Builder request = lagRequest();
             try {
                 FssToken fssToken = request.get(FssToken.class);
@@ -71,6 +72,7 @@ public class STSConsumer {
                 throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
             }
         }
+        logger.info("Tar i bruk cached STSToken");
         return cachedFssToken;
     }
 
