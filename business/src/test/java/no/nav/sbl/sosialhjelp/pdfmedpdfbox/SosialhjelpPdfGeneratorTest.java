@@ -320,4 +320,243 @@ public class SosialhjelpPdfGeneratorTest {
             e.printStackTrace();
         }
     }
+
+    @Ignore("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
+    @Test
+    public void testGenerateNoDisk() {
+        //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();
+
+
+        String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt" +
+                " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
+                " laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
+                " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
+                " laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
+                "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat" +
+                " non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+
+        final JsonData data = new JsonData()
+
+                .withPersonalia(
+                        new JsonPersonalia()
+                                .withPersonIdentifikator(
+                                        new JsonPersonIdentifikator()
+                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                                .withVerdi("123456 78909")
+                                )
+                                .withNavn(
+                                        new JsonSokernavn()
+                                                .withFornavn("Han")
+//                                                .withMellomnavn("Mellomnavn")
+                                                .withEtternavn("Solo")
+                                )
+                                .withStatsborgerskap(
+                                        new JsonStatsborgerskap().withVerdi("NOR")
+                                )
+                                .withOppholdsadresse(
+                                        new JsonGateAdresse()
+                                                .withType(JsonAdresse.Type.GATEADRESSE)
+                                                .withGatenavn("Sannergata")
+                                                .withHusnummer("2")
+                                                .withHusbokstav("Z")
+                                                .withPostnummer("1337")
+                                                .withPoststed("Andeby")
+                                                .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
+                                )
+                                .withFolkeregistrertAdresse(
+                                        new JsonGateAdresse()
+                                                .withType(JsonAdresse.Type.GATEADRESSE)
+                                                .withGatenavn("Sannergata")
+                                                .withHusnummer("2")
+                                                .withHusbokstav("Z")
+                                                .withPostnummer("1337")
+                                                .withPoststed("Andeby")
+                                )
+                                .withTelefonnummer(new JsonTelefonnummer().withVerdi("99887766").withKilde(JsonKilde.BRUKER))
+                                .withKontonummer(new JsonKontonummer().withKilde(BRUKER).withVerdi("12345678903"))
+                )
+                .withBegrunnelse(
+                        new JsonBegrunnelse()
+                                .withHvaSokesOm(text)
+                                .withHvorforSoke(text)
+                )
+                .withArbeid(
+                        new JsonArbeid()
+                                .withForhold(
+                                        new ArrayList<>(Arrays.asList(
+                                                new JsonArbeidsforhold()
+                                                        .withArbeidsgivernavn("Blizzard")
+                                                        .withKilde(SYSTEM)
+                                                        .withFom("2000-01-01")
+                                                        .withOverstyrtAvBruker(false)
+                                                        .withStillingsprosent(100)
+                                                        .withStillingstype(Stillingstype.FAST),
+                                                new JsonArbeidsforhold()
+                                                        .withArbeidsgivernavn("Team liquid")
+                                                        .withKilde(BRUKER)
+                                                        .withFom("2000-01-01")
+                                                        .withOverstyrtAvBruker(true)
+                                                        .withStillingsprosent(20)
+                                                        .withStillingstype(Stillingstype.FAST_OG_VARIABEL)
+                                        ))
+                                )
+                                .withKommentarTilArbeidsforhold(
+                                        new JsonKommentarTilArbeidsforhold()
+                                                .withKilde(JsonKildeBruker.BRUKER)
+                                                .withVerdi("Her skriver jeg litt om noen arbeidsforhold jeg har som ikke er systemverdi.")
+                                )
+                )
+                .withUtdanning(
+                        new JsonUtdanning()
+//                                .withErStudent(true)
+//                                .withStudentgrad(JsonUtdanning.Studentgrad.DELTID)
+                )
+                .withFamilie(
+                        new JsonFamilie()
+                                .withSivilstatus(
+//                                        new JsonSivilstatus()
+//                                                .withKilde(BRUKER)
+//                                                .withStatus(JsonSivilstatus.Status.GIFT)
+//                                                .withEktefelle(
+//                                                        new JsonEktefelle()
+//                                                                .withNavn(
+//                                                                        new JsonNavn()
+//                                                                                .withFornavn("Leia")
+//                                                                                .withMellomnavn("Mellomnavn")
+//                                                                                .withEtternavn("Skywalker")
+//                                                                )
+//                                                                .withPersonIdentifikator("0101195011223")
+//                                                )
+//                                                .withBorSammenMed(true)
+//                                        new JsonSivilstatus()
+//                                                .withKilde(BRUKER)
+//                                                .withStatus(JsonSivilstatus.Status.SKILT)
+                                        new JsonSivilstatus()
+                                                .withKilde(SYSTEM)
+                                                .withStatus(JsonSivilstatus.Status.GIFT)
+                                                .withEktefelle(
+                                                        new JsonEktefelle()
+                                                                .withNavn(
+                                                                        new JsonNavn()
+                                                                                .withFornavn("Leia")
+                                                                                .withMellomnavn("Mellomnavn")
+                                                                                .withEtternavn("Skywalker")
+                                                                )
+                                                                .withPersonIdentifikator("0101195011223")
+                                                )
+                                                .withBorSammenMed(false)
+                                                .withEktefelleHarDiskresjonskode(false)
+                                )
+                                .withForsorgerplikt(
+                                        new JsonForsorgerplikt()
+                                                .withHarForsorgerplikt(
+                                                        new JsonHarForsorgerplikt()
+                                                                .withKilde(SYSTEM)
+                                                                .withVerdi(true)
+                                                )
+                                                .withAnsvar(
+                                                        Arrays.asList(
+                                                                new JsonAnsvar()
+                                                                        .withBarn(
+                                                                                new JsonBarn()
+                                                                                        .withNavn(
+                                                                                                new JsonNavn()
+                                                                                                        .withFornavn("Kylo")
+                                                                                                        .withEtternavn("Ren")
+                                                                                        )
+                                                                                        .withFodselsdato("2000-01-01")
+                                                                                        .withPersonIdentifikator("01010011223")
+                                                                        )
+                                                                        .withErFolkeregistrertSammen(
+                                                                                new JsonErFolkeregistrertSammen()
+                                                                                        .withKilde(JsonKildeSystem.SYSTEM)
+                                                                                        .withVerdi(true)
+                                                                        )
+                                                                        .withHarDeltBosted(
+                                                                                new JsonHarDeltBosted()
+                                                                                        .withKilde(JsonKildeBruker.BRUKER)
+                                                                                        .withVerdi(true)
+                                                                        ),
+                                                                new JsonAnsvar()
+                                                                        .withBarn(
+                                                                                new JsonBarn()
+                                                                                        .withNavn(
+                                                                                                new JsonNavn()
+                                                                                                        .withFornavn("Ben")
+                                                                                                        .withEtternavn("Solo")
+                                                                                        )
+                                                                                        .withFodselsdato("2000-01-01")
+                                                                                        .withPersonIdentifikator("01010011223")
+                                                                        )
+                                                                        .withErFolkeregistrertSammen(
+                                                                                new JsonErFolkeregistrertSammen()
+                                                                                        .withKilde(JsonKildeSystem.SYSTEM)
+                                                                                        .withVerdi(false)
+                                                                        )
+                                                                        .withHarDeltBosted(
+                                                                                new JsonHarDeltBosted()
+                                                                                        .withKilde(JsonKildeBruker.BRUKER)
+                                                                                        .withVerdi(true)
+                                                                        )
+                                                                        .withSamvarsgrad(
+                                                                                new JsonSamvarsgrad()
+                                                                                        .withKilde(JsonKildeBruker.BRUKER)
+                                                                                        .withVerdi(42)
+                                                                        )
+
+
+                                                        )
+                                                )
+                                                .withBarnebidrag(
+                                                        new JsonBarnebidrag()
+                                                                .withKilde(JsonKildeBruker.BRUKER)
+                                                                .withVerdi(JsonBarnebidrag.Verdi.MOTTAR)
+                                                )
+                                )
+
+                )
+                .withBosituasjon(
+                        new JsonBosituasjon()
+                                .withBotype(JsonBosituasjon.Botype.EIER)
+                                .withAntallPersoner(2)
+                )
+                .withOkonomi(new JsonOkonomi()
+                        .withOpplysninger(new JsonOkonomiopplysninger()
+                                .withUtbetaling(Arrays.asList(
+                                        new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("skatteetaten")
+                                                .withBrutto(2000.0)
+                                                .withPeriodeFom("01.08.2019")
+                                                .withPeriodeTom("31.08.2019")
+                                                .withSkattetrekk(25.0)
+                                                .withOrganisasjon(new JsonOrganisasjon().withNavn("The Millennium Falcon")),
+                                        new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("navytelse")
+                                                .withBrutto(2000.0)
+                                                .withNetto(1500.0)
+                                                .withUtbetalingsdato("31.08.2019"),
+                                        new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("husbanken")
+                                                .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND)
+                                                .withUtbetalingsdato("31.08.2019")
+                                                .withNetto(6000.0)
+                                ))
+                        )
+                );
+
+        final JsonSoknad jsonSoknad = new JsonSoknad().withData(data);
+        final JsonInternalSoknad jsonInternalSoknad = new JsonInternalSoknad().withSoknad(jsonSoknad);
+
+
+        byte[] bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true);
+
+        try {
+            FileOutputStream out = new FileOutputStream("../temp/starcraftWithDisk.pdf");
+            out.write(bytes);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
