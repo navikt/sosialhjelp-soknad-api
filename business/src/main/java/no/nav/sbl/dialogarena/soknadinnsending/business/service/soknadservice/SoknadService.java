@@ -36,7 +36,6 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -170,9 +169,9 @@ public class SoknadService {
         removeBekreftelserIfPresent(okonomi.getOpplysninger(), BOSTOTTE_SAMTYKKE);
         removeBekreftelserIfPresent(okonomi.getOpplysninger(), UTBETALING_SKATTEETATEN_SAMTYKKE);
         setBekreftelse(okonomi.getOpplysninger(), BOSTOTTE_SAMTYKKE, harBostotteSamtykke,
-                "Samtykke gitt ved opphenting av påbegynt soknad. " + DateTime.now().toDateTimeISO());
+                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"));
         setBekreftelse(okonomi.getOpplysninger(), UTBETALING_SKATTEETATEN_SAMTYKKE, harSkatteetatenSamtykke,
-                "Samtykke gitt ved opphenting av påbegynt soknad. " + DateTime.now().toDateTimeISO());
+                textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"));
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);

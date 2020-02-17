@@ -100,7 +100,7 @@ public class EttersendingService {
 
     private void throwDetailedExceptionForEttersendelserEtterFrist(SoknadMetadata soknad) {
         long dagerEtterFrist = DAYS.between(soknad.innsendtDato, LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER));
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy HH:mm:ss");
         long antallEttersendelser = hentAntallEttersendelserSendtPaSoknad(soknad.behandlingsId);
         long antallNyereSoknader = henvendelseService.hentAntallInnsendteSoknaderEtterTidspunkt(soknad.fnr, soknad.innsendtDato);
         throw new EttersendelseSendtForSentException(
