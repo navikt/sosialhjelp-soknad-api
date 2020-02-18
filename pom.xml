@@ -89,7 +89,7 @@
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.10.0</jackson.version>
         <jackson-databind.version>2.10.0</jackson-databind.version>
-        <filformat.version>1.2020.02.17-16.28-59e5010b20c1-SNAPSHOT</filformat.version>
+        <filformat.version>1.2020.02.18-17.03-d62a2f77ef0d-SNAPSHOT</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>2.0.17</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
