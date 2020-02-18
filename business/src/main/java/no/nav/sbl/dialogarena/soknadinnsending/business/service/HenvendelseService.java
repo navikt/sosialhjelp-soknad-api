@@ -82,6 +82,10 @@ public class HenvendelseService {
         return soknadMetadataRepository.hentBehandlingskjede(behandlingskjedeId);
     }
 
+    public int hentAntallInnsendteSoknaderEtterTidspunkt(String fnr, LocalDateTime tidspunkt) {
+        return soknadMetadataRepository.hentAntallInnsendteSoknaderEtterTidspunkt(fnr, tidspunkt);
+    }
+
     public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, SoknadMetadata.VedleggMetadataListe vedlegg, SoknadUnderArbeid soknadUnderArbeid, boolean brukerDigisosApi) {
         SoknadMetadata meta = soknadMetadataRepository.hent(behandlingsId);
 

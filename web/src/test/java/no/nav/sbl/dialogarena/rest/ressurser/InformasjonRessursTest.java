@@ -63,15 +63,7 @@ public class InformasjonRessursTest {
     public void miljovariablerInneholderAlleVariableneViTrenger() {
         Map<String, String> miljovariabler = ressurs.hentMiljovariabler();
 
-        assertThat(miljovariabler.containsKey("saksoversikt.link.url")).isTrue();
         assertThat(miljovariabler.containsKey("dittnav.link.url")).isTrue();
-        assertThat(miljovariabler.containsKey("dialogarena.navnolink.url")).isTrue();
-        assertThat(miljovariabler.containsKey("soknad.skjemaveileder.url")).isTrue();
-        assertThat(miljovariabler.containsKey("soknad.alderspensjon.url")).isTrue();
-        assertThat(miljovariabler.containsKey("soknad.reelarbeidsoker.url")).isTrue();
-        assertThat(miljovariabler.containsKey("soknad.dagpengerbrosjyre.url")).isTrue();
-        assertThat(miljovariabler.containsKey("dialogarena.cms.url")).isTrue();
-        assertThat(miljovariabler.containsKey("soknadinnsending.soknad.path")).isTrue();
         assertThat(miljovariabler.containsKey("soknad.ettersending.antalldager")).isTrue();
     }
 

@@ -194,19 +194,21 @@ public class KommuneTilNavEnhetMapper {
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(
             asList(
-                    "0701",
-                    "0703",
-                    "0717",
-                    "1201",
-                    "0301",
-                    "1247",
-                    "0219",
-                    "5001",
-                    "1103",
-                    "0403",
-                    "0516",
-                    "0519",
-                    "0520"
+                    "3801", // Nytt Horten
+                    "0701", // Gammel Horten (1988-2020)
+                    "0703", // Gammel Horten (1858-1988)
+                    "0717", // Gammel Horten (1838-1858) (Borre)
+                    "4601", // Nytt Bergen
+                    "0301", // Oslo
+                    "1201", // Mock-data Oslo
+                    "4627", // Nytt Askøy
+                    "3024", // Nytt Bærum
+                    "5001", // Trondheim
+                    "1103", // Stavanger
+                    "3403", // Nytt Hamar
+                    "3436", // Nytt Nord-Fron
+                    "3438", // Nytt Sør-Fron
+                    "3439"  // Nytt Ringebu
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(

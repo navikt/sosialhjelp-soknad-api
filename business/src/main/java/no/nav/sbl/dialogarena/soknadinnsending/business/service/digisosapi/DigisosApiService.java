@@ -110,8 +110,8 @@ public class DigisosApiService {
 
     }
 
-    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEkseternRefId, String token) {
-        return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, navEkseternRefId, token);
+    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String behandlingsId, String token) {
+        return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
@@ -200,6 +200,9 @@ public class DigisosApiService {
         log.info("Laster opp {}", filOpplastinger.size());
         String soknadJson = getSoknadJson(soknadUnderArbeid);
         String vedleggJson = getVedleggJson(soknadUnderArbeid);
+        log.info("Starter kryptering av filer for {}, skal sende til kommune {} med enhetsnummer {} og navenhetsnavn {}", behandlingsId,  kommunenummer,
+                soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getEnhetsnummer(),
+                soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
         String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, behandlingsId, token);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
