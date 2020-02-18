@@ -8,16 +8,17 @@
                 {{#manglerSamtykkeEllerSant "skatteetaten_samtykke" @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
                     {{#manglerSamtykkeEllerSant "skatteetaten_samtykke" false}}
                         <div class="verdi verdi--tekst">
-                            Vi mangler samtykke til å hente ned informasjon fra Skatteetaten
+                            Vi mangler samtykke til å hente informasjon fra Skatteetaten
                         </div>
                         {{#if @root.utvidetSoknad}}
+                            {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.gi_samtykke"}}}
                             {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_sporsmal" }}}
                             {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_info" }}}
                         {{/if}}
                     {{else}}
                         {{#if @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
                             <div class="verdi verdi--tekst">
-                                Kunne ikke hente utbetalinger fra Skatteetaten
+                                Vi fikk ikke hentet utbetalinger fra Skatteetaten
                             </div>
                         {{/if}}
                     {{/manglerSamtykkeEllerSant}}
@@ -25,8 +26,9 @@
                     {{#if @root.utvidetSoknad}}
                         {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
                         <div class="verdi verdi--tekst">
-                            Har gitt samtykke til å hente ned informasjon fra Skatteetaten
+                            Har gitt samtykke til å hente informasjon fra Skatteetaten
                         </div>
+                        {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.ta_bort_samtykke"}}}
                         {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_sporsmal" }}}
                         {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_info" }}}
                     {{/if}}
@@ -124,7 +126,7 @@
                     <ul class="svar-liste">
                         <li>
                             <span class="verdi verdi--tekst">
-                                Kunne ikke hente utbetalinger fra NAV
+                                Vi fikk ikke hentet utbetalinger fra NAV
                             </span>
                         </li>
                     </ul>
@@ -276,25 +278,27 @@
                     {{/if}}
                     {{#if @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
                         <div class="verdi verdi--tekst">
-                            Kunne ikke hente status fra Husbanken
+                            Vi fikk ikke hentet opplysninger fra Husbanken
                         </div>
                     {{/if}}
                     {{#manglerSamtykkeEllerSant "bostotte_samtykke" false}}
                         {{#hentOkonomiBekreftelse "bostotte"}}
                             {{#if verdi}}
                                 <div class="verdi verdi--tekst">
-                                    Vi mangler samtykke til å hente ned informasjon fra Husbanken
+                                    Vi mangler samtykke til å hente informasjon fra Husbanken
                                 </div>
                                 {{#if @root.utvidetSoknad}}
+                                    {{{settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke"}}}
                                     {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
                                     {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.tekst" }}}
                                 {{/if}}
                             {{/if}}
                         {{else}}
                             <div class="verdi verdi--tekst">
-                                Vi mangler samtykke til å hente ned informasjon fra Husbanken
+                                Vi mangler samtykke til å hente informasjon fra Husbanken
                             </div>
                             {{#if @root.utvidetSoknad}}
+                                {{{settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke"}}}
                                 {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
                                 {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.tekst" }}}
                             {{/if}}
@@ -303,12 +307,11 @@
                 {{else}}
                     {{#if @root.utvidetSoknad}}
                         <div class="verdi verdi--tekst">
-                            Har gitt samtykke til å hente ned informasjon fra Husbanken
+                            Har gitt samtykke til å hente informasjon fra Husbanken
                         </div>
+                        {{{settInnKnappTilgjengeligTekst "inntekt.bostotte.ta_bort_samtykke"}}}
                         {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
                         {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.tekst" }}}
-                    {{/if}}
-                    {{#if @root.utvidetSoknad}}
                         {{{ settInnInfotekst "inntekt.bostotte.infotekst.tekst" }}}
                     {{/if}}
                     {{#each utbetaling}}
