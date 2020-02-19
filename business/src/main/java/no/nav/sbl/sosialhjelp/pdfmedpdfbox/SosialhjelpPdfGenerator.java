@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -751,6 +752,9 @@ public class SosialhjelpPdfGenerator {
     }
 
     private List<JsonOkonomibekreftelse> hentBekreftelser(JsonOkonomi okonomi, String type) {
+        if (okonomi.getOpplysninger().getBekreftelse() == null) {
+            return Collections.emptyList();
+        }
         return okonomi.getOpplysninger().getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals(type))
                 .collect(Collectors.toList());
@@ -782,8 +786,6 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
 
         if (okonomi != null) {
-            //List<JsonOkonomiOpplysningUtbetaling> utbetalinger = okonomi.getOpplysninger().getUtbetaling();
-
             // Skatt
             pdf.skrivTekstBold(getTekst("utbetalinger.inntekt.skattbar.tittel"));
             if (utvidetSoknad) {
@@ -916,7 +918,9 @@ public class SosialhjelpPdfGenerator {
                 List<JsonOkonomiOpplysningUtbetaling> husbankenUtbetalinger = hentUtbetalinger(okonomi, "husbanken");
                 for (JsonOkonomiOpplysningUtbetaling husbanken : husbankenUtbetalinger) {
                     pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling"));
-                    pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.mottaker") + ": " + husbanken.getMottaker().value());
+                    if (husbanken.getMottaker() != null) {
+                        pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.mottaker") + ": " + husbanken.getMottaker().value());
+                    }
                     pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.utbetalingsdato") + ": " + husbanken.getUtbetalingsdato());
                     pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.belop") + ": " + husbanken.getNetto());
                 }
@@ -967,7 +971,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(formue.getTittel());
                             if (formue.getType().equals("annet")) {
                                 pdf.skrivTekst(getTekst("inntekt.eierandeler.true.type.annet.true.beskrivelse.label"));
-                                if (okonomi.getOpplysninger().getBeskrivelseAvAnnet().getVerdi() != null) {
+                                if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null && okonomi.getOpplysninger().getBeskrivelseAvAnnet().getVerdi() != null) {
                                     pdf.skrivTekst(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getVerdi());
                                 } else {
                                     skrivIkkeUtfylt(pdf);
@@ -1017,7 +1021,7 @@ public class SosialhjelpPdfGenerator {
                         pdf.skrivTekst(formue.getTittel());
                         if (formue.equals("annet")) {
                             pdf.skrivTekst(getTekst("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"));
-                            if (okonomi.getOpplysninger().getBeskrivelseAvAnnet().getSparing() != null) {
+                            if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null && okonomi.getOpplysninger().getBeskrivelseAvAnnet().getSparing() != null) {
                                 pdf.skrivTekst(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getSparing());
                             } else {
                                 skrivIkkeUtfylt(pdf);
@@ -1049,10 +1053,10 @@ public class SosialhjelpPdfGenerator {
                 JsonOkonomibekreftelse utbetalingBekreftelse = utbetalingBekreftelser.get(0);
                 pdf.skrivTekst(getTekst("inntekt.inntekter." + utbetalingBekreftelse.getVerdi()));
                 List<String> utbetalingAlternativer = new ArrayList<>(4);
-                utbetalingAlternativer.add("");
-                utbetalingAlternativer.add("");
-                utbetalingAlternativer.add("");
-                utbetalingAlternativer.add("");
+                utbetalingAlternativer.add("utbytte");
+                utbetalingAlternativer.add("salg");
+                utbetalingAlternativer.add("forsikring");
+                utbetalingAlternativer.add("annet");
 
                 if (utbetalingBekreftelse.getVerdi()) {
                     pdf.skrivTekst(getTekst("inntekt.inntekter.true.type.sporsmal"));
@@ -1061,7 +1065,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(utbetaling.getTittel());
                             if (utbetaling.getType().equals("annet")) {
                                 pdf.skrivTekst(getTekst("inntekt.eierandeler.true.type.annet.true.beskrivelse.label"));
-                                if (okonomi.getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling() != null) {
+                                if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null && okonomi.getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling() != null) {
                                     pdf.skrivTekst(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling());
                                 } else {
                                     skrivIkkeUtfylt(pdf);
