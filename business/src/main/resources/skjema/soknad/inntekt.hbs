@@ -5,16 +5,20 @@
             {{#with opplysninger}}
 
                 <h3>{{hentTekst "utbetalinger.inntekt.skattbar.tittel"}}</h3>
+                {{#if @root.utvidetSoknad}}
+                    {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_sporsmal" }}}
+                    <ul class="svar-liste">
+                        <li>
+                            {{{ hentTekst "utbetalinger.inntekt.skattbar.samtykke_info" }}}
+                        </li>
+                    </ul>
+                {{/if}}
                 {{#manglerSamtykkeEllerSant "skatteetaten_samtykke" @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
                     {{#manglerSamtykkeEllerSant "skatteetaten_samtykke" false}}
+                        <br />
                         <div class="verdi verdi--tekst">
                             Vi mangler samtykke til å hente informasjon fra Skatteetaten
                         </div>
-                        {{#if @root.utvidetSoknad}}
-                            {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.gi_samtykke"}}}
-                            {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_sporsmal" }}}
-                            {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_info" }}}
-                        {{/if}}
                     {{else}}
                         {{#if @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
                             <div class="verdi verdi--tekst">
@@ -22,15 +26,15 @@
                             </div>
                         {{/if}}
                     {{/manglerSamtykkeEllerSant}}
+                    {{#if @root.utvidetSoknad}}
+                        {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.gi_samtykke"}}}
+                    {{/if}}
                 {{else}}
                     {{#if @root.utvidetSoknad}}
-                        {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
                         <div class="verdi verdi--tekst">
                             Har gitt samtykke til å hente informasjon fra Skatteetaten
                         </div>
-                        {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.ta_bort_samtykke"}}}
-                        {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_sporsmal" }}}
-                        {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.samtykke_info" }}}
+                        {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
                     {{/if}}
                     {{#hvisUtbetalingFinnes "skatteetaten"}}
                         <h3>{{hentTekst "utbetalinger.skatt"}}</h3>
@@ -115,6 +119,9 @@
                             </span>
                         </li>
                     {{/hvisUtbetalingFinnes}}
+                    {{#if @root.utvidetSoknad}}
+                        {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.ta_bort_samtykke"}}}
+                    {{/if}}
                 {{/manglerSamtykkeEllerSant}}
 
                 <h3>{{hentTekst "navytelser.sporsmal"}}</h3>
@@ -247,71 +254,73 @@
                 {{/if}}
 
                 <h3>{{hentTekst "inntekt.bostotte.overskrift"}}</h3>
-                {{#manglerSamtykkeEllerSant "bostotte_samtykke" @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
-                    {{#hentOkonomiBekreftelse "bostotte"}}
-                        <h4>{{hentTekst "inntekt.bostotte.sporsmal.sporsmal"}}</h4>
-                        <li>
-                            <ul class="svar-liste">
-                                <li>
+                <h4>{{hentTekst "inntekt.bostotte.sporsmal.sporsmal"}}</h4>
+                {{#hentOkonomiBekreftelse "bostotte"}}
+                    <li>
+                        <ul class="svar-liste">
+                            <li>
                                 <span class="verdi verdi--radio">
                                     {{ hentTekst (concat 'inntekt.bostotte.sporsmal.' verdi) }}
                                 </span>
-                                </li>
-                            </ul>
-                            {{#if @root.utvidetSoknad}}
-                                {{#unless verdi}}
-                                    {{{settInnInfotekst "informasjon.husbanken.bostotte"}}}
-                                {{/unless}}
-                            {{/if}}
-                        </li>
-                    {{else}}
-                        <li>
+                            </li>
+                        </ul>
+                    </li>
+                {{else}}
+                    <li>
                         <span class="verdi verdi--ikkeUtfylt">
                             <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
                         </span>
-                        </li>
+                    </li>
+                {{/hentOkonomiBekreftelse}}
+                {{#if @root.utvidetSoknad}}
+                    <li>
+                        {{{hentSvaralternativer "inntekt.bostotte.sporsmal"}}}
+                    </li>
+                {{/if}}
+                {{#manglerSamtykkeEllerSant "bostotte_samtykke" @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
+                    {{#hentOkonomiBekreftelse "bostotte"}}
+                        {{#if @root.utvidetSoknad}}
+                            {{#unless verdi}}
+                                {{{settInnInfotekst "informasjon.husbanken.bostotte"}}}
+                            {{else}}
+                                {{#if @root.utvidetSoknad}}
+                                    {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
+                                    <ul class="svar-liste">
+                                        <li>
+                                            {{{ hentTekst "inntekt.bostotte.gi_samtykke.tekst" }}}
+                                        </li>
+                                    </ul>
+                                {{/if}}
+                                {{#manglerSamtykkeEllerSant "bostotte_samtykke" false}}
+                                    <div class="verdi verdi--tekst">
+                                        Vi mangler samtykke til å hente informasjon fra Husbanken
+                                    </div>
+                                    {{#if @root.utvidetSoknad}}
+                                        {{{ settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke" }}}
+                                    {{/if}}
+                                {{/manglerSamtykkeEllerSant}}
+                            {{/unless}}
+                        {{/if}}
                     {{/hentOkonomiBekreftelse}}
-                    {{#if @root.utvidetSoknad}}
-                        <li>
-                            {{{hentSvaralternativer "inntekt.bostotte.sporsmal"}}}
-                        </li>
-                    {{/if}}
                     {{#if @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
                         <div class="verdi verdi--tekst">
                             Vi fikk ikke hentet opplysninger fra Husbanken
                         </div>
+                        {{#if @root.utvidetSoknad}}
+                            {{{ settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke" }}}
+                        {{/if}}
                     {{/if}}
-                    {{#manglerSamtykkeEllerSant "bostotte_samtykke" false}}
-                        {{#hentOkonomiBekreftelse "bostotte"}}
-                            {{#if verdi}}
-                                <div class="verdi verdi--tekst">
-                                    Vi mangler samtykke til å hente informasjon fra Husbanken
-                                </div>
-                                {{#if @root.utvidetSoknad}}
-                                    {{{settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke"}}}
-                                    {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
-                                    {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.tekst" }}}
-                                {{/if}}
-                            {{/if}}
-                        {{else}}
-                            <div class="verdi verdi--tekst">
-                                Vi mangler samtykke til å hente informasjon fra Husbanken
-                            </div>
-                            {{#if @root.utvidetSoknad}}
-                                {{{settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke"}}}
-                                {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
-                                {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.tekst" }}}
-                            {{/if}}
-                        {{/hentOkonomiBekreftelse}}
-                    {{/manglerSamtykkeEllerSant}}
                 {{else}}
                     {{#if @root.utvidetSoknad}}
+                        {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
+                        <ul class="svar-liste">
+                            <li>
+                                {{{ hentTekst "inntekt.bostotte.gi_samtykke.tekst" }}}
+                            </li>
+                        </ul>
                         <div class="verdi verdi--tekst">
                             Har gitt samtykke til å hente informasjon fra Husbanken
                         </div>
-                        {{{settInnKnappTilgjengeligTekst "inntekt.bostotte.ta_bort_samtykke"}}}
-                        {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
-                        {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.tekst" }}}
                         {{{ settInnInfotekst "inntekt.bostotte.infotekst.tekst" }}}
                     {{/if}}
                     {{#each utbetaling}}
@@ -391,6 +400,9 @@
                             </li>
                         {{/hvisUtbetalingFinnes}}
                     {{/erListeTom}}
+                    {{#if @root.utvidetSoknad}}
+                        {{{ settInnKnappTilgjengeligTekst "inntekt.bostotte.ta_bort_samtykke" }}}
+                    {{/if}}
                 {{/manglerSamtykkeEllerSant}}
 
                 <h3>{{ hentTekst "inntekt.eierandeler.sporsmal" }}</h3>
