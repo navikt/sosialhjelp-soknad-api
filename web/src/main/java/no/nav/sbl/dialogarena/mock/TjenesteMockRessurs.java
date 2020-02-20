@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.PostAdresse;
+import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
+import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
@@ -26,6 +28,7 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.security.oidc.api.Unprotected;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +70,8 @@ public class TjenesteMockRessurs {
     private InnsendingService innsendingService;
     @Inject
     private FiksSender fiksSender;
+    @Inject
+    private Adressekodeverk adressekodeverk;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
@@ -251,6 +256,17 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter mock familieforhold med data: " + jsonPerson);
+        try {
+            Person person = mapper.readValue(jsonPerson, Person.class);
+            if (person.getStatsborgerskap() != null
+                    && person.getStatsborgerskap().getLand() != null
+                    && person.getStatsborgerskap().getLand().getValue() != null) {
+                String landkode = person.getStatsborgerskap().getLand().getValue();
+                ((StandardKodeverk) adressekodeverk).leggTilLandskodeForMock(landkode);
+            }
+        } catch (JsonProcessingException e) {
+            logger.warn("Klarte ikke å legge inn nytt land i kodeverk mock :-O");
+        }
         PersonMock.setPersonMedFamilieforhold(jsonPerson);
         clearCache();
     }
