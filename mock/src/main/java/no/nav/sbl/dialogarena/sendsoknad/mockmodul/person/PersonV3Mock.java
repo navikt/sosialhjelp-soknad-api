@@ -33,6 +33,7 @@ public class PersonV3Mock {
             String kommunenr = node.at("/person/bostedsadresse/strukturertAdresse/kommunenummer").textValue();
             String husnr = node.at("/person/bostedsadresse/strukturertAdresse/husnummer").textValue();
             String kontonummer = node.at("/person/bankkonto/bankkonto/bankkontonummer").textValue();
+            String statborgerskap = node.at("/person/statsborgerskap/landkode/value").textValue();
 
             Bruker defaultPerson = getDefaultPerson();
             Integer husnummer;
@@ -50,6 +51,7 @@ public class PersonV3Mock {
                     )
             );
             defaultPerson.setBankkonto(new BankkontoNorge().withBankkonto(new Bankkontonummer().withBankkontonummer(kontonummer)));
+            defaultPerson.setStatsborgerskap(new Statsborgerskap().withLand(new Landkoder().withValue(statborgerskap)));
 
             responses.put(OidcFeatureToggleUtils.getUserId(), defaultPerson);
 

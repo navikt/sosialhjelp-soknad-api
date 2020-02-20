@@ -68,6 +68,7 @@ public class PdfGenerator {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         this.currentStream.close();
         this.document.save(baos);
+        this.document.close();
         byte[] pdf;
         pdf = baos.toByteArray();
         return pdf;

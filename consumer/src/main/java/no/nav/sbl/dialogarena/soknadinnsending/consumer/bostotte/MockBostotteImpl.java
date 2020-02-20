@@ -16,6 +16,7 @@ public class MockBostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(MockBostotteImpl.class);
 
     private static Map<String, BostotteDto> responses = new HashMap<>();
+    private static Map<String, Boolean> personnummereSomSkalFeile = new HashMap<>();
 
     public static void setBostotteData(String fnr, String bostotteJson) {
         ObjectMapper mapper = new ObjectMapper();
@@ -33,8 +34,21 @@ public class MockBostotteImpl implements Bostotte {
         }
     }
 
+    public static void settPersonnummerSomSkalFeile(String fnr, boolean skalFeile) {
+        Boolean funnet = personnummereSomSkalFeile.get(fnr);
+        if (funnet == null){
+            personnummereSomSkalFeile.put(fnr, skalFeile);
+        } else {
+            personnummereSomSkalFeile.replace(fnr, skalFeile);
+        }
+    }
+
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til) {
+        Boolean feilet = personnummereSomSkalFeile.get(personIdentifikator);
+        if(feilet != null && feilet) {
+            return null;
+        }
         BostotteDto response = responses.get(personIdentifikator);
         if (response != null){
             return response;
