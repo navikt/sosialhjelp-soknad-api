@@ -16,8 +16,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import org.apache.commons.lang3.LocaleUtils;
@@ -71,6 +73,7 @@ public class SosialhjelpPdfGenerator {
             leggTilFamilie(pdf, data.getFamilie(), utvidetSoknad);
             leggTilBosituasjon(pdf, data.getBosituasjon(), utvidetSoknad);
             leggTilInntektOgFormue(pdf, data.getOkonomi(), jsonInternalSoknad.getSoknad(), utvidetSoknad);
+            leggTilUtgifterOgGjeld(pdf, data.getOkonomi(), jsonInternalSoknad.getSoknad(), utvidetSoknad);
 
             return pdf.finish();
         } catch (IOException e) {
@@ -1093,6 +1096,117 @@ public class SosialhjelpPdfGenerator {
             pdf.addBlankLine();
         }
     }
+
+    private void leggTilUtgifterOgGjeld(PdfGenerator pdf, JsonOkonomi okonomi, JsonSoknad soknad, boolean utvidetSoknad) throws IOException {
+        pdf.skrivH4Bold(getTekst("utgifterbolk.tittel"));
+        pdf.addBlankLine();
+
+        if (okonomi != null) {
+            // Boutgifter
+            pdf.skrivTekstBold(getTekst("utgifter.boutgift.sporsmal"));
+            if (utvidetSoknad) {
+                skrivInfotekst(pdf, "utgifter.boutgift.infotekst.tekst");
+            }
+            List<JsonOkonomibekreftelse> boutgifterBekreftelser = hentBekreftelser(okonomi, "boutgifter");
+            if (!boutgifterBekreftelser.isEmpty()) {
+                JsonOkonomibekreftelse boutgifterBekreftelse = boutgifterBekreftelser.get(0);
+
+                pdf.skrivTekst(getTekst("utgifter.boutgift." + boutgifterBekreftelse.getVerdi()));
+                if (boutgifterBekreftelse.getVerdi()) {
+                    pdf.skrivTekst(getTekst("utgifter.boutgift.true.type.sporsmal"));
+
+                    List<String> boutgiftAlternativer = new ArrayList<>(6);
+                    boutgiftAlternativer.add("husleie");
+                    boutgiftAlternativer.add("strom");
+                    boutgiftAlternativer.add("kommunalAvgift");
+                    boutgiftAlternativer.add("oppvarming");
+                    boutgiftAlternativer.add("boliglanAvdrag"); // boliglanRenter er ikke tatt med her, da det kun er ett valg for disse i frontend
+                    boutgiftAlternativer.add("annenBoutgift");
+
+                    for (JsonOkonomiOpplysningUtgift opplysningUtgift : okonomi.getOpplysninger().getUtgift()) {
+                        if (boutgiftAlternativer.contains(opplysningUtgift.getType())) {
+                            pdf.skrivTekst(getTekst("utgifter.boutgift.true.type." + opplysningUtgift.getType()));
+                        }
+                    }
+                    for (JsonOkonomioversiktUtgift oversiktUtgift : okonomi.getOversikt().getUtgift()) {
+                        if (boutgiftAlternativer.contains(oversiktUtgift.getType())) {
+                            pdf.skrivTekst(getTekst("utgifter.boutgift.true.type." + oversiktUtgift.getType()));
+                        }
+                    }
+                }
+            } else {
+                skrivIkkeUtfylt(pdf);
+            }
+            if (utvidetSoknad) {
+                List<String> boutgifterSvaralternativer = new ArrayList<>(2);
+                boutgifterSvaralternativer.add("utgifter.boutgift.true");
+                boutgifterSvaralternativer.add("utgifter.boutgift.false");
+                skrivSvaralternativer(pdf, boutgifterSvaralternativer);
+                pdf.skrivTekst("Under: " + getTekst("utgifter.boutgift.true"));
+                List<String> boutgifterJaSvaralternativer = new ArrayList<>();
+                boutgifterJaSvaralternativer.add("utgifter.boutgift.true.type.husleie");
+                boutgifterJaSvaralternativer.add("utgifter.boutgift.true.type.strom");
+                boutgifterJaSvaralternativer.add("utgifter.boutgift.true.type.kommunalAvgift");
+                boutgifterJaSvaralternativer.add("utgifter.boutgift.true.type.oppvarming");
+                boutgifterJaSvaralternativer.add("utgifter.boutgift.true.type.boliglanAvdrag");
+                boutgifterJaSvaralternativer.add("utgifter.boutgift.true.type.annenBoutgift");
+                skrivSvaralternativer(pdf, boutgifterJaSvaralternativer);
+            }
+            pdf.addBlankLine();
+
+            // Forsørgerplikt
+            if (soknad.getData().getFamilie() != null && soknad.getData().getFamilie().getForsorgerplikt() != null && soknad.getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt().getVerdi()) {
+                pdf.skrivTekstBold(getTekst("utgifter.barn.sporsmal"));
+                if (utvidetSoknad) {
+                    skrivInfotekst(pdf, "utgifter.barn.infotekst.tekst");
+                }
+                List<JsonOkonomibekreftelse> barneutgifterBekreftelser = hentBekreftelser(okonomi, "barneutgifter");
+                if (!barneutgifterBekreftelser.isEmpty()) {
+                    JsonOkonomibekreftelse barneutgiftBekreftelse = barneutgifterBekreftelser.get(0);
+
+                    pdf.skrivTekst(getTekst("utgifter.barn." + barneutgiftBekreftelse.getVerdi()));
+
+                    if (barneutgiftBekreftelse.getVerdi()) {
+                        List<String> utgifterBarnAlternativer = new ArrayList<>(5);
+                        utgifterBarnAlternativer.add("barnFritidsaktiviteter");
+                        utgifterBarnAlternativer.add("barnehage");
+                        utgifterBarnAlternativer.add("sfo");
+                        utgifterBarnAlternativer.add("barnTannregulering");
+                        utgifterBarnAlternativer.add("annenBarneutgift");
+
+                        for (JsonOkonomiOpplysningUtgift opplysningUtgift : okonomi.getOpplysninger().getUtgift()) {
+                            if (utgifterBarnAlternativer.contains(opplysningUtgift.getType())) {
+                                pdf.skrivTekst(getTekst("utgifter.barn.true.utgifter." + opplysningUtgift.getType()));
+                            }
+                        }
+                        for (JsonOkonomioversiktUtgift oversiktUtgift : okonomi.getOversikt().getUtgift()) {
+                            if (utgifterBarnAlternativer.contains(oversiktUtgift.getType())) {
+                                pdf.skrivTekst(getTekst("utgifter.barn.true.utgifter." + oversiktUtgift.getType()));
+                            }
+                        }
+                    }
+
+                } else {
+                    skrivIkkeUtfylt(pdf);
+                }
+                if (utvidetSoknad) {
+                    List<String> utgifterBarnSvaralternativer = new ArrayList<>(2);
+                    utgifterBarnSvaralternativer.add("utgifter.barn.true");
+                    utgifterBarnSvaralternativer.add("utgifter.barn.false");
+                    skrivSvaralternativer(pdf, utgifterBarnSvaralternativer);
+                    pdf.skrivTekst("Under: " + getTekst("utgifter.barn.true"));
+                    List<String> utgifterBarnJaSvaralternativer = new ArrayList<>(5);
+                    utgifterBarnJaSvaralternativer.add("utgifter.barn.true.utgifter.barnFritidsaktiviteter"); // Fritid
+                    utgifterBarnJaSvaralternativer.add("utgifter.barn.true.utgifter.barnehage"); // Barnehage
+                    utgifterBarnJaSvaralternativer.add("utgifter.barn.true.utgifter.sfo"); // SFO
+                    utgifterBarnJaSvaralternativer.add("utgifter.barn.true.utgifter.barnTannregulering"); // Regulering
+                    utgifterBarnJaSvaralternativer.add("utgifter.barn.true.utgifter.annenBarneutgift"); // Annet
+                    skrivSvaralternativer(pdf, utgifterBarnJaSvaralternativer);
+                }
+            }
+        }
+    }
+    
 
     private void skrivTekstMedGuard(PdfGenerator pdf, String tekst, String key) throws IOException {
         if (tekst != null) {
