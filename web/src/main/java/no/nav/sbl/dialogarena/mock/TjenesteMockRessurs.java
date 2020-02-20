@@ -303,4 +303,17 @@ public class TjenesteMockRessurs {
         fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
         MockBostotteImpl.setBostotteData(fnr, bostotteJson);
     }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/bostotte_feiler")
+    public void setBostotte(@RequestBody Boolean feilet, @QueryParam("fnr") String fnr) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        if(feilet != null) {
+            fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+            MockBostotteImpl.setFeilerStatus(fnr, feilet);
+        }
+    }
 }
