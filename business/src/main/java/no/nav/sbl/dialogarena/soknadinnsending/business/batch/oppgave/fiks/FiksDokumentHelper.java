@@ -80,12 +80,7 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
-        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(internalSoknad, "/");
-        try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, false);
-        } catch (Exception e) {
-            logger.warn("Kunne ikke generere Soknad.pdf", e);
-        }
+        byte[] soknadPdf = sosialhjelpPdfGenerator.generate(internalSoknad, false);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadPdf);
         return new Dokument()
@@ -98,12 +93,7 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
-        try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, true);
-        } catch (Exception e) {
-            logger.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
-        }
+        byte[] juridiskPdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
         return new Dokument()
