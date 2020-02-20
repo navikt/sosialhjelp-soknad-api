@@ -1360,10 +1360,10 @@ public class SosialhjelpPdfGenerator {
                         pdf.skrivTekst(fil.getFilnavn());
                     }
                 }
-                if (vedlegg.getStatus().equals("VedleggKreves")) {
+                if (vedlegg.getStatus() != null && vedlegg.getStatus().equals("VedleggKreves")) {
                     pdf.skrivTekst(getTekst("vedlegg.oppsummering.ikkelastetopp"));
                 }
-                if (vedlegg.getStatus().equals("VedleggAlleredeSendt")) {
+                if (vedlegg.getStatus() != null && vedlegg.getStatus().equals("VedleggAlleredeSendt")) {
                     pdf.skrivTekst(getTekst("opplysninger.vedlegg.alleredelastetopp"));
                 }
             }
