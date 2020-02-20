@@ -1206,6 +1206,7 @@ public class SosialhjelpPdfGenerator {
             }
         }
     }
+    
 
     private void skrivTekstMedGuard(PdfGenerator pdf, String tekst, String key) throws IOException {
         if (tekst != null) {
