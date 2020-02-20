@@ -307,13 +307,13 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/bostotte_feiler")
-    public void setBostotte(@RequestBody Boolean feilet, @QueryParam("fnr") String fnr) {
+    public void setBostotte(@RequestBody Boolean skalFeile, @QueryParam("fnr") String fnr) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        if(feilet != null) {
+        if(skalFeile != null) {
             fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
-            MockBostotteImpl.setFeilerStatus(fnr, feilet);
+            MockBostotteImpl.settPersonnummerSomSkalFeile(fnr, skalFeile);
         }
     }
 }

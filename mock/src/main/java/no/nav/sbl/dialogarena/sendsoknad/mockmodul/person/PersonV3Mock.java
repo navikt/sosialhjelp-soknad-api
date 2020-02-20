@@ -88,7 +88,7 @@ public class PersonV3Mock {
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
         Landkoder landkoder = new Landkoder();
-        landkoder.setValue("USA");
+        landkoder.setValue("NOR");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
 
