@@ -22,6 +22,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
@@ -42,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
@@ -303,6 +305,11 @@ public class SosialhjelpPdfGeneratorTest {
                                         .withUtbetalingsdato("31.08.2019")
                                         .withNetto(6000.0)
                             ))
+                    )
+                    .withOversikt(new JsonOkonomioversikt()
+                        .withInntekt(Collections.emptyList())
+                        .withFormue(Collections.emptyList())
+                        .withUtgift(Collections.emptyList())
                     )
                 );
 
