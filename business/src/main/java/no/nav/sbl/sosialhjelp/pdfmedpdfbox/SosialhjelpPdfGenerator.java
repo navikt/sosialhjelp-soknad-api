@@ -395,9 +395,8 @@ public class SosialhjelpPdfGenerator {
             // Sivilstatus
             JsonSivilstatus sivilstatus = familie.getSivilstatus();
 
-            boolean ektefelleHarDiskresjonskode = sivilstatus.getEktefelleHarDiskresjonskode();
-
             if (sivilstatus != null) {
+                boolean ektefelleHarDiskresjonskode = sivilstatus.getEktefelleHarDiskresjonskode();
                 JsonKilde kilde = sivilstatus.getKilde();
 
                 // System
