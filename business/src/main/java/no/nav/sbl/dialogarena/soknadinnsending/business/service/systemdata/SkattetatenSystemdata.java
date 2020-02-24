@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
@@ -30,10 +31,13 @@ public class SkattetatenSystemdata {
     public static final Logger log = getLogger(SkattetatenSystemdata.class);
 
     @Inject
-    SkattbarInntektService skattbarInntektService;
+    private SkattbarInntektService skattbarInntektService;
 
     @Inject
-    OrganisasjonService organisasjonService;
+    private OrganisasjonService organisasjonService;
+
+    @Inject
+    private TextService textService;
 
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
@@ -53,6 +57,8 @@ public class SkattetatenSystemdata {
             fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
             soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
         }
+        // Dette kan påvirke hvilke forventinger vi har til arbeidsforhold:
+        ArbeidsforholdSystemdata.updateVedleggForventninger(soknadUnderArbeid.getJsonInternalSoknad(), textService);
     }
 
     private void fjernGamleUtbetalinger(List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger) {
