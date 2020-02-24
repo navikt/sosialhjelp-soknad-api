@@ -401,7 +401,6 @@ public class SosialhjelpPdfGenerator {
             JsonSivilstatus sivilstatus = familie.getSivilstatus();
 
             if (sivilstatus != null) {
-                boolean ektefelleHarDiskresjonskode = sivilstatus.getEktefelleHarDiskresjonskode();
                 JsonKilde kilde = sivilstatus.getKilde();
 
                 // System
@@ -411,14 +410,14 @@ public class SosialhjelpPdfGenerator {
                     if (status == JsonSivilstatus.Status.GIFT) {
                         if (utvidetSoknad) {
                             pdf.skrivTekst(getTekst("system.familie.sivilstatus"));
-                            if (!ektefelleHarDiskresjonskode) {
+                            if (sivilstatus.getEktefelleHarDiskresjonskode() != null && !sivilstatus.getEktefelleHarDiskresjonskode()) {
                                 pdf.skrivTekst(getTekst("system.familie.sivilstatus.label"));
                             }
                         } else {
                             pdf.skrivTekst(getTekst("familie.sivilstatus." + status.toString()));
                         }
 
-                        if (ektefelleHarDiskresjonskode) {
+                        if (sivilstatus.getEktefelleHarDiskresjonskode() != null && sivilstatus.getEktefelleHarDiskresjonskode()) {
                             pdf.skrivTekstBold(getTekst("system.familie.sivilstatus.ikkeTilgang.label"));
                             pdf.skrivTekst("Ektefelle/partner har diskresjonskode");
                         } else {
@@ -594,8 +593,7 @@ public class SosialhjelpPdfGenerator {
                             JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
                             if (erFolkeregistrertSammen != null) {
                                 pdf.skrivTekst(getTekst("familierelasjon.samme_folkeregistrerte_adresse"));
-                                Boolean erFolkeregistrertSammenVerdi = erFolkeregistrertSammen.getVerdi();
-                                if (erFolkeregistrertSammenVerdi) {
+                                if (erFolkeregistrertSammen.getVerdi() != null && erFolkeregistrertSammen.getVerdi()) {
                                     pdf.skrivTekstMedInnrykk("Ja", INNRYKK_1);
                                     pdf.addBlankLine();
                                     leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
@@ -1375,56 +1373,6 @@ public class SosialhjelpPdfGenerator {
         }
     }
 
-    private void leggTilEktefelle(PdfGenerator pdf, JsonSivilstatus sivilstatus, boolean utvidetSoknad) throws IOException {
-        JsonEktefelle ektefelle = sivilstatus.getEktefelle();
-        Boolean ektefelleHarDiskresjonskode = sivilstatus.getEktefelleHarDiskresjonskode();
-
-        pdf.addBlankLine();
-        pdf.skrivTekstBold(getTekst("familie.sivilstatus.gift.ektefelle.sporsmal"));
-
-        if (!(ektefelleHarDiskresjonskode != null && ektefelleHarDiskresjonskode)) {
-            if (ektefelle != null) {
-
-                // Navn
-                JsonNavn navn = ektefelle.getNavn();
-                String fullstendigNavn = getJsonNavnTekst(navn);
-                pdf.skrivTekst(
-                        getTekst("familie.sivilstatus.gift.navn.label") + ": " + fullstendigNavn
-                );
-
-                // Fødselsnummer
-                String personIdentifikator = ektefelle.getPersonIdentifikator();
-                skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
-
-                // Bor sammen?
-                pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal"));
-                Boolean borSammenMed = sivilstatus.getBorSammenMed();
-                if (borSammenMed != null) {
-                    if (borSammenMed) {
-                        pdf.skrivTekstMedInnrykk(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.true"), INNRYKK_1);
-                    } else {
-                        pdf.skrivTekstMedInnrykk(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.false"), INNRYKK_1);
-                    }
-
-                    if(utvidetSoknad){
-                        List<String> svaralternativer = new ArrayList<>(2);
-                        svaralternativer.add("familie.sivilstatus.gift.ektefelle.borsammen.true");
-                        svaralternativer.add("familie.sivilstatus.gift.ektefelle.borsammen.false");
-                        skrivSvaralternativer(pdf, svaralternativer);
-                        pdf.addBlankLine();
-                    }
-                } else {
-                    pdf.skrivTekstKursiv(IKKE_UTFYLT);
-                }
-
-            } else {
-                pdf.skrivTekstKursiv(IKKE_UTFYLT);
-            }
-        } else {
-            pdf.skrivTekst(getTekst("system.familie.sivilstatus.diskresjonskode"));
-        }
-    }
-
     private String getJsonNavnTekst(JsonNavn navn) {
         String fullstendigNavn = "";
         if (navn != null) {
@@ -1468,28 +1416,6 @@ public class SosialhjelpPdfGenerator {
 
     private void skrivIkkeUtfylt(PdfGenerator pdf) throws IOException {
         pdf.skrivTekst(getTekst("oppsummering.ikkeutfylt"));
-    }
-
-    private void skrivUtSivilstatusAlternativer(PdfGenerator pdf, boolean utvidetSoknad) throws IOException{
-        if(utvidetSoknad) {
-            List<String> svaralternativer = new ArrayList<>(6);
-            svaralternativer.add("system.familie.sivilstatus.enke");
-            svaralternativer.add("system.familie.sivilstatus.gift");
-            svaralternativer.add("system.familie.sivilstatus.samboer");
-            svaralternativer.add("system.familie.sivilstatus.separert");
-            svaralternativer.add("system.familie.sivilstatus.skilt");
-            svaralternativer.add("system.familie.sivilstatus.ugift");
-            skrivSvaralternativer(pdf, svaralternativer);
-        }
-    }
-
-    private void skrivUtDeltBostedBarnAlternativer(PdfGenerator pdf, boolean utvidetSoknad) throws IOException{
-        if(utvidetSoknad){
-            List<String> svaralternativer = new ArrayList<>(2);
-            svaralternativer.add("system.familie.barn.true.barn.deltbosted.true");
-            svaralternativer.add("system.familie.barn.true.barn.deltbosted.false");
-            skrivSvaralternativer(pdf, svaralternativer);
-        }
     }
 
     private void skrivUtBarnebidragAlternativer(PdfGenerator pdf, boolean utvidetSoknad) throws IOException{
