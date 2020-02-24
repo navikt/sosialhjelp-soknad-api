@@ -152,6 +152,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0425", "974602970")    // Åsnes
             .put("0135", "974569906")    // Råde
             .put("1002", "921060440")    // Nye Lindesnes
+            .put("5302", "974607395")    // Færder
 
             .build();
 
@@ -333,6 +334,7 @@ public class KommuneTilNavEnhetMapper {
                     "5427", // Nytt Skjervøy
                     "3418", // Nytt Åsnes
                     "3017"  // Nytt Råde
+                    "3811"  // Færder
             ));
 
 
