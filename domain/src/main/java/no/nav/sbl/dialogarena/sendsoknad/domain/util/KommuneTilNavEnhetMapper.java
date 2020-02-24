@@ -333,7 +333,7 @@ public class KommuneTilNavEnhetMapper {
                     "5428", // Nytt Nordreisa
                     "5427", // Nytt Skjervøy
                     "3418", // Nytt Åsnes
-                    "3017"  // Nytt Råde
+                    "3017", // Nytt Råde
                     "3811"  // Færder
             ));
 
