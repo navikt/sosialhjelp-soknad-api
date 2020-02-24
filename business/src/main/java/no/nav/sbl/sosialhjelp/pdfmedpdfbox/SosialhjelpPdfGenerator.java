@@ -709,7 +709,7 @@ public class SosialhjelpPdfGenerator {
             JsonBosituasjon.Botype botype = bosituasjon.getBotype();
             if (botype != null) {
                 String tekst = getTekst("bosituasjon." + botype.value());
-                if (tekst.isEmpty()) {
+                if (tekst == null || tekst.isEmpty()) {
                         pdf.skrivTekst(getTekst("bosituasjon.annet.botype." + botype.value()));
                 } else {
                     pdf.skrivTekst(tekst);
