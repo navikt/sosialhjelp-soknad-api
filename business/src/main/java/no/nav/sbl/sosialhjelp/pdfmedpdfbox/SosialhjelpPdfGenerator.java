@@ -401,7 +401,6 @@ public class SosialhjelpPdfGenerator {
             JsonSivilstatus sivilstatus = familie.getSivilstatus();
 
             if (sivilstatus != null) {
-                boolean ektefelleHarDiskresjonskode = sivilstatus.getEktefelleHarDiskresjonskode();
                 JsonKilde kilde = sivilstatus.getKilde();
 
                 // System
@@ -411,14 +410,14 @@ public class SosialhjelpPdfGenerator {
                     if (status == JsonSivilstatus.Status.GIFT) {
                         if (utvidetSoknad) {
                             pdf.skrivTekst(getTekst("system.familie.sivilstatus"));
-                            if (!ektefelleHarDiskresjonskode) {
+                            if (sivilstatus.getEktefelleHarDiskresjonskode() != null && !sivilstatus.getEktefelleHarDiskresjonskode()) {
                                 pdf.skrivTekst(getTekst("system.familie.sivilstatus.label"));
                             }
                         } else {
                             pdf.skrivTekst(getTekst("familie.sivilstatus." + status.toString()));
                         }
 
-                        if (ektefelleHarDiskresjonskode) {
+                        if (sivilstatus.getEktefelleHarDiskresjonskode() != null && sivilstatus.getEktefelleHarDiskresjonskode()) {
                             pdf.skrivTekstBold(getTekst("system.familie.sivilstatus.ikkeTilgang.label"));
                             pdf.skrivTekst("Ektefelle/partner har diskresjonskode");
                         } else {
