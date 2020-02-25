@@ -40,6 +40,7 @@ import org.springframework.context.annotation.Import;
         AdresseSystemdata.class,
         FamilieSystemdata.class,
         BostotteSystemdata.class,
+        SkattetatenSystemdata.class,
         PdfGeneratorConfig.class
 })
 public class BusinessConfig {
