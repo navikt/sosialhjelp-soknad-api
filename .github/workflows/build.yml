@@ -14,10 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/cache@v1
-          with:
-            path: ~/.m2/repository
-            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-            restore-keys: ${{ runner.os }}-maven-
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
       - name: Login to GitHub package registry
         run: |
           echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_REPOSITORY} --password-stdin docker.pkg.github.com
