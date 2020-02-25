@@ -205,7 +205,6 @@ public class SkattbarInntektService {
     }
 
     private SkattbarInntekt hentOpplysninger(Invocation.Builder request) {
-        log.info("Skatt: Henter skatteopplysninger");
         try (Response response = request.get()) {
 
             if (log.isDebugEnabled()) {
@@ -214,18 +213,7 @@ public class SkattbarInntektService {
             }
 
             if (response.getStatus() == 200) {
-                SkattbarInntekt skattbarInntekt = response.readEntity(SkattbarInntekt.class);
-                if (skattbarInntekt == null) {
-                    log.info("Skatt: skattbarInntekt var null");
-                } else if (skattbarInntekt.oppgaveInntektsmottaker == null) {
-                    log.info("Skatt: skattbarInntekt.oppgaveInntektsmottaker var null");
-                } else if (skattbarInntekt.oppgaveInntektsmottaker.size() == 0) {
-                    log.info("Skatt: skattbarInntekt.oppgaveInntektsmottaker var tom (size 0)");
-                } else {
-                    log.info("Skatt: skattbarInntekt.oppgaveInntektsmottaker var ikke tom");
-                }
-
-                return skattbarInntekt;
+                return response.readEntity(SkattbarInntekt.class);
             } else if (response.getStatus() == 404) {
                 // Ingen funnet
                 return new SkattbarInntekt();
