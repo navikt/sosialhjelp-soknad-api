@@ -44,6 +44,7 @@ public class SkattetatenSystemdata implements Systemdata {
         fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
 
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
+        log.info("skattemelding samtykke: {}", soknadUnderArbeid.getHarSkattemeldingSamtykke());
         if(soknadUnderArbeid.getHarSkattemeldingSamtykke()) {
             List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
             if (systemUtbetalingerSkattbar == null) {
