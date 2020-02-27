@@ -14,6 +14,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import static java.util.Collections.singletonList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class DkifConsumerImpl implements DkifConsumer {
@@ -71,6 +72,6 @@ public class DkifConsumerImpl implements DkifConsumer {
                 .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken()) // brukers token (?)
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
-                .header("Nav-Personidenter", ident);
+                .header("Nav-Personidenter", singletonList(ident));
     }
 }
