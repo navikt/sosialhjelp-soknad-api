@@ -38,15 +38,15 @@ public class DkifService {
             return null;
         }
         if (digitalKontaktinfoBolk.getFeil() != null) {
-            log.warn("Dkif.api - response inneholder feil - {}", digitalKontaktinfoBolk.getFeil().getMelding());
+            log.warn("Dkif.api - response inneholder feil - {}", digitalKontaktinfoBolk.getFeil().get(0).getMelding());
             return null;
         }
-        if (digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().getMobiltelefonnummer() == null) {
+        if (digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().get(0).getMobiltelefonnummer() == null) {
             log.warn("Dkif.api - kontaktinfo er null, eller inneholder ikke mobiltelefonnummer");
             return null;
         }
-        log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().getMobiltelefonnummer());
-        return digitalKontaktinfoBolk.getKontaktinfo().getMobiltelefonnummer();
+        log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().get(0).getMobiltelefonnummer());
+        return digitalKontaktinfoBolk.getKontaktinfo().get(0).getMobiltelefonnummer();
     }
 
     private String hentMobiltelefonnummerWS(String ident) {

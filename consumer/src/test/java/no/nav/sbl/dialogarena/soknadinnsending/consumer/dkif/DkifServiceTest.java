@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
@@ -60,7 +61,7 @@ public class DkifServiceTest {
 
     @Test
     public void skalReturnereNullHvis_DigitalKontaktinfoBolk_Kontaktinfo_Mobiltelefonnummer_ErNull() {
-        when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(new DigitalKontaktinfo(null), null));
+        when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(singletonList(new DigitalKontaktinfo(null)), null));
 
         String response = service.hentMobiltelefonnummer("ident");
 
@@ -69,7 +70,7 @@ public class DkifServiceTest {
 
     @Test
     public void skalReturnereNullHvis_DigitalKontaktinfoBolk_Feil_ErSatt() {
-        when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(null, new Feil("feil feil feil")));
+        when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(null, singletonList(new Feil("feil feil feil"))));
 
         String response = service.hentMobiltelefonnummer("ident");
 
@@ -78,7 +79,7 @@ public class DkifServiceTest {
 
     private DigitalKontaktinfoBolk createDigitalKontaktinfoBolk() {
         return new DigitalKontaktinfoBolk(
-                new DigitalKontaktinfo(mobiltelefonnummer),
+                singletonList(new DigitalKontaktinfo(mobiltelefonnummer)),
                 null
         );
     }
