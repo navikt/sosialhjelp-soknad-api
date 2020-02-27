@@ -45,8 +45,13 @@ public class DkifService {
             log.warn("Dkif.api - kontaktinfo er null");
             return null;
         }
-        log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer());
-        return digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer();
+        if (digitalKontaktinfoBolk.getKontaktinfo().containsKey(ident)) {
+            log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer());
+            return digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer();
+        } else {
+            log.info("Dkif.api - kontaktinfo inneholer ikke key={}. Keys={}, values={}", ident, digitalKontaktinfoBolk.getKontaktinfo().keySet(), digitalKontaktinfoBolk.getKontaktinfo().values());
+            return null;
+        }
     }
 
     private String hentMobiltelefonnummerWS(String ident) {
