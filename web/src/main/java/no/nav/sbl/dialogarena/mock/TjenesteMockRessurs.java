@@ -15,6 +15,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumerMock;
@@ -72,6 +73,8 @@ public class TjenesteMockRessurs {
     private FiksSender fiksSender;
     @Inject
     private Adressekodeverk adressekodeverk;
+    @Inject
+    private SkattbarInntektService skattbarInntektService;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
@@ -279,6 +282,18 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
+        clearCache();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/skattetaten")
+    public void setSkattUtbetalinger(@RequestBody String jsonWSSkattUtbetaling, @QueryParam("fnr") String fnr) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+        skattbarInntektService.setMockData(fnr, jsonWSSkattUtbetaling);
         clearCache();
     }
 

@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.Forskuddstrekk;
@@ -39,6 +40,7 @@ public class SkattbarInntektService {
     public Function<Sokedata, RestCallContext> restCallContextSelector;
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
     public String mockFil = "/mockdata/InntektOgSkatt.json";
+    public Map<String, SkattbarInntekt> mockData = new HashMap<>();
 
 
     public SkattbarInntektService() {
@@ -57,7 +59,7 @@ public class SkattbarInntektService {
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
-            return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(mockRespons()));
+            return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(mockRespons(fnummer)));
         }
 
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata))));
@@ -229,7 +231,11 @@ public class SkattbarInntektService {
         }
     }
 
-    private SkattbarInntekt mockRespons() {
+    private SkattbarInntekt mockRespons(String fnr) {
+        SkattbarInntekt skattbarInntekt = mockData.get(fnr);
+        if(skattbarInntekt != null) {
+            return skattbarInntekt;
+        }
         try {
             InputStream resourceAsStream = this.getClass().getResourceAsStream(mockFil);
             if (resourceAsStream == null) {
@@ -243,6 +249,16 @@ public class SkattbarInntektService {
         }
     }
 
+    public void setMockData(String fnr, String jsonWSSkattUtbetaling) {
+        try {
+            SkattbarInntekt skattbarInntekt = new ObjectMapper()
+                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                    .readValue(jsonWSSkattUtbetaling, SkattbarInntekt.class);
+            mockData.put(fnr, skattbarInntekt);
+        } catch (JsonProcessingException e) {
+            log.error("", e);
+        }
+    }
 
     public static class Sokedata {
         //Builder med personidentifikator og fom tom, brukes som parametere til rest kallet
