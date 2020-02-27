@@ -45,7 +45,6 @@ public class DkifService {
             log.warn("Dkif.api - kontaktinfo er null, eller mobiltelefonnummer er null");
             return null;
         }
-        log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer());
         return digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer();
     }
 
