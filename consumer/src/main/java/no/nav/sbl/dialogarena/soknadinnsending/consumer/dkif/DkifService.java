@@ -41,8 +41,8 @@ public class DkifService {
             log.warn("Dkif.api - response inneholder feil - {}", digitalKontaktinfoBolk.getFeil().get(ident).getMelding());
             return null;
         }
-        if (digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().isEmpty() || digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer() == null) {
-            log.warn("Dkif.api - kontaktinfo er null, eller inneholder ikke mobiltelefonnummer");
+        if (digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().isEmpty()) {
+            log.warn("Dkif.api - kontaktinfo er null");
             return null;
         }
         log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer());
