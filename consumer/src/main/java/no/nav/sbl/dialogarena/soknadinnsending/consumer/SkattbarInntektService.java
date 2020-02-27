@@ -40,7 +40,8 @@ public class SkattbarInntektService {
     public Function<Sokedata, RestCallContext> restCallContextSelector;
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
     public String mockFil = "/mockdata/InntektOgSkatt.json";
-    public Map<String, SkattbarInntekt> mockData = new HashMap<>();
+    private Map<String, SkattbarInntekt> mockData = new HashMap<>();
+    private Set<String> mockDataFeiler = new HashSet<>();
 
 
     public SkattbarInntektService() {
@@ -232,6 +233,9 @@ public class SkattbarInntektService {
     }
 
     private SkattbarInntekt mockRespons(String fnr) {
+        if(mockDataFeiler.contains(fnr)) {
+            return null;
+        }
         SkattbarInntekt skattbarInntekt = mockData.get(fnr);
         if(skattbarInntekt != null) {
             return skattbarInntekt;
@@ -250,13 +254,23 @@ public class SkattbarInntektService {
     }
 
     public void setMockData(String fnr, String jsonWSSkattUtbetaling) {
-        try {
-            SkattbarInntekt skattbarInntekt = new ObjectMapper()
-                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                    .readValue(jsonWSSkattUtbetaling, SkattbarInntekt.class);
-            mockData.put(fnr, skattbarInntekt);
-        } catch (JsonProcessingException e) {
-            log.error("", e);
+        mockData.remove(fnr);
+        if(!jsonWSSkattUtbetaling.equalsIgnoreCase("{}")) {
+            try {
+                SkattbarInntekt skattbarInntekt = new ObjectMapper()
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                        .readValue(jsonWSSkattUtbetaling, SkattbarInntekt.class);
+                mockData.put(fnr, skattbarInntekt);
+            } catch (JsonProcessingException e) {
+                log.error("", e);
+            }
+        }
+    }
+
+    public void setMockSkalFeile(String fnr, boolean skalFeile) {
+        mockDataFeiler.remove(fnr);
+        if(skalFeile) {
+            mockDataFeiler.add(fnr);
         }
     }
 

@@ -299,6 +299,18 @@ public class TjenesteMockRessurs {
 
     @POST
     @Consumes(APPLICATION_JSON)
+    @Path("/skattetaten_feiler")
+    public void setSkattUtbetalingerFeiler(@RequestBody boolean skalFeile, @QueryParam("fnr") String fnr) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+        skattbarInntektService.setMockSkalFeile(fnr, skalFeile);
+        clearCache();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
     @Path("/norg")
     public void setNorg(@RequestBody String rsNorgEnhetMap) {
         if (!isTillatMockRessurs()) {
