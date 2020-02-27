@@ -69,7 +69,7 @@ public class DkifConsumerImpl implements DkifConsumer {
         WebTarget b = client.target(endpoint);
 
         return b.request()
-                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken())
+                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken()) // brukers token (?)
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .header("Nav-Personidenter", singletonList(ident));
