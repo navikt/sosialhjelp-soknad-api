@@ -15,7 +15,7 @@ public class DigitalKontaktinfoBolk {
     @JsonCreator
     public DigitalKontaktinfoBolk(
             @JsonProperty("kontaktinfo") Map<String, DigitalKontaktinfo> kontaktinfo,
-            @JsonProperty("feil") Map<String,Feil> feil) {
+            @JsonProperty("feil") Map<String, Feil> feil) {
         this.kontaktinfo = kontaktinfo;
         this.feil = feil;
     }
