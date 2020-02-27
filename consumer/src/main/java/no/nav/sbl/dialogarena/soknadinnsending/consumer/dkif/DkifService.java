@@ -41,17 +41,12 @@ public class DkifService {
             log.warn("Dkif.api - response inneholder feil - {}", digitalKontaktinfoBolk.getFeil().get(ident).getMelding());
             return null;
         }
-        if (digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().isEmpty()) {
-            log.warn("Dkif.api - kontaktinfo er null");
+        if (digitalKontaktinfoBolk.getKontaktinfo() == null || digitalKontaktinfoBolk.getKontaktinfo().isEmpty() || !digitalKontaktinfoBolk.getKontaktinfo().containsKey(ident) || digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer() == null) {
+            log.warn("Dkif.api - kontaktinfo er null, eller mobiltelefonnummer er null");
             return null;
         }
-        if (digitalKontaktinfoBolk.getKontaktinfo().containsKey(ident)) {
-            log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer());
-            return digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer();
-        } else {
-            log.info("Dkif.api - kontaktinfo inneholer ikke key={}. Keys={}, values={}", ident, digitalKontaktinfoBolk.getKontaktinfo().keySet(), digitalKontaktinfoBolk.getKontaktinfo().values());
-            return null;
-        }
+        log.info("Hentet mobiltelefonnummer: {}", digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer());
+        return digitalKontaktinfoBolk.getKontaktinfo().get(ident).getMobiltelefonnummer();
     }
 
     private String hentMobiltelefonnummerWS(String ident) {

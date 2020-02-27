@@ -43,9 +43,7 @@ public class DkifConsumerImpl implements DkifConsumer {
     public DigitalKontaktinfoBolk hentDigitalKontaktinfo(String ident) {
         Invocation.Builder request = lagRequest(endpoint + "v1/personer/kontaktinformasjon", ident);
         try {
-            DigitalKontaktinfoBolk digitalKontaktinfoBolk = request.get(DigitalKontaktinfoBolk.class);
-            logger.info("dkif.api response: {}", digitalKontaktinfoBolk.toString());
-            return digitalKontaktinfoBolk;
+            return request.get(DigitalKontaktinfoBolk.class);
         } catch (NotAuthorizedException e) {
             logger.warn("Dkif.api - 401 Unauthorized - {}", e.getMessage());
             return null;

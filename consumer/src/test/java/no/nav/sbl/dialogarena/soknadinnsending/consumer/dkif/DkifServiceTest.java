@@ -25,7 +25,7 @@ public class DkifServiceTest {
     @InjectMocks
     private DkifService service;
 
-    private String ident = "ident";
+    private String ident = "99988877777";
     private String mobiltelefonnummer = "12345678";
 
     @Before
