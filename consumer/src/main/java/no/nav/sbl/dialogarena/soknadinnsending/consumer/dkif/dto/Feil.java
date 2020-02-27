@@ -17,4 +17,11 @@ public class Feil {
     public String getMelding() {
         return melding;
     }
+
+    @Override
+    public String toString() {
+        return "Feil{" +
+                "melding='" + melding + '\'' +
+                '}';
+    }
 }

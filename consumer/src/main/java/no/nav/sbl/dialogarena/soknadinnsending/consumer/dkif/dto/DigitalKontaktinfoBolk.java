@@ -25,4 +25,12 @@ public class DigitalKontaktinfoBolk {
     public Feil getFeil() {
         return feil;
     }
+
+    @Override
+    public String toString() {
+        return "DigitalKontaktinfoBolk{" +
+                "kontaktinfo=" + kontaktinfo +
+                ", feil=" + feil +
+                '}';
+    }
 }

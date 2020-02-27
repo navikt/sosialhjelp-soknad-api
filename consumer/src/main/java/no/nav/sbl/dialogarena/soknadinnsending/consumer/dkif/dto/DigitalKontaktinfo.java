@@ -17,4 +17,11 @@ public class DigitalKontaktinfo {
     public String getMobiltelefonnummer() {
         return mobiltelefonnummer;
     }
+
+    @Override
+    public String toString() {
+        return "DigitalKontaktinfo{" +
+                "mobiltelefonnummer='" + mobiltelefonnummer + '\'' +
+                '}';
+    }
 }
