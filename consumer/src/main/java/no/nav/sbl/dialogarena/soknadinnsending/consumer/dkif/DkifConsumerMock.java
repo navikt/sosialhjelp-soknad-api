@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontakti
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.singletonMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,23 +29,23 @@ public class DkifConsumerMock {
     public static DigitalKontaktinfoBolk getOrDefaultResponse(String fnr) {
         DigitalKontaktinfoBolk response = responses.get(fnr);
         if (response == null) {
-            response = defaultDigitalKontaktinfo();
+            response = defaultDigitalKontaktinfo(fnr);
             responses.put(fnr, response);
         }
 
         return response;
     }
 
-    private static DigitalKontaktinfoBolk defaultDigitalKontaktinfo() {
-        return new DigitalKontaktinfoBolk(new DigitalKontaktinfo(telefonnummer), null);
+    private static DigitalKontaktinfoBolk defaultDigitalKontaktinfo(String fnr) {
+        return new DigitalKontaktinfoBolk(singletonMap(fnr,new DigitalKontaktinfo(telefonnummer)), null);
     }
 
     public static void setTelefonnummer(String telefonnummer, String fnr) {
-        DigitalKontaktinfoBolk response = new DigitalKontaktinfoBolk(new DigitalKontaktinfo(telefonnummer), null);
+        DigitalKontaktinfoBolk response = new DigitalKontaktinfoBolk(singletonMap(fnr, new DigitalKontaktinfo(telefonnummer)), null);
         responses.put(fnr, response);
     }
 
     public static void resetTelefonnummer(String fnr) {
-        responses.replace(fnr, defaultDigitalKontaktinfo());
+        responses.replace(fnr, defaultDigitalKontaktinfo(fnr));
     }
 }

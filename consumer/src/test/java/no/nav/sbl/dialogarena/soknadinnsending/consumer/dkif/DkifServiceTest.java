@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
@@ -24,6 +25,7 @@ public class DkifServiceTest {
     @InjectMocks
     private DkifService service;
 
+    private String ident = "ident";
     private String mobiltelefonnummer = "12345678";
 
     @Before
@@ -35,7 +37,7 @@ public class DkifServiceTest {
     public void skalHenteMobiltelefonnummer() {
         when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(createDigitalKontaktinfoBolk());
 
-        String response = service.hentMobiltelefonnummer("ident");
+        String response = service.hentMobiltelefonnummer(ident);
 
         assertEquals(mobiltelefonnummer, response);
     }
@@ -44,7 +46,7 @@ public class DkifServiceTest {
     public void skalReturnereNullHvis_DigitalKontaktinfoBolk_ErNull() {
         when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(null);
 
-        String response = service.hentMobiltelefonnummer("ident");
+        String response = service.hentMobiltelefonnummer(ident);
 
         assertNull(response);
     }
@@ -53,32 +55,32 @@ public class DkifServiceTest {
     public void skalReturnereNullHvis_DigitalKontaktinfoBolk_Kontaktinfo_ErNull() {
         when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(null, null));
 
-        String response = service.hentMobiltelefonnummer("ident");
+        String response = service.hentMobiltelefonnummer(ident);
 
         assertNull(response);
     }
 
     @Test
     public void skalReturnereNullHvis_DigitalKontaktinfoBolk_Kontaktinfo_Mobiltelefonnummer_ErNull() {
-        when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(new DigitalKontaktinfo(null), null));
+        when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(singletonMap(ident, new DigitalKontaktinfo(null)), null));
 
-        String response = service.hentMobiltelefonnummer("ident");
+        String response = service.hentMobiltelefonnummer(ident);
 
         assertNull(response);
     }
 
     @Test
     public void skalReturnereNullHvis_DigitalKontaktinfoBolk_Feil_ErSatt() {
-        when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(null, new Feil("feil feil feil")));
+        when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(null, singletonMap(ident, new Feil("feil feil feil"))));
 
-        String response = service.hentMobiltelefonnummer("ident");
+        String response = service.hentMobiltelefonnummer(ident);
 
         assertNull(response);
     }
 
     private DigitalKontaktinfoBolk createDigitalKontaktinfoBolk() {
         return new DigitalKontaktinfoBolk(
-                new DigitalKontaktinfo(mobiltelefonnummer),
+                singletonMap(ident, new DigitalKontaktinfo(mobiltelefonnummer)),
                 null
         );
     }

@@ -4,25 +4,27 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DigitalKontaktinfoBolk {
 
-    private DigitalKontaktinfo kontaktinfo;
-    private Feil feil;
+    private Map<String, DigitalKontaktinfo> kontaktinfo;
+    private Map<String, Feil> feil;
 
     @JsonCreator
     public DigitalKontaktinfoBolk(
-            @JsonProperty("kontaktinfo") DigitalKontaktinfo kontaktinfo,
-            @JsonProperty("feil") Feil feil) {
+            @JsonProperty("kontaktinfo") Map<String, DigitalKontaktinfo> kontaktinfo,
+            @JsonProperty("feil") Map<String,Feil> feil) {
         this.kontaktinfo = kontaktinfo;
         this.feil = feil;
     }
 
-    public DigitalKontaktinfo getKontaktinfo() {
+    public Map<String, DigitalKontaktinfo> getKontaktinfo() {
         return kontaktinfo;
     }
 
-    public Feil getFeil() {
+    public Map<String, Feil> getFeil() {
         return feil;
     }
 
