@@ -158,6 +158,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1002", "921060440")    // Nye Lindesnes
             .put("5302", "974607395")    // Færder
             .put("0704", "974586002")    // Tønsberg
+            .put("5301", "974542811")    // Holmestrand
 
             .build();
 
@@ -344,7 +345,8 @@ public class KommuneTilNavEnhetMapper {
                     "4225", // Lyngdal
                     "4206", // Farsund
                     "4228", // Sirdal
-                    "3803"  // Tønsberg
+                    "3803", // Tønsberg
+                    "3802"  // Holmestrand
             ));
 
 
