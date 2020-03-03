@@ -21,7 +21,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -33,16 +37,42 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.MediaType;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.URI;
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -138,15 +168,14 @@ public class DigisosApiImpl implements DigisosApi {
     }
 
     @Override
-    public String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token) {
-        log.info("Starter kryptering av filer, skal sende til {} {}", kommunenr, navEkseternRefId);
+    public String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String behandlingsId, String token) {
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         String digisosId;
         try {
             X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
             digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
-                    .collect(Collectors.toList()), kommunenr, navEkseternRefId, token);
+                    .collect(Collectors.toList()), kommunenr, behandlingsId, token);
 
             waitForFutures(krypteringFutureList);
 
@@ -277,7 +306,7 @@ public class DigisosApiImpl implements DigisosApi {
                 String errorResponse = EntityUtils.toString(response.getEntity());
                 String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
                 if (fiksDigisosId != null) {
-                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Ruter brukeren til innsynssiden. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
+                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
                     return fiksDigisosId;
                 }
 
@@ -288,7 +317,7 @@ public class DigisosApiImpl implements DigisosApi {
                         errorResponse));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
-            log.info("Sendte inn søknad og fikk digisosid: {}", digisosId);
+            log.info("Sendte inn søknad {} og fikk digisosid: {}", behandlingsId, digisosId);
             return digisosId;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet", behandlingsId), e);

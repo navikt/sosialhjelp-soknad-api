@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.tidTilTimestamp;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.timestampTilTid;
 
 @Component
 public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadMetadataRepository {
@@ -39,6 +41,8 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         m.innsendtDato = timestampTilTid(rs.getTimestamp("innsendtdato"));
         return m;
     };
+
+    private RowMapper<Integer> antallRowMapper = (rs, rowNum) -> rs.getInt("antall");
 
     @Inject
     public void setDS(DataSource ds) {
@@ -158,6 +162,16 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     public List<SoknadMetadata> hentBehandlingskjede(String behandlingsId) {
         String select = "SELECT * FROM soknadmetadata WHERE TILKNYTTETBEHANDLINGSID = ?";
         return getJdbcTemplate().query(select, soknadMetadataRowMapper, behandlingsId);
+    }
+
+    @Override
+    public int hentAntallInnsendteSoknaderEtterTidspunkt(String fnr, LocalDateTime tidspunkt) {
+        String select = "SELECT count(*) as antall FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?";
+        try {
+            return getJdbcTemplate().queryForObject(select, antallRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidspunkt));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override

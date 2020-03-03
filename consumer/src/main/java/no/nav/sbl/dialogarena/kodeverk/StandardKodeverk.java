@@ -4,16 +4,16 @@ import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.springframework.scheduling.annotation.Scheduled;
-
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
@@ -25,13 +25,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.Collator;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 import static javax.xml.bind.JAXBContext.newInstance;
-import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.KOMMUNE;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.LANDKODE;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.POSTNUMMER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static org.joda.time.DateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -89,6 +96,19 @@ public class StandardKodeverk implements Kodeverk {
         String landFraKodeverk = hentFoersteTermnavnFraKodenavnIKodeverk(landkode, LANDKODE.toString());
 
         return formaterLand(landFraKodeverk);
+    }
+
+    public void leggTilLandskodeForMock(String landkode) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        String landFraKodeverk = hentFoersteTermnavnFraKodenavnIKodeverk(landkode, LANDKODE.toString());
+        if(landFraKodeverk == null) {
+            hentKodeverk(LANDKODE.toString()).getKode()
+                    .add(new XMLKode()
+                            .withNavn(landkode)
+                            .withTerm(new XMLTerm().withNavn(landkode)));
+        }
     }
 
     private String formaterLand(String land) {

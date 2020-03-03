@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
@@ -8,7 +8,15 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilg
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkontonummer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bostedsadresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Diskresjonskoder;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Matrikkeladresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Postnummer;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 import org.junit.Test;

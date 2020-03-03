@@ -4,7 +4,11 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
@@ -18,6 +22,8 @@ public class STSConsumer {
 
     private Client client;
     private String endpoint;
+
+    private FssToken cachedFssToken;
 
     public STSConsumer(Client client, String endpoint) {
         if (isTillatMockRessurs()) {
@@ -42,29 +48,42 @@ public class STSConsumer {
     }
 
     public FssToken getFSSToken() {
-        Invocation.Builder request = lagRequest();
-
-        try {
-            return request.get(FssToken.class);
-        } catch (BadRequestException e) {
-            logger.warn("STS - 400 bad request", e);
-            throw new ApplicationException("STS - 400 bad request. Endpoint=" + endpoint, e);
-        } catch (NotAuthorizedException e) {
-            logger.warn("STS - 401 unauthorized", e);
-            throw new ApplicationException("STS - 401 Unauthorized. Endpoint=" + endpoint, e);
-        } catch (ForbiddenException e) {
-            logger.warn("STS - 401 unauthorized", e);
-            throw new ApplicationException("STS - 403 Forbidden. Endpoint=" + endpoint, e);
-        } catch (NotFoundException e) {
-            logger.warn("STS - 401 unauthorized", e);
-            throw new ApplicationException("STS - 404 Not Found. Endpoint=" + endpoint, e);
-        } catch (ServerErrorException e) {
-            logger.warn("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
-            throw new TjenesteUtilgjengeligException("STS", e);
-        } catch (Exception e) {
-            logger.warn("Noe feil skjedde ved henting av token fra STS i FSS.");
-            throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
+        if (shouldRenew(cachedFssToken)) {
+            logger.info("Henter nytt STSToken");
+            Invocation.Builder request = lagRequest();
+            try {
+                FssToken fssToken = request.get(FssToken.class);
+                cachedFssToken = fssToken;
+                return fssToken;
+            } catch (BadRequestException e) {
+                logger.warn("STS - 400 Bad Request", e);
+                throw new ApplicationException("STS - 400 bad request. Endpoint=" + endpoint, e);
+            } catch (NotAuthorizedException e) {
+                logger.warn("STS - 401 unauthorized", e);
+                throw new ApplicationException("STS - 401 Unauthorized. Endpoint=" + endpoint, e);
+            } catch (ForbiddenException e) {
+                logger.warn("STS - 403 Forbidden", e);
+                throw new ApplicationException("STS - 403 Forbidden. Endpoint=" + endpoint, e);
+            } catch (NotFoundException e) {
+                logger.warn("STS - 404 Not Found", e);
+                throw new ApplicationException("STS - 404 Not Found. Endpoint=" + endpoint, e);
+            } catch (ServerErrorException e) {
+                logger.warn("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+                throw new TjenesteUtilgjengeligException("STS", e);
+            } catch (Exception e) {
+                logger.warn("Noe feil skjedde ved henting av token fra STS i FSS.");
+                throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
+            }
         }
+        logger.info("Tar i bruk cached STSToken");
+        return cachedFssToken;
+    }
+
+    private boolean shouldRenew(FssToken fssToken) {
+        if (fssToken == null) {
+            return true;
+        }
+        return fssToken.isExpired();
     }
 
     private Invocation.Builder lagRequest() {

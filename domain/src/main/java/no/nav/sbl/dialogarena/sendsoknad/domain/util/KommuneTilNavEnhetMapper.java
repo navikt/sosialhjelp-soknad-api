@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 
@@ -19,6 +21,10 @@ public class KommuneTilNavEnhetMapper {
             .put("3050", "Rollag")    // Flesberg (nytt kommunenummer)
             .put("3052", "Rollag")    // Nore og Uvdal (nytt kommunenummer)
             .put("1151", "Haugesund") // Utsira (samme kommunenummer etter 2020)
+            .put("4207", "Kvinesdal") // Flekkefjord
+            .put("4225", "Kvinesdal") // Lyngdal
+            .put("4206", "Kvinesdal") // Farsund
+            .put("4228", "Kvinesdal") // Sirdal
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -82,7 +88,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1127", "988052310")    // Randaberg-Kvitsøy
             .put("0412", "976639618")    // Ringsaker
             .put("0426", "974550342")    // Våler (Hedmark)
-            .put("1037", "964964076")    // Kvinesdal
+            .put("1037", "964964076")    // Kvinesdal, Flekkefjord, Lyngdal, Farsund, Sirdal
             .put("0106", "993393851")    // Fredrikstad
             .put("0605", "976820835")    // Ringerike
             .put("0418", "964950768")    // Nord-Odal
@@ -152,6 +158,9 @@ public class KommuneTilNavEnhetMapper {
             .put("0425", "974602970")    // Åsnes
             .put("0135", "974569906")    // Råde
             .put("1002", "921060440")    // Nye Lindesnes
+            .put("5302", "974607395")    // Færder
+            .put("0704", "974586002")    // Tønsberg
+            .put("5301", "974542811")    // Holmestrand
 
             .build();
 
@@ -194,19 +203,21 @@ public class KommuneTilNavEnhetMapper {
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(
             asList(
-                    "0701",
-                    "0703",
-                    "0717",
-                    "1201",
-                    "0301",
-                    "1247",
-                    "0219",
-                    "5001",
-                    "1103",
-                    "0403",
-                    "0516",
-                    "0519",
-                    "0520"
+                    "3801", // Nytt Horten
+                    "0701", // Gammel Horten (1988-2020)
+                    "0703", // Gammel Horten (1858-1988)
+                    "0717", // Gammel Horten (1838-1858) (Borre)
+                    "4601", // Nytt Bergen
+                    "0301", // Oslo
+                    "1201", // Mock-data Oslo
+                    "4627", // Nytt Askøy
+                    "3024", // Nytt Bærum
+                    "5001", // Trondheim
+                    "1103", // Stavanger
+                    "3403", // Nytt Hamar
+                    "3436", // Nytt Nord-Fron
+                    "3438", // Nytt Sør-Fron
+                    "3439"  // Nytt Ringebu
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
@@ -330,7 +341,14 @@ public class KommuneTilNavEnhetMapper {
                     "5428", // Nytt Nordreisa
                     "5427", // Nytt Skjervøy
                     "3418", // Nytt Åsnes
-                    "3017"  // Nytt Råde
+                    "3017", // Nytt Råde
+                    "3811", // Færder
+                    "4207", // Flekkefjord
+                    "4225", // Lyngdal
+                    "4206", // Farsund
+                    "4228", // Sirdal
+                    "3803", // Tønsberg
+                    "3802"  // Holmestrand
             ));
 
 

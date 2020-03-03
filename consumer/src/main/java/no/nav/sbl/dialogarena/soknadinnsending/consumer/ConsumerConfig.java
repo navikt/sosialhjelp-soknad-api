@@ -1,17 +1,27 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.ArbeidsforholdRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.AdresseSokRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DigisosApiRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DkifWSConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.FiksWSConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.KodeverkWSConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.NorgRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonV3WSConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonWSConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.UtbetalingWSConfig;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -31,7 +41,8 @@ import static java.lang.System.setProperty;
         NorgService.class,
         UtbetalingService.class,
         SkattbarInntektService.class,
-        OrganisasjonService.class
+        OrganisasjonService.class,
+        DkifService.class
 })
 
 public class ConsumerConfig {
@@ -55,7 +66,8 @@ public class ConsumerConfig {
             UtbetalingWSConfig.class,
             OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,
-            STSTokenRestConfig.class
+            STSTokenRestConfig.class,
+            DkifRestConfig.class
     })
     public static class WsServices {
     }

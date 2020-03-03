@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.Forskuddstrekk;
@@ -22,7 +23,13 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,6 +46,8 @@ public class SkattbarInntektService {
     public Function<Sokedata, RestCallContext> restCallContextSelector;
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
     public String mockFil = "/mockdata/InntektOgSkatt.json";
+    private Map<String, SkattbarInntekt> mockData = new HashMap<>();
+    private Set<String> mockDataFeiler = new HashSet<>();
 
 
     public SkattbarInntektService() {
@@ -57,7 +66,7 @@ public class SkattbarInntektService {
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
-            return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(mockRespons()));
+            return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(mockRespons(fnummer)));
         }
 
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata))));
@@ -213,7 +222,6 @@ public class SkattbarInntektService {
             }
 
             if (response.getStatus() == 200) {
-
                 return response.readEntity(SkattbarInntekt.class);
             } else if (response.getStatus() == 404) {
                 // Ingen funnet
@@ -230,7 +238,14 @@ public class SkattbarInntektService {
         }
     }
 
-    private SkattbarInntekt mockRespons() {
+    private SkattbarInntekt mockRespons(String fnr) {
+        if(mockDataFeiler.contains(fnr)) {
+            return null;
+        }
+        SkattbarInntekt skattbarInntekt = mockData.get(fnr);
+        if(skattbarInntekt != null) {
+            return skattbarInntekt;
+        }
         try {
             InputStream resourceAsStream = this.getClass().getResourceAsStream(mockFil);
             if (resourceAsStream == null) {
@@ -244,6 +259,26 @@ public class SkattbarInntektService {
         }
     }
 
+    public void setMockData(String fnr, String jsonWSSkattUtbetaling) {
+        mockData.remove(fnr);
+        if(!jsonWSSkattUtbetaling.equalsIgnoreCase("{}")) {
+            try {
+                SkattbarInntekt skattbarInntekt = new ObjectMapper()
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                        .readValue(jsonWSSkattUtbetaling, SkattbarInntekt.class);
+                mockData.put(fnr, skattbarInntekt);
+            } catch (JsonProcessingException e) {
+                log.error("", e);
+            }
+        }
+    }
+
+    public void setMockSkalFeile(String fnr, boolean skalFeile) {
+        mockDataFeiler.remove(fnr);
+        if(skalFeile) {
+            mockDataFeiler.add(fnr);
+        }
+    }
 
     public static class Sokedata {
         //Builder med personidentifikator og fom tom, brukes som parametere til rest kallet

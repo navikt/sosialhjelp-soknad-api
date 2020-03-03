@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,11 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -80,6 +83,10 @@ public class HenvendelseService {
 
     public List<SoknadMetadata> hentBehandlingskjede(String behandlingskjedeId) {
         return soknadMetadataRepository.hentBehandlingskjede(behandlingskjedeId);
+    }
+
+    public int hentAntallInnsendteSoknaderEtterTidspunkt(String fnr, LocalDateTime tidspunkt) {
+        return soknadMetadataRepository.hentAntallInnsendteSoknaderEtterTidspunkt(fnr, tidspunkt);
     }
 
     public void oppdaterMetadataVedAvslutningAvSoknad(String behandlingsId, SoknadMetadata.VedleggMetadataListe vedlegg, SoknadUnderArbeid soknadUnderArbeid, boolean brukerDigisosApi) {
