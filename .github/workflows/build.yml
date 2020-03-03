@@ -15,9 +15,9 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/cache@v1.1.2
         with:
-          path: ~/.m2/repository
+          path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+          restore-keys: ${{ runner.os }}-maven-cache
       - name: Login to GitHub package registry
         run: |
           echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_REPOSITORY} --password-stdin docker.pkg.github.com
