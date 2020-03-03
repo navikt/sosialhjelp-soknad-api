@@ -82,6 +82,6 @@
     "START_NORG_WITHMOCK": "false",
     "EREG_API_ENABLED": "true",
     "AAREG_API_ENABLED": "true",
-    "DKIF_API_ENABLED": "false"
+    "DKIF_API_ENABLED": "true"
   }
 }
