@@ -1,7 +1,10 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonSikkerhetsbegrensing;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
@@ -27,7 +30,7 @@ public class EpostService {
     public DigitalKontaktinfo hentInfoFraDKIF(String ident) {
         try {
             return mapResponsTilKontaktInfo(dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident)));
-        }catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
+        } catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
             logger.error("Person ikke tilgjengelig i dkif: {}", e.getMessage());
         } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
             logger.info("Kunne ikke hente kontaktinformasjon fra dkif: {}", e.getMessage());

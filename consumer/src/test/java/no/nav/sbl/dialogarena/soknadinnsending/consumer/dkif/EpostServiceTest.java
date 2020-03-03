@@ -1,9 +1,13 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.*;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonSikkerhetsbegrensing;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSMobiltelefonnummer;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import org.junit.Test;
