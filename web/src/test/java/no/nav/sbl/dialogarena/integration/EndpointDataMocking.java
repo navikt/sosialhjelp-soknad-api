@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.integration;
 
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Foedselsdato;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
@@ -26,7 +26,6 @@ public class EndpointDataMocking {
     public static void setupMockWsEndpointData() throws Exception {
         mockPersonEndpoint();
         mockPersonV3Endpoint();
-        mockDkifService();
     }
 
     static void mockPersonEndpoint() throws Exception {
@@ -66,15 +65,5 @@ public class EndpointDataMocking {
             hentPersonPersonIkkeFunnet.printStackTrace();
         }
 
-    }
-
-    static void mockDkifService() throws Exception {
-        DigitalKontaktinformasjonV1 dkif = IntegrationConfig.getMocked("dkifService");
-        when(dkif.hentDigitalKontaktinformasjon(any())).thenReturn(
-                new WSHentDigitalKontaktinformasjonResponse()
-                        .withDigitalKontaktinformasjon(new WSKontaktinformasjon()
-                                .withEpostadresse(new WSEpostadresse().withValue(""))
-                        )
-        );
     }
 }

@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
@@ -15,7 +14,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestC
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.AdresseSokRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DigisosApiRestConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DkifWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.FiksWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.KodeverkWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.NorgRestConfig;
@@ -33,7 +31,6 @@ import static java.lang.System.setProperty;
 @EnableCaching
 @Import({
         PersonService.class,
-        EpostService.class,
         PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
@@ -55,7 +52,6 @@ public class ConsumerConfig {
     @Configuration
     @Profile("!integration")
     @Import({
-            DkifWSConfig.class,
             DigisosApiRestConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class,

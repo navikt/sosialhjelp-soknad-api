@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfo;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.Feil;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,11 +26,6 @@ public class DkifServiceTest {
 
     private String ident = "99988877777";
     private String mobiltelefonnummer = "12345678";
-
-    @Before
-    public void setUp() {
-        System.setProperty("dkif_api_enabled", "true");
-    }
 
     @Test
     public void skalHenteMobiltelefonnummer() {
