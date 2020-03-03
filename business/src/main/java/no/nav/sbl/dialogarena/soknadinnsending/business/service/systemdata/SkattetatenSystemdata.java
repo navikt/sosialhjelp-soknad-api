@@ -37,7 +37,6 @@ public class SkattetatenSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
-        log.info("Skatt: updateSystemdataIn");
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();
@@ -45,7 +44,6 @@ public class SkattetatenSystemdata implements Systemdata {
         fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
 
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
-        log.info("Skatt: skattemelding samtykke: {}", soknadUnderArbeid.getHarSkattemeldingSamtykke());
         if(soknadUnderArbeid.getHarSkattemeldingSamtykke()) {
             List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
             if (systemUtbetalingerSkattbar == null) {

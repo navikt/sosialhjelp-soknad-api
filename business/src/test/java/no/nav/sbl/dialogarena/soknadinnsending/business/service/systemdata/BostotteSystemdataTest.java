@@ -70,7 +70,7 @@ public class BostotteSystemdataTest {
         BigDecimal netto2 = BigDecimal.valueOf(20000);
         LocalDate utbetalingsDato = LocalDate.now();
         BostotteDto bostotteDto = new BostotteDto()
-                .withUtbetaling(new UtbetalingerDto().with(mottaker, netto1, utbetalingsDato.minusMonths(1), BostotteRolle.HOVEDPERSON))
+                .withUtbetaling(new UtbetalingerDto().with(mottaker, netto1, utbetalingsDato.minusDays(32), BostotteRolle.HOVEDPERSON))
                 .withUtbetaling(new UtbetalingerDto().with(mottaker, netto2, utbetalingsDato, BostotteRolle.HOVEDPERSON));
 
         // Mock:
@@ -246,8 +246,8 @@ public class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
                 .withBostotteSamtykke(true);
-        UtbetalingerDto utbetalingerDto1 = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusMonths(1), BostotteRolle.HOVEDPERSON);
-        UtbetalingerDto utbetalingerDto2 = new UtbetalingerDto().with(BostotteMottaker.HUSSTAND, BigDecimal.valueOf(20000), LocalDate.now().minusMonths(1), BostotteRolle.BIPERSON);
+        UtbetalingerDto utbetalingerDto1 = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusDays(32), BostotteRolle.HOVEDPERSON);
+        UtbetalingerDto utbetalingerDto2 = new UtbetalingerDto().with(BostotteMottaker.HUSSTAND, BigDecimal.valueOf(20000), LocalDate.now().minusDays(32), BostotteRolle.BIPERSON);
         BostotteDto bostotteDto = new BostotteDto()
                 .withUtbetaling(utbetalingerDto1)
                 .withUtbetaling(utbetalingerDto2);
@@ -272,7 +272,7 @@ public class BostotteSystemdataTest {
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
                 .withBostotteSamtykke(true);
         SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusMonths(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
+        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusDays(32), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
         BostotteDto bostotteDto = new BostotteDto()
                 .withSak(sakerDto1)
                 .withSak(sakerDto2);
@@ -325,7 +325,7 @@ public class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
                 .withBostotteSamtykke(false);
-        UtbetalingerDto utbetalingerDto = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusMonths(1), BostotteRolle.HOVEDPERSON);
+        UtbetalingerDto utbetalingerDto = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusDays(32), BostotteRolle.HOVEDPERSON);
         BostotteDto bostotteDto = new BostotteDto()
                 .withUtbetaling(utbetalingerDto);
 
@@ -346,7 +346,7 @@ public class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid1 = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
                 .withBostotteSamtykke(true);
-        UtbetalingerDto utbetalingerDto = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusMonths(1), BostotteRolle.HOVEDPERSON);
+        UtbetalingerDto utbetalingerDto = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusDays(32), BostotteRolle.HOVEDPERSON);
         BostotteDto bostotteDto = new BostotteDto()
                 .withUtbetaling(utbetalingerDto);
 

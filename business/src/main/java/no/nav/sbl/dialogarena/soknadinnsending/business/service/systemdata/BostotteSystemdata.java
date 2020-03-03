@@ -16,7 +16,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.apache.commons.lang3.text.WordUtils;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -25,21 +24,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class BostotteSystemdata implements Systemdata {
-    public static final Logger log = getLogger(BostotteSystemdata.class);
     @Inject
     private Bostotte bostotte;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
-        log.info("Bostotte: updateSystemdataIn");
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         fjernGamleHusbankenData(okonomi.getOpplysninger());
-        log.info("Bostotte: bostotte samtykke: {}", soknadUnderArbeid.getHarBostotteSamtykke());
         if(soknadUnderArbeid.getHarBostotteSamtykke()) {
             String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
             BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
