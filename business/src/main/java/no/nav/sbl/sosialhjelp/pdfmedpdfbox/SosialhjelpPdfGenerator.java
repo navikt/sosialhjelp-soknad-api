@@ -287,9 +287,26 @@ public class SosialhjelpPdfGenerator {
     }
 
     private void leggTilUtvidetInfoAdresse(PdfGenerator pdf, JsonAdresse jsonAdresse) throws IOException {
-        JsonGateAdresse jsonGateAdresse = (JsonGateAdresse) jsonAdresse;
-        pdf.skrivTekstMedInnrykk(jsonGateAdresse.getGatenavn() + " " + jsonGateAdresse.getHusnummer() + "" + jsonGateAdresse.getHusbokstav(), INNRYKK_4);
-        pdf.skrivTekstMedInnrykk(jsonGateAdresse.getPostnummer() + " " + jsonGateAdresse.getPoststed(), INNRYKK_4);
+        switch (jsonAdresse.getType()) {
+            case GATEADRESSE:
+                JsonGateAdresse jsonGateAdresse = (JsonGateAdresse) jsonAdresse;
+                pdf.skrivTekstMedInnrykk(jsonGateAdresse.getGatenavn() + " " + jsonGateAdresse.getHusnummer() + "" + jsonGateAdresse.getHusbokstav(), INNRYKK_4);
+                pdf.skrivTekstMedInnrykk(jsonGateAdresse.getPostnummer() + " " + jsonGateAdresse.getPoststed(), INNRYKK_4);
+                break;
+            case MATRIKKELADRESSE:
+                JsonMatrikkelAdresse maf = (JsonMatrikkelAdresse) jsonAdresse;
+                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.adresse.bruksnummer.label") + ": " + maf.getBruksnummer() + ". " +
+                        getTekst("kontakt.system.adresse.gaardsnummer.label") + ": " + maf.getGaardsnummer() + ". " +
+                        getTekst("kontakt.system.adresse.kommunenummer.label") + ":" + maf.getKommunenummer() + ".", INNRYKK_2);
+                break;
+            case POSTBOKS:
+                JsonPostboksAdresse pbaf = (JsonPostboksAdresse) jsonAdresse;
+                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.adresse.postboks.label") + ": " + pbaf.getPostboks() + ", " + pbaf.getPostnummer() + " " + pbaf.getPoststed(), INNRYKK_2);
+                break;
+            case USTRUKTURERT:
+                JsonUstrukturertAdresse uaf = (JsonUstrukturertAdresse) jsonAdresse;
+                pdf.skrivTekstMedInnrykk(String.join(" ", uaf.getAdresse()), INNRYKK_2);
+        }
     }
 
     private void leggTilBegrunnelse(PdfGenerator pdf, JsonBegrunnelse jsonBegrunnelse) throws IOException {
@@ -537,7 +554,7 @@ public class SosialhjelpPdfGenerator {
                     JsonSivilstatus.Status status = sivilstatus.getStatus();
                     if(status != null){
                         if(status.toString().equals("gift")){
-                            if(!sivilstatus.getEktefelleHarDiskresjonskode()){
+                            if(sivilstatus.getEktefelleHarDiskresjonskode() != null && !sivilstatus.getEktefelleHarDiskresjonskode()){
                                 pdf.addBlankLine();
                                 pdf.skrivTekstBold(getTekst("system.familie.sivilstatus.informasjonspanel.tittel"));
                                 pdf.skrivTekst(getTekst("system.familie.sivilstatus.informasjonspanel.tekst"));
