@@ -17,7 +17,7 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-maven-cache-${{ hashFiles('pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-cache
+          restore-keys: ${{ runner.os }}-maven-cache-
       - name: Login to GitHub package registry
         run: |
           echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_REPOSITORY} --password-stdin docker.pkg.github.com
