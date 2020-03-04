@@ -32,7 +32,6 @@ jobs:
           fi
 
       - name: deploy til prod-sbs
-        if: success()
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
