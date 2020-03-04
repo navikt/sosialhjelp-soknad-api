@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
@@ -313,7 +314,12 @@ public class SosialhjelpPdfGeneratorTest {
                     )
                 );
 
-        final JsonSoknad jsonSoknad = new JsonSoknad().withData(data);
+        final JsonSoknad jsonSoknad = new JsonSoknad()
+                .withData(data)
+                .withInnsendingstidspunkt("2020-02-22-14:42")
+                .withMottaker(new JsonSoknadsmottaker()
+                        .withNavEnhetsnavn("NAV Hamar")
+                );
         final JsonInternalSoknad jsonInternalSoknad = new JsonInternalSoknad().withSoknad(jsonSoknad);
 
 
