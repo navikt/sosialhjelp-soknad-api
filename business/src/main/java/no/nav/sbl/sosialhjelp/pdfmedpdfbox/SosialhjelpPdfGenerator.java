@@ -194,29 +194,31 @@ public class SosialhjelpPdfGenerator {
 
         if (utvidetSoknad) {
             pdf.skrivTekst("Valgt adresse:");
-            JsonAdresseValg adresseValg = jsonPersonalia.getOppholdsadresse().getAdresseValg();
-            if (adresseValg == JsonAdresseValg.SOKNAD) {
-                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2);
-            } else {
-                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse." + adresseValg.value() + "Adresse"), INNRYKK_2);
-            }
-            pdf.addBlankLine();
-
-            pdf.skrivTekstBold("Svaralternativer:");
-            if (jsonPersonalia.getFolkeregistrertAdresse() != null) {
-                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.folkeregistrertAdresse"), INNRYKK_2);
-            }
-            if (midlertidigAdresse != null) {
-                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.midlertidigAdresse"), INNRYKK_2);
-                if (adresseValg == JsonAdresseValg.MIDLERTIDIG) {
-                    leggTilUtvidetInfoAdresse(pdf, jsonPersonalia.getOppholdsadresse());
+            if (jsonPersonalia.getOppholdsadresse() != null) {
+                JsonAdresseValg adresseValg = jsonPersonalia.getOppholdsadresse().getAdresseValg();
+                if (adresseValg == JsonAdresseValg.SOKNAD) {
+                    pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2);
                 } else {
-                    leggTilUtvidetInfoAdresse(pdf, midlertidigAdresse);
+                    pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse." + adresseValg.value() + "Adresse"), INNRYKK_2);
                 }
+                pdf.addBlankLine();
+
+                pdf.skrivTekstBold("Svaralternativer:");
+                if (jsonPersonalia.getFolkeregistrertAdresse() != null) {
+                    pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.folkeregistrertAdresse"), INNRYKK_2);
+                }
+                if (midlertidigAdresse != null) {
+                    pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.midlertidigAdresse"), INNRYKK_2);
+                    if (adresseValg == JsonAdresseValg.MIDLERTIDIG) {
+                        leggTilUtvidetInfoAdresse(pdf, jsonPersonalia.getOppholdsadresse());
+                    } else {
+                        leggTilUtvidetInfoAdresse(pdf, midlertidigAdresse);
+                    }
+                }
+                pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2);
+                pdf.addBlankLine();
+                skrivInfotekst(pdf, "kontakt.system.oppholdsadresse.hvorOppholder");
             }
-            pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2);
-            pdf.addBlankLine();
-            skrivInfotekst(pdf, "kontakt.system.oppholdsadresse.hvorOppholder");
         }
 
         // Telefonnummer
@@ -1174,7 +1176,7 @@ public class SosialhjelpPdfGenerator {
             pdf.addBlankLine();
 
             // Forsørgerplikt
-            if (soknad.getData().getFamilie() != null && soknad.getData().getFamilie().getForsorgerplikt() != null && soknad.getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt().getVerdi()) {
+            if (soknad.getData().getFamilie() != null && soknad.getData().getFamilie().getForsorgerplikt() != null && soknad.getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt() != null) {
                 pdf.skrivTekstBold(getTekst("utgifter.barn.sporsmal"));
                 if (utvidetSoknad) {
                     skrivInfotekst(pdf, "utgifter.barn.infotekst.tekst");
