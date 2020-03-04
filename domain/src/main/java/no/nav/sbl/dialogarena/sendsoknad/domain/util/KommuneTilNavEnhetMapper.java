@@ -19,6 +19,10 @@ public class KommuneTilNavEnhetMapper {
             .put("3050", "Rollag")    // Flesberg (nytt kommunenummer)
             .put("3052", "Rollag")    // Nore og Uvdal (nytt kommunenummer)
             .put("1151", "Haugesund") // Utsira (samme kommunenummer etter 2020)
+            .put("4207", "Kvinesdal") // Flekkefjord
+            .put("4225", "Kvinesdal") // Lyngdal
+            .put("4206", "Kvinesdal") // Farsund
+            .put("4228", "Kvinesdal") // Sirdal
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -82,7 +86,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1127", "988052310")    // Randaberg-Kvitsøy
             .put("0412", "976639618")    // Ringsaker
             .put("0426", "974550342")    // Våler (Hedmark)
-            .put("1037", "964964076")    // Kvinesdal
+            .put("1037", "964964076")    // Kvinesdal, Flekkefjord, Lyngdal, Farsund, Sirdal
             .put("0106", "993393851")    // Fredrikstad
             .put("0605", "976820835")    // Ringerike
             .put("0418", "964950768")    // Nord-Odal
@@ -152,6 +156,10 @@ public class KommuneTilNavEnhetMapper {
             .put("0425", "974602970")    // Åsnes
             .put("0135", "974569906")    // Råde
             .put("1002", "921060440")    // Nye Lindesnes
+            .put("5302", "974607395")    // Færder
+            .put("0704", "974586002")    // Tønsberg
+            .put("5301", "974542811")    // Holmestrand
+            .put("1504", "975914895")    // Ålesund, Fjord
 
             .build();
 
@@ -332,7 +340,16 @@ public class KommuneTilNavEnhetMapper {
                     "5428", // Nytt Nordreisa
                     "5427", // Nytt Skjervøy
                     "3418", // Nytt Åsnes
-                    "3017"  // Nytt Råde
+                    "3017", // Nytt Råde
+                    "3811", // Færder
+                    "4207", // Flekkefjord
+                    "4225", // Lyngdal
+                    "4206", // Farsund
+                    "4228", // Sirdal
+                    "3803", // Tønsberg
+                    "3802", // Holmestrand
+                    "1507", // Ålesund
+                    "1578"  // Fjord
             ));
 
 

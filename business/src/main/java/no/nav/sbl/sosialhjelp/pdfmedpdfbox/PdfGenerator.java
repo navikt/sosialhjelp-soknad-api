@@ -171,6 +171,8 @@ public class PdfGenerator {
 
         boolean justify = false;
 
+        text = removeBadCharacters(text);
+
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
         this.currentStream.beginText();
@@ -262,6 +264,13 @@ public class PdfGenerator {
             }
         }
         return lines;
+    }
+
+    private String removeBadCharacters(String text) {
+        if (text != null) {
+            return text.replace("\n", " ").replace("\r", " ");
+        }
+        return null;
     }
 
     public void addLogo() throws IOException {

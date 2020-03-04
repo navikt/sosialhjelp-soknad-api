@@ -16,6 +16,7 @@
     "/apigw/eregapi": "apikey/apigw/dev/ereg.api/sosialhjelp-soknad-api_q0",
     "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q0",
     "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q0",
+    "/apigw/dkifapi": "apikey/apigw/dev/dkif.api/sosialhjelp-soknad-api_q0",
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/dev/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/dev/srvsoknadsosialhjelp-server-sbs"
   },
@@ -27,6 +28,7 @@
     "AAREG_API_BASEURL": "https://api-gw-q0.oera.no/aareg-services/api/",
     "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DITTNAV_LINK_URL": "https://tjenester-q0.nav.no/dittnav/",
+    "DKIF_API_BASEURL": "https://api-gw-q0.oera.no/dkif/api/",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "https://api-gw-q0.oera.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/",
     "EKSTERN_KS_SVARUT_V1_ENDPOINTURL": "https://pep-gw-q0.oera-q.local:9443/ekstern/ks/svarUt/v1",
     "EKSTERN_KS_SVARUT_V1_SECURITYTOKEN": "SAML",
@@ -80,6 +82,7 @@
     "TILLATMOCK": "false",
     "START_NORG_WITHMOCK": "false",
     "EREG_API_ENABLED": "true",
-    "AAREG_API_ENABLED": "true"
+    "AAREG_API_ENABLED": "true",
+    "DKIF_API_ENABLED": "true"
   }
 }
