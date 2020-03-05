@@ -57,7 +57,7 @@ public class SkattbarInntektService {
 
         Sokedata sokedata = new Sokedata()
                 .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 6 : 7)) // TODO: DEBUG only!!!
-                .withTom(LocalDate.now()).withIdentifikator(fnummer);
+                .withTom(LocalDate.now()).withIdentifikator("18018200283"); // TODO: DEBUG only!!!
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
             return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(mockRespons(fnummer)));
