@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -32,9 +33,9 @@ public class PdfGenerator {
     public static final int INNRYKK_3 = 70;
     public static final int INNRYKK_4 = 80;
 
-    private static final String REGULAR = "/fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf";
-    private static final String KURSIV = "/fonts/Source_Sans_Pro/SourceSansPro-Italic.ttf";
-    private static final String BOLD = "/fonts/Source_Sans_Pro/SourceSansPro-Bold.ttf";
+    private static final String REGULAR =  "/fonts/ArialMT.ttf"; //"/fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf";
+    private static final String KURSIV = "/fonts/Arial-BoldItalicMT.ttf"; //"/fonts/Source_Sans_Pro/SourceSansPro-Italic.ttf";
+    private static final String BOLD = "/fonts/Arial-BoldMT.ttf"; //"/fonts/Source_Sans_Pro/SourceSansPro-Bold.ttf";
 
     public static final int FONT_PLAIN_SIZE = 12;
     public static final int FONT_H1_SIZE = 20;
@@ -279,6 +280,9 @@ public class PdfGenerator {
     }
 
     private List<String> splitTextOnNewlines(String text) {
+        if (text == null) {
+            return Collections.emptyList();
+        }
         List<String> splitByNewlines = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
