@@ -56,7 +56,7 @@ public class SkattbarInntektService {
     public List<Utbetaling> hentSkattbarInntekt(String fnummer) {
 
         Sokedata sokedata = new Sokedata()
-                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
+                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 6 : 7)) // TODO: DEBUG only!!!
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
@@ -210,7 +210,7 @@ public class SkattbarInntektService {
     private SkattbarInntekt hentOpplysninger(Invocation.Builder request) {
         try (Response response = request.get()) {
 
-            if (log.isDebugEnabled()) {
+            if (true) { // TODO: DEBUG only!!!
                 response.bufferEntity();
                 log.debug("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
             }
