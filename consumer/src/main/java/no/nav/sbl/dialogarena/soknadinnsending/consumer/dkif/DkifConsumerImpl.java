@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
@@ -40,6 +41,7 @@ public class DkifConsumerImpl implements DkifConsumer {
     }
 
     @Override
+    @Cacheable("dkifCache")
     public DigitalKontaktinfoBolk hentDigitalKontaktinfo(String ident) {
         Invocation.Builder request = lagRequest(endpoint + "v1/personer/kontaktinformasjon", ident);
         try {
@@ -66,7 +68,7 @@ public class DkifConsumerImpl implements DkifConsumer {
         WebTarget b = client.target(endpoint);
 
         return b.request()
-                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken()) // brukers token (?)
+                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken())
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .header("Nav-Personidenter", ident);
