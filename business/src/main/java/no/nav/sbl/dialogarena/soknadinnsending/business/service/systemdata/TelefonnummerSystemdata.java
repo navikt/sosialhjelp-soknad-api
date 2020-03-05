@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
@@ -15,28 +14,28 @@ import javax.inject.Inject;
 public class TelefonnummerSystemdata implements Systemdata {
 
     @Inject
-    private EpostService epostService;
+    private DkifService dkifService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final JsonTelefonnummer telefonnummer = personalia.getTelefonnummer();
 
-        if (telefonnummer == null || telefonnummer.getKilde() == JsonKilde.SYSTEM){
+        if (telefonnummer == null || telefonnummer.getKilde() == JsonKilde.SYSTEM) {
             final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
             final String systemverdi = innhentSystemverdiTelefonnummer(personIdentifikator);
 
             personalia.setTelefonnummer(systemverdi == null ? null :
                     telefonnummer != null ? telefonnummer.withVerdi(systemverdi) :
-                    new JsonTelefonnummer()
-                            .withKilde(JsonKilde.SYSTEM)
-                            .withVerdi(systemverdi));
+                            new JsonTelefonnummer()
+                                    .withKilde(JsonKilde.SYSTEM)
+                                    .withVerdi(systemverdi));
         }
     }
 
     public String innhentSystemverdiTelefonnummer(final String personIdentifikator) {
-        DigitalKontaktinfo digitalKontaktinfo = epostService.hentInfoFraDKIF(personIdentifikator);
-        return norskTelefonnummer(digitalKontaktinfo.getMobilnummer());
+        String mobiltelefonnummer = dkifService.hentMobiltelefonnummer(personIdentifikator);
+        return norskTelefonnummer(mobiltelefonnummer);
     }
 
     private static String norskTelefonnummer(String mobiltelefonnummer) {

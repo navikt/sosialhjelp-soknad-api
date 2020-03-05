@@ -1,5 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -7,6 +8,8 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
@@ -171,6 +174,8 @@ public class PdfGenerator {
 
         boolean justify = false;
 
+        text = removeBadCharacters(text);
+
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
         this.currentStream.beginText();
@@ -251,7 +256,14 @@ public class PdfGenerator {
                     lastSpace = spaceIndex;
                 }
                 subString = text.substring(0, lastSpace);
-                lines.add(subString);
+                 // One more check to see if line is too long
+                size = fontSize * font.getStringWidth(subString) / 1000;
+                if (size > PdfGenerator.WIDTH_OF_CONTENT_COLUMN) {
+                    lines.add(subString.substring(0, 90));
+                    lines.add(subString.substring(90));
+                } else {
+                    lines.add(subString);
+                }
                 text = text.substring(lastSpace).trim();
                 lastSpace = -1;
             } else if (spaceIndex == text.length()) {
@@ -264,11 +276,23 @@ public class PdfGenerator {
         return lines;
     }
 
+    private String removeBadCharacters(String text) {
+        if (text != null) {
+            return text.replace("\n", " ").replace("\r", " ");
+        }
+        return null;
+    }
+
     public void addLogo() throws IOException {
         PDImageXObject ximage = PDImageXObject.createFromByteArray(this.document, logo(), "logo");
         float startX = (MEDIA_BOX.getWidth() - 99) / 2;
         float offsetTop = 40;
         this.currentStream.drawImage(ximage, 27, 765, 99, 62);
+    }
+
+    public void addLink(String uri, String text) throws IOException {
+
+        skrivTekst(text);
     }
 
     private static byte[] logo() {

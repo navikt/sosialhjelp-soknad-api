@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.DigitalKontaktinfo;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kontaktinfo.EpostService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -28,14 +27,14 @@ public class TelefonnummerSystemdataTest {
     private static final String TELEFONNUMMER_BRUKER = "+4723456789";
 
     @Mock
-    private EpostService epostService;
+    private DkifService dkifService;
 
     @InjectMocks
     private TelefonnummerSystemdata telefonnummerSystemdata;
 
     @Test
     public void skalOppdatereTelefonnummerUtenLandkode() {
-        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(TELEFONNUMMER_SYSTEM));
+        when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -48,7 +47,7 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalOppdatereTelefonnummerMedLandkode() {
-        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer("+47" + TELEFONNUMMER_SYSTEM));
+        when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn("+47" + TELEFONNUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -61,7 +60,7 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalIkkeOppdatereTelefonnummerDersomKildeErBruker() {
-        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(TELEFONNUMMER_SYSTEM));
+        when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedTelefonnummer());
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -74,7 +73,7 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalSetteNullDersomTelefonnummerErTomStreng() {
-        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(""));
+        when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn("");
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -86,7 +85,7 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalSetteNullDersomTelefonnummerErNull() {
-        when(epostService.hentInfoFraDKIF(anyString())).thenReturn(new DigitalKontaktinfo().withMobilnummer(null));
+        when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn(null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
