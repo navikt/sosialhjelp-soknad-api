@@ -42,10 +42,8 @@ import org.springframework.util.ReflectionUtils;
 import javax.inject.Inject;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
@@ -81,6 +79,86 @@ public class SosialhjelpPdfGeneratorTest {
         textHelpers.setNavMessageSource(navMessageSource);
         textHelpers.setAdressekodeverk(adressekodeverk);
         sosialhjelpPdfGenerator.setTextHelpers(textHelpers);
+    }
+
+    @Test
+    public void generatePdfWithLatinCharacters() {
+        StringBuilder text = new StringBuilder();
+
+        for (int i = 0x0000; i <= 0x024F; i++) {
+            text.appendCodePoint(i);
+            text.append(" ");
+        }
+        text.appendCodePoint(0x000A);
+        text.appendCodePoint(0x000A);
+        for (int i = 0x0000; i <= 0x024F; i++) {
+            text.appendCodePoint(i);
+            text.append(" ");
+        }
+
+        JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
+        internalSoknad.getSoknad().getData().getBegrunnelse().withHvaSokesOm(text.toString());
+
+        byte[] bytes = sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        /*try {
+            FileOutputStream out = new FileOutputStream("../temp/starcraft.pdf");
+            out.write(bytes);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    private JsonInternalSoknad getJsonInternalSoknadWithMandatoryFields() {
+        return new JsonInternalSoknad()
+            .withSoknad(new JsonSoknad()
+                .withVersion("1.0")
+                .withData(new JsonData()
+                    .withPersonalia(new JsonPersonalia()
+                        .withPersonIdentifikator(new JsonPersonIdentifikator()
+                            .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                            .withVerdi("1234")
+                        )
+                        .withNavn(new JsonSokernavn()
+                            .withFornavn("Navn")
+                            .withMellomnavn("")
+                            .withEtternavn("Navnesen")
+                            .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                        )
+                        .withKontonummer(new JsonKontonummer()
+                            .withKilde(SYSTEM)
+                            .withVerdi("0000")
+                        )
+                    )
+                    .withArbeid(new JsonArbeid())
+                    .withUtdanning(new JsonUtdanning()
+                        .withKilde(SYSTEM)
+                    )
+                    .withFamilie(new JsonFamilie()
+                        .withForsorgerplikt(new JsonForsorgerplikt())
+                    )
+                    .withBegrunnelse(new JsonBegrunnelse()
+                        .withKilde(JsonKildeBruker.BRUKER)
+                        .withHvaSokesOm("")
+                        .withHvorforSoke("")
+                    )
+                    .withBosituasjon(new JsonBosituasjon()
+                        .withKilde(JsonKildeBruker.BRUKER)
+                    )
+                    .withOkonomi(new JsonOkonomi()
+                        .withOpplysninger(new JsonOkonomiopplysninger()
+                            .withUtbetaling(Collections.emptyList())
+                            .withUtgift(Collections.emptyList())
+                        )
+                        .withOversikt(new JsonOkonomioversikt()
+                            .withInntekt(Collections.emptyList())
+                            .withUtgift(Collections.emptyList())
+                            .withFormue(Collections.emptyList())
+                        )
+                    )
+                )
+        );
+
     }
 
     // TODO: Skrive bedre tester for generering av pdf med pdfbox

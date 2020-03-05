@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
@@ -28,7 +29,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdat
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -134,7 +137,7 @@ public class SkattetatenSystemdataTest {
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         List<Utbetaling> skattbare_utbetalinger = Arrays.asList(SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_ANNEN);
-        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(skattbare_utbetalinger);
+        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(skattbare_utbetalinger);
 
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -153,7 +156,7 @@ public class SkattetatenSystemdataTest {
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         List<Utbetaling> skattbare_utbetalinger = Arrays.asList(SKATTBAR_UTBETALING_ANNEN, SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_FRA_PRIVATPERSON);
-        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(skattbare_utbetalinger);
+        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(skattbare_utbetalinger);
 
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -174,7 +177,7 @@ public class SkattetatenSystemdataTest {
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
-        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(utbetalinger);
+        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(utbetalinger);
 
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -194,7 +197,7 @@ public class SkattetatenSystemdataTest {
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
         List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
-        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(utbetalinger);
+        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(utbetalinger);
 
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -213,7 +216,7 @@ public class SkattetatenSystemdataTest {
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
-        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(utbetalinger);
+        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(utbetalinger);
 
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 

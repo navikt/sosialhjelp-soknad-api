@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
@@ -67,7 +66,7 @@ public class ArbeidsforholdSystemdataTest {
     @Mock
     private UtbetalingService utbetalingService;
 
-    @Spy
+    @Mock
     private SkattbarInntektService skattbarInntektService;
 
     @InjectMocks
@@ -105,10 +104,8 @@ public class ArbeidsforholdSystemdataTest {
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
-        System.setProperty("tillatmock", "true");
-        skattbarInntektService.mockFil = "TULL";
+        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(null);
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
-        System.setProperty("tillatmock", "false");
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonOkonomioversiktInntekt inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt().get(0);
@@ -129,11 +126,8 @@ public class ArbeidsforholdSystemdataTest {
         when(arbeidsforholdService.hentArbeidsforhold(anyString(), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(arbeidsforholdList);
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
-        System.setProperty("tillatmock", "true");
-        skattbarInntektService.mockFil = "TULL";
+        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(null);
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
-
-        System.setProperty("tillatmock", "false");
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonOkonomiOpplysningUtbetaling utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().get(0);
