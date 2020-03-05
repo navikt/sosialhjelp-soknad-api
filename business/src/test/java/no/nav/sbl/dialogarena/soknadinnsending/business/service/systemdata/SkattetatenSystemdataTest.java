@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -29,9 +28,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdat
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -252,7 +249,7 @@ public class SkattetatenSystemdataTest {
         utbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING);
 
         // Mock:
-        when(skattbarInntektService.hentSkattbarInntekt(anyString())).thenReturn(null);
+        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(null);
 
         // Kjøring:
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
