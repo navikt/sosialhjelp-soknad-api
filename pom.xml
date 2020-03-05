@@ -91,7 +91,7 @@
         <jackson-databind.version>2.10.0</jackson-databind.version>
         <filformat.version>1.2019.11.27-10.45-cf682907bdc8</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
-        <pdfbox.version>2.0.17</pdfbox.version>
+        <pdfbox.version>2.0.19</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
         <httpclient.version>4.5.10</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
