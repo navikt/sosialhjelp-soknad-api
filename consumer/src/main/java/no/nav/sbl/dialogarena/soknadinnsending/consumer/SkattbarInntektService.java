@@ -212,7 +212,7 @@ public class SkattbarInntektService {
 
             if (true) { // TODO: DEBUG only!!!
                 response.bufferEntity();
-                log.debug("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
+                log.warn("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
             }
 
             if (response.getStatus() == 200) {
