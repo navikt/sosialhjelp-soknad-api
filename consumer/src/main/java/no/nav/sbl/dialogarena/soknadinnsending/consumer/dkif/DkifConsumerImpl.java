@@ -56,7 +56,7 @@ public class DkifConsumerImpl implements DkifConsumer {
             logger.warn("Dkif.api - 404 Not Found - {}", e.getMessage());
             return null;
         } catch (RuntimeException e) {
-            logger.warn("Dkif.api - Noe uventet feilet", e);
+            logger.error("Dkif.api - Noe uventet feilet", e);
             throw new TjenesteUtilgjengeligException("Dkif", e);
         }
     }
