@@ -34,7 +34,7 @@ public class DkifRestConfig {
     }
 
     @Bean
-    public Pingable organisasjonRestPing() {
+    public Pingable dkifRestPing() {
         return () -> {
             Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Dkif", false);
             try {
