@@ -1,6 +1,5 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -8,8 +7,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
@@ -178,7 +175,7 @@ public class PdfGenerator {
             int margin
     ) throws IOException {
 
-        PDType0Font font = PDType0Font.load(document, new ClassPathResource(fontType).getFile());
+        PDFont font = getFont(fontType);
 
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
@@ -211,7 +208,7 @@ public class PdfGenerator {
             float leadingPercentage
     ) throws IOException {
 
-        PDType0Font font = PDType0Font.load(document, new ClassPathResource(fontType).getFile());
+        PDFont font = getFont(fontType);
 
         List<String> lines = parseLines(heading, font, fontSize);
         this.currentStream.beginText();
@@ -316,6 +313,10 @@ public class PdfGenerator {
     public void addLink(String uri, String text) throws IOException {
 
         skrivTekst(text);
+    }
+
+    private PDFont getFont(String path) throws IOException {
+        return PDType0Font.load(document, new ClassPathResource(path).getInputStream());
     }
 
     private static byte[] logo() {
