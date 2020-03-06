@@ -1,6 +1,5 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -8,8 +7,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
@@ -17,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -178,7 +176,7 @@ public class PdfGenerator {
             int margin
     ) throws IOException {
 
-        PDType0Font font = PDType0Font.load(document, new ClassPathResource(fontType).getFile());
+        PDFont font = getFont(fontType);
 
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
@@ -211,7 +209,7 @@ public class PdfGenerator {
             float leadingPercentage
     ) throws IOException {
 
-        PDType0Font font = PDType0Font.load(document, new ClassPathResource(fontType).getFile());
+        PDFont font = getFont(fontType);
 
         List<String> lines = parseLines(heading, font, fontSize);
         this.currentStream.beginText();
@@ -279,6 +277,9 @@ public class PdfGenerator {
     }
 
     private List<String> splitTextOnNewlines(String text) {
+        if (text == null) {
+            return Collections.emptyList();
+        }
         List<String> splitByNewlines = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
@@ -316,6 +317,10 @@ public class PdfGenerator {
     public void addLink(String uri, String text) throws IOException {
 
         skrivTekst(text);
+    }
+
+    private PDFont getFont(String path) throws IOException {
+        return PDType0Font.load(document, new ClassPathResource(path).getInputStream());
     }
 
     private static byte[] logo() {
