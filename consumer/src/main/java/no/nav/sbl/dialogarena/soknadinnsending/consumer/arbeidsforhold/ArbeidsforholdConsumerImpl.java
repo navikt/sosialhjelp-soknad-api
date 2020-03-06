@@ -9,7 +9,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ServiceUnavailableException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
@@ -73,10 +78,10 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
             log.warn("Aareg.api - 404 Not Found- Fant ikke arbeidsforhold for bruker", e);
             return null;
         } catch (ServiceUnavailableException | InternalServerErrorException e) {
-            log.warn("Aareg.api - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+            log.error("Aareg.api - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
             throw new TjenesteUtilgjengeligException("AAREG", e);
         } catch (Exception e) {
-            log.warn("Aareg.api - Noe uventet feilet", e);
+            log.error("Aareg.api - Noe uventet feilet", e);
             throw new TjenesteUtilgjengeligException("AAREG", e);
         }
     }
