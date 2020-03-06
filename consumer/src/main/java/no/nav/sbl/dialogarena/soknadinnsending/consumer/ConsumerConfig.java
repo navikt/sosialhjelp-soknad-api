@@ -11,6 +11,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.Arbeidsforhol
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.SkattbarInntektRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.AdresseSokRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DigisosApiRestConfig;
@@ -63,7 +65,8 @@ public class ConsumerConfig {
             OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
-            DkifRestConfig.class
+            DkifRestConfig.class,
+            SkattbarInntektRestConfig.class
     })
     public static class WsServices {
     }

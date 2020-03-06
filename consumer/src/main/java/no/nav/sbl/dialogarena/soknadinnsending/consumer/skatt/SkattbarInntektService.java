@@ -1,78 +1,48 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.Forskuddstrekk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.Inntekt;
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.OppgaveInntektsmottaker;
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
-import no.nav.sbl.rest.RestUtils;
-import org.apache.cxf.helpers.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.System.getenv;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 @Service
 public class SkattbarInntektService {
-    private static final String SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD";
-    @Value("${skatteetaten.inntektsmottaker.url}")
-    private String endpoint;
-    private static Logger log = LoggerFactory.getLogger(SkattbarInntektService.class);
-    public Function<Sokedata, RestCallContext> restCallContextSelector;
+
+    private static final Logger log = LoggerFactory.getLogger(SkattbarInntektService.class);
+
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
-    public String mockFil = "/mockdata/InntektOgSkatt.json";
-    private Map<String, SkattbarInntekt> mockData = new HashMap<>();
-    private Set<String> mockDataFeiler = new HashSet<>();
 
+    private SkattbarInntektConsumer consumer;
 
-    public SkattbarInntektService() {
-        restCallContextSelector = (sokedata -> new RestCallContext.Builder()
-                .withClient(RestUtils.createClient(RestUtils.RestConfig.builder().readTimeout(30000).build()))
-                .withConcurrentRequests(2)
-                .withMaximumQueueSize(6)
-                .withExecutorTimeoutInMilliseconds(30000)
-                .build());
+    public SkattbarInntektService(SkattbarInntektConsumer consumer) {
+        this.consumer = consumer;
     }
 
-    public List<Utbetaling> hentSkattbarInntekt(String fnummer) {
+    public List<Utbetaling> hentUtbetalinger(String fnummer) {
 
-        Sokedata sokedata = new Sokedata()
-                .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
-                .withTom(LocalDate.now()).withIdentifikator(fnummer);
+        SkattbarInntekt skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
 
-        if (Boolean.valueOf(System.getProperty("tillatmock", "false"))) {
-            return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(mockRespons(fnummer)));
-        }
-
-        return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(hentOpplysninger(getRequest(sokedata))));
+        return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(skattbarInntekt));
     }
 
-    public List<Utbetaling> filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(List<Utbetaling> utbetalinger) {
+    private List<Utbetaling> filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(List<Utbetaling> utbetalinger) {
         if (utbetalinger == null) {
             return null;
         }
@@ -87,20 +57,6 @@ public class SkattbarInntektService {
                     return grupperOgsummerEtterUtbetalingsStartDato(u)
                             .get(nyesteDato);
                 }).collect(Collectors.toList());
-    }
-
-    public Invocation.Builder getRequest(Sokedata sokedata) {
-        RestCallContext executionContext = restCallContextSelector.apply(sokedata);
-        return lagRequest(executionContext, sokedata);
-    }
-
-    private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
-        String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-        WebTarget b = executionContext.getClient().target(String.format("%s%s/oppgave/inntekt", endpoint, sokedata.identifikator))
-                .queryParam("fraOgMed", sokedata.fom.format(formatter))
-                .queryParam("tilOgMed", sokedata.tom.format(formatter));
-        return b.request().header("x-nav-apiKey", apiKey);
     }
 
     private List<Utbetaling> mapTilUtbetalinger(SkattbarInntekt skattbarInntekt) {
@@ -150,7 +106,6 @@ public class SkattbarInntektService {
                 forskuddstrekk.add(utbetaling);
             }
         }
-
 
         List<Utbetaling> aggregertUtbetaling = new ArrayList<>();
         aggregertUtbetaling.addAll(utbetalingerLonn);
@@ -213,101 +168,4 @@ public class SkattbarInntektService {
         return utbetaling;
     }
 
-    private SkattbarInntekt hentOpplysninger(Invocation.Builder request) {
-        try (Response response = request.get()) {
-
-            if (log.isDebugEnabled()) {
-                response.bufferEntity();
-                log.debug("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
-            }
-
-            if (response.getStatus() == 200) {
-                return response.readEntity(SkattbarInntekt.class);
-            } else if (response.getStatus() == 404) {
-                // Ingen funnet
-                return new SkattbarInntekt();
-            } else {
-                String melding = response.readEntity(String.class);
-                log.error(  String.format("Klarer ikke hente skatteopplysninger %s status %s ", melding, response.getStatus()));
-
-                return new SkattbarInntekt();
-            }
-        } catch (RuntimeException e) {
-            log.warn("Klarer ikke hente skatteopplysninger", e);
-            return null;
-        }
-    }
-
-    private SkattbarInntekt mockRespons(String fnr) {
-        if(mockDataFeiler.contains(fnr)) {
-            return null;
-        }
-        SkattbarInntekt skattbarInntekt = mockData.get(fnr);
-        if(skattbarInntekt != null) {
-            return skattbarInntekt;
-        }
-        try {
-            InputStream resourceAsStream = this.getClass().getResourceAsStream(mockFil);
-            if (resourceAsStream == null) {
-                return null;
-            }
-            String json = IOUtils.toString(resourceAsStream);
-            return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, SkattbarInntekt.class);
-        } catch (Exception e) {
-            log.error("", e);
-            return null;
-        }
-    }
-
-    public void setMockData(String fnr, String jsonWSSkattUtbetaling) {
-        mockData.remove(fnr);
-        if(!jsonWSSkattUtbetaling.equalsIgnoreCase("{}")) {
-            try {
-                SkattbarInntekt skattbarInntekt = new ObjectMapper()
-                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                        .readValue(jsonWSSkattUtbetaling, SkattbarInntekt.class);
-                mockData.put(fnr, skattbarInntekt);
-            } catch (JsonProcessingException e) {
-                log.error("", e);
-            }
-        }
-    }
-
-    public void setMockSkalFeile(String fnr, boolean skalFeile) {
-        mockDataFeiler.remove(fnr);
-        if(skalFeile) {
-            mockDataFeiler.add(fnr);
-        }
-    }
-
-    public static class Sokedata {
-        //Builder med personidentifikator og fom tom, brukes som parametere til rest kallet
-        public String identifikator;
-        public LocalDate fom;
-        public LocalDate tom;
-
-        public Sokedata withIdentifikator(String identifikator) {
-            this.identifikator = identifikator;
-            return this;
-        }
-
-        public Sokedata withFom(LocalDate fom) {
-            this.fom = fom;
-            return this;
-        }
-
-        public Sokedata withTom(LocalDate tom) {
-            this.tom = tom;
-            return this;
-        }
-
-        @Override
-        public String toString() {
-            return "Sokedata{" +
-                    "identifikator='" + identifikator + '\'' +
-                    ", fom=" + fom +
-                    ", tom=" + tom +
-                    '}';
-        }
-    }
 }

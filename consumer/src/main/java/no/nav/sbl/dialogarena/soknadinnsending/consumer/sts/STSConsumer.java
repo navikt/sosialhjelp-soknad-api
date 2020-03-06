@@ -68,14 +68,14 @@ public class STSConsumer {
                 logger.warn("STS - 404 Not Found", e);
                 throw new ApplicationException("STS - 404 Not Found. Endpoint=" + endpoint, e);
             } catch (ServerErrorException e) {
-                logger.warn("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+                logger.error("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
                 throw new TjenesteUtilgjengeligException("STS", e);
             } catch (Exception e) {
-                logger.warn("Noe feil skjedde ved henting av token fra STS i FSS.");
+                logger.error("Noe feil skjedde ved henting av token fra STS i FSS.");
                 throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
             }
         }
-        logger.info("Tar i bruk cached STSToken");
+        logger.debug("Tar i bruk cached STSToken");
         return cachedFssToken;
     }
 

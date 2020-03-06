@@ -51,10 +51,10 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
             logger.warn("Ereg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request");
             return null;
         } catch (ServerErrorException e) {
-            logger.warn("Ereg.api - {} {} - Tjenesten er utilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+            logger.error("Ereg.api - {} {} - Tjenesten er utilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
             throw new TjenesteUtilgjengeligException("EREG", e);
         } catch (Exception e) {
-            logger.warn("Ereg.api - Noe uventet feilet", e);
+            logger.error("Ereg.api - Noe uventet feilet", e);
             throw new TjenesteUtilgjengeligException("EREG", e);
         }
     }

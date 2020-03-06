@@ -161,6 +161,7 @@ public class KommuneTilNavEnhetMapper {
             .put("5302", "974607395")    // Færder
             .put("0704", "974586002")    // Tønsberg
             .put("5301", "974542811")    // Holmestrand
+            .put("1504", "975914895")    // Ålesund, Fjord
 
             .build();
 
@@ -348,7 +349,9 @@ public class KommuneTilNavEnhetMapper {
                     "4206", // Farsund
                     "4228", // Sirdal
                     "3803", // Tønsberg
-                    "3802"  // Holmestrand
+                    "3802", // Holmestrand
+                    "1507", // Ålesund
+                    "1578"  // Fjord
             ));
 
 
