@@ -1,6 +1,5 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -8,8 +7,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
@@ -17,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -56,12 +54,19 @@ public class PdfGenerator {
     public static final int EXTENDED_LATIN_START = 0x00A0;
     public static final int EXTENDED_LATIN_END = 0x0170;
 
+
+
     private PDDocument document = new PDDocument();
     private ArrayList<PDPage> completedPages;
     private PDPage currentPage = new PDPage(PDRectangle.A4);
     private ArrayList<PDPageContentStream> completedStreams;
     private PDPageContentStream currentStream;
     private float y;
+
+    private final PDFont FONT_REGULAR = PDType0Font.load(document, new ClassPathResource(REGULAR).getInputStream());
+    private final PDFont FONT_BOLD = PDType0Font.load(document, new ClassPathResource(BOLD).getInputStream());
+    private final PDFont FONT_KURSIV = PDType0Font.load(document, new ClassPathResource(KURSIV).getInputStream());
+
 
     public PdfGenerator() throws IOException {
         this.currentStream = new PDPageContentStream(document, currentPage);
@@ -108,59 +113,59 @@ public class PdfGenerator {
     }
 
     public void skrivTekst(String text) throws IOException {
-        this.addParagraph(text, REGULAR, FONT_PLAIN_SIZE, MARGIN);
+        this.addParagraph(text, FONT_REGULAR, FONT_PLAIN_SIZE, MARGIN);
     }
 
     public void skrivTekstKursiv(String text) throws IOException {
-        this.addParagraph(text, KURSIV, FONT_PLAIN_SIZE, MARGIN);
+        this.addParagraph(text, FONT_KURSIV, FONT_PLAIN_SIZE, MARGIN);
     }
 
     public void skrivTekstMedInnrykk(String text, int innrykk) throws IOException {
-        this.addParagraph(text, REGULAR, FONT_PLAIN_SIZE, innrykk);
+        this.addParagraph(text, FONT_REGULAR, FONT_PLAIN_SIZE, innrykk);
     }
 
     public void skrivTekstBold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_PLAIN_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_PLAIN_SIZE, MARGIN);
     }
 
     public void skrivH1(String tekst) throws IOException {
-        this.addParagraph(tekst, REGULAR, FONT_H1_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H1_SIZE, MARGIN);
     }
 
     public void skrivH1Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_H1_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H1_SIZE, MARGIN);
     }
 
     public void skrivH2(String tekst) throws IOException {
-        this.addParagraph(tekst, REGULAR, FONT_H2_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H2_SIZE, MARGIN);
     }
 
     public void skrivH2Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_H2_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H2_SIZE, MARGIN);
     }
 
     public void skrivH3(String tekst) throws IOException {
-        this.addParagraph(tekst, REGULAR, FONT_H3_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H3_SIZE, MARGIN);
     }
 
     public void skrivH3Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_H3_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H3_SIZE, MARGIN);
     }
 
     public void skrivH4(String tekst) throws IOException {
-        this.addParagraph(tekst, REGULAR, FONT_H4_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H4_SIZE, MARGIN);
     }
 
     public void skrivH4Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_H4_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H4_SIZE, MARGIN);
     }
 
     public void addCenteredH1Bold(String heading) throws IOException {
-        addCenteredParagraph(heading, BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
+        addCenteredParagraph(heading, FONT_BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
     }
 
     public void addCenteredH4Bold(String heading) throws IOException {
-        addCenteredParagraph(heading, BOLD, FONT_H4_SIZE, LEADING_PERCENTAGE);
+        addCenteredParagraph(heading, FONT_BOLD, FONT_H4_SIZE, LEADING_PERCENTAGE);
     }
 
 
@@ -173,12 +178,10 @@ public class PdfGenerator {
 
     public void addParagraph(
             String text,
-            String fontType,
+            PDFont font,
             float fontSize,
             int margin
     ) throws IOException {
-
-        PDType0Font font = PDType0Font.load(document, new ClassPathResource(fontType).getFile());
 
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
@@ -206,12 +209,10 @@ public class PdfGenerator {
 
     public void addCenteredParagraph(
             String heading,
-            String fontType,
+            PDFont font,
             float fontSize,
             float leadingPercentage
     ) throws IOException {
-
-        PDType0Font font = PDType0Font.load(document, new ClassPathResource(fontType).getFile());
 
         List<String> lines = parseLines(heading, font, fontSize);
         this.currentStream.beginText();
@@ -279,6 +280,9 @@ public class PdfGenerator {
     }
 
     private List<String> splitTextOnNewlines(String text) {
+        if (text == null) {
+            return Collections.emptyList();
+        }
         List<String> splitByNewlines = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {

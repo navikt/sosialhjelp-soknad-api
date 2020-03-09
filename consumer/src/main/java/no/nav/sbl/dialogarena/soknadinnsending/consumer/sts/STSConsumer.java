@@ -4,7 +4,11 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
@@ -64,14 +68,14 @@ public class STSConsumer {
                 logger.warn("STS - 404 Not Found", e);
                 throw new ApplicationException("STS - 404 Not Found. Endpoint=" + endpoint, e);
             } catch (ServerErrorException e) {
-                logger.warn("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+                logger.error("STS - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
                 throw new TjenesteUtilgjengeligException("STS", e);
             } catch (Exception e) {
-                logger.warn("Noe feil skjedde ved henting av token fra STS i FSS.");
+                logger.error("Noe feil skjedde ved henting av token fra STS i FSS.");
                 throw new ApplicationException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=" + endpoint, e);
             }
         }
-        logger.info("Tar i bruk cached STSToken");
+        logger.debug("Tar i bruk cached STSToken");
         return cachedFssToken;
     }
 

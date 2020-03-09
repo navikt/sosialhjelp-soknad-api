@@ -38,7 +38,6 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
     @Override
     public SkattbarInntekt hentSkattbarInntekt(String fnummer) {
-
         Sokedata sokedata = new Sokedata()
                 .withFom(LocalDate.now().minusMonths(LocalDate.now().getDayOfMonth() > 10 ? 1 : 2))
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
@@ -46,7 +45,6 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
         Invocation.Builder request = getRequest(sokedata);
 
         try (Response response = request.get()) {
-
             if (log.isDebugEnabled()) {
                 response.bufferEntity();
                 log.debug("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
@@ -60,7 +58,6 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
             } else {
                 String melding = response.readEntity(String.class);
                 log.error(String.format("Klarer ikke hente skatteopplysninger %s status %s ", melding, response.getStatus()));
-
                 return new SkattbarInntekt();
             }
         } catch (RuntimeException e) {
@@ -71,7 +68,6 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
     @Override
     public void ping() {
-        // TODO: finn ut om dette funker
         Invocation.Builder request = client.target(endpoint).request();
         try (Response response = request.options()) {
             if (response.getStatus() != 200) {

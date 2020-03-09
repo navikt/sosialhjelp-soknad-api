@@ -4,7 +4,12 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
@@ -13,7 +18,16 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
@@ -21,12 +35,18 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import org.apache.commons.lang3.LocaleUtils;
+import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -35,13 +55,17 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.*;
+import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_1;
+import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
+import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_4;
 import static org.apache.cxf.common.logging.LogUtils.getLogger;
 
 @Component
 public class SosialhjelpPdfGenerator {
 
     private final Logger logger = getLogger(SosialhjelpPdfGenerator.class);
+
+    private final String DATO_FORMAT = "d. MMMM yyyy";
 
     @Inject
     public NavMessageSource navMessageSource;
@@ -349,8 +373,8 @@ public class SosialhjelpPdfGenerator {
                 if (forhold.getArbeidsgivernavn() != null) {
                     pdf.skrivTekst(forhold.getArbeidsgivernavn());
                 }
-                skrivTekstMedGuard(pdf, forhold.getFom(), "arbeidsforhold.fom.label");
-                skrivTekstMedGuard(pdf, forhold.getTom(), "arbeidsforhold.tom.label");
+                skrivTekstMedGuard(pdf, formaterDato(forhold.getFom(), DATO_FORMAT), "arbeidsforhold.fom.label");
+                skrivTekstMedGuard(pdf, formaterDato(forhold.getTom(), DATO_FORMAT), "arbeidsforhold.tom.label");
 
                 if (forhold.getStillingsprosent() != null) {
                     pdf.skrivTekst(getTekst("arbeidsforhold.stillingsprosent.label") + ": " + forhold.getStillingsprosent());
@@ -457,7 +481,7 @@ public class SosialhjelpPdfGenerator {
                                 pdf.addBlankLine();
 
                                 pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift.ektefelle.fodselsdato"));
-                                pdf.skrivTekstMedInnrykk(ektefelle.getFodselsdato(), INNRYKK_2);
+                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), INNRYKK_2);
 
                                 pdf.addBlankLine();
 
@@ -513,7 +537,7 @@ public class SosialhjelpPdfGenerator {
 
                             pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.fnr.label"));
                             if (ektefelle.getFodselsdato() != null) {
-                                pdf.skrivTekstMedInnrykk(ektefelle.getFodselsdato(), INNRYKK_2);
+                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), INNRYKK_2);
                             } else {
                                 pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
                             }
@@ -602,7 +626,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(getTekst("familie.barn.true.barn.navn.label") + ": " + navnPaBarnTekst);
 
                             // Fødselsdato
-                            String fodselsdato = barn.getFodselsdato();
+                            String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
                             skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fnr");
 
                             // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
@@ -873,7 +897,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(getTekst("utbetalinger.utbetaling.brutto.label") + ": " + navytelse.getBrutto());
                         }
                         if (navytelse.getUtbetalingsdato() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.erutbetalt.label") + ": " + navytelse.getUtbetalingsdato());
+                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.erutbetalt.label") + ": " + formaterDato(navytelse.getUtbetalingsdato(), DATO_FORMAT));
                         }
                     }
                     if (utvidetSoknad) {
@@ -946,14 +970,14 @@ public class SosialhjelpPdfGenerator {
                     if (husbanken.getMottaker() != null) {
                         pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.mottaker") + ": " + husbanken.getMottaker().value());
                     }
-                    pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.utbetalingsdato") + ": " + husbanken.getUtbetalingsdato());
+                    pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.utbetalingsdato") + ": " + formaterDato(husbanken.getUtbetalingsdato(), DATO_FORMAT));
                     pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.belop") + ": " + husbanken.getNetto());
                 }
                 JsonBostotte bostotte = okonomi.getOpplysninger().getBostotte();
                 if (bostotte != null && bostotte.getSaker() != null) {
                     for (JsonBostotteSak bostotteSak : bostotte.getSaker()) {
                         pdf.skrivTekst("inntekt.bostotte.sak");
-                        pdf.skrivTekst(bostotteSak.getDato());
+                        pdf.skrivTekst(formaterDato(bostotteSak.getDato(), DATO_FORMAT));
                         pdf.skrivTekst(getTekst("inntekt.bostotte.sak.status"));
                         pdf.skrivTekst(finnSaksStatus(bostotteSak));
                     }
@@ -1592,5 +1616,15 @@ public class SosialhjelpPdfGenerator {
             svaralternativer.add("familie.barn.true.barnebidrag.ingen");
             skrivSvaralternativer(pdf, svaralternativer);
         }
+    }
+
+    private String formaterDato(String dato, String format) {
+        if (dato == null) {
+            return "";
+        }
+        Locale locale = new Locale("nb", "NO");
+        LocalDate localDate = new LocalDate(dato);
+
+        return localDate.toString(format, locale);
     }
 }
