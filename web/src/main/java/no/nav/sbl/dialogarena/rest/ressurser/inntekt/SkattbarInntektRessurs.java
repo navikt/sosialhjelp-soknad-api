@@ -80,13 +80,13 @@ public class SkattbarInntektRessurs {
 
         boolean lagretSamtykke = hentSamtykkeBooleanFraSoknad(soknad.getJsonInternalSoknad());
 
-        removeBekreftelserIfPresent(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE);
-        setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"));
-
-        if(samtykke != lagretSamtykke) {
-            skattetatenSystemdata.updateSystemdataIn(soknad, token);
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        if(lagretSamtykke != samtykke) {
+            removeBekreftelserIfPresent(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE);
+            setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"));
         }
+
+        skattetatenSystemdata.updateSystemdataIn(soknad, token);
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
     private boolean hentSamtykkeBooleanFraSoknad(JsonInternalSoknad soknad) {

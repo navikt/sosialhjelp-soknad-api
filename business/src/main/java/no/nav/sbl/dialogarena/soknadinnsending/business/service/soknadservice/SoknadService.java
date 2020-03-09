@@ -49,11 +49,7 @@ import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeBekreftelserIfPresent;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -165,15 +161,12 @@ public class SoknadService {
     public void oppdaterSamtykker(String behandlingsId, boolean harBostotteSamtykke, boolean harSkatteetatenSamtykke, String token) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        JsonOkonomi okonomi = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
-        removeBekreftelserIfPresent(okonomi.getOpplysninger(), BOSTOTTE_SAMTYKKE);
-        removeBekreftelserIfPresent(okonomi.getOpplysninger(), UTBETALING_SKATTEETATEN_SAMTYKKE);
-        setBekreftelse(okonomi.getOpplysninger(), BOSTOTTE_SAMTYKKE, harBostotteSamtykke,
-                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"));
-        setBekreftelse(okonomi.getOpplysninger(), UTBETALING_SKATTEETATEN_SAMTYKKE, harSkatteetatenSamtykke,
-                textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"));
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
+        if(harSkatteetatenSamtykke) {
+            skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
+        }
+        if(harBostotteSamtykke) {
+            bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
+        }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
     }
 

@@ -101,13 +101,13 @@ public class BostotteRessurs {
 
         boolean lagretSamtykke = hentSamtykkeFraSoknad(opplysninger);
 
-        removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE);
-        setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"));
-
-        if(samtykke != lagretSamtykke) {
-            bostotteSystemdata.updateSystemdataIn(soknad, token);
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        if(lagretSamtykke != samtykke) {
+            removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE);
+            setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"));
         }
+
+        bostotteSystemdata.updateSystemdataIn(soknad, token);
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
     private boolean hentSamtykkeFraSoknad(JsonOkonomiopplysninger opplysninger) {
