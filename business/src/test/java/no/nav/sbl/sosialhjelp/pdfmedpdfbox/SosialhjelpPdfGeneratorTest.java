@@ -380,19 +380,19 @@ public class SosialhjelpPdfGeneratorTest {
                                         new JsonOkonomiOpplysningUtbetaling()
                                                 .withType("skatteetaten")
                                                 .withBrutto(2000.0)
-                                                .withPeriodeFom("01.08.2019")
-                                                .withPeriodeTom("31.08.2019")
+                                                .withPeriodeFom("2019-08-01")
+                                                .withPeriodeTom("2019-08-31")
                                                 .withSkattetrekk(25.0)
                                                 .withOrganisasjon(new JsonOrganisasjon().withNavn("The Millennium Falcon")),
                                         new JsonOkonomiOpplysningUtbetaling()
                                                 .withType("navytelse")
                                                 .withBrutto(2000.0)
                                                 .withNetto(1500.0)
-                                                .withUtbetalingsdato("31.08.2019"),
+                                                .withUtbetalingsdato("2019-08-31"),
                                         new JsonOkonomiOpplysningUtbetaling()
                                                 .withType("husbanken")
                                                 .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND)
-                                                .withUtbetalingsdato("31.08.2019")
+                                                .withUtbetalingsdato("2019-08-31")
                                                 .withNetto(6000.0)
                                 ))
                         )

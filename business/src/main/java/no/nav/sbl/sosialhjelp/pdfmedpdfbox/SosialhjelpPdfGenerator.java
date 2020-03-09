@@ -46,6 +46,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import org.apache.commons.lang3.LocaleUtils;
+import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -370,8 +371,8 @@ public class SosialhjelpPdfGenerator {
                 if (forhold.getArbeidsgivernavn() != null) {
                     pdf.skrivTekst(forhold.getArbeidsgivernavn());
                 }
-                skrivTekstMedGuard(pdf, forhold.getFom(), "arbeidsforhold.fom.label");
-                skrivTekstMedGuard(pdf, forhold.getTom(), "arbeidsforhold.tom.label");
+                skrivTekstMedGuard(pdf, formaterDato(forhold.getFom()), "arbeidsforhold.fom.label");
+                skrivTekstMedGuard(pdf, formaterDato(forhold.getTom()), "arbeidsforhold.tom.label");
 
                 if (forhold.getStillingsprosent() != null) {
                     pdf.skrivTekst(getTekst("arbeidsforhold.stillingsprosent.label") + ": " + forhold.getStillingsprosent());
@@ -478,7 +479,7 @@ public class SosialhjelpPdfGenerator {
                                 pdf.addBlankLine();
 
                                 pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift.ektefelle.fodselsdato"));
-                                pdf.skrivTekstMedInnrykk(ektefelle.getFodselsdato(), INNRYKK_2);
+                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato()), INNRYKK_2);
 
                                 pdf.addBlankLine();
 
@@ -534,7 +535,7 @@ public class SosialhjelpPdfGenerator {
 
                             pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.fnr.label"));
                             if (ektefelle.getFodselsdato() != null) {
-                                pdf.skrivTekstMedInnrykk(ektefelle.getFodselsdato(), INNRYKK_2);
+                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato()), INNRYKK_2);
                             } else {
                                 pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
                             }
@@ -623,7 +624,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(getTekst("familie.barn.true.barn.navn.label") + ": " + navnPaBarnTekst);
 
                             // Fødselsdato
-                            String fodselsdato = barn.getFodselsdato();
+                            String fodselsdato = formaterDato(barn.getFodselsdato());
                             skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fnr");
 
                             // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
@@ -894,7 +895,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(getTekst("utbetalinger.utbetaling.brutto.label") + ": " + navytelse.getBrutto());
                         }
                         if (navytelse.getUtbetalingsdato() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.erutbetalt.label") + ": " + navytelse.getUtbetalingsdato());
+                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.erutbetalt.label") + ": " + formaterDato(navytelse.getUtbetalingsdato()));
                         }
                     }
                     if (utvidetSoknad) {
@@ -967,14 +968,14 @@ public class SosialhjelpPdfGenerator {
                     if (husbanken.getMottaker() != null) {
                         pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.mottaker") + ": " + husbanken.getMottaker().value());
                     }
-                    pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.utbetalingsdato") + ": " + husbanken.getUtbetalingsdato());
+                    pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.utbetalingsdato") + ": " + formaterDato(husbanken.getUtbetalingsdato()));
                     pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.belop") + ": " + husbanken.getNetto());
                 }
                 JsonBostotte bostotte = okonomi.getOpplysninger().getBostotte();
                 if (bostotte != null && bostotte.getSaker() != null) {
                     for (JsonBostotteSak bostotteSak : bostotte.getSaker()) {
                         pdf.skrivTekst("inntekt.bostotte.sak");
-                        pdf.skrivTekst(bostotteSak.getDato());
+                        pdf.skrivTekst(formaterDato(bostotteSak.getDato()));
                         pdf.skrivTekst(getTekst("inntekt.bostotte.sak.status"));
                         pdf.skrivTekst(finnSaksStatus(bostotteSak));
                     }
@@ -1613,5 +1614,16 @@ public class SosialhjelpPdfGenerator {
             svaralternativer.add("familie.barn.true.barnebidrag.ingen");
             skrivSvaralternativer(pdf, svaralternativer);
         }
+    }
+
+    private String formaterDato(String dato) {
+        if (dato == null) {
+            return "";
+        }
+        Locale locale = new Locale("nb", "NO");
+        String format = "d. MMMM yyyy";
+        LocalDate localDate = new LocalDate(dato);
+
+        return localDate.toString(format, locale);
     }
 }
