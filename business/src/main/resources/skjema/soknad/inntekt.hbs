@@ -30,6 +30,11 @@
                         {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.gi_samtykke"}}}
                     {{/if}}
                 {{else}}
+                    {{#hentOkonomiBekreftelse "bostotte_samtykke"}}
+                        <div>
+                            Sist oppdatert: {{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}
+                        </div>
+                    {{/hentOkonomiBekreftelse}}
                     {{#if @root.utvidetSoknad}}
                         <div class="verdi verdi--tekst">
                             Har gitt samtykke til å hente informasjon fra Skatteetaten
@@ -311,6 +316,11 @@
                         {{/if}}
                     {{/if}}
                 {{else}}
+                    {{#hentOkonomiBekreftelse "bostotte_samtykke"}}
+                        <div>
+                            Sist oppdatert: {{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}
+                        </div>
+                    {{/hentOkonomiBekreftelse}}
                     {{#if @root.utvidetSoknad}}
                         {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
                         <ul class="svar-liste">

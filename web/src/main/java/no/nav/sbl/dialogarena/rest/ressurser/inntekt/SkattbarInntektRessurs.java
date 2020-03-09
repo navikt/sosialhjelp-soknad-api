@@ -66,7 +66,7 @@ public class SkattbarInntektRessurs {
         return new SkattbarInntektFrontend()
                 .withInntektFraSkatteetaten(organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger))
                 .withInntektFraSkatteetatenFeilet(soknad.getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet())
-                .withInntektFraSkatteetatenSamtykke(hentSamtykkeFraSoknad(soknad));
+                .withInntektFraSkatteetatenSamtykke(hentSamtykkeBooleanFraSoknad(soknad), hentSamtykkeDatoFraSoknad(soknad));
     }
 
     @POST
@@ -78,7 +78,7 @@ public class SkattbarInntektRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 
-        boolean lagretSamtykke = hentSamtykkeFraSoknad(soknad.getJsonInternalSoknad());
+        boolean lagretSamtykke = hentSamtykkeBooleanFraSoknad(soknad.getJsonInternalSoknad());
 
         removeBekreftelserIfPresent(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE);
         setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"));
@@ -89,10 +89,18 @@ public class SkattbarInntektRessurs {
         }
     }
 
-    private boolean hentSamtykkeFraSoknad(JsonInternalSoknad soknad) {
+    private boolean hentSamtykkeBooleanFraSoknad(JsonInternalSoknad soknad) {
         return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals(UTBETALING_SKATTEETATEN_SAMTYKKE))
                 .anyMatch(JsonOkonomibekreftelse::getVerdi);
+    }
+
+    private String hentSamtykkeDatoFraSoknad(JsonInternalSoknad soknad) {
+        return soknad.getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals(UTBETALING_SKATTEETATEN_SAMTYKKE))
+                .filter(JsonOkonomibekreftelse::getVerdi)
+                .findAny()
+                .map(JsonOkonomibekreftelse::getBekreftelsesDato).orElse(null);
     }
 
     private List<SkattbarInntektOgForskuddstrekk> organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(List<JsonOkonomiOpplysningUtbetaling> skatteopplysninger) {
@@ -203,7 +211,6 @@ public class SkattbarInntektRessurs {
             this.tittel = tittel;
             return this;
         }
-
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -212,6 +219,7 @@ public class SkattbarInntektRessurs {
         public List<SkattbarInntektOgForskuddstrekk> inntektFraSkatteetaten;
         public Boolean inntektFraSkatteetatenFeilet;
         public Boolean samtykke;
+        public String samtykkeTidspunkt;
 
         public SkattbarInntektFrontend withInntektFraSkatteetaten(List<SkattbarInntektOgForskuddstrekk> inntektFraSkatteetaten) {
             this.inntektFraSkatteetaten = inntektFraSkatteetaten;
@@ -222,8 +230,9 @@ public class SkattbarInntektRessurs {
             this.inntektFraSkatteetatenFeilet = inntektFraSkatteetatenFeilet;
             return this;
         }
-        public SkattbarInntektFrontend withInntektFraSkatteetatenSamtykke(Boolean samtykke) {
+        public SkattbarInntektFrontend withInntektFraSkatteetatenSamtykke(Boolean samtykke, String samtykkeTidspunkt) {
             this.samtykke = samtykke;
+            this.samtykkeTidspunkt = samtykkeTidspunkt;
             return this;
         }
     }

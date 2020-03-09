@@ -116,6 +116,14 @@ public class BostotteRessurs {
                 .anyMatch(JsonOkonomibekreftelse::getVerdi);
     }
 
+    private String hentSamtykkeDatoFraSoknad(JsonOkonomiopplysninger opplysninger) {
+        return opplysninger.getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals(BOSTOTTE_SAMTYKKE))
+                .filter(JsonOkonomibekreftelse::getVerdi)
+                .findAny()
+                .map(JsonOkonomibekreftelse::getBekreftelsesDato).orElse(null);
+    }
+
     private void setBekreftelseOnBostotteFrontend(JsonOkonomiopplysninger opplysninger, BostotteFrontend bostotteFrontend) {
         opplysninger.getBekreftelse().stream()
                 .filter(bekreftelse -> bekreftelse.getType().equals(BOSTOTTE))
@@ -124,7 +132,7 @@ public class BostotteRessurs {
     }
 
     private void setSamtykkeOnBostotteFrontend(JsonOkonomiopplysninger opplysninger, BostotteFrontend bostotteFrontend) {
-        bostotteFrontend.setSamtykke(hentSamtykkeFraSoknad(opplysninger));
+        bostotteFrontend.setSamtykke(hentSamtykkeFraSoknad(opplysninger), hentSamtykkeDatoFraSoknad(opplysninger));
     }
 
     private List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalinger(JsonInternalSoknad soknad) {
@@ -147,13 +155,15 @@ public class BostotteRessurs {
         public List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
         public List<JsonBostotteSak> saker;
         public Boolean stotteFraHusbankenFeilet;
+        public String samtykkeTidspunkt;
 
         public void setBekreftelse(Boolean bekreftelse) {
             this.bekreftelse = bekreftelse;
         }
 
-        public void setSamtykke(Boolean samtykke) {
+        public void setSamtykke(Boolean samtykke, String samtykkeTidspunkt) {
             this.samtykke = samtykke;
+            this.samtykkeTidspunkt = samtykkeTidspunkt;
         }
 
         public void setUtbetalinger(List<JsonOkonomiOpplysningUtbetaling> utbetalinger) {

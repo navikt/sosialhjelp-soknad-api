@@ -22,6 +22,7 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
+import static no.nav.sbl.sosialhjelp.SoknadUnderArbeidService.naTidspunkFormatertForFilformat;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -49,6 +50,10 @@ public class SkattetatenSystemdata {
             if (systemUtbetalingerSkattbar == null) {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
             } else {
+                jsonData.getOkonomi().getOpplysninger().getBekreftelse().stream()
+                        .filter(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN_SAMTYKKE))
+                        .findAny()
+                        .ifPresent(bekreftelse -> bekreftelse.withBekreftelsesDato(naTidspunkFormatertForFilformat()));
                 fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
                 okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar);
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);

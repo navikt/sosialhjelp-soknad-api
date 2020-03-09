@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
+import static no.nav.sbl.sosialhjelp.SoknadUnderArbeidService.naTidspunkFormatertForFilformat;
 
 @Component
 public class BostotteSystemdata {
@@ -37,6 +38,10 @@ public class BostotteSystemdata {
             String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
             BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
             if (bostotteDto != null) {
+                okonomi.getOpplysninger().getBekreftelse().stream()
+                        .filter(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE))
+                        .findAny()
+                        .ifPresent(bekreftelse -> bekreftelse.withBekreftelsesDato(naTidspunkFormatertForFilformat()));
                 fjernGamleHusbankenData(okonomi.getOpplysninger());
                 boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
                 List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
@@ -83,7 +88,7 @@ public class BostotteSystemdata {
         int filterDays = trengerViDataFraDeSiste60Dager ? 60 : 30;
         return bostotteDto.getUtbetalinger().stream()
                 .filter(utbetalingerDto -> utbetalingerDto.getUtbetalingsdato().isAfter(LocalDate.now().minusDays(filterDays)))
-                .map(this::mapToJsonOkonomiOpplysningUtbetaling)
+                .map(utbetalingerDto1 -> mapToJsonOkonomiOpplysningUtbetaling(utbetalingerDto1))
                 .collect(Collectors.toList());
     }
 
@@ -106,7 +111,7 @@ public class BostotteSystemdata {
         int filterDays = trengerViDataFraDeSiste60Dager ? 60 : 30;
         return bostotteDto.getSaker().stream()
                 .filter(sakerDto -> sakerDto.getDato().isAfter(LocalDate.now().minusDays(filterDays)))
-                .map(this::mapToBostotteSak)
+                .map(sakerDto1 -> mapToBostotteSak(sakerDto1))
                 .collect(Collectors.toList());
     }
 
