@@ -66,7 +66,6 @@ public class SosialhjelpPdfGenerator {
     private final Logger logger = getLogger(SosialhjelpPdfGenerator.class);
 
     private final String DATO_FORMAT = "d. MMMM yyyy";
-    private final String FODSELSDAG_FORMAT = "dd-MM-yyyy";
 
     @Inject
     public NavMessageSource navMessageSource;
@@ -482,7 +481,7 @@ public class SosialhjelpPdfGenerator {
                                 pdf.addBlankLine();
 
                                 pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift.ektefelle.fodselsdato"));
-                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), FODSELSDAG_FORMAT), INNRYKK_2);
+                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), INNRYKK_2);
 
                                 pdf.addBlankLine();
 
@@ -538,7 +537,7 @@ public class SosialhjelpPdfGenerator {
 
                             pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.fnr.label"));
                             if (ektefelle.getFodselsdato() != null) {
-                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), FODSELSDAG_FORMAT), INNRYKK_2);
+                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), INNRYKK_2);
                             } else {
                                 pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
                             }
@@ -627,7 +626,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(getTekst("familie.barn.true.barn.navn.label") + ": " + navnPaBarnTekst);
 
                             // Fødselsdato
-                            String fodselsdato = formaterDato(barn.getFodselsdato(), FODSELSDAG_FORMAT);
+                            String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
                             skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fnr");
 
                             // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
