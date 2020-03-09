@@ -54,12 +54,19 @@ public class PdfGenerator {
     public static final int EXTENDED_LATIN_START = 0x00A0;
     public static final int EXTENDED_LATIN_END = 0x0170;
 
+
+
     private PDDocument document = new PDDocument();
     private ArrayList<PDPage> completedPages;
     private PDPage currentPage = new PDPage(PDRectangle.A4);
     private ArrayList<PDPageContentStream> completedStreams;
     private PDPageContentStream currentStream;
     private float y;
+
+    private final PDFont FONT_REGULAR = PDType0Font.load(document, new ClassPathResource(REGULAR).getInputStream());
+    private final PDFont FONT_BOLD = PDType0Font.load(document, new ClassPathResource(BOLD).getInputStream());
+    private final PDFont FONT_KURSIV = PDType0Font.load(document, new ClassPathResource(KURSIV).getInputStream());
+
 
     public PdfGenerator() throws IOException {
         this.currentStream = new PDPageContentStream(document, currentPage);
@@ -106,59 +113,59 @@ public class PdfGenerator {
     }
 
     public void skrivTekst(String text) throws IOException {
-        this.addParagraph(text, REGULAR, FONT_PLAIN_SIZE, MARGIN);
+        this.addParagraph(text, FONT_REGULAR, FONT_PLAIN_SIZE, MARGIN);
     }
 
     public void skrivTekstKursiv(String text) throws IOException {
-        this.addParagraph(text, KURSIV, FONT_PLAIN_SIZE, MARGIN);
+        this.addParagraph(text, FONT_KURSIV, FONT_PLAIN_SIZE, MARGIN);
     }
 
     public void skrivTekstMedInnrykk(String text, int innrykk) throws IOException {
-        this.addParagraph(text, REGULAR, FONT_PLAIN_SIZE, innrykk);
+        this.addParagraph(text, FONT_REGULAR, FONT_PLAIN_SIZE, innrykk);
     }
 
     public void skrivTekstBold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_PLAIN_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_PLAIN_SIZE, MARGIN);
     }
 
     public void skrivH1(String tekst) throws IOException {
-        this.addParagraph(tekst, REGULAR, FONT_H1_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H1_SIZE, MARGIN);
     }
 
     public void skrivH1Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_H1_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H1_SIZE, MARGIN);
     }
 
     public void skrivH2(String tekst) throws IOException {
-        this.addParagraph(tekst, REGULAR, FONT_H2_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H2_SIZE, MARGIN);
     }
 
     public void skrivH2Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_H2_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H2_SIZE, MARGIN);
     }
 
     public void skrivH3(String tekst) throws IOException {
-        this.addParagraph(tekst, REGULAR, FONT_H3_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H3_SIZE, MARGIN);
     }
 
     public void skrivH3Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_H3_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H3_SIZE, MARGIN);
     }
 
     public void skrivH4(String tekst) throws IOException {
-        this.addParagraph(tekst, REGULAR, FONT_H4_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H4_SIZE, MARGIN);
     }
 
     public void skrivH4Bold(String tekst) throws IOException {
-        this.addParagraph(tekst, BOLD, FONT_H4_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_BOLD, FONT_H4_SIZE, MARGIN);
     }
 
     public void addCenteredH1Bold(String heading) throws IOException {
-        addCenteredParagraph(heading, BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
+        addCenteredParagraph(heading, FONT_BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
     }
 
     public void addCenteredH4Bold(String heading) throws IOException {
-        addCenteredParagraph(heading, BOLD, FONT_H4_SIZE, LEADING_PERCENTAGE);
+        addCenteredParagraph(heading, FONT_BOLD, FONT_H4_SIZE, LEADING_PERCENTAGE);
     }
 
 
@@ -171,12 +178,10 @@ public class PdfGenerator {
 
     public void addParagraph(
             String text,
-            String fontType,
+            PDFont font,
             float fontSize,
             int margin
     ) throws IOException {
-
-        PDFont font = getFont(fontType);
 
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
@@ -204,12 +209,10 @@ public class PdfGenerator {
 
     public void addCenteredParagraph(
             String heading,
-            String fontType,
+            PDFont font,
             float fontSize,
             float leadingPercentage
     ) throws IOException {
-
-        PDFont font = getFont(fontType);
 
         List<String> lines = parseLines(heading, font, fontSize);
         this.currentStream.beginText();
@@ -317,10 +320,6 @@ public class PdfGenerator {
     public void addLink(String uri, String text) throws IOException {
 
         skrivTekst(text);
-    }
-
-    private PDFont getFont(String path) throws IOException {
-        return PDType0Font.load(document, new ClassPathResource(path).getInputStream());
     }
 
     private static byte[] logo() {
