@@ -1313,10 +1313,13 @@ public class SosialhjelpPdfGenerator {
         }
 
         // Formue
-        List<String> sparingTyper = new ArrayList<>(3);
+        List<String> sparingTyper = new ArrayList<>(6);
+        sparingTyper.add("aksjer");
         sparingTyper.add("brukskonto");
         sparingTyper.add("bsu");
+        sparingTyper.add("livsforsikring");
         sparingTyper.add("sparekonto");
+        sparingTyper.add("annet");
         for (JsonOkonomioversiktFormue formue : okonomi.getOversikt().getFormue()) {
             if (sparingTyper.contains(formue.getType())) {
                 pdf.skrivTekst(formue.getTittel());
@@ -1549,7 +1552,7 @@ public class SosialhjelpPdfGenerator {
     }
 
     private void leggTilMetainformasjon(PdfGenerator pdf, JsonSoknad soknad) throws IOException {
-        pdf.skrivTekst("Søknaden er sendt " + soknad.getInnsendingstidspunkt());
+        pdf.skrivTekst("Søknaden er sendt " + formaterDato(soknad.getInnsendingstidspunkt(), "d. MMMM yyyy HH:mm"));
         pdf.skrivTekst("Versjonsnummer: " + soknad.getVersion());
         if (soknad.getMottaker() != null) {
             pdf.skrivTekst("Sendt til: " + soknad.getMottaker().getNavEnhetsnavn());
