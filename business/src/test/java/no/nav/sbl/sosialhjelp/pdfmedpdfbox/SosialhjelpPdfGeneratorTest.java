@@ -20,30 +20,41 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.ReflectionUtils;
 
-import javax.inject.Inject;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
@@ -111,53 +122,53 @@ public class SosialhjelpPdfGeneratorTest {
 
     private JsonInternalSoknad getJsonInternalSoknadWithMandatoryFields() {
         return new JsonInternalSoknad()
-            .withSoknad(new JsonSoknad()
-                .withVersion("1.0")
-                .withData(new JsonData()
-                    .withPersonalia(new JsonPersonalia()
-                        .withPersonIdentifikator(new JsonPersonIdentifikator()
-                            .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                            .withVerdi("1234")
+                .withSoknad(new JsonSoknad()
+                        .withVersion("1.0")
+                        .withData(new JsonData()
+                                .withPersonalia(new JsonPersonalia()
+                                        .withPersonIdentifikator(new JsonPersonIdentifikator()
+                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                                .withVerdi("1234")
+                                        )
+                                        .withNavn(new JsonSokernavn()
+                                                .withFornavn("Navn")
+                                                .withMellomnavn("")
+                                                .withEtternavn("Navnesen")
+                                                .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                                        )
+                                        .withKontonummer(new JsonKontonummer()
+                                                .withKilde(SYSTEM)
+                                                .withVerdi("0000")
+                                        )
+                                )
+                                .withArbeid(new JsonArbeid())
+                                .withUtdanning(new JsonUtdanning()
+                                        .withKilde(SYSTEM)
+                                )
+                                .withFamilie(new JsonFamilie()
+                                        .withForsorgerplikt(new JsonForsorgerplikt())
+                                )
+                                .withBegrunnelse(new JsonBegrunnelse()
+                                        .withKilde(JsonKildeBruker.BRUKER)
+                                        .withHvaSokesOm("")
+                                        .withHvorforSoke("")
+                                )
+                                .withBosituasjon(new JsonBosituasjon()
+                                        .withKilde(JsonKildeBruker.BRUKER)
+                                )
+                                .withOkonomi(new JsonOkonomi()
+                                        .withOpplysninger(new JsonOkonomiopplysninger()
+                                                .withUtbetaling(Collections.emptyList())
+                                                .withUtgift(Collections.emptyList())
+                                        )
+                                        .withOversikt(new JsonOkonomioversikt()
+                                                .withInntekt(Collections.emptyList())
+                                                .withUtgift(Collections.emptyList())
+                                                .withFormue(Collections.emptyList())
+                                        )
+                                )
                         )
-                        .withNavn(new JsonSokernavn()
-                            .withFornavn("Navn")
-                            .withMellomnavn("")
-                            .withEtternavn("Navnesen")
-                            .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                        )
-                        .withKontonummer(new JsonKontonummer()
-                            .withKilde(SYSTEM)
-                            .withVerdi("0000")
-                        )
-                    )
-                    .withArbeid(new JsonArbeid())
-                    .withUtdanning(new JsonUtdanning()
-                        .withKilde(SYSTEM)
-                    )
-                    .withFamilie(new JsonFamilie()
-                        .withForsorgerplikt(new JsonForsorgerplikt())
-                    )
-                    .withBegrunnelse(new JsonBegrunnelse()
-                        .withKilde(JsonKildeBruker.BRUKER)
-                        .withHvaSokesOm("")
-                        .withHvorforSoke("")
-                    )
-                    .withBosituasjon(new JsonBosituasjon()
-                        .withKilde(JsonKildeBruker.BRUKER)
-                    )
-                    .withOkonomi(new JsonOkonomi()
-                        .withOpplysninger(new JsonOkonomiopplysninger()
-                            .withUtbetaling(Collections.emptyList())
-                            .withUtgift(Collections.emptyList())
-                        )
-                        .withOversikt(new JsonOkonomioversikt()
-                            .withInntekt(Collections.emptyList())
-                            .withUtgift(Collections.emptyList())
-                            .withFormue(Collections.emptyList())
-                        )
-                    )
-                )
-        );
+                );
 
     }
 
@@ -350,11 +361,11 @@ public class SosialhjelpPdfGeneratorTest {
 
                                                         )
                                                 )
-                                        .withBarnebidrag(
-                                                new JsonBarnebidrag()
-                                                .withKilde(JsonKildeBruker.BRUKER)
-                                                .withVerdi(JsonBarnebidrag.Verdi.MOTTAR)
-                                        )
+                                                .withBarnebidrag(
+                                                        new JsonBarnebidrag()
+                                                                .withKilde(JsonKildeBruker.BRUKER)
+                                                                .withVerdi(JsonBarnebidrag.Verdi.MOTTAR)
+                                                )
                                 )
 
                 )
@@ -364,32 +375,32 @@ public class SosialhjelpPdfGeneratorTest {
                                 .withAntallPersoner(2)
                 )
                 .withOkonomi(new JsonOkonomi()
-                    .withOpplysninger(new JsonOkonomiopplysninger()
-                            .withUtbetaling(Arrays.asList(
-                                    new JsonOkonomiOpplysningUtbetaling()
-                                        .withType("skatteetaten")
-                                        .withBrutto(2000.0)
-                                        .withPeriodeFom("01.08.2019")
-                                        .withPeriodeTom("31.08.2019")
-                                        .withSkattetrekk(25.0)
-                                        .withOrganisasjon(new JsonOrganisasjon().withNavn("The Millennium Falcon")),
-                                    new JsonOkonomiOpplysningUtbetaling()
-                                        .withType("navytelse")
-                                        .withBrutto(2000.0)
-                                        .withNetto(1500.0)
-                                        .withUtbetalingsdato("31.08.2019"),
-                                    new JsonOkonomiOpplysningUtbetaling()
-                                        .withType("husbanken")
-                                        .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND)
-                                        .withUtbetalingsdato("31.08.2019")
-                                        .withNetto(6000.0)
-                            ))
-                    )
-                    .withOversikt(new JsonOkonomioversikt()
-                        .withInntekt(Collections.emptyList())
-                        .withFormue(Collections.emptyList())
-                        .withUtgift(Collections.emptyList())
-                    )
+                        .withOpplysninger(new JsonOkonomiopplysninger()
+                                .withUtbetaling(Arrays.asList(
+                                        new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("skatteetaten")
+                                                .withBrutto(2000.0)
+                                                .withPeriodeFom("01.08.2019")
+                                                .withPeriodeTom("31.08.2019")
+                                                .withSkattetrekk(25.0)
+                                                .withOrganisasjon(new JsonOrganisasjon().withNavn("The Millennium Falcon")),
+                                        new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("navytelse")
+                                                .withBrutto(2000.0)
+                                                .withNetto(1500.0)
+                                                .withUtbetalingsdato("31.08.2019"),
+                                        new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("husbanken")
+                                                .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND)
+                                                .withUtbetalingsdato("31.08.2019")
+                                                .withNetto(6000.0)
+                                ))
+                        )
+                        .withOversikt(new JsonOkonomioversikt()
+                                .withInntekt(Collections.emptyList())
+                                .withFormue(Collections.emptyList())
+                                .withUtgift(Collections.emptyList())
+                        )
                 );
 
         final JsonSoknad jsonSoknad = new JsonSoknad()

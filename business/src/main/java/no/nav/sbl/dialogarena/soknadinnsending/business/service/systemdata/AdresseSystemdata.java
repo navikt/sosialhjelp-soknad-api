@@ -6,7 +6,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Sy
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;

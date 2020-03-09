@@ -1,7 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteImpl;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteMottaker;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRolle;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.VedtakDto;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
