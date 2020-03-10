@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MetricsUtils.navKontorTilInfluxNavn;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Service
@@ -72,16 +73,7 @@ public class FiksHandterer {
     private Event lagForsoktSendtTilFiksEvent(SendtSoknad sendtSoknad) {
         Event event = MetricsFactory.createEvent("digisos.fikshandterer.sendt");
         event.addTagToReport("ettersendelse", sendtSoknad.erEttersendelse() ? "true" : "false");
-        event.addTagToReport("mottaker", tilInfluxNavn(sendtSoknad.getNavEnhetsnavn()));
+        event.addTagToReport("mottaker", navKontorTilInfluxNavn(sendtSoknad.getNavEnhetsnavn()));
         return event;
-    }
-
-    private String tilInfluxNavn(String mottaker) {
-        if (mottaker == null) {
-            return "";
-        }
-        return mottaker
-                .replace("NAV", "")
-                .replace(",", "");
     }
 }

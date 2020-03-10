@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
@@ -18,6 +20,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
@@ -33,6 +36,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MetricsUtils.navKontorTilInfluxNavn;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -52,7 +56,7 @@ public class DigisosApiService {
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @Inject
-    private InnsendingService innSendingService;
+    private InnsendingService innsendingService;
 
     @Inject
     private HenvendelseService henvendelseService;
@@ -111,7 +115,23 @@ public class DigisosApiService {
     }
 
     String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String behandlingsId, String token) {
-        return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
+        Event event = lagForsoktSendtDigisosApiEvent(behandlingsId, OidcFeatureToggleUtils.getUserId());
+        try {
+            return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
+        } catch (Exception e) {
+            event.setFailed();
+            throw e;
+        } finally {
+            event.report();
+        }
+    }
+
+    private Event lagForsoktSendtDigisosApiEvent(String behandlingsId, String eier){
+        SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
+        Event event = MetricsFactory.createEvent("fiks.digisosapi.sendt");
+        event.addTagToReport("ettersendelse", sendtSoknad.erEttersendelse() ? "true" : "false");
+        event.addTagToReport("mottaker", navKontorTilInfluxNavn(sendtSoknad.getNavEnhetsnavn()));
+        return event;
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
@@ -130,7 +150,7 @@ public class DigisosApiService {
 
 
     private List<FilOpplasting> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
-        List<OpplastetVedlegg> opplastedeVedlegg = innSendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
+        List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
         return opplastedeVedlegg.stream()
                 .map(this::opprettDokumentForVedlegg)
                 .collect(Collectors.toList());
