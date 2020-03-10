@@ -158,7 +158,7 @@ public class DigisosApiImpl implements DigisosApi {
             cacheTimestamp = LocalDateTime.now();
             return collect;
         } catch (Exception e) {
-            if(cacheForKommuneinfo.get().isEmpty()) {
+            if (cacheForKommuneinfo.get().isEmpty()) {
                 log.error("Hent kommuneinfo feiler og cache er tom!", e);
                 return Collections.emptyMap();
             }

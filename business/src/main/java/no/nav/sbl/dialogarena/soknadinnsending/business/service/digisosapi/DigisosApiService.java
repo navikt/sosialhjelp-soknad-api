@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MetricsUtils.navKontorTilInfluxNavn;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -52,7 +55,7 @@ public class DigisosApiService {
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @Inject
-    private InnsendingService innSendingService;
+    private InnsendingService innsendingService;
 
     @Inject
     private HenvendelseService henvendelseService;
@@ -110,8 +113,22 @@ public class DigisosApiService {
 
     }
 
-    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String behandlingsId, String token) {
-        return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
+    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEnhetsnavn, String behandlingsId, String token) {
+        Event event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn);
+        try {
+            return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
+        } catch (Exception e) {
+            event.setFailed();
+            throw e;
+        } finally {
+            event.report();
+        }
+    }
+
+    private Event lagForsoktSendtDigisosApiEvent(String navEnhetsnavn){
+        Event event = MetricsFactory.createEvent("fiks.digisosapi.sendt");
+        event.addTagToReport("mottaker", navKontorTilInfluxNavn(navEnhetsnavn));
+        return event;
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
@@ -130,7 +147,7 @@ public class DigisosApiService {
 
 
     private List<FilOpplasting> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
-        List<OpplastetVedlegg> opplastedeVedlegg = innSendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
+        List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
         return opplastedeVedlegg.stream()
                 .map(this::opprettDokumentForVedlegg)
                 .collect(Collectors.toList());
@@ -203,7 +220,7 @@ public class DigisosApiService {
         log.info("Starter kryptering av filer for {}, skal sende til kommune {} med enhetsnummer {} og navenhetsnavn {}", behandlingsId,  kommunenummer,
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getEnhetsnummer(),
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
-        String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, behandlingsId, token);
+        String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
