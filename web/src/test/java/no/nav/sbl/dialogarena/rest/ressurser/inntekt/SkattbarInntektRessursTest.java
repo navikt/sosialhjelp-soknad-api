@@ -161,10 +161,7 @@ public class SkattbarInntektRessursTest {
         verify(soknadUnderArbeidRepository, times(0)).oppdaterSoknadsdata(any(), anyString());
 
         // Sjekker soknaden
-        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
-        JsonOkonomibekreftelse bekreftelse = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(bekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(bekreftelse.getVerdi()).isFalse();
+        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(0);
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

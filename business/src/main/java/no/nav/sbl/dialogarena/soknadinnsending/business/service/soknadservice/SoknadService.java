@@ -25,6 +25,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -42,6 +43,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +54,8 @@ import java.util.stream.Collectors;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -128,11 +134,19 @@ public class SoknadService {
     public void sendSoknad(String behandlingsId) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()){
+        if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
         logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
+        if (soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()) {
+            logger.info("Nedlasing fra Husbanken har feilet for innsendtsoknad." +
+                    finnAlderPaaDataFor(soknadUnderArbeid, BOSTOTTE_SAMTYKKE));
+        }
+        if (soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet()) {
+            logger.info("Nedlasing fra Skatteetaten har feilet for innsendtsoknad." +
+                    finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE));
+        }
 
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, false);
@@ -146,11 +160,28 @@ public class SoknadService {
         }
     }
 
+    private String finnAlderPaaDataFor(SoknadUnderArbeid soknadUnderArbeid, String type) {
+        String bekreftelsesDatoStreng = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
+                .getOkonomi().getOpplysninger().getBekreftelse().stream()
+                .filter(bekreftelse -> bekreftelse.getType().equals(type))
+                .filter(JsonOkonomibekreftelse::getVerdi)
+                .findAny()
+                .map(JsonOkonomibekreftelse::getBekreftelsesDato).orElse(null);
+        if (bekreftelsesDatoStreng == null) {
+            return "";
+        }
+        OffsetDateTime bekreftelsesDato = OffsetDateTime.parse(bekreftelsesDatoStreng);
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+        return " Dataene er " + bekreftelsesDato.until(now, ChronoUnit.DAYS) + " dager, " +
+                bekreftelsesDato.until(now, ChronoUnit.HOURS) % 24 + " timer og " +
+                bekreftelsesDato.until(now, ChronoUnit.MINUTES) % 60 + " minutter gamle.";
+    }
+
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
-        if (soknadUnderArbeidOptional.isPresent()){
+        if (soknadUnderArbeidOptional.isPresent()) {
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
             henvendelseService.avbrytSoknad(soknadUnderArbeidOptional.get().getBehandlingsId(), false);
             soknadMetricsService.avbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse());
@@ -161,10 +192,10 @@ public class SoknadService {
     public void oppdaterSamtykker(String behandlingsId, boolean harBostotteSamtykke, boolean harSkatteetatenSamtykke, String token) {
         final String eier = OidcFeatureToggleUtils.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        if(harSkatteetatenSamtykke) {
+        if (harSkatteetatenSamtykke) {
             skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
         }
-        if(harBostotteSamtykke) {
+        if (harBostotteSamtykke) {
             bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
@@ -260,7 +291,7 @@ public class SoknadService {
 
     private static void logAlderTilKibana(String eier) {
         int age = new PersonAlder(eier).getAlder();
-        if ( age > 0 && age < 30 ) {
+        if (age > 0 && age < 30) {
             logger.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: " + age);
         } else {
             logger.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder:" + age);

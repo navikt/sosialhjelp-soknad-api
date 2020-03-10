@@ -30,10 +30,8 @@
                         {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.gi_samtykke"}}}
                     {{/if}}
                 {{else}}
-                    {{#hentOkonomiBekreftelse "bostotte_samtykke"}}
-                        <div>
-                            Sist oppdatert: {{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}
-                        </div>
+                    {{#hentOkonomiBekreftelse "skatteetaten_samtykke"}}
+                        <div>{{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}</div>
                     {{/hentOkonomiBekreftelse}}
                     {{#if @root.utvidetSoknad}}
                         <div class="verdi verdi--tekst">
@@ -316,11 +314,6 @@
                         {{/if}}
                     {{/if}}
                 {{else}}
-                    {{#hentOkonomiBekreftelse "bostotte_samtykke"}}
-                        <div>
-                            Sist oppdatert: {{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}
-                        </div>
-                    {{/hentOkonomiBekreftelse}}
                     {{#if @root.utvidetSoknad}}
                         {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
                         <ul class="svar-liste">
@@ -328,6 +321,9 @@
                                 {{{ hentTekst "inntekt.bostotte.gi_samtykke.tekst" }}}
                             </li>
                         </ul>
+                        {{#hentOkonomiBekreftelse "bostotte_samtykke"}}
+                            <div>{{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}</div>
+                        {{/hentOkonomiBekreftelse}}
                         <div class="verdi verdi--tekst">
                             Har gitt samtykke til å hente informasjon fra Husbanken
                         </div>

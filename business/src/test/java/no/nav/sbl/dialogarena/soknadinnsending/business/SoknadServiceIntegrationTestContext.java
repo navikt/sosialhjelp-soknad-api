@@ -31,7 +31,6 @@ import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +38,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.sql.DataSource;
 import java.time.Clock;
 
@@ -216,11 +214,4 @@ public class SoknadServiceIntegrationTestContext {
     public OrganisasjonConsumer organisasjonConsumer() {
         return mock(OrganisasjonConsumer.class);
     }
-
-    @Bean
-    @Named("organisasjonEndpoint")
-    public OrganisasjonV4 organisasjonV4() {
-        return mock(OrganisasjonV4.class);
-    }
-
 }

@@ -28,13 +28,11 @@ import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.inject.Named;
 import java.time.Clock;
 
 import static org.mockito.Mockito.mock;
@@ -201,12 +199,6 @@ public class SoknadActionsTestConfig {
     @Bean
     public OrganisasjonConsumer organisasjonConsumer() {
         return mock(OrganisasjonConsumer.class);
-    }
-
-    @Bean
-    @Named("organisasjonEndpoint")
-    public OrganisasjonV4 organisasjonV4() {
-        return mock(OrganisasjonV4.class);
     }
 
     @Bean

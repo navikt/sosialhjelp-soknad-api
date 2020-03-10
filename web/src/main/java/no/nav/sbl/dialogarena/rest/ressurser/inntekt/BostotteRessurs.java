@@ -100,14 +100,18 @@ public class BostotteRessurs {
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 
         boolean lagretSamtykke = hentSamtykkeFraSoknad(opplysninger);
+        boolean skalLagre = samtykke;
 
         if(lagretSamtykke != samtykke) {
+            skalLagre = true;
             removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE);
             setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"));
         }
 
-        bostotteSystemdata.updateSystemdataIn(soknad, token);
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        if(skalLagre) {
+            bostotteSystemdata.updateSystemdataIn(soknad, token);
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        }
     }
 
     private boolean hentSamtykkeFraSoknad(JsonOkonomiopplysninger opplysninger) {

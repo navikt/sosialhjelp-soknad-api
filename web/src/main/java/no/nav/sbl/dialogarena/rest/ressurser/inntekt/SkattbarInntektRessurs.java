@@ -79,14 +79,18 @@ public class SkattbarInntektRessurs {
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 
         boolean lagretSamtykke = hentSamtykkeBooleanFraSoknad(soknad.getJsonInternalSoknad());
+        boolean skalLagre = samtykke;
 
-        if(lagretSamtykke != samtykke) {
+        if (lagretSamtykke != samtykke) {
+            skalLagre = true;
             removeBekreftelserIfPresent(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE);
             setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"));
         }
 
-        skattetatenSystemdata.updateSystemdataIn(soknad, token);
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        if (skalLagre) {
+            skattetatenSystemdata.updateSystemdataIn(soknad, token);
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
+        }
     }
 
     private boolean hentSamtykkeBooleanFraSoknad(JsonInternalSoknad soknad) {
@@ -230,6 +234,7 @@ public class SkattbarInntektRessurs {
             this.inntektFraSkatteetatenFeilet = inntektFraSkatteetatenFeilet;
             return this;
         }
+
         public SkattbarInntektFrontend withInntektFraSkatteetatenSamtykke(Boolean samtykke, String samtykkeTidspunkt) {
             this.samtykke = samtykke;
             this.samtykkeTidspunkt = samtykkeTidspunkt;
