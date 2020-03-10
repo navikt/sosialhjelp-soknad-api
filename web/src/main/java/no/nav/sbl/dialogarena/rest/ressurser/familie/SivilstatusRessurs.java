@@ -26,6 +26,7 @@ import java.util.Date;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.mapToJsonNavn;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -109,16 +110,6 @@ public class SivilstatusRessurs {
                 .withHarDiskresjonskode(jsonSivilstatus.getEktefelleHarDiskresjonskode())
                 .withBorSammenMed(jsonSivilstatus.getBorSammenMed())
                 .withErFolkeregistrertSammen(jsonSivilstatus.getFolkeregistrertMedEktefelle());
-    }
-
-    private JsonNavn mapToJsonNavn(NavnFrontend navn) {
-        if (navn == null){
-            return null;
-        }
-        return new JsonNavn()
-                .withFornavn(navn.fornavn != null ? navn.fornavn : "")
-                .withMellomnavn(navn.mellomnavn != null ? navn.mellomnavn : "")
-                .withEtternavn(navn.etternavn != null ? navn.etternavn : "");
     }
 
     private Boolean mapToSystemBoolean(JsonKilde kilde) {
