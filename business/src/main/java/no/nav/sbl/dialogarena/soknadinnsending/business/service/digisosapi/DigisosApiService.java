@@ -20,7 +20,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
@@ -114,8 +113,8 @@ public class DigisosApiService {
 
     }
 
-    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String behandlingsId, String token) {
-        Event event = lagForsoktSendtDigisosApiEvent(behandlingsId, OidcFeatureToggleUtils.getUserId());
+    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEnhetsnavn, String behandlingsId, String token) {
+        Event event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn);
         try {
             return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
         } catch (Exception e) {
@@ -126,11 +125,9 @@ public class DigisosApiService {
         }
     }
 
-    private Event lagForsoktSendtDigisosApiEvent(String behandlingsId, String eier){
-        SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
+    private Event lagForsoktSendtDigisosApiEvent(String navEnhetsnavn){
         Event event = MetricsFactory.createEvent("fiks.digisosapi.sendt");
-        event.addTagToReport("ettersendelse", sendtSoknad.erEttersendelse() ? "true" : "false");
-        event.addTagToReport("mottaker", navKontorTilInfluxNavn(sendtSoknad.getNavEnhetsnavn()));
+        event.addTagToReport("mottaker", navKontorTilInfluxNavn(navEnhetsnavn));
         return event;
     }
 
@@ -223,7 +220,7 @@ public class DigisosApiService {
         log.info("Starter kryptering av filer for {}, skal sende til kommune {} med enhetsnummer {} og navenhetsnavn {}", behandlingsId,  kommunenummer,
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getEnhetsnummer(),
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
-        String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, behandlingsId, token);
+        String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
