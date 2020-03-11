@@ -162,6 +162,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0704", "974586002")    // Tønsberg
             .put("5301", "974542811")    // Holmestrand
             .put("1504", "975914895")    // Ålesund, Fjord
+            .put("1532", "964980721")    // Giske
 
             .build();
 
@@ -351,7 +352,8 @@ public class KommuneTilNavEnhetMapper {
                     "3803", // Tønsberg
                     "3802", // Holmestrand
                     "1507", // Ålesund
-                    "1578"  // Fjord
+                    "1578", // Fjord
+                    "1532"  // Giske
             ));
 
 
