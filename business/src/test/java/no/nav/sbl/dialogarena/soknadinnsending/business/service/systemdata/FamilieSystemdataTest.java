@@ -302,7 +302,7 @@ public class FamilieSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(jsonInternalSoknad);
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "token");
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -337,7 +337,7 @@ public class FamilieSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(jsonInternalSoknad);
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "token");
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);

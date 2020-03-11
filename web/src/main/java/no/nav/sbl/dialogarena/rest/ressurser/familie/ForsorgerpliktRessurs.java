@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -130,7 +131,9 @@ public class ForsorgerpliktRessurs {
                         .withNavn(mapToJsonNavn(ansvarFrontend.barn.navn))
                         .withFodselsdato(ansvarFrontend.barn.fodselsdato));
                 setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend, ansvar);
-                brukerregistrertAnsvar.add(ansvar);
+                if(erAnsvarIkkeTomt(ansvar)) {
+                    brukerregistrertAnsvar.add(ansvar);
+                }
             }
             if (forsorgerplikt.getHarForsorgerplikt() == null || forsorgerplikt.getHarForsorgerplikt().getVerdi().equals(false)) {
                 forsorgerplikt.setHarForsorgerplikt(new JsonHarForsorgerplikt().withKilde(JsonKilde.BRUKER).withVerdi(true));
@@ -144,6 +147,23 @@ public class ForsorgerpliktRessurs {
 
         systemAnsvar.addAll(brukerregistrertAnsvar);
         forsorgerplikt.setAnsvar(systemAnsvar.isEmpty()? null : systemAnsvar);
+    }
+
+    private boolean erAnsvarIkkeTomt(JsonAnsvar ansvar) {
+        JsonNavn navn = ansvar.getBarn().getNavn();
+        if(!navn.getFornavn().isEmpty()) {
+            return true;
+        }
+        if(!navn.getMellomnavn().isEmpty()) {
+            return true;
+        }
+        if(!navn.getEtternavn().isEmpty()) {
+            return true;
+        }
+        if(ansvar.getBarn().getFodselsdato() != null && !ansvar.getBarn().getFodselsdato().isEmpty()) {
+            return true;
+        }
+        return false;
     }
 
     private void setBorSammenDeltBostedAndSamvarsgrad(AnsvarFrontend ansvarFrontend, JsonAnsvar ansvar) {
