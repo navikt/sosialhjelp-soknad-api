@@ -120,6 +120,14 @@ public class SosialhjelpPdfGeneratorTest {
         }*/
     }
 
+    @Test
+    public void lagPdfMedGyldigInnsendelsestidspunkt() {
+        JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
+        internalSoknad.getSoknad().withInnsendingstidspunkt("2020-03-12T08:35:45.329Z");
+
+        sosialhjelpPdfGenerator.generate(internalSoknad, true);
+    }
+
     private JsonInternalSoknad getJsonInternalSoknadWithMandatoryFields() {
         return new JsonInternalSoknad()
                 .withSoknad(new JsonSoknad()

@@ -51,6 +51,9 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -1552,7 +1555,7 @@ public class SosialhjelpPdfGenerator {
     }
 
     private void leggTilMetainformasjon(PdfGenerator pdf, JsonSoknad soknad) throws IOException {
-        pdf.skrivTekst("Søknaden er sendt " + formaterDato(soknad.getInnsendingstidspunkt(), "d. MMMM yyyy HH:mm"));
+        pdf.skrivTekst("Søknaden er sendt " + formaterDatoOgTidspunkt(soknad.getInnsendingstidspunkt()));
         pdf.skrivTekst("Versjonsnummer: " + soknad.getVersion());
         if (soknad.getMottaker() != null) {
             pdf.skrivTekst("Sendt til: " + soknad.getMottaker().getNavEnhetsnavn());
@@ -1629,5 +1632,16 @@ public class SosialhjelpPdfGenerator {
         LocalDate localDate = new LocalDate(dato);
 
         return localDate.toString(format, locale);
+    }
+
+    private String formaterDatoOgTidspunkt(String isoTimestamp) {
+        if (isoTimestamp == null) {
+            return "";
+        }
+        String format = "d. MMMM yyyy HH:mm";
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(format);
+        ZonedDateTime zonedDate = ZonedDateTime.parse(isoTimestamp)
+                .withZoneSameInstant(ZoneId.of("Europe/Oslo"));
+        return zonedDate.format(dateFormatter);
     }
 }
