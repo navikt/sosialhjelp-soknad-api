@@ -47,10 +47,10 @@ spec:
   resources:
     limits:
       cpu: 3000m
-      memory: 2Gi
+      memory: {{memoryLimit}}
     requests:
       cpu: 200m
-      memory: 2Gi
+      memory: {{memoryRequest}}
   env:
 {{#each env}}
     - name: {{@key}}
