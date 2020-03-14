@@ -49,7 +49,7 @@
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "false",
     "SOKNAD_BOSTOTTE_URL": "https://api-gw.oera.no/ekstern/husbanken/api/nav/minbostotte",
     "SOKNAD_BOSTOTTE_PING_URL": "https://api-gw.oera.no/ekstern/husbanken/api/nav/minbostotte/ping",
-    "SOKNAD_ETTERSENDING_ANTALLDAGER": "120",
+    "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "false",
     "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw.oera.no/security-token-service/rest/v1/sts/token",
     "TPSWS_API_V1_URL": "https://api-gw.oera.no/tpsws/api/v1/",
