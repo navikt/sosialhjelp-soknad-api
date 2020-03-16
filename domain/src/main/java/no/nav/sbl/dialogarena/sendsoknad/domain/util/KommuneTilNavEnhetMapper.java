@@ -163,6 +163,11 @@ public class KommuneTilNavEnhetMapper {
             .put("5301", "974542811")    // Holmestrand
             .put("1504", "975914895")    // Ålesund, Fjord
             .put("1532", "974619148")    // Giske
+            .put("1923", "974597578")    // Salangen, Lavangen og Dyrøy
+            .put("0542", "961381908")    // Nord-Aurdal, Sør-Aurdal, Etnedal, Vestre Slidre, Øystre Slidre, Vang
+            .put("0538", "861381722")    // Nordre Land
+            .put("3815", "974551063")    // Drangedal
+            .put("1621", "974620529")    // Ørland
 
             .build();
 
@@ -353,7 +358,20 @@ public class KommuneTilNavEnhetMapper {
                     "3802", // Holmestrand
                     "1507", // Ålesund
                     "1578", // Fjord
-                    "1532"  // Giske
+                    "1532", // Giske
+                    "5417", // Salangen
+                    "5415", // Lavangen
+                    "5420", // Dyrøy
+                    "3451", // Nord-Aurdal
+                    "3449", // Sør-Aurdal
+                    "3450", // Etnedal
+                    "3452", // Vestre Slidre
+                    "3453", // Øystre Slidre
+                    "3454", // Vang
+                    "3448", // Nordre Land
+                    "3815", // Drangedal
+                    "5057"  // Ørland
+                    
             ));
 
 
