@@ -168,6 +168,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0538", "861381722")    // Nordre Land
             .put("3815", "974551063")    // Drangedal
             .put("1621", "974620529")    // Ørland
+            .put("0231", "974555379")    // Lillestrøm
 
             .build();
 
@@ -370,7 +371,8 @@ public class KommuneTilNavEnhetMapper {
                     "3454", // Vang
                     "3448", // Nordre Land
                     "3815", // Drangedal
-                    "5057"  // Ørland
+                    "5057", // Ørland
+                    "3030"  // Lillestrøm
                     
             ));
 
