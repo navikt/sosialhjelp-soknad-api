@@ -166,7 +166,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1923", "974597578")    // Salangen, Lavangen og Dyrøy
             .put("0542", "994057790")    // Nord-Aurdal, Sør-Aurdal, Etnedal, Vestre Slidre, Øystre Slidre, Vang
             .put("0538", "974546302")    // Nordre Land
-            .put("3815", "974551063")    // Drangedal
+            .put("0817", "974551063")    // Drangedal
             .put("1621", "974620529")    // Ørland
             .put("0231", "974555379")    // Lillestrøm
             .put("2025", "987590254")    // Deatnu/Tana
