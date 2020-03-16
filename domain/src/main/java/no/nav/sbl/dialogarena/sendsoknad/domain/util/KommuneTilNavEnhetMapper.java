@@ -164,7 +164,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1504", "975914895")    // Ålesund, Fjord
             .put("1532", "974619148")    // Giske
             .put("1923", "974597578")    // Salangen, Lavangen og Dyrøy
-            .put("0542", "961381908")    // Nord-Aurdal, Sør-Aurdal, Etnedal, Vestre Slidre, Øystre Slidre, Vang
+            .put("0542", "994057790")    // Nord-Aurdal, Sør-Aurdal, Etnedal, Vestre Slidre, Øystre Slidre, Vang
             .put("0538", "974546302")    // Nordre Land
             .put("3815", "974551063")    // Drangedal
             .put("1621", "974620529")    // Ørland
