@@ -1,5 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
+import com.vdurmont.emoji.EmojiParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -182,6 +183,7 @@ public class PdfGenerator {
             float fontSize,
             int margin
     ) throws IOException {
+        text = EmojiParser.parseToAliases(text);
 
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
@@ -214,6 +216,7 @@ public class PdfGenerator {
             float leadingPercentage
     ) throws IOException {
 
+        heading = EmojiParser.parseToAliases(heading);
         List<String> lines = parseLines(heading, font, fontSize);
         this.currentStream.beginText();
         this.currentStream.setFont(font, fontSize);

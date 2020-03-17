@@ -121,6 +121,28 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
+    public void generatePdfWithEmoticons() {
+        StringBuilder text = new StringBuilder();
+
+        for (int i = 0x1F600; i <= 0x1F64F; i++) {
+            text.appendCodePoint(i);
+            text.append(" ");
+        }
+
+        JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
+        internalSoknad.getSoknad().getData().getBegrunnelse().withHvaSokesOm(text.toString());
+
+        byte[] bytes = sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        /*try {
+            FileOutputStream out = new FileOutputStream("../temp/starcraft.pdf");
+            out.write(bytes);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    @Test
     public void lagPdfMedGyldigInnsendelsestidspunkt() {
         JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
         internalSoknad.getSoknad().withInnsendingstidspunkt("2020-03-12T08:35:45.329Z");
