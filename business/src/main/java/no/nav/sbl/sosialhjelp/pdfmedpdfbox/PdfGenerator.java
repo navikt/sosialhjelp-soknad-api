@@ -183,8 +183,6 @@ public class PdfGenerator {
             float fontSize,
             int margin
     ) throws IOException {
-        text = EmojiParser.parseToAliases(text);
-
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
         this.currentStream.beginText();
@@ -215,8 +213,6 @@ public class PdfGenerator {
             float fontSize,
             float leadingPercentage
     ) throws IOException {
-
-        heading = EmojiParser.parseToAliases(heading);
         List<String> lines = parseLines(heading, font, fontSize);
         this.currentStream.beginText();
         this.currentStream.setFont(font, fontSize);
@@ -246,6 +242,12 @@ public class PdfGenerator {
 
     private List<String> parseLines(String text, PDFont font, float fontSize) throws IOException {
         List<String> lines = new ArrayList<>();
+
+        if (text == null) {
+            return lines;
+        }
+
+        text = EmojiParser.parseToAliases(text);
 
         for (String line : splitTextOnNewlines(text)) {
             int lastSpace = -1;
@@ -283,9 +285,6 @@ public class PdfGenerator {
     }
 
     private List<String> splitTextOnNewlines(String text) {
-        if (text == null) {
-            return Collections.emptyList();
-        }
         List<String> splitByNewlines = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
