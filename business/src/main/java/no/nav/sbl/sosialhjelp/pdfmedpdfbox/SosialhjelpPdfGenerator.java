@@ -1343,6 +1343,9 @@ public class SosialhjelpPdfGenerator {
                 if (utbetaling.getType().equals("sluttoppgjoer")) {
                     pdf.skrivTekst(getTekst("opplysninger.arbeid.avsluttet.netto.label"));
                 } else {
+                    if (getTekst("opplysninger.inntekt.inntekter." + utbetaling.getType() + ".sum.label") == null) {
+                        logger.warning("Oversettelse for opplysninger.inntekt.inntekter." + utbetaling.getType() + ".sum.label finnes ikke");
+                    }
                     pdf.skrivTekst(getTekst("opplysninger.inntekt.inntekter." + utbetaling.getType() + ".sum.label"));
                 }
                 if (utbetaling.getBelop() != null) {
