@@ -4,7 +4,8 @@ import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
@@ -109,7 +110,8 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
 
         for (Map.Entry<String, Integer> entry : statuser.entrySet()) {
             logger.info("Databasestatus for oppgaver: {} er {}", entry.getKey(), entry.getValue());
-            Event event = MetricsFactory.createEvent("status.oppgave." + entry.getKey());
+            Event event = MetricsFactory.createEvent("status.oppgave");
+            event.addTagToReport("oppgave", entry.getKey());
             event.addFieldToReport("antall", entry.getValue());
             event.report();
         }
