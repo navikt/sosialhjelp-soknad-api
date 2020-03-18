@@ -18,6 +18,8 @@ public class UserAgentFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        // TODO: Enable telling av user-agent når trykket på sensu / influxdb er lavere igjen / finne bedre måte å telle user-agent på.
+        /*
         if (countUserAgentForRequest(request)) {
             String uaHeader = request.getHeader("User-Agent");
             try {
@@ -37,6 +39,7 @@ public class UserAgentFilter extends OncePerRequestFilter {
                 logger.info("Unable to parse User-Agent: {}", uaHeader);
             }
         }
+         */
         filterChain.doFilter(request, response);
     }
 
