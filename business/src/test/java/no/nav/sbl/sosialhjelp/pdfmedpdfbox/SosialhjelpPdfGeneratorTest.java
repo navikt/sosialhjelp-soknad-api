@@ -110,14 +110,22 @@ public class SosialhjelpPdfGeneratorTest {
         JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
         internalSoknad.getSoknad().getData().getBegrunnelse().withHvaSokesOm(text.toString());
 
-        byte[] bytes = sosialhjelpPdfGenerator.generate(internalSoknad, true);
-        /*try {
-            FileOutputStream out = new FileOutputStream("../temp/starcraft.pdf");
-            out.write(bytes);
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        sosialhjelpPdfGenerator.generate(internalSoknad, true);
+    }
+
+    @Test
+    public void generatePdfWithEmoticons() {
+        StringBuilder text = new StringBuilder();
+
+        for (int i = 0x1F600; i <= 0x1F64F; i++) {
+            text.appendCodePoint(i);
+            text.append(" ");
+        }
+
+        JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
+        internalSoknad.getSoknad().getData().getBegrunnelse().withHvaSokesOm(text.toString());
+
+        sosialhjelpPdfGenerator.generate(internalSoknad, true);
     }
 
     @Test
