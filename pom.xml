@@ -158,6 +158,7 @@
         <oauth2-oidc-sdk.version>6.1.1</oauth2-oidc-sdk.version>
         <lang-tag.version>1.4.4</lang-tag.version>
         <uap-java.version>1.4.0</uap-java.version>
+        <emoji-java.version>5.1.1</emoji-java.version>
     </properties>
 
     <dependencyManagement>
@@ -1306,6 +1307,12 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.vdurmont</groupId>
+                <artifactId>emoji-java</artifactId>
+                <version>${emoji-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
