@@ -73,7 +73,7 @@ public class SoknadServiceTest {
         soknadService.startSoknad("", false);
 
         String bruker = OidcFeatureToggleUtils.getUserId();
-        verify(henvendelsesConnector).startSoknad(eq(bruker), false);
+        verify(henvendelsesConnector).startSoknad(eq(bruker), anyBoolean());
         verify(soknadUnderArbeidRepository).opprettSoknad(any(SoknadUnderArbeid.class), eq(bruker));
         DateTimeUtils.setCurrentMillisSystem();
     }
