@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,11 +69,11 @@ public class SoknadServiceTest {
     @Test
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
-        soknadService.startSoknad("");
+        when(henvendelsesConnector.startSoknad(anyString(), anyBoolean())).thenReturn("123");
+        soknadService.startSoknad("", false);
 
         String bruker = OidcFeatureToggleUtils.getUserId();
-        verify(henvendelsesConnector).startSoknad(eq(bruker));
+        verify(henvendelsesConnector).startSoknad(eq(bruker), false);
         verify(soknadUnderArbeidRepository).opprettSoknad(any(SoknadUnderArbeid.class), eq(bruker));
         DateTimeUtils.setCurrentMillisSystem();
     }
@@ -117,6 +118,31 @@ public class SoknadServiceTest {
         assertThat(capturedVedlegg.vedleggListe.get(1).filnavn).isEqualTo(testType2);
         assertThat(capturedVedlegg.vedleggListe.get(1).skjema).isEqualTo(testType2);
         assertThat(capturedVedlegg.vedleggListe.get(1).tillegg).isEqualTo(testTilleggsinfo2);
+    }
+
+    @Test
+    public void skalSendeSelvstendigNaringsdrivendeSoknad() {
+        List<JsonVedlegg> jsonVedlegg = new ArrayList<>();
+
+        String behandlingsId = "123";
+        String aktorId = "123456";
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
+                .withSelvstendigNaringsdrivende(true);
+        soknadUnderArbeid.getJsonInternalSoknad().setVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg));
+        when(soknadUnderArbeidRepository.hentSoknad(eq(behandlingsId), anyString())).thenReturn(soknadUnderArbeid);
+
+        soknadService.sendSoknad(behandlingsId);
+
+        ArgumentCaptor<SoknadUnderArbeid> soknadUnderArbeidCaptor = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(oppgaveHandterer).leggTilOppgave(eq(behandlingsId), anyString());
+        verify(henvendelsesConnector, atLeastOnce()).oppdaterMetadataVedAvslutningAvSoknad(eq(behandlingsId), any(), soknadUnderArbeidCaptor.capture(), eq(false));
+
+        SoknadUnderArbeid capturedSoknadUnderArbeid = soknadUnderArbeidCaptor.getValue();
+        assertThat(capturedSoknadUnderArbeid).isEqualTo(soknadUnderArbeid);
+
+        assertThat(capturedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse().getHvaSokesOm())
+                .contains("*** Selvstendig næringsdrivende ***");
     }
 
     @Test

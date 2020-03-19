@@ -82,7 +82,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         soknadUnderArbeid.getInnsendingStatus().toString(),
                         Date.from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        soknadUnderArbeid.getSelvstendigNaringsdrivende() ? 1, 0);
+                        soknadUnderArbeid.getSelvstendigNaringsdrivende() ? 1 : 0);
         return soknadUnderArbeidId;
     }
 
