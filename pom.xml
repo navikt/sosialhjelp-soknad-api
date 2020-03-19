@@ -75,7 +75,7 @@
         <spring.version>5.2.3.RELEASE</spring.version>
         <jetty.version>9.4.18.v20190429</jetty.version>
         <jersey.version>2.25.1</jersey.version>
-        <oidc-support.version>0.2.18</oidc-support.version>
+        <token-validation.version>1.0.1</token-validation.version> <!--nyere versjoner krever java 11-->
         <nimbus-jose-jwt.version>8.4</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <jcip-annotations.version>1.0-1</jcip-annotations.version>
@@ -881,13 +881,13 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-jersey-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-jaxrs</artifactId>
+                <version>${token-validation.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-core</artifactId>
+                <version>${token-validation.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.nimbusds</groupId>
@@ -1008,8 +1008,8 @@
             <!-- Avhengigheter med test scope -->
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-test-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-test-support</artifactId>
+                <version>${token-validation.version}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>

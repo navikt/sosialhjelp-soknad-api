@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.oidc;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.security.oidc.configuration.IssuerProperties;
-import no.nav.security.oidc.configuration.MultiIssuerConfiguration;
-import no.nav.security.oidc.configuration.OIDCResourceRetriever;
-import no.nav.security.oidc.jaxrs.servlet.JaxrsOIDCTokenValidationFilter;
+import no.nav.security.token.support.core.configuration.IssuerProperties;
+import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration;
+import no.nav.security.token.support.core.configuration.ProxyAwareResourceRetriever;
+import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -12,19 +12,23 @@ import org.springframework.context.annotation.Configuration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 public class OidcTokenValidatorConfig {
     private static final Logger log = LoggerFactory.getLogger(OidcTokenValidatorConfig.class);
 
     @Bean
-    public JaxrsOIDCTokenValidationFilter jaxrsOIDCTokenValidationFilter(MultiIssuerConfiguration multiIssuerConfiguration) {
-        return new JaxrsOIDCTokenValidationFilter(multiIssuerConfiguration);
+    public JaxrsJwtTokenValidationFilter jaxrsJwtTokenValidationFilter(MultiIssuerConfiguration multiIssuerConfiguration) {
+        return new JaxrsJwtTokenValidationFilter(multiIssuerConfiguration);
     }
 
     @Bean
-    public MultiIssuerConfiguration MultiIssuerConfiguration(OIDCResourceRetriever resourceRetriever) {
+    public MultiIssuerConfiguration MultiIssuerConfiguration(ProxyAwareResourceRetriever resourceRetriever) {
         if (MockUtils.isTillatMockRessurs()) {
             return new MultiIssuerConfiguration(new HashMap<>(), resourceRetriever);
         }
@@ -33,8 +37,8 @@ public class OidcTokenValidatorConfig {
 
     /** Is overridden in test scope **/
     @Bean
-    public OIDCResourceRetriever oidcResourceRetriever() {
-        return new OIDCResourceRetriever();
+    public ProxyAwareResourceRetriever proxyAwareResourceRetriever() {
+        return new ProxyAwareResourceRetriever();
     }
 
     private Map<String, IssuerProperties> getIssuerPropertiesMap() {

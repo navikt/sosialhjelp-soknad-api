@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.integration;
 
 
 import no.nav.sbl.dialogarena.rest.SoknadApplication;
-import no.nav.security.oidc.OIDCConstants;
-import no.nav.security.oidc.test.support.JwtTokenGenerator;
+import no.nav.security.token.support.core.JwtTokenConstants;
+import no.nav.security.token.support.test.JwtTokenGenerator;
 import org.glassfish.jersey.test.JerseyTest;
 
 import javax.ws.rs.WebApplicationException;
@@ -15,7 +15,11 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 import java.util.function.Function;
 
-import static javax.ws.rs.core.MediaType.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_HTML_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_XML_TYPE;
+import static javax.ws.rs.core.MediaType.WILDCARD_TYPE;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class SoknadTester extends JerseyTest {
@@ -46,7 +50,7 @@ public class SoknadTester extends JerseyTest {
         Response response = sendsoknad().path("soknader/opprettSoknad")
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
-                .header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token)
+                .header(JwtTokenConstants.AUTHORIZATION_HEADER, "Bearer " + token)
                 .buildPost(null)
                 .invoke();
         checkResponse(response, SC_OK);

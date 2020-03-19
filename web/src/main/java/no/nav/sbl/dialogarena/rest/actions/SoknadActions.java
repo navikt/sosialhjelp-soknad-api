@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.metrics.aspects.Timed;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
@@ -9,21 +11,23 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import javax.ws.rs.*;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,7 +36,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isAlltidSendTilNavTestkommune;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isSendingTilFiksEnabled;
-import static no.nav.sbl.dialogarena.utils.NedetidUtils.*;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.NEDETID_SLUTT;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsStringOrNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

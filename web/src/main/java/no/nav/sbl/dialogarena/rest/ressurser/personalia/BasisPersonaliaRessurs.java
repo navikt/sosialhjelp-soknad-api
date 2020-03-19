@@ -8,7 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
