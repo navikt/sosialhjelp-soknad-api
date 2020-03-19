@@ -107,7 +107,7 @@ public class SoknadRessurs {
     }
 
     @POST
-    @Path("/@opprettSoknad")
+    @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
     public Map<String, String> opprettSoknad(
             @QueryParam("ettersendTil") String behandlingsId,
