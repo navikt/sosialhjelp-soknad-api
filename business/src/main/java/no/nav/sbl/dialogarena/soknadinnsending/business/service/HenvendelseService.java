@@ -14,11 +14,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -33,12 +29,12 @@ public class HenvendelseService {
     @Inject
     private Clock clock;
 
-    public String startSoknad(String fnr) {
+    public String startSoknad(String fnr, boolean selvstendigNaringsdrivende) {
         logger.info("Starter søknad");
 
         SoknadMetadata meta = new SoknadMetadata();
         meta.id = soknadMetadataRepository.hentNesteId();
-        meta.behandlingsId = lagBehandlingsId(meta.id);
+        meta.behandlingsId = lagBehandlingsId(meta.id, selvstendigNaringsdrivende);
         meta.fnr = fnr;
         meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
         meta.skjema = SKJEMANUMMER;
@@ -51,8 +47,8 @@ public class HenvendelseService {
         return meta.behandlingsId;
     }
 
-    static String lagBehandlingsId(long databasenokkel) {
-        String applikasjonsprefix = "11";
+    static String lagBehandlingsId(long databasenokkel, boolean selvstendigNaringsdrivende) {
+        String applikasjonsprefix = selvstendigNaringsdrivende ? "33" : "11";
         Long base = Long.parseLong(applikasjonsprefix + "0000000", 36);
         String behandlingsId = Long.toString(base + databasenokkel, 36).toUpperCase().replace("O", "o").replace("I", "i");
         if (!behandlingsId.startsWith(applikasjonsprefix)) {
@@ -64,7 +60,7 @@ public class HenvendelseService {
     public String startEttersending(SoknadMetadata ettersendesPaSoknad) {
         SoknadMetadata ettersendelse = new SoknadMetadata();
         ettersendelse.id = soknadMetadataRepository.hentNesteId();
-        ettersendelse.behandlingsId = lagBehandlingsId(ettersendelse.id);
+        ettersendelse.behandlingsId = lagBehandlingsId(ettersendelse.id, false);
         ettersendelse.tilknyttetBehandlingsId = ettersendesPaSoknad.behandlingsId;
         ettersendelse.fnr = ettersendesPaSoknad.fnr;
         ettersendelse.type = SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;

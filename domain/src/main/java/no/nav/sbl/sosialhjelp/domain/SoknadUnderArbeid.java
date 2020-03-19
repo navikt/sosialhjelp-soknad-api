@@ -19,6 +19,7 @@ public class SoknadUnderArbeid {
     private LocalDateTime sistEndretDato;
     private boolean harBostotteSamtykke = true;
     private boolean harSkattemeldingSamtykke = true;
+    private boolean selvstendigNaringsdrivende = true;
 
     public boolean erEttersendelse() {
         return !isEmpty(tilknyttetBehandlingsId);
@@ -105,6 +106,15 @@ public class SoknadUnderArbeid {
 
     public SoknadUnderArbeid withSistEndretDato(LocalDateTime sistEndretDato) {
         this.sistEndretDato = sistEndretDato;
+        return this;
+    }
+
+    public boolean getSelvstendigNaringsdrivende() {
+        return selvstendigNaringsdrivende;
+    }
+
+    public SoknadUnderArbeid withSelvstendigNaringsdrivende(boolean selvstendigNaringsdrivende) {
+        this.selvstendigNaringsdrivende = selvstendigNaringsdrivende;
         return this;
     }
 

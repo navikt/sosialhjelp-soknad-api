@@ -48,7 +48,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     private static final Logger logger = getLogger(SoknadUnderArbeidRepository.class);
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
-    
+
     {
         mapper = new ObjectMapper();
         mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
@@ -71,8 +71,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
         Long soknadUnderArbeidId = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"), Long.class);
         getJdbcTemplate()
-                .update("insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)" +
-                                " values (?,?,?,?,?,?,?,?,?)",
+                .update("insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO, SELVSTENDIGNARINGSDRIVENDE)" +
+                                " values (?,?,?,?,?,?,?,?,?,?)",
                         soknadUnderArbeidId,
                         soknadUnderArbeid.getVersjon(),
                         soknadUnderArbeid.getBehandlingsId(),
@@ -81,7 +81,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
                         soknadUnderArbeid.getInnsendingStatus().toString(),
                         Date.from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
+                        Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()),
+                        soknadUnderArbeid.getSelvstendigNaringsdrivende() ? 1, 0);
         return soknadUnderArbeidId;
     }
 
@@ -147,9 +148,9 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         UNDER_ARBEID.toString());
         if (antallOppdaterteRader == 0) {
             SoknadUnderArbeid soknadIDb = hentSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier()).orElseThrow(() -> new IllegalStateException(
-                            String.format("Ingen soknadUnderArbeid funnet for %s, med status %s ",
-                                    soknadUnderArbeid.getBehandlingsId(),
-                                    soknadUnderArbeid.getInnsendingStatus())));
+                    String.format("Ingen soknadUnderArbeid funnet for %s, med status %s ",
+                            soknadUnderArbeid.getBehandlingsId(),
+                            soknadUnderArbeid.getInnsendingStatus())));
             if (Arrays.equals(mapJsonSoknadInternalTilFil(soknadIDb.getJsonInternalSoknad()), data)) {
                 return;
             }
@@ -228,12 +229,13 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
                             rs.getTimestamp("opprettetdato").toLocalDateTime() : null)
                     .withSistEndretDato(rs.getTimestamp("sistendretdato") != null ?
-                            rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
+                            rs.getTimestamp("sistendretdato").toLocalDateTime() : null)
+                    .withSelvstendigNaringsdrivende(1 == rs.getInt("selvstendignaringsdrivende"));
         }
     }
-    
-    private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
-        if (data == null){
+
+    private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data) {
+        if (data == null) {
             return null;
         }
         try {
@@ -243,7 +245,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
             throw new RuntimeException(e);
         }
     }
-    
+
     private byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
         try {
             final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
@@ -254,6 +256,4 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
             throw new RuntimeException(e);
         }
     }
-
-
 }

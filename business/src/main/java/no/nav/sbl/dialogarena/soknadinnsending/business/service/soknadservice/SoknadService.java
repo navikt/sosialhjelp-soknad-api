@@ -75,14 +75,14 @@ public class SoknadService {
     private SystemdataUpdater systemdata;
 
     @Transactional
-    public String startSoknad(String token) {
+    public String startSoknad(String token, boolean selvstendigNaringsdrivende) {
         String mainUid = randomUUID().toString();
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
 
         String aktorId = OidcFeatureToggleUtils.getUserId();
         Timer henvendelseTimer = createDebugTimer("startHenvendelse", mainUid);
-        String behandlingsId = henvendelseService.startSoknad(aktorId);
+        String behandlingsId = henvendelseService.startSoknad(aktorId, selvstendigNaringsdrivende);
         henvendelseTimer.stop();
         henvendelseTimer.report();
 
@@ -97,7 +97,8 @@ public class SoknadService {
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now())
-                .withSistEndretDato(LocalDateTime.now());
+                .withSistEndretDato(LocalDateTime.now())
+                .withSelvstendigNaringsdrivende(selvstendigNaringsdrivende);
 
         systemdata.update(soknadUnderArbeid, token);
 
@@ -120,6 +121,12 @@ public class SoknadService {
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
         logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
+
+        if(soknadUnderArbeid.getSelvstendigNaringsdrivende()) {
+            JsonBegrunnelse begrunnelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
+            begrunnelse.setHvaSokesOm("*** Selvstendig næringsdrivende ***\n" + begrunnelse.getHvaSokesOm());
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+        }
 
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, false);

@@ -107,9 +107,14 @@ public class SoknadRessurs {
     }
 
     @POST
-    @Path("/opprettSoknad")
+    @Path("/@opprettSoknad")
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @HeaderParam(value = AUTHORIZATION) String token) {
+    public Map<String, String> opprettSoknad(
+            @QueryParam("ettersendTil") String behandlingsId,
+            @QueryParam("selvstendigNaringsdrivende") boolean selvstendigNaringsdrivende,
+            @Context HttpServletResponse response,
+            @HeaderParam(value = AUTHORIZATION) String token
+    ) {
         if (NedetidUtils.isInnenforNedetid()) {
             throw new SoknadenHarNedetidException(String.format("Soknaden har nedetid fram til %s ", getNedetidAsStringOrNull(NEDETID_SLUTT)));
         }
@@ -118,7 +123,7 @@ public class SoknadRessurs {
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad(token);
+            opprettetBehandlingsId = soknadService.startSoknad(token, selvstendigNaringsdrivende);
         } else {
             final String eier = OidcFeatureToggleUtils.getUserId();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
