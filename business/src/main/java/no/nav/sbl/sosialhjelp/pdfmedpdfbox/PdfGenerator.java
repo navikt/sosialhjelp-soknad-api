@@ -1,6 +1,5 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import com.vdurmont.emoji.EmojiParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -15,7 +14,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -246,8 +244,6 @@ public class PdfGenerator {
         if (text == null) {
             return lines;
         }
-
-        text = EmojiParser.parseToAliases(text);
 
         for (String line : splitTextOnNewlines(text)) {
             int lastSpace = -1;
