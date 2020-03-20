@@ -1,25 +1,35 @@
 package no.nav.sbl.dialogarena.mock;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.PostAdresse;
+import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
+import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.organisasjon.OrganisasjonMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektConsumerMock;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.security.oidc.api.Unprotected;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +42,17 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -52,6 +69,8 @@ public class TjenesteMockRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(TjenesteMockRessurs.class);
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     @Inject
     private CacheManager cacheManager;
     @Inject
@@ -59,13 +78,36 @@ public class TjenesteMockRessurs {
     @Inject
     private FiksSender fiksSender;
     @Inject
-    private NavMessageSource messageSource;
-    @Inject
-    private SoknadService soknadService;
+    private Adressekodeverk adressekodeverk;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
             cacheManager.getCache(cacheName).clear();
+        }
+    }
+
+    @GET
+    @Path("/pdfboxtest")
+    public void generatePdfAndSaveToDisk() {
+
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+
+        SosialhjelpPdfGenerator sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
+
+        byte[] bytes = sosialhjelpPdfGenerator.generate(new JsonInternalSoknad().withSoknad(
+                new JsonSoknad().withData(new JsonData().withPersonalia(new JsonPersonalia().withNavn(
+                        new JsonSokernavn().withFornavn("Han").withEtternavn("Solo")
+                        ))
+                )), false);
+
+        try {
+            FileOutputStream out = new FileOutputStream("starcraft.pdf");
+            out.write(bytes);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -141,6 +183,7 @@ public class TjenesteMockRessurs {
 
     class SessionResponse {
         public String uid;
+
         SessionResponse(String uid) {
             this.uid = uid;
         }
@@ -155,17 +198,17 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/telefon")
-    public void setTelefon(@RequestBody JsonTelefonnummer jsonTelefonnummer, @QueryParam("fnr") String fnr ) {
+    public void setTelefon(@RequestBody JsonTelefonnummer jsonTelefonnummer, @QueryParam("fnr") String fnr) {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
         fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
         logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med fnr: " + fnr);
-        if (jsonTelefonnummer != null){
-            DkifMock.setTelefonnummer(jsonTelefonnummer, fnr);
+        if (jsonTelefonnummer != null) {
+            DkifConsumerMock.setTelefonnummer(jsonTelefonnummer.getVerdi(), fnr);
         } else {
-            DkifMock.resetTelefonnummer(fnr);
+            DkifConsumerMock.resetTelefonnummer(fnr);
         }
         clearCache();
     }
@@ -184,27 +227,30 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/arbeid")
-    public void setArbeidsforholdJson(@RequestBody String arbeidsforholdData) {
+    public void setArbeidsforholdJson(@RequestBody String arbeidsforholdData) throws JsonProcessingException {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter arbeidsforhold med data: " + arbeidsforholdData);
-        ArbeidsforholdMock.setArbeidsforhold(arbeidsforholdData);
+        String strippedArbeidsforhold = mapper.readTree(arbeidsforholdData).get("arbeidsforhold").toString();
+        ArbeidsforholdConsumerMock.setArbeidsforhold(strippedArbeidsforhold);
         clearCache();
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/organisasjon")
-    public void setOrganisasjon(@RequestBody String jsonOrganisasjon) {
+    public void setOrganisasjon(@RequestBody String jsonOrganisasjon) throws JsonProcessingException {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
+
         logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
-        if (jsonOrganisasjon != null){
-            OrganisasjonMock.setOrganisasjon(jsonOrganisasjon);
+        if (jsonOrganisasjon != null && mapper.readTree(jsonOrganisasjon).has("organisasjon")) {
+            String strippedOrganisasjon = mapper.readTree(jsonOrganisasjon).get("organisasjon").toString();
+            OrganisasjonConsumerMock.setOrganisasjon(strippedOrganisasjon);
         } else {
-            OrganisasjonMock.resetOrganisasjon();
+            OrganisasjonConsumerMock.resetOrganisasjon();
         }
         clearCache();
     }
@@ -217,6 +263,17 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter mock familieforhold med data: " + jsonPerson);
+        try {
+            Person person = mapper.readValue(jsonPerson, Person.class);
+            if (person.getStatsborgerskap() != null
+                    && person.getStatsborgerskap().getLand() != null
+                    && person.getStatsborgerskap().getLand().getValue() != null) {
+                String landkode = person.getStatsborgerskap().getLand().getValue();
+                ((StandardKodeverk) adressekodeverk).leggTilLandskodeForMock(landkode);
+            }
+        } catch (JsonProcessingException e) {
+            logger.warn("Klarte ikke å legge inn nytt land i kodeverk mock :-O");
+        }
         PersonMock.setPersonMedFamilieforhold(jsonPerson);
         clearCache();
     }
@@ -229,6 +286,42 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
+        clearCache();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/utbetaling_feiler")
+    public void setNavUtbetalingerFeiler(@RequestBody boolean skalFeile, @QueryParam("fnr") String fnr) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+        UtbetalMock.setMockSkalFeile(fnr, skalFeile);
+        clearCache();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/skattetaten")
+    public void setSkattUtbetalinger(@RequestBody String jsonWSSkattUtbetaling, @QueryParam("fnr") String fnr) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+        SkattbarInntektConsumerMock.setMockData(fnr, jsonWSSkattUtbetaling);
+        clearCache();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/skattetaten_feiler")
+    public void setSkattUtbetalingerFeiler(@RequestBody boolean skalFeile, @QueryParam("fnr") String fnr) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+        SkattbarInntektConsumerMock.setMockSkalFeile(fnr, skalFeile);
         clearCache();
     }
 
@@ -252,5 +345,18 @@ public class TjenesteMockRessurs {
         }
         fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
         MockBostotteImpl.setBostotteData(fnr, bostotteJson);
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("/bostotte_feiler")
+    public void setBostotte(@RequestBody Boolean skalFeile, @QueryParam("fnr") String fnr) {
+        if (!isTillatMockRessurs()) {
+            throw new RuntimeException("Mocking har ikke blitt aktivert.");
+        }
+        if(skalFeile != null) {
+            fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
+            MockBostotteImpl.settPersonnummerSomSkalFeile(fnr, skalFeile);
+        }
     }
 }

@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -10,9 +13,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -20,8 +20,12 @@ import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,17 +38,21 @@ import java.util.Locale;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
 
-    public static final String SOKNADINNSENDING_ETTERSENDING_URL = "/soknadinnsending/ettersending";
-    public static final String SAKSOVERSIKT_URL = "/saksoversikt";
     public static final String TESTKOMMUNE = "2352";
-    public static final String KOMMUNE_I_SVARUT_LISTEN = "0701";
+    public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
     private String EIER;
 
     @Inject
@@ -71,13 +79,13 @@ public class SoknadActionsTest {
     SoknadMetadataRepository soknadMetadataRepository;
     @Inject
     DigisosApiService digisosApiService;
+    @Inject
+    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     ServletContext context = mock(ServletContext.class);
 
     @Before
     public void setUp() {
-        System.setProperty("soknadinnsending.ettersending.path", SOKNADINNSENDING_ETTERSENDING_URL);
-        System.setProperty("saksoversikt.link.url", SAKSOVERSIKT_URL);
         System.setProperty("authentication.isRunningWithOidc", "true");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         reset(tekster);

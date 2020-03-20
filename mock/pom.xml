@@ -28,19 +28,10 @@
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>person-v3-tjenestespesifikasjon</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
         </dependency>
 
         <dependency>
@@ -51,11 +42,6 @@
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>dkif-tjenestespesifikasjon</artifactId>
         </dependency>
 
         <dependency>

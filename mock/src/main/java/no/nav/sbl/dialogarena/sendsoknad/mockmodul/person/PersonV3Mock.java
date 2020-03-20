@@ -7,7 +7,19 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkontonummer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bostedsadresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Foedselsdato;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Landkoder;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personidenter;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Postnummer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
@@ -33,6 +45,7 @@ public class PersonV3Mock {
             String kommunenr = node.at("/person/bostedsadresse/strukturertAdresse/kommunenummer").textValue();
             String husnr = node.at("/person/bostedsadresse/strukturertAdresse/husnummer").textValue();
             String kontonummer = node.at("/person/bankkonto/bankkonto/bankkontonummer").textValue();
+            String statborgerskap = node.at("/person/statsborgerskap/landkode/value").textValue();
 
             Bruker defaultPerson = getDefaultPerson();
             Integer husnummer;
@@ -50,6 +63,7 @@ public class PersonV3Mock {
                     )
             );
             defaultPerson.setBankkonto(new BankkontoNorge().withBankkonto(new Bankkontonummer().withBankkontonummer(kontonummer)));
+            defaultPerson.setStatsborgerskap(new Statsborgerskap().withLand(new Landkoder().withValue(statborgerskap)));
 
             responses.put(OidcFeatureToggleUtils.getUserId(), defaultPerson);
 

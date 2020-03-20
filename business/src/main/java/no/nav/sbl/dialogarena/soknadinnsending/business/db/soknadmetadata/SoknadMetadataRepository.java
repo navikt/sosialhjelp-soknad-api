@@ -24,7 +24,11 @@ public interface SoknadMetadataRepository {
 
     List<SoknadMetadata> hentBehandlingskjede(String behandlingsId);
 
-    List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr);
+    int hentAntallInnsendteSoknaderEtterTidspunkt(String fnr, LocalDateTime tidspunkt);
+
+    List<SoknadMetadata> hentSvarUtInnsendteSoknaderForBruker(String fnr);
+
+    List<SoknadMetadata> hentAlleInnsendteSoknaderForBruker(String fnr);
 
     List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr);
 

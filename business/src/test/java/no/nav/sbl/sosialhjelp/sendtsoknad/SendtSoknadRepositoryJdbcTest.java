@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 public class SendtSoknadRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
-    private static final String EIER2 = "10987654321";
+    private static final String EIER2 = "22222222222";
     private static final String BEHANDLINGSID = "1100020";
     private static final String BEHANDLINGSID2 = "1100021";
     private static final String BEHANDLINGSID3 = "1100022";

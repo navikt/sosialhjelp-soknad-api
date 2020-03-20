@@ -21,7 +21,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     @Override
     public String fyllHtmlMalMedInnhold(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) throws IOException {
         final HandlebarContext context = new HandlebarContext(jsonInternalSoknad, utvidetSoknad, false, "");
-        return getHandlebars()
+        String renderedHtml = getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/soknad")
                 .apply(Context.newBuilder(context)
@@ -32,15 +32,17 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                                 MethodValueResolver.INSTANCE
                         )
                         .build());
+        return stripNonValidXMLCharacters(renderedHtml);
     }
 
     @Override
     public String fyllHtmlMalMedInnhold(JsonInternalSoknad internalSoknad, String file, boolean erEttersending, String eier) throws IOException {
         final HandlebarContext context = new HandlebarContext(internalSoknad, false, erEttersending, eier);
 
-        return getHandlebars()
+        String renderedHtml = getHandlebars()
                 .compile(file)
                 .apply(Context.newBuilder(context).build());
+        return stripNonValidXMLCharacters(renderedHtml);
     }
 
     @Override
@@ -59,4 +61,21 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         return handlebars;
     }
 
+    private String stripNonValidXMLCharacters(String in) {
+        if (in == null || in.isEmpty()) return "";
+
+        StringBuilder out = new StringBuilder();
+        char character;
+        for (int i = 0; i < in.length(); i++) {
+            character = in.charAt(i);
+            if (
+                    character == 0x9 ||
+                    character == 0xA ||
+                    character == 0xD ||
+                    character >= 0x20 && character <= 0xD7FF ||
+                    character >= 0xE000 && character <= 0xFFFD)
+                out.append(character);
+        }
+        return out.toString();
+    }
 }

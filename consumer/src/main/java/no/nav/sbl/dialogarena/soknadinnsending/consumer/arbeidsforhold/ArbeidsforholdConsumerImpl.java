@@ -1,0 +1,131 @@
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
+
+import no.nav.sbl.dialogarena.mdc.MDCOperations;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
+import org.slf4j.Logger;
+
+import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ServiceUnavailableException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
+import java.time.LocalDate;
+import java.util.List;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static org.slf4j.LoggerFactory.getLogger;
+
+public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
+
+    private static final Logger log = getLogger(ArbeidsforholdConsumerImpl.class);
+    private static final String A_ORDNINGEN = "A_ORDNINGEN";
+    private static final String BEARER = "Bearer ";
+
+    private Client client;
+    private String endpoint;
+
+    @Inject
+    private STSConsumer stsConsumer;
+
+    public ArbeidsforholdConsumerImpl(Client client, String endpoint) {
+        this.client = client;
+        this.endpoint = endpoint;
+    }
+
+    @Override
+    public void ping() {
+        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+
+        //FIXME: aareg.api vil få dedikert ping-endepunkt på sikt. Frem til det er på fungerer ikke denne pingen :(
+        Invocation.Builder request = client.target(endpoint + "v1/").request()
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId);
+
+        try (Response response = request.options()) {
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Aareg.api - Feil statuskode ved ping: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+            }
+        }
+    }
+
+    @Override
+    public List<ArbeidsforholdDto> finnArbeidsforholdForArbeidstaker(String fodselsnummer) {
+        Invocation.Builder request = lagRequest(endpoint + "v1/arbeidstaker/arbeidsforhold", fodselsnummer);
+        try {
+            return request.get(new GenericType<List<ArbeidsforholdDto>>() {
+            });
+        } catch (BadRequestException e) {
+            log.warn("Aareg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request", e);
+            return null;
+        } catch (NotAuthorizedException e) {
+            log.warn("Aareg.api - 401 Unauthorized- Token mangler eller er ugyldig", e);
+            return null;
+        } catch (ForbiddenException e) {
+            log.warn("Aareg.api - 403 Forbidden - Ingen tilgang til forespurt ressurs", e);
+            return null;
+        } catch (NotFoundException e) {
+            log.warn("Aareg.api - 404 Not Found- Fant ikke arbeidsforhold for bruker", e);
+            return null;
+        } catch (ServiceUnavailableException | InternalServerErrorException e) {
+            log.error("Aareg.api - {} {} - Tjenesten er ikke tilgjengelig", e.getResponse().getStatus(), e.getResponse().getStatusInfo().getReasonPhrase(), e);
+            throw new TjenesteUtilgjengeligException("AAREG", e);
+        } catch (Exception e) {
+            log.error("Aareg.api - Noe uventet feilet", e);
+            throw new TjenesteUtilgjengeligException("AAREG", e);
+        }
+    }
+
+    private Invocation.Builder lagRequest(String endpoint, String fodselsnummer) {
+        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+        FssToken fssToken = stsConsumer.getFSSToken();
+        Sokeperiode sokeperiode = lagSokePeriode();
+
+        return client.target(endpoint)
+                .queryParam("sporingsinformasjon", false)
+                .queryParam("regelverk", A_ORDNINGEN)
+                .queryParam("ansettelsesperiodeFom", sokeperiode.fom.format(ISO_LOCAL_DATE))
+                .queryParam("ansettelsesperiodeTom", sokeperiode.tom.format(ISO_LOCAL_DATE))
+                .request()
+                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken()) // brukers token
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
+                .header("Nav-Consumer-Token", BEARER + fssToken.getAccessToken())
+                .header("Nav-Personident", fodselsnummer);
+    }
+
+    private Sokeperiode lagSokePeriode(){
+        return new Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now());
+    }
+
+    private static final class Sokeperiode {
+
+        private final LocalDate fom;
+        private final LocalDate tom;
+
+        public Sokeperiode(LocalDate fom, LocalDate tom) {
+            this.fom = fom;
+            this.tom = tom;
+        }
+
+        public LocalDate getFom() {
+            return fom;
+        }
+
+        public LocalDate getTom() {
+            return tom;
+        }
+
+    }
+}

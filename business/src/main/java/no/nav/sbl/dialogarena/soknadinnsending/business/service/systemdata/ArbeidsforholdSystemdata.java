@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
@@ -12,7 +12,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService.Sokeperiode;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 
@@ -52,14 +50,14 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         List<JsonOkonomioversiktInntekt> inntekter = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad);
 
-        if (typeIsInList(jsonVedleggs, "sluttoppgjor")){
+        if (typeIsInList(jsonVedleggs, "sluttoppgjor")) {
             String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(SLUTTOPPGJOER));
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, SLUTTOPPGJOER, tittel);
         } else {
             removeUtbetalingIfPresentInOpplysninger(utbetalinger, SLUTTOPPGJOER);
         }
 
-        if (typeIsInList(jsonVedleggs, "lonnslipp")){
+        if (typeIsInList(jsonVedleggs, "lonnslipp")) {
             String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(JOBB));
             addInntektIfNotPresentInOversikt(inntekter, JOBB, tittel);
         } else {
@@ -72,16 +70,15 @@ public class ArbeidsforholdSystemdata implements Systemdata {
     }
 
     public List<JsonArbeidsforhold> innhentSystemArbeidsforhold(final String personIdentifikator) {
-        Sokeperiode sokeperiode = getSoekeperiode();
         List<Arbeidsforhold> arbeidsforholds;
         try {
-            arbeidsforholds = arbeidsforholdService.hentArbeidsforhold(personIdentifikator, sokeperiode);
+            arbeidsforholds = arbeidsforholdService.hentArbeidsforhold(personIdentifikator);
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente arbeidsforhold: " + e, e);
             arbeidsforholds = null;
         }
 
-        if (arbeidsforholds == null){
+        if (arbeidsforholds == null) {
             return null;
         }
         return arbeidsforholds.stream()
@@ -98,10 +95,6 @@ public class ArbeidsforholdSystemdata implements Systemdata {
                 .withStillingsprosent(Math.toIntExact(arbeidsforhold.fastStillingsprosent))
                 .withStillingstype(tilJsonStillingstype(arbeidsforhold.harFastStilling))
                 .withOverstyrtAvBruker(Boolean.FALSE);
-    }
-
-    private ArbeidsforholdService.Sokeperiode getSoekeperiode() {
-        return new ArbeidsforholdService.Sokeperiode(new DateTime().minusMonths(3), new DateTime());
     }
 
     private static JsonArbeidsforhold.Stillingstype tilJsonStillingstype(boolean harFastStilling) {

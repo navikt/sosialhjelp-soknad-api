@@ -145,7 +145,7 @@ public class UtbetalingServiceTest {
     private WSUtbetaling lagWSUtbetalingSomIkkeErUtbetalt(WSPerson wsPerson) {
         WSBankkonto bankkonto = new WSBankkonto()
                 .withKontotype("Norsk bankkonto")
-                .withKontonummer("32902095534");
+                .withKontonummer("123456789123");
         return new WSUtbetaling()
                 .withPosteringsdato(dato(YEAR, MONTH, POSTERINGSDAG))
                 .withUtbetaltTil(wsPerson)
@@ -161,7 +161,7 @@ public class UtbetalingServiceTest {
     private WSUtbetaling lagWSUtbetaling(WSPerson wsPerson, LocalDateTime posteringsdato, LocalDateTime utbetalingsdato) {
         WSBankkonto bankkonto = new WSBankkonto()
                 .withKontotype("Norsk bankkonto")
-                .withKontonummer("32902095534");
+                .withKontonummer("123456789123");
         return new WSUtbetaling()
                 .withPosteringsdato(dato(posteringsdato))
                 .withUtbetaltTil(wsPerson)
@@ -186,7 +186,7 @@ public class UtbetalingServiceTest {
     private WSUtbetaling lagKomplettWSUtbetaling(WSPerson wsPerson) {
         WSBankkonto bankkonto = new WSBankkonto()
                 .withKontotype("Norsk bankkonto")
-                .withKontonummer("32902095534");
+                .withKontonummer("123456789123");
         return new WSUtbetaling()
                 .withPosteringsdato(dato(YEAR, MONTH, POSTERINGSDAG))
                 .withUtbetaltTil(wsPerson)

@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>1.2019.11.05-08.52-efbfb5bc984e</version>
+        <version>1.2020.01.08-12.57-62d0c889ddb5</version>
     </parent>
 
     <modules>
@@ -75,14 +75,14 @@
         <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
 
         <!-- Nav felles java-bibliotek -->
-        <nav-common.version>1.2019.10.14-11.26-d162453764a7</nav-common.version>
+        <nav-common.version>1.2020.01.08-12.57-62d0c889ddb5</nav-common.version>
 
         <modig.frontend>1.1.96</modig.frontend>
-        <spring.version>4.1.3.RELEASE</spring.version>
+        <spring.version>5.2.3.RELEASE</spring.version>
         <jetty.version>9.4.18.v20190429</jetty.version>
         <jersey.version>2.25.1</jersey.version>
         <oidc-support.version>0.2.18</oidc-support.version>
-        <nimbus-jose-jwt.version>7.8</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>8.4</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <jcip-annotations.version>1.0-1</jcip-annotations.version>
         <cxf.version>3.3.4</cxf.version>
@@ -96,22 +96,23 @@
         <jackson.version>2.10.0</jackson.version>
         <jackson-databind.version>2.10.0</jackson-databind.version>
         <filformat.version>1.2019.11.27-10.45-cf682907bdc8</filformat.version>
-        <pdfbox.version>1.8.16</pdfbox.version>
+        <commons-fileupload.version>1.4</commons-fileupload.version>
+        <pdfbox.version>2.0.19</pdfbox.version>
         <bouncycastle.version>1.60</bouncycastle.version>
         <httpclient.version>4.5.10</httpclient.version>
         <guava.version>27.0.1-jre</guava.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
-        <verapdf.version>1.12.1</verapdf.version>
+        <verapdf.version>1.14.105</verapdf.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.3.2</hsqldb.version>
-        <hikaricp.version>2.7.8</hikaricp.version>
+        <hikaricp.version>3.4.1</hikaricp.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <ehcache.version>2.10.4</ehcache.version>
         <woodstox-core-asl.version>4.4.0</woodstox-core-asl.version>
         <joda-time.version>2.7</joda-time.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <gson.version>2.3.1</gson.version>
         <commons-codec.version>1.10</commons-codec.version>
         <commons-io.version>2.4</commons-io.version>
@@ -137,7 +138,7 @@
 
         <kryptering.version>1.0.5</kryptering.version>
         <jackson-annotations.version>2.10.0.pr2</jackson-annotations.version>
-        <streaming-klient.version>1.0.6</streaming-klient.version>
+        <streaming-klient.version>1.0.11</streaming-klient.version>
 
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>1.3</hamcrest.version>
@@ -164,6 +165,8 @@
         <jsoup.version>1.11.3</jsoup.version>
         <oauth2-oidc-sdk.version>6.1.1</oauth2-oidc-sdk.version>
         <lang-tag.version>1.4.4</lang-tag.version>
+        <uap-java.version>1.4.0</uap-java.version>
+        <emoji-java.version>5.1.1</emoji-java.version>
     </properties>
 
     <dependencyManagement>
@@ -234,22 +237,7 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-                <version>${tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
-                <version>${tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
-                <version>${tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>dkif-tjenestespesifikasjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
@@ -494,6 +482,11 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-joda</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
 
@@ -763,6 +756,11 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
@@ -1280,6 +1278,36 @@
                 <artifactId>jetty-client</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
+
+            <!--
+                Snyk klager på sårbarhet i snakeyaml som er en avhengighet i uap-java.
+                Se https://snyk.io/vuln/SNYK-JAVA-ORGYAML-537645
+                uap-java bruker kun snakeyaml til å parse en yaml-fil med regexer brukt av biblioteket. Vi stoler på
+                denne filen. https://github.com/ua-parser/uap-core/blob/master/regexes.yaml
+            -->
+            <dependency>
+                <groupId>com.github.ua-parser</groupId>
+                <artifactId>uap-java</artifactId>
+                <version>${uap-java.version}</version>
+
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.vdurmont</groupId>
+                <artifactId>emoji-java</artifactId>
+                <version>${emoji-java.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
@@ -1387,6 +1415,17 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <excludes>
+                        <exclude>org.apache.commons:commons-collections4</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
 

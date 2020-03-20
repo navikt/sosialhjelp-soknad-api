@@ -97,7 +97,7 @@ public class SaksoversiktMetadataServiceTest {
 
     @Test
     public void henterInnsendteForBruker() throws ParseException {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBruker("12345"))
+        when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345"))
                 .thenReturn(asList(soknadMetadata));
 
         List<InnsendtSoknad> resultat = saksoversiktMetadataService.hentInnsendteSoknaderForFnr("12345");

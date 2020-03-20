@@ -63,10 +63,6 @@
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>soknadsosialhjelp-tekster</artifactId>
         </dependency>
@@ -474,12 +470,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>dkif-tjenestespesifikasjon</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ua-parser</groupId>
+            <artifactId>uap-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
         </dependency>
     </dependencies>
     <build>

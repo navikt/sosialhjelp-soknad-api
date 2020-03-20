@@ -16,10 +16,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.tidTilTimestamp;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.timestampTilTid;
 
 @Component
-@Transactional
 public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadMetadataRepository {
 
     private RowMapper<SoknadMetadata> soknadMetadataRowMapper = (rs, rowNum) -> {
@@ -41,6 +42,8 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return m;
     };
 
+    private RowMapper<Integer> antallRowMapper = (rs, rowNum) -> rs.getInt("antall");
+
     @Inject
     public void setDS(DataSource ds) {
         super.setDataSource(ds);
@@ -51,6 +54,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long.class);
     }
 
+    @Transactional
     @Override
     public void opprett(SoknadMetadata metadata) {
         getJdbcTemplate().update("INSERT INTO soknadmetadata (id, behandlingsid, tilknyttetBehandlingsId, skjema, " +
@@ -73,6 +77,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 SQLUtils.tidTilTimestamp(metadata.innsendtDato));
     }
 
+    @Transactional
     @Override
     public void oppdater(SoknadMetadata metadata) {
         getJdbcTemplate().update("UPDATE soknadmetadata SET tilknyttetBehandlingsId = ?, skjema = ?, " +
@@ -106,6 +111,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return null;
     }
 
+    @Transactional
     @Override
     public Optional<SoknadMetadata> hentForBatch(int antallDagerGammel) {
         LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
@@ -125,6 +131,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         }
     }
 
+    @Transactional
     @Override
     public Optional<SoknadMetadata> hentEldreEnn(int antallDagerGammel) {
         LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
@@ -144,6 +151,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         }
     }
 
+    @Transactional
     @Override
     public void leggTilbakeBatch(Long id) {
         String update = "UPDATE soknadmetadata set batchstatus = 'LEDIG' WHERE id = ?";
@@ -157,9 +165,25 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
 
     @Override
-    public List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr) {
+    public int hentAntallInnsendteSoknaderEtterTidspunkt(String fnr, LocalDateTime tidspunkt) {
+        String select = "SELECT count(*) as antall FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?";
+        try {
+            return getJdbcTemplate().queryForObject(select, antallRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidspunkt));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @Override
+    public List<SoknadMetadata> hentSvarUtInnsendteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
+    }
+
+    @Override
+    public List<SoknadMetadata> hentAlleInnsendteSoknaderForBruker(String fnr) {
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name(), SoknadInnsendingStatus.SENDT_MED_DIGISOS_API.name());
     }
 
     @Override
@@ -169,11 +193,12 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
     @Override
     public List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime tidsgrense) {
-        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
-                fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidsgrense));
+                fnr, SoknadInnsendingStatus.FERDIG.name(), SoknadInnsendingStatus.SENDT_MED_DIGISOS_API.name(), tidTilTimestamp(tidsgrense));
     }
 
+    @Transactional
     @Override
     public void slettSoknadMetaData(String behandlingsId, String eier) {
         getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE fnr = ? AND behandlingsid = ?", eier, behandlingsId);
