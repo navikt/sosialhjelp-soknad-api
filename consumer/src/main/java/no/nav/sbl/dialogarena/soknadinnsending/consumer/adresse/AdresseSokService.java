@@ -72,7 +72,7 @@ public class AdresseSokService {
     public List<Kommunesok> sokEtterNavEnheter(String kommunenr) {
         return sokEtterNavKontor(new AdresseSokConsumer.Sokedata().withKommunenummer(kommunenr))
                 .stream().map(adresseForslag -> {
-                    NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+                    NavEnhet navEnhet = norgService.getEnhetForGt(adresseForslag.geografiskTilknytning);
                     return new Kommunesok(kommunenr, adresseForslag, navEnhet);
                 }).collect(Collectors.toList());
     }

@@ -32,9 +32,9 @@ public class NorgServiceTest {
     @Test
     public void finnEnhetForGtBrukerTestOrgNrForTest() {
         setProperty("environment.name", "t5");
-        when(norgConsumer.finnEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
+        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
 
-        NavEnhet navEnhet = norgService.finnEnhetForGt(GT);
+        NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
         assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_TEST));
     }
@@ -42,9 +42,9 @@ public class NorgServiceTest {
     @Test
     public void finnEnhetForGtBrukerOrgNrFraNorgForProd() {
         setProperty("environment.name", "p");
-        when(norgConsumer.finnEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
+        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
 
-        NavEnhet navEnhet = norgService.finnEnhetForGt(GT);
+        NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
         assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
     }
@@ -70,9 +70,9 @@ public class NorgServiceTest {
         String sosialOrgNummer = "974592274";
         NorgConsumer.RsNorgEnhet norgEnhet = lagRsNorgEnhet();
         norgEnhet.enhetNr = "0513";
-        when(norgConsumer.finnEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
+        when(norgConsumer.getEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
 
-        NavEnhet navEnhet = norgService.finnEnhetForGt(gt);
+        NavEnhet navEnhet = norgService.getEnhetForGt(gt);
         assertThat(navEnhet.sosialOrgnr, is(sosialOrgNummer));
     }
 
@@ -84,9 +84,9 @@ public class NorgServiceTest {
         String sosialOrgNummer = "976641175";
         NorgConsumer.RsNorgEnhet norgEnhet = lagRsNorgEnhet();
         norgEnhet.enhetNr = "0513";
-        when(norgConsumer.finnEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
+        when(norgConsumer.getEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
 
-        NavEnhet navEnhet = norgService.finnEnhetForGt(gt);
+        NavEnhet navEnhet = norgService.getEnhetForGt(gt);
         assertThat(navEnhet.sosialOrgnr, is(sosialOrgNummer));
     }
 }

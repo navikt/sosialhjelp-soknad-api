@@ -1,14 +1,23 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenhetFraLokalListe;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenheterFraLokalListe;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import org.apache.cxf.helpers.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NorgService {
@@ -18,12 +27,16 @@ public class NorgService {
     @Inject
     private NorgConsumer norgConsumer;
 
-    public NavEnhet finnEnhetForGt(String gt) {
+    public List<NavenhetFraLokalListe> getEnheterForKommunenummer(String kommunenummer) {
+        return getAllNavenheterFromPath().navenheter.stream().filter(navenhet -> navenhet.kommunenummer.equals(kommunenummer)).collect(Collectors.toList());
+    }
+
+    public NavEnhet getEnhetForGt(String gt) {
         if (gt == null || !gt.matches("^[0-9]+$")) {
             throw new IllegalArgumentException("GT ikke på gyldig format: " + gt);
         }
 
-        RsNorgEnhet rsNorgEnhet = norgConsumer.finnEnhetForGeografiskTilknytning(gt);
+        RsNorgEnhet rsNorgEnhet = norgConsumer.getEnhetForGeografiskTilknytning(gt);
         if (rsNorgEnhet == null) {
             logger.warn("Kunne ikke finne NorgEnhet for gt: " + gt);
             return null;
@@ -48,5 +61,18 @@ public class NorgService {
 
 
         return enhet;
+    }
+
+    private NavenheterFraLokalListe getAllNavenheterFromPath() {
+        try {
+            InputStream resourceAsStream = this.getClass().getResourceAsStream("navenhet.json");
+            if (resourceAsStream == null) {
+                return null;
+            }
+            String json = IOUtils.toString(resourceAsStream);
+            return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, NavenheterFraLokalListe.class);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

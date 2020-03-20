@@ -134,7 +134,7 @@ public class NavEnhetRessurs {
          * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
          */
         return adresseForslagene.stream().map((adresseForslag) -> {
-            NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+            NavEnhet navEnhet = norgService.getEnhetForGt(adresseForslag.geografiskTilknytning);
             return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtEnhetNr);
         }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
     }
