@@ -19,7 +19,7 @@ public class UrlUtils {
         while (m.find()) {
             ArrayList<HTMLLenkeParser.HTMLLenke> lenker = HTMLLenkeParser.hentLenker(m.group());
 
-            if (lenker != null && lenker.get(0) != null) {
+            if (lenker != null && !lenker.isEmpty() && lenker.get(0) != null) {
 
                 HTMLLenkeParser.HTMLLenke lenke = lenker.get(0);
                 html = html.replace(m.group(), lenke.toString()).trim();
