@@ -65,7 +65,7 @@ public class NorgService {
 
     private NavenheterFraLokalListe getAllNavenheterFromPath() {
         try {
-            InputStream resourceAsStream = this.getClass().getResourceAsStream("navenhet.json");
+            InputStream resourceAsStream = this.getClass().getResourceAsStream("/navenhet.json");
             if (resourceAsStream == null) {
                 return null;
             }
