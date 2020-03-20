@@ -76,8 +76,6 @@ public class SosialhjelpPdfGenerator {
     @Inject
     public TextHelpers textHelpers;
 
-    public static final String IKKE_UTFYLT = "Ikke utfylt";
-
     public byte[] generate(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) {
         try {
             PdfGenerator pdf = new PdfGenerator();
@@ -295,7 +293,7 @@ public class SosialhjelpPdfGenerator {
                 pdf.skrivTekstMedInnrykk(getTekst("kontakt.kontonummer.harikke.true"), INNRYKK_2);
             } else {
                 if (jsonKontonummer.getVerdi() == null || jsonKontonummer.getVerdi().isEmpty()) {
-                    pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                    skrivIkkeUtfylt(pdf);
                 } else {
                     pdf.skrivTekstMedInnrykk(jsonKontonummer.getVerdi(), INNRYKK_2);
                 }
@@ -396,7 +394,7 @@ public class SosialhjelpPdfGenerator {
         } else if (utvidetSoknad) {
             pdf.skrivTekst(getTekst("opplysninger.arbeidsituasjon.kommentarer.label"));
             pdf.addBlankLine();
-            pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+            skrivIkkeUtfylt(pdf);
             pdf.addBlankLine();
         }
 
@@ -407,7 +405,7 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekst(getTekst("dinsituasjon.studerer." + utdanning.getErStudent()));
 
         } else {
-            pdf.skrivTekstKursiv(IKKE_UTFYLT);
+            skrivIkkeUtfylt(pdf);
         }
 
         if (utvidetSoknad) {
@@ -422,7 +420,7 @@ public class SosialhjelpPdfGenerator {
             if (utdanning.getStudentgrad() != null) {
                 pdf.skrivTekst(getTekst("dinsituasjon.studerer.true.grad." + utdanning.getStudentgrad()));
             } else {
-                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                skrivIkkeUtfylt(pdf);
             }
             pdf.addBlankLine();
 
@@ -523,33 +521,33 @@ public class SosialhjelpPdfGenerator {
                             if (ektefelle.getNavn().getFornavn() != null) {
                                 pdf.skrivTekstMedInnrykk(ektefelle.getNavn().getFornavn(), INNRYKK_2);
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfylt(pdf);
                             }
                             pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.mellomnavn.label"));
                             if (ektefelle.getNavn().getMellomnavn() != null) {
                                 pdf.skrivTekstMedInnrykk(ektefelle.getNavn().getMellomnavn(), INNRYKK_2);
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfylt(pdf);
                             }
                             pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.etternavn.label"));
                             if (ektefelle.getNavn().getEtternavn() != null) {
                                 pdf.skrivTekstMedInnrykk(ektefelle.getNavn().getEtternavn(), INNRYKK_2);
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfylt(pdf);
                             }
 
                             pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.fnr.label"));
                             if (ektefelle.getFodselsdato() != null) {
                                 pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), INNRYKK_2);
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfylt(pdf);
                             }
 
                             pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.pnr.label"));
                             if (ektefelle.getPersonIdentifikator() != null) {
                                 pdf.skrivTekstMedInnrykk(ektefelle.getPersonIdentifikator(), INNRYKK_2);
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfylt(pdf);
                             }
 
                             if (ektefelle.getPersonIdentifikator() != null) {
@@ -565,7 +563,7 @@ public class SosialhjelpPdfGenerator {
                             if (sivilstatus.getBorSammenMed() != null) {
                                 pdf.skrivTekstMedInnrykk(getTekst("familie.sivilstatus.gift.ektefelle.borsammen." + sivilstatus.getBorSammenMed()), INNRYKK_2);
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfylt(pdf);
                             }
 
                             if (utvidetSoknad) {
@@ -576,7 +574,7 @@ public class SosialhjelpPdfGenerator {
                             }
                         }
                     } else {
-                        pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                        skrivIkkeUtfylt(pdf);
                     }
                 }
 
@@ -593,7 +591,7 @@ public class SosialhjelpPdfGenerator {
                     }
                 }
             } else {
-                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                skrivIkkeUtfylt(pdf);
             }
 
             pdf.addBlankLine();
@@ -669,7 +667,7 @@ public class SosialhjelpPdfGenerator {
 
                         }
                     } else {
-                        pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                        skrivIkkeUtfylt(pdf);
 
                     }
                     skrivUtBarnebidragAlternativer(pdf, utvidetSoknad);
@@ -682,7 +680,7 @@ public class SosialhjelpPdfGenerator {
                 }
             }
         } else {
-            pdf.skrivTekstKursiv(IKKE_UTFYLT);
+            skrivIkkeUtfylt(pdf);
         }
         pdf.addBlankLine();
     }
