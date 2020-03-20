@@ -162,7 +162,7 @@ public class PdfGenerator {
     }
 
     public void addCenteredH1Bold(String heading) throws IOException {
-        addCenteredParagraph(heading, FONT_BOLD, FONT_H1_SIZE, LEADING_PERCENTAGE);
+        addCenteredParagraph(heading, FONT_BOLD, FONT_H1_SIZE, 1.2F);
     }
 
     public void addCenteredH4Bold(String heading) throws IOException {

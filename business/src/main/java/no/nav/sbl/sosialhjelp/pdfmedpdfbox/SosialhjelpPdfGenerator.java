@@ -88,7 +88,7 @@ public class SosialhjelpPdfGenerator {
             JsonPersonalia jsonPersonalia = data.getPersonalia(); // personalia er required
 
             // Add header
-            String heading = getTekst("applikasjon.sidetittel");
+
             JsonPersonIdentifikator jsonPersonIdentifikator = jsonPersonalia.getPersonIdentifikator(); // required
             JsonSokernavn jsonSokernavn = jsonPersonalia.getNavn();// required
 
@@ -96,7 +96,8 @@ public class SosialhjelpPdfGenerator {
 
             String fnr = jsonPersonIdentifikator.getVerdi(); // required
 
-            leggTilHeading(pdf, heading, navn, fnr);
+            // TODO: Oppdatere erSelvstendigNaeringsdrivende etter at dette blir lagt inn i SoknadUnderArbeid
+            leggTilHeading(pdf, false, navn, fnr);
 
             leggTilPersonalia(pdf, data.getPersonalia(), jsonInternalSoknad.getMidlertidigAdresse(), utvidetSoknad);
             leggTilBegrunnelse(pdf, data.getBegrunnelse());
@@ -128,7 +129,8 @@ public class SosialhjelpPdfGenerator {
         return navMessageSource.getBundleFor("soknadsosialhjelp", LocaleUtils.toLocale("nb_NO")).getProperty(key);
     }
 
-    private void leggTilHeading(PdfGenerator pdf, String heading, String... undertittler) throws IOException {
+    private void leggTilHeading(PdfGenerator pdf, boolean erSelvstendigNaeringsdrivende, String... undertittler) throws IOException {
+        String heading = erSelvstendigNaeringsdrivende ? "Søknad for selvstendig\nnæringsdrivende og frilansere" : getTekst("applikasjon.sidetittel");
         pdf.addCenteredH1Bold(heading);
         for (String undertittel : undertittler) {
             if (undertittel != null && undertittel.length() > 0) {
