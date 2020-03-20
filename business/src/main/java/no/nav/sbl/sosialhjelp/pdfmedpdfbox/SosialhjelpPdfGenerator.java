@@ -45,6 +45,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.apache.commons.lang3.LocaleUtils;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
@@ -78,10 +79,11 @@ public class SosialhjelpPdfGenerator {
 
     public static final String IKKE_UTFYLT = "Ikke utfylt";
 
-    public byte[] generate(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) {
+    public byte[] generate(SoknadUnderArbeid soknadUnderArbeid, boolean utvidetSoknad) {
         try {
             PdfGenerator pdf = new PdfGenerator();
 
+            JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
             JsonData data = jsonInternalSoknad.getSoknad().getData();
             JsonPersonalia jsonPersonalia = data.getPersonalia(); // personalia er required
 

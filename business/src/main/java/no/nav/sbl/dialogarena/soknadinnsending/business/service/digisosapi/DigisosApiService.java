@@ -87,7 +87,7 @@ public class DigisosApiService {
             filOpplastinger.addAll(dokumenterForVedlegg);
         } else {
             filOpplastinger.add(lagDokumentForSaksbehandlerPdf(soknadUnderArbeid));
-            filOpplastinger.add(lagDokumentForJuridiskPdf(internalSoknad));
+            filOpplastinger.add(lagDokumentForJuridiskPdf(soknadUnderArbeid));
             filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
@@ -134,7 +134,7 @@ public class DigisosApiService {
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
         byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
         try {
-            sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+            sosialhjelpPdfGenerator.generate(soknadUnderArbeid, false);
         } catch (Exception e) {
             log.warn("Kunne ikke generere soknad.pdf", e);
         }
@@ -173,10 +173,10 @@ public class DigisosApiService {
                 new ByteArrayInputStream(pdf));
     }
 
-    private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
-        byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+    private FilOpplasting lagDokumentForJuridiskPdf(SoknadUnderArbeid soknadUnderArbeid) {
+        byte[] pdf = pdfService.genererJuridiskPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
         try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, true);
+            sosialhjelpPdfGenerator.generate(soknadUnderArbeid, true);
         } catch (Exception e) {
             log.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
         }

@@ -148,6 +148,10 @@ public class SoknadService {
         return ettersendingService.start(behandlingsIdSoknad);
     }
 
+    public static SoknadUnderArbeid createEmptySoknadUnderArbeid(String eier) {
+        return new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(eier));
+    }
+
     public static JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
         return new JsonInternalSoknad().withSoknad(new JsonSoknad()
                 .withData(new JsonData()

@@ -119,9 +119,9 @@ public class FiksSender {
             fiksDokumenter.addAll(dokumenterForVedlegg);
         } else {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(soknadUnderArbeid));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(soknadUnderArbeid));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
             List<Dokument> dokumenterForVedlegg = fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
