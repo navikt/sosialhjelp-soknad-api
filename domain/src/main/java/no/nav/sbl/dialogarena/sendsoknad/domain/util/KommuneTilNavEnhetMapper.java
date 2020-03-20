@@ -171,6 +171,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0231", "974555379")    // Lillestrøm
             .put("2025", "987590254")    // Deatnu/Tana
             .put("0213", "974593408")    // Nordre Follo
+            .put("1246", "974586312")    // Øygarden
 
             .build();
 
@@ -376,7 +377,8 @@ public class KommuneTilNavEnhetMapper {
                     "5057", // Ørland
                     "3030", // Lillestrøm
                     "5441", // Deatnu/Tana
-                    "3020"  // Nordre Follo
+                    "3020", // Nordre Follo
+                    "4626"  // Øygarden
                     
             ));
 
