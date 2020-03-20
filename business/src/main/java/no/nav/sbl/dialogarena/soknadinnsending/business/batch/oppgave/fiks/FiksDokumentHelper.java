@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -80,7 +82,15 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
+        if(soknadUnderArbeid.getSelvstendigNaringsdrivende()) {
+            JsonOkonomiopplysninger opplysninger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+            setBekreftelse(opplysninger, "selvstendignaringsdriveende", true, "selvstendignaringsdriveende");
+        }
         byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
+        if(soknadUnderArbeid.getSelvstendigNaringsdrivende()) {
+            JsonOkonomiopplysninger opplysninger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+            opplysninger.getBekreftelse().removeIf(bekreftelse -> bekreftelse.getType().equalsIgnoreCase("selvstendignaringsdriveende"));
+        }
         try {
             sosialhjelpPdfGenerator.generate(soknadUnderArbeid, false);
         } catch (Exception e) {
@@ -98,7 +108,15 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForJuridiskPdf(SoknadUnderArbeid soknadUnderArbeid) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
+        if(soknadUnderArbeid.getSelvstendigNaringsdrivende()) {
+            JsonOkonomiopplysninger opplysninger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+            setBekreftelse(opplysninger, "selvstendignaringsdriveende", true, "selvstendignaringsdriveende");
+        }
         byte[] juridiskPdf = pdfService.genererJuridiskPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
+        if(soknadUnderArbeid.getSelvstendigNaringsdrivende()) {
+            JsonOkonomiopplysninger opplysninger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
+            opplysninger.getBekreftelse().removeIf(bekreftelse -> bekreftelse.getType().equalsIgnoreCase("selvstendignaringsdriveende"));
+        }
         try {
             sosialhjelpPdfGenerator.generate(soknadUnderArbeid, true);
         } catch (Exception e) {

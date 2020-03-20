@@ -28,6 +28,12 @@
 
     <div class="hode">
         <h1>{{hentTekst "skjema.tittel"}}</h1>
+        {{#with data.okonomi.opplysninger}}
+            {{#hentOkonomiBekreftelse "selvstendignaringsdriveende"}}
+                <h1>SELVSTENDIG NÆRINGSDRIVENDE</h1>
+            {{else}}
+            {{/hentOkonomiBekreftelse}}
+        {{/with}}
         <div class="personalia">
             {{#with data.personalia}}
                 <p class ="nvn">{{navn.fornavn}} {{navn.mellomnavn}} {{navn.etternavn}}</p>
