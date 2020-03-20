@@ -25,6 +25,10 @@ public class KommuneTilNavEnhetMapper {
             .put("4225", "Kvinesdal") // Lyngdal
             .put("4206", "Kvinesdal") // Farsund
             .put("4228", "Kvinesdal") // Sirdal
+            .put("4218", "Vennesla")  // Iveland
+            .put("4224", "Vennesla")  // Åseral
+            .put("4221", "Vennesla")  // Valle
+            .put("4222", "Vennesla")  // Bykle
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -172,6 +176,7 @@ public class KommuneTilNavEnhetMapper {
             .put("2025", "987590254")    // Deatnu/Tana
             .put("0213", "974593408")    // Nordre Follo
             .put("1246", "974586312")    // Øygarden
+            .put("1014", "936846777")    // Midt-Agder
 
             .build();
 
@@ -378,7 +383,12 @@ public class KommuneTilNavEnhetMapper {
                     "3030", // Lillestrøm
                     "5441", // Deatnu/Tana
                     "3020", // Nordre Follo
-                    "4626"  // Øygarden
+                    "4626", // Øygarden
+                    "4222", // Bykle
+                    "4221", // Valle
+                    "4224", // Åseral
+                    "4223", // Vennesla
+                    "4218"  // Iveland
                     
             ));
 
