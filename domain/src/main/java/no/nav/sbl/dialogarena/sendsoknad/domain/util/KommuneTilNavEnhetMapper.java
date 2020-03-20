@@ -172,6 +172,7 @@ public class KommuneTilNavEnhetMapper {
             .put("2025", "987590254")    // Deatnu/Tana
             .put("0213", "974593408")    // Nordre Follo
             .put("1246", "974586312")    // Øygarden
+            .put("1014", "936846777")    // Midt-Agder
 
             .build();
 
@@ -378,7 +379,12 @@ public class KommuneTilNavEnhetMapper {
                     "3030", // Lillestrøm
                     "5441", // Deatnu/Tana
                     "3020", // Nordre Follo
-                    "4626"  // Øygarden
+                    "4626", // Øygarden
+                    "4222", // Bykle
+                    "4221", // Valle
+                    "4224", // Åseral
+                    "4223", // Vennesla
+                    "4218"  // Iveland
                     
             ));
 
