@@ -45,6 +45,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.apache.commons.lang3.LocaleUtils;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
@@ -78,15 +79,16 @@ public class SosialhjelpPdfGenerator {
 
     public static final String IKKE_UTFYLT = "Ikke utfylt";
 
-    public byte[] generate(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) {
+    public byte[] generate(SoknadUnderArbeid soknadUnderArbeid, boolean utvidetSoknad) {
         try {
             PdfGenerator pdf = new PdfGenerator();
 
+            JsonInternalSoknad jsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
             JsonData data = jsonInternalSoknad.getSoknad().getData();
             JsonPersonalia jsonPersonalia = data.getPersonalia(); // personalia er required
 
             // Add header
-            String heading = getTekst("applikasjon.sidetittel");
+
             JsonPersonIdentifikator jsonPersonIdentifikator = jsonPersonalia.getPersonIdentifikator(); // required
             JsonSokernavn jsonSokernavn = jsonPersonalia.getNavn();// required
 
@@ -94,7 +96,8 @@ public class SosialhjelpPdfGenerator {
 
             String fnr = jsonPersonIdentifikator.getVerdi(); // required
 
-            leggTilHeading(pdf, heading, navn, fnr);
+            // TODO: Oppdatere erSelvstendigNaeringsdrivende etter at dette blir lagt inn i SoknadUnderArbeid
+            leggTilHeading(pdf, false, navn, fnr);
 
             leggTilPersonalia(pdf, data.getPersonalia(), jsonInternalSoknad.getMidlertidigAdresse(), utvidetSoknad);
             leggTilBegrunnelse(pdf, data.getBegrunnelse());
@@ -126,7 +129,8 @@ public class SosialhjelpPdfGenerator {
         return navMessageSource.getBundleFor("soknadsosialhjelp", LocaleUtils.toLocale("nb_NO")).getProperty(key);
     }
 
-    private void leggTilHeading(PdfGenerator pdf, String heading, String... undertittler) throws IOException {
+    private void leggTilHeading(PdfGenerator pdf, boolean erSelvstendigNaeringsdrivende, String... undertittler) throws IOException {
+        String heading = erSelvstendigNaeringsdrivende ? "Søknad for selvstendig\nnæringsdrivende og frilansere" : getTekst("applikasjon.sidetittel");
         pdf.addCenteredH1Bold(heading);
         for (String undertittel : undertittler) {
             if (undertittel != null && undertittel.length() > 0) {

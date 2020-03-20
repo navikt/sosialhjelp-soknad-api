@@ -27,6 +27,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
@@ -96,11 +97,16 @@ public class TjenesteMockRessurs {
 
         SosialhjelpPdfGenerator sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
 
-        byte[] bytes = sosialhjelpPdfGenerator.generate(new JsonInternalSoknad().withSoknad(
-                new JsonSoknad().withData(new JsonData().withPersonalia(new JsonPersonalia().withNavn(
-                        new JsonSokernavn().withFornavn("Han").withEtternavn("Solo")
-                        ))
-                )), false);
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(
+                        new JsonInternalSoknad().withSoknad(
+                                new JsonSoknad().withData(new JsonData().withPersonalia(new JsonPersonalia().withNavn(
+                                        new JsonSokernavn().withFornavn("Han").withEtternavn("Solo")
+                                        ))
+                                )
+                        ));
+
+        byte[] bytes = sosialhjelpPdfGenerator.generate(soknadUnderArbeid, false);
 
         try {
             FileOutputStream out = new FileOutputStream("starcraft.pdf");

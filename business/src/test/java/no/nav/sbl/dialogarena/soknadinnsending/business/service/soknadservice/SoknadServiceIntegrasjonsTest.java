@@ -56,7 +56,7 @@ public class SoknadServiceIntegrasjonsTest {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(new SoknadMetadata());
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withVersjon(0L)));
-        when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generate(any(SoknadUnderArbeid.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
     }
 
     @Test

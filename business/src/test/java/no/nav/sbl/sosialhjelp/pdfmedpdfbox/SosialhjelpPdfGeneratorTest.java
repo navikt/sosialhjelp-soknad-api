@@ -43,6 +43,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -110,7 +111,9 @@ public class SosialhjelpPdfGeneratorTest {
         JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
         internalSoknad.getSoknad().getData().getBegrunnelse().withHvaSokesOm(text.toString());
 
-        sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(internalSoknad);
+
+        sosialhjelpPdfGenerator.generate(soknadUnderArbeid, true);
     }
 
     @Test
@@ -125,7 +128,9 @@ public class SosialhjelpPdfGeneratorTest {
         JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
         internalSoknad.getSoknad().getData().getBegrunnelse().withHvaSokesOm(text.toString());
 
-        sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(internalSoknad);
+
+        sosialhjelpPdfGenerator.generate(soknadUnderArbeid, true);
     }
 
     @Test
@@ -133,7 +138,9 @@ public class SosialhjelpPdfGeneratorTest {
         JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
         internalSoknad.getSoknad().withInnsendingstidspunkt("2020-03-12T08:35:45.329Z");
 
-        sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(internalSoknad);
+
+        sosialhjelpPdfGenerator.generate(soknadUnderArbeid, true);
     }
 
     private JsonInternalSoknad getJsonInternalSoknadWithMandatoryFields() {
@@ -427,8 +434,9 @@ public class SosialhjelpPdfGeneratorTest {
                 );
         final JsonInternalSoknad jsonInternalSoknad = new JsonInternalSoknad().withSoknad(jsonSoknad);
 
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(jsonInternalSoknad);
 
-        byte[] bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true);
+        byte[] bytes = sosialhjelpPdfGenerator.generate(soknadUnderArbeid, true);
 
         try {
             FileOutputStream out = new FileOutputStream("../temp/starcraft.pdf");
@@ -666,8 +674,9 @@ public class SosialhjelpPdfGeneratorTest {
         final JsonSoknad jsonSoknad = new JsonSoknad().withData(data);
         final JsonInternalSoknad jsonInternalSoknad = new JsonInternalSoknad().withSoknad(jsonSoknad);
 
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(jsonInternalSoknad);
 
-        byte[] bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true);
+        byte[] bytes = sosialhjelpPdfGenerator.generate(soknadUnderArbeid, true);
 
         try {
             FileOutputStream out = new FileOutputStream("../temp/starcraftWithDisk.pdf");

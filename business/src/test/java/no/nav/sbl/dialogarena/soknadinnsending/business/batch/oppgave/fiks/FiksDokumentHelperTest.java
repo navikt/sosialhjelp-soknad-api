@@ -39,6 +39,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptySoknadUnderArbeid;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -75,7 +76,7 @@ public class FiksDokumentHelperTest {
         when(pdfService.genererJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
-        when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generate(any(SoknadUnderArbeid.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
     }
 
@@ -101,7 +102,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForSaksbehandlerPdfLagerKorrektDokument() {
-        Dokument saksbehandlerPdf = fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(createEmptyJsonInternalSoknad(EIER));
+        Dokument saksbehandlerPdf = fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(createEmptySoknadUnderArbeid(EIER));
 
         assertThat(saksbehandlerPdf.getFilnavn(), is("Soknad.pdf"));
         assertThat(saksbehandlerPdf.getMimetype(), is("application/pdf"));
@@ -111,7 +112,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForJuridiskPdfLagerKorrektDokument() {
-        Dokument juridiskPdf = fiksDokumentHelper.lagDokumentForJuridiskPdf(createEmptyJsonInternalSoknad(EIER));
+        Dokument juridiskPdf = fiksDokumentHelper.lagDokumentForJuridiskPdf(createEmptySoknadUnderArbeid(EIER));
 
         assertThat(juridiskPdf.getFilnavn(), is("Soknad-juridisk.pdf"));
         assertThat(juridiskPdf.getMimetype(), is("application/pdf"));

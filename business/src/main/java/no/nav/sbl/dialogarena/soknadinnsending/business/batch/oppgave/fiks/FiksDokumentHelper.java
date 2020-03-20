@@ -77,12 +77,12 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
-    Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
-        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(internalSoknad, "/");
+        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
         try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, false);
+            sosialhjelpPdfGenerator.generate(soknadUnderArbeid, false);
         } catch (Exception e) {
             logger.warn("Kunne ikke generere Soknad.pdf", e);
         }
@@ -95,12 +95,12 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
-    Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForJuridiskPdf(SoknadUnderArbeid soknadUnderArbeid) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+        byte[] juridiskPdf = pdfService.genererJuridiskPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
         try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, true);
+            sosialhjelpPdfGenerator.generate(soknadUnderArbeid, true);
         } catch (Exception e) {
             logger.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
         }
