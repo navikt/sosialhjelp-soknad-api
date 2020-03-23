@@ -61,7 +61,7 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
                 return new SkattbarInntekt();
             }
         } catch (RuntimeException e) {
-            log.warn("Klarer ikke hente skatteopplysninger", e);
+            log.error("Klarer ikke hente skatteopplysninger", e);
             return null;
         }
     }
