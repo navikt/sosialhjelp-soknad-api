@@ -591,11 +591,6 @@
                         <version>${jaxb.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-impl</artifactId>
-                        <version>${jaxb.version}</version>
-                    </dependency>
-                    <dependency>
                         <groupId>org.glassfish.jaxb</groupId>
                         <artifactId>jaxb-runtime</artifactId>
                         <version>${jaxb.version}</version>
@@ -668,43 +663,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>jetty</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>exec-maven-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <goals>
-                                        <goal>exec</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <classpathScope>test</classpathScope>
-                                <executable>java</executable>
-                                <arguments>
-                                    <argument>-cp</argument>
-                                    <classpath/>
-                                    <argument>
-                                        no.nav.sbl.dialogarena.dokumentinnsending.StartJettyWeb
-                                    </argument>
-                                    <argument>-restart-server</argument>
-                                    <argument>-port</argument>
-                                    <argument>${jetty.port}</argument>
-                                </arguments>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
 
