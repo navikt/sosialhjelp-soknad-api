@@ -154,7 +154,7 @@
         <digipost.digg.version>0.13</digipost.digg.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
-        <asm.version>7.0</asm.version>
+        <asm.version>7.2</asm.version>
         <neethi.version>3.1.1</neethi.version>
         <xmlsec.version>2.1.3</xmlsec.version>
         <nav-sbl-util.version>2018.05.15.11.54</nav-sbl-util.version>
@@ -162,7 +162,7 @@
         <opensaml.version>3.3.0</opensaml.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
         <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
-        <hk2.version>2.5.0-b42</hk2.version>
+        <hk2.version>2.6.1</hk2.version>
         <prometheus.version>0.5.0</prometheus.version>
         <javax.websocket-api.version>1.1</javax.websocket-api.version>
         <jsoup.version>1.11.3</jsoup.version>
