@@ -7,19 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkontonummer;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bostedsadresse;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Foedselsdato;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Landkoder;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personidenter;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Postnummer;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Statsborgerskap;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
@@ -103,6 +91,14 @@ public class PersonV3Mock {
         landkoder.setValue("NOR");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
+        Matrikkeladresse matrikkeladresse = new Matrikkeladresse()
+                .withKommunenummer("0301")
+                .withEiendomsnavn("SLOTTSSTALLEN")
+                .withPoststed(new Postnummer().withValue("0010"))
+                .withMatrikkelnummer(new Matrikkelnummer()
+                        .withGaardsnummer("209")
+                        .withBruksnummer("25"));
+        person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(matrikkeladresse));
 
         return person;
     }

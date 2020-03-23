@@ -9,6 +9,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Soked
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class AdresseSokService {
+    private static final Logger log = LoggerFactory.getLogger(AdresseSokService.class);
 
     @Inject
     private AdresseSokConsumer adresseSokConsumer;
@@ -57,6 +60,7 @@ public class AdresseSokService {
     }
     
     public List<AdresseForslag> sokEtterNavKontor(Sokedata sokedata) {
+        log.info("MATRIKKEL - søkedata: " + sokedata.toString());
         if (sokedata.adresse != null && sokedata.adresse.trim().length() <= 2) {
             return Collections.emptyList();
         }

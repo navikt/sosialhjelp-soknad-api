@@ -8,6 +8,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @Component
 public class SoknadsmottakerService {
+    private static final Logger log = LoggerFactory.getLogger(SoknadsmottakerService.class);
 
     @Inject
     private AdresseSokService adresseSokService;
@@ -46,13 +49,16 @@ public class SoknadsmottakerService {
             return Collections.emptyList();
         }
 
+        log.info("MATRIKKEL - soknadsmottakerGitt");
         if (adresse.getType().equals(JsonAdresse.Type.MATRIKKELADRESSE)) {
             final JsonMatrikkelAdresse matrikkelAdresse = (JsonMatrikkelAdresse) adresse;
+            log.info("MATRIKKEL - adresse er matrikkeladresse: " + matrikkelAdresse.toString());
             final String kommunenummer = matrikkelAdresse.getKommunenummer();
             if (kommunenummer == null || kommunenummer.trim().equals("")) {
                 return Collections.emptyList();
             }
 
+            log.info("MATRIKKEL - klar til å søke");
             return adresseSokService.sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenummer));
         } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
             final JsonGateAdresse gateAdresse = (JsonGateAdresse) adresse;
