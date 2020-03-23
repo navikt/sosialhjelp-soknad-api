@@ -51,7 +51,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
 
-    public static final String TESTKOMMUNE = "2352";
+    public static final String TESTKOMMUNE = "3002";
     public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
     private String EIER;
 
