@@ -17,7 +17,7 @@ import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligExcepti
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.oidc.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
@@ -42,8 +42,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
-//@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
-@Unprotected
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
 @Timed(name = "SoknadActionsRessurs")
