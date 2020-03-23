@@ -1337,11 +1337,11 @@
                         </dependency>
                     </dependencies>
                 </plugin>
-                <plugin>
-                    <groupId>org.jboss.as.plugins</groupId>
-                    <artifactId>jboss-as-maven-plugin</artifactId>
-                    <version>7.4.Final</version>
-                </plugin>
+                <!--                <plugin>-->
+                <!--                    <groupId>org.jboss.as.plugins</groupId>-->
+                <!--                    <artifactId>jboss-as-maven-plugin</artifactId>-->
+                <!--                    <version>7.4.Final</version>-->
+                <!--                </plugin>-->
                 <plugin>
                     <groupId>com.googlecode.flyway</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
