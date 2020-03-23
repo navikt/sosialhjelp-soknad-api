@@ -177,6 +177,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0213", "974593408")    // Nordre Follo
             .put("1246", "974586312")    // Øygarden
             .put("1014", "936846777")    // Midt-Agder
+            .put("0710", "974594188")    // Sandefjord
 
             .build();
 
@@ -388,7 +389,8 @@ public class KommuneTilNavEnhetMapper {
                     "4221", // Valle
                     "4224", // Åseral
                     "4223", // Vennesla
-                    "4218"  // Iveland
+                    "4218", // Iveland
+                    "3804"  // Sandefjord
                     
             ));
 
