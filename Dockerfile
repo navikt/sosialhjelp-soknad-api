@@ -1,7 +1,7 @@
 FROM docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.2-jdk-11 as builder
 WORKDIR /source
 ADD / /source
-RUN mvn package
+RUN mvn install
 
 FROM navikt/java:8
 COPY --from=builder /source/web/target/soknadsosialhjelp-server /app
