@@ -31,7 +31,12 @@ public interface AdresseSokConsumer {
         
         @Override
         public String toString() {
-            return adressenavn + ", " + postnummer + " " + poststed;
+            return adressenavn + ", " + postnummer + " " + poststed +
+                    ". Kommunenummer: " + kommunenummer +
+                    ", kommunenavn: " + kommunenavn +
+                    ", geografiskTilknytning: " + geografiskTilknytning +
+                    ", gatekode: " + gatekode +
+                    ", bydel: " + bydel;
         }
     }
     

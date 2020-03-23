@@ -66,6 +66,7 @@ public class AdresseSokService {
         }
         
         final AdressesokRespons adressesokRespons = adresseSokConsumer.sokAdresse(sokedata);
+        log.info("MATRIKKEL - respons: " + adressesokRespons.toString());
         return adressesokRespons.adresseDataList.stream()
                 .filter(distinktGeografiskTilknytning())
                 .map(AdresseSokService::toKunTilknytningAdresseForslag)
