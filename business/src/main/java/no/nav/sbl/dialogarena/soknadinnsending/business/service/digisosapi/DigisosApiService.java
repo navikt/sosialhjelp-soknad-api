@@ -104,7 +104,7 @@ public class DigisosApiService {
                 antallBrukerOpplastedeVedlegg += vedlegg.getFiler().size();
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse, soknadUnderArbeid.erEttersendelse());
+                log.warn("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse, soknadUnderArbeid.erEttersendelse());
             }
         } catch (RuntimeException e) {
             log.debug("Ignored exception");
