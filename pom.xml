@@ -59,6 +59,8 @@
     </repositories>
 
     <properties>
+        <java.jdk.version>11</java.jdk.version>
+
         <sonar.exclusions>
             **/mockmodul/**,
             **/selftest/**
@@ -1317,15 +1319,15 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.8.1</version>
                     <configuration>
-                        <release>11</release>
+                        <release>${java.jdk.version}</release>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.2</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.apache.maven.shared</groupId>
