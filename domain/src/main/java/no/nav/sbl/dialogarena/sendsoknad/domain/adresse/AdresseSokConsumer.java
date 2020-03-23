@@ -12,6 +12,14 @@ public interface AdresseSokConsumer {
     class AdressesokRespons {
         public boolean flereTreff;
         public List<AdresseData> adresseDataList = new ArrayList<>();
+
+        @Override
+        public String toString() {
+            return "AdressesokRespons{" +
+                    "flereTreff=" + flereTreff +
+                    ", adresseDataList=" + adresseDataList +
+                    '}';
+        }
     }
 
     class AdresseData {
