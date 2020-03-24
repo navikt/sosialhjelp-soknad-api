@@ -1269,12 +1269,12 @@ public class SosialhjelpPdfGenerator {
 
         // Formue
         List<String> sparingTyper = new ArrayList<>(6);
-        sparingTyper.add("aksjer");
+        sparingTyper.add("verdipapirer");
         sparingTyper.add("brukskonto");
         sparingTyper.add("bsu");
-        sparingTyper.add("livsforsikring");
+        sparingTyper.add("livsforsikringssparedel");
         sparingTyper.add("sparekonto");
-        sparingTyper.add("annet");
+        sparingTyper.add("belop");
         for (JsonOkonomioversiktFormue formue : okonomi.getOversikt().getFormue()) {
             if (sparingTyper.contains(formue.getType())) {
                 pdf.skrivTekst(formue.getTittel());
