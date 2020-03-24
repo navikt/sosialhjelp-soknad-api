@@ -169,8 +169,7 @@ public class SosialhjelpPdfGenerator {
             String folkeregistrertAdresseTekst = "";
             switch (jsonPersonalia.getFolkeregistrertAdresse().getType()) {
                 case GATEADRESSE:
-                    JsonGateAdresse gaf = (JsonGateAdresse) jsonPersonalia.getFolkeregistrertAdresse();
-                    folkeregistrertAdresseTekst = gaf.getGatenavn() + " " + gaf.getHusnummer() + gaf.getHusbokstav() + ", " + gaf.getPostnummer() + " " + gaf.getPoststed();
+                    folkeregistrertAdresseTekst = jsonGateAdresseToString((JsonGateAdresse) jsonPersonalia.getFolkeregistrertAdresse());
                     break;
                 case MATRIKKELADRESSE:
                     JsonMatrikkelAdresse maf = (JsonMatrikkelAdresse) jsonPersonalia.getFolkeregistrertAdresse();
@@ -196,8 +195,7 @@ public class SosialhjelpPdfGenerator {
             String oppholdsAdresseTekst = "";
             switch (jsonPersonalia.getOppholdsadresse().getType()) {
                 case GATEADRESSE:
-                    JsonGateAdresse gaf = (JsonGateAdresse) jsonPersonalia.getOppholdsadresse();
-                    oppholdsAdresseTekst = gaf.getGatenavn() + " " + gaf.getHusnummer() + gaf.getHusbokstav() + ", " + gaf.getPostnummer() + " " + gaf.getPoststed();
+                    oppholdsAdresseTekst = jsonGateAdresseToString((JsonGateAdresse) jsonPersonalia.getOppholdsadresse());
                     break;
                 case MATRIKKELADRESSE:
                     JsonMatrikkelAdresse maf = (JsonMatrikkelAdresse) jsonPersonalia.getOppholdsadresse();
@@ -335,6 +333,27 @@ public class SosialhjelpPdfGenerator {
                 JsonUstrukturertAdresse uaf = (JsonUstrukturertAdresse) jsonAdresse;
                 pdf.skrivTekstMedInnrykk(String.join(" ", uaf.getAdresse()), INNRYKK_2);
         }
+    }
+
+    private String jsonGateAdresseToString(JsonGateAdresse gaf) {
+        StringBuilder adresse = new StringBuilder();
+        if (gaf.getGatenavn() != null) {
+            adresse.append(gaf.getGatenavn()).append(" ");
+        }
+        if (gaf.getHusnummer() != null) {
+            adresse.append(gaf.getHusnummer());
+        }
+        if (gaf.getHusbokstav() != null) {
+            adresse.append(gaf.getHusbokstav());
+        }
+        adresse.append(", ");
+        if (gaf.getPostnummer() != null) {
+            adresse.append(gaf.getPostnummer()).append(" ");
+        }
+        if (gaf.getPoststed() != null) {
+            adresse.append(gaf.getPoststed());
+        }
+        return adresse.toString();
     }
 
     private void leggTilBegrunnelse(PdfGenerator pdf, JsonBegrunnelse jsonBegrunnelse) throws IOException {
@@ -906,10 +925,9 @@ public class SosialhjelpPdfGenerator {
                 JsonBostotte bostotte = okonomi.getOpplysninger().getBostotte();
                 if (bostotte != null && bostotte.getSaker() != null) {
                     for (JsonBostotteSak bostotteSak : bostotte.getSaker()) {
-                        pdf.skrivTekst("inntekt.bostotte.sak");
+                        pdf.skrivTekst(getTekst("inntekt.bostotte.sak"));
                         pdf.skrivTekst(formaterDato(bostotteSak.getDato(), DATO_FORMAT));
-                        pdf.skrivTekst(getTekst("inntekt.bostotte.sak.status"));
-                        pdf.skrivTekst(finnSaksStatus(bostotteSak));
+                        skrivTekstMedGuard(pdf, finnSaksStatus(bostotteSak), "inntekt.bostotte.sak.status");
                     }
                     boolean utbetalingHusbankenFinnes = hentUtbetalinger(okonomi, "bostotte").size() > 0;
                     if (bostotte.getSaker().isEmpty()) {
@@ -924,6 +942,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(getTekst("inntekt.bostotte.utbetalingerIkkefunnet"));
                         }
                     }
+                    pdf.addBlankLine();
                 }
             }
 
