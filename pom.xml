@@ -132,7 +132,7 @@
         <modig-lang.version>2.0.2</modig-lang.version>
         <aspectjweaver.version>1.8.8</aspectjweaver.version>
         <zjsonpatch.version>0.4.8</zjsonpatch.version>
-        <jaxb.version>2.3.0</jaxb.version>
+        <jaxb.version>2.3.1</jaxb.version>
         <soap.version>1.4.0</soap.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
@@ -1270,6 +1270,11 @@
                 <groupId>jakarta.annotation</groupId>
                 <artifactId>jakarta.annotation-api</artifactId>
                 <version>${jakarta-annotation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.messaging.saaj</groupId>
+                <artifactId>saaj-impl</artifactId>
+                <version>1.5.1</version>
             </dependency>
 
             <!--
