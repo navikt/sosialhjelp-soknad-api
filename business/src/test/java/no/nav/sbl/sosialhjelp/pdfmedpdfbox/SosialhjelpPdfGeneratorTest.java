@@ -34,8 +34,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -43,6 +45,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -302,20 +307,22 @@ public class SosialhjelpPdfGeneratorTest {
 //                                                .withKilde(BRUKER)
 //                                                .withStatus(JsonSivilstatus.Status.SKILT)
                                         new JsonSivilstatus()
-                                                .withKilde(SYSTEM)
+                                                .withKilde(BRUKER)
                                                 .withStatus(JsonSivilstatus.Status.GIFT)
                                                 .withEktefelle(
                                                         new JsonEktefelle()
                                                                 .withNavn(
                                                                         new JsonNavn()
                                                                                 .withFornavn("Leia")
-                                                                                .withMellomnavn("Mellomnavn")
+                                                                                //.withMellomnavn("Mellomnavn")
                                                                                 .withEtternavn("Skywalker")
                                                                 )
-                                                                .withPersonIdentifikator("0101195011223")
+                                                                .withFodselsdato("1950-01-01")
+                                                                .withPersonIdentifikator("010150xxxxx")
                                                 )
+                                                .withFolkeregistrertMedEktefelle(false)
                                                 .withBorSammenMed(false)
-                                                .withEktefelleHarDiskresjonskode(true)
+                                                .withEktefelleHarDiskresjonskode(false)
                                 )
                                 .withForsorgerplikt(
                                         new JsonForsorgerplikt()
@@ -392,6 +399,41 @@ public class SosialhjelpPdfGeneratorTest {
                 )
                 .withOkonomi(new JsonOkonomi()
                         .withOpplysninger(new JsonOkonomiopplysninger()
+                                .withBekreftelse(Arrays.asList(
+                                        new JsonOkonomibekreftelse()
+                                            .withType("verdi")
+                                            .withVerdi(true),
+                                        new JsonOkonomibekreftelse()
+                                            .withType("studielanOgStipend")
+                                            .withVerdi(true),
+                                        new JsonOkonomibekreftelse()
+                                            .withType("sparing")
+                                            .withVerdi(true),
+                                        new JsonOkonomibekreftelse()
+                                            .withType("utbetaling")
+                                            .withVerdi(true),
+                                        new JsonOkonomibekreftelse()
+                                            .withType("boutgifter")
+                                            .withVerdi(true),
+                                        new JsonOkonomibekreftelse()
+                                            .withType("barneutgifter")
+                                            .withVerdi(true)
+                                ))
+                                .withBeskrivelseAvAnnet(new JsonOkonomibeskrivelserAvAnnet()
+                                    .withVerdi("Noe annet av verdi")
+                                    .withSparing("En annen form for sparing")
+                                    .withUtbetaling("En annen utbetaling")
+                                )
+                                .withUtgift(Arrays.asList(
+                                        new JsonOkonomiOpplysningUtgift()
+                                            .withType("annenBoutgift")
+                                            .withTittel("Andre boutgifter")
+                                            .withBelop(10),
+                                        new JsonOkonomiOpplysningUtgift()
+                                            .withType("annenBarneutgift")
+                                            .withTittel("Andre barneutgifter")
+                                            .withBelop(10)
+                                ))
                                 .withUtbetaling(Arrays.asList(
                                         new JsonOkonomiOpplysningUtbetaling()
                                                 .withType("skatteetaten")
@@ -401,7 +443,15 @@ public class SosialhjelpPdfGeneratorTest {
                                                 .withSkattetrekk(25.0)
                                                 .withOrganisasjon(new JsonOrganisasjon().withNavn("The Millennium Falcon")),
                                         new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("skatteetaten")
+                                                .withBrutto(2000.0)
+                                                .withPeriodeFom("2019-08-01")
+                                                .withPeriodeTom("2019-08-31")
+                                                .withSkattetrekk(25.0)
+                                                .withOrganisasjon(new JsonOrganisasjon().withNavn("NAV Mock AS")),
+                                        new JsonOkonomiOpplysningUtbetaling()
                                                 .withType("navytelse")
+                                                .withTittel("Koronastønad")
                                                 .withBrutto(2000.0)
                                                 .withNetto(1500.0)
                                                 .withUtbetalingsdato("2019-08-31"),
@@ -409,26 +459,72 @@ public class SosialhjelpPdfGeneratorTest {
                                                 .withType("husbanken")
                                                 .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND)
                                                 .withUtbetalingsdato("2019-08-31")
-                                                .withNetto(6000.0)
+                                                .withNetto(6000.0),
+                                        new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("forsikring")
+                                                .withTittel("Forsikringsutbetaling"),
+                                        new JsonOkonomiOpplysningUtbetaling()
+                                                .withType("annen")
+                                                .withTittel("Annen utbetaling")
+
                                 ))
                         )
                         .withOversikt(new JsonOkonomioversikt()
-                                .withInntekt(Collections.emptyList())
-                                .withFormue(Collections.emptyList())
-                                .withUtgift(Collections.emptyList())
+                                .withInntekt(Arrays.asList(
+                                        new JsonOkonomioversiktInntekt()
+                                            .withType("studielanOgStipend")
+                                            .withTittel("Studielån og stipend")
+                                            .withBrutto(10)
+                                            .withNetto(10)
+                                ))
+                                .withFormue(Arrays.asList(
+                                        new JsonOkonomioversiktFormue()
+                                            .withType("bolig")
+                                            .withTittel("Bolig"),
+                                        new JsonOkonomioversiktFormue()
+                                            .withType("annet")
+                                            .withTittel("Annet"),
+                                        new JsonOkonomioversiktFormue()
+                                            .withType("brukskonto")
+                                            .withTittel("Brukskonto"),
+                                        new JsonOkonomioversiktFormue()
+                                            .withType("belop")
+                                            .withTittel("Annen form for sparing")
+                                ))
+                                .withUtgift(Arrays.asList(
+                                        new JsonOkonomioversiktUtgift()
+                                            .withType("barnebidrag")
+                                            .withTittel("Barnebidrag")
+                                            .withBelop(100),
+                                        new JsonOkonomioversiktUtgift()
+                                            .withType("barnehage")
+                                            .withTittel("Barnehage")
+                                            .withBelop(10),
+                                        new JsonOkonomioversiktUtgift()
+                                            .withType("husleie")
+                                            .withTittel("Husleie")
+                                            .withBelop(10)
+                                ))
                         )
                 );
 
         final JsonSoknad jsonSoknad = new JsonSoknad()
                 .withData(data)
-                .withInnsendingstidspunkt("2020-02-22-14:42")
+                //.withInnsendingstidspunkt("2020-02-22-14:42")
                 .withMottaker(new JsonSoknadsmottaker()
                         .withNavEnhetsnavn("NAV Hamar")
                 );
         final JsonInternalSoknad jsonInternalSoknad = new JsonInternalSoknad().withSoknad(jsonSoknad);
+        jsonInternalSoknad
+                .withVedlegg(new JsonVedleggSpesifikasjon()
+                        .withVedlegg(Arrays.asList(
+                                new JsonVedlegg().withType("barnebidrag").withTilleggsinfo("betaler").withFiler(Arrays.asList(new JsonFiler().withFilnavn("barnebidrag.pdf"), new JsonFiler().withFilnavn("annen-dokumentasjon.png"))),
+                                new JsonVedlegg().withType("dokumentasjon").withTilleggsinfo("utbytte").withStatus("VedleggAlleredeSendt"),
+                                new JsonVedlegg().withType("faktura").withTilleggsinfo("strom").withStatus("VedleggKreves")
+                        )));
 
 
-        byte[] bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true);
+        byte[] bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, false);
 
         try {
             FileOutputStream out = new FileOutputStream("../temp/starcraft.pdf");
