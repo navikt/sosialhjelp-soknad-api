@@ -184,7 +184,6 @@ public class KommuneTilNavEnhetMapper {
             .put("0911", "964964998")    // Gjerstad
             .put("1563", "813112892")    // Sunndal
             .put("1432", "976831683")    // Sunnfjord
-            .put("1014", "936846777")    // Bygland
 
             .build();
 
