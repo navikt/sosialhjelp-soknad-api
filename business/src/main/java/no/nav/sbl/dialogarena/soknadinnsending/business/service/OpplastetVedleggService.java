@@ -15,6 +15,7 @@ import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -175,6 +176,10 @@ public class OpplastetVedleggService {
         try {
             document = PDDocument.load(new ByteArrayInputStream(
                     data));
+        } catch (InvalidPasswordException e) {
+            throw new UgyldigOpplastingTypeException(
+                    "PDF kan ikke være krypert.", null,
+                    "opplasting.feilmelding.pdf.kryptert");
         } catch (IOException e) {
             throw new OpplastingException("Kunne ikke lagre fil", e,
                     "vedlegg.opplasting.feil.generell");
@@ -186,8 +191,8 @@ public class OpplastetVedleggService {
                     "opplasting.feilmelding.pdf.signert");
         } else if (detector.pdfIsEncrypted()) {
             throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være krypert.", null,
-                    "opplasting.feilmelding.pdf.krypert");
+                    "PDF kan ikke være signert.", null,
+                    "opplasting.feilmelding.pdf.signert");
         }
     }
 }
