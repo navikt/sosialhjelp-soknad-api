@@ -29,6 +29,7 @@ public class KommuneTilNavEnhetMapper {
             .put("4224", "Vennesla")  // Åseral
             .put("4221", "Vennesla")  // Valle
             .put("4222", "Vennesla")  // Bykle
+            .put("4220", "Vennesla")  // Bygland
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -177,6 +178,12 @@ public class KommuneTilNavEnhetMapper {
             .put("0213", "974593408")    // Nordre Follo
             .put("1246", "974586312")    // Øygarden
             .put("1014", "936846777")    // Midt-Agder
+            .put("0710", "974594188")    // Sandefjord
+            .put("1560", "916359616")    // Tingvoll
+            .put("1566", "974619962")    // Surnadal
+            .put("0911", "964964998")    // Gjerstad
+            .put("1563", "813112892")    // Sunndal
+            .put("1432", "976831683")    // Sunnfjord
 
             .build();
 
@@ -388,7 +395,14 @@ public class KommuneTilNavEnhetMapper {
                     "4221", // Valle
                     "4224", // Åseral
                     "4223", // Vennesla
-                    "4218"  // Iveland
+                    "4218", // Iveland
+                    "3804", // Sandefjord
+                    "1560", // Tingvoll
+                    "1566", // Surnadal
+                    "4211", // Gjerstad
+                    "1563", // Sunndal
+                    "4647", // Sunnfjord
+                    "4220"  // Bygland
                     
             ));
 
