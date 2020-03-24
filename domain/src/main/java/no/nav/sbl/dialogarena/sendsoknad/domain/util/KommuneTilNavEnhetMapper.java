@@ -182,6 +182,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1566", "974619962")    // Surnadal
             .put("0911", "964964998")    // Gjerstad
             .put("1563", "813112892")    // Sunndal
+            .put("1432", "976831683")    // Sunnfjord
 
             .build();
 
@@ -398,7 +399,8 @@ public class KommuneTilNavEnhetMapper {
                     "1560", // Tingvoll
                     "1566", // Surnadal
                     "4211", // Gjerstad
-                    "1563"  // Sunndal
+                    "1563", // Sunndal
+                    "4647"  // SUnnfjord
                     
             ));
 
