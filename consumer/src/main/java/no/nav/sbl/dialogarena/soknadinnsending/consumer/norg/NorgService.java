@@ -17,7 +17,8 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class NorgService {
@@ -27,8 +28,24 @@ public class NorgService {
     @Inject
     private NorgConsumer norgConsumer;
 
-    public List<NavenhetFraLokalListe> getEnheterForKommunenummer(String kommunenummer) {
-        return getAllNavenheterFromPath().navenheter.stream().filter(navenhet -> navenhet.kommunenummer.equals(kommunenummer)).collect(Collectors.toList());
+    private List<NavenhetFraLokalListe> cachedNavenheterFraLokalListe;
+    private static final String NAVENHET_PATH = "/navenhet.json";
+
+
+    public List<NavEnhet> getEnheterForKommunenummer(String kommunenummer) {
+        return getNavenhetForKommunenummerFraCahceEllerLokalListe(kommunenummer)
+                .stream()
+                .map(this::mapToNavEnhet)
+                .distinct()
+                .collect(toList());
+    }
+
+    private NavEnhet mapToNavEnhet(NavenhetFraLokalListe navenhetFraLokalListe) {
+        NavEnhet navEnhet = new NavEnhet();
+        navEnhet.navn = navenhetFraLokalListe.enhetsnavn;
+        navEnhet.enhetNr = navenhetFraLokalListe.enhetsnummer;
+        navEnhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(navenhetFraLokalListe.enhetsnummer);
+        return navEnhet;
     }
 
     public NavEnhet getEnhetForGt(String gt) {
@@ -59,13 +76,28 @@ public class NorgService {
             enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
         }
 
-
         return enhet;
+    }
+
+    private List<NavenhetFraLokalListe> getNavenhetForKommunenummerFraCahceEllerLokalListe(String kommunenummer) {
+        if (cachedNavenheterFraLokalListe == null) {
+            NavenheterFraLokalListe allNavenheterFromPath = getAllNavenheterFromPath();
+            if (allNavenheterFromPath == null) {
+                throw new IllegalStateException(String.format("Fant ingen navenheter i path: %s", NAVENHET_PATH));
+            }
+            cachedNavenheterFraLokalListe = allNavenheterFromPath.navenheter;
+        }
+
+        return cachedNavenheterFraLokalListe
+                    .stream()
+                    .filter(navenhet -> navenhet.kommunenummer.equals(kommunenummer))
+                    .distinct()
+                    .collect(toList());
     }
 
     private NavenheterFraLokalListe getAllNavenheterFromPath() {
         try {
-            InputStream resourceAsStream = this.getClass().getResourceAsStream("/navenhet.json");
+            InputStream resourceAsStream = this.getClass().getResourceAsStream(NAVENHET_PATH);
             if (resourceAsStream == null) {
                 return null;
             }

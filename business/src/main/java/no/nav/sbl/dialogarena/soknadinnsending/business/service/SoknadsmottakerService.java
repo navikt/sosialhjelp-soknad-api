@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Soketype;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
@@ -49,17 +50,19 @@ public class SoknadsmottakerService {
             return Collections.emptyList();
         }
 
-        log.info("MATRIKKEL - soknadsmottakerGitt");
         if (adresse.getType().equals(JsonAdresse.Type.MATRIKKELADRESSE)) {
             final JsonMatrikkelAdresse matrikkelAdresse = (JsonMatrikkelAdresse) adresse;
-            log.info("MATRIKKEL - adresse er matrikkeladresse: " + matrikkelAdresse.toString());
             final String kommunenummer = matrikkelAdresse.getKommunenummer();
             if (kommunenummer == null || kommunenummer.trim().equals("")) {
                 return Collections.emptyList();
             }
 
-            log.info("MATRIKKEL - klar til å søke");
-            return adresseSokService.sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenummer));
+            AdresseForslag adresseForslag = new AdresseForslag();
+            adresseForslag.type = AdresseForslagType.matrikkelAdresse;
+            adresseForslag.kommunenummer = kommunenummer;
+
+            return Collections.singletonList(adresseForslag);
+
         } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
             final JsonGateAdresse gateAdresse = (JsonGateAdresse) adresse;
             final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()

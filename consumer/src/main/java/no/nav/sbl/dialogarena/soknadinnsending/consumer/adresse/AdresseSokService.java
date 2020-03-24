@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType.gateAdresse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -60,13 +61,11 @@ public class AdresseSokService {
     }
     
     public List<AdresseForslag> sokEtterNavKontor(Sokedata sokedata) {
-        log.info("MATRIKKEL - søkedata: " + sokedata.toString());
         if (sokedata.adresse != null && sokedata.adresse.trim().length() <= 2) {
             return Collections.emptyList();
         }
         
         final AdressesokRespons adressesokRespons = adresseSokConsumer.sokAdresse(sokedata);
-        log.info("MATRIKKEL - respons: " + adressesokRespons.toString());
         return adressesokRespons.adresseDataList.stream()
                 .filter(distinktGeografiskTilknytning())
                 .map(AdresseSokService::toKunTilknytningAdresseForslag)
@@ -94,7 +93,7 @@ public class AdresseSokService {
         adresse.geografiskTilknytning = data.geografiskTilknytning;
         adresse.gatekode = data.gatekode;
         adresse.bydel = data.bydel;
-        adresse.type = "gateadresse";
+        adresse.type = gateAdresse;
         return adresse;
     }
 

@@ -30,7 +30,7 @@ public class AdresseSokConsumerMock {
                     Sokedata sokedata = (Sokedata) invocation.getArguments()[0];
 
                     if (sokedata.adresse == null) {
-                        return getOsloKommune();
+                        return new AdressesokRespons();
                     }
 
                     if ("test".equalsIgnoreCase(sokedata.adresse)) {
@@ -93,17 +93,6 @@ public class AdresseSokConsumerMock {
 
         response.adresseDataList = Collections.singletonList(a1);
 
-        return response;
-    }
-
-    private static AdressesokRespons getOsloKommune(){
-        AdressesokRespons response = new AdressesokRespons();
-
-        final AdresseData a1 = new AdresseData();
-        a1.kommunenummer = "0301";
-        a1.kommunenavn = "Oslo";
-
-        response.adresseDataList = Collections.singletonList(a1);
         return response;
     }
 
