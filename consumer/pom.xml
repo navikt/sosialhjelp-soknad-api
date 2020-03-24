@@ -85,12 +85,6 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jvnet.staxex</groupId>
-                    <artifactId>stax-ex</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
