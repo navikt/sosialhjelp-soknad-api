@@ -1290,9 +1290,6 @@ public class SosialhjelpPdfGenerator {
                 if (utbetaling.getType().equals("sluttoppgjoer")) {
                     skrivTekstMedGuardOgIkkeUtfylt(pdf, utbetaling.getBelop(), "opplysninger.arbeid.avsluttet.netto.label");
                 } else {
-                    if (getTekst("opplysninger.inntekt.inntekter." + utbetaling.getType() + ".sum.label") == null) {
-                        pdf.skrivTekstBold("MANGLER OVERSETTELSE: " + utbetaling.getType());
-                    }
                     skrivTekstMedGuardOgIkkeUtfylt(pdf, utbetaling.getBelop(), "opplysninger.inntekt.inntekter." + utbetaling.getType() + ".sum.label");
                 }
                 pdf.addBlankLine();
