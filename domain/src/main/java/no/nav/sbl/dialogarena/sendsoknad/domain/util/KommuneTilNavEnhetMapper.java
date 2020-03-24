@@ -29,7 +29,7 @@ public class KommuneTilNavEnhetMapper {
             .put("4224", "Vennesla")  // Åseral
             .put("4221", "Vennesla")  // Valle
             .put("4222", "Vennesla")  // Bykle
-            .put("1014", "Vennesla")  // Bygland
+            .put("4220", "Vennesla")  // Bygland
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
