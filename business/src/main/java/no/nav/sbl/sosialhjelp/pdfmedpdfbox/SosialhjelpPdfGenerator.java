@@ -576,13 +576,11 @@ public class SosialhjelpPdfGenerator {
                 skrivIkkeUtfylt(pdf);
             }
 
-            pdf.addBlankLine();
-
-            pdf.skrivTekstBold(getTekst("familierelasjon.faktum.sporsmal"));
-
             // Forsørgerplikt
             JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
             if (forsorgerplikt != null) {
+                pdf.addBlankLine();
+                pdf.skrivTekstBold(getTekst("familierelasjon.faktum.sporsmal"));
                 JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
                 if (harForsorgerplikt != null && harForsorgerplikt.getVerdi()) {
 
@@ -650,7 +648,7 @@ public class SosialhjelpPdfGenerator {
             }
             else {
                 if (utvidetSoknad) {
-                    pdf.skrivH3(getTekst("familierelasjon.ingen_registerte_barn_tittel"));
+                    pdf.skrivH3(getTekst("familierelasjon.ingen_registrerte_barn_tittel"));
                     pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn_tekst"));
                 }
             }
