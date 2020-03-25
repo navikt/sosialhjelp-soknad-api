@@ -19,6 +19,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
@@ -59,6 +60,9 @@ public class DigisosApiService {
 
     @Inject
     private HenvendelseService henvendelseService;
+
+    @Inject
+    private SoknadUnderArbeidService soknadUnderArbeidService;
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
@@ -204,6 +208,8 @@ public class DigisosApiService {
         }
 
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
+        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid);
+
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             log.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
