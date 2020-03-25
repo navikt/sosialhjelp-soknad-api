@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -82,9 +83,9 @@ public class SoknadsmottakerServiceTest {
 
         AdresseForslag adresseForslag = adresseForslagene.get(0);
 
-        assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
         assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
-        assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
+        assertThat(adresseForslag.type, is(AdresseForslagType.matrikkelAdresse));
+        // Får kun kommunenummer som adresseforslag. Ut fra denne finner man navenhet i den lokale lista
     }
 
     @Test
