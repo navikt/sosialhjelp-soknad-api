@@ -91,10 +91,19 @@ public class PersonV3Mock {
         landkoder.setValue("NOR");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
-        person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createOsloMatrikkelAdresse()));
-        person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createSarpsborgMatrikkelAdresse()));
+        person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
+        person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
 
         return person;
+    }
+
+    private static Gateadresse createDobbelGateadresse() {
+        return new Gateadresse()
+                .withKommunenummer("0301")
+                .withPoststed(new Postnummer().withValue("2222"))
+                .withGatenavn("Dobbelveien")
+                .withBolignummer("2")
+                .withHusnummer(3);
     }
 
     private static Matrikkeladresse createOsloMatrikkelAdresse() {
@@ -115,6 +124,16 @@ public class PersonV3Mock {
                 .withMatrikkelnummer(new Matrikkelnummer()
                         .withGaardsnummer("1")
                         .withBruksnummer("174"));
+    }
+
+    private static Matrikkeladresse createSandeiMoreOgRomsdalMatrikkelAdresse() {
+        return new Matrikkeladresse()
+                .withKommunenummer("1514")
+                .withEiendomsnavn("SandeHus")
+                .withPoststed(new Postnummer().withValue("1706"))
+                .withMatrikkelnummer(new Matrikkelnummer()
+                        .withGaardsnummer("555")
+                        .withBruksnummer("309"));
     }
 
 

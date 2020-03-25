@@ -1,22 +1,25 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenhetFraLokalListe;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenheterFraLokalListe;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getOrganisasjonsnummer;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -183,5 +186,90 @@ public class NorgServiceTest {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
             assertThat(kommune, enheterForKommunenummer.size(), is(1));
         });
+    }
+
+    @Ignore
+    @Test
+    public void getAllNavenheterFromPath() {
+        NavenheterFraLokalListe allNavenheterFromPath = norgService.getAllNavenheterFromPath();
+        List<NavenhetFraLokalListe> navenhetnavnUlikKommunenavn = new ArrayList<>();
+        List<NavenhetFraLokalListe> kommunenavnMedSpesifisertSted = new ArrayList<>();
+        List<NavenhetFraLokalListe> samiskeKommunenavn = new ArrayList<>();
+        Map<String, List<NavenhetFraLokalListe>> kommuneMap = new HashMap<>();
+        Map<String, List<NavenhetFraLokalListe>> enhetsnavnMap = new HashMap<>();
+
+        for (NavenhetFraLokalListe navenhet : allNavenheterFromPath.navenheter) {
+            assertNotNull(navenhet.kommunenavn);
+            assertNotEquals("", navenhet.kommunenavn);
+            if (!navenhet.enhetsnavn.contains(navenhet.kommunenavn) &&
+                    !navenhet.kommunenavn.equals("Oslo") &&
+                    !navenhet.kommunenavn.equals("Bergen") &&
+                    !navenhet.kommunenavn.equals("Stavanger") &&
+                    !navenhet.kommunenavn.equals("Trondheim")) {
+
+                if (navenhet.kommunenavn.contains(" - ") || navenhet.kommunenavn.contains(" – ")) {
+                    samiskeKommunenavn.add(navenhet);
+                } else if(navenhet.kommunenavn.contains(" i ")) {
+                    kommunenavnMedSpesifisertSted.add(navenhet);
+                } else {
+                    navenhetnavnUlikKommunenavn.add(navenhet);
+                }
+
+                List<NavenhetFraLokalListe> navenheterForEnhetsnavn = enhetsnavnMap.get(navenhet.enhetsnavn);
+                if (navenheterForEnhetsnavn == null) navenheterForEnhetsnavn = new ArrayList<>();
+                navenheterForEnhetsnavn.add(navenhet);
+                enhetsnavnMap.put(navenhet.enhetsnavn, navenheterForEnhetsnavn);
+            }
+            List<NavenhetFraLokalListe> navenheterForKommune = kommuneMap.get(navenhet.kommunenavn);
+            if (navenheterForKommune == null) navenheterForKommune = new ArrayList<>();
+
+            navenheterForKommune.add(navenhet);
+            kommuneMap.put(navenhet.kommunenavn, navenheterForKommune);
+        }
+
+        Map<String, List<NavenhetFraLokalListe>> kommunerMedFlereNavenheter = kommuneMap.entrySet()
+                .stream()
+                .filter(stringListEntry -> {
+                    return stringListEntry.getValue().size() > 1;
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Map<String, List<NavenhetFraLokalListe>> enheterForFlerekommuner = enhetsnavnMap.entrySet()
+                .stream()
+                .filter(stringListEntry -> stringListEntry.getValue().size() > 1)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        StringBuilder navenheterOverFlereKommuner = new StringBuilder().append("\n~~~~~ Navenheter som strekker seg over flere kommuner: ~~~~~\n");
+        for(Map.Entry<String, List<NavenhetFraLokalListe>> entry : enheterForFlerekommuner.entrySet()) {
+            String navenhetNavn = entry.getKey();
+            List<NavenhetFraLokalListe> navenheter = entry.getValue();
+            navenheterOverFlereKommuner.append("\n").append(navenhetNavn).append(":\n");
+            navenheter.forEach(navenhet ->
+                    navenheterOverFlereKommuner.append("* ").append(navenhet.kommunenavn).append("\n"));
+        }
+        System.out.println(navenheterOverFlereKommuner);
+
+        StringBuilder samiskeKommuner = new StringBuilder().append("\n~~~~~ Samiske kommuner: ~~~~~\n");
+        samiskeKommunenavn.forEach(samiskKommune -> {
+            samiskeKommuner.append(samiskKommune.enhetsnavn).append(", ");
+            samiskeKommuner.append(samiskKommune.kommunenavn).append(" kommune").append("\n");
+        });
+        System.out.println(samiskeKommuner);
+
+        StringBuilder spesifisertStedskommuner = new StringBuilder().append("\n~~~~~ Enhetsnavn ulik kommunenavn, der kommunen spesifiserer sted med i : ~~~~~\n");
+        kommunenavnMedSpesifisertSted.forEach(kommune -> {
+            spesifisertStedskommuner.append(kommune.enhetsnavn).append(", ");
+            spesifisertStedskommuner.append(kommune.kommunenavn).append(" kommune").append("\n");
+        });
+        System.out.println(spesifisertStedskommuner);
+
+        navenhetnavnUlikKommunenavn = navenhetnavnUlikKommunenavn.stream().filter(navenhet -> enheterForFlerekommuner.get(navenhet.enhetsnavn) == null).collect(Collectors.toList()); // filtrere vekk navenheter som strekker seg over flere kommuner
+        StringBuilder kommunerNavnUlikNavenhetsnavn = new StringBuilder().append("\n~~~~~ Enhetsnavn ulik kommunenavn: ~~~~~\n");
+        navenhetnavnUlikKommunenavn.forEach(kommune -> {
+            kommunerNavnUlikNavenhetsnavn.append(kommune.enhetsnavn).append(", ");
+            kommunerNavnUlikNavenhetsnavn.append(kommune.kommunenavn).append(" kommune").append("\n");
+        });
+        System.out.println(kommunerNavnUlikNavenhetsnavn);
+
+        assertThat(allNavenheterFromPath.navenheter.size(), is(356 + 17-1 + 8-1 + 9-1 + 4-1)); //Totalt antall kommuner + ekstra navkontorer i Oslo, Bergen, Stavanger og Trondheim
     }
 }

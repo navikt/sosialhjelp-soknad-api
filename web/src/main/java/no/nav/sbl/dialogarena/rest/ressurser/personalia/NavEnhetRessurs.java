@@ -185,7 +185,7 @@ public class NavEnhetRessurs {
         boolean valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
-                .withKommunenavn(adresseForslag.kommunenavn)
+                .withKommunenavn(adresseForslag.kommunenavn != null ? adresseForslag.kommunenavn : navEnhet.kommunenavn)
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
                 .withValgt(valgt)

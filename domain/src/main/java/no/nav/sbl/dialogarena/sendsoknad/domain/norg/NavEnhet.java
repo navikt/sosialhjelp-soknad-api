@@ -6,6 +6,7 @@ import java.util.Objects;
 public class NavEnhet {
     public String enhetNr;
     public String navn;
+    public String kommunenavn;
     public String sosialOrgnr;
 
     @Override

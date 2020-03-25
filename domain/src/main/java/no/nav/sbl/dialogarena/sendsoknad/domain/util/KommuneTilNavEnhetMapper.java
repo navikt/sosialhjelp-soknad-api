@@ -214,6 +214,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0516", "910229567")   // Nord-Fron - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0519", "910229567")   // Sør-Fron - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0520", "910229567")   // Ringebu - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("1517", "910229567")   // NAV Hareid - Ulstein - Sande - OBS: Sendes til vårt orgnummer i FIKS!
 
             .build();
 
@@ -237,7 +238,8 @@ public class KommuneTilNavEnhetMapper {
                     "3403", // Nytt Hamar
                     "3436", // Nytt Nord-Fron
                     "3438", // Nytt Sør-Fron
-                    "3439"  // Nytt Ringebu
+                    "3439", // Nytt Ringebu
+                    "1514"  // Nytt Sande i Møre og Romsdal
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(

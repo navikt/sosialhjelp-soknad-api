@@ -44,6 +44,7 @@ public class NorgService {
         NavEnhet navEnhet = new NavEnhet();
         navEnhet.navn = navenhetFraLokalListe.enhetsnavn;
         navEnhet.enhetNr = navenhetFraLokalListe.enhetsnummer;
+        navEnhet.kommunenavn = navenhetFraLokalListe.kommunenavn;
         navEnhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(navenhetFraLokalListe.enhetsnummer);
         return navEnhet;
     }
@@ -95,7 +96,7 @@ public class NorgService {
                     .collect(toList());
     }
 
-    private NavenheterFraLokalListe getAllNavenheterFromPath() {
+    NavenheterFraLokalListe getAllNavenheterFromPath() {
         try {
             InputStream resourceAsStream = this.getClass().getResourceAsStream(NAVENHET_PATH);
             if (resourceAsStream == null) {
