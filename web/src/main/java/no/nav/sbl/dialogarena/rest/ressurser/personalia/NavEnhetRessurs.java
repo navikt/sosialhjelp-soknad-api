@@ -144,6 +144,7 @@ public class NavEnhetRessurs {
                     navenheter.forEach(navEnhet ->
                             addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr)
                     );
+                    log.info("Matrikkeladresse ble brukt. Returnerer {} navenheter", navenheter.size());
             } else {
                 NavEnhet navEnhet = norgService.getEnhetForGt(adresseForslag.geografiskTilknytning);
                 addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr);
