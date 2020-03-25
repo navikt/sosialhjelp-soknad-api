@@ -12,14 +12,6 @@ public interface AdresseSokConsumer {
     class AdressesokRespons {
         public boolean flereTreff;
         public List<AdresseData> adresseDataList = new ArrayList<>();
-
-        @Override
-        public String toString() {
-            return "AdressesokRespons{" +
-                    "flereTreff=" + flereTreff +
-                    ", adresseDataList=" + adresseDataList +
-                    '}';
-        }
     }
 
     class AdresseData {
@@ -39,12 +31,7 @@ public interface AdresseSokConsumer {
         
         @Override
         public String toString() {
-            return adressenavn + ", " + postnummer + " " + poststed +
-                    ". Kommunenummer: " + kommunenummer +
-                    ", kommunenavn: " + kommunenavn +
-                    ", geografiskTilknytning: " + geografiskTilknytning +
-                    ", gatekode: " + gatekode +
-                    ", bydel: " + bydel;
+            return adressenavn + ", " + postnummer + " " + poststed;
         }
     }
     
