@@ -104,6 +104,7 @@ public class NorgService {
             String json = IOUtils.toString(resourceAsStream);
             return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, NavenheterFraLokalListe.class);
         } catch (IOException e) {
+            logger.error("IOException ved henting av navenheter fra lokal liste", e);
             return null;
         }
     }
