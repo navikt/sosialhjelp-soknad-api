@@ -192,7 +192,6 @@ public class KommuneTilNavEnhetMapper {
             .put("1573", "976832418")    // Smøla
             .put("1576", "921358288")    // Aure
             .put("1783", "918964118")    // Selbu, Tydal, Meråker, Stjørdal og Frosta
-            .put("0914", "964965781")    // Tvedestrand
 
             .build();
 
@@ -419,8 +418,7 @@ public class KommuneTilNavEnhetMapper {
                     "5033", // Tydal
                     "5034", // Meråker
                     "5035", // Stjørdal
-                    "5036", // Frosta
-                    "4213"  // Tvedestrand                
+                    "5036"  // Frosta           
             ));
 
 
