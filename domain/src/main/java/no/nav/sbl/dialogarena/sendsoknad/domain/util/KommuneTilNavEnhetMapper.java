@@ -30,6 +30,10 @@ public class KommuneTilNavEnhetMapper {
             .put("4221", "Vennesla")  // Valle
             .put("4222", "Vennesla")  // Bykle
             .put("4220", "Vennesla")  // Bygland
+            .put("5032", "Stjørdal")  // Selbu
+            .put("5033", "Stjørdal")  // Tydal
+            .put("5034", "Stjørdal")  // Meråker
+            .put("5036", "Stjørdal")  // Frosta
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -177,7 +181,7 @@ public class KommuneTilNavEnhetMapper {
             .put("2025", "987590254")    // Deatnu/Tana
             .put("0213", "974593408")    // Nordre Follo
             .put("1246", "974586312")    // Øygarden
-            .put("1014", "936846777")    // Midt-Agder
+            .put("1014", "936846777")    // Bykle, Bygland, Valle, Åseral, Vennesla og Iveland
             .put("0710", "974594188")    // Sandefjord
             .put("1560", "916359616")    // Tingvoll
             .put("1566", "974619962")    // Surnadal
@@ -187,6 +191,8 @@ public class KommuneTilNavEnhetMapper {
             .put("5703", "874577502")    // Indre Fosen
             .put("1573", "976832418")    // Smøla
             .put("1576", "921358288")    // Aure
+            .put("1783", "939958851")    // Selbu, Tydal, Meråker, Stjørdal og Frosta
+            .put("0914", "964965781")    // Tvedestrand
 
             .build();
 
@@ -408,8 +414,13 @@ public class KommuneTilNavEnhetMapper {
                     "4220", // Bygland
                     "5054", // Indre Fosen
                     "1573", // Smøla
-                    "1576"  // Aure
-                    
+                    "1576", // Aure
+                    "5032", // Selbu
+                    "5033", // Tydal
+                    "5034", // Meråker
+                    "5035", // Stjørdal
+                    "5036", // Frosta
+                    "4213"  // Tvedestrand                
             ));
 
 
