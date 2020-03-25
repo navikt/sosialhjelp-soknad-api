@@ -184,6 +184,9 @@ public class KommuneTilNavEnhetMapper {
             .put("0911", "964964998")    // Gjerstad
             .put("1563", "813112892")    // Sunndal
             .put("1432", "976831683")    // Sunnfjord
+            .put("5703", "874577502")    // Indre Fosen
+            .put("1573", "976832418")    // Smøla
+            .put("1576", "921358288")    // Aure
 
             .build();
 
@@ -402,7 +405,10 @@ public class KommuneTilNavEnhetMapper {
                     "4211", // Gjerstad
                     "1563", // Sunndal
                     "4647", // Sunnfjord
-                    "4220"  // Bygland
+                    "4220", // Bygland
+                    "5054", // Indre Fosen
+                    "1573", // Smøla
+                    "1576"  // Aure
                     
             ));
 
