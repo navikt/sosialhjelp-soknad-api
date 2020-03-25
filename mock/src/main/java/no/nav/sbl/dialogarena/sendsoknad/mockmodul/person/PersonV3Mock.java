@@ -91,16 +91,30 @@ public class PersonV3Mock {
         landkoder.setValue("NOR");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
-        Matrikkeladresse matrikkeladresse = new Matrikkeladresse()
+        person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createOsloMatrikkelAdresse()));
+        person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createSarpsborgMatrikkelAdresse()));
+
+        return person;
+    }
+
+    private static Matrikkeladresse createOsloMatrikkelAdresse() {
+        return new Matrikkeladresse()
                 .withKommunenummer("0301")
                 .withEiendomsnavn("SLOTTSSTALLEN")
                 .withPoststed(new Postnummer().withValue("0010"))
                 .withMatrikkelnummer(new Matrikkelnummer()
                         .withGaardsnummer("209")
                         .withBruksnummer("25"));
-        person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(matrikkeladresse));
+    }
 
-        return person;
+    private static Matrikkeladresse createSarpsborgMatrikkelAdresse() {
+        return new Matrikkeladresse()
+                .withKommunenummer("3003")
+                .withEiendomsnavn("Sarpsborg Rådhus")
+                .withPoststed(new Postnummer().withValue("1706"))
+                .withMatrikkelnummer(new Matrikkelnummer()
+                        .withGaardsnummer("1")
+                        .withBruksnummer("174"));
     }
 
 
