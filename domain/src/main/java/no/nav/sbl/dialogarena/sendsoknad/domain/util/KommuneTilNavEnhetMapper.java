@@ -191,7 +191,7 @@ public class KommuneTilNavEnhetMapper {
             .put("5703", "874577502")    // Indre Fosen
             .put("1573", "976832418")    // Smøla
             .put("1576", "921358288")    // Aure
-            .put("1783", "939958851")    // Selbu, Tydal, Meråker, Stjørdal og Frosta
+            .put("1783", "918964118")    // Selbu, Tydal, Meråker, Stjørdal og Frosta
             .put("0914", "964965781")    // Tvedestrand
 
             .build();
