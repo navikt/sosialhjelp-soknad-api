@@ -34,6 +34,9 @@ public class KommuneTilNavEnhetMapper {
             .put("5033", "Stjørdal")  // Tydal
             .put("5034", "Stjørdal")  // Meråker
             .put("5036", "Stjørdal")  // Frosta
+            .put("1853", "Narvik")    // Evenes
+            .put("5414", "Narvik")    // Gratangen
+            .put("5419", "Senja")     // Sørreisa
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -192,6 +195,9 @@ public class KommuneTilNavEnhetMapper {
             .put("1573", "976832418")    // Smøla
             .put("1576", "921358288")    // Aure
             .put("1783", "918964118")    // Selbu, Tydal, Meråker, Stjørdal og Frosta
+            .put("0228", "976637437")    // Rælingen
+            .put("1805", "974592630")    // Narvik, Evenes og Gratangen
+            :put("1931", "974562820")    // Senja og Sørreisa
 
             .build();
 
@@ -418,7 +424,13 @@ public class KommuneTilNavEnhetMapper {
                     "5033", // Tydal
                     "5034", // Meråker
                     "5035", // Stjørdal
-                    "5036"  // Frosta           
+                    "5036", // Frosta
+                    "3027", // Rælingen
+                    "1853", // Evenes
+                    "1806", // Narvik
+                    "5414", // Gratangen
+                    "5421", // Senja
+                    "5419"  // Sørreisa
             ));
 
 
