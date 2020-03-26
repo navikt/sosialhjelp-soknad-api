@@ -12,6 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
+import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,8 @@ public class OkonomiskeOpplysningerMapper {
             inntekter.addAll(mapToInntektList(vedleggFrontend.rader, eksisterendeInntekt.get()));
             jsonOkonomi.getOversikt().setInntekt(inntekter);
         } else {
-            logger.error("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.warn("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            throw new NotFoundException("Disse oplysningene tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtig?");
         }
     }
 
@@ -54,7 +56,8 @@ public class OkonomiskeOpplysningerMapper {
             formuer.addAll(mapToFormueList(vedleggFrontend.rader, eksisterendeFormue.get()));
             jsonOkonomi.getOversikt().setFormue(formuer);
         } else {
-            logger.error("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.warn("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
         }
     }
 
@@ -78,7 +81,8 @@ public class OkonomiskeOpplysningerMapper {
 
             jsonOkonomi.getOversikt().setUtgift(utgifter);
         } else {
-            logger.error("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.warn("Typen \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
         }
     }
 
@@ -106,11 +110,12 @@ public class OkonomiskeOpplysningerMapper {
             utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, eksisterendeOpplysningUtgift.get()));
             jsonOkonomi.getOpplysninger().setUtgift(utgifter);
         } else {
-            logger.error("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.warn("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
         }
     }
 
-    public static boolean checkIfTypeAnnetAnnetShouldBeRemoved(VedleggFrontend vedleggFrontend) {
+    private static boolean checkIfTypeAnnetAnnetShouldBeRemoved(VedleggFrontend vedleggFrontend) {
         return vedleggFrontend.rader.size() == 1 && vedleggFrontend.rader.get(0).belop == null &&
                 StringUtils.isEmpty(vedleggFrontend.rader.get(0).beskrivelse);
     }
@@ -128,7 +133,8 @@ public class OkonomiskeOpplysningerMapper {
             utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling.get()));
             jsonOkonomi.getOpplysninger().setUtbetaling(utbetalinger);
         } else {
-            logger.error("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.warn("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
         }
     }
 
@@ -145,7 +151,8 @@ public class OkonomiskeOpplysningerMapper {
 
             utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, eksisterendeRenter.get()));
         } else {
-            logger.error("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            logger.warn("Typen: \'" + soknadType + "\' eksisterer ikke fra før av i søknad.json");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
         }
     }
 
