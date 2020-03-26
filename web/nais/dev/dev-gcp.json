@@ -1,4 +1,5 @@
 {
+  "applicationName": "sosialhjelp-soknad-api",
   "namespace": "teamdigisos",
   "ingresses": [
     "https://sosialhjelp-soknad-api.dev-nav.no/sosialhjelp/soknad-api"
