@@ -136,17 +136,16 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
-        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
+        String filnavn = "soknad.pdf";
+        String mimetype = "application/pdf";
         try {
-            sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+            byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
         } catch (Exception e) {
-            log.warn("Kunne ikke generere soknad.pdf", e);
+            log.error("Kunne ikke generere soknad.pdf. Fallback til generering med itext.", e);
+            byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
         }
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("soknad.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) soknadPdf.length),
-                new ByteArrayInputStream(soknadPdf));
     }
 
 
@@ -178,18 +177,16 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
-        byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+        String filnavn = "Soknad-juridisk.pdf";
+        String mimetype = "application/pdf";
         try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, true);
+            byte[] pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         } catch (Exception e) {
-            log.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
+            log.error("Kunne ikke generere Soknad-juridisk.pdf. Fallback til generering med itext.", e);
+            byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         }
-
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("Soknad-juridisk.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
@@ -200,6 +197,14 @@ public class DigisosApiService {
                 .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
                 .withStorrelse((long) pdf.length),
                 new ByteArrayInputStream(pdf));
+    }
+
+    private FilOpplasting opprettFilOpplastingFraByteArray(String filnavn, String mimetype, byte[] bytes) {
+        return new FilOpplasting(new FilMetadata()
+                .withFilnavn(filnavn)
+                .withMimetype(mimetype)
+                .withStorrelse((long) bytes.length), new ByteArrayInputStream(bytes)
+        );
     }
 
     public String sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
