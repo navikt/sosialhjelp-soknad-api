@@ -174,8 +174,8 @@ public class NavEnhetRessurs {
         }
 
         if (!ServiceUtils.isRunningInProd() && MockUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-            log.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
-            kommunenummer = "2352";
+            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD");
+            kommunenummer = "3002";
         }
 
         boolean digisosKommune = isDigisosKommune(kommunenummer);

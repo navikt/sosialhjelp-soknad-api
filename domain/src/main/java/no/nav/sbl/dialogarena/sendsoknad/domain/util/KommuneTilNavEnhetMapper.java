@@ -25,6 +25,17 @@ public class KommuneTilNavEnhetMapper {
             .put("4225", "Kvinesdal") // Lyngdal
             .put("4206", "Kvinesdal") // Farsund
             .put("4228", "Kvinesdal") // Sirdal
+            .put("4218", "Vennesla")  // Iveland
+            .put("4224", "Vennesla")  // Åseral
+            .put("4221", "Vennesla")  // Valle
+            .put("4222", "Vennesla")  // Bykle
+            .put("4220", "Vennesla")  // Bygland
+            .put("5032", "Stjørdal")  // Selbu
+            .put("5033", "Stjørdal")  // Tydal
+            .put("5034", "Stjørdal")  // Meråker
+            .put("5036", "Stjørdal")  // Frosta
+            .put("1853", "Narvik")    // Evenes
+            .put("5414", "Narvik")    // Gratangen
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -172,6 +183,20 @@ public class KommuneTilNavEnhetMapper {
             .put("2025", "987590254")    // Deatnu/Tana
             .put("0213", "974593408")    // Nordre Follo
             .put("1246", "974586312")    // Øygarden
+            .put("1014", "936846777")    // Bykle, Bygland, Valle, Åseral, Vennesla og Iveland
+            .put("0710", "974594188")    // Sandefjord
+            .put("1560", "916359616")    // Tingvoll
+            .put("1566", "974619962")    // Surnadal
+            .put("0911", "964964998")    // Gjerstad
+            .put("1563", "813112892")    // Sunndal
+            .put("1432", "976831683")    // Sunnfjord
+            .put("5703", "874577502")    // Indre Fosen
+            .put("1573", "976832418")    // Smøla
+            .put("1576", "921358288")    // Aure
+            .put("1783", "918964118")    // Selbu, Tydal, Meråker, Stjørdal og Frosta
+            .put("0228", "976637437")    // Rælingen
+            .put("1805", "974592630")    // Narvik, Evenes og Gratangen
+            .put("1931", "974562820")    // Senja
 
             .build();
 
@@ -389,8 +414,32 @@ public class KommuneTilNavEnhetMapper {
                     "3030", // Lillestrøm
                     "5441", // Deatnu/Tana
                     "3020", // Nordre Follo
-                    "4626"  // Øygarden
-                    
+                    "4626", // Øygarden
+                    "4222", // Bykle
+                    "4221", // Valle
+                    "4224", // Åseral
+                    "4223", // Vennesla
+                    "4218", // Iveland
+                    "3804", // Sandefjord
+                    "1560", // Tingvoll
+                    "1566", // Surnadal
+                    "4211", // Gjerstad
+                    "1563", // Sunndal
+                    "4647", // Sunnfjord
+                    "4220", // Bygland
+                    "5054", // Indre Fosen
+                    "1573", // Smøla
+                    "1576", // Aure
+                    "5032", // Selbu
+                    "5033", // Tydal
+                    "5034", // Meråker
+                    "5035", // Stjørdal
+                    "5036", // Frosta
+                    "3027", // Rælingen
+                    "1853", // Evenes
+                    "1806", // Narvik
+                    "5414", // Gratangen
+                    "5421"  // Senja
             ));
 
 

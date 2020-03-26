@@ -306,7 +306,7 @@ public class DigisosApiImpl implements DigisosApi {
                 String errorResponse = EntityUtils.toString(response.getEntity());
                 String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
                 if (fiksDigisosId != null) {
-                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
+                    log.warn("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
                     return fiksDigisosId;
                 }
 
