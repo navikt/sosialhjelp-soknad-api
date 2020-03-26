@@ -197,7 +197,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1783", "918964118")    // Selbu, Tydal, Meråker, Stjørdal og Frosta
             .put("0228", "976637437")    // Rælingen
             .put("1805", "974592630")    // Narvik, Evenes og Gratangen
-            :put("1931", "974562820")    // Senja og Sørreisa
+            .put("1931", "974562820")    // Senja og Sørreisa
 
             .build();
 
