@@ -80,37 +80,28 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
-        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(internalSoknad, "/");
         try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, false);
+            byte[] soknadPdf = sosialhjelpPdfGenerator.generate(internalSoknad, false);
+            return genererDokumentFraByteArray(filnavn, mimetype, soknadPdf, false);
         } catch (Exception e) {
-            logger.warn("Kunne ikke generere Soknad.pdf", e);
+            logger.error("Kunne ikke generere Soknad.pdf. Fallback til generering med itext.", e);
+            byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(internalSoknad, "/");
+            return genererDokumentFraByteArray(filnavn, mimetype, soknadPdf, false);
         }
-
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadPdf);
-        return new Dokument()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(false)
-                .withData(new DataHandler(dataSource));
     }
 
     Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
-        try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, true);
-        } catch (Exception e) {
-            logger.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
-        }
 
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
-        return new Dokument()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(false)
-                .withData(new DataHandler(dataSource));
+        try {
+            byte[] juridiskPdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
+            return genererDokumentFraByteArray(filnavn, mimetype, juridiskPdf, false);
+        } catch (Exception e) {
+            logger.error("Kunne ikke generere Soknad-juridisk.pdf. Fallback til generering med itext.", e);
+            byte[] juridiskPdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+            return genererDokumentFraByteArray(filnavn, mimetype, juridiskPdf, false);
+        }
     }
 
     Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
@@ -136,6 +127,15 @@ public class FiksDokumentHelper {
                 .withFilnavn(filnavn)
                 .withMimetype(mimetype)
                 .withEkskluderesFraPrint(false)
+                .withData(new DataHandler(dataSource));
+    }
+
+    private Dokument genererDokumentFraByteArray(String filnavn, String mimetype, byte[] bytes, boolean eksluderesFraPrint) {
+        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, bytes);
+        return new Dokument()
+                .withFilnavn(filnavn)
+                .withMimetype(mimetype)
+                .withEkskluderesFraPrint(eksluderesFraPrint)
                 .withData(new DataHandler(dataSource));
     }
 
