@@ -129,7 +129,7 @@ public class OpplastetVedleggService {
                 .findFirst();
 
         if (!jsonVedleggOptional.isPresent()) {
-            throw new NotFoundException("Dette vedlegget tilhører " + vedleggstype + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtig?");
+            throw new NotFoundException("Dette vedlegget tilhører " + vedleggstype + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?");
         }
         return jsonVedleggOptional.get();
     }

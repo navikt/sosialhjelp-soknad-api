@@ -35,7 +35,7 @@ public class OkonomiskeOpplysningerMapper {
             inntekter.addAll(mapToInntektList(vedleggFrontend.rader, eksisterendeInntekt.get()));
             jsonOkonomi.getOversikt().setInntekt(inntekter);
         } else {
-            throw new NotFoundException("Disse opplysningene tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtig?");
+            throw new NotFoundException("Disse opplysningene tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?");
         }
     }
 
@@ -52,7 +52,7 @@ public class OkonomiskeOpplysningerMapper {
             formuer.addAll(mapToFormueList(vedleggFrontend.rader, eksisterendeFormue.get()));
             jsonOkonomi.getOversikt().setFormue(formuer);
         } else {
-            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?");
         }
     }
 
@@ -76,7 +76,7 @@ public class OkonomiskeOpplysningerMapper {
 
             jsonOkonomi.getOversikt().setUtgift(utgifter);
         } else {
-            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?");
         }
     }
 
@@ -104,7 +104,7 @@ public class OkonomiskeOpplysningerMapper {
             utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, eksisterendeOpplysningUtgift.get()));
             jsonOkonomi.getOpplysninger().setUtgift(utgifter);
         } else {
-            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?");
         }
     }
 
@@ -126,7 +126,7 @@ public class OkonomiskeOpplysningerMapper {
             utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling.get()));
             jsonOkonomi.getOpplysninger().setUtbetaling(utbetalinger);
         } else {
-            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?");
         }
     }
 
@@ -143,7 +143,7 @@ public class OkonomiskeOpplysningerMapper {
 
             utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, eksisterendeRenter.get()));
         } else {
-            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtig?");
+            throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?");
         }
     }
 
