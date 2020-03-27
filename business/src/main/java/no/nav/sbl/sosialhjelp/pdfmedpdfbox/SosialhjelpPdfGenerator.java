@@ -576,6 +576,9 @@ public class SosialhjelpPdfGenerator {
                 skrivIkkeUtfylt(pdf);
             }
 
+            pdf.addBlankLine();
+            pdf.skrivTekstBold(getTekst("familierelasjon.faktum.sporsmal"));
+
             // Forsørgerplikt
             JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
             if (forsorgerplikt != null) {
@@ -649,8 +652,8 @@ public class SosialhjelpPdfGenerator {
             else {
                 if (utvidetSoknad) {
                     pdf.skrivH3(getTekst("familierelasjon.ingen_registrerte_barn_tittel"));
-                    pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn_tekst"));
                 }
+                pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn_tekst"));
             }
         } else {
             skrivIkkeUtfylt(pdf);
@@ -854,33 +857,6 @@ public class SosialhjelpPdfGenerator {
                 pdf.addBlankLine();
             }
 
-            // Student
-            if (soknad.getData() != null && soknad.getData().getUtdanning() != null && soknad.getData().getUtdanning().getErStudent() != null) {
-                pdf.skrivTekstBold(getTekst("inntekt.studielan.sporsmal"));
-
-                List<JsonOkonomibekreftelse> studielanOgStipendBekreftelser = hentBekreftelser(okonomi, "studielanOgStipend");
-                if (!studielanOgStipendBekreftelser.isEmpty()) {
-                    JsonOkonomibekreftelse studielanOgStipendBekreftelse = studielanOgStipendBekreftelser.get(0);
-                    pdf.skrivTekst(getTekst("inntekt.studielan." + studielanOgStipendBekreftelse.getVerdi()));
-
-                    if (utvidetSoknad && !studielanOgStipendBekreftelse.getVerdi()) {
-                        pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"));
-                        pdf.skrivTekst(getTekst("informasjon.student.studielan.tittel"));
-                        pdf.skrivTekst(getTekst("informasjon.student.studielan.1"));
-                        pdf.skrivTekst(getTekst("informasjon.student.studielan.2"));
-                    }
-                } else {
-                    skrivIkkeUtfylt(pdf);
-                }
-                if (utvidetSoknad) {
-                    List<String> studentSvaralternativer = new ArrayList<>(2);
-                    studentSvaralternativer.add("inntekt.studielan.true");
-                    studentSvaralternativer.add("inntekt.studielan.false");
-                    skrivSvaralternativer(pdf, studentSvaralternativer);
-                }
-                pdf.addBlankLine();
-            }
-
             // Bostotte
             pdf.skrivTekstBold(getTekst("inntekt.bostotte.overskrift"));
 
@@ -942,6 +918,33 @@ public class SosialhjelpPdfGenerator {
                     }
                     pdf.addBlankLine();
                 }
+            }
+
+            // Student
+            if (soknad.getData() != null && soknad.getData().getUtdanning() != null && soknad.getData().getUtdanning().getErStudent() != null) {
+                pdf.skrivTekstBold(getTekst("inntekt.studielan.sporsmal"));
+
+                List<JsonOkonomibekreftelse> studielanOgStipendBekreftelser = hentBekreftelser(okonomi, "studielanOgStipend");
+                if (!studielanOgStipendBekreftelser.isEmpty()) {
+                    JsonOkonomibekreftelse studielanOgStipendBekreftelse = studielanOgStipendBekreftelser.get(0);
+                    pdf.skrivTekst(getTekst("inntekt.studielan." + studielanOgStipendBekreftelse.getVerdi()));
+
+                    if (utvidetSoknad && !studielanOgStipendBekreftelse.getVerdi()) {
+                        pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"));
+                        pdf.skrivTekst(getTekst("informasjon.student.studielan.tittel"));
+                        pdf.skrivTekst(getTekst("informasjon.student.studielan.1"));
+                        pdf.skrivTekst(getTekst("informasjon.student.studielan.2"));
+                    }
+                } else {
+                    skrivIkkeUtfylt(pdf);
+                }
+                if (utvidetSoknad) {
+                    List<String> studentSvaralternativer = new ArrayList<>(2);
+                    studentSvaralternativer.add("inntekt.studielan.true");
+                    studentSvaralternativer.add("inntekt.studielan.false");
+                    skrivSvaralternativer(pdf, studentSvaralternativer);
+                }
+                pdf.addBlankLine();
             }
 
             // Eierandeler
@@ -1069,7 +1072,7 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(utbetaling.getTittel());
                             if (utbetaling.getType().equals("annen")) {
                                 pdf.addBlankLine();
-                                pdf.skrivTekstBold(getTekst("inntekt.eierandeler.true.type.annet.true.beskrivelse.label"));
+                                pdf.skrivTekstBold(getTekst("inntekt.inntekter.true.type.annen.true.beskrivelse.label"));
                                 if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null && okonomi.getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling() != null) {
                                     pdf.skrivTekst(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling());
                                 } else {
@@ -1158,7 +1161,7 @@ public class SosialhjelpPdfGenerator {
             pdf.addBlankLine();
 
             // Forsørgerplikt
-            if (soknad.getData().getFamilie() != null && soknad.getData().getFamilie().getForsorgerplikt() != null && soknad.getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt() != null) {
+            if (soknad.getData().getFamilie() != null && soknad.getData().getFamilie().getForsorgerplikt() != null && soknad.getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt() != null && soknad.getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt().getVerdi()) {
                 pdf.skrivTekstBold(getTekst("utgifter.barn.sporsmal"));
                 if (utvidetSoknad) {
                     skrivInfotekst(pdf, "utgifter.barn.infotekst.tekst");
