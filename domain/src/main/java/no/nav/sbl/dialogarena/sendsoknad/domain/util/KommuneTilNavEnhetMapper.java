@@ -208,24 +208,33 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "910940066")   // Horten
-            .put("1208", "910230964")   // Årstad, Bergen kommune
-            .put("1209", "910230158")   // Bergenhus, Bergen kommune
-            .put("1210", "910230506")   // Ytrebygda, Bergen kommune
-            .put("1202", "910230913")   // Fana, Bergen kommune
-            .put("0312", "910229699")   // Frogner, Oslo kommune
+            .put("1208", "910230964")   // Årstad,          Bergen kommune
+            .put("1209", "910230158")   // Bergenhus,       Bergen kommune
+            .put("1210", "910230506")   // Ytrebygda,       Bergen kommune
+            .put("1202", "910230913")   // Fana,            Bergen kommune
+            .put("1204", "910230905")   // Arna,            Bergen kommune
+            .put("1203", "910230530")   // Åsane,           Bergen kommune
+            .put("1205", "910230948")   // Fyllingsdalen,   Bergen kommune
+            .put("1206", "910230514")   // Laksevåg,        Bergen kommune
             .put("1247", "910230182")   // Askøy
-            .put("0315", "811213322")   // Grünerløkka, Oslo kommune
-            .put("0328", "910229702")   // Grorud, Oslo kommune
-            .put("0327", "910589792")   // Stovner, Oslo kommune
-            .put("0314", "910565338")   // Sagene, Oslo kommune
 
-            .put("0318", "910309935")   // Nordstrand, Oslo kommune
-            .put("0319", "910723499")   // Søndre Nordstrand, Oslo kommune
+            .put("0312", "910229699")   // Frogner,             Oslo kommune
+            .put("0315", "811213322")   // Grünerløkka,         Oslo kommune
+            .put("0328", "910229702")   // Grorud,              Oslo kommune
+            .put("0327", "910589792")   // Stovner,             Oslo kommune
+            .put("0314", "910565338")   // Sagene,              Oslo kommune
+            .put("0318", "910309935")   // Nordstrand,          Oslo kommune
+            .put("0319", "910723499")   // Søndre Nordstrand,   Oslo kommune
+            .put("0316", "910229567")   // Gamle Oslo,          Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0313", "910229567")   // St. Hanshaugen,      Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0335", "910229567")   // Ullern,              Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0334", "910229567")   // Vestre Aker,         Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0331", "910229567")   // Nordre Aker,         Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0330", "910229567")   // Bjerke,              Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0326", "910229567")   // Alna,                Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0321", "910229567")   // Østensjø,            Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+
             .put("0219", "910231065")   // Bærum
-            .put("1204", "910230905")   // Arna, Bergen kommune
-            .put("1203", "910230530")   // Åsane, Bergen kommune
-            .put("1205", "910230948")   // Fyllingsdalen, Bergen kommune
-            .put("1206", "910230514")   // Laksevåg, Bergen kommune
             .put("5701", "910230646")   // NAV Falkenborg, Trondheim kommune
             .put("5702", "910230611")   // NAV Lerkendal, Trondheim kommunne
             .put("1161", "910229567")   // Eiganes og Tasta, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
@@ -236,6 +245,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0516", "910229567")   // Nord-Fron - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0519", "910229567")   // Sør-Fron - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0520", "910229567")   // Ringebu - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("1517", "910229567")   // NAV Hareid - Ulstein - Sande - OBS: Sendes til vårt orgnummer i FIKS!
 
             .build();
 
@@ -259,7 +269,8 @@ public class KommuneTilNavEnhetMapper {
                     "3403", // Nytt Hamar
                     "3436", // Nytt Nord-Fron
                     "3438", // Nytt Sør-Fron
-                    "3439"  // Nytt Ringebu
+                    "3439", // Nytt Ringebu
+                    "1514"  // Nytt Sande i Møre og Romsdal
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(

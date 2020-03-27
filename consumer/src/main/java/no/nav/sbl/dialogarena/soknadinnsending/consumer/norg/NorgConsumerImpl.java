@@ -30,7 +30,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     }
 
     @Override
-    public RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning) {
+    public RsNorgEnhet getEnhetForGeografiskTilknytning(String geografiskTilknytning) {
 
         final Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
         try (Response response = request.get()) {

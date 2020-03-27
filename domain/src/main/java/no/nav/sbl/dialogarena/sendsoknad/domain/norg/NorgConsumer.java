@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface NorgConsumer {
 
-    RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning);
-    
+    RsNorgEnhet getEnhetForGeografiskTilknytning(String geografiskTilknytning);
+
     void ping();
 
     class RsNorgEnhet {
