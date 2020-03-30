@@ -581,71 +581,67 @@ public class SosialhjelpPdfGenerator {
 
             // Forsørgerplikt
             JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
-            if (forsorgerplikt != null) {
-                JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
-                if (harForsorgerplikt != null && harForsorgerplikt.getVerdi()) {
-
-                    if (utvidetSoknad) {
-                        pdf.skrivTekst(getTekst("familierelasjon.ingress_folkeregisteret"));
-                        pdf.skrivTekst(getTekst("familierelasjon.ingress_forsorger") + " " + forsorgerplikt.getAnsvar().size() + " barn under 18år");
-                    }
-
-                    // TODO: Finnes ikke i handlebarkode?
-                    //pdf.skrivTekstBold(getTekst("familie.barn.true.barn.sporsmal"));
-                    //pdf.addBlankLine();
-
-                    List<JsonAnsvar> listeOverAnsvar = forsorgerplikt.getAnsvar();
-
-                    for (JsonAnsvar ansvar : listeOverAnsvar) {
-                        JsonBarn barn = ansvar.getBarn();
-
-                        if (barn.getHarDiskresjonskode() == null || !barn.getHarDiskresjonskode()) {
-                            // navn
-                            JsonNavn navnPaBarn = barn.getNavn();
-                            String navnPaBarnTekst = getJsonNavnTekst(navnPaBarn);
-                            skrivTekstMedGuard(pdf, navnPaBarnTekst, "familie.barn.true.barn.navn.label");
-
-                            // Fødselsdato
-                            String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
-                            skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fnr");
-
-                            // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
-                            //String personIdentifikator = barn.getPersonIdentifikator();
-                            // skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
-
-                            // Samme folkeregistrerte adresse
-                            JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
-                            if (erFolkeregistrertSammen != null) {
-                                if (erFolkeregistrertSammen.getVerdi() != null && erFolkeregistrertSammen.getVerdi()) {
-                                    skrivTekstMedGuard(pdf, "Ja", "familierelasjon.samme_folkeregistrerte_adresse");
-                                    leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
-                                } else {
-                                    skrivTekstMedGuard(pdf, "Nei", "familierelasjon.samme_folkeregistrerte_adresse");
-                                    leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
-                                }
-                            }
-                            pdf.addBlankLine();
-                        }
-                    }
-
-                    // Mottar eller betaler du barnebidrag for ett eller flere av barna?
-                    pdf.skrivTekstBold(getTekst("familie.barn.true.barnebidrag.sporsmal"));
-                    if (listeOverAnsvar.size() > 0) {
-
-                        JsonBarnebidrag barnebidrag = forsorgerplikt.getBarnebidrag();
-                        if (barnebidrag != null && barnebidrag.getVerdi() != null) {
-                            JsonBarnebidrag.Verdi barnebidragVerdi = barnebidrag.getVerdi();
-                            if (barnebidragVerdi != null) {
-                                pdf.skrivTekst(getTekst("familie.barn.true.barnebidrag." + barnebidragVerdi.value()));
-                            }
-
-                        }
-                    } else {
-                        skrivIkkeUtfylt(pdf);
-
-                    }
-                    skrivUtBarnebidragAlternativer(pdf, utvidetSoknad);
+            if (forsorgerplikt != null && forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getVerdi()) {
+                if (utvidetSoknad) {
+                    pdf.skrivTekst(getTekst("familierelasjon.ingress_folkeregisteret"));
+                    pdf.skrivTekst(getTekst("familierelasjon.ingress_forsorger") + " " + forsorgerplikt.getAnsvar().size() + " barn under 18år");
                 }
+
+                // TODO: Finnes ikke i handlebarkode?
+                //pdf.skrivTekstBold(getTekst("familie.barn.true.barn.sporsmal"));
+                //pdf.addBlankLine();
+
+                List<JsonAnsvar> listeOverAnsvar = forsorgerplikt.getAnsvar();
+
+                for (JsonAnsvar ansvar : listeOverAnsvar) {
+                    JsonBarn barn = ansvar.getBarn();
+
+                    if (barn.getHarDiskresjonskode() == null || !barn.getHarDiskresjonskode()) {
+                        // navn
+                        JsonNavn navnPaBarn = barn.getNavn();
+                        String navnPaBarnTekst = getJsonNavnTekst(navnPaBarn);
+                        skrivTekstMedGuard(pdf, navnPaBarnTekst, "familie.barn.true.barn.navn.label");
+
+                        // Fødselsdato
+                        String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
+                        skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fnr");
+
+                        // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
+                        //String personIdentifikator = barn.getPersonIdentifikator();
+                        // skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
+
+                        // Samme folkeregistrerte adresse
+                        JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
+                        if (erFolkeregistrertSammen != null) {
+                            if (erFolkeregistrertSammen.getVerdi() != null && erFolkeregistrertSammen.getVerdi()) {
+                                skrivTekstMedGuard(pdf, "Ja", "familierelasjon.samme_folkeregistrerte_adresse");
+                                leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
+                            } else {
+                                skrivTekstMedGuard(pdf, "Nei", "familierelasjon.samme_folkeregistrerte_adresse");
+                                leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
+                            }
+                        }
+                        pdf.addBlankLine();
+                    }
+                }
+
+                // Mottar eller betaler du barnebidrag for ett eller flere av barna?
+                pdf.skrivTekstBold(getTekst("familie.barn.true.barnebidrag.sporsmal"));
+                if (listeOverAnsvar.size() > 0) {
+
+                    JsonBarnebidrag barnebidrag = forsorgerplikt.getBarnebidrag();
+                    if (barnebidrag != null && barnebidrag.getVerdi() != null) {
+                        JsonBarnebidrag.Verdi barnebidragVerdi = barnebidrag.getVerdi();
+                        if (barnebidragVerdi != null) {
+                            pdf.skrivTekst(getTekst("familie.barn.true.barnebidrag." + barnebidragVerdi.value()));
+                        }
+
+                    }
+                } else {
+                    skrivIkkeUtfylt(pdf);
+
+                }
+                skrivUtBarnebidragAlternativer(pdf, utvidetSoknad);
             }
             else {
                 if (utvidetSoknad) {
