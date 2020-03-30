@@ -582,8 +582,6 @@ public class SosialhjelpPdfGenerator {
             // Forsørgerplikt
             JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
             if (forsorgerplikt != null) {
-                pdf.addBlankLine();
-                pdf.skrivTekstBold(getTekst("familierelasjon.faktum.sporsmal"));
                 JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
                 if (harForsorgerplikt != null && harForsorgerplikt.getVerdi()) {
 
