@@ -203,6 +203,9 @@ public class KommuneTilNavEnhetMapper {
             .put("1805", "974592630")    // Narvik, Evenes og Gratangen
             .put("1931", "974562820")    // Senja
             .put("0833", "974610175")    // Nissedal, Kvitseid, Tokke, Vinje, Fyresdal og Seljord
+            .put("0528", "974604264")    // Østre Toten
+            .put("1870", "974545713")    // Sortland
+            .put("0914", "964965781")    // Tvedestrand
 
             .build();
 
@@ -451,7 +454,10 @@ public class KommuneTilNavEnhetMapper {
                     "3824", // Tokke
                     "3825", // Vinje
                     "3823", // Fyresdal
-                    "3820"  // Seljord
+                    "3820", // Seljord
+                    "4213", // Tvedestrand
+                    "1870", // Sortland
+                    "3442"  // Østre Toten
             ));
 
 
