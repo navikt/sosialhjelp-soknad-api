@@ -38,6 +38,9 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
+        if(soknadUnderArbeid.getSelvstendigNaringsdrivende()) {
+            return;
+        }
         String eier = soknadUnderArbeid.getEier();
         JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         internalSoknad.getSoknad().getData().getArbeid().setForhold(innhentSystemArbeidsforhold(eier));

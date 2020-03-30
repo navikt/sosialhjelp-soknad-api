@@ -29,6 +29,9 @@ public class FamilieSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
+        if(soknadUnderArbeid.getSelvstendigNaringsdrivende()) {
+            return;
+        }
         final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         final JsonFamilie familie = jsonData.getFamilie();

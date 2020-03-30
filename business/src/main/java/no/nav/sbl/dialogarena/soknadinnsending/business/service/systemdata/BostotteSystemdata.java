@@ -32,6 +32,9 @@ public class BostotteSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
+        if(soknadUnderArbeid.getSelvstendigNaringsdrivende()) {
+            return;
+        }
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         fjernGamleHusbankenData(okonomi.getOpplysninger());
