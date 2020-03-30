@@ -56,8 +56,6 @@ public class SosialhjelpPdfGenerator {
     @Inject
     public TextHelpers textHelpers;
 
-    public static final String IKKE_UTFYLT = "Ikke utfylt";
-
     public byte[] generate(SoknadUnderArbeid soknadUnderArbeid, boolean utvidetSoknad) {
         try {
             PdfGenerator pdf = new PdfGenerator();
@@ -153,8 +151,7 @@ public class SosialhjelpPdfGenerator {
             String folkeregistrertAdresseTekst = "";
             switch (jsonPersonalia.getFolkeregistrertAdresse().getType()) {
                 case GATEADRESSE:
-                    JsonGateAdresse gaf = (JsonGateAdresse) jsonPersonalia.getFolkeregistrertAdresse();
-                    folkeregistrertAdresseTekst = gaf.getGatenavn() + " " + gaf.getHusnummer() + gaf.getHusbokstav() + ", " + gaf.getPostnummer() + " " + gaf.getPoststed();
+                    folkeregistrertAdresseTekst = jsonGateAdresseToString((JsonGateAdresse) jsonPersonalia.getFolkeregistrertAdresse());
                     break;
                 case MATRIKKELADRESSE:
                     JsonMatrikkelAdresse maf = (JsonMatrikkelAdresse) jsonPersonalia.getFolkeregistrertAdresse();
@@ -171,7 +168,7 @@ public class SosialhjelpPdfGenerator {
                     folkeregistrertAdresseTekst = " " + String.join(" ", uaf.getAdresse());
                     break;
             }
-            pdf.skrivTekstMedInnrykk(folkeregistrertAdresseTekst, INNRYKK_2);
+            pdf.skrivTekst(folkeregistrertAdresseTekst);
             pdf.addBlankLine();
         }
 
@@ -180,8 +177,7 @@ public class SosialhjelpPdfGenerator {
             String oppholdsAdresseTekst = "";
             switch (jsonPersonalia.getOppholdsadresse().getType()) {
                 case GATEADRESSE:
-                    JsonGateAdresse gaf = (JsonGateAdresse) jsonPersonalia.getOppholdsadresse();
-                    oppholdsAdresseTekst = gaf.getGatenavn() + " " + gaf.getHusnummer() + gaf.getHusbokstav() + ", " + gaf.getPostnummer() + " " + gaf.getPoststed();
+                    oppholdsAdresseTekst = jsonGateAdresseToString((JsonGateAdresse) jsonPersonalia.getOppholdsadresse());
                     break;
                 case MATRIKKELADRESSE:
                     JsonMatrikkelAdresse maf = (JsonMatrikkelAdresse) jsonPersonalia.getOppholdsadresse();
@@ -198,7 +194,7 @@ public class SosialhjelpPdfGenerator {
                     oppholdsAdresseTekst = " " + String.join(" ", uaf.getAdresse());
                     break;
             }
-            pdf.skrivTekstMedInnrykk(oppholdsAdresseTekst, INNRYKK_2);
+            pdf.skrivTekst(oppholdsAdresseTekst);
             pdf.addBlankLine();
         }
 
@@ -240,7 +236,7 @@ public class SosialhjelpPdfGenerator {
                     skrivInfotekst(pdf, "kontakt.system.telefoninfo.infotekst.tekst");
                 }
                 pdf.skrivTekst(getTekst("kontakt.system.telefon.label"));
-                pdf.skrivTekstMedInnrykk(jsonTelefonnummer.getVerdi(), INNRYKK_2);
+                pdf.skrivTekst(jsonTelefonnummer.getVerdi());
                 pdf.addBlankLine();
                 if (utvidetSoknad) {
                     skrivKnappTilgjengelig(pdf, "kontakt.system.telefon.endreknapp.label");
@@ -274,12 +270,12 @@ public class SosialhjelpPdfGenerator {
                 pdf.skrivTekst(getTekst("kontakt.kontonummer.label"));
             }
             if (jsonKontonummer.getHarIkkeKonto() != null && jsonKontonummer.getHarIkkeKonto()) {
-                pdf.skrivTekstMedInnrykk(getTekst("kontakt.kontonummer.harikke.true"), INNRYKK_2);
+                pdf.skrivTekst(getTekst("kontakt.kontonummer.harikke.true"));
             } else {
                 if (jsonKontonummer.getVerdi() == null || jsonKontonummer.getVerdi().isEmpty()) {
-                    pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                    skrivIkkeUtfylt(pdf);
                 } else {
-                    pdf.skrivTekstMedInnrykk(jsonKontonummer.getVerdi(), INNRYKK_2);
+                    pdf.skrivTekst(jsonKontonummer.getVerdi());
                 }
             }
             pdf.addBlankLine();
@@ -321,6 +317,27 @@ public class SosialhjelpPdfGenerator {
         }
     }
 
+    private String jsonGateAdresseToString(JsonGateAdresse gaf) {
+        StringBuilder adresse = new StringBuilder();
+        if (gaf.getGatenavn() != null) {
+            adresse.append(gaf.getGatenavn()).append(" ");
+        }
+        if (gaf.getHusnummer() != null) {
+            adresse.append(gaf.getHusnummer());
+        }
+        if (gaf.getHusbokstav() != null) {
+            adresse.append(gaf.getHusbokstav());
+        }
+        adresse.append(", ");
+        if (gaf.getPostnummer() != null) {
+            adresse.append(gaf.getPostnummer()).append(" ");
+        }
+        if (gaf.getPoststed() != null) {
+            adresse.append(gaf.getPoststed());
+        }
+        return adresse.toString();
+    }
+
     private void leggTilBegrunnelse(PdfGenerator pdf, JsonBegrunnelse jsonBegrunnelse) throws IOException {
         pdf.skrivH4Bold(getTekst("begrunnelsebolk.tittel"));
         pdf.addBlankLine();
@@ -355,14 +372,11 @@ public class SosialhjelpPdfGenerator {
         if (arbeid != null && arbeid.getForhold() != null) {
             for (JsonArbeidsforhold forhold : arbeid.getForhold()) {
                 skrivTekstMedGuard(pdf, forhold.getArbeidsgivernavn(), "arbeidsforhold.arbeidsgivernavn.label");
-                if (forhold.getArbeidsgivernavn() != null) {
-                    pdf.skrivTekst(forhold.getArbeidsgivernavn());
-                }
                 skrivTekstMedGuard(pdf, formaterDato(forhold.getFom(), DATO_FORMAT), "arbeidsforhold.fom.label");
                 skrivTekstMedGuard(pdf, formaterDato(forhold.getTom(), DATO_FORMAT), "arbeidsforhold.tom.label");
 
                 if (forhold.getStillingsprosent() != null) {
-                    pdf.skrivTekst(getTekst("arbeidsforhold.stillingsprosent.label") + ": " + forhold.getStillingsprosent());
+                    pdf.skrivTekst(getTekst("arbeidsforhold.stillingsprosent.label") + ": " + forhold.getStillingsprosent() + "%");
                 }
                 pdf.addBlankLine();
             }
@@ -373,12 +387,14 @@ public class SosialhjelpPdfGenerator {
         if (arbeid != null && arbeid.getKommentarTilArbeidsforhold() != null && arbeid.getKommentarTilArbeidsforhold().getVerdi() != null) {
             pdf.skrivTekst(getTekst("opplysninger.arbeidsituasjon.kommentarer.label"));
             pdf.addBlankLine();
-            pdf.skrivTekstMedInnrykk(arbeid.getKommentarTilArbeidsforhold().getVerdi(), INNRYKK_1);
+            pdf.skrivTekstBold("Kommentar til arbeidsforhold:");
+            pdf.skrivTekst(arbeid.getKommentarTilArbeidsforhold().getVerdi());
             pdf.addBlankLine();
         } else if (utvidetSoknad) {
             pdf.skrivTekst(getTekst("opplysninger.arbeidsituasjon.kommentarer.label"));
             pdf.addBlankLine();
-            pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+            pdf.skrivTekstBold("Kommentar til arbeidsforhold:");
+            skrivIkkeUtfylt(pdf);
             pdf.addBlankLine();
         }
 
@@ -389,8 +405,9 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekst(getTekst("dinsituasjon.studerer." + utdanning.getErStudent()));
 
         } else {
-            pdf.skrivTekstKursiv(IKKE_UTFYLT);
+            skrivIkkeUtfylt(pdf);
         }
+        pdf.addBlankLine();
 
         if (utvidetSoknad) {
             List<String> svaralternativer = new ArrayList<>(2);
@@ -404,7 +421,7 @@ public class SosialhjelpPdfGenerator {
             if (utdanning.getStudentgrad() != null) {
                 pdf.skrivTekst(getTekst("dinsituasjon.studerer.true.grad." + utdanning.getStudentgrad()));
             } else {
-                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                skrivIkkeUtfylt(pdf);
             }
             pdf.addBlankLine();
 
@@ -415,7 +432,6 @@ public class SosialhjelpPdfGenerator {
                 skrivSvaralternativer(pdf, svaralternativer);
             }
         }
-        pdf.addBlankLine();
     }
 
     private void leggTilFamilie(PdfGenerator pdf, JsonFamilie familie, boolean utvidetSoknad) throws IOException {
@@ -445,6 +461,7 @@ public class SosialhjelpPdfGenerator {
                         } else {
                             pdf.skrivTekst(getTekst("familie.sivilstatus." + status.toString()));
                         }
+                        pdf.addBlankLine();
 
                         if (sivilstatus.getEktefelleHarDiskresjonskode() != null && sivilstatus.getEktefelleHarDiskresjonskode()) {
                             pdf.skrivTekstBold(getTekst("system.familie.sivilstatus.ikkeTilgang.label"));
@@ -455,26 +472,12 @@ public class SosialhjelpPdfGenerator {
                                 if (!utvidetSoknad) {
                                     pdf.skrivTekstBold(getTekst("system.familie.sivilstatus.infotekst"));
                                 }
-                                pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift.ektefelle.navn"));
-                                String ektefelleNavn = ektefelle.getNavn().getFornavn();
-                                if (ektefelle.getNavn().getMellomnavn() != null) {
-                                    ektefelleNavn += " " + ektefelle.getNavn().getMellomnavn();
-                                }
-                                ektefelleNavn += " " + ektefelle.getNavn().getEtternavn();
-                                pdf.skrivTekstMedInnrykk(ektefelleNavn, INNRYKK_2);
+                                skrivTekstMedGuard(pdf, getJsonNavnTekst(ektefelle.getNavn()), "system.familie.sivilstatus.gift.ektefelle.navn");
+                                skrivTekstMedGuard(pdf, formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), "system.familie.sivilstatus.gift.ektefelle.fodselsdato");
 
-                                pdf.addBlankLine();
-
-                                pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift.ektefelle.fodselsdato"));
-                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), INNRYKK_2);
-
-                                pdf.addBlankLine();
-
-                                pdf.skrivTekst(getTekst("system.familie.sivilstatus.gift.ektefelle.folkereg"));
                                 if (sivilstatus.getFolkeregistrertMedEktefelle() != null) {
-                                    pdf.skrivTekstMedInnrykk(
-                                            getTekst("system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen." +
-                                                    sivilstatus.getFolkeregistrertMedEktefelle()), INNRYKK_2);
+                                    String folkeregistrertTekst =  getTekst("system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen." + sivilstatus.getFolkeregistrertMedEktefelle());
+                                    skrivTekstMedGuard(pdf, folkeregistrertTekst, "system.familie.sivilstatus.gift.ektefelle.folkereg");
                                 }
                             }
                         }
@@ -487,6 +490,7 @@ public class SosialhjelpPdfGenerator {
 
                     if (status != null) {
                         pdf.skrivTekst(getTekst("familie.sivilstatus." + status.toString()));
+                        pdf.addBlankLine();
 
                         if (utvidetSoknad) {
                             List<String> sivilstatusSvaralternativer = new ArrayList<>(5);
@@ -499,55 +503,31 @@ public class SosialhjelpPdfGenerator {
                         }
 
                         JsonEktefelle ektefelle = sivilstatus.getEktefelle();
-                        if (ektefelle != null) {
+                        if (ektefelle != null && status == JsonSivilstatus.Status.GIFT) {
                             pdf.skrivTekstBold(getTekst("familie.sivilstatus.gift.ektefelle.sporsmal"));
-                            pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.fornavn.label"));
-                            if (ektefelle.getNavn().getFornavn() != null) {
-                                pdf.skrivTekstMedInnrykk(ektefelle.getNavn().getFornavn(), INNRYKK_2);
-                            } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
-                            }
-                            pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.mellomnavn.label"));
-                            if (ektefelle.getNavn().getMellomnavn() != null) {
-                                pdf.skrivTekstMedInnrykk(ektefelle.getNavn().getMellomnavn(), INNRYKK_2);
-                            } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
-                            }
-                            pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.etternavn.label"));
-                            if (ektefelle.getNavn().getEtternavn() != null) {
-                                pdf.skrivTekstMedInnrykk(ektefelle.getNavn().getEtternavn(), INNRYKK_2);
-                            } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
-                            }
 
-                            pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.fnr.label"));
+                            skrivTekstMedGuardOgIkkeUtfylt(pdf, ektefelle.getNavn().getFornavn(), "familie.sivilstatus.gift.ektefelle.fornavn.label");
+                            skrivTekstMedGuardOgIkkeUtfylt(pdf, ektefelle.getNavn().getMellomnavn(), "familie.sivilstatus.gift.ektefelle.mellomnavn.label");
+                            skrivTekstMedGuardOgIkkeUtfylt(pdf, ektefelle.getNavn().getEtternavn(), "familie.sivilstatus.gift.ektefelle.etternavn.label");
+
                             if (ektefelle.getFodselsdato() != null) {
-                                pdf.skrivTekstMedInnrykk(formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), INNRYKK_2);
+                                skrivTekstMedGuard(pdf, formaterDato(ektefelle.getFodselsdato(), DATO_FORMAT), "familie.sivilstatus.gift.ektefelle.fnr.label");
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfyltMedGuard(pdf, "familie.sivilstatus.gift.ektefelle.fnr.label");
                             }
 
-                            pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.pnr.label"));
-                            if (ektefelle.getPersonIdentifikator() != null) {
-                                pdf.skrivTekstMedInnrykk(ektefelle.getPersonIdentifikator(), INNRYKK_2);
+                            if (ektefelle.getPersonIdentifikator() != null && ektefelle.getPersonIdentifikator().length() == 11) {
+                                skrivTekstMedGuard(pdf,ektefelle.getPersonIdentifikator().substring(6,11), "familie.sivilstatus.gift.ektefelle.pnr.label");
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfyltMedGuard(pdf, "familie.sivilstatus.gift.ektefelle.pnr.label");
                             }
 
-                            if (ektefelle.getPersonIdentifikator() != null) {
-                                pdf.skrivTekst(getTekst("personalia.fnr"));
-                                pdf.skrivTekstMedInnrykk(ektefelle.getPersonIdentifikator(), INNRYKK_2);
-                            }
-
-                        }
-
-                        if (status == JsonSivilstatus.Status.GIFT) {
-                            pdf.skrivTekst(getTekst("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal"));
+                            skrivTekstMedGuardOgIkkeUtfylt(pdf, ektefelle.getPersonIdentifikator(), "personalia.fnr");
 
                             if (sivilstatus.getBorSammenMed() != null) {
-                                pdf.skrivTekstMedInnrykk(getTekst("familie.sivilstatus.gift.ektefelle.borsammen." + sivilstatus.getBorSammenMed()), INNRYKK_2);
+                                skrivTekstMedGuard(pdf, getTekst("familie.sivilstatus.gift.ektefelle.borsammen." + sivilstatus.getBorSammenMed()), "familie.sivilstatus.gift.ektefelle.borsammen.sporsmal");
                             } else {
-                                pdf.skrivTekstMedInnrykk(getTekst("oppsummering.ikkeutfylt"), INNRYKK_2);
+                                skrivIkkeUtfyltMedGuard(pdf, "familie.sivilstatus.gift.ektefelle.borsammen.sporsmal");
                             }
 
                             if (utvidetSoknad) {
@@ -558,7 +538,7 @@ public class SosialhjelpPdfGenerator {
                             }
                         }
                     } else {
-                        pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                        skrivIkkeUtfylt(pdf);
                     }
                 }
 
@@ -575,17 +555,14 @@ public class SosialhjelpPdfGenerator {
                     }
                 }
             } else {
-                pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                skrivIkkeUtfylt(pdf);
             }
 
-            pdf.addBlankLine();
-
-            if(utvidetSoknad){
-                pdf.skrivTekstBold(getTekst("familierelasjon.faktum.sporsmal"));
-            }
             // Forsørgerplikt
             JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
             if (forsorgerplikt != null) {
+                pdf.addBlankLine();
+                pdf.skrivTekstBold(getTekst("familierelasjon.faktum.sporsmal"));
                 JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
                 if (harForsorgerplikt != null && harForsorgerplikt.getVerdi()) {
 
@@ -604,11 +581,10 @@ public class SosialhjelpPdfGenerator {
                         JsonBarn barn = ansvar.getBarn();
 
                         if (barn.getHarDiskresjonskode() == null || !barn.getHarDiskresjonskode()) {
-                            pdf.addBlankLine();
                             // navn
                             JsonNavn navnPaBarn = barn.getNavn();
                             String navnPaBarnTekst = getJsonNavnTekst(navnPaBarn);
-                            pdf.skrivTekst(getTekst("familie.barn.true.barn.navn.label") + ": " + navnPaBarnTekst);
+                            skrivTekstMedGuard(pdf, navnPaBarnTekst, "familie.barn.true.barn.navn.label");
 
                             // Fødselsdato
                             String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
@@ -621,21 +597,16 @@ public class SosialhjelpPdfGenerator {
                             // Samme folkeregistrerte adresse
                             JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
                             if (erFolkeregistrertSammen != null) {
-                                pdf.skrivTekst(getTekst("familierelasjon.samme_folkeregistrerte_adresse"));
                                 if (erFolkeregistrertSammen.getVerdi() != null && erFolkeregistrertSammen.getVerdi()) {
-                                    pdf.skrivTekstMedInnrykk("Ja", INNRYKK_1);
-                                    pdf.addBlankLine();
+                                    skrivTekstMedGuard(pdf, "Ja", "familierelasjon.samme_folkeregistrerte_adresse");
                                     leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
                                 } else {
-                                    pdf.skrivTekstMedInnrykk("Nei", INNRYKK_1);
-                                    pdf.addBlankLine();
+                                    skrivTekstMedGuard(pdf, "Nei", "familierelasjon.samme_folkeregistrerte_adresse");
                                     leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
                                 }
                             }
                             pdf.addBlankLine();
                         }
-
-
                     }
 
                     // Mottar eller betaler du barnebidrag for ett eller flere av barna?
@@ -651,20 +622,20 @@ public class SosialhjelpPdfGenerator {
 
                         }
                     } else {
-                        pdf.skrivTekstKursiv(IKKE_UTFYLT);
+                        skrivIkkeUtfylt(pdf);
 
                     }
                     skrivUtBarnebidragAlternativer(pdf, utvidetSoknad);
                 }
             }
-            else{
-                if(utvidetSoknad){
-                    pdf.skrivH3(getTekst("familierelasjon.ingen_registerte_barn_tittel"));
+            else {
+                if (utvidetSoknad) {
+                    pdf.skrivH3(getTekst("familierelasjon.ingen_registrerte_barn_tittel"));
                     pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn_tekst"));
                 }
             }
         } else {
-            pdf.skrivTekstKursiv(IKKE_UTFYLT);
+            skrivIkkeUtfylt(pdf);
         }
         pdf.addBlankLine();
     }
@@ -672,53 +643,25 @@ public class SosialhjelpPdfGenerator {
     private void leggTilDeltBosted(PdfGenerator pdf, JsonAnsvar ansvar, Boolean erFolkeregistrertSammenVerdi, boolean utvidetSoknad) throws IOException {
         // Har barnet delt bosted
         if (erFolkeregistrertSammenVerdi) {
-            pdf.skrivTekstBold(getTekst("system.familie.barn.true.barn.deltbosted.sporsmal"));
 
             JsonHarDeltBosted harDeltBosted = ansvar.getHarDeltBosted();
-            if (harDeltBosted != null && harDeltBosted.getVerdi() != null) {
-                pdf.skrivTekstMedInnrykk(getTekst("system.familie.barn.true.barn.deltbosted." + harDeltBosted.getVerdi()), INNRYKK_1);
+            skrivTekstMedGuardOgIkkeUtfylt(pdf, getTekst("system.familie.barn.true.barn.deltbosted." + harDeltBosted.getVerdi()), "system.familie.barn.true.barn.deltbosted.sporsmal");
 
-                if (utvidetSoknad) {
-                    List<String> deltBostedSvaralternativer = new ArrayList<>(2);
-                    deltBostedSvaralternativer.add("system.familie.barn.true.barn.deltbosted.true");
-                    deltBostedSvaralternativer.add("system.familie.barn.true.barn.deltbosted.false");
-                    skrivSvaralternativer(pdf, deltBostedSvaralternativer);
-                }
-            /*
-
-
-                skrivUtDeltBostedBarnAlternativer(pdf, utvidetSoknad);
-                pdf.addBlankLine();
-
-                JsonSamvarsgrad samvarsgrad = ansvar.getSamvarsgrad();
-                if (samvarsgrad != null && samvarsgrad.getVerdi() != null && !erFolkeregistrertSammenVerdi) {
-                    pdf.skrivTekst(getTekst("system.familie.barn.true.barn.grad.sporsmal"));
-                    Integer samvarsgradVerdi = samvarsgrad.getVerdi();
-                    pdf.skrivTekstMedInnrykk(samvarsgradVerdi + "%", INNRYKK_1);
-
-                    if(utvidetSoknad){
-                        List<String> svaralternativer = new ArrayList<>(1);
-                        svaralternativer.add("system.familie.barn.true.barn.grad.pattern");
-                        skrivSvaralternativer(pdf, svaralternativer);
-                    }
-                }
-            } else {
-                skrivUtDeltBostedBarnAlternativer(pdf, utvidetSoknad);
-            }*/
-            } else {
-                skrivIkkeUtfylt(pdf);
+            if (utvidetSoknad) {
+                List<String> deltBostedSvaralternativer = new ArrayList<>(2);
+                deltBostedSvaralternativer.add("system.familie.barn.true.barn.deltbosted.true");
+                deltBostedSvaralternativer.add("system.familie.barn.true.barn.deltbosted.false");
+                skrivSvaralternativer(pdf, deltBostedSvaralternativer);
             }
 
             if(utvidetSoknad){
                 skrivHjelpetest(pdf, "system.familie.barn.true.barn.deltbosted.hjelpetekst.tekst");
             }
         } else {
-            pdf.skrivTekst(getTekst("system.familie.barn.true.barn.grad.sporsmal"));
-
             if (ansvar.getSamvarsgrad() != null && ansvar.getSamvarsgrad().getVerdi() != null ) {
-                pdf.skrivTekst(ansvar.getSamvarsgrad().getVerdi() + "%");
+                skrivTekstMedGuard(pdf, ansvar.getSamvarsgrad().getVerdi() + "%", "system.familie.barn.true.barn.grad.sporsmal");
             } else {
-                skrivIkkeUtfylt(pdf);
+                skrivIkkeUtfyltMedGuard(pdf,  "system.familie.barn.true.barn.grad.sporsmal");
             }
 
             if (utvidetSoknad) {
@@ -834,30 +777,30 @@ public class SosialhjelpPdfGenerator {
                 if (!skatteetatenUtbetalinger.isEmpty()) {
                     pdf.skrivTekstBold(getTekst("utbetalinger.skatt"));
                     for (JsonOkonomiOpplysningUtbetaling skatt : skatteetatenUtbetalinger) {
-                        pdf.skrivTekst("Inntekt");
                         if (skatt.getOrganisasjon() != null && skatt.getOrganisasjon().getNavn() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.arbeidsgivernavn.label") + ": " + skatt.getOrganisasjon().getNavn());
+                            skrivTekstMedGuard(pdf, skatt.getOrganisasjon().getNavn(), "utbetalinger.utbetaling.arbeidsgivernavn.label");
                         }
                         if (skatt.getPeriodeFom() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.periodeFom.label") + ": " + skatt.getPeriodeFom());
+                            skrivTekstMedGuard(pdf, formaterDato(skatt.getPeriodeFom(), DATO_FORMAT), "utbetalinger.utbetaling.periodeFom.label");
                         }
                         if (skatt.getPeriodeTom() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.periodeTom.label") + ": " + skatt.getPeriodeTom());
+                            skrivTekstMedGuard(pdf, formaterDato(skatt.getPeriodeTom(), DATO_FORMAT), "utbetalinger.utbetaling.periodeTom.label");
                         }
                         if (skatt.getBrutto() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.brutto.label") + ": " + skatt.getBrutto());
+                            skrivTekstMedGuard(pdf, skatt.getBrutto().toString(), "utbetalinger.utbetaling.brutto.label");
                         }
                         if (skatt.getSkattetrekk() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.skattetrekk.label") + ": " + skatt.getSkattetrekk());
+                            skrivTekstMedGuard(pdf, skatt.getSkattetrekk().toString(), "utbetalinger.utbetaling.skattetrekk.label");
                         }
+                        pdf.addBlankLine();
                     }
                     if (utvidetSoknad) {
                         skrivInfotekst(pdf, "utbetalinger.infotekst.tekst");
                     }
                 } else {
                     pdf.skrivTekst(getTekst("utbetalinger.inntekt.skattbar.ingen"));
+                    pdf.addBlankLine();
                 }
-                pdf.addBlankLine();
             }
 
             // NAV ytelser
@@ -873,16 +816,15 @@ public class SosialhjelpPdfGenerator {
                 if (!navytelseUtbetalinger.isEmpty()) {
                     pdf.skrivTekstBold(getTekst("utbetalinger.sporsmal"));
                     for (JsonOkonomiOpplysningUtbetaling navytelse : navytelseUtbetalinger) {
-                        pdf.skrivTekst("Ytelse");
-                        pdf.skrivTekst(getTekst("utbetalinger.utbetaling.type.label") + ": " + navytelse.getTittel());
+                        skrivTekstMedGuard(pdf, navytelse.getTittel(), "utbetalinger.utbetaling.type.label");
                         if (navytelse.getNetto() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.netto.label") + ": " + navytelse.getNetto());
+                            skrivTekstMedGuard(pdf, navytelse.getNetto().toString(), "utbetalinger.utbetaling.netto.label");
                         }
                         if (navytelse.getBrutto() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.brutto.label") + ": " + navytelse.getBrutto());
+                            skrivTekstMedGuard(pdf, navytelse.getBrutto().toString(), "utbetalinger.utbetaling.brutto.label");
                         }
                         if (navytelse.getUtbetalingsdato() != null) {
-                            pdf.skrivTekst(getTekst("utbetalinger.utbetaling.erutbetalt.label") + ": " + formaterDato(navytelse.getUtbetalingsdato(), DATO_FORMAT));
+                            skrivTekstMedGuard(pdf, formaterDato(navytelse.getUtbetalingsdato(), DATO_FORMAT), "utbetalinger.utbetaling.erutbetalt.label");
                         }
                     }
                     if (utvidetSoknad) {
@@ -951,20 +893,21 @@ public class SosialhjelpPdfGenerator {
                 }
                 List<JsonOkonomiOpplysningUtbetaling> husbankenUtbetalinger = hentUtbetalinger(okonomi, "husbanken");
                 for (JsonOkonomiOpplysningUtbetaling husbanken : husbankenUtbetalinger) {
-                    pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling"));
                     if (husbanken.getMottaker() != null) {
-                        pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.mottaker") + ": " + husbanken.getMottaker().value());
+                        skrivTekstMedGuard(pdf, husbanken.getMottaker().value(), "inntekt.bostotte.utbetaling.mottaker");
                     }
-                    pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.utbetalingsdato") + ": " + formaterDato(husbanken.getUtbetalingsdato(), DATO_FORMAT));
-                    pdf.skrivTekst(getTekst("inntekt.bostotte.utbetaling.belop") + ": " + husbanken.getNetto());
+                    skrivTekstMedGuard(pdf, formaterDato(husbanken.getUtbetalingsdato(), DATO_FORMAT), "inntekt.bostotte.utbetaling.utbetalingsdato");
+                    if (husbanken.getNetto() != null) {
+                        skrivTekstMedGuard(pdf, husbanken.getNetto().toString(), "inntekt.bostotte.utbetaling.belop");
+                    }
+                    pdf.addBlankLine();
                 }
                 JsonBostotte bostotte = okonomi.getOpplysninger().getBostotte();
                 if (bostotte != null && bostotte.getSaker() != null) {
                     for (JsonBostotteSak bostotteSak : bostotte.getSaker()) {
-                        pdf.skrivTekst("inntekt.bostotte.sak");
+                        pdf.skrivTekst(getTekst("inntekt.bostotte.sak"));
                         pdf.skrivTekst(formaterDato(bostotteSak.getDato(), DATO_FORMAT));
-                        pdf.skrivTekst(getTekst("inntekt.bostotte.sak.status"));
-                        pdf.skrivTekst(finnSaksStatus(bostotteSak));
+                        skrivTekstMedGuard(pdf, finnSaksStatus(bostotteSak), "inntekt.bostotte.sak.status");
                     }
                     boolean utbetalingHusbankenFinnes = hentUtbetalinger(okonomi, "bostotte").size() > 0;
                     if (bostotte.getSaker().isEmpty()) {
@@ -979,8 +922,8 @@ public class SosialhjelpPdfGenerator {
                             pdf.skrivTekst(getTekst("inntekt.bostotte.utbetalingerIkkefunnet"));
                         }
                     }
+                    pdf.addBlankLine();
                 }
-                pdf.addBlankLine();
             }
 
             // Eierandeler
@@ -1000,11 +943,14 @@ public class SosialhjelpPdfGenerator {
                 verdierAlternativer.add("annet");
 
                 if (verdiBekreftelse.getVerdi()) {
+                    pdf.addBlankLine();
+                    pdf.skrivTekstBold(getTekst("inntekt.eierandeler.true.type.sporsmal"));
                     for (JsonOkonomioversiktFormue formue : okonomi.getOversikt().getFormue()) {
                         if (verdierAlternativer.contains(formue.getType())) {
                             pdf.skrivTekst(formue.getTittel());
                             if (formue.getType().equals("annet")) {
-                                pdf.skrivTekst(getTekst("inntekt.eierandeler.true.type.annet.true.beskrivelse.label"));
+                                pdf.addBlankLine();
+                                pdf.skrivTekstBold(getTekst("inntekt.eierandeler.true.type.annet.true.beskrivelse.label"));
                                 if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null && okonomi.getOpplysninger().getBeskrivelseAvAnnet().getVerdi() != null) {
                                     pdf.skrivTekst(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getVerdi());
                                 } else {
@@ -1048,20 +994,25 @@ public class SosialhjelpPdfGenerator {
                 sparingAlternativer.add("bsu");
                 sparingAlternativer.add("livsforsikringssparedel");
                 sparingAlternativer.add("verdipapirer");
-                sparingAlternativer.add("annet");
+                sparingAlternativer.add("belop");
 
-                for (JsonOkonomioversiktFormue formue : okonomi.getOversikt().getFormue()) {
-                    if (sparingAlternativer.contains(formue.getType())) {
-                        pdf.skrivTekst(formue.getTittel());
-                        if (formue.equals("annet")) {
-                            pdf.skrivTekst(getTekst("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"));
-                            if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null && okonomi.getOpplysninger().getBeskrivelseAvAnnet().getSparing() != null) {
-                                pdf.skrivTekst(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getSparing());
-                            } else {
-                                skrivIkkeUtfylt(pdf);
+                if (sparingBekreftelse.getVerdi()) {
+                    for (JsonOkonomioversiktFormue formue : okonomi.getOversikt().getFormue()) {
+                        if (sparingAlternativer.contains(formue.getType())) {
+                            pdf.skrivTekst(formue.getTittel());
+                            if (formue.getType().equals("belop")) {
+                                pdf.addBlankLine();
+                                pdf.skrivTekstBold(getTekst("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"));
+                                if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null && okonomi.getOpplysninger().getBeskrivelseAvAnnet().getSparing() != null) {
+                                    pdf.skrivTekst(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getSparing());
+                                } else {
+                                    skrivIkkeUtfylt(pdf);
+                                }
                             }
                         }
                     }
+                } else {
+                    skrivIkkeUtfylt(pdf);
                 }
             } else {
                 skrivIkkeUtfylt(pdf);
@@ -1090,15 +1041,17 @@ public class SosialhjelpPdfGenerator {
                 utbetalingAlternativer.add("utbytte");
                 utbetalingAlternativer.add("salg");
                 utbetalingAlternativer.add("forsikring");
-                utbetalingAlternativer.add("annet");
+                utbetalingAlternativer.add("annen");
 
                 if (utbetalingBekreftelse.getVerdi()) {
-                    pdf.skrivTekst(getTekst("inntekt.inntekter.true.type.sporsmal"));
+                    pdf.addBlankLine();
+                    pdf.skrivTekstBold(getTekst("inntekt.inntekter.true.type.sporsmal"));
                     for (JsonOkonomiOpplysningUtbetaling utbetaling : okonomi.getOpplysninger().getUtbetaling()) {
                         if (utbetalingAlternativer.contains(utbetaling.getType())) {
                             pdf.skrivTekst(utbetaling.getTittel());
-                            if (utbetaling.getType().equals("annet")) {
-                                pdf.skrivTekst(getTekst("inntekt.eierandeler.true.type.annet.true.beskrivelse.label"));
+                            if (utbetaling.getType().equals("annen")) {
+                                pdf.addBlankLine();
+                                pdf.skrivTekstBold(getTekst("inntekt.eierandeler.true.type.annet.true.beskrivelse.label"));
                                 if (okonomi.getOpplysninger().getBeskrivelseAvAnnet() != null && okonomi.getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling() != null) {
                                     pdf.skrivTekst(okonomi.getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling());
                                 } else {
@@ -1144,7 +1097,8 @@ public class SosialhjelpPdfGenerator {
 
                 pdf.skrivTekst(getTekst("utgifter.boutgift." + boutgifterBekreftelse.getVerdi()));
                 if (boutgifterBekreftelse.getVerdi()) {
-                    pdf.skrivTekst(getTekst("utgifter.boutgift.true.type.sporsmal"));
+                    pdf.addBlankLine();
+                    pdf.skrivTekstBold(getTekst("utgifter.boutgift.true.type.sporsmal"));
 
                     List<String> boutgiftAlternativer = new ArrayList<>(6);
                     boutgiftAlternativer.add("husleie");
@@ -1198,6 +1152,9 @@ public class SosialhjelpPdfGenerator {
                     pdf.skrivTekst(getTekst("utgifter.barn." + barneutgiftBekreftelse.getVerdi()));
 
                     if (barneutgiftBekreftelse.getVerdi()) {
+                        pdf.addBlankLine();
+                        pdf.skrivTekstBold(getTekst("utgifter.barn.true.utgifter.sporsmal"));
+
                         List<String> utgifterBarnAlternativer = new ArrayList<>(5);
                         utgifterBarnAlternativer.add("barnFritidsaktiviteter");
                         utgifterBarnAlternativer.add("barnehage");
@@ -1220,6 +1177,9 @@ public class SosialhjelpPdfGenerator {
                 } else {
                     skrivIkkeUtfylt(pdf);
                 }
+
+                pdf.addBlankLine();
+
                 if (utvidetSoknad) {
                     List<String> utgifterBarnSvaralternativer = new ArrayList<>(2);
                     utgifterBarnSvaralternativer.add("utgifter.barn.true");
@@ -1272,65 +1232,45 @@ public class SosialhjelpPdfGenerator {
         for (JsonOkonomioversiktInntekt inntekt : okonomi.getOversikt().getInntekt()) {
             pdf.skrivTekst(inntekt.getTittel());
             if (inntekt.getType().equals("bostotte")) {
-                pdf.skrivTekst(getTekst("opplysninger.inntekt.bostotte.utbetaling.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.getNetto(), "opplysninger.inntekt.bostotte.utbetaling.label");
             }
             if (inntekt.getType().equals("studielanOgStipend")) {
-                pdf.skrivTekst(getTekst("opplysninger.arbeid.student.utbetaling.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.getNetto(), "opplysninger.arbeid.student.utbetaling.label");
             }
             if (inntekt.getType().equals("jobb")) {
-                pdf.skrivTekst(getTekst("opplysninger.arbeid.jobb.bruttolonn.label"));
-                if (inntekt.getBrutto() != null) {
-                    pdf.skrivTekst(inntekt.getBrutto().toString());
-                } else {
-                    skrivIkkeUtfylt(pdf);
-                }
-                pdf.skrivTekst(getTekst("opplysninger.arbeid.jobb.nettolonn.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.getBrutto(), "opplysninger.arbeid.jobb.bruttolonn.label");
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.getNetto(), "opplysninger.arbeid.jobb.nettolonn.label");
             }
             if (inntekt.getType().equals("barnebidrag")) {
-                pdf.skrivTekst(getTekst("opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label"));
-            }
-            if (inntekt.getNetto() != null) {
-                pdf.skrivTekst(inntekt.getNetto().toString());
-            } else {
-                skrivIkkeUtfylt(pdf);
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.getNetto(), "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label");
             }
             pdf.addBlankLine();
         }
 
         // Formue
         List<String> sparingTyper = new ArrayList<>(6);
-        sparingTyper.add("aksjer");
+        sparingTyper.add("verdipapirer");
         sparingTyper.add("brukskonto");
         sparingTyper.add("bsu");
-        sparingTyper.add("livsforsikring");
+        sparingTyper.add("livsforsikringssparedel");
         sparingTyper.add("sparekonto");
-        sparingTyper.add("annet");
+        sparingTyper.add("belop");
         for (JsonOkonomioversiktFormue formue : okonomi.getOversikt().getFormue()) {
             if (sparingTyper.contains(formue.getType())) {
                 pdf.skrivTekst(formue.getTittel());
-                pdf.skrivTekst(getTekst("opplysninger.inntekt.bankinnskudd." + formue.getType() + ".saldo.label"));
-                if (formue.getBelop() != null) {
-                    pdf.skrivTekst(formue.getBelop().toString());
-                } else {
-                    skrivIkkeUtfylt(pdf);
-                }
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, formue.getBelop(), "opplysninger.inntekt.bankinnskudd." + formue.getType() + ".saldo.label");
                 pdf.addBlankLine();
             }
         }
 
         // Utbetaling
         for (JsonOkonomiOpplysningUtbetaling utbetaling : okonomi.getOpplysninger().getUtbetaling()) {
-            if (!utbetaling.getType().equals("skatteetaten") && !utbetaling.getType().equals("navytelse")) {
+            if (!utbetaling.getType().equals("skatteetaten") && !utbetaling.getType().equals("navytelse") && !utbetaling.getType().equals("husbanken")) {
                 pdf.skrivTekst(utbetaling.getTittel());
                 if (utbetaling.getType().equals("sluttoppgjoer")) {
-                    pdf.skrivTekst(getTekst("opplysninger.arbeid.avsluttet.netto.label"));
+                    skrivTekstMedGuardOgIkkeUtfylt(pdf, utbetaling.getBelop(), "opplysninger.arbeid.avsluttet.netto.label");
                 } else {
-                    pdf.skrivTekst(getTekst("opplysninger.inntekt.inntekter." + utbetaling.getType() + ".sum.label"));
-                }
-                if (utbetaling.getBelop() != null) {
-                    pdf.skrivTekst(utbetaling.getBelop().toString());
-                } else {
-                    skrivIkkeUtfylt(pdf);
+                    skrivTekstMedGuardOgIkkeUtfylt(pdf, utbetaling.getBelop(), "opplysninger.inntekt.inntekter." + utbetaling.getType() + ".sum.label");
                 }
                 pdf.addBlankLine();
             }
@@ -1342,19 +1282,13 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekst(utgift.getTittel());
 
             if (utgifterBarnAlternativer.contains(utgift.getType())) {
-                pdf.skrivTekst(getTekst("opplysninger.utgifter.barn." + utgift.getType() + ".sisteregning.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, utgift.getBelop(), "opplysninger.utgifter.barn." + utgift.getType() + ".sisteregning.label");
             }
             if (boutgiftAlternativer.contains(utgift.getType())) {
-                pdf.skrivTekst(getTekst("opplysninger.utgifter.boutgift." + utgift.getType() + ".sisteregning.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, utgift.getBelop(), "opplysninger.utgifter.boutgift." + utgift.getType() + ".sisteregning.label");
             }
-
             if (utgift.getType().equals("annen")) {
-                pdf.skrivTekst(getTekst("opplysninger.ekstrainfo.utgifter.utgift.label"));
-            }
-            if (utgift.getBelop() != null) {
-                pdf.skrivTekst(utgift.getBelop().toString());
-            } else {
-                skrivIkkeUtfylt(pdf);
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, utgift.getBelop(), "opplysninger.ekstrainfo.utgifter.utgift.label");
             }
             pdf.addBlankLine();
         }
@@ -1362,24 +1296,19 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekst(utgift.getTittel());
 
             if (utgifterBarnAlternativer.contains(utgift.getType())) {
-                pdf.skrivTekst(getTekst( "opplysninger.utgifter.barn." + utgift.getType() + ".sistemnd.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, utgift.getBelop(), "opplysninger.utgifter.barn." + utgift.getType() + ".sistemnd.label");
             }
             if (utgift.getType().equals("barnebidrag")) {
-                pdf.skrivTekst(getTekst("opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, utgift.getBelop(), "opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label");
             }
             if (utgift.getType().equals("husleie")) {
-                pdf.skrivTekst(getTekst("opplysninger.utgifter.boutgift.husleie.permnd.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, utgift.getBelop(), "opplysninger.utgifter.boutgift.husleie.permnd.label");
             }
             if (utgift.getType().equals("boliglanAvdrag")) {
-                pdf.skrivTekst(getTekst("opplysninger.utgifter.boutgift.avdraglaan.avdrag.label"));
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, utgift.getBelop(), "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label");
             }
             if (utgift.getType().equals("boliglanRenter")) {
-                pdf.skrivTekst(getTekst("opplysninger.utgifter.boutgift.avdraglaan.renter.label"));
-            }
-            if (utgift.getBelop() != null) {
-                pdf.skrivTekst(utgift.getBelop().toString());
-            } else {
-                skrivIkkeUtfylt(pdf);
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, utgift.getBelop(), "opplysninger.utgifter.boutgift.avdraglaan.renter.label");
             }
             pdf.addBlankLine();
         }
@@ -1391,7 +1320,7 @@ public class SosialhjelpPdfGenerator {
                 pdf.skrivTekst(getTekst("vedlegg." + vedlegg.getType() + "." + vedlegg.getTilleggsinfo() + ".tittel"));
                 if (vedlegg.getFiler() != null) {
                     for (JsonFiler fil : vedlegg.getFiler()) {
-                        pdf.skrivTekst(fil.getFilnavn());
+                        pdf.skrivTekst(" - " + fil.getFilnavn());
                     }
                 }
                 if (vedlegg.getStatus() != null && vedlegg.getStatus().equals("VedleggKreves")) {
@@ -1550,6 +1479,22 @@ public class SosialhjelpPdfGenerator {
         }
     }
 
+    private void skrivTekstMedGuardOgIkkeUtfylt(PdfGenerator pdf, String tekst, String key) throws IOException {
+        if (tekst != null) {
+            pdf.skrivTekst(getTekst(key) + ": " + tekst);
+        } else {
+            skrivIkkeUtfyltMedGuard(pdf, key);
+        }
+    }
+
+    private void skrivTekstMedGuardOgIkkeUtfylt(PdfGenerator pdf, Integer verdi, String key) throws IOException {
+        if (verdi != null) {
+            pdf.skrivTekst(getTekst(key) + ": " + verdi);
+        } else {
+            pdf.skrivTekst(getTekst(key) + ": " + getTekst("oppsummering.ikkeutfylt"));
+        }
+    }
+
     private String getJsonNavnTekst(JsonNavn navn) {
         String fullstendigNavn = "";
         if (navn != null) {
@@ -1593,6 +1538,10 @@ public class SosialhjelpPdfGenerator {
 
     private void skrivIkkeUtfylt(PdfGenerator pdf) throws IOException {
         pdf.skrivTekst(getTekst("oppsummering.ikkeutfylt"));
+    }
+
+    private void skrivIkkeUtfyltMedGuard(PdfGenerator pdf, String key) throws IOException {
+        pdf.skrivTekst(getTekst(key) + ": " + getTekst("oppsummering.ikkeutfylt"));
     }
 
     private void skrivUtBarnebidragAlternativer(PdfGenerator pdf, boolean utvidetSoknad) throws IOException{

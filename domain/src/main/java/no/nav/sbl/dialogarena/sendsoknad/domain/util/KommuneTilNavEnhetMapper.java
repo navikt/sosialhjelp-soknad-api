@@ -25,6 +25,22 @@ public class KommuneTilNavEnhetMapper {
             .put("4225", "Kvinesdal") // Lyngdal
             .put("4206", "Kvinesdal") // Farsund
             .put("4228", "Kvinesdal") // Sirdal
+            .put("4218", "Vennesla")  // Iveland
+            .put("4224", "Vennesla")  // Åseral
+            .put("4221", "Vennesla")  // Valle
+            .put("4222", "Vennesla")  // Bykle
+            .put("4220", "Vennesla")  // Bygland
+            .put("5032", "Stjørdal")  // Selbu
+            .put("5033", "Stjørdal")  // Tydal
+            .put("5034", "Stjørdal")  // Meråker
+            .put("5036", "Stjørdal")  // Frosta
+            .put("1853", "Narvik")    // Evenes
+            .put("5414", "Narvik")    // Gratangen
+            .put("3822", "Tokke")     // Nissedal
+            .put("3821", "Tokke")     // Kvitseid
+            .put("3825", "Tokke")     // Vinje
+            .put("3823", "Tokke")     // Fyresdal
+            .put("3820", "Tokke")     // Seljord
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -172,29 +188,56 @@ public class KommuneTilNavEnhetMapper {
             .put("2025", "987590254")    // Deatnu/Tana
             .put("0213", "974593408")    // Nordre Follo
             .put("1246", "974586312")    // Øygarden
+            .put("1014", "936846777")    // Bykle, Bygland, Valle, Åseral, Vennesla og Iveland
+            .put("0710", "974594188")    // Sandefjord
+            .put("1560", "916359616")    // Tingvoll
+            .put("1566", "974619962")    // Surnadal
+            .put("0911", "964964998")    // Gjerstad
+            .put("1563", "813112892")    // Sunndal
+            .put("1432", "976831683")    // Sunnfjord
+            .put("5703", "874577502")    // Indre Fosen
+            .put("1573", "976832418")    // Smøla
+            .put("1576", "921358288")    // Aure
+            .put("1783", "918964118")    // Selbu, Tydal, Meråker, Stjørdal og Frosta
+            .put("0228", "976637437")    // Rælingen
+            .put("1805", "974592630")    // Narvik, Evenes og Gratangen
+            .put("1931", "974562820")    // Senja
+            .put("0833", "974610175")    // Nissedal, Kvitseid, Tokke, Vinje, Fyresdal og Seljord
+            .put("0528", "974604264")    // Østre Toten
+            .put("1870", "974545713")    // Sortland
+            .put("0914", "964965781")    // Tvedestrand
 
             .build();
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "910940066")   // Horten
-            .put("1208", "910230964")   // Årstad, Bergen kommune
-            .put("1209", "910230158")   // Bergenhus, Bergen kommune
-            .put("1210", "910230506")   // Ytrebygda, Bergen kommune
-            .put("1202", "910230913")   // Fana, Bergen kommune
-            .put("0312", "910229699")   // Frogner, Oslo kommune
+            .put("1208", "910230964")   // Årstad,          Bergen kommune
+            .put("1209", "910230158")   // Bergenhus,       Bergen kommune
+            .put("1210", "910230506")   // Ytrebygda,       Bergen kommune
+            .put("1202", "910230913")   // Fana,            Bergen kommune
+            .put("1204", "910230905")   // Arna,            Bergen kommune
+            .put("1203", "910230530")   // Åsane,           Bergen kommune
+            .put("1205", "910230948")   // Fyllingsdalen,   Bergen kommune
+            .put("1206", "910230514")   // Laksevåg,        Bergen kommune
             .put("1247", "910230182")   // Askøy
-            .put("0315", "811213322")   // Grünerløkka, Oslo kommune
-            .put("0328", "910229702")   // Grorud, Oslo kommune
-            .put("0327", "910589792")   // Stovner, Oslo kommune
-            .put("0314", "910565338")   // Sagene, Oslo kommune
 
-            .put("0318", "910309935")   // Nordstrand, Oslo kommune
-            .put("0319", "910723499")   // Søndre Nordstrand, Oslo kommune
+            .put("0312", "910229699")   // Frogner,             Oslo kommune
+            .put("0315", "811213322")   // Grünerløkka,         Oslo kommune
+            .put("0328", "910229702")   // Grorud,              Oslo kommune
+            .put("0327", "910589792")   // Stovner,             Oslo kommune
+            .put("0314", "910565338")   // Sagene,              Oslo kommune
+            .put("0318", "910309935")   // Nordstrand,          Oslo kommune
+            .put("0319", "910723499")   // Søndre Nordstrand,   Oslo kommune
+            .put("0316", "910229567")   // Gamle Oslo,          Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0313", "910229567")   // St. Hanshaugen,      Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0335", "910229567")   // Ullern,              Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0334", "910229567")   // Vestre Aker,         Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0331", "910229567")   // Nordre Aker,         Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0330", "910229567")   // Bjerke,              Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0326", "910229567")   // Alna,                Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("0321", "910229567")   // Østensjø,            Oslo kommune - OBS: Sendes til vårt orgnummer i FIKS!
+
             .put("0219", "910231065")   // Bærum
-            .put("1204", "910230905")   // Arna, Bergen kommune
-            .put("1203", "910230530")   // Åsane, Bergen kommune
-            .put("1205", "910230948")   // Fyllingsdalen, Bergen kommune
-            .put("1206", "910230514")   // Laksevåg, Bergen kommune
             .put("5701", "910230646")   // NAV Falkenborg, Trondheim kommune
             .put("5702", "910230611")   // NAV Lerkendal, Trondheim kommunne
             .put("1161", "910229567")   // Eiganes og Tasta, Stavanger kommune - OBS: Sendes til vårt orgnummer i FIKS!
@@ -205,6 +248,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0516", "910229567")   // Nord-Fron - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0519", "910229567")   // Sør-Fron - OBS: Sendes til vårt orgnummer i FIKS!
             .put("0520", "910229567")   // Ringebu - OBS: Sendes til vårt orgnummer i FIKS!
+            .put("1517", "910229567")   // NAV Hareid - Ulstein - Sande - OBS: Sendes til vårt orgnummer i FIKS!
 
             .build();
 
@@ -228,7 +272,8 @@ public class KommuneTilNavEnhetMapper {
                     "3403", // Nytt Hamar
                     "3436", // Nytt Nord-Fron
                     "3438", // Nytt Sør-Fron
-                    "3439"  // Nytt Ringebu
+                    "3439", // Nytt Ringebu
+                    "1514"  // Nytt Sande i Møre og Romsdal
             ));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
@@ -378,8 +423,41 @@ public class KommuneTilNavEnhetMapper {
                     "3030", // Lillestrøm
                     "5441", // Deatnu/Tana
                     "3020", // Nordre Follo
-                    "4626"  // Øygarden
-                    
+                    "4626", // Øygarden
+                    "4222", // Bykle
+                    "4221", // Valle
+                    "4224", // Åseral
+                    "4223", // Vennesla
+                    "4218", // Iveland
+                    "3804", // Sandefjord
+                    "1560", // Tingvoll
+                    "1566", // Surnadal
+                    "4211", // Gjerstad
+                    "1563", // Sunndal
+                    "4647", // Sunnfjord
+                    "4220", // Bygland
+                    "5054", // Indre Fosen
+                    "1573", // Smøla
+                    "1576", // Aure
+                    "5032", // Selbu
+                    "5033", // Tydal
+                    "5034", // Meråker
+                    "5035", // Stjørdal
+                    "5036", // Frosta
+                    "3027", // Rælingen
+                    "1853", // Evenes
+                    "1806", // Narvik
+                    "5414", // Gratangen
+                    "5421", // Senja
+                    "3822", // Nissedal
+                    "3821", // Kvitseid
+                    "3824", // Tokke
+                    "3825", // Vinje
+                    "3823", // Fyresdal
+                    "3820", // Seljord
+                    "4213", // Tvedestrand
+                    "1870", // Sortland
+                    "3442"  // Østre Toten
             ));
 
 

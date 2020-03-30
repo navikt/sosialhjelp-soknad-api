@@ -23,7 +23,7 @@ public class NorgConsumerMock {
     public NorgConsumer norgConsumerMock(){
         NorgConsumer mock = mock(NorgConsumer.class);
 
-        when(mock.finnEnhetForGeografiskTilknytning(any(String.class)))
+        when(mock.getEnhetForGeografiskTilknytning(any(String.class)))
                 .thenAnswer(NorgConsumerMock::getOrCreateCurrentUserResponse);
 
         return mock;
