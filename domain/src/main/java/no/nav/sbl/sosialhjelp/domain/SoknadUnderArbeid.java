@@ -19,7 +19,7 @@ public class SoknadUnderArbeid {
     private LocalDateTime sistEndretDato;
     private boolean harBostotteSamtykke = true;
     private boolean harSkattemeldingSamtykke = true;
-    private boolean selvstendigNaringsdrivende = true;
+    private boolean selvstendigNaringsdrivende = false;
 
     public boolean erEttersendelse() {
         return !isEmpty(tilknyttetBehandlingsId);
