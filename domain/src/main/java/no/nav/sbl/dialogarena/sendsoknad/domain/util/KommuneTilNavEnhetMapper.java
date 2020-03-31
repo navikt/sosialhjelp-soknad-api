@@ -215,6 +215,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0912", "964965048")    // Vegårshei
             .put("0617", "974607948")    // Gol, Hemsedal, Flå, Nesbyen, Ål og Hol
             .put("1630", "974578069")    // Osen og Åfjord
+            .put("1620", "913071751")    // Hitra og Frøya
 
             .build();
 
@@ -475,7 +476,9 @@ public class KommuneTilNavEnhetMapper {
                     "3043", // Ål
                     "3044", // Hol
                     "5020", // Osen
-                    "5058"  // Åfjord
+                    "5058", // Åfjord
+                    "5056", // Hitra
+                    "5014"  // Frøya
             ));
 
 
