@@ -217,6 +217,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1630", "974578069")    // Osen og Åfjord
             .put("1620", "913071751")    // Hitra og Frøya
             .put("2012", "974580713")    // Alta
+            .put("0124", "998432189")    // Indre Østfold
 
             .build();
 
@@ -480,7 +481,8 @@ public class KommuneTilNavEnhetMapper {
                     "5058", // Åfjord
                     "5056", // Hitra
                     "5014", // Frøya
-                    "5403"  // Alta
+                    "5403", // Alta
+                    "3014"  // Indre Østfold
             ));
 
 
