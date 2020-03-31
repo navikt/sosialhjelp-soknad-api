@@ -215,7 +215,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0912", "964965048")    // Vegårshei
             .put("0617", "974607948")    // Gol, Hemsedal, Flå, Nesbyen, Ål og Hol
             .put("1630", "974578069")    // Osen og Åfjord
-            .put("1620", "913071751")    // Hitra og Frøya
+            .put("1620", "974239965")    // Hitra og Frøya
             .put("2012", "974580713")    // Alta
             .put("0124", "998432189")    // Indre Østfold
 
