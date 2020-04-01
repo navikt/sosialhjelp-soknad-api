@@ -25,6 +25,9 @@ jobs:
         run: |
           PROJECT_NAME=$(echo $GITHUB_REPOSITORY | cut -d/ -f2)
           echo "docker.pkg.github.com/$GITHUB_REPOSITORY/$PROJECT_NAME:$VERSION" > DOCKER_TAG
+
+          echo ::set-env name=IMAGE::$(echo "docker.pkg.github.com/$GITHUB_REPOSITORY/$PROJECT_NAME:$VERSION")
+
         env:
           VERSION: ${{ steps.artifact-version.outputs.version }}
       - name: Build docker image
@@ -41,3 +44,14 @@ jobs:
       - name: Push docker image
         run: |
           docker push $(cat DOCKER_TAG)
+
+#      auto-deploy til q0 for testing
+      - name: Deploy til q0
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          RESOURCE: web/nais.yaml
+          CLUSTER: dev-sbs
+          VARS: web/nais/dev/q0.json
+          REF: ${{ env.VERSION }}
+          PRINT_PAYLOAD: true
