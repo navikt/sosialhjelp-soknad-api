@@ -220,6 +220,7 @@ public class KommuneTilNavEnhetMapper {
             .put("0124", "998432189")    // Indre Østfold
             .put("0919", "946439045")    // Froland
             .put("0929", "864965962")    // Åmli
+            .put("1502", "986852522")    // Molde
 
             .build();
 
@@ -486,7 +487,8 @@ public class KommuneTilNavEnhetMapper {
                     "5403", // Alta
                     "3014", // Indre Østfold
                     "4214", // Froland
-                    "4217"  // Åmli
+                    "4217", // Åmli
+                    "1506"  // Molde
             ));
 
 
