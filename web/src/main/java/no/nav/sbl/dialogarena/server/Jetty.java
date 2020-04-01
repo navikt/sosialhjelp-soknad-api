@@ -1,13 +1,25 @@
 package no.nav.sbl.dialogarena.server;
 
+import io.prometheus.client.exporter.MetricsServlet;
 import no.nav.modig.lang.option.Optional;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.plus.webapp.PlusConfiguration;
 import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.webapp.*;
+import org.eclipse.jetty.webapp.FragmentConfiguration;
+import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
+import org.eclipse.jetty.webapp.MetaInfConfiguration;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebInfConfiguration;
+import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -237,6 +249,9 @@ public final class Jetty {
 
 
         jetty.setConnectors(on(new Connector[]{httpConnector}).append(sslPort.map(new CreateSslConnector(jetty, configuration))).collectIn(new Connector[] {}));
+
+        registerMetricsServlet(context);
+
         context.setServer(jetty);
         jetty.setHandler(context);
         return jetty;
@@ -278,5 +293,10 @@ public final class Jetty {
     public Iterable<URL> getBaseUrls() {
         return on(optional(port).map(new ToUrl("http", contextPath))).append(sslPort.map(new ToUrl("https", contextPath)));
     };
+
+    private void registerMetricsServlet(final ServletContextHandler context) {
+        final ServletHolder metricsServlet = new ServletHolder(new MetricsServlet());
+        context.addServlet(metricsServlet, "/internal/metrics/*");
+    }
 
 }
