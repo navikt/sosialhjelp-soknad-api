@@ -218,6 +218,8 @@ public class KommuneTilNavEnhetMapper {
             .put("1620", "974239965")    // Hitra og Frøya
             .put("2012", "974580713")    // Alta
             .put("0124", "998432189")    // Indre Østfold
+            .put("0919", "946439045")    // Froland
+            .put("0929", "864965962")    // Åmli
 
             .build();
 
@@ -482,7 +484,9 @@ public class KommuneTilNavEnhetMapper {
                     "5056", // Hitra
                     "5014", // Frøya
                     "5403", // Alta
-                    "3014"  // Indre Østfold
+                    "3014", // Indre Østfold
+                    "4214", // Froland
+                    "4217"  // Åmli
             ));
 
 
