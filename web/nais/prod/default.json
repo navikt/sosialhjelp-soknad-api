@@ -22,8 +22,8 @@
   },
   "minReplicas": "2",
   "maxReplicas": "4",
-  "memoryLimit": "3Gi",
-  "memoryRequest": "3Gi",
+  "memoryLimit": "4Gi",
+  "memoryRequest": "4Gi",
   "vaultEnabled": true,
   "prometheusEnabled": true,
   "env": {
