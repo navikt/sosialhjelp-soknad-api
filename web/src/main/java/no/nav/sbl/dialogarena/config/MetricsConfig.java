@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.hotspot.DefaultExports;
 import no.nav.metrics.MetricsClient;
 import no.nav.metrics.aspects.TimerAspect;
 import org.springframework.context.annotation.Bean;
@@ -19,5 +21,11 @@ public class MetricsConfig {
         if (!parseBoolean(getProperty("disable.metrics.report"))) {
             MetricsClient.enableMetrics(no.nav.metrics.MetricsConfig.resolveNaisConfig().withEnvironment(miljo));
         }
+    }
+
+    @Bean
+    public CollectorRegistry collectorRegistry() {
+        DefaultExports.initialize();
+        return CollectorRegistry.defaultRegistry;
     }
 }
