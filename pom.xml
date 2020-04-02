@@ -162,6 +162,7 @@
         <java-support.version>7.5.1</java-support.version>
         <jakarta.annotation-api.version>1.3.5</jakarta.annotation-api.version>
         <cryptacular.version>1.2.4</cryptacular.version>
+        <stax-ex.version>1.8.3</stax-ex.version>
     </properties>
 
     <dependencyManagement>
@@ -1363,6 +1364,11 @@
                 <groupId>org.cryptacular</groupId>
                 <artifactId>cryptacular</artifactId>
                 <version>${cryptacular.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.staxex</groupId>
+                <artifactId>stax-ex</artifactId>
+                <version>${stax-ex.version}</version>
             </dependency>
 
             <!--
