@@ -1,6 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
-import no.ks.svarut.servicesv9.*;
+import no.ks.svarut.servicesv9.Adresse;
+import no.ks.svarut.servicesv9.Brevtype;
+import no.ks.svarut.servicesv9.Dokument;
+import no.ks.svarut.servicesv9.Forsendelse;
+import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
+import no.ks.svarut.servicesv9.NoarkMetadataFraAvleverendeSakssystem;
+import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
+import no.ks.svarut.servicesv9.PostAdresse;
+import no.ks.svarut.servicesv9.Printkonfigurasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -16,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,7 +71,7 @@ public class FiksSender {
 
         validerAtEttersendelseSinSoknadHarForsendelseId(sendtSoknad, svarPaForsendelseId);
 
-        return new Forsendelse()
+        Forsendelse forsendelse = new Forsendelse()
                 .withMottaker(new Adresse()
                         .withDigitalAdresse(
                                 new OrganisasjonDigitalAdresse().withOrgnr(sendtSoknad.getOrgnummer()))
@@ -81,6 +90,13 @@ public class FiksSender {
                         new NoarkMetadataFraAvleverendeSakssystem()
                                 .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
                 );
+
+        if (Objects.equals(sendtSoknad.getBehandlingsId(), "11000L5XF")) {
+            return  forsendelse
+                    .withKunDigitalLevering(true);
+        }
+
+        return forsendelse;
     }
 
     private void validerAtEttersendelseSinSoknadHarForsendelseId(SendtSoknad sendtSoknad, String svarPaForsendelseId) {
