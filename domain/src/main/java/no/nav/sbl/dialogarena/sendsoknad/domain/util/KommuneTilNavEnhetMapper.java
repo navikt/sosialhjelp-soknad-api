@@ -222,7 +222,6 @@ public class KommuneTilNavEnhetMapper {
             .put("0919", "946439045")    // Froland
             .put("0929", "864965962")    // Åmli
             .put("1502", "986852522")    // Molde
-            .put("0904", "994161105")    // Grimstad
             .put("1120", "974549611")    // Klepp og Time
             .put("0901", "964977402")    // Risør
 
@@ -493,7 +492,6 @@ public class KommuneTilNavEnhetMapper {
                     "4214", // Froland
                     "4217", // Åmli
                     "1506", // Molde
-                    "4202", // Grimstad
                     "1120", // Klepp
                     "1121", // Time
                     "4201"  // Risør
