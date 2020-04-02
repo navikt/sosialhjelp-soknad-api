@@ -1,10 +1,17 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.fiks;
 
-import no.ks.svarut.servicesv9.*;
+import no.ks.svarut.servicesv9.Dokument;
+import no.ks.svarut.servicesv9.Forsendelse;
+import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
+import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.mockito.Matchers.any;
@@ -51,8 +58,8 @@ public class ForsendelseServiceMock {
         mappeForForsendelse.mkdir();
         logger.info("Lagrer filer lokalt i " + mappenavn);
         for (Dokument dokument : forsendelse.getDokumenter()) {
-            OutputStream os = null;
-            InputStream is = null;
+            OutputStream os;
+            InputStream is;
             try {
                 is = dokument.getData().getInputStream();
                 os = new FileOutputStream(new File(mappenavn + "/" + dokument.getFilnavn()));
@@ -60,8 +67,6 @@ public class ForsendelseServiceMock {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            IOUtils.closeQuietly(os);
-            IOUtils.closeQuietly(is);
         }
     }
 

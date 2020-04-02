@@ -23,7 +23,7 @@ class CreateSslConnector implements Transformer<Integer, ServerConnector> {
     @Override
     public ServerConnector transform(Integer sslPort) {
 
-        SslContextFactory factory = new SslContextFactory(true);
+        SslContextFactory factory = new SslContextFactory.Client.Client(true);
         factory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
         factory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
 
