@@ -140,10 +140,10 @@ public class DigisosApiService {
         try {
             sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
         } catch (Exception e) {
-            log.warn("Kunne ikke generere soknad.pdf", e);
+            log.warn("Kunne ikke generere Soknad.pdf", e);
         }
         return new FilOpplasting(new FilMetadata()
-                .withFilnavn("soknad.pdf")
+                .withFilnavn("Soknad.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) soknadPdf.length),
                 new ByteArrayInputStream(soknadPdf));
