@@ -224,6 +224,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1502", "986852522")    // Molde
             .put("1120", "974549611")    // Klepp og Time
             .put("0901", "964977402")    // Risør
+            .put("0904", "994161105")    // Grimstad
 
             .build();
 
@@ -494,7 +495,8 @@ public class KommuneTilNavEnhetMapper {
                     "1506", // Molde
                     "1120", // Klepp
                     "1121", // Time
-                    "4201"  // Risør
+                    "4201", // Risør
+                    "4202"  // Grimstad
             ));
 
 
