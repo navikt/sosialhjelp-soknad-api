@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions;
 
-import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 
 
-public class IkkeFunnetException extends ApplicationException {
+public class IkkeFunnetException extends SosialhjelpSoknadApiException {
     public IkkeFunnetException(String melding, Exception e) {
         super(melding, e);
     }

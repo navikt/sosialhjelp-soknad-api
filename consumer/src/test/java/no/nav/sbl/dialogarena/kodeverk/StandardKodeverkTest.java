@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-import no.nav.modig.core.exception.SystemException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
@@ -68,7 +68,7 @@ public class StandardKodeverkTest {
         assertThat(kodeverk.getLand("ALB"), nullValue());
     }
 
-    @Test(expected = SystemException.class)
+    @Test(expected = SosialhjelpSoknadApiException.class)
     public void ugyldigKodeverknavnGirSystemException() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenThrow(new HentKodeverkHentKodeverkKodeverkIkkeFunnet());
         kodeverk.lastInnNyeKodeverk();

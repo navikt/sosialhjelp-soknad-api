@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import org.apache.commons.codec.binary.Base64;
@@ -34,7 +34,7 @@ public class XsrfGenerator {
             hmac.init(secretKey);
             return Base64.encodeBase64URLSafeString(hmac.doFinal(signKey.getBytes()));
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
-            throw new ApplicationException("Kunne ikke generere token: ", e);
+            throw new SosialhjelpSoknadApiException("Kunne ikke generere token: ", e);
         }
     }
 
