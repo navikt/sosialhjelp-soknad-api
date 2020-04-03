@@ -47,21 +47,26 @@
     <div>
         {{> skjema/soknad/begrunnelse}}
     </div>
-    <div>
-        {{> skjema/soknad/arbeid}}
-    </div>
-    <div>
-        {{> skjema/soknad/familie}}
-    </div>
-    <div>
-        {{> skjema/soknad/bosituasjon}}
-    </div>
-    <div>
-        {{> skjema/soknad/inntekt}}
-    </div>
-    <div>
-        {{> skjema/soknad/utgifter}}
-    </div>
+    {{#with data.okonomi.opplysninger}}
+        {{#hentOkonomiBekreftelse "selvstendignaringsdriveende"}}
+        {{else}}
+            <div>
+                {{> skjema/soknad/arbeid}}
+            </div>
+            <div>
+                {{> skjema/soknad/familie}}
+            </div>
+            <div>
+                {{> skjema/soknad/bosituasjon}}
+            </div>
+            <div>
+                {{> skjema/soknad/inntekt}}
+            </div>
+            <div>
+                {{> skjema/soknad/utgifter}}
+            </div>
+        {{/hentOkonomiBekreftelse}}
+    {{/with}}
     <div>
         {{> skjema/soknad/opplysninger}}
     </div>

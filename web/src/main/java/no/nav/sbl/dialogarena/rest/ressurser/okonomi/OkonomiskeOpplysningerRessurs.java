@@ -58,6 +58,12 @@ public class OkonomiskeOpplysningerRessurs {
         JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknad);
         List<JsonVedlegg> paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.getJsonInternalSoknad());
+        if(soknad.getSelvstendigNaringsdrivende()) {
+            paakrevdeVedlegg = paakrevdeVedlegg.stream()
+                    .filter(vedlegg -> !vedlegg.getType().equalsIgnoreCase("skattemelding"))
+                    .filter(vedlegg -> !vedlegg.getType().equalsIgnoreCase("annet"))
+                    .collect(Collectors.toList());
+        }
         List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknad.getSoknadId(), soknad.getEier());
 
         List<VedleggFrontend> slettedeVedlegg = removeIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
