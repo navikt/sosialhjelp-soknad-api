@@ -136,7 +136,6 @@
         <mockito.version>1.10.8</mockito.version>
         <assertj.version>3.13.2</assertj.version>
         <reflections.version>0.9.10</reflections.version>
-        <modig-core-test.version>1.0.0</modig-core-test.version>
         <modig-testcertificates.version>1.2.5</modig-testcertificates.version>
         <digipost.digg.version>0.13</digipost.digg.version>
 
@@ -1044,12 +1043,6 @@
                 <artifactId>test</artifactId>
                 <version>${nav-common.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-core-test</artifactId>
-                <scope>test</scope>
-                <version>${modig-core-test.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
