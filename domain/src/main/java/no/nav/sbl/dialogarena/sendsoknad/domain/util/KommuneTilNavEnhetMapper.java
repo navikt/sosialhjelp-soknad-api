@@ -225,6 +225,7 @@ public class KommuneTilNavEnhetMapper {
             .put("1120", "974549611")    // Klepp og Time
             .put("0901", "964977402")    // Risør
             .put("0904", "994161105")    // Grimstad
+            .put("1940", "976979958")    // Gáivuotna/Kåfjord
 
             .build();
 
@@ -496,7 +497,8 @@ public class KommuneTilNavEnhetMapper {
                     "1120", // Klepp
                     "1121", // Time
                     "4201", // Risør
-                    "4202"  // Grimstad
+                    "4202", // Grimstad
+                    "5426"  // Gáivuotna/Kåfjord
             ));
 
 
