@@ -24,7 +24,7 @@ public class FiksSender {
     static final String SOKNAD_TIL_NAV = "Søknad til NAV";
     static final String ETTERSENDELSE_TIL_NAV = "Ettersendelse til NAV";
     public static String KRYPTERING_DISABLED = "feature.fiks.kryptering.disabled";
-    private boolean SKAL_KRYPTERE = !Boolean.valueOf(System.getProperty(KRYPTERING_DISABLED, "false"));
+    private boolean SKAL_KRYPTERE = !Boolean.parseBoolean(System.getProperty(KRYPTERING_DISABLED, "false"));
 
     private static final Logger log = LoggerFactory.getLogger(FiksSender.class);
 

@@ -44,9 +44,7 @@ public class AdresseSokRestConfig {
             .withExecutorTimeoutInMilliseconds(30000)
             .build();
     
-    private final Function<Sokedata, RestCallContext> restCallContextSelector = (sokedata) -> {
-        return (sokedata != null && sokedata.postnummer != null) ? medPostnummerExecutionContext : utenPostnummerExecutionContext;
-    };
+    private final Function<Sokedata, RestCallContext> restCallContextSelector = (sokedata) -> (sokedata != null && sokedata.postnummer != null) ? medPostnummerExecutionContext : utenPostnummerExecutionContext;
 
     @Bean
     public AdresseSokConsumer adresseSokConsumer() {
@@ -57,16 +55,13 @@ public class AdresseSokRestConfig {
     
     @Bean
     public Pingable adressesokPing() {
-        return new Pingable() {
-            @Override
-            public Ping ping() {
-                PingMetadata metadata = new PingMetadata(endpoint, "TPSWS-adressesok", false);
-                try {
-                    adresseSokConsumer().ping();
-                    return lyktes(metadata);
-                } catch (Exception e) {
-                    return feilet(metadata, e);
-                }
+        return () -> {
+            PingMetadata metadata = new PingMetadata(endpoint, "TPSWS-adressesok", false);
+            try {
+                adresseSokConsumer().ping();
+                return lyktes(metadata);
+            } catch (Exception e) {
+                return feilet(metadata, e);
             }
         };
     }

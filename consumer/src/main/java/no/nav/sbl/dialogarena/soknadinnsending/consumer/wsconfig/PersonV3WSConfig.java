@@ -37,7 +37,7 @@ public class PersonV3WSConfig {
 
     @Bean
     public PersonV3 personV3Endpoint() {
-        PersonV3 mock = new PersonV3Mock().PersonV3Mock();
+        PersonV3 mock = new PersonV3Mock().personV3Mock();
         PersonV3 prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Person", prod, mock, PERSON_KEY, PersonV3.class);
     }
@@ -49,16 +49,13 @@ public class PersonV3WSConfig {
 
     @Bean
     public Pingable personv3Pingable() {
-        return new Pingable() {
-            @Override
-            public Ping ping() {
-                PingMetadata metadata = new PingMetadata(personv3EndpointUrl,"TPS - Person", true);
-                try {
-                    personV3SelftestEndpoint().ping();
-                    return lyktes(metadata);
-                } catch (Exception e) {
-                    return feilet(metadata, e);
-                }
+        return () -> {
+            PingMetadata metadata = new PingMetadata(personv3EndpointUrl,"TPS - Person", true);
+            try {
+                personV3SelftestEndpoint().ping();
+                return lyktes(metadata);
+            } catch (Exception e) {
+                return feilet(metadata, e);
             }
         };
     }

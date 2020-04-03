@@ -72,7 +72,7 @@ public final class RestCallContext {
                     concurrentRequests,
                     concurrentRequests,
                     0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>(maximumQueueSize));
+                    new LinkedBlockingQueue<>(maximumQueueSize));
             
             return new RestCallContext(client, executorService, executorTimeoutInMilliseconds);
         }

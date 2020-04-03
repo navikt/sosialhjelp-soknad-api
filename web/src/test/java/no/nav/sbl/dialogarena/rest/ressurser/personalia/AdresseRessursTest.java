@@ -27,7 +27,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUti
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 

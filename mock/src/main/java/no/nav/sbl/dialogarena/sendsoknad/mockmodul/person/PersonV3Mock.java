@@ -40,9 +40,9 @@ public class PersonV3Mock {
             String midlertidigAdresseKommunenummer = node.at("/person/midlertidigPostadresse/strukturertAdresse/kommunenummer").textValue();
 
             Bruker defaultPerson = getDefaultPerson();
-            Integer husnummer;
+            int husnummer;
             try {
-                husnummer = Integer.valueOf(husnr);
+                husnummer = Integer.parseInt(husnr);
             } catch (NumberFormatException e) {
                 husnummer = 0;
             }
@@ -71,16 +71,14 @@ public class PersonV3Mock {
         }
     }
 
-    public PersonV3 PersonV3Mock() {
+    public PersonV3 personV3Mock() {
 
         PersonV3 mock = mock(PersonV3.class);
 
         try {
             when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(OidcFeatureToggleUtils.getUserId()));
-        } catch (HentPersonPersonIkkeFunnet hentPersonPersonIkkeFunnet) {
+        } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
-        } catch (HentPersonSikkerhetsbegrensning hentPersonSikkerhetsbegrensning) {
-            hentPersonSikkerhetsbegrensning.printStackTrace();
         }
 
         return mock;

@@ -32,16 +32,13 @@ public class NorgRestConfig {
     
     @Bean
     public Pingable norgRestPing() {
-        return new Pingable() {
-            @Override
-            public Ping ping() {
-                PingMetadata metadata = new PingMetadata(endpoint, "Norg2", false);
-                try {
-                    norgConsumer().ping();
-                    return lyktes(metadata);
-                } catch (Exception e) {
-                    return feilet(metadata, e);
-                }
+        return () -> {
+            PingMetadata metadata = new PingMetadata(endpoint, "Norg2", false);
+            try {
+                norgConsumer().ping();
+                return lyktes(metadata);
+            } catch (Exception e) {
+                return feilet(metadata, e);
             }
         };
     }
