@@ -73,6 +73,8 @@ public class NorgService {
             enhet.sosialOrgnr = "974592274";
         } else if (rsNorgEnhet.enhetNr.equals("0511")  && gt.equals("3432")){
             enhet.sosialOrgnr = "964949204";
+        } else if (rsNorgEnhet.enhetNr.equals("1620")  && gt.equals("5014")){
+            enhet.sosialOrgnr = "913071751";
         } else {
             enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
         }

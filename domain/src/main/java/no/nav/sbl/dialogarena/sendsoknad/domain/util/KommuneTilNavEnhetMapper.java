@@ -41,6 +41,13 @@ public class KommuneTilNavEnhetMapper {
             .put("3825", "Tokke")     // Vinje
             .put("3823", "Tokke")     // Fyresdal
             .put("3820", "Tokke")     // Seljord
+            .put("3042", "Gol")       // Hemsedal
+            .put("3039", "Gol")       // Flå
+            .put("3040", "Gol")       // Nesbyen
+            .put("3043", "Gol")       // Ål
+            .put("3044", "Gol")       // Hol
+            .put("5058", "Osen")      // Åfjord
+            .put("1121", "Klepp")     // Time
             .build();
 
     private static final Map<String, String> PROD_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
@@ -206,6 +213,19 @@ public class KommuneTilNavEnhetMapper {
             .put("0528", "974604264")    // Østre Toten
             .put("1870", "974545713")    // Sortland
             .put("0914", "964965781")    // Tvedestrand
+            .put("0912", "964965048")    // Vegårshei
+            .put("0617", "974607948")    // Gol, Hemsedal, Flå, Nesbyen, Ål og Hol
+            .put("1630", "974578069")    // Osen og Åfjord
+            .put("1620", "974239965")    // Hitra og Frøya
+            .put("2012", "974580713")    // Alta
+            .put("0124", "998432189")    // Indre Østfold
+            .put("0919", "946439045")    // Froland
+            .put("0929", "864965962")    // Åmli
+            .put("1502", "986852522")    // Molde
+            .put("1120", "974549611")    // Klepp og Time
+            .put("0901", "964977402")    // Risør
+            .put("0904", "994161105")    // Grimstad
+            .put("1940", "976979958")    // Gáivuotna/Kåfjord
 
             .build();
 
@@ -457,7 +477,28 @@ public class KommuneTilNavEnhetMapper {
                     "3820", // Seljord
                     "4213", // Tvedestrand
                     "1870", // Sortland
-                    "3442"  // Østre Toten
+                    "3442", // Østre Toten
+                    "4212", // Vegårshei
+                    "3041", // Gol
+                    "3042", // Hemsedal
+                    "3039", // Flå
+                    "3040", // Nesbyen
+                    "3043", // Ål
+                    "3044", // Hol
+                    "5020", // Osen
+                    "5058", // Åfjord
+                    "5056", // Hitra
+                    "5014", // Frøya
+                    "5403", // Alta
+                    "3014", // Indre Østfold
+                    "4214", // Froland
+                    "4217", // Åmli
+                    "1506", // Molde
+                    "1120", // Klepp
+                    "1121", // Time
+                    "4201", // Risør
+                    "4202", // Grimstad
+                    "5426"  // Gáivuotna/Kåfjord
             ));
 
 

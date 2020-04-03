@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -29,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
@@ -84,11 +86,8 @@ public class OpplastetVedleggService {
         String uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier);
         opplastetVedlegg.withUuid(uuid);
 
-        JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
-                .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
-                .findFirst().get();
-
-        if (jsonVedlegg.getFiler() == null){
+        JsonVedlegg jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid);
+        if (jsonVedlegg.getFiler() == null) {
             jsonVedlegg.setFiler(new ArrayList<>());
         }
         jsonVedlegg.withStatus(LastetOpp.toString()).getFiler().add(new JsonFiler().withFilnavn(filnavn).withSha512(sha512));
@@ -110,10 +109,7 @@ public class OpplastetVedleggService {
 
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
-        final JsonVedlegg jsonVedlegg = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
-                .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
-                .findFirst().get();
-
+        JsonVedlegg jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid);
         jsonVedlegg.getFiler().removeIf(jsonFiler ->
                 jsonFiler.getSha512().equals(opplastetVedlegg.getSha512()) &&
                 jsonFiler.getFilnavn().equals(opplastetVedlegg.getFilnavn()));
@@ -125,6 +121,17 @@ public class OpplastetVedleggService {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
         opplastetVedleggRepository.slettVedlegg(vedleggId, eier);
+    }
+
+    private JsonVedlegg finnVedleggEllerKastException(String vedleggstype, SoknadUnderArbeid soknadUnderArbeid) {
+        Optional<JsonVedlegg> jsonVedleggOptional = getVedleggFromInternalSoknad(soknadUnderArbeid).stream()
+                .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
+                .findFirst();
+
+        if (!jsonVedleggOptional.isPresent()) {
+            throw new NotFoundException("Dette vedlegget tilhører " + vedleggstype + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?");
+        }
+        return jsonVedleggOptional.get();
     }
 
     String lagFilnavn(String opplastetNavn, String mimetype, String uuid) {
