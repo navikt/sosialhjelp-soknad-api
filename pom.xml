@@ -82,7 +82,6 @@
         <cxf.version>3.3.4</cxf.version>
         <modig-security.version>3.0.6</modig-security.version>
         <wss4j.version>2.2.3</wss4j.version>
-        <lokalt.kodeverk>1.12.28</lokalt.kodeverk>
         <ojdbc.version>12.2.0.1</ojdbc.version>
         <flyway-core.version>5.0.7</flyway-core.version>
         <flying.saucer.version>9.0.8</flying.saucer.version>
@@ -309,11 +308,6 @@
 
 
             <!-- NAV felles biblioteker (gammelt) -->
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-lokalt-kodeverk</artifactId>
-                <version>${lokalt.kodeverk}</version>
-            </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-detect</artifactId>
