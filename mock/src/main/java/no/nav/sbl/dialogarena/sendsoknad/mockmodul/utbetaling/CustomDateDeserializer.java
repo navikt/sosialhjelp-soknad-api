@@ -29,7 +29,7 @@ public class CustomDateDeserializer extends JsonDeserializer<DateTime> implement
     }
 
     @Override
-    public DateTime deserialize(JsonParser jp, DeserializationContext dc) throws IOException, JsonProcessingException {
+    public DateTime deserialize(JsonParser jp, DeserializationContext dc) throws IOException {
         DateTimeFormatter formatter = DateTimeFormat.forPattern(format);
         return formatter.parseDateTime(jp.getText());
     }

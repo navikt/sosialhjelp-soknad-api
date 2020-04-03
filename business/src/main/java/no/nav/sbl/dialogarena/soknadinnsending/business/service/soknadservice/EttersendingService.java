@@ -117,8 +117,7 @@ public class EttersendingService {
     public SoknadMetadata hentNyesteSoknadIKjede(SoknadMetadata originalSoknad) {
         return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId).stream()
                 .filter(e -> e.status == FERDIG)
-                .sorted(Comparator.comparing((SoknadMetadata o) -> o.innsendtDato).reversed())
-                .findFirst()
+                .max(Comparator.comparing((SoknadMetadata o) -> o.innsendtDato))
                 .orElse(originalSoknad);
     }
 

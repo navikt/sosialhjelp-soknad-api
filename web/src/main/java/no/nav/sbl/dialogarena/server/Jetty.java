@@ -282,17 +282,17 @@ public final class Jetty {
                     + "\n * Http port: " + port
                     );
         for (Integer httpsPort : sslPort) {
-            statusBuilder.append("\n * Https port: " + httpsPort);
+            statusBuilder.append("\n * Https port: ").append(httpsPort);
         }
         for (URL url : getBaseUrls()) {
-            statusBuilder.append("\n * " + url);
+            statusBuilder.append("\n * ").append(url);
         }
         return statusBuilder.toString();
     }
 
     public Iterable<URL> getBaseUrls() {
         return on(optional(port).map(new ToUrl("http", contextPath))).append(sslPort.map(new ToUrl("https", contextPath)));
-    };
+    }
 
     private void registerMetricsServlet(final ServletContextHandler context) {
         final ServletHolder metricsServlet = new ServletHolder(new MetricsServlet());
