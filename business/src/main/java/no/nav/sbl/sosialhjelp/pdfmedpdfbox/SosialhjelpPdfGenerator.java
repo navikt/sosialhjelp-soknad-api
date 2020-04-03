@@ -897,7 +897,7 @@ public class SosialhjelpPdfGenerator {
                         pdf.skrivTekst(formaterDato(bostotteSak.getDato(), DATO_FORMAT));
                         skrivTekstMedGuard(pdf, finnSaksStatus(bostotteSak), "inntekt.bostotte.sak.status");
                     }
-                    boolean utbetalingHusbankenFinnes = hentUtbetalinger(okonomi, "bostotte").size() > 0;
+                    boolean utbetalingHusbankenFinnes = husbankenUtbetalinger.size() > 0;
                     if (bostotte.getSaker().isEmpty()) {
 
                         if (utbetalingHusbankenFinnes) {
