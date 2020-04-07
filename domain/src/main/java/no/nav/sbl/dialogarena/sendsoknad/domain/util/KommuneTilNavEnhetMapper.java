@@ -487,7 +487,7 @@ public class KommuneTilNavEnhetMapper {
                     "3044", // Hol
                     "5020", // Osen
                     "5058", // Åfjord
-                    "5056", // Hitra
+                    // "5056", // Hitra - Foreløpig koblet fra siden vi ikke kan ha to orgnr på samme navenhet
                     "5014", // Frøya
                     "5403", // Alta
                     "3014", // Indre Østfold
