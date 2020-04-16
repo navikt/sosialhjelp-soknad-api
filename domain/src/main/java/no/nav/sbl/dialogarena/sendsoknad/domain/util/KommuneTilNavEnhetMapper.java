@@ -216,15 +216,16 @@ public class KommuneTilNavEnhetMapper {
             .put("0912", "964965048")    // Vegårshei
             .put("0617", "974607948")    // Gol, Hemsedal, Flå, Nesbyen, Ål og Hol
             .put("1630", "974578069")    // Osen og Åfjord
-            .put("1620", "974239965")    // Hitra og Frøya
+            .put("1620", "874560332")    // Hitra og Frøya
             .put("2012", "974580713")    // Alta
             .put("0124", "998432189")    // Indre Østfold
             .put("0919", "946439045")    // Froland
             .put("0929", "864965962")    // Åmli
             .put("1502", "986852522")    // Molde
-            .put("0904", "994161105")    // Grimstad
             .put("1120", "974549611")    // Klepp og Time
             .put("0901", "964977402")    // Risør
+            .put("0904", "994161105")    // Grimstad
+            .put("1940", "976979958")    // Gáivuotna/Kåfjord
 
             .build();
 
@@ -493,10 +494,11 @@ public class KommuneTilNavEnhetMapper {
                     "4214", // Froland
                     "4217", // Åmli
                     "1506", // Molde
-                    "4202", // Grimstad
                     "1120", // Klepp
                     "1121", // Time
-                    "4201"  // Risør
+                    "4201", // Risør
+                    "4202", // Grimstad
+                    "5426"  // Gáivuotna/Kåfjord
             ));
 
 

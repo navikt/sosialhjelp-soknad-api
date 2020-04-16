@@ -76,7 +76,7 @@ public class DigisosApiServiceTest {
         List<FilOpplasting> filOpplastings = digisosApiService.lagDokumentListe(soknadUnderArbeid);
 
         FilMetadata metadataFil1 = filOpplastings.get(0).metadata;
-        assertThat(metadataFil1.filnavn).isEqualTo("soknad.pdf");
+        assertThat(metadataFil1.filnavn).isEqualTo("Soknad.pdf");
         assertThat(metadataFil1.mimetype).isEqualTo("application/pdf");
 
 

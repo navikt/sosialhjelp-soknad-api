@@ -64,6 +64,8 @@ public class ForsendelseServiceMock {
                 is = dokument.getData().getInputStream();
                 os = new FileOutputStream(new File(mappenavn + "/" + dokument.getFilnavn()));
                 IOUtils.copy(is, os);
+                is.close();
+                os.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
