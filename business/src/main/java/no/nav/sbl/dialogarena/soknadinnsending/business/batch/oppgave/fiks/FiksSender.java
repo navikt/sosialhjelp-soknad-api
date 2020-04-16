@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,7 +62,7 @@ public class FiksSender {
 
         validerAtEttersendelseSinSoknadHarForsendelseId(sendtSoknad, svarPaForsendelseId);
 
-        Forsendelse forsendelse = new Forsendelse()
+        return new Forsendelse()
                 .withMottaker(new Adresse()
                         .withDigitalAdresse(
                                 new OrganisasjonDigitalAdresse().withOrgnr(sendtSoknad.getOrgnummer()))
@@ -82,13 +81,6 @@ public class FiksSender {
                         new NoarkMetadataFraAvleverendeSakssystem()
                                 .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
                 );
-
-        if (Objects.equals(sendtSoknad.getBehandlingsId(), "11000L5XF")) {
-            return  forsendelse
-                    .withKunDigitalLevering(true);
-        }
-
-        return forsendelse;
     }
 
     private void validerAtEttersendelseSinSoknadHarForsendelseId(SendtSoknad sendtSoknad, String svarPaForsendelseId) {
