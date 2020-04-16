@@ -919,7 +919,7 @@ public class SosialhjelpPdfGenerator {
             }
 
             // Student
-            if (soknad.getData() != null && soknad.getData().getUtdanning() != null && soknad.getData().getUtdanning().getErStudent() != null) {
+            if (soknad.getData() != null && soknad.getData().getUtdanning() != null && soknad.getData().getUtdanning().getErStudent() != null && soknad.getData().getUtdanning().getErStudent()) {
                 pdf.skrivTekstBold(getTekst("inntekt.studielan.sporsmal"));
 
                 List<JsonOkonomibekreftelse> studielanOgStipendBekreftelser = hentBekreftelser(okonomi, "studielanOgStipend");
