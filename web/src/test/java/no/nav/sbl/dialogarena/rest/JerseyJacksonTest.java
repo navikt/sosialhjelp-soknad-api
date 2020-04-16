@@ -5,8 +5,9 @@ import no.nav.sbl.dialogarena.rest.providers.SoknadObjectMapperProvider;
 import org.hamcrest.CoreMatchers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class JerseyJacksonTest {
 
@@ -17,7 +18,7 @@ public class JerseyJacksonTest {
         SoknadObjectMapperProvider mapper = new SoknadObjectMapperProvider();
         String result = mapper.getContext(DateTime.class).writeValueAsString(date);
 
-        Assert.assertThat(result, CoreMatchers.containsString("2015-01-01T10:00:00.000Z"));
+        assertThat(result, CoreMatchers.containsString("2015-01-01T10:00:00.000Z"));
     }
 
 }

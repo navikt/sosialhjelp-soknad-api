@@ -2,7 +2,6 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +17,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sos
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -44,7 +44,7 @@ public class HentTekstHelperTest {
     public void henterTekstFraCmsTekst() throws IOException {
         String compiled = handlebars.compileInline("{{hentTekst \"test\"}}").apply(new Object());
 
-        Assert.assertThat(compiled, is("test"));
+        assertThat(compiled, is("test"));
     }
 
     @Test

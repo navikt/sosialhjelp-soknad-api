@@ -3,14 +3,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
-import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class KodeverkWSConfig {
@@ -43,16 +43,13 @@ public class KodeverkWSConfig {
 
     @Bean
     Pingable kodeverkPing() {
-        return new Pingable() {
-            @Override
-            public Ping ping() {
-                PingMetadata metadata = new PingMetadata(kodeverkEndPoint,"Kodeverk v2 ", false);
-                try {
-                    kodeverkSelftestEndpoint().ping();
-                    return lyktes(metadata);
-                } catch (Exception e) {
-                    return feilet(metadata, e);
-                }
+        return () -> {
+            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(kodeverkEndPoint,"Kodeverk v2 ", false);
+            try {
+                kodeverkSelftestEndpoint().ping();
+                return lyktes(metadata);
+            } catch (Exception e) {
+                return feilet(metadata, e);
             }
         };
     }

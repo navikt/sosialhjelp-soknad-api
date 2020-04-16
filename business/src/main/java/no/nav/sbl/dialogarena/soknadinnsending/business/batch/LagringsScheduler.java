@@ -42,7 +42,7 @@ public class LagringsScheduler {
         batchStartTime = DateTime.now();
         vellykket = 0;
         feilet = 0;
-        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+        if (Boolean.parseBoolean(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             logger.info("Starter flytting av søknader til henvendelse-jobb");
             Timer batchTimer = MetricsFactory.createTimer("debug.lagringsjobb");
             batchTimer.start();

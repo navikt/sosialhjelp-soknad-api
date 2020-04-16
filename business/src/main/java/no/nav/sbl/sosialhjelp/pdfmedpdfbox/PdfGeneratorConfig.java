@@ -3,7 +3,6 @@ package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.xml.soap.Text;
 import java.io.IOException;
 
 @Configuration

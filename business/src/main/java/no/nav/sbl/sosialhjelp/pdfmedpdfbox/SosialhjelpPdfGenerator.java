@@ -54,11 +54,15 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_1;
 import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
 import static no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenerator.INNRYKK_4;
 import static org.apache.cxf.common.logging.LogUtils.getLogger;

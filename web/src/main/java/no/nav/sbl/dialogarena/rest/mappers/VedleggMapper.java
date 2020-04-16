@@ -13,12 +13,25 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskGruppeMapper.getGruppe;
-import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.*;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.isInSoknadJson;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANNET_BARN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANNET_BO;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_RENTER;
 
 public class VedleggMapper {
 
@@ -122,9 +135,9 @@ public class VedleggMapper {
         if (utbetaling.getBelop() != null){
             return new VedleggRadFrontend().withBelop(utbetaling.getBelop());
         } else if (utbetaling.getBrutto() != null){
-            return new VedleggRadFrontend().withBelop(new Integer(String.valueOf(utbetaling.getBrutto())));
+            return new VedleggRadFrontend().withBelop(Integer.valueOf(String.valueOf(utbetaling.getBrutto())));
         } else if (utbetaling.getNetto() != null) {
-            return new VedleggRadFrontend().withBelop(new Integer(String.valueOf(utbetaling.getNetto())));
+            return new VedleggRadFrontend().withBelop(Integer.valueOf(String.valueOf(utbetaling.getNetto())));
         }
         return new VedleggRadFrontend();
     }
