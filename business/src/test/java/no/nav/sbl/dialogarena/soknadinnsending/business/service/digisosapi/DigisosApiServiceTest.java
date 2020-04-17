@@ -14,7 +14,6 @@ import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,8 +28,9 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -97,10 +97,10 @@ public class DigisosApiServiceTest {
                 .withTilknyttetBehandlingsId("123")
                 .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
 
-        Assert.assertThat(fiksDokumenter.size(), is(3));
-        Assert.assertThat(fiksDokumenter.get(0).metadata.filnavn, is("ettersendelse.pdf"));
-        Assert.assertThat(fiksDokumenter.get(1).metadata.filnavn, is("Brukerkvittering.pdf"));
-        Assert.assertThat(fiksDokumenter.get(2).metadata.filnavn, is("FILNAVN"));
+        assertThat(fiksDokumenter.size()).isEqualTo(3);
+        assertThat(fiksDokumenter.get(0).metadata.filnavn).isEqualTo("ettersendelse.pdf");
+        assertThat(fiksDokumenter.get(1).metadata.filnavn).isEqualTo("Brukerkvittering.pdf");
+        assertThat(fiksDokumenter.get(2).metadata.filnavn).isEqualTo("FILNAVN");
     }
 
     private JsonInternalSoknad lagInternalSoknadForEttersending() {

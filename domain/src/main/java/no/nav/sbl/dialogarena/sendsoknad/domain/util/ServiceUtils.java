@@ -45,11 +45,11 @@ public class ServiceUtils {
     }
 
     public static boolean isScheduledTasksDisabled(){
-        return Boolean.valueOf(System.getProperty(IS_SCHEDULED_TASKS_DISABLED, "false"));
+        return Boolean.parseBoolean(System.getProperty(IS_SCHEDULED_TASKS_DISABLED, "false"));
     }
 
     public static boolean isSendingTilFiksEnabled(){
-        return Boolean.valueOf(System.getProperty(IS_SENDING_TIL_DIGISOS_API_ENABLED, "false"));
+        return Boolean.parseBoolean(System.getProperty(IS_SENDING_TIL_DIGISOS_API_ENABLED, "false"));
     }
 
     public static String stripVekkFnutter(String tekstMedFnutt) {

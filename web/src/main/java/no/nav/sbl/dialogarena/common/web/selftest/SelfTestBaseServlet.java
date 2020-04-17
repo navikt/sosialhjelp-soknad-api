@@ -60,7 +60,7 @@ public abstract class SelfTestBaseServlet extends HttpServlet {
     protected abstract Collection<? extends Pingable> getPingables();
 
     @Override
-    protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         doPing();
         Selftest selftest = lagSelftest();
 

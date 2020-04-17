@@ -287,7 +287,7 @@ public final class Jetty {
                     );
         sslPort.ifPresent(integer -> statusBuilder.append("\n * Https port: ").append(integer));
         for (URL url : getBaseUrls()) {
-            statusBuilder.append("\n * " + url);
+            statusBuilder.append("\n * ").append(url);
         }
         return statusBuilder.toString();
     }

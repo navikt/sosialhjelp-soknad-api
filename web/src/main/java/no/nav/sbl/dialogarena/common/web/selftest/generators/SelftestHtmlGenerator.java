@@ -8,6 +8,7 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
-import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.*;
+import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.STATUS_ERROR;
+import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.STATUS_OK;
+import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.STATUS_WARNING;
 import static org.apache.commons.lang3.StringUtils.join;
 
 /*
@@ -39,7 +42,7 @@ public class SelftestHtmlGenerator {
                 .collect(Collectors.toList());
 
         InputStream template = SelftestHtmlGenerator.class.getResourceAsStream("/selftest/SelfTestPage.html");
-        String html = IOUtils.toString(template);
+        String html = IOUtils.toString(template, StandardCharsets.UTF_8);
         html = html.replace("${app-navn}", Optional.of(selftestNullSafe).map(s -> selftestNullSafe.getApplication()).orElse("?"));
         html = html.replace("${aggregertStatus}", getStatusNavnElement(selftestNullSafe.getAggregateResult(), "span"));
         html = html.replace("${resultater}", join(tabellrader, "\n"));

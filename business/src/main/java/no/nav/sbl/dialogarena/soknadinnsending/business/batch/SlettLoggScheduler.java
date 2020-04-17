@@ -48,7 +48,7 @@ public class SlettLoggScheduler {
 
         batchStartTime = LocalDateTime.now();
         vellykket = 0;
-        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+        if (Boolean.parseBoolean(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             logger.info("Starter sletting av logger for ett år gamle søknader");
             Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettLogg");
             batchTimer.start();

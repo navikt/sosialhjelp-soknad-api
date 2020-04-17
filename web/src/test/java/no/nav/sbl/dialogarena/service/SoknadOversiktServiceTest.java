@@ -19,7 +19,9 @@ import static java.util.Collections.singletonList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.service.SoknadOversiktService.DEFAULT_TITTEL;
 import static no.nav.sbl.dialogarena.service.SoknadOversiktService.KILDE_SOKNAD_API;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
