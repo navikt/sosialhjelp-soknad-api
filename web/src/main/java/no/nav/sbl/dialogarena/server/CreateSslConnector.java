@@ -24,8 +24,8 @@ class CreateSslConnector implements Transformer<Integer, ServerConnector> {
     public ServerConnector transform(Integer sslPort) {
 
         SslContextFactory factory = new SslContextFactory.Client.Client(true);
-        factory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
-        factory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
+//        factory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
+//        factory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
 
         HttpConfiguration httpsConfiguration = new HttpConfiguration(baseConfiguration);
         httpsConfiguration.setSecureScheme("https");
