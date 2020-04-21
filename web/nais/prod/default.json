@@ -3,6 +3,7 @@
   "namespace": "default",
   "ingresses": [
     "https://sosialhjelp-soknad-api.nais.oera.no/",
+    "https://sosialhjelp-soknad-api.prod-sbs.nais.io/",
     "https://www.nav.no/sosialhjelp/soknad-api"
   ],
   "vaultKvPath": "/kv/prod/sbs/sosialhjelp-soknad-api/default",
