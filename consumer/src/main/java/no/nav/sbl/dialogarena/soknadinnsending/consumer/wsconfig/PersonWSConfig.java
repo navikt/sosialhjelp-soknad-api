@@ -45,16 +45,13 @@ public class PersonWSConfig {
 
     @Bean
     public Pingable personPingable() {
-        return new Pingable() {
-            @Override
-            public Ping ping() {
-                PingMetadata metadata = new PingMetadata(personEndpoint,"TPS - Person", true);
-                try {
-                    personSelftestEndpoint().ping();
-                    return lyktes(metadata);
-                } catch (Exception e) {
-                    return feilet(metadata, e);
-                }
+        return () -> {
+            PingMetadata metadata = new PingMetadata(personEndpoint,"TPS - Person", true);
+            try {
+                personSelftestEndpoint().ping();
+                return lyktes(metadata);
+            } catch (Exception e) {
+                return feilet(metadata, e);
             }
         };
     }

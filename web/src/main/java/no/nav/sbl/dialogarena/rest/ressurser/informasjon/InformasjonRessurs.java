@@ -5,6 +5,8 @@ import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
@@ -19,9 +21,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import java.util.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -34,7 +45,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  * Klassen håndterer rest kall for å hente informasjon
  */
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/informasjon")
 @Produces(APPLICATION_JSON)
 @Timed
@@ -45,14 +56,21 @@ public class InformasjonRessurs {
 
     private static final List<String> DISKRESJONSKODER = asList("6", "7");
 
-    @Inject
-    private InformasjonService informasjon;
-    @Inject
-    private NavMessageSource messageSource;
-    @Inject
-    private PersonService personService;
-    @Inject
-    private AdresseSokService adresseSokService;
+    private final InformasjonService informasjon;
+    private final NavMessageSource messageSource;
+    private final PersonService personService;
+    private final AdresseSokService adresseSokService;
+    private final DigisosApi digisosApi;
+    private final KommuneInfoService kommuneInfoService;
+
+    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService) {
+        this.informasjon = informasjon;
+        this.messageSource = messageSource;
+        this.personService = personService;
+        this.adresseSokService = adresseSokService;
+        this.digisosApi = digisosApi;
+        this.kommuneInfoService = kommuneInfoService;
+    }
 
     @GET
     @Path("/miljovariabler")
@@ -65,7 +83,7 @@ public class InformasjonRessurs {
     public Map<String, String> hentFornavn() {
         String fnr = OidcFeatureToggleUtils.getUserId();
         Person person = personService.hentPerson(fnr);
-        if (person == null){
+        if (person == null) {
             return new HashMap<>();
         }
         String fornavn = person.getFornavn() != null ? person.getFornavn() : "";
@@ -83,10 +101,10 @@ public class InformasjonRessurs {
             sprak = "nb_NO";
         }
 
-        if(isNotEmpty(type) && !BUNDLE_NAME.equals(type.toLowerCase())){
-            String prefiksetType = new StringBuilder("soknad").append(type.toLowerCase()).toString();
+        if (isNotEmpty(type) && !BUNDLE_NAME.equals(type.toLowerCase())) {
+            String prefiksetType = "soknad" + type.toLowerCase();
             logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType);
-            if(BUNDLE_NAME.equals(prefiksetType)){
+            if (BUNDLE_NAME.equals(prefiksetType)) {
                 type = prefiksetType;
             }
         }
@@ -147,11 +165,20 @@ public class InformasjonRessurs {
     @Unprotected
     @GET
     @Path("/tilgjengelige_kommuner")
-    public List<String> hentTilgjengeligeKommuner() {
+    public Set<String> hentTilgjengeligeKommuner() {
         if (NedetidUtils.isInnenforNedetid()) {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
-        return KommuneTilNavEnhetMapper.getDigisoskommuner();
+        List<String> manueltPaakobledeKommuner = KommuneTilNavEnhetMapper.getDigisoskommuner();
+
+        Set<String> digisosApiKommuner = digisosApi.hentKommuneInfo().keySet().stream()
+                .filter(kommuneInfoService::kanMottaSoknader)
+                .collect(Collectors.toSet());
+
+        Set<String> union = new HashSet<>(manueltPaakobledeKommuner);
+        union.addAll(digisosApiKommuner);
+
+        return union;
     }
 
     @Unprotected

@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: sosialhjelp-soknad-api
+  name: {{applicationName}}
   namespace: {{namespace}}
   labels:
     team: teamdigisos
@@ -20,7 +20,7 @@ spec:
     timeout: 1
   prometheus:
     enabled: {{prometheusEnabled}}
-    path: /prometheus
+    path: /sosialhjelp/soknad-api/internal/metrics
   replicas:
     min: {{minReplicas}}
     max: {{maxReplicas}}
@@ -47,10 +47,10 @@ spec:
   resources:
     limits:
       cpu: 3000m
-      memory: 2Gi
+      memory: {{memoryLimit}}
     requests:
       cpu: 200m
-      memory: 2Gi
+      memory: {{memoryRequest}}
   env:
 {{#each env}}
     - name: {{@key}}

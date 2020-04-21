@@ -15,7 +15,6 @@ import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
@@ -44,6 +43,7 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -158,7 +158,7 @@ public class DigisosApiImpl implements DigisosApi {
             cacheTimestamp = LocalDateTime.now();
             return collect;
         } catch (Exception e) {
-            if(cacheForKommuneinfo.get().isEmpty()) {
+            if (cacheForKommuneinfo.get().isEmpty()) {
                 log.error("Hent kommuneinfo feiler og cache er tom!", e);
                 return Collections.emptyMap();
             }
@@ -274,7 +274,7 @@ public class DigisosApiImpl implements DigisosApi {
                 .build()));
 
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
-        entitybuilder.setCharset(Charsets.UTF_8);
+        entitybuilder.setCharset(StandardCharsets.UTF_8);
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
         entitybuilder.addTextBody("soknadJson", soknadJson, ContentType.APPLICATION_JSON);
@@ -306,7 +306,7 @@ public class DigisosApiImpl implements DigisosApi {
                 String errorResponse = EntityUtils.toString(response.getEntity());
                 String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
                 if (fiksDigisosId != null) {
-                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
+                    log.warn("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
                     return fiksDigisosId;
                 }
 
@@ -369,9 +369,9 @@ public class DigisosApiImpl implements DigisosApi {
     private String createJws() {
         try {
             String virksomhetsSertifikatPath = System.getProperty("virksomhetssertifikat_path", "/var/run/secrets/nais.io/virksomhetssertifikat");
-            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/credentials.json")), VirksertCredentials.class);
+            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/credentials.json"), StandardCharsets.UTF_8), VirksertCredentials.class);
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            String src = FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/key.p12.b64"));
+            String src = FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/key.p12.b64"), StandardCharsets.UTF_8);
             keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(src)), virksertCredentials.password.toCharArray());
 
             X509Certificate certificate = (X509Certificate) keyStore.getCertificate(virksertCredentials.alias);

@@ -2,7 +2,7 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;

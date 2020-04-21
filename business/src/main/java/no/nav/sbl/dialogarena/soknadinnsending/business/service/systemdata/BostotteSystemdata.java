@@ -14,7 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;

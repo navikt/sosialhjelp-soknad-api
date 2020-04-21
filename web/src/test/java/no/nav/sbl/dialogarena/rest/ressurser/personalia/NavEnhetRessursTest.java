@@ -35,7 +35,9 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUti
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -142,8 +144,8 @@ public class NavEnhetRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert"))).thenReturn(
                 Arrays.asList(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2));
-        when(norgService.finnEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
-        when(norgService.finnEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
+        when(norgService.getEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
+        when(norgService.getEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
 
         List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
@@ -172,8 +174,8 @@ public class NavEnhetRessursTest {
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq(null))).thenReturn(new ArrayList<>());
-        when(norgService.finnEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
-        when(norgService.finnEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
+        when(norgService.getEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
+        when(norgService.getEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
 
         List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 

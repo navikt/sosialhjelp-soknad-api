@@ -16,7 +16,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sos
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

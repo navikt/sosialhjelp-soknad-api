@@ -77,7 +77,7 @@ public class SkattetatenSystemdata {
         if (utbetalinger == null) {
             return null;
         }
-        return utbetalinger.stream().map(utbetaling -> mapToJsonOkonomiOpplysningUtbetaling(utbetaling)).collect(Collectors.toList());
+        return utbetalinger.stream().map(this::mapToJsonOkonomiOpplysningUtbetaling).collect(Collectors.toList());
     }
 
     private JsonOrganisasjon mapToJsonOrganisasjon(String orgnummer) {

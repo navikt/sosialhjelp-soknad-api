@@ -24,9 +24,9 @@ import java.util.Optional;
 
 import static no.nav.modig.core.test.FilesAndDirs.BUILD_OUTPUT;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 

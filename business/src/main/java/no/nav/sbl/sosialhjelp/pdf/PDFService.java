@@ -2,7 +2,6 @@ package no.nav.sbl.sosialhjelp.pdf;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;

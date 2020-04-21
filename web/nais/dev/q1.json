@@ -1,7 +1,9 @@
 {
+  "applicationName": "sosialhjelp-soknad-api",
   "namespace": "q1",
   "ingresses": [
     "https://sosialhjelp-soknad-api-q1.nais.oera-q.local/",
+    "https://sosialhjelp-soknad-api-q1.dev-sbs.nais.io/",
     "https://tjenester-q1.nav.no/sosialhjelp-soknad-api",
     "https://www-q1.nav.no/sosialhjelp/soknad-api"
   ],
@@ -22,6 +24,8 @@
   },
   "minReplicas": "2",
   "maxReplicas": "4",
+  "memoryLimit": "2Gi",
+  "memoryRequest": "2Gi",
   "vaultEnabled": true,
   "prometheusEnabled": true,
   "env": {
@@ -48,7 +52,7 @@
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "true",
     "SOKNAD_BOSTOTTE_URL": "https://api-gw-q1.oera.no/ekstern/husbanken/api/nav/minbostotte",
     "SOKNAD_BOSTOTTE_PING_URL": "https://api-gw-q1.oera.no/ekstern/husbanken/api/nav/minbostotte/ping",
-    "SOKNAD_ETTERSENDING_ANTALLDAGER": "120",
+    "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q1.oera.no/security-token-service/rest/v1/sts/token",
     "TPSWS_API_V1_URL": "https://api-gw-q1.oera.no/tpsws/api/v1/",

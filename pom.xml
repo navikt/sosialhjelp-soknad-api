@@ -72,92 +72,96 @@
         <nav-common.version>1.2020.01.08-12.57-62d0c889ddb5</nav-common.version>
 
         <modig.frontend>1.1.96</modig.frontend>
-        <spring.version>5.2.3.RELEASE</spring.version>
-        <jetty.version>9.4.18.v20190429</jetty.version>
-        <jersey.version>2.25.1</jersey.version>
+        <spring.version>5.2.5.RELEASE</spring.version>
+        <jetty.version>9.4.27.v20200227</jetty.version>
+        <jersey.version>2.30.1</jersey.version>
         <oidc-support.version>0.2.18</oidc-support.version>
-        <nimbus-jose-jwt.version>8.4</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>8.11</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <jcip-annotations.version>1.0-1</jcip-annotations.version>
-        <cxf.version>3.3.4</cxf.version>
+        <cxf.version>3.3.6</cxf.version>
         <modig-security.version>3.0.6</modig-security.version>
-        <wss4j.version>2.2.3</wss4j.version>
+        <wss4j.version>2.2.5</wss4j.version>
         <lokalt.kodeverk>1.12.28</lokalt.kodeverk>
         <ojdbc.version>12.2.0.1</ojdbc.version>
         <flyway-core.version>5.0.7</flyway-core.version>
-        <flying.saucer.version>9.0.8</flying.saucer.version>
+        <flying.saucer.version>9.1.20</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
-        <jackson.version>2.10.0</jackson.version>
-        <jackson-databind.version>2.10.0</jackson-databind.version>
+        <jackson.version>2.10.3</jackson.version>
+        <jackson-databind.version>2.10.3</jackson-databind.version>
         <filformat.version>1.2020.03.06-13.49-249219fd597a-SNAPSHOT</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>2.0.19</pdfbox.version>
-        <bouncycastle.version>1.60</bouncycastle.version>
-        <httpclient.version>4.5.10</httpclient.version>
-        <guava.version>27.0.1-jre</guava.version>
+        <bouncycastle.version>1.64</bouncycastle.version>
+        <httpclient.version>4.5.12</httpclient.version>
+        <guava.version>28.2-jre</guava.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
         <verapdf.version>1.14.105</verapdf.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.3.2</hsqldb.version>
-        <hikaricp.version>3.4.1</hikaricp.version>
-        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <ehcache.version>2.10.4</ehcache.version>
-        <woodstox-core-asl.version>4.4.0</woodstox-core-asl.version>
-        <joda-time.version>2.7</joda-time.version>
+        <hikaricp.version>3.4.2</hikaricp.version>
+        <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
+        <ehcache.version>2.10.6</ehcache.version>
+        <woodstox-core-asl.version>4.4.1</woodstox-core-asl.version>
+        <joda-time.version>2.10.5</joda-time.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <gson.version>2.3.1</gson.version>
-        <commons-codec.version>1.10</commons-codec.version>
-        <commons-io.version>2.4</commons-io.version>
-        <commons-lang.version>2.4</commons-lang.version>
-        <commons-lang3.version>3.3.2</commons-lang3.version>
-        <httpcore.version>4.4.12</httpcore.version>
-        <httpmime.version>4.5.10</httpmime.version>
+        <gson.version>2.8.6</gson.version>
+        <commons-codec.version>1.14</commons-codec.version>
+        <commons-io.version>2.6</commons-io.version>
+        <commons-lang3.version>3.10</commons-lang3.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+        <commons-text.version>1.8</commons-text.version>
+        <httpcore.version>4.4.13</httpcore.version>
+        <httpmime.version>4.5.12</httpmime.version>
         <json-smart.version>2.3</json-smart.version>
         <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
-        <javax.annotation-api.version>1.2</javax.annotation-api.version>
-        <javax.ws.rs-api.version>2.1</javax.ws.rs-api.version>
+        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
+        <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <modig-core.version>1.0.1</modig-core.version>
         <modig-content.version>2.0.9</modig-content.version>
         <modig-lang.version>2.0.2</modig-lang.version>
-        <aspectjweaver.version>1.8.8</aspectjweaver.version>
-        <zjsonpatch.version>0.4.8</zjsonpatch.version>
+        <aspectjweaver.version>1.9.5</aspectjweaver.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
 
-        <kryptering.version>1.0.5</kryptering.version>
-        <jackson-annotations.version>2.10.0.pr2</jackson-annotations.version>
-        <streaming-klient.version>1.0.11</streaming-klient.version>
+        <kryptering.version>1.0.8</kryptering.version>
+        <streaming-klient.version>1.0.12</streaming-klient.version>
 
         <!-- Versjoner for test dependencies -->
-        <hamcrest.version>1.3</hamcrest.version>
-        <junit.version>4.12</junit.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <junit.version>4.13</junit.version>
         <mockito.version>1.10.8</mockito.version>
-        <assertj.version>3.13.2</assertj.version>
-        <reflections.version>0.9.10</reflections.version>
+        <assertj.version>3.15.0</assertj.version>
+        <reflections.version>0.9.12</reflections.version>
         <modig-core-test.version>1.0.0</modig-core-test.version>
         <modig-testcertificates.version>1.2.5</modig-testcertificates.version>
         <digipost.digg.version>0.13</digipost.digg.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
-        <asm.version>7.0</asm.version>
+        <asm.version>8.0</asm.version>
         <neethi.version>3.1.1</neethi.version>
-        <xmlsec.version>2.1.3</xmlsec.version>
+        <xmlsec.version>2.1.5</xmlsec.version>
         <nav-sbl-util.version>2018.05.15.11.54</nav-sbl-util.version>
-        <rhino.version>1.7.7.2</rhino.version>
-        <opensaml.version>3.3.0</opensaml.version>
+        <rhino.version>1.7.12</rhino.version>
+        <opensaml.version>3.4.5</opensaml.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
         <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
-        <hk2.version>2.5.0-b42</hk2.version>
-        <prometheus.version>0.5.0</prometheus.version>
+        <hk2.version>2.6.1</hk2.version>
+        <prometheus.version>0.8.1</prometheus.version>
         <javax.websocket-api.version>1.1</javax.websocket-api.version>
-        <jsoup.version>1.11.3</jsoup.version>
-        <oauth2-oidc-sdk.version>6.1.1</oauth2-oidc-sdk.version>
+        <jsoup.version>1.13.1</jsoup.version>
+        <oauth2-oidc-sdk.version>7.3</oauth2-oidc-sdk.version>
         <lang-tag.version>1.4.4</lang-tag.version>
-        <uap-java.version>1.4.0</uap-java.version>
+        <uap-java.version>1.4.3</uap-java.version>
+        <emoji-java.version>5.1.1</emoji-java.version>
+        <java-support.version>7.5.1</java-support.version>
+        <jakarta.annotation-api.version>1.3.5</jakarta.annotation-api.version>
+        <cryptacular.version>1.2.4</cryptacular.version>
+        <stax-ex.version>1.8.3</stax-ex.version>
     </properties>
 
     <dependencyManagement>
@@ -345,17 +349,6 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
                 <version>${spring.version}</version>
                 <exclusions>
@@ -411,7 +404,7 @@
             <!-- Jersey avhengigheter -->
             <dependency>
                 <groupId>org.glassfish.jersey.ext</groupId>
-                <artifactId>jersey-spring3</artifactId>
+                <artifactId>jersey-spring5</artifactId>
                 <version>${jersey.version}</version>
                 <scope>runtime</scope>
                 <exclusions>
@@ -478,7 +471,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson-annotations.version}</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -732,6 +725,16 @@
                 <groupId>org.xhtmlrenderer</groupId>
                 <artifactId>flying-saucer-pdf</artifactId>
                 <version>${flying.saucer.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcmail-jdk14</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk14</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.github.jknack</groupId>
@@ -764,11 +767,6 @@
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
@@ -777,6 +775,16 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -922,14 +930,36 @@
                 <version>${verapdf.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.flipkart.zjsonpatch</groupId>
-                <artifactId>zjsonpatch</artifactId>
-                <version>${zjsonpatch.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jvnet.jaxb2_commons</groupId>
                 <artifactId>jaxb2-basics-runtime</artifactId>
                 <version>${jaxb2-basics-runtime.version}</version>
+            </dependency>
+
+            <!-- Prometheus -->
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient</artifactId>
+                <version>${prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_common</artifactId>
+                <version>${prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_hotspot</artifactId>
+                <version>${prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_jetty_jdk8</artifactId>
+                <version>${prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_servlet</artifactId>
+                <version>${prometheus.version}</version>
             </dependency>
 
             <!-- Avhengigheter med runtime scope -->
@@ -949,12 +979,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${commons-lang.version}</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
@@ -1117,12 +1141,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>no.nav.common</groupId>
-                <artifactId>jetty</artifactId>
-                <version>${nav-common.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jaas</artifactId>
                 <scope>test</scope>
@@ -1179,6 +1197,21 @@
                 <version>${opensaml.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-profile-api</artifactId>
+                <version>${opensaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-xmlsec-api</artifactId>
+                <version>${opensaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-security-api</artifactId>
+                <version>${opensaml.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
                 <version>${validation-api.version}</version>
@@ -1191,6 +1224,11 @@
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-common</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.inject</groupId>
+                <artifactId>jersey-hk2</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
             <dependency>
@@ -1217,11 +1255,6 @@
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2-api</artifactId>
                 <version>${hk2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.prometheus</groupId>
-                <artifactId>simpleclient</artifactId>
-                <version>${prometheus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
@@ -1259,6 +1292,16 @@
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-xml</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-xml</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.websocket</groupId>
                 <artifactId>javax.websocket-api</artifactId>
                 <version>${javax.websocket-api.version}</version>
@@ -1283,6 +1326,26 @@
                 <artifactId>jetty-client</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
+            <dependency>
+                <groupId>net.shibboleth.utilities</groupId>
+                <artifactId>java-support</artifactId>
+                <version>${java-support.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>${jakarta.annotation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.cryptacular</groupId>
+                <artifactId>cryptacular</artifactId>
+                <version>${cryptacular.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.staxex</groupId>
+                <artifactId>stax-ex</artifactId>
+                <version>${stax-ex.version}</version>
+            </dependency>
 
             <!--
                 Snyk klager på sårbarhet i snakeyaml som er en avhengighet i uap-java.
@@ -1299,13 +1362,19 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
-                <version>4.2</version>
+                <version>${commons-collections4.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.vdurmont</groupId>
+                <artifactId>emoji-java</artifactId>
+                <version>${emoji-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

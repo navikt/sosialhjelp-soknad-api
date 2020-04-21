@@ -12,7 +12,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -36,9 +43,12 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUti
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ForsorgerpliktRessursTest {

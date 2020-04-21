@@ -2,10 +2,14 @@ package no.nav.sbl.sosialhjelp.domain;
 
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class VedleggTypeTest {
 
@@ -33,7 +37,7 @@ public class VedleggTypeTest {
 
     @Test
     public void vedleggTypeObjekterMedSammeTypeOgUlikTilleggsinfoErUlike() {
-        VedleggType vedleggType = new  VedleggType(TYPE);
+        VedleggType vedleggType = new VedleggType(TYPE);
         VedleggType likVedleggType = new VedleggType(TYPE2);
 
         assertThat(vedleggType.equals(likVedleggType), is(false));
@@ -41,7 +45,7 @@ public class VedleggTypeTest {
 
     @Test
     public void vedleggTypeObjekterMedUlikTypeOgSammeTilleggsinfoErUlike() {
-        VedleggType vedleggType = new  VedleggType(TYPE);
+        VedleggType vedleggType = new VedleggType(TYPE);
         VedleggType likVedleggType = new VedleggType(TYPE2);
 
         assertThat(vedleggType.equals(likVedleggType), is(false));

@@ -10,12 +10,12 @@ import org.glassfish.jersey.server.wadl.processor.WadlModelProcessor;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class OidcResourceFilteringFeature implements DynamicFeature {
-    private static final List<Class> WHITELISTED_CLASSES = Arrays.asList(WadlModelProcessor.OptionsHandler.class); // Add Resource-classes from external libraries we need to use but can't annotate with @unprotected.
-    private static final List<Class> WHITELISTED_PARENT_CLASSES = Arrays.asList(OptionsMethodProcessor.class);
+    private static final List<Class> WHITELISTED_CLASSES = Collections.singletonList(WadlModelProcessor.OptionsHandler.class); // Add Resource-classes from external libraries we need to use but can't annotate with @unprotected.
+    private static final List<Class> WHITELISTED_PARENT_CLASSES = Collections.singletonList(OptionsMethodProcessor.class);
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {

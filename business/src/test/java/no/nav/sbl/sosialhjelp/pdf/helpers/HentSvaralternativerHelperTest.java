@@ -15,7 +15,7 @@ import java.util.Properties;
 import static no.nav.sbl.sosialhjelp.pdf.HandlebarContext.SPRAK;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
