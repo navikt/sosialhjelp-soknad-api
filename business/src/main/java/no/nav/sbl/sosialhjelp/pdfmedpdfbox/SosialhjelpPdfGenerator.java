@@ -26,7 +26,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
@@ -245,7 +244,6 @@ public class SosialhjelpPdfGenerator {
                 }
                 pdf.skrivTekstMedInnrykk(getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2);
                 pdf.addBlankLine();
-                skrivInfotekst(pdf, "kontakt.system.oppholdsadresse.hvorOppholder");
             }
         }
 
@@ -1048,6 +1046,7 @@ public class SosialhjelpPdfGenerator {
                 bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.livsforsikringssparedel");
                 bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.verdipapirer");
                 bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.annet");
+                skrivSvaralternativer(pdf, bankinnskuddSvaralternativer);
             }
             pdf.addBlankLine();
 

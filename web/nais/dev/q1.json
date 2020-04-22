@@ -3,6 +3,7 @@
   "namespace": "q1",
   "ingresses": [
     "https://sosialhjelp-soknad-api-q1.nais.oera-q.local/",
+    "https://sosialhjelp-soknad-api-q1.dev-sbs.nais.io/",
     "https://tjenester-q1.nav.no/sosialhjelp-soknad-api",
     "https://www-q1.nav.no/sosialhjelp/soknad-api"
   ],
