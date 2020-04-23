@@ -141,9 +141,15 @@ public class FiksDokumentHelper {
 
     List<Dokument> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
         final List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
-        return opplastedeVedlegg.stream()
-                .map(this::opprettDokumentForVedlegg)
-                .collect(Collectors.toList());
+        try {
+            return opplastedeVedlegg.stream()
+                    .map(this::opprettDokumentForVedlegg)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error(String.format("Opprettelse av dokument feilet for behandlingsId %s", soknadUnderArbeid.getBehandlingsId()), e);
+            throw e;
+        }
+
     }
 
     Dokument opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
