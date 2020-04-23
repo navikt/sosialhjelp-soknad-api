@@ -16,7 +16,7 @@ import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import javax.xml.datatype.DatatypeFactory;
 
 import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock.createPersonV3HentPersonRequest;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class EndpointDataMocking {
