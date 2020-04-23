@@ -31,7 +31,7 @@ public class STSConsumerTest {
     private Invocation.Builder request;
 
     @InjectMocks
-    private STSConsumer consumer;
+    private final STSConsumer consumer = new STSConsumer(client, "endpointurl");
 
     @Before
     public void setUp() {
