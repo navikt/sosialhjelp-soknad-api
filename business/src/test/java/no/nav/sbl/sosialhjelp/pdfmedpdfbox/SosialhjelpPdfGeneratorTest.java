@@ -67,7 +67,7 @@ import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class SosialhjelpPdfGeneratorTest {
 

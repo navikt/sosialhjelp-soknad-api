@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class DigisosApiServiceTest {
 
@@ -71,7 +71,7 @@ public class DigisosApiServiceTest {
 
     @Test
     public void skalLageOpplastingsListeMedDokumenterForSoknad() {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910"));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910")).withEier("eier");
 
         List<FilOpplasting> filOpplastings = digisosApiService.lagDokumentListe(soknadUnderArbeid);
 
@@ -95,7 +95,8 @@ public class DigisosApiServiceTest {
 
         List<FilOpplasting> fiksDokumenter = digisosApiService.lagDokumentListe(new SoknadUnderArbeid()
                 .withTilknyttetBehandlingsId("123")
-                .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
+                .withJsonInternalSoknad(lagInternalSoknadForEttersending())
+                .withEier("eier"));
 
         assertThat(fiksDokumenter.size()).isEqualTo(3);
         assertThat(fiksDokumenter.get(0).metadata.filnavn).isEqualTo("ettersendelse.pdf");

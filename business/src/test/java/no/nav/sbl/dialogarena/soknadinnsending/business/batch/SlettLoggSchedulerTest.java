@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class SlettLoggSchedulerTest {
 

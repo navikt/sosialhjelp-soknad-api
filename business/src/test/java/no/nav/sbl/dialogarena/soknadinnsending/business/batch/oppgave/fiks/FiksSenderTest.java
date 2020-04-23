@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";
@@ -72,6 +73,7 @@ public class FiksSenderTest {
     @Mock
     SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
+    @InjectMocks
     private FiksSender fiksSender;
 
     private static final PostAdresse FAKE_ADRESSE = new PostAdresse()
@@ -123,7 +125,7 @@ public class FiksSenderTest {
     @Test
     public void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
         fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
         SendtSoknad sendtSoknad = lagSendtSoknad();
@@ -138,7 +140,7 @@ public class FiksSenderTest {
     @Test
     public void opprettForsendelseSetterRiktigTittelForNySoknad() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
@@ -150,7 +152,8 @@ public class FiksSenderTest {
     public void opprettForsendelseSetterRiktigTittelForEttersendelse() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid()
                 .withTilknyttetBehandlingsId("12345")
-                .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
+                .withJsonInternalSoknad(lagInternalSoknadForEttersending())
+                .withEier(EIER));
         //when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
         SendtSoknad sendtSoknad = lagSendtSoknad().withTilknyttetBehandlingsId("12345");
 
@@ -162,7 +165,7 @@ public class FiksSenderTest {
     @Test(expected = IllegalStateException.class)
     public void opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withFiksforsendelseId(null));
         SendtSoknad sendtEttersendelse = lagSendtEttersendelse();
@@ -252,6 +255,7 @@ public class FiksSenderTest {
                 .withBehandlingsId(BEHANDLINGSID)
                 .withOrgnummer(ORGNUMMER)
                 .withNavEnhetsnavn(NAVENHETSNAVN)
+                .withEier(EIER)
                 .withBrukerFerdigDato(LocalDateTime.now());
     }
 
