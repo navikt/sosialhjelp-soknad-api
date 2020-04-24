@@ -120,14 +120,13 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
         final String filnavn = "ettersendelse.pdf";
         final String mimetype = "application/pdf";
-        byte[] ettersendelsePdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
-
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, ettersendelsePdf);
-        return new Dokument()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(false)
-                .withData(new DataHandler(dataSource));
+        try {
+            byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
+            return genererDokumentFraByteArray(filnavn, mimetype, pdf, false);
+        } catch (Exception e) {
+            byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
+            return genererDokumentFraByteArray(filnavn, mimetype, pdf, false);
+        }
     }
 
     private Dokument genererDokumentFraByteArray(String filnavn, String mimetype, byte[] bytes, boolean eksluderesFraPrint) {

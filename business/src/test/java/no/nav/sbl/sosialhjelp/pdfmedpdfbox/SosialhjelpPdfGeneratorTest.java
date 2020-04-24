@@ -98,6 +98,34 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
+    public void generateEttersendelsePdfWithValidJson() {
+        JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
+
+        JsonVedleggSpesifikasjon vedleggSpesifikasjon = new JsonVedleggSpesifikasjon()
+                .withVedlegg(new ArrayList<>(Arrays.asList(
+                        new JsonVedlegg()
+                                .withStatus("LastetOpp")
+                                .withType("annet")
+                                .withTilleggsinfo("annet")
+                                .withFiler(new ArrayList<>(Arrays.asList(
+                                        new JsonFiler()
+                                            .withFilnavn("Fil1.pdf")
+                                )))
+                )));
+        internalSoknad.setVedlegg(vedleggSpesifikasjon);
+
+        byte[] bytes = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, "1234");
+
+        try {
+            FileOutputStream out = new FileOutputStream("../temp/starcraft.pdf");
+            out.write(bytes);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void generatePdfWithLatinCharacters() {
         StringBuilder text = new StringBuilder();
 

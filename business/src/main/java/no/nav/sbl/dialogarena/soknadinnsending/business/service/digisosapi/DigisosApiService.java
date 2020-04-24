@@ -156,13 +156,15 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
-        byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
-
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("ettersendelse.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
+        String filnavn = "ettersendelse.pdf";
+        String mimetype = "application/pdf";
+        try {
+            byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        } catch (Exception e) {
+            byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        }
     }
 
     private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
