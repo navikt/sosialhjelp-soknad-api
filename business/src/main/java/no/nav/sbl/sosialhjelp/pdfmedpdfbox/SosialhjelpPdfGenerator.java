@@ -149,6 +149,18 @@ public class SosialhjelpPdfGenerator {
         }
     }
 
+    public byte[] generateBrukerkvitteringPdf() {
+        try {
+            PdfGenerator pdf = new PdfGenerator();
+
+            leggTilHeading(pdf, "Brukerkvittering");
+
+            return pdf.finish();
+        } catch (IOException e) {
+            throw new RuntimeException("Error while creating pdf", e);
+        }
+    }
+
     public void setNavMessageSource(NavMessageSource navMessageSource) {
         this.navMessageSource = navMessageSource;
     }

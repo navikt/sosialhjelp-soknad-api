@@ -85,14 +85,14 @@ public class DigisosApiService {
 
         if (soknadUnderArbeid.erEttersendelse()) {
             filOpplastinger.add(lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, true, soknadUnderArbeid.getEier()));
+            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf());
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
             filOpplastinger.addAll(dokumenterForVedlegg);
         } else {
             filOpplastinger.add(lagDokumentForSaksbehandlerPdf(soknadUnderArbeid));
             filOpplastinger.add(lagDokumentForJuridiskPdf(internalSoknad));
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
+            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf());
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
             filOpplastinger.addAll(dokumenterForVedlegg);
@@ -167,14 +167,12 @@ public class DigisosApiService {
         }
     }
 
-    private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
-        byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
+    private FilOpplasting lagDokumentForBrukerkvitteringPdf() {
+        String filnavn = "Brukerkvittering.pdf";
+        String mimetype = "application/pdf";
+        byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
 
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("Brukerkvittering.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
+        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {

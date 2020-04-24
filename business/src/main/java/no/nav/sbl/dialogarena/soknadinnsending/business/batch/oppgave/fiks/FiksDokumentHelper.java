@@ -104,17 +104,12 @@ public class FiksDokumentHelper {
         }
     }
 
-    Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
+    Dokument lagDokumentForBrukerkvitteringPdf() {
         final String filnavn = "Brukerkvittering.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
+        byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
 
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
-        return new Dokument()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(true)
-                .withData(new DataHandler(dataSource));
+        return genererDokumentFraByteArray(filnavn, mimetype, pdf, true);
     }
 
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
