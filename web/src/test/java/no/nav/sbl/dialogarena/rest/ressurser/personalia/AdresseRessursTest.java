@@ -143,8 +143,8 @@ public class AdresseRessursTest {
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
-        AdresserFrontend adresserFrontend = new AdresserFrontend();
-        adresserFrontend.withValg(JsonAdresseValg.FOLKEREGISTRERT);
+        AdresserFrontend adresserFrontend = new AdresserFrontend()
+                .withValg(JsonAdresseValg.FOLKEREGISTRERT);
         final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
@@ -199,11 +199,11 @@ public class AdresseRessursTest {
     }
 
     private void legacyReturnerNavEnhetTilhorendeValgtAdresse() {
-        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("folkeregistrert"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("folkeregistrert"), any())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet").withOrgnr("1")));
-        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("midlertidig"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("midlertidig"), any())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withOrgnr("2")));
-        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("soknad"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("soknad"), any())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withOrgnr("3")));
     }
 
