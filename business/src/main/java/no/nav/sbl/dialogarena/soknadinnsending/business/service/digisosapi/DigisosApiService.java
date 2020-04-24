@@ -166,13 +166,16 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
-        byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
-
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("Brukerkvittering.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
+        String filnavn = "Brukerkvittering.pdf";
+        String mimetype = "application/pdf";
+        try {
+            byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvittering(internalSoknad, erEttersendelse);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        } catch (Exception e) {
+            log.error("Kunne ikke generere Brukerkvittering.pdf. Fallback til generering med itext.", e);
+            byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        }
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {

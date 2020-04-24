@@ -77,14 +77,12 @@ public class SosialhjelpPdfGeneratorTest {
     public void setUp() {
         NavMessageSource navMessageSource = new NavMessageSource();
 
-
         NavMessageSource.Bundle bundle = new NavMessageSource.Bundle(BUNDLE_NAME, "classpath:/" + BUNDLE_NAME);
 
         NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", "classpath:/sendsoknad");
 
         navMessageSource.setBasenames(fellesBundle, bundle);
         navMessageSource.setDefaultEncoding("UTF-8");
-
 
         sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
         sosialhjelpPdfGenerator.setNavMessageSource(navMessageSource);
@@ -95,6 +93,12 @@ public class SosialhjelpPdfGeneratorTest {
         textHelpers.setNavMessageSource(navMessageSource);
         textHelpers.setAdressekodeverk(adressekodeverk);
         sosialhjelpPdfGenerator.setTextHelpers(textHelpers);
+    }
+
+    @Test
+    public void generateBrukerkvitteringWithValidJson() {
+        JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
+        sosialhjelpPdfGenerator.generateBrukerkvittering(internalSoknad, false);
     }
 
     @Test
@@ -188,6 +192,8 @@ public class SosialhjelpPdfGeneratorTest {
                                                 .withFormue(Collections.emptyList())
                                         )
                                 )
+                        ).withMottaker(new JsonSoknadsmottaker()
+                            .withNavEnhetsnavn("NAV Bergenhus")
                         )
                 );
 

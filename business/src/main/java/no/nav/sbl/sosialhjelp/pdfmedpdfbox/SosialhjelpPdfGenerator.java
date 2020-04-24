@@ -115,6 +115,37 @@ public class SosialhjelpPdfGenerator {
         }
     }
 
+    public byte[] generateBrukerkvittering(JsonInternalSoknad jsonInternalSoknad, boolean erEttersendelse) {
+        try {
+            PdfGenerator pdf = new PdfGenerator();
+
+            JsonPersonalia jsonPersonalia = jsonInternalSoknad.getSoknad().getData().getPersonalia();
+            // Add header
+            String heading = getTekst("kvittering.tittel");
+            if (erEttersendelse) {
+                heading += ": " + getTekst("ettersending.kvittering.tittel");
+            }
+            JsonPersonIdentifikator jsonPersonIdentifikator = jsonPersonalia.getPersonIdentifikator(); // required
+            JsonSokernavn jsonSokernavn = jsonPersonalia.getNavn();// required
+
+            String navn = getJsonNavnTekst(jsonSokernavn);
+
+            String fnr = jsonPersonIdentifikator.getVerdi(); // required
+
+            leggTilHeading(pdf, heading, navn, fnr);
+
+            pdf.skrivTekstBold(getTekst("kvittering.undertittel"));
+            pdf.skrivTekst(getTekst(
+                    "kvittering.tekst.pre") + " " +
+                    jsonInternalSoknad.getSoknad().getMottaker().getNavEnhetsnavn() +
+                    getTekst("kvittering.tekst.post"));
+
+            return pdf.finish();
+        } catch (IOException e) {
+            throw new RuntimeException("Error while creating Brukerkvittering.pdf", e);
+        }
+    }
+
     public void setNavMessageSource(NavMessageSource navMessageSource) {
         this.navMessageSource = navMessageSource;
     }

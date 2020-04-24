@@ -107,14 +107,15 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
         final String filnavn = "Brukerkvittering.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
 
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
-        return new Dokument()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(true)
-                .withData(new DataHandler(dataSource));
+        try {
+            byte[] brukerkvitteringPdf = sosialhjelpPdfGenerator.generateBrukerkvittering(internalSoknad, erEttersendelse);
+            return genererDokumentFraByteArray(filnavn, mimetype, brukerkvitteringPdf, true);
+        } catch (Exception e) {
+            logger.error("Kunne ikke generere Brukkerkvittering.pdf. Fallback til generering med itext.", e);
+            byte[] brukerkvitteringPdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
+            return genererDokumentFraByteArray(filnavn, mimetype, brukerkvitteringPdf, true);
+        }
     }
 
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
