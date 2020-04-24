@@ -17,7 +17,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,8 +31,8 @@ import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
