@@ -14,15 +14,6 @@ public class PDFService {
 
     @Inject
     private HtmlGenerator pdfTemplate;
-
-    public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending, String eier) {
-        try {
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/kvittering/kvittering", erEttersending, eier);
-            return lagPdfFraMarkup(pdfMarkup, servletPath);
-        } catch (IOException e) {
-            throw new ApplicationException("Kunne ikke generere brukerkvittering (Brukerkvittering.pdf).", e);
-        }
-    }
     
     public byte[] genererEttersendelsePdf(JsonInternalSoknad internalSoknad, String servletPath, String eier) {
         try {

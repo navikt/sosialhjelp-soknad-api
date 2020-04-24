@@ -88,7 +88,6 @@ public class FiksSenderTest {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
         when(pdfService.genererSaksbehandlerPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
-        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
 
@@ -115,9 +114,9 @@ public class FiksSenderTest {
         assertThat(forsendelse.isKryptert(), is(true));
         assertThat(forsendelse.isKrevNiva4Innlogging(), is(true));
         assertThat(forsendelse.getSvarPaForsendelse(), nullValue());
-        assertThat(forsendelse.getDokumenter().size(), is(5));
+        assertThat(forsendelse.getDokumenter().size(), is(4));
         assertThat(forsendelse.getMetadataFraAvleverendeSystem().getDokumentetsDato(), notNullValue());
-        verify(dokumentKrypterer, times(5)).krypterData(any());
+        verify(dokumentKrypterer, times(4)).krypterData(any());
     }
 
     @Test
@@ -175,12 +174,11 @@ public class FiksSenderTest {
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
-        assertThat(fiksDokumenter.size(), is(5));
+        assertThat(fiksDokumenter.size(), is(4));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("soknad.json"));
         assertThat(fiksDokumenter.get(1).getFilnavn(), is("Soknad.pdf"));
         assertThat(fiksDokumenter.get(2).getFilnavn(), is("vedlegg.json"));
         assertThat(fiksDokumenter.get(3).getFilnavn(), is("Soknad-juridisk.pdf"));
-        assertThat(fiksDokumenter.get(4).getFilnavn(), is("Brukerkvittering.pdf"));
     }
 
     @Test
@@ -191,11 +189,10 @@ public class FiksSenderTest {
                 .withTilknyttetBehandlingsId("123")
                 .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
 
-        assertThat(fiksDokumenter.size(), is(4));
+        assertThat(fiksDokumenter.size(), is(3));
         assertThat(fiksDokumenter.get(0).getFilnavn(), is("ettersendelse.pdf"));
         assertThat(fiksDokumenter.get(1).getFilnavn(), is("vedlegg.json"));
-        assertThat(fiksDokumenter.get(2).getFilnavn(), is("Brukerkvittering.pdf"));
-        assertThat(fiksDokumenter.get(3).getFilnavn(), is(FILNAVN));
+        assertThat(fiksDokumenter.get(2).getFilnavn(), is(FILNAVN));
     }
 
     @Test(expected = RuntimeException.class)

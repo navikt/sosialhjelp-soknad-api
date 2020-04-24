@@ -85,14 +85,12 @@ public class DigisosApiService {
 
         if (soknadUnderArbeid.erEttersendelse()) {
             filOpplastinger.add(lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, true, soknadUnderArbeid.getEier()));
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
             filOpplastinger.addAll(dokumenterForVedlegg);
         } else {
             filOpplastinger.add(lagDokumentForSaksbehandlerPdf(soknadUnderArbeid));
             filOpplastinger.add(lagDokumentForJuridiskPdf(internalSoknad));
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
             filOpplastinger.addAll(dokumenterForVedlegg);
@@ -160,16 +158,6 @@ public class DigisosApiService {
 
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn("ettersendelse.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
-    }
-
-    private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
-        byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
-
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("Brukerkvittering.pdf")
                 .withMimetype("application/pdf")
                 .withStorrelse((long) pdf.length),
                 new ByteArrayInputStream(pdf));

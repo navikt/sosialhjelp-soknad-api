@@ -63,7 +63,6 @@ public class DigisosApiServiceTest {
     public void setUpBefore() throws Exception {
         when(pdfService.genererSaksbehandlerPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
-        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
@@ -83,10 +82,6 @@ public class DigisosApiServiceTest {
         FilMetadata metadataFil3 = filOpplastings.get(1).metadata;
         assertThat(metadataFil3.filnavn).isEqualTo("Soknad-juridisk.pdf");
         assertThat(metadataFil3.mimetype).isEqualTo("application/pdf");
-
-        FilMetadata metadataFil4 = filOpplastings.get(2).metadata;
-        assertThat(metadataFil4.filnavn).isEqualTo("Brukerkvittering.pdf");
-        assertThat(metadataFil4.mimetype).isEqualTo("application/pdf");
     }
 
     @Test
@@ -97,10 +92,9 @@ public class DigisosApiServiceTest {
                 .withTilknyttetBehandlingsId("123")
                 .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
 
-        assertThat(fiksDokumenter.size()).isEqualTo(3);
+        assertThat(fiksDokumenter.size()).isEqualTo(2);
         assertThat(fiksDokumenter.get(0).metadata.filnavn).isEqualTo("ettersendelse.pdf");
-        assertThat(fiksDokumenter.get(1).metadata.filnavn).isEqualTo("Brukerkvittering.pdf");
-        assertThat(fiksDokumenter.get(2).metadata.filnavn).isEqualTo("FILNAVN");
+        assertThat(fiksDokumenter.get(1).metadata.filnavn).isEqualTo("FILNAVN");
     }
 
     private JsonInternalSoknad lagInternalSoknadForEttersending() {
