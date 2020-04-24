@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,8 +27,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUti
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -144,8 +143,8 @@ public class AdresseRessursTest {
         legacyReturnerNavEnhetTilhorendeValgtAdresse();
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
-        AdresserFrontend adresserFrontend = new AdresserFrontend();
-        adresserFrontend.withValg(JsonAdresseValg.FOLKEREGISTRERT);
+        AdresserFrontend adresserFrontend = new AdresserFrontend()
+                .withValg(JsonAdresseValg.FOLKEREGISTRERT);
         final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
@@ -200,11 +199,11 @@ public class AdresseRessursTest {
     }
 
     private void legacyReturnerNavEnhetTilhorendeValgtAdresse() {
-        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("folkeregistrert"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("folkeregistrert"), any())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet").withOrgnr("1")));
-        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("midlertidig"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("midlertidig"), any())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withOrgnr("2")));
-        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("soknad"), anyString())).thenReturn(
+        when(navEnhetRessurs.findSoknadsmottaker(any(JsonSoknad.class), eq("soknad"), any())).thenReturn(
                 Collections.singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withOrgnr("3")));
     }
 

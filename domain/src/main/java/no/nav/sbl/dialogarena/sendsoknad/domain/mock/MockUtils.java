@@ -12,10 +12,10 @@ public class MockUtils {
     }
 
     public static boolean isAlltidSendTilNavTestkommune(){
-        return Boolean.valueOf(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
+        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
     }
 
     public static boolean isAlltidHentKommuneInfoFraNavTestkommune(){
-        return Boolean.valueOf(System.getProperty(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
+        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
     }
 }

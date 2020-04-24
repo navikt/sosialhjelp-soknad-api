@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.oidc.OidcConfig;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,14 +28,22 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMO
 @ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcConfig.class})
 public class ApplicationContextTest {
 
+    public static final String ENVIRONMENT_TEST_PROPERTIES = "/environment-test.properties";
+    private static SimpleNamingContextBuilder builder;
+
     @BeforeClass
     public static void beforeClass() throws NamingException {
-        load("/environment-test.properties");
+        load(ENVIRONMENT_TEST_PROPERTIES);
         getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 
-        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
+        builder = new SimpleNamingContextBuilder();
         builder.bind("jdbc/SoknadInnsendingDS", Mockito.mock(DataSource.class));
         builder.activate();
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        builder.deactivate();
     }
 
     @Test

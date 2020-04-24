@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,7 +23,7 @@ public class NorgConsumerMock {
     public NorgConsumer norgConsumerMock(){
         NorgConsumer mock = mock(NorgConsumer.class);
 
-        when(mock.finnEnhetForGeografiskTilknytning(any(String.class)))
+        when(mock.getEnhetForGeografiskTilknytning(any(String.class)))
                 .thenAnswer(NorgConsumerMock::getOrCreateCurrentUserResponse);
 
         return mock;
@@ -37,7 +37,7 @@ public class NorgConsumerMock {
             responses.put(OidcFeatureToggleUtils.getUserId(), rsNorgEnhetMap);
         }
 
-        String argumentAt = invocationOnMock.getArgumentAt(0, String.class);
+        String argumentAt = invocationOnMock.getArgument(0);
         return rsNorgEnhetMap.get(argumentAt);
     }
 

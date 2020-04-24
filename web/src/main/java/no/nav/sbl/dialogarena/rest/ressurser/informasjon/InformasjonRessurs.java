@@ -102,7 +102,7 @@ public class InformasjonRessurs {
         }
 
         if (isNotEmpty(type) && !BUNDLE_NAME.equals(type.toLowerCase())) {
-            String prefiksetType = new StringBuilder("soknad").append(type.toLowerCase()).toString();
+            String prefiksetType = "soknad" + type.toLowerCase();
             logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType);
             if (BUNDLE_NAME.equals(prefiksetType)) {
                 type = prefiksetType;
