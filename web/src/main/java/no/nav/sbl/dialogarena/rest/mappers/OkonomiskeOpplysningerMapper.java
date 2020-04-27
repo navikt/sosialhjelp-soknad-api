@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOpplysninger;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_RENTER;
 
 public class OkonomiskeOpplysningerMapper {
 
@@ -34,6 +36,23 @@ public class OkonomiskeOpplysningerMapper {
 
             inntekter.addAll(mapToInntektList(vedleggFrontend.rader, eksisterendeInntekt.get()));
             jsonOkonomi.getOversikt().setInntekt(inntekter);
+        } else {
+            throw new NotFoundException("Disse opplysningene tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?");
+        }
+    }
+
+    public static void addAllInntekterToJsonOkonomiUtbetalinger(VedleggFrontend vedleggFrontend, JsonOkonomi jsonOkonomi, String soknadType) {
+        final Optional<JsonOkonomiOpplysningUtbetaling> eksisterendeInntekt = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
+                .filter(inntekt -> inntekt.getType().equals(soknadType))
+                .findFirst();
+
+        if (eksisterendeInntekt.isPresent()) {
+            final List<JsonOkonomiOpplysningUtbetaling> inntekter = jsonOkonomi.getOpplysninger().getUtbetaling().stream()
+                    .filter(inntekt -> !inntekt.getType().equals(soknadType))
+                    .collect(Collectors.toList());
+
+            inntekter.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeInntekt.get()));
+            jsonOkonomi.getOpplysninger().setUtbetaling(inntekter);
         } else {
             throw new NotFoundException("Disse opplysningene tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?");
         }
