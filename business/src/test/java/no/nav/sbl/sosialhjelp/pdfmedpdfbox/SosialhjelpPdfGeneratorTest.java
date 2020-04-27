@@ -114,15 +114,12 @@ public class SosialhjelpPdfGeneratorTest {
                 )));
         internalSoknad.setVedlegg(vedleggSpesifikasjon);
 
-        byte[] bytes = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, "1234");
+        sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, "1234");
+    }
 
-        try {
-            FileOutputStream out = new FileOutputStream("../temp/starcraft.pdf");
-            out.write(bytes);
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void generateBrukerkvittering() {
+        sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
     }
 
     @Test
