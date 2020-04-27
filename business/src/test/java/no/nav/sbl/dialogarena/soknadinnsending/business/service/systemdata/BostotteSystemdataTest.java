@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteMottaker;
@@ -25,6 +26,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
@@ -40,6 +42,9 @@ public class BostotteSystemdataTest {
 
     @Mock
     private BostotteImpl bostotte;
+
+    @Mock
+    private TextService textService;
 
     @InjectMocks
     private BostotteSystemdata bostotteSystemdata;
@@ -371,7 +376,10 @@ public class BostotteSystemdataTest {
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad()
+                .getData().getOkonomi().getOpplysninger().getUtbetaling().stream()
+                .filter(utbetaling -> utbetaling.getKilde().equals(JsonKilde.SYSTEM))
+                .collect(Collectors.toList());
         assertThat(utbetalinger).isEmpty();
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
@@ -401,7 +409,10 @@ public class BostotteSystemdataTest {
         setSammtykke(soknadUnderArbeid2.getJsonInternalSoknad(), false);
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid2, "");
 
-        List<JsonOkonomiOpplysningUtbetaling> utbetalinger2 = soknadUnderArbeid1.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
+        List<JsonOkonomiOpplysningUtbetaling> utbetalinger2 = soknadUnderArbeid1.getJsonInternalSoknad().getSoknad()
+                .getData().getOkonomi().getOpplysninger().getUtbetaling().stream()
+                .filter(utbetaling -> utbetaling.getKilde().equals(JsonKilde.SYSTEM))
+                .collect(Collectors.toList());
         assertThat(utbetalinger2).isEmpty();
     }
 
