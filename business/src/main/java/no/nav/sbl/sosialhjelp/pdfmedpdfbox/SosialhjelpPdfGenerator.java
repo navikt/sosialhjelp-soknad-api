@@ -155,6 +155,8 @@ public class SosialhjelpPdfGenerator {
 
             leggTilHeading(pdf, "Brukerkvittering");
 
+            pdf.skrivTekst("Fil ikke i bruk, generert for bakoverkompatibilitet med filformat / File not in use, generated for backward compatibility with fileformat");
+
             return pdf.finish();
         } catch (IOException e) {
             throw new RuntimeException("Error while creating pdf", e);
