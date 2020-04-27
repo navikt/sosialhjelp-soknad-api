@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +35,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

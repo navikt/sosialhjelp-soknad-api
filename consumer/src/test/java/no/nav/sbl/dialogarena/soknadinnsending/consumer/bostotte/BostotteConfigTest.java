@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
