@@ -104,30 +104,24 @@ public class FiksDokumentHelper {
         }
     }
 
-    Dokument lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
+    Dokument lagDokumentForBrukerkvitteringPdf() {
         final String filnavn = "Brukerkvittering.pdf";
         final String mimetype = "application/pdf";
-        byte[] juridiskPdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
+        byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
 
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, juridiskPdf);
-        return new Dokument()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(true)
-                .withData(new DataHandler(dataSource));
+        return genererDokumentFraByteArray(filnavn, mimetype, pdf, true);
     }
 
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
         final String filnavn = "ettersendelse.pdf";
         final String mimetype = "application/pdf";
-        byte[] ettersendelsePdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
-
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, ettersendelsePdf);
-        return new Dokument()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(false)
-                .withData(new DataHandler(dataSource));
+        try {
+            byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
+            return genererDokumentFraByteArray(filnavn, mimetype, pdf, false);
+        } catch (Exception e) {
+            byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
+            return genererDokumentFraByteArray(filnavn, mimetype, pdf, false);
+        }
     }
 
     private Dokument genererDokumentFraByteArray(String filnavn, String mimetype, byte[] bytes, boolean eksluderesFraPrint) {

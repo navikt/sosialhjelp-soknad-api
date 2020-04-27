@@ -50,6 +50,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -108,6 +109,53 @@ public class SosialhjelpPdfGenerator {
             leggTilInformasjonFraForsiden(pdf, data.getPersonalia(), utvidetSoknad);
             leggTilJuridiskInformasjon(pdf, jsonInternalSoknad.getSoknad(), utvidetSoknad);
             leggTilMetainformasjon(pdf, jsonInternalSoknad.getSoknad());
+
+            return pdf.finish();
+        } catch (IOException e) {
+            throw new RuntimeException("Error while creating pdf", e);
+        }
+    }
+
+    public byte[] generateEttersendelsePdf(JsonInternalSoknad jsonInternalSoknad, String eier) {
+        try {
+            PdfGenerator pdf = new PdfGenerator();
+
+            String tittel = getTekst("ettersending.kvittering.tittel");
+            String undertittel = getTekst("skjema.tittel");
+            leggTilHeading(pdf, tittel, undertittel, eier);
+
+            String pattern = "d. MMMM yyyy HH:mm";
+            DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+            LocalDateTime currentTime = LocalDateTime.now();
+
+            pdf.skrivTekstBold("Følgende vedlegg er sendt " + currentTime.format(format) + ":");
+            pdf.addBlankLine();
+
+            if (jsonInternalSoknad.getVedlegg() != null && jsonInternalSoknad.getVedlegg().getVedlegg() != null) {
+                for (JsonVedlegg jsonVedlegg : jsonInternalSoknad.getVedlegg().getVedlegg()) {
+                    if (jsonVedlegg.getStatus().equals("LastetOpp")) {
+                        pdf.skrivTekst(getTekst("vedlegg." + jsonVedlegg.getType() + "." + jsonVedlegg.getTilleggsinfo() + ".tittel"));
+                        pdf.skrivTekst("Filer:");
+                        for (JsonFiler jsonFiler : jsonVedlegg.getFiler()) {
+                            pdf.skrivTekst("Filnavn: " + jsonFiler.getFilnavn());
+                        }
+                    }
+                }
+            }
+
+            return pdf.finish();
+        } catch (IOException e) {
+            throw new RuntimeException("Error while creating pdf", e);
+        }
+    }
+
+    public byte[] generateBrukerkvitteringPdf() {
+        try {
+            PdfGenerator pdf = new PdfGenerator();
+
+            leggTilHeading(pdf, "Brukerkvittering");
+
+            pdf.skrivTekst("Fil ikke i bruk, generert for bakoverkompatibilitet med filformat / File not in use, generated for backward compatibility with fileformat");
 
             return pdf.finish();
         } catch (IOException e) {

@@ -85,14 +85,14 @@ public class DigisosApiService {
 
         if (soknadUnderArbeid.erEttersendelse()) {
             filOpplastinger.add(lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, true, soknadUnderArbeid.getEier()));
+            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf());
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
             filOpplastinger.addAll(dokumenterForVedlegg);
         } else {
             filOpplastinger.add(lagDokumentForSaksbehandlerPdf(soknadUnderArbeid));
             filOpplastinger.add(lagDokumentForJuridiskPdf(internalSoknad));
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
+            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf());
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
             filOpplastinger.addAll(dokumenterForVedlegg);
@@ -156,23 +156,23 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
-        byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
-
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("ettersendelse.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
+        String filnavn = "ettersendelse.pdf";
+        String mimetype = "application/pdf";
+        try {
+            byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        } catch (Exception e) {
+            byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        }
     }
 
-    private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
-        byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
+    private FilOpplasting lagDokumentForBrukerkvitteringPdf() {
+        String filnavn = "Brukerkvittering.pdf";
+        String mimetype = "application/pdf";
+        byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
 
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("Brukerkvittering.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
+        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
