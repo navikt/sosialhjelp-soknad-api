@@ -78,25 +78,21 @@ public class StandardKodeverk implements Kodeverk {
     
     @Override
     public String gjettKommunenummer(String kommunenavn) {
-        logger.info("Standardkodeverk - Gjett kommunenummer");
         return finnSisteKodenavnFraFoersteTermnavn(kommunenavn, KOMMUNE.toString());
     }
 
     @Override
     public String getKommunenavn(final String kommunenummer) {
-        logger.info("Standardkodeverk - Get kommunenavn");
         return hentFoersteTermnavnFraKodenavnIKodeverk(kommunenummer, KOMMUNE.toString());
     }
 
     @Override
     public String getPoststed(final String postnummer) {
-        logger.info("Standardkodeverk - Get poststed - " + postnummer);
         return hentFoersteTermnavnFraKodenavnIKodeverk(postnummer, POSTNUMMER.toString());
     }
 
     @Override
     public String getLand(String landkode) {
-        logger.info("Standardkodeverk - Get land");
         String landFraKodeverk = hentFoersteTermnavnFraKodenavnIKodeverk(landkode, LANDKODE.toString());
 
         return formaterLand(landFraKodeverk);
@@ -233,10 +229,8 @@ public class StandardKodeverk implements Kodeverk {
             logger.warn("Kodeverktjeneste feilet ({})! Forsøker fallback", kodeverkfeil.getMessage());
             try {
                 if (MockUtils.isTillatMockRessurs()) {
-                    logger.info("hentKodeverk - tillatMockRessurs true");
                     kodeverket = new XMLEnkeltKodeverk();
                 } else {
-                    logger.info("hentKodeverk - tillatMockRessurs false --> readFromDump");
                     kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
                 }
             } catch (RuntimeException dumpException) {
@@ -270,7 +264,6 @@ public class StandardKodeverk implements Kodeverk {
     @SuppressWarnings("unchecked")
     private XMLKodeverk readFromDump(String dumpName) {
         if(dumpDirectory.isPresent() && dumpDirectory.get().exists()){
-            logger.info("readFromDump - dumpDirectory: " + dumpDirectory.get().getAbsolutePath());
             File dumpFile = new File(dumpDirectory.get(),dumpName + ".xml");
             try {
                 logger.info("Leser dump fra fil '{}'", dumpFile);
@@ -279,7 +272,6 @@ public class StandardKodeverk implements Kodeverk {
                 throw new RuntimeException("Feil ved innlasting av dump " + dumpFile + ": " + e.getMessage(), e);
             }
         }
-        logger.info("readFromDump - dumpDirectory er ikke present?");
         throw new IllegalStateException("Forsøkte å laste fildump '" + dumpName + ".xml', men fant ikke filen");
     }
 
