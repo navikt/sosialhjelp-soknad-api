@@ -62,7 +62,7 @@ public class FiksSender {
 
         validerAtEttersendelseSinSoknadHarForsendelseId(sendtSoknad, svarPaForsendelseId);
 
-        return new Forsendelse()
+        Forsendelse forsendelse = new Forsendelse()
                 .withMottaker(new Adresse()
                         .withDigitalAdresse(
                                 new OrganisasjonDigitalAdresse().withOrgnr(sendtSoknad.getOrgnummer()))
@@ -81,6 +81,12 @@ public class FiksSender {
                         new NoarkMetadataFraAvleverendeSakssystem()
                                 .withDokumentetsDato(sendtSoknad.getBrukerFerdigDato())
                 );
+
+        if (sendtSoknad.getBehandlingsId().equalsIgnoreCase("11000NT56")) {
+            forsendelse.setKunDigitalLevering(true);
+        }
+
+        return forsendelse;
     }
 
     private void validerAtEttersendelseSinSoknadHarForsendelseId(SendtSoknad sendtSoknad, String svarPaForsendelseId) {
