@@ -16,7 +16,7 @@ import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 
 import javax.xml.datatype.DatatypeFactory;
 
-import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock.createPersonV3HentPersonRequest;
+import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock.createPersonV3HentPersonRequestForIntegrationTest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -61,7 +61,7 @@ public class EndpointDataMocking {
         PersonV3 mock = IntegrationConfig.getMocked("personV3Endpoint");
 
         try {
-            when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequest("12"));
+            when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequestForIntegrationTest("12"));
         } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
         }

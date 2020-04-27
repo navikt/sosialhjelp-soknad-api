@@ -10,8 +10,6 @@ import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -22,8 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PersonV3Mock {
-
-    private static final Logger log = LoggerFactory.getLogger(PersonV3Mock.class);
 
     private static HashMap<String, Person> responses = new HashMap<>();
 
@@ -43,7 +39,7 @@ public class PersonV3Mock {
             String midlertidigAdresseBnr = node.at("/person/midlertidigPostadresse/strukturertAdresse/bnr").textValue();
             String midlertidigAdresseKommunenummer = node.at("/person/midlertidigPostadresse/strukturertAdresse/kommunenummer").textValue();
 
-            Bruker defaultPerson = getDefaultPerson();
+            Bruker defaultPerson = getDefaultPerson(false);
             int husnummer;
             try {
                 husnummer = Integer.parseInt(husnr);
@@ -76,7 +72,6 @@ public class PersonV3Mock {
     }
 
     public PersonV3 personV3Mock() {
-
         PersonV3 mock = mock(PersonV3.class);
 
         try {
@@ -88,24 +83,19 @@ public class PersonV3Mock {
         return mock;
     }
 
-
     public static HentPersonResponse createPersonV3HentPersonRequest(String userId) {
         HentPersonResponse response = new HentPersonResponse();
-        response.setPerson(responses.getOrDefault(userId, getDefaultPerson()));
-
-        if (response.getPerson().getBostedsadresse() != null) {
-            log.info("PersonV3Mock - bostedsadresse: " + response.getPerson().getBostedsadresse());
-            if (response.getPerson().getBostedsadresse().getStrukturertAdresse() != null) {
-                log.info("PersonV3Mock - bostedsadresse.strukturertadresse: " + response.getPerson().getBostedsadresse().getStrukturertAdresse());
-                if (((Gateadresse) response.getPerson().getBostedsadresse().getStrukturertAdresse()).getPoststed() != null) {
-                    log.info("PersonV3Mock - bostedsadresse.strukturertadresse.poststed: " + ((Gateadresse) response.getPerson().getBostedsadresse().getStrukturertAdresse()).getPoststed());
-                }
-            }
-        }
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson(false)));
         return response;
     }
 
-    public static Bruker getDefaultPerson() {
+    public static HentPersonResponse createPersonV3HentPersonRequestForIntegrationTest(String userId) {
+        HentPersonResponse response = new HentPersonResponse();
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson(true)));
+        return response;
+    }
+
+    public static Bruker getDefaultPerson(boolean forIntegrationTest) {
         Bruker person = genererPersonMedGyldigIdentOgNavn("01234567890", "Donald", "D.", "Mockmann");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 
@@ -114,8 +104,10 @@ public class PersonV3Mock {
         landkoder.setValue("NOR");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
-        person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
-        person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
+        if (!forIntegrationTest) {
+            person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
+            person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
+        }
 
         return person;
     }
