@@ -78,21 +78,25 @@ public class StandardKodeverk implements Kodeverk {
     
     @Override
     public String gjettKommunenummer(String kommunenavn) {
+        logger.info("Standardkodeverk - Gjett kommunenummer");
         return finnSisteKodenavnFraFoersteTermnavn(kommunenavn, KOMMUNE.toString());
     }
 
     @Override
     public String getKommunenavn(final String kommunenummer) {
+        logger.info("Standardkodeverk - Get kommunenavn");
         return hentFoersteTermnavnFraKodenavnIKodeverk(kommunenummer, KOMMUNE.toString());
     }
 
     @Override
     public String getPoststed(final String postnummer) {
+        logger.info("Standardkodeverk - Get poststed");
         return hentFoersteTermnavnFraKodenavnIKodeverk(postnummer, POSTNUMMER.toString());
     }
 
     @Override
     public String getLand(String landkode) {
+        logger.info("Standardkodeverk - Get land");
         String landFraKodeverk = hentFoersteTermnavnFraKodenavnIKodeverk(landkode, LANDKODE.toString());
 
         return formaterLand(landFraKodeverk);
