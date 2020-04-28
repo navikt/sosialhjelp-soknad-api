@@ -73,8 +73,6 @@ public class OpplastetVedleggService {
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
 
-        sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(soknadId, eier, data);
-
         OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
                 .withEier(eier)
                 .withVedleggType(new VedleggType(vedleggstype))
@@ -100,8 +98,12 @@ public class OpplastetVedleggService {
         return opplastetVedlegg;
     }
 
-    private void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(Long soknadUnderArbeidId, String eier, byte[] data) {
-        Long samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadUnderArbeidId, eier);
+    public void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(String behandlingsId, byte[] data) {
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        Long soknadId = soknadUnderArbeid.getSoknadId();
+
+        Long samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadId, eier);
         long newStorrelse = samletVedleggStorrelse + (long) data.length;
         if (newStorrelse > MAKS_SAMLET_VEDLEGG_STORRELSE) {
             throw new OpplastingException("Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor", null, "vedlegg.opplasting.feil.samletStorrelseForStor");

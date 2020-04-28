@@ -148,7 +148,7 @@ public class OpplastetVedleggServiceTest {
 
         final byte[] imageFile = createByteArrayFromJpeg();
 
-        assertThrows("Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor", OpplastingException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1));
+        assertThrows("Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor", OpplastingException.class, () -> opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(BEHANDLINGSID, imageFile));
     }
 
     private byte[] createByteArrayFromJpeg() throws IOException {
