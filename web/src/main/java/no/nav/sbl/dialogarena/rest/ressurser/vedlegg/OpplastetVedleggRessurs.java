@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
@@ -79,7 +80,10 @@ public class OpplastetVedleggRessurs {
         final String filnavn = fil.getContentDisposition().getFileName();
         final byte[] data = getByteArray(fil);
 
-        opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId, data);
+        if (!MockUtils.isTillatMockRessurs()) {
+            // Oracle-spesifikk syntax i query: disabler da denne sjekken på mock (hvor hsqldb brukes)
+            opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId, data);
+        }
 
         final OpplastetVedlegg opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn);
         return new FilFrontend().withFilNavn(opplastetVedlegg.getFilnavn()).withUuid(opplastetVedlegg.getUuid());
