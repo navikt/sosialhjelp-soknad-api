@@ -41,6 +41,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class OpplastetVedleggService {
 
     private static final Logger logger = getLogger(OpplastetVedleggService.class);
+    private static final long MAKS_SAMLET_VEDLEGG_STORRELSE = 150 * 1024 * 1024; // 150 MB
 
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
@@ -72,6 +73,8 @@ public class OpplastetVedleggService {
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
 
+        sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(soknadId, eier, data);
+
         OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg()
                 .withEier(eier)
                 .withVedleggType(new VedleggType(vedleggstype))
@@ -95,6 +98,14 @@ public class OpplastetVedleggService {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
         return opplastetVedlegg;
+    }
+
+    private void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(Long soknadUnderArbeidId, String eier, byte[] data) {
+        Long samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadUnderArbeidId, eier);
+        long newStorrelse = samletVedleggStorrelse + (long) data.length;
+        if (newStorrelse > MAKS_SAMLET_VEDLEGG_STORRELSE) {
+            throw new OpplastingException("Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor", null, "vedlegg.opplasting.feil.samletStorrelseForStor");
+        }
     }
 
     public void deleteVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggId) {
