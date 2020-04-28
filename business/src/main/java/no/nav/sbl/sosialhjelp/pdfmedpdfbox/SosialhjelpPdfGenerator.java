@@ -1242,7 +1242,7 @@ public class SosialhjelpPdfGenerator {
 
         if (utvidetSoknad) {
             if (okonomi.getOpplysninger().getBekreftelse() != null && !okonomi.getOpplysninger().getBekreftelse().isEmpty()) {
-                skrivInfotekst(pdf, "opplysninger.informasjon");
+                skrivInfotekst(pdf, "opplysninger.informasjon.avsnitt1", "opplysninger.informasjon.avsnitt2", "opplysninger.informasjon.lenke");
             } else {
                 skrivInfotekst(pdf, "opplysninger.ikkebesvart.melding");
             }
@@ -1532,10 +1532,13 @@ public class SosialhjelpPdfGenerator {
         }
         return fullstendigNavn;
     }
-
-    private void skrivInfotekst(PdfGenerator pdf, String key) throws IOException {
+    private void skrivInfotekst(PdfGenerator pdf, String ...keys) throws IOException {
         pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"));
-        pdf.skrivTekst(getTekst(key));
+        for (String key : keys) {
+            if (key != null && key.length() > 0) {
+                pdf.skrivTekst(getTekst(key));
+            }
+        }
         pdf.addBlankLine();
     }
 
