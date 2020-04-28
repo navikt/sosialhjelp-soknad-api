@@ -12,5 +12,5 @@ public interface OpplastetVedleggRepository {
     String opprettVedlegg(OpplastetVedlegg opplastetVedlegg, String eier);
     void slettVedlegg(String uuid, String eier);
     void slettAlleVedleggForSoknad(Long soknadId, String eier);
-    Long hentSamletVedleggStorrelse(Long soknadId, String eier);
+    Integer hentSamletVedleggStorrelse(Long soknadId, String eier);
 }

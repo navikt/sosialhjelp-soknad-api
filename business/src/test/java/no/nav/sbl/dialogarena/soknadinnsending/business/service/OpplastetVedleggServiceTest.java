@@ -50,7 +50,7 @@ public class OpplastetVedleggServiceTest {
     private static final String SHA512 = "Shakk matt";
     private static final String TYPE = "hei|på deg";
     private static final Long SOKNAD_ID = 1234L;
-    private static final Long MAKS_SAMLET_VEDLEGG_STORRELSE = 150 * 1024 * 1024L;
+    private static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE = 150 * 1024 * 1024;
 
     @Mock
     private OpplastetVedleggRepository opplastetVedleggRepository;

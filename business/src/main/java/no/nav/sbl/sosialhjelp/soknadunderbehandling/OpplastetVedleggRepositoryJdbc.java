@@ -70,11 +70,11 @@ public class OpplastetVedleggRepositoryJdbc extends NamedParameterJdbcDaoSupport
     }
 
     @Override
-    public Long hentSamletVedleggStorrelse(Long soknadId, String eier) {
+    public Integer hentSamletVedleggStorrelse(Long soknadId, String eier) {
         String sql = "select sum(dbms_lob.getLength(DATA)) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?";
         logger.info("query: " + sql);
-        Long totalSize = getJdbcTemplate()
-                .queryForObject(sql, Long.class, eier, soknadId);
+        Integer totalSize = getJdbcTemplate()
+                .queryForObject(sql, Integer.class, eier, soknadId);
         logger.info("result: " + totalSize);
         return totalSize;
     }
