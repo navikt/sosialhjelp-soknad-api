@@ -104,14 +104,6 @@ public class OpplastetVedleggRepositoryJdbcTest {
         assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER).isPresent(), is(true));
     }
 
-//    @Test
-//    public void hentSamletVedleggStorrelseForSoknad() {
-//        opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
-//        Long samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(SOKNADID, EIER);
-//
-//        assertThat(samletVedleggStorrelse, is(DATA.length));
-//    }
-
     private OpplastetVedlegg lagOpplastetVedlegg(String eier, String type, Long soknadId) {
         return new OpplastetVedlegg()
                 .withEier(eier)

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
@@ -148,7 +148,7 @@ public class OpplastetVedleggServiceTest {
 
         final byte[] imageFile = createByteArrayFromJpeg();
 
-        assertThrows("Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor", OpplastingException.class, () -> opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(BEHANDLINGSID, imageFile));
+        assertThrows(SamletVedleggStorrelseForStorException.class, () -> opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(BEHANDLINGSID, imageFile));
     }
 
     private byte[] createByteArrayFromJpeg() throws IOException {

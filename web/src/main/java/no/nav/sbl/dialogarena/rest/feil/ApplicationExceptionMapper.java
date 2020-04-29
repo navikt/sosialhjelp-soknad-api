@@ -5,6 +5,7 @@ import no.nav.modig.core.exception.ModigException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -24,6 +25,7 @@ import static javax.ws.rs.core.Response.Status.*;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
 import static no.nav.sbl.dialogarena.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE;
 
 @Provider
 public class ApplicationExceptionMapper implements ExceptionMapper<ModigException> {
@@ -38,6 +40,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
         } else if (e instanceof OpplastingException) {
             response = status(REQUEST_ENTITY_TOO_LARGE);
             logger.warn("Feilet opplasting", e);
+        } else if (e instanceof SamletVedleggStorrelseForStorException) {
+            response = status(REQUEST_ENTITY_TOO_LARGE);
+            logger.warn("Feilet opplasting. Valgt fil gjør at grensen for samlet vedleggstørrelse på "+ MAKS_SAMLET_VEDLEGG_STORRELSE + "MB overskrides.", e);
         } else if (e instanceof AuthorizationException) {
             response = status(FORBIDDEN);
             logger.warn("Ikke tilgang til ressurs", e);
