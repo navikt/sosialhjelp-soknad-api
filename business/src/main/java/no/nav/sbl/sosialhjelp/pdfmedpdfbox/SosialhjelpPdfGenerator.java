@@ -1243,6 +1243,17 @@ public class SosialhjelpPdfGenerator {
         if (utvidetSoknad) {
             if (okonomi.getOpplysninger().getBekreftelse() != null && !okonomi.getOpplysninger().getBekreftelse().isEmpty()) {
                 skrivInfotekst(pdf, "opplysninger.informasjon.avsnitt1", "opplysninger.informasjon.avsnitt2", "opplysninger.informasjon.lenke");
+                pdf.skrivTekst("Ved trykk på " + getTekst("opplysninger.informasjon.lenke") + ":");
+                pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.overskrift"));
+                pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk1.tittel"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt1"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt2"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt3"));
+                pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk2.tittel"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk2.avsnitt1"));
+                pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk3.tittel"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk3.avsnitt1"));
+                pdf.addBlankLine();
             } else {
                 skrivInfotekst(pdf, "opplysninger.ikkebesvart.melding");
             }
