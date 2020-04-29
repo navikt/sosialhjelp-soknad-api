@@ -1261,6 +1261,7 @@ public class SosialhjelpPdfGenerator {
 
         // Inntekt
         pdf.skrivTekstBold(getTekst("inntektbolk.tittel"));
+        
         // Kan ikke være null i filformatet
         for (JsonOkonomioversiktInntekt inntekt : okonomi.getOversikt().getInntekt()) {
             pdf.skrivTekst(inntekt.getTittel());
