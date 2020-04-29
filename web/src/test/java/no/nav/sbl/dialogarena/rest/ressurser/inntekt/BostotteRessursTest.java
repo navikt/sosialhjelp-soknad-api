@@ -129,7 +129,7 @@ public class BostotteRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomiOpplysningUtbetaling> utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtbetaling();
-        assertEquals(utbetaling.get(0).getType(), BOSTOTTE);
+        assertEquals(utbetaling.get(0).getType(), UTBETALING_HUSBANKEN);
         JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
         assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
         assertThat(bostotte.getType(), is(BOSTOTTE));
