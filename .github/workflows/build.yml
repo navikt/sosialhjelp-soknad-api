@@ -41,3 +41,14 @@ jobs:
       - name: Push docker image
         run: |
           docker push $(cat DOCKER_TAG)
+
+      - name: autodeploy til namespace
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          RESOURCE: web/nais.yaml
+          CLUSTER: dev-sbs
+          VARS: web/nais/dev/q1.json
+          REF: $VERSION
+          PRINT_PAYLOAD: true
+          IMAGE: $(cat DOCKER_TAG)
