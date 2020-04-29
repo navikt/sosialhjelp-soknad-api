@@ -7,9 +7,6 @@
                     <h4>{{tittel}}</h4>
                     <ul class="fakta-liste">
                         <li>
-                            {{#hvisLik type "bostotte"}}
-                                <span class="label">{{ hentTekst (concat "opplysninger.inntekt." type ".utbetaling.label") }}</span>
-                            {{/hvisLik}}
                             {{#hvisLik type "studielanOgStipend"}}
                                 <span class="label">{{ hentTekst (concat "opplysninger.arbeid.student.utbetaling.label") }}</span>
                             {{/hvisLik}}
@@ -33,19 +30,23 @@
                             {{#hvisLik type "barnebidrag"}}
                                 <span class="label">{{ hentTekst (concat "opplysninger.familiesituasjon." type ".mottar.mottar.label") }}</span>
                             {{/hvisLik}}
-                            <ul class="svar-liste">
-                                <li>
-                                    {{#if netto}}
-                                        <span class="verdi verdi--tekst">
-                                            {{netto}}
-                                        </span>
-                                    {{else}}
-                                        <span class="verdi verdi--ikkeUtfylt">
-                                            <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-                                        </span>
-                                    {{/if}}
-                                </li>
-                            </ul>
+                            <!-- Har flyttet bostøtte. -->
+                            {{#hvisLik type "bostotte"}}
+                            {{else}}
+                                <ul class="svar-liste">
+                                    <li>
+                                        {{#if netto}}
+                                            <span class="verdi verdi--tekst">
+                                                {{netto}}
+                                            </span>
+                                        {{else}}
+                                            <span class="verdi verdi--ikkeUtfylt">
+                                                <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                                            </span>
+                                        {{/if}}
+                                    </li>
+                                </ul>
+                            {{/hvisLik}}
                         </li>
                     </ul>
                 </li>
@@ -85,7 +86,7 @@
             {{else}}
                 {{#hvisLik type "skatteetaten"}}
                 {{else}}
-                    {{#hvisLik type "bostotte"}}
+                    {{#hvisLik type "husbanken"}}
                     {{else}}
                         <ul class="svar-liste">
                             <li>

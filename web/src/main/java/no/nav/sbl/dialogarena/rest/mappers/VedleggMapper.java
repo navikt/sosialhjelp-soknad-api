@@ -137,7 +137,7 @@ public class VedleggMapper {
         } else if (utbetaling.getBrutto() != null){
             return new VedleggRadFrontend().withBelop(Integer.valueOf(String.valueOf(utbetaling.getBrutto())));
         } else if (utbetaling.getNetto() != null) {
-            return new VedleggRadFrontend().withBelop(Integer.valueOf(String.valueOf(utbetaling.getNetto())));
+            return new VedleggRadFrontend().withBelop(utbetaling.getNetto().intValue());
         }
         return new VedleggRadFrontend();
     }

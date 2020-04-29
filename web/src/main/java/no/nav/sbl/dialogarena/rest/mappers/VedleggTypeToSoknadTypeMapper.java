@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BARNEBIDRAG;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_ANNET;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_BRUKSKONTO;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_BSU;
@@ -16,6 +15,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_ANNET;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSIKRING;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER;
@@ -66,7 +66,7 @@ public class VedleggTypeToSoknadTypeMapper {
         vedleggTypeToSoknadType.put("faktura|strom", UTGIFTER_STROM);
         vedleggTypeToSoknadType.put("faktura|tannbehandling", UTGIFTER_BARN_TANNREGULERING);
         vedleggTypeToSoknadType.put("dokumentasjon|utbytte", UTBETALING_UTBYTTE);
-        vedleggTypeToSoknadType.put("bostotte|vedtak", BOSTOTTE);
+        vedleggTypeToSoknadType.put("husbanken|vedtak", UTBETALING_HUSBANKEN);
         vedleggTypeToSoknadType.put("student|vedtak", STUDIELAN);
         vedleggTypeToSoknadType.put("lonnslipp|arbeid", JOBB);
         vedleggTypeToSoknadType.put("sluttoppgjor|arbeid", SLUTTOPPGJOER);
@@ -111,7 +111,7 @@ public class VedleggTypeToSoknadTypeMapper {
             case "dokumentasjon|annet":
             case "salgsoppgjor|eiendom":
             case "sluttoppgjor|arbeid":
-            case "bostotte|vedtak":
+            case "husbanken|vedtak":
                 return "utbetaling";
             case "barnebidrag|mottar":
             case "lonnslipp|arbeid":

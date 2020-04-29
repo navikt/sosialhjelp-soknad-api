@@ -42,7 +42,7 @@ import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.isInSoknadJson;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 
 @Controller
@@ -96,7 +96,11 @@ public class OkonomiskeOpplysningerRessurs {
 
             switch (soknadPath) {
                 case "utbetaling":
-                    addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    if(soknadType.equalsIgnoreCase(UTBETALING_HUSBANKEN)) {
+                        addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN);
+                    } else {
+                        addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    }
                     break;
                 case "opplysningerUtgift":
                     addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
@@ -108,11 +112,7 @@ public class OkonomiskeOpplysningerRessurs {
                     addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
                     break;
                 case "inntekt":
-                    if(soknadType.equalsIgnoreCase(BOSTOTTE)) {
-                        addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, soknadType);
-                    } else {
-                        addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
-                    }
+                    addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
                     break;
             }
         }

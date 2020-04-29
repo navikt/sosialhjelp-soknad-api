@@ -76,9 +76,9 @@ public class BostotteSystemdata {
         );
         if(skalFortsattHaBrukerUtbetaling) {
             String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(BOSTOTTE));
-            addUtbetalingIfNotPresentInOpplysninger(okonomiopplysninger.getUtbetaling(), BOSTOTTE, tittel);
+            addUtbetalingIfNotPresentInOpplysninger(okonomiopplysninger.getUtbetaling(), UTBETALING_HUSBANKEN, tittel);
         } else {
-            removeUtbetalingIfPresentInOpplysninger(okonomiopplysninger.getUtbetaling(), BOSTOTTE);
+            removeUtbetalingIfPresentInOpplysninger(okonomiopplysninger.getUtbetaling(), UTBETALING_HUSBANKEN);
         }
     }
 

@@ -94,9 +94,9 @@ public class BostotteRessurs {
         if (bostotteFrontend.bekreftelse != null) {
             if(bostotteFrontend.bekreftelse) {
                 String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(BOSTOTTE));
-                addUtbetalingIfNotPresentInOpplysninger(opplysninger.getUtbetaling(), BOSTOTTE, tittel);
+                addUtbetalingIfNotPresentInOpplysninger(opplysninger.getUtbetaling(), UTBETALING_HUSBANKEN, tittel);
             } else {
-                removeUtbetalingIfPresentInOpplysninger(opplysninger.getUtbetaling(), BOSTOTTE);
+                removeUtbetalingIfPresentInOpplysninger(opplysninger.getUtbetaling(), UTBETALING_HUSBANKEN);
             }
         }
 

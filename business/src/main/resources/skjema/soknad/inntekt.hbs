@@ -282,28 +282,41 @@
                 {{/if}}
                 {{#manglerSamtykkeEllerSant "bostotte_samtykke" @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
                     {{#hentOkonomiBekreftelse "bostotte"}}
-                        {{#if @root.utvidetSoknad}}
-                            {{#unless verdi}}
-                                {{{settInnInfotekst "informasjon.husbanken.bostotte"}}}
-                            {{else}}
+                        {{#unless verdi}}
+                            {{{settInnInfotekst "informasjon.husbanken.bostotte"}}}
+                        {{else}}
+                            {{#if @root.utvidetSoknad}}
+                                {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
+                                <ul class="svar-liste">
+                                    <li>
+                                        {{{ hentTekst "inntekt.bostotte.gi_samtykke.tekst" }}}
+                                    </li>
+                                </ul>
+                            {{/if}}
+                            {{#manglerSamtykkeEllerSant "bostotte_samtykke" false}}
+                                <div class="verdi verdi--tekst">
+                                    Vi mangler samtykke til å hente informasjon fra Husbanken
+                                </div>
                                 {{#if @root.utvidetSoknad}}
-                                    {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
-                                    <ul class="svar-liste">
-                                        <li>
-                                            {{{ hentTekst "inntekt.bostotte.gi_samtykke.tekst" }}}
-                                        </li>
-                                    </ul>
+                                    {{{ settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke" }}}
                                 {{/if}}
-                                {{#manglerSamtykkeEllerSant "bostotte_samtykke" false}}
-                                    <div class="verdi verdi--tekst">
-                                        Vi mangler samtykke til å hente informasjon fra Husbanken
-                                    </div>
-                                    {{#if @root.utvidetSoknad}}
-                                        {{{ settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke" }}}
-                                    {{/if}}
-                                {{/manglerSamtykkeEllerSant}}
-                            {{/unless}}
-                        {{/if}}
+                                {{#each utbetaling}}
+                                    {{#hvisLik type "husbanken"}}
+                                        <h4>{{hentTekst "inntekt.bostotte.utbetaling.sporsmal_manuell"}}</h4>
+                                        <li>
+                                            <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.belop_siste_maned"}}</span>
+                                            <ul class="svar-liste">
+                                                <li>
+                                                    <span class="verdi verdi--tekst">
+                                                        {{formaterDecimal netto}}
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    {{/hvisLik}}
+                                {{/each}}
+                            {{/manglerSamtykkeEllerSant}}
+                        {{/unless}}
                     {{/hentOkonomiBekreftelse}}
                     {{#if @root.soknad.driftsinformasjon.stotteFraHusbankenFeilet}}
                         <div class="verdi verdi--tekst">

@@ -51,7 +51,7 @@ public class OkonomiskeOpplysningerMapper {
                     .filter(inntekt -> !inntekt.getType().equals(soknadType))
                     .collect(Collectors.toList());
 
-            inntekter.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeInntekt.get()));
+            inntekter.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeInntekt.get(), false));
             jsonOkonomi.getOpplysninger().setUtbetaling(inntekter);
         } else {
             throw new NotFoundException("Disse opplysningene tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?");
@@ -142,7 +142,7 @@ public class OkonomiskeOpplysningerMapper {
                     .filter(utbetaling -> !utbetaling.getType().equals(soknadType))
                     .collect(Collectors.toList());
 
-            utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling.get()));
+            utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling.get(), true));
             jsonOkonomi.getOpplysninger().setUtbetaling(utbetalinger);
         } else {
             throw new NotFoundException("Dette vedlegget tilhører " + soknadType + " utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?");
@@ -180,17 +180,22 @@ public class OkonomiskeOpplysningerMapper {
                 .withOverstyrtAvBruker(false);
     }
 
-    private static List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalingList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling) {
-        return rader.stream().map(rad -> mapToUtbetaling(rad, eksisterendeUtbetaling)).collect(Collectors.toList());
+    private static List<JsonOkonomiOpplysningUtbetaling> mapToUtbetalingList(List<VedleggRadFrontend> rader, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling, boolean brukBelop) {
+        return rader.stream().map(rad -> mapToUtbetaling(rad, eksisterendeUtbetaling, brukBelop)).collect(Collectors.toList());
     }
 
-    private static JsonOkonomiOpplysningUtbetaling mapToUtbetaling(VedleggRadFrontend rad, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling) {
-        return new JsonOkonomiOpplysningUtbetaling()
+    private static JsonOkonomiOpplysningUtbetaling mapToUtbetaling(VedleggRadFrontend rad, JsonOkonomiOpplysningUtbetaling eksisterendeUtbetaling, boolean brukBelop) {
+        JsonOkonomiOpplysningUtbetaling jsonOkonomiOpplysningUtbetaling = new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.BRUKER)
                 .withType(eksisterendeUtbetaling.getType())
                 .withTittel(eksisterendeUtbetaling.getTittel())
-                .withBelop(rad.belop)
                 .withOverstyrtAvBruker(false);
+        if(brukBelop) {
+            jsonOkonomiOpplysningUtbetaling.withBelop(rad.belop);
+        } else {
+            jsonOkonomiOpplysningUtbetaling.withNetto(rad.belop.doubleValue());
+        }
+        return jsonOkonomiOpplysningUtbetaling;
     }
 
     private static List<JsonOkonomioversiktFormue> mapToFormueList(List<VedleggRadFrontend> rader, JsonOkonomioversiktFormue eksisterendeFormue) {
