@@ -25,7 +25,7 @@ import static javax.ws.rs.core.Response.Status.*;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
 import static no.nav.sbl.dialogarena.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService.HUNDRE_OG_FEMTI;
 
 @Provider
 public class ApplicationExceptionMapper implements ExceptionMapper<ModigException> {
@@ -42,7 +42,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             logger.warn("Feilet opplasting", e);
         } else if (e instanceof SamletVedleggStorrelseForStorException) {
             response = status(BAD_REQUEST);
-            logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på "+ MAKS_SAMLET_VEDLEGG_STORRELSE + "MB overskrides.", e);
+            logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på "+ HUNDRE_OG_FEMTI + "MB overskrides.", e);
         } else if (e instanceof AuthorizationException) {
             response = status(FORBIDDEN);
             logger.warn("Ikke tilgang til ressurs", e);
