@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -50,7 +51,6 @@ public class OpplastetVedleggServiceTest {
     private static final String SHA512 = "Shakk matt";
     private static final String TYPE = "hei|på deg";
     private static final Long SOKNAD_ID = 1234L;
-    private static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE = 150 * 1024 * 1024;
 
     @Mock
     private OpplastetVedleggRepository opplastetVedleggRepository;
