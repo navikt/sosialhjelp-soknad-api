@@ -647,52 +647,14 @@ public class SosialhjelpPdfGenerator {
                 //pdf.addBlankLine();
 
                 List<JsonAnsvar> listeOverAnsvar = forsorgerplikt.getAnsvar();
+                leggTilBarn(pdf, utvidetSoknad, listeOverAnsvar, JsonKilde.SYSTEM);
 
-                for (JsonAnsvar ansvar : listeOverAnsvar) {
-                    JsonBarn barn = ansvar.getBarn();
-
-                    if (barn.getHarDiskresjonskode() == null || !barn.getHarDiskresjonskode()) {
-                        // navn
-                        JsonNavn navnPaBarn = barn.getNavn();
-                        String navnPaBarnTekst = getJsonNavnTekst(navnPaBarn);
-                        skrivTekstMedGuard(pdf, navnPaBarnTekst, "familie.barn.true.barn.navn.label");
-
-                        // Fødselsdato
-                        String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
-                        skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fnr");
-
-                        // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
-                        //String personIdentifikator = barn.getPersonIdentifikator();
-                        // skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
-
-                        if (barn.getKilde().equals(JsonKilde.SYSTEM)) {
-                            // Samme folkeregistrerte adresse
-                            JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
-                            if (erFolkeregistrertSammen != null) {
-                                if (erFolkeregistrertSammen.getVerdi() != null && erFolkeregistrertSammen.getVerdi()) {
-                                    skrivTekstMedGuard(pdf, "Ja", "familierelasjon.samme_folkeregistrerte_adresse");
-                                    leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
-                                } else {
-                                    skrivTekstMedGuard(pdf, "Nei", "familierelasjon.samme_folkeregistrerte_adresse");
-                                    leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
-                                }
-                            }
-                        } else {
-                            // Svart at barnet bor på samme adresse
-                            JsonBorSammenMed borSammen = ansvar.getBorSammenMed();
-                            if (borSammen != null) {
-                                if (borSammen.getVerdi() != null && borSammen.getVerdi()) {
-                                    skrivTekstMedGuard(pdf, "Ja", "familierelasjon.bor_sammen");
-                                    leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
-                                } else {
-                                    skrivTekstMedGuard(pdf, "Nei", "familierelasjon.bor_sammen");
-                                    leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
-                                }
-                            }
-                        }
-                        pdf.addBlankLine();
-                    }
+                if (utvidetSoknad) {
+                    pdf.skrivTekst(getTekst("familierelasjon.faktum.lagttil"));
+                    pdf.skrivTekst(getTekst("familierelasjon.faktum.leggtil"));
+                    pdf.skrivTekst(getTekst("familierelasjon.faktum.leggtil.hjelpetekst.tekst"));
                 }
+                leggTilBarn(pdf, utvidetSoknad, listeOverAnsvar, JsonKilde.BRUKER);
 
                 // Mottar eller betaler du barnebidrag for ett eller flere av barna?
                 pdf.skrivTekstBold(getTekst("familie.barn.true.barnebidrag.sporsmal"));
@@ -714,6 +676,7 @@ public class SosialhjelpPdfGenerator {
             } else {
                 if (utvidetSoknad) {
                     pdf.skrivH3(getTekst("familierelasjon.ingen_registrerte_barn_tittel"));
+                    pdf.skrivTekst(getTekst("familierelasjon.faktum.lagttil"));
                 }
                 pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn_tekst"));
             }
@@ -721,6 +684,55 @@ public class SosialhjelpPdfGenerator {
             skrivIkkeUtfylt(pdf);
         }
         pdf.addBlankLine();
+    }
+
+    private void leggTilBarn(PdfGenerator pdf, boolean utvidetSoknad, List<JsonAnsvar> listeOverAnsvar, JsonKilde kilde) throws IOException {
+        for (JsonAnsvar ansvar : listeOverAnsvar) {
+            JsonBarn barn = ansvar.getBarn();
+            if (barn.getKilde().equals(kilde)) {
+                if (barn.getHarDiskresjonskode() == null || !barn.getHarDiskresjonskode()) {
+                    // navn
+                    JsonNavn navnPaBarn = barn.getNavn();
+                    String navnPaBarnTekst = getJsonNavnTekst(navnPaBarn);
+                    skrivTekstMedGuard(pdf, navnPaBarnTekst, "familie.barn.true.barn.navn.label");
+
+                    // Fødselsdato
+                    String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
+                    skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fodselsdato");
+
+                    // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
+                    //String personIdentifikator = barn.getPersonIdentifikator();
+                    // skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
+
+                    if (barn.getKilde().equals(JsonKilde.SYSTEM)) {
+                        // Samme folkeregistrerte adresse
+                        JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
+                        if (erFolkeregistrertSammen != null) {
+                            if (erFolkeregistrertSammen.getVerdi() != null && erFolkeregistrertSammen.getVerdi()) {
+                                skrivTekstMedGuard(pdf, "Ja", "familierelasjon.samme_folkeregistrerte_adresse");
+                                leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
+                            } else {
+                                skrivTekstMedGuard(pdf, "Nei", "familierelasjon.samme_folkeregistrerte_adresse");
+                                leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
+                            }
+                        }
+                    } else {
+                        // Svart at barnet bor på samme adresse
+                        JsonBorSammenMed borSammen = ansvar.getBorSammenMed();
+                        if (borSammen != null) {
+                            if (borSammen.getVerdi() != null && borSammen.getVerdi()) {
+                                skrivTekstMedGuard(pdf, "Ja", "familierelasjon.bor_sammen");
+                                leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
+                            } else {
+                                skrivTekstMedGuard(pdf, "Nei", "familierelasjon.bor_sammen");
+                                leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
+                            }
+                        }
+                    }
+                    pdf.addBlankLine();
+                }
+            }
+        }
     }
 
     private void leggTilDeltBosted(PdfGenerator pdf, JsonAnsvar ansvar, boolean erFolkeregistrertSammenVerdi, boolean utvidetSoknad) throws IOException {
@@ -854,7 +866,7 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekstBold(getTekst("utbetalinger.inntekt.skattbar.tittel"));
             List<JsonOkonomibekreftelse> skattetatenSamtykke = hentBekreftelser(okonomi, UTBETALING_SKATTEETATEN_SAMTYKKE);
             boolean harSkattetatenSamtykke = skattetatenSamtykke.isEmpty() ? false : skattetatenSamtykke.get(0).getVerdi();
-            if(!harSkattetatenSamtykke) {
+            if (!harSkattetatenSamtykke) {
                 if (utvidetSoknad) {
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_sporsmal");
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_info");
@@ -867,7 +879,10 @@ public class SosialhjelpPdfGenerator {
                 pdf.addBlankLine();
             } else {
                 if (utvidetSoknad) {
-                    if(!skattetatenSamtykke.isEmpty()) {
+                    if (utvidetSoknad) {
+                        skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.har_gitt_samtykke");
+                    }
+                    if (!skattetatenSamtykke.isEmpty()) {
                         skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(skattetatenSamtykke.get(0).getBekreftelsesDato()), "utbetalinger.inntekt.skattbar.tidspunkt");
                     }
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.beskrivelse");
@@ -974,13 +989,15 @@ public class SosialhjelpPdfGenerator {
             List<JsonOkonomibekreftelse> bostotteSamtykke = hentBekreftelser(okonomi, BOSTOTTE_SAMTYKKE);
             boolean harBostotteSamtykke = bostotteSamtykke.isEmpty() ? false : bostotteSamtykke.get(0).getVerdi();
             if (harBostotteSamtykke) {
-                if(utvidetSoknad) {
+                if (utvidetSoknad) {
                     skrivInfotekst(pdf, "inntekt.bostotte.har_gitt_samtykke");
                 }
-                if(!bostotteSamtykke.isEmpty()) {
+                if (!bostotteSamtykke.isEmpty()) {
                     skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(bostotteSamtykke.get(0).getBekreftelsesDato()), "inntekt.bostotte.tidspunkt");
                 }
-                skrivInfotekst(pdf, "inntekt.bostotte.infotekst.tekst");
+                if (utvidetSoknad) {
+                    skrivInfotekst(pdf, "inntekt.bostotte.infotekst.tekst");
+                }
                 if (hentingFraHusbankenHarFeilet) {
                     skrivInfotekst(pdf, "informasjon.husbanken.bostotte.nedlasting_feilet");
                     if (utvidetSoknad) {
@@ -988,7 +1005,7 @@ public class SosialhjelpPdfGenerator {
                     }
                 }
             } else {
-                if(motarBostotte) {
+                if (motarBostotte) {
                     pdf.skrivTekstBold(getTekst("inntekt.bostotte.mangler_samtykke"));
                     pdf.addBlankLine();
                 }
