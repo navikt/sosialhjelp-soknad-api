@@ -107,7 +107,8 @@ public class OpplastetVedleggService {
         Integer samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadId, eier);
         int newStorrelse = samletVedleggStorrelse + data.length;
         if (newStorrelse > MAKS_SAMLET_VEDLEGG_STORRELSE) {
-            throw new SamletVedleggStorrelseForStorException("Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor", null, "vedlegg.opplasting.feil.samletStorrelseForStor");
+            String feilmeldingId = soknadUnderArbeid.erEttersendelse() ? "ettersending.vedlegg.feil.samletStorrelseForStor" : "vedlegg.opplasting.feil.samletStorrelseForStor";
+            throw new SamletVedleggStorrelseForStorException("Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor", null, feilmeldingId);
         }
     }
 
