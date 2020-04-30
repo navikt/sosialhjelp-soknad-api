@@ -42,8 +42,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class OpplastetVedleggService {
 
     private static final Logger logger = getLogger(OpplastetVedleggService.class);
-    public static final Integer HUNDRE_OG_FEMTI = 150;
-    public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE = HUNDRE_OG_FEMTI * 1024 * 1024; // 150 MB
+    public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB = 150;
+    public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE = MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB * 1024 * 1024; // 150 MB
 
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;

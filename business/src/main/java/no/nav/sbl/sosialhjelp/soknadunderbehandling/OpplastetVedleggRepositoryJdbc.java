@@ -74,10 +74,8 @@ public class OpplastetVedleggRepositoryJdbc extends NamedParameterJdbcDaoSupport
         if (getJdbcTemplate()
                 .queryForObject("select count(*) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", Integer.class, eier, soknadId) > 0) {
             String sql = "select sum(dbms_lob.getLength(DATA)) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?";
-            logger.info("query: " + sql);
             Integer totalSize = getJdbcTemplate()
                     .queryForObject(sql, Integer.class, eier, soknadId);
-            logger.info("result: " + totalSize);
             return totalSize;
         }
         return 0;
