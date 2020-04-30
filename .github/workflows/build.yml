@@ -46,13 +46,13 @@ jobs:
           docker push $(cat DOCKER_TAG)
 
 # For testing kan denne brukes med ønsket cluster/namespace:
-      - name: autodeploy til namespace
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: web/nais.yaml
-          CLUSTER: dev-sbs
-          VARS: web/nais/dev/q1.json
-          REF: ${{ env.TAG }}
-          IMAGE: ${{ env.IMAGE }}
-          PRINT_PAYLOAD: true
+#      - name: autodeploy til namespace
+#        uses: nais/deploy/actions/deploy@v1
+#        env:
+#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+#          RESOURCE: web/nais.yaml
+#          CLUSTER: dev-sbs
+#          VARS: web/nais/dev/q1.json
+#          REF: ${{ env.TAG }}
+#          IMAGE: ${{ env.IMAGE }}
+#          PRINT_PAYLOAD: true
