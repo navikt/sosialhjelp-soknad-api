@@ -193,7 +193,7 @@ public class OkonomiskeOpplysningerMapper {
         if(brukBelop) {
             jsonOkonomiOpplysningUtbetaling.withBelop(rad.belop);
         } else {
-            jsonOkonomiOpplysningUtbetaling.withNetto(rad.belop.doubleValue());
+            jsonOkonomiOpplysningUtbetaling.withNetto(rad.belop == null ? null : rad.belop.doubleValue());
         }
         return jsonOkonomiOpplysningUtbetaling;
     }

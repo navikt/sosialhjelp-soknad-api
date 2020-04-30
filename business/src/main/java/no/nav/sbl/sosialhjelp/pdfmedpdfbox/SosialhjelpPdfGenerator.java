@@ -639,7 +639,9 @@ public class SosialhjelpPdfGenerator {
             if (forsorgerplikt != null && forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getVerdi()) {
                 if (utvidetSoknad) {
                     pdf.skrivTekst(getTekst("familierelasjon.ingress_folkeregisteret"));
-                    pdf.skrivTekst(getTekst("familierelasjon.ingress_forsorger") + " " + forsorgerplikt.getAnsvar().size() + " barn under 18år");
+                    long antallBarnFraFolkeregisteret = forsorgerplikt.getAnsvar().stream()
+                            .filter(ansvar -> ansvar.getBarn().getKilde().equals(JsonKilde.SYSTEM)).count();
+                    pdf.skrivTekst(getTekst("familierelasjon.ingress_forsorger") + " " + antallBarnFraFolkeregisteret + " barn under 18år");
                 }
 
                 // TODO: Finnes ikke i handlebarkode?
