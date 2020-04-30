@@ -45,6 +45,7 @@ jobs:
         run: |
           docker push $(cat DOCKER_TAG)
 
+# For testing kan denne brukes med ønsket cluster/namespace:
       - name: autodeploy til namespace
         uses: nais/deploy/actions/deploy@v1
         env:
