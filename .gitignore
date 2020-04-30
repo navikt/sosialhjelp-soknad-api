@@ -23,12 +23,3 @@ oracledb.properties
 
 web/handlebar.pdf
 
-# /web/FitNesseRoot/
-/web/FitNesseRoot/ErrorLogs
-/web/FitNesseRoot/properties
-/web/FitNesseRoot/updateDoNotCopyOverList
-/web/FitNesseRoot/updateList
-/web/FitNesseRoot/files
-/web/FitNesseRoot/RecentChanges
-/web/FitNesseRoot/FitNesse
-

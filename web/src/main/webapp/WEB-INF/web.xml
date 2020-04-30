@@ -83,12 +83,12 @@
     </filter-mapping>
 
     <filter>
-        <filter-name>MDCFilter</filter-name>
-        <filter-class>no.nav.modig.presentation.logging.session.MDCFilter</filter-class>
+        <filter-name>SosialhjelpSoknadMDCFilter</filter-name>
+        <filter-class>no.nav.sbl.dialogarena.mdc.SosialhjelpSoknadMDCFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
-        <filter-name>MDCFilter</filter-name>
+        <filter-name>SosialhjelpSoknadMDCFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 

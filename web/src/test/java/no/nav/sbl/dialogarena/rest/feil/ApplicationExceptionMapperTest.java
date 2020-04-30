@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -41,7 +41,7 @@ public class ApplicationExceptionMapperTest {
 
     @Test
     public void skalGi500MedHeaderForIngenBigIpRedirectForAndreKjenteUnntak() {
-        Response response = mapper.toResponse(new ApplicationException("feil"));
+        Response response = mapper.toResponse(new SosialhjelpSoknadApiException("feil"));
         assertThat(response.getStatus()).isEqualTo(500);
         assertThat(response.getHeaderString(NO_BIGIP_5XX_REDIRECT)).isEqualTo("true");
     }

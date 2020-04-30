@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
-import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.security.tilgangskontroll.URN;
 import no.nav.modig.security.tilgangskontroll.policy.attributes.values.StringValue;
 import no.nav.modig.security.tilgangskontroll.policy.enrichers.EnvironmentRequestEnricher;
@@ -10,6 +9,7 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.EnforcementPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.config.SikkerhetsConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -89,7 +89,6 @@ public class Tilgangskontroll {
         String aktorId = OidcFeatureToggleUtils.getUserId();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
-
         try {
             pep.assertAccess(
                     forRequest(
@@ -98,7 +97,7 @@ public class Tilgangskontroll {
                             ownerId(eier),
                             aktorSubjectId));
         } catch (RuntimeException e) {
-            throw new AuthorizationException(e.getMessage(), e);
+            throw new AuthorizationException(e.getMessage());
         }
     }
 }
