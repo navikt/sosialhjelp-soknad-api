@@ -41,8 +41,8 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
             response = status(REQUEST_ENTITY_TOO_LARGE);
             logger.warn("Feilet opplasting", e);
         } else if (e instanceof SamletVedleggStorrelseForStorException) {
-            response = status(BAD_REQUEST);
-            logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på "+ MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB + "MB overskrides.", e);
+            response = status(REQUEST_ENTITY_TOO_LARGE);
+            logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på " + MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB + "MB overskrides.", e);
         } else if (e instanceof AuthorizationException) {
             response = status(FORBIDDEN);
             logger.warn("Ikke tilgang til ressurs", e);
