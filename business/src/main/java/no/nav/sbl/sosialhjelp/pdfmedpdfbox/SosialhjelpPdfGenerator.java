@@ -1242,7 +1242,18 @@ public class SosialhjelpPdfGenerator {
 
         if (utvidetSoknad) {
             if (okonomi.getOpplysninger().getBekreftelse() != null && !okonomi.getOpplysninger().getBekreftelse().isEmpty()) {
-                skrivInfotekst(pdf, "opplysninger.informasjon");
+                skrivInfotekst(pdf, "opplysninger.informasjon.avsnitt1", "opplysninger.informasjon.avsnitt2", "opplysninger.informasjon.lenke");
+                pdf.skrivTekst("Ved trykk på " + getTekst("opplysninger.informasjon.lenke") + ":");
+                pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.overskrift"));
+                pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk1.tittel"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt1"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt2"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt3"));
+                pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk2.tittel"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk2.avsnitt1"));
+                pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk3.tittel"));
+                pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk3.avsnitt1"));
+                pdf.addBlankLine();
             } else {
                 skrivInfotekst(pdf, "opplysninger.ikkebesvart.melding");
             }
@@ -1250,6 +1261,7 @@ public class SosialhjelpPdfGenerator {
 
         // Inntekt
         pdf.skrivTekstBold(getTekst("inntektbolk.tittel"));
+
         // Kan ikke være null i filformatet
         for (JsonOkonomioversiktInntekt inntekt : okonomi.getOversikt().getInntekt()) {
             pdf.skrivTekst(inntekt.getTittel());
@@ -1532,10 +1544,13 @@ public class SosialhjelpPdfGenerator {
         }
         return fullstendigNavn;
     }
-
-    private void skrivInfotekst(PdfGenerator pdf, String key) throws IOException {
+    private void skrivInfotekst(PdfGenerator pdf, String ...keys) throws IOException {
         pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"));
-        pdf.skrivTekst(getTekst(key));
+        for (String key : keys) {
+            if (key != null && key.length() > 0) {
+                pdf.skrivTekst(getTekst(key));
+            }
+        }
         pdf.addBlankLine();
     }
 

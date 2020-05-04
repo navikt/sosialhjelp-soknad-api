@@ -14,8 +14,6 @@
 
     <logger name="org.springframework" level="warn"></logger>
 
-    <logger name="no.nav.modig.lang.reflect" level="warn"></logger>
-
     <logger name="no.nav.sbl.dialogarena.config" level="info"></logger>
 
     <logger name="org.apache.pdfbox" level="error"></logger>

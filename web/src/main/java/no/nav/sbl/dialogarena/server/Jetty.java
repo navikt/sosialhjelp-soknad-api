@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.server;
 
 import io.prometheus.client.exporter.MetricsServlet;
-import no.nav.modig.lang.option.Optional;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.plus.webapp.PlusConfiguration;
@@ -27,14 +26,16 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.option.Optional.none;
-import static no.nav.modig.lang.option.Optional.optional;
 import static org.apache.commons.io.FilenameUtils.getBaseName;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -58,7 +59,7 @@ public final class Jetty {
         private File war;
         private String contextPath;
         private int port = 35000;
-        private Optional<Integer> sslPort = none();
+        private Optional<Integer> sslPort = Optional.empty();
         private WebAppContext context;
         private File overridewebXmlFile;
         private JAASLoginService loginService;
@@ -81,7 +82,7 @@ public final class Jetty {
         }
 
         public final JettyBuilder sslPort(int sslPort) {
-            this.sslPort = optional(sslPort);
+            this.sslPort = Optional.of(sslPort);
             return this;
         }
 
@@ -247,8 +248,11 @@ public final class Jetty {
         ServerConnector httpConnector = new ServerConnector(jetty, new HttpConnectionFactory(configuration));
         httpConnector.setPort(port);
 
-
-        jetty.setConnectors(on(new Connector[]{httpConnector}).append(sslPort.map(new CreateSslConnector(jetty, configuration))).collectIn(new Connector[] {}));
+        if (sslPort.isPresent()) {
+            jetty.setConnectors(new Connector[]{httpConnector, new CreateSslConnector(jetty, configuration).transform(sslPort.get())});
+        } else {
+            jetty.setConnectors(new Connector[]{httpConnector});
+        }
 
         registerMetricsServlet(context);
 
@@ -281,9 +285,7 @@ public final class Jetty {
                     + "\n * Context path: " + contextPath
                     + "\n * Http port: " + port
                     );
-        for (Integer httpsPort : sslPort) {
-            statusBuilder.append("\n * Https port: ").append(httpsPort);
-        }
+        sslPort.ifPresent(integer -> statusBuilder.append("\n * Https port: ").append(integer));
         for (URL url : getBaseUrls()) {
             statusBuilder.append("\n * ").append(url);
         }
@@ -291,7 +293,9 @@ public final class Jetty {
     }
 
     public Iterable<URL> getBaseUrls() {
-        return on(optional(port).map(new ToUrl("http", contextPath))).append(sslPort.map(new ToUrl("https", contextPath)));
+        return sslPort
+                .map(integer -> Collections.singletonList(toUrl("https", contextPath, integer)))
+                .orElseGet(() -> Collections.singletonList(toUrl("http", contextPath, port)));
     }
 
     private void registerMetricsServlet(final ServletContextHandler context) {
@@ -299,4 +303,11 @@ public final class Jetty {
         context.addServlet(metricsServlet, "/internal/metrics/*");
     }
 
+    private URL toUrl(String scheme, String path, Integer port) {
+        try {
+            return new URL(scheme + "://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + port + path);
+        } catch (MalformedURLException | UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
