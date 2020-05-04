@@ -32,11 +32,11 @@ public class SoknadUnderArbeidService {
         if (soknadUnderArbeid.erEttersendelse()){
             return;
         }
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setInnsendingstidspunkt(naTidspunkFormatertForFilformat());
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().setInnsendingstidspunkt(naTidspunkForUtcAltidMedNano());
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.getEier());
     }
 
-    public static String naTidspunkFormatertForFilformat() {
+    public static String naTidspunkForUtcAltidMedNano() {
         final OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         if (now.getNano() == 0) {
             return now.plusNanos(1_000_000).toString();

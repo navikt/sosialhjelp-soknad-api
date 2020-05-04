@@ -29,7 +29,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyM
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
-import static no.nav.sbl.sosialhjelp.SoknadUnderArbeidService.naTidspunkFormatertForFilformat;
+import static no.nav.sbl.sosialhjelp.SoknadUnderArbeidService.naTidspunkForUtcAltidMedNano;
 
 @Component
 public class BostotteSystemdata {
@@ -49,7 +49,7 @@ public class BostotteSystemdata {
                 okonomi.getOpplysninger().getBekreftelse().stream()
                         .filter(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE))
                         .findAny()
-                        .ifPresent(bekreftelse -> bekreftelse.withBekreftelsesDato(naTidspunkFormatertForFilformat()));
+                        .ifPresent(bekreftelse -> bekreftelse.withBekreftelsesDato(naTidspunkForUtcAltidMedNano()));
                 fjernGamleHusbankenData(okonomi, false);
                 boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
                 List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);

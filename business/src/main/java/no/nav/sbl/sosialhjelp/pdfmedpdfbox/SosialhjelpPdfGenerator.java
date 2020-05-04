@@ -1027,12 +1027,9 @@ public class SosialhjelpPdfGenerator {
                     if (husbanken.getNetto() != null) {
                         skrivTekstMedGuard(pdf, husbanken.getNetto().toString(), "inntekt.bostotte.utbetaling.belop");
                     }
-                } else {
-                    pdf.skrivTekstBold(getTekst("inntekt.bostotte.utbetaling.sporsmal_manuell"));
-                    skrivTekstMedGuard(pdf, husbanken.getNetto() == null ? "" : husbanken.getNetto().toString(), "inntekt.bostotte.utbetaling.belop_siste_maned");
+                    pdf.addBlankLine();
+                    harBostotteUtbetalinger = true;
                 }
-                pdf.addBlankLine();
-                harBostotteUtbetalinger = true;
             }
 
             boolean harBostotteSaker = false;
@@ -1061,6 +1058,7 @@ public class SosialhjelpPdfGenerator {
                 }
                 pdf.addBlankLine();
                 if (utvidetSoknad) {
+                    skrivInfotekst(pdf, "inntekt.bostotte.detaljer.tekst");
                     skrivInfotekst(pdf, "inntekt.bostotte.ta_bort_samtykke");
                     pdf.addBlankLine();
                 }
@@ -1399,9 +1397,6 @@ public class SosialhjelpPdfGenerator {
         // Kan ikke være null i filformatet
         for (JsonOkonomioversiktInntekt inntekt : okonomi.getOversikt().getInntekt()) {
             pdf.skrivTekst(inntekt.getTittel());
-            if (inntekt.getType().equals("bostotte")) {
-                skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.getNetto(), "opplysninger.inntekt.bostotte.utbetaling.label");
-            }
             if (inntekt.getType().equals("studielanOgStipend")) {
                 skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.getNetto(), "opplysninger.arbeid.student.utbetaling.label");
             }
@@ -1413,6 +1408,14 @@ public class SosialhjelpPdfGenerator {
                 skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.getNetto(), "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label");
             }
             pdf.addBlankLine();
+        }
+        List<JsonOkonomiOpplysningUtbetaling> husbankenUtbetalinger = hentUtbetalinger(okonomi, UTBETALING_HUSBANKEN);
+        for (JsonOkonomiOpplysningUtbetaling husbankenUtbetaling : husbankenUtbetalinger) {
+            if (husbankenUtbetaling.getKilde().equals(JsonKilde.BRUKER)) {
+                pdf.skrivTekst(husbankenUtbetaling.getTittel());
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, husbankenUtbetaling.getNetto().intValue(), "opplysninger.inntekt.bostotte.utbetaling.label");
+                pdf.addBlankLine();
+            }
         }
 
         // Formue

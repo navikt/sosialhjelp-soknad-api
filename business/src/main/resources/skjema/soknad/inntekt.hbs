@@ -300,21 +300,6 @@
                                 {{#if @root.utvidetSoknad}}
                                     {{{ settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke" }}}
                                 {{/if}}
-                                {{#each utbetaling}}
-                                    {{#hvisLik type "husbanken"}}
-                                        <h4>{{hentTekst "inntekt.bostotte.utbetaling.sporsmal_manuell"}}</h4>
-                                        <li>
-                                            <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.belop_siste_maned"}}</span>
-                                            <ul class="svar-liste">
-                                                <li>
-                                                    <span class="verdi verdi--tekst">
-                                                        {{formaterDecimal netto}}
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    {{/hvisLik}}
-                                {{/each}}
                             {{/manglerSamtykkeEllerSant}}
                         {{/unless}}
                     {{/hentOkonomiBekreftelse}}
