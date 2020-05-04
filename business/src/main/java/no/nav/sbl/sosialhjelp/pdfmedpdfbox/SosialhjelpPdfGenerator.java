@@ -1,5 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonOkonomiUtils;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -1241,7 +1242,7 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
 
         if (utvidetSoknad) {
-            if (okonomi.getOpplysninger().getBekreftelse() != null && !okonomi.getOpplysninger().getBekreftelse().isEmpty()) {
+            if (JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet(okonomi)) {
                 skrivInfotekst(pdf, "opplysninger.informasjon.avsnitt1", "opplysninger.informasjon.avsnitt2", "opplysninger.informasjon.lenke");
                 pdf.skrivTekst("Ved trykk på " + getTekst("opplysninger.informasjon.lenke") + ":");
                 pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.overskrift"));
