@@ -80,7 +80,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
+import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
+import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -135,12 +139,12 @@ public class DigisosApiImpl implements DigisosApi {
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommuner/");
-            http.setHeader("Accept", MediaType.APPLICATION_JSON);
-            http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
+            http.setHeader(ACCEPT.name(), MediaType.APPLICATION_JSON);
+            http.setHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"));
             String integrasjonpassord_fiks = System.getProperty("integrasjonpassord_fiks");
             Objects.requireNonNull(integrasjonpassord_fiks, "integrasjonpassord_fiks");
-            http.setHeader("IntegrasjonPassord", integrasjonpassord_fiks);
-            http.setHeader("Authorization", "Bearer " + accessToken.accessToken);
+            http.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassord_fiks);
+            http.setHeader(AUTHORIZATION.name(), "Bearer " + accessToken.accessToken);
 
             long startTime = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(http);
@@ -189,10 +193,10 @@ public class DigisosApiImpl implements DigisosApi {
         byte[] publicKey = new byte[0];
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
-                    .addHeader("Accept", MediaType.WILDCARD)
-                    .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
-                    .addHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"))
-                    .addHeader("Authorization", token).build();
+                    .addHeader(ACCEPT.name(), MediaType.WILDCARD)
+                    .addHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"))
+                    .addHeader(HEADER_INTEGRASJON_PASSORD, System.getProperty("integrasjonpassord_fiks"))
+                    .addHeader(AUTHORIZATION.name(), token).build();
 
             CloseableHttpResponse response = client.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -294,9 +298,9 @@ public class DigisosApiImpl implements DigisosApi {
             HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, behandlingsId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
-            post.setHeader("Authorization", token);
-            post.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
-            post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
+            post.setHeader(AUTHORIZATION.name(), token);
+            post.setHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"));
+            post.setHeader(HEADER_INTEGRASJON_PASSORD, System.getProperty("integrasjonpassord_fiks"));
 
             post.setEntity(entitybuilder.build());
             long startTime = System.currentTimeMillis();
