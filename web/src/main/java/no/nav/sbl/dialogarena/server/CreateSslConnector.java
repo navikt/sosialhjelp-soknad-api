@@ -31,7 +31,7 @@ class CreateSslConnector {
         httpsConfiguration.addCustomizer(new SecureRequestCustomizer());
 
         ServerConnector sslConnector = new ServerConnector(jetty,
-                new SslConnectionFactory(factory, HttpVersion.HTTP_1_1.toString()),
+                //new SslConnectionFactory(factory, HttpVersion.HTTP_1_1.toString()),
                 new HttpConnectionFactory(httpsConfiguration));
         sslConnector.setPort(sslPort);
         return sslConnector;

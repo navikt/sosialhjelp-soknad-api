@@ -32,7 +32,7 @@ public class DevSoknadsosialhjelpServer {
             SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         }
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // Er med pga SaksoversiktMetadataRessurs.
-        TestCertificates.setupKeyAndTrustStore();
+        //TestCertificates.setupKeyAndTrustStore();
         if ("Mac OS X".equals(System.getProperty("os.name")) || "Linux".equals(System.getProperty("os.name"))) {
             System.setProperty("sendsoknad.datadir", System.getProperty("user.home")+"/kodeverk/sendsoknad");
         }
