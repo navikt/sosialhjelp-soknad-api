@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.modig.testcertificates.TestCertificates;
+//import no.nav.modig.testcertificates.TestCertificates;
 import no.nav.sbl.dialogarena.oidc.OidcConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
