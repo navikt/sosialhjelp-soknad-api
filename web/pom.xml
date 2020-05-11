@@ -294,11 +294,6 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>no.nav.modig</groupId>-->
-<!--            <artifactId>modig-testcertificates</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
