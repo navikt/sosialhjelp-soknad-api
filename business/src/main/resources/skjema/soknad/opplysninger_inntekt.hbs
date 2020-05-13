@@ -70,23 +70,26 @@
                 {{#hvisLik type "skatteetaten"}}
                 {{else}}
                     {{#hvisLik type "husbanken"}}
-                        <ul class="svar-liste">
-                            <li>
-                                <h4>{{tittel}}</h4>
-                                <ul class="fakta-liste">
-                                    <li>
-                                        <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.belop_siste_maned"}}</span>
-                                        <ul class="svar-liste">
-                                            <li>
-                                                <span class="verdi verdi--tekst">
-                                                    {{formaterDecimal netto}}
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+                        {{#hvisLik kilde "system"}}
+                        {{else}}
+                            <ul class="svar-liste">
+                                <li>
+                                    <h4>{{tittel}}</h4>
+                                    <ul class="fakta-liste">
+                                        <li>
+                                            <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.belop_siste_maned"}}</span>
+                                            <ul class="svar-liste">
+                                                <li>
+                                                    <span class="verdi verdi--tekst">
+                                                        {{formaterDecimal netto}}
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        {{/hvisLik}}
                     {{else}}
                         <ul class="svar-liste">
                             <li>

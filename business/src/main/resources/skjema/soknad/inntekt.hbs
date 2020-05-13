@@ -17,7 +17,7 @@
                     {{#manglerSamtykkeEllerSant "skatteetaten_samtykke" false}}
                         <br />
                         <div class="verdi verdi--tekst">
-                            Vi mangler samtykke til å hente informasjon fra Skatteetaten
+                            {{{ hentTekst "utbetalinger.inntekt.skattbar.mangler_samtykke" }}}
                         </div>
                     {{else}}
                         <div class="verdi verdi--tekst">
@@ -298,7 +298,7 @@
                             {{/if}}
                             {{#manglerSamtykkeEllerSant "bostotte_samtykke" false}}
                                 <div class="verdi verdi--tekst">
-                                    Vi mangler samtykke til å hente informasjon fra Husbanken
+                                    {{{ hentTekst "inntekt.bostotte.mangler_samtykke" }}}
                                 </div>
                                 {{#if @root.utvidetSoknad}}
                                     {{{ settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke" }}}
