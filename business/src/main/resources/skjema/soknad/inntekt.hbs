@@ -20,6 +20,9 @@
                             Vi mangler samtykke til å hente informasjon fra Skatteetaten
                         </div>
                     {{else}}
+                        <div class="verdi verdi--tekst">
+                            {{{ hentTekst "utbetalinger.inntekt.skattbar.har_gitt_samtykke" }}}
+                        </div>
                         {{#if @root.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet}}
                             <div class="verdi verdi--tekst">
                                 Vi fikk ikke hentet utbetalinger fra Skatteetaten
@@ -30,13 +33,13 @@
                         {{{settInnKnappTilgjengeligTekst "utbetalinger.inntekt.skattbar.gi_samtykke"}}}
                     {{/if}}
                 {{else}}
+                    <div class="verdi verdi--tekst">
+                        {{{ hentTekst "utbetalinger.inntekt.skattbar.har_gitt_samtykke" }}}
+                    </div>
                     {{#hentOkonomiBekreftelse "skatteetaten_samtykke"}}
                         <div>{{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}</div>
                     {{/hentOkonomiBekreftelse}}
                     {{#if @root.utvidetSoknad}}
-                        <div class="verdi verdi--tekst">
-                            Har gitt samtykke til å hente informasjon fra Skatteetaten
-                        </div>
                         {{{ settInnInfotekst "utbetalinger.inntekt.skattbar.beskrivelse" }}}
                     {{/if}}
                     {{#hvisUtbetalingFinnes "skatteetaten"}}
@@ -300,6 +303,10 @@
                                 {{#if @root.utvidetSoknad}}
                                     {{{ settInnKnappTilgjengeligTekst "inntekt.bostotte.gi_samtykke" }}}
                                 {{/if}}
+                            {{else}}
+                                <div class="verdi verdi--tekst">
+                                    {{{ hentTekst "inntekt.bostotte.har_gitt_samtykke" }}}
+                                </div>
                             {{/manglerSamtykkeEllerSant}}
                         {{/unless}}
                     {{/hentOkonomiBekreftelse}}
@@ -312,6 +319,9 @@
                         {{/if}}
                     {{/if}}
                 {{else}}
+                    <div class="verdi verdi--tekst">
+                        {{{ hentTekst "inntekt.bostotte.har_gitt_samtykke" }}}
+                    </div>
                     {{#if @root.utvidetSoknad}}
                         {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
                         <ul class="svar-liste">
@@ -322,9 +332,6 @@
                         {{#hentOkonomiBekreftelse "bostotte_samtykke"}}
                             <div>{{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}</div>
                         {{/hentOkonomiBekreftelse}}
-                        <div class="verdi verdi--tekst">
-                            Har gitt samtykke til å hente informasjon fra Husbanken
-                        </div>
                         {{{ settInnInfotekst "inntekt.bostotte.infotekst.tekst" }}}
                     {{/if}}
                     {{#each utbetaling}}

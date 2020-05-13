@@ -881,10 +881,9 @@ public class SosialhjelpPdfGenerator {
                 }
                 pdf.addBlankLine();
             } else {
+                pdf.skrivTekst(getTekst("utbetalinger.inntekt.skattbar.har_gitt_samtykke"));
+                pdf.addBlankLine();
                 if (utvidetSoknad) {
-                    if (utvidetSoknad) {
-                        skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.har_gitt_samtykke");
-                    }
                     if (!skattetatenSamtykke.isEmpty()) {
                         skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(skattetatenSamtykke.get(0).getBekreftelsesDato()), "utbetalinger.inntekt.skattbar.tidspunkt");
                     }
@@ -992,9 +991,8 @@ public class SosialhjelpPdfGenerator {
             List<JsonOkonomibekreftelse> bostotteSamtykke = hentBekreftelser(okonomi, BOSTOTTE_SAMTYKKE);
             boolean harBostotteSamtykke = bostotteSamtykke.isEmpty() ? false : bostotteSamtykke.get(0).getVerdi();
             if (harBostotteSamtykke) {
-                if (utvidetSoknad) {
-                    skrivInfotekst(pdf, "inntekt.bostotte.har_gitt_samtykke");
-                }
+                pdf.skrivTekst(getTekst("inntekt.bostotte.har_gitt_samtykke"));
+                pdf.addBlankLine();
                 if (!bostotteSamtykke.isEmpty()) {
                     skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(bostotteSamtykke.get(0).getBekreftelsesDato()), "inntekt.bostotte.tidspunkt");
                 }
