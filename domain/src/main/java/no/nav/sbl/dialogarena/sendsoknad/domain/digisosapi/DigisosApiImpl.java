@@ -97,6 +97,7 @@ public class DigisosApiImpl implements DigisosApi {
     private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
     private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
     private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
+    byte[] fiksPublicKey = null;
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
@@ -172,9 +173,9 @@ public class DigisosApiImpl implements DigisosApi {
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         String digisosId;
         try {
-            X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
+            X509Certificate fiksX509Certificate = getFiksPublicKeyX509Certificate(token);
             digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
-                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
+                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, fiksX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, behandlingsId, token);
 
             waitForFutures(krypteringFutureList);
@@ -185,37 +186,49 @@ public class DigisosApiImpl implements DigisosApi {
         return digisosId;
     }
 
-    private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
-        byte[] publicKey = new byte[0];
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-            HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
-                    .addHeader("Accept", MediaType.WILDCARD)
-                    .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
-                    .addHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"))
-                    .addHeader("Authorization", token).build();
+    private X509Certificate getFiksPublicKeyX509Certificate(String token) {
+        fetchFiksPublicKeyIfNull(token);
+        return generateX509CertificateFromFiksPublicKey();
+    }
 
-            CloseableHttpResponse response = client.execute(request);
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode >= 300) {
-                log.warn("Statuscode ved henting av sertifikat {} token:{}", statusCode, token);
-                log.warn(response.getStatusLine().getReasonPhrase());
-                log.warn(EntityUtils.toString(response.getEntity()));
+    private void fetchFiksPublicKeyIfNull(String token) {
+        // Fiks public key skal aldri endres. Isåfall vil Fiks gi en tydelig beskjed.
+        //Denne integrasjonen kan feile så fiksPublicKey blir derfor cachet.
+        if (fiksPublicKey == null) {
+            try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
+                HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
+                        .addHeader("Accept", MediaType.WILDCARD)
+                        .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
+                        .addHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"))
+                        .addHeader("Authorization", token).build();
+
+                CloseableHttpResponse response = client.execute(request);
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode >= 300) {
+                    log.error("Statuscode ved henting av sertifikat {} - {}, response:{}",
+                            statusCode,
+                            response.getStatusLine().getReasonPhrase(),
+                            EntityUtils.toString(response.getEntity()));
+                }
+                fiksPublicKey = IOUtils.toByteArray(response.getEntity().getContent());
+            } catch (IOException e) {
+                log.error("", e);
             }
-            publicKey = IOUtils.toByteArray(response.getEntity().getContent());
-        } catch (IOException e) {
-            log.error("", e);
         }
-        try {
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+    }
 
-            return (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(publicKey));
+    private X509Certificate generateX509CertificateFromFiksPublicKey() {
+        try {
+            return (X509Certificate) CertificateFactory
+                    .getInstance("X.509")
+                    .generateCertificate(new ByteArrayInputStream(fiksPublicKey));
 
         } catch (CertificateException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, X509Certificate dokumentlagerPublicKeyX509Certificate) {
+    private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, X509Certificate fiksX509Certificate) {
         CMSStreamKryptering kryptering = new CMSKrypteringImpl();
 
         PipedInputStream pipedInputStream = new PipedInputStream();
@@ -224,7 +237,7 @@ public class DigisosApiImpl implements DigisosApi {
             Future<Void> krypteringFuture =
                     executor.submit(() -> {
                         try {
-                            kryptering.krypterData(pipedOutputStream, dokumentStream, dokumentlagerPublicKeyX509Certificate, Security.getProvider("BC"));
+                            kryptering.krypterData(pipedOutputStream, dokumentStream, fiksX509Certificate, Security.getProvider("BC"));
                         } catch (Exception e) {
                             log.error("Encryption failed, setting exception on encrypted InputStream", e);
                             throw new IllegalStateException("An error occurred during encryption", e);
