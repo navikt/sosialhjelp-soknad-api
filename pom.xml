@@ -133,7 +133,6 @@
         <mockito.version>3.3.3</mockito.version>
         <assertj.version>3.15.0</assertj.version>
         <reflections.version>0.9.12</reflections.version>
-        <modig-testcertificates.version>1.2.5</modig-testcertificates.version>
         <digipost.digg.version>0.13</digipost.digg.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
@@ -1040,12 +1039,6 @@
                 <artifactId>modig-security-core</artifactId>
                 <version>${modig-security.version}</version>
                 <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-testcertificates</artifactId>
-                <version>${modig-testcertificates.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
