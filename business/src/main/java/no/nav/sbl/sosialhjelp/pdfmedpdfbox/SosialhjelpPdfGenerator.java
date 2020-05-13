@@ -1,5 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonOkonomiUtils;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -1385,15 +1386,18 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
 
         if (utvidetSoknad) {
-            if (okonomi.getOpplysninger().getBekreftelse() != null && !okonomi.getOpplysninger().getBekreftelse().isEmpty()) {
-                skrivInfotekst(pdf, "opplysninger.informasjon");
+            if (JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet(okonomi)) {
+                skrivInfotekst(pdf, "opplysninger.informasjon.avsnitt1", "opplysninger.informasjon.avsnitt2", "opplysninger.informasjon.lenke");
+                skrivOkonomiskeOpplysningerModal(pdf);
             } else {
-                skrivInfotekst(pdf, "opplysninger.ikkebesvart.melding");
+                skrivInfotekst(pdf, "opplysninger.ikkebesvart.avsnitt1", "opplysninger.ikkebesvart.avsnitt2", "opplysninger.informasjon.lenke");
+                skrivOkonomiskeOpplysningerModal(pdf);
             }
         }
 
         // Inntekt
         pdf.skrivTekstBold(getTekst("inntektbolk.tittel"));
+
         // Kan ikke være null i filformatet
         for (JsonOkonomioversiktInntekt inntekt : okonomi.getOversikt().getInntekt()) {
             pdf.skrivTekst(inntekt.getTittel());
@@ -1503,6 +1507,20 @@ public class SosialhjelpPdfGenerator {
                 pdf.addBlankLine();
             }
         }
+    }
+
+    private void skrivOkonomiskeOpplysningerModal(PdfGenerator pdf) throws IOException {
+        pdf.skrivTekst("Ved trykk på " + getTekst("opplysninger.informasjon.lenke") + ":");
+        pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.overskrift"));
+        pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk1.tittel"));
+        pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt1"));
+        pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt2"));
+        pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk1.avsnitt3"));
+        pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk2.tittel"));
+        pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk2.avsnitt1"));
+        pdf.skrivTekstBold(getTekst("opplysninger.informasjon.modal.bolk3.tittel"));
+        pdf.skrivTekst(getTekst("opplysninger.informasjon.modal.bolk3.avsnitt1"));
+        pdf.addBlankLine();
     }
 
     private void leggTilInformasjonFraForsiden(PdfGenerator pdf, JsonPersonalia personalia, boolean utvidetSoknad) throws IOException {
@@ -1681,10 +1699,13 @@ public class SosialhjelpPdfGenerator {
         }
         return fullstendigNavn;
     }
-
-    private void skrivInfotekst(PdfGenerator pdf, String key) throws IOException {
+    private void skrivInfotekst(PdfGenerator pdf, String ...keys) throws IOException {
         pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"));
-        pdf.skrivTekst(getTekst(key));
+        for (String key : keys) {
+            if (key != null && key.length() > 0) {
+                pdf.skrivTekst(getTekst(key));
+            }
+        }
         pdf.addBlankLine();
     }
 

@@ -1,17 +1,17 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfWriter;
-import no.nav.modig.core.exception.ApplicationException;
-import org.apache.commons.io.IOUtils;
-import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
+import org.apache.commons.io.IOUtils;
+import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfWriter;
 
 public class PDFFabrikk {
 
@@ -35,7 +35,7 @@ public class PDFFabrikk {
             });
 
             renderer.setDocumentFromString(html, skjemaPath);
-            
+
             renderer.getFontResolver().addFont("/fonts/modus/ModusRegular.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusLight.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
@@ -57,12 +57,12 @@ public class PDFFabrikk {
                     "AdobeRGB1998",
                     byteArray);
             renderer.finishPDF();
-        } catch (DocumentException|IOException e) {
-            throw new ApplicationException("Kunne ikke lagre oppsummering som PDF", e);
+        } catch (DocumentException | IOException e) {
+            throw new SosialhjelpSoknadApiException("Kunne ikke lagre oppsummering som PDF", e);
         }
         return os.toByteArray();
     }
-    
+
     private static String inPdfBox(String path) {
         return PDFFabrikk.class.getResource(path).toString();
     }

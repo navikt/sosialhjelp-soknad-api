@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
@@ -41,6 +42,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class OpplastetVedleggService {
 
     private static final Logger logger = getLogger(OpplastetVedleggService.class);
+    public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB = 150;
+    public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE = MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB * 1024 * 1024; // 150 MB
 
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
@@ -95,6 +98,19 @@ public class OpplastetVedleggService {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
         return opplastetVedlegg;
+    }
+
+    public void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(String behandlingsId, byte[] data) {
+        String eier = OidcFeatureToggleUtils.getUserId();
+        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        Long soknadId = soknadUnderArbeid.getSoknadId();
+
+        Integer samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadId, eier);
+        int newStorrelse = samletVedleggStorrelse + data.length;
+        if (newStorrelse > MAKS_SAMLET_VEDLEGG_STORRELSE) {
+            String feilmeldingId = soknadUnderArbeid.erEttersendelse() ? "ettersending.vedlegg.feil.samletStorrelseForStor" : "vedlegg.opplasting.feil.samletStorrelseForStor";
+            throw new SamletVedleggStorrelseForStorException("Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor", null, feilmeldingId);
+        }
     }
 
     public void deleteVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggId) {
