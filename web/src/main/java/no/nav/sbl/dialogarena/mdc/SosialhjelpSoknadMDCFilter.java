@@ -22,7 +22,6 @@ public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
     protected static final Logger log = LoggerFactory.getLogger(SosialhjelpSoknadMDCFilter.class.getName());
 
     private static final String CALL_ID = "callId";
-    private static final String USER_ID = "userId";
     private static final String CONSUMER_ID = "consumerId";
 
     private SubjectHandler subjectHandler;
@@ -36,21 +35,17 @@ public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
     }
 
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String userId = this.subjectHandler.getUid() != null ? this.subjectHandler.getUid() : "";
         String consumerId = this.subjectHandler.getConsumerId() != null ? this.subjectHandler.getConsumerId() : "";
         String callId = Optional.ofNullable(httpServletRequest.getHeader(HEADER_CALL_ID))
                 .orElse(generateCallId());
         putToMDC(CALL_ID, callId);
-        putToMDC(USER_ID, userId);
         putToMDC(CONSUMER_ID, consumerId);
 
         try {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } finally {
             remove(CALL_ID);
-            remove(USER_ID);
             remove(CONSUMER_ID);
         }
-
     }
 }
