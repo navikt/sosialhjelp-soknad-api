@@ -14,6 +14,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
@@ -66,7 +68,7 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
         WebTarget b = client.target(endpoint);
 
         return b.request()
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId);
+                .header(HEADER_CALL_ID, callId)
+                .header(HEADER_CONSUMER_ID, consumerId);
     }
 }
