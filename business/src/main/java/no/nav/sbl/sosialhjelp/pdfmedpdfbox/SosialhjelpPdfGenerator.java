@@ -874,7 +874,7 @@ public class SosialhjelpPdfGenerator {
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_sporsmal");
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_info");
                 }
-                pdf.skrivTekstBold(getTekst("utbetalinger.inntekt.skattbar.mangler_samtykke"));
+                pdf.skrivTekst(getTekst("utbetalinger.inntekt.skattbar.mangler_samtykke"));
                 if (utvidetSoknad) {
                     pdf.addBlankLine();
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.gi_samtykke");
@@ -884,6 +884,7 @@ public class SosialhjelpPdfGenerator {
                 pdf.skrivTekst(getTekst("utbetalinger.inntekt.skattbar.har_gitt_samtykke"));
                 pdf.addBlankLine();
                 if (utvidetSoknad) {
+                    skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_info");
                     if (!skattetatenSamtykke.isEmpty()) {
                         skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(skattetatenSamtykke.get(0).getBekreftelsesDato()), "utbetalinger.inntekt.skattbar.tidspunkt");
                     }
@@ -993,6 +994,9 @@ public class SosialhjelpPdfGenerator {
             if (harBostotteSamtykke) {
                 pdf.skrivTekst(getTekst("inntekt.bostotte.har_gitt_samtykke"));
                 pdf.addBlankLine();
+                if (utvidetSoknad) {
+                    skrivInfotekst(pdf, "inntekt.bostotte.gi_samtykke.tekst");
+                }
                 if (!bostotteSamtykke.isEmpty()) {
                     skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(bostotteSamtykke.get(0).getBekreftelsesDato()), "inntekt.bostotte.tidspunkt");
                 }
@@ -1007,10 +1011,11 @@ public class SosialhjelpPdfGenerator {
                 }
             } else {
                 if (motarBostotte) {
-                    pdf.skrivTekstBold(getTekst("inntekt.bostotte.mangler_samtykke"));
+                    pdf.skrivTekst(getTekst("inntekt.bostotte.mangler_samtykke"));
                     pdf.addBlankLine();
                 }
                 if (utvidetSoknad) {
+                    skrivInfotekst(pdf, "inntekt.bostotte.gi_samtykke.tekst");
                     skrivInfotekst(pdf, "inntekt.bostotte.gi_samtykke");
                 }
             }
