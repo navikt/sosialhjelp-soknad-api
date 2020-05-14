@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import no.nav.sbl.dialogarena.types.Pingable;
+import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.UriBuilder;
 import java.time.LocalDate;
 
 import static java.lang.System.getenv;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
@@ -39,8 +41,8 @@ public class BostotteImpl implements Bostotte {
             String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
             RequestEntity<Void> request = RequestEntity.get(uri.build())
-                    .header("x-nav-apiKey", apikey)
-                    .header("Authorization", token)
+                    .header(HEADER_NAV_APIKEY, apikey)
+                    .header(HttpHeader.AUTHORIZATION.name(), token)
                     .build();
             return operations.exchange(request, BostotteDto.class).getBody();
         } catch (ResourceAccessException e) {
@@ -64,7 +66,7 @@ public class BostotteImpl implements Bostotte {
                 try {
                     String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
                     RequestEntity<Void> request = RequestEntity.get(UriBuilder.fromPath(config.getPingUrl()).build())
-                            .header("x-nav-apiKey", apikey)
+                            .header(HEADER_NAV_APIKEY, apikey)
                             .build();
                     String result = operations.exchange(request, String.class).getBody();
                     if (result.equalsIgnoreCase("pong")) {
