@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
@@ -91,7 +91,7 @@ public class EttersendingService {
         }
 
         if (soknad.status != FERDIG) {
-            throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er innsendt");
+            throw new SosialhjelpSoknadApiException("Kan ikke starte ettersendelse på noe som ikke er innsendt");
         } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER))) {
             throwDetailedExceptionForEttersendelserEtterFrist(soknad);
         }

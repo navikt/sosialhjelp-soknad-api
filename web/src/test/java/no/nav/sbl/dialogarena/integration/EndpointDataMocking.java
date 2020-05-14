@@ -7,6 +7,7 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Foedselsdato;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
@@ -16,7 +17,7 @@ import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import javax.xml.datatype.DatatypeFactory;
 
 import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock.createPersonV3HentPersonRequest;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class EndpointDataMocking {
@@ -53,7 +54,7 @@ public class EndpointDataMocking {
         person.setFoedselsdato(foedselsdato);
         hentKjerneinformasjonResponse.setPerson(person);
 
-        when(personEndpoint.hentKjerneinformasjon(any())).thenReturn(hentKjerneinformasjonResponse);
+        when(personEndpoint.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(hentKjerneinformasjonResponse);
     }
 
     static void mockPersonV3Endpoint() throws Exception {

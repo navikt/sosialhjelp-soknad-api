@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
@@ -28,12 +28,12 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class DigisosApiServiceTest {
 
@@ -71,7 +71,7 @@ public class DigisosApiServiceTest {
 
     @Test
     public void skalLageOpplastingsListeMedDokumenterForSoknad() {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910"));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910")).withEier("eier");
 
         List<FilOpplasting> filOpplastings = digisosApiService.lagDokumentListe(soknadUnderArbeid);
 
@@ -95,7 +95,8 @@ public class DigisosApiServiceTest {
 
         List<FilOpplasting> fiksDokumenter = digisosApiService.lagDokumentListe(new SoknadUnderArbeid()
                 .withTilknyttetBehandlingsId("123")
-                .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
+                .withJsonInternalSoknad(lagInternalSoknadForEttersending())
+                .withEier("eier"));
 
         assertThat(fiksDokumenter.size()).isEqualTo(3);
         assertThat(fiksDokumenter.get(0).metadata.filnavn).isEqualTo("ettersendelse.pdf");

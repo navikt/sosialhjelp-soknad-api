@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-import no.nav.modig.core.exception.SystemException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
@@ -10,24 +10,24 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
 import org.joda.time.DateMidnight;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Optional;
 
-import static no.nav.modig.core.test.FilesAndDirs.BUILD_OUTPUT;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,10 +38,13 @@ public class StandardKodeverkTest {
 
     private Kodeverk kodeverk;
 
-    private final File dumpDir = new File(BUILD_OUTPUT, "kodeverkdump/" + randomNumeric(10));
+    private final File dumpDir = Paths.get("target/kodeverkdump" + randomNumeric(10)).toAbsolutePath().toFile();
 
     @Before
     public void wireUpKodeverk() {
+        if (!dumpDir.exists()) {
+            assertTrue(dumpDir.mkdirs());
+        }
         kodeverk = new StandardKodeverk(ws, Locale.getDefault(), Optional.of(dumpDir));
     }
 
@@ -51,7 +54,7 @@ public class StandardKodeverkTest {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(response);
 
         String poststed = kodeverk.getPoststed("0565");
-        Assert.assertEquals("Oslo", poststed);
+        assertEquals("Oslo", poststed);
     }
 
     @Test
@@ -68,25 +71,21 @@ public class StandardKodeverkTest {
         assertThat(kodeverk.getLand("ALB"), nullValue());
     }
 
-    @Test(expected = SystemException.class)
+    @Test(expected = SosialhjelpSoknadApiException.class)
     public void ugyldigKodeverknavnGirSystemException() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenThrow(new HentKodeverkHentKodeverkKodeverkIkkeFunnet());
         kodeverk.lastInnNyeKodeverk();
     }
 
     @Test
-    @Ignore
     public void dumperInnlastetKodeverkTilFileOgBrukerDenneVedRestartDaKodeverkErNede() throws Exception {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
         kodeverk.lastInnNyeKodeverk();
 
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenThrow(new RuntimeException("Kodeverk er nede"));
         kodeverk.lastInnNyeKodeverk();
-        wireUpKodeverk();
-        kodeverk.lastInnNyeKodeverk();
     }
-    
-   
+
     private XMLHentKodeverkResponse postnummerKodeverkResponse() {
         XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo")).withGyldighetsperiode(new XMLPeriode().withFom(DateMidnight.now().minusDays(1)).withTom(DateMidnight.now().plusDays(1)));
         return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Kommuner").withKode(kode));

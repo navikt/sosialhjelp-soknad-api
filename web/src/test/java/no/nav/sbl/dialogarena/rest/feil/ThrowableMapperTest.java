@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.rest.feil;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.ws.rs.core.Response;
 

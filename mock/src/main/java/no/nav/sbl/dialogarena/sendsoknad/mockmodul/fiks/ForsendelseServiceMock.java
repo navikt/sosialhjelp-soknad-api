@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -28,7 +28,7 @@ public class ForsendelseServiceMock {
 
         try {
             when(amock.sendForsendelse(any())).then(invocation -> {
-                Forsendelse forsendelse = invocation.getArgumentAt(0, Forsendelse.class);
+                Forsendelse forsendelse = invocation.getArgument(0);
                 String behId = forsendelse.getEksternref();
 
                 String mottakerOrg = ((OrganisasjonDigitalAdresse) forsendelse.getMottaker().getDigitalAdresse()).getOrgnr();

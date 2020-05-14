@@ -1,16 +1,13 @@
 package no.nav.sbl.dialogarena.server;
 
-import org.apache.commons.collections15.Transformer;
-import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
-class CreateSslConnector implements Transformer<Integer, ServerConnector> {
+class CreateSslConnector {
 
     private final Server jetty;
     private final HttpConfiguration baseConfiguration;
@@ -20,7 +17,6 @@ class CreateSslConnector implements Transformer<Integer, ServerConnector> {
         this.baseConfiguration = baseConfiguration;
     }
 
-    @Override
     public ServerConnector transform(Integer sslPort) {
 
         SslContextFactory factory = new SslContextFactory.Client.Client(true);
@@ -33,7 +29,6 @@ class CreateSslConnector implements Transformer<Integer, ServerConnector> {
         httpsConfiguration.addCustomizer(new SecureRequestCustomizer());
 
         ServerConnector sslConnector = new ServerConnector(jetty,
-                new SslConnectionFactory(factory, HttpVersion.HTTP_1_1.toString()),
                 new HttpConnectionFactory(httpsConfiguration));
         sslConnector.setPort(sslPort);
         return sslConnector;

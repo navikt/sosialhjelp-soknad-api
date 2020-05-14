@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.exception;
 
-import no.nav.modig.core.exception.ApplicationException;
-
-public class EttersendelseSendtForSentException extends ApplicationException {
+public class EttersendelseSendtForSentException extends SosialhjelpSoknadApiException {
 
     public EttersendelseSendtForSentException(String message) {
         super(message);

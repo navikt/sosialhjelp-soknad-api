@@ -2,9 +2,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
@@ -117,7 +117,7 @@ public class SoknadService {
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()){
             logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
-            throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+            throw new SosialhjelpSoknadApiException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
         logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
 
