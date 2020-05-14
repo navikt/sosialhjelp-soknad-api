@@ -33,10 +33,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.eclipse.jetty.util.StringUtil;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
@@ -81,7 +79,6 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
