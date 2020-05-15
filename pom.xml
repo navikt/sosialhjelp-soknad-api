@@ -611,17 +611,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-authorization</artifactId>
-                <version>${modig-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.sf.ehcache</groupId>
-                        <artifactId>ehcache-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-filter</artifactId>
                 <version>${modig-security.version}</version>
             </dependency>
