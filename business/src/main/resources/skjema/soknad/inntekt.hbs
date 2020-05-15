@@ -322,6 +322,9 @@
                     <div class="verdi verdi--tekst">
                         {{{ hentTekst "inntekt.bostotte.har_gitt_samtykke" }}}
                     </div>
+                    {{#hentOkonomiBekreftelse "bostotte_samtykke"}}
+                        <div>{{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}</div>
+                    {{/hentOkonomiBekreftelse}}
                     {{#if @root.utvidetSoknad}}
                         {{{ settInnInfotekst "inntekt.bostotte.gi_samtykke.overskrift" }}}
                         <ul class="svar-liste">
@@ -329,9 +332,6 @@
                                 {{{ hentTekst "inntekt.bostotte.gi_samtykke.tekst" }}}
                             </li>
                         </ul>
-                        {{#hentOkonomiBekreftelse "bostotte_samtykke"}}
-                            <div>{{ formaterDatoKlokkeslett tidspunkt "d. MMMM yyyy HH:mm" }}</div>
-                        {{/hentOkonomiBekreftelse}}
                         {{{ settInnInfotekst "inntekt.bostotte.infotekst.tekst" }}}
                     {{/if}}
                     {{#each utbetaling}}

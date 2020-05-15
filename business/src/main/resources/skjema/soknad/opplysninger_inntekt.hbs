@@ -80,9 +80,15 @@
                                             <span class="label">{{hentTekst "inntekt.bostotte.utbetaling.belop_siste_maned"}}</span>
                                             <ul class="svar-liste">
                                                 <li>
-                                                    <span class="verdi verdi--tekst">
-                                                        {{formaterDecimal netto}}
-                                                    </span>
+                                                    {{#if netto}}
+                                                        <span class="verdi verdi--tekst">
+                                                            {{formaterDecimal netto}}
+                                                        </span>
+                                                    {{else}}
+                                                        <span class="verdi verdi--ikkeUtfylt">
+                                                            <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                                                        </span>
+                                                    {{/if}}
                                                 </li>
                                             </ul>
                                         </li>
@@ -109,8 +115,8 @@
                                                     </span>
                                                 {{else}}
                                                     <span class="verdi verdi--ikkeUtfylt">
-                                                    <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-                                                </span>
+                                                        <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                                                    </span>
                                                 {{/if}}
                                             </li>
                                         </ul>

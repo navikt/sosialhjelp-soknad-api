@@ -885,10 +885,10 @@ public class SosialhjelpPdfGenerator {
                 pdf.addBlankLine();
                 if (utvidetSoknad) {
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_info");
-                    if (!skattetatenSamtykke.isEmpty()) {
-                        skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(skattetatenSamtykke.get(0).getBekreftelsesDato()), "utbetalinger.inntekt.skattbar.tidspunkt");
-                    }
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.beskrivelse");
+                }
+                if (!skattetatenSamtykke.isEmpty()) {
+                    skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(skattetatenSamtykke.get(0).getBekreftelsesDato()), "utbetalinger.inntekt.skattbar.tidspunkt");
                 }
                 List<JsonOkonomiOpplysningUtbetaling> skatteetatenUtbetalinger = hentUtbetalinger(okonomi, "skatteetaten");
                 if (soknad.getDriftsinformasjon() != null && soknad.getDriftsinformasjon().getInntektFraSkatteetatenFeilet()) {
@@ -997,11 +997,11 @@ public class SosialhjelpPdfGenerator {
                 if (utvidetSoknad) {
                     skrivInfotekst(pdf, "inntekt.bostotte.gi_samtykke.tekst");
                 }
-                if (!bostotteSamtykke.isEmpty()) {
-                    skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(bostotteSamtykke.get(0).getBekreftelsesDato()), "inntekt.bostotte.tidspunkt");
-                }
                 if (utvidetSoknad) {
                     skrivInfotekst(pdf, "inntekt.bostotte.infotekst.tekst");
+                }
+                if (!bostotteSamtykke.isEmpty()) {
+                    skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(bostotteSamtykke.get(0).getBekreftelsesDato()), "inntekt.bostotte.tidspunkt");
                 }
                 if (hentingFraHusbankenHarFeilet) {
                     skrivInfotekst(pdf, "informasjon.husbanken.bostotte.nedlasting_feilet");
