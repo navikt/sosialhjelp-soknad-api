@@ -84,7 +84,7 @@ public class TilgangskontrollTest {
 
     @Test(expected = AuthorizationException.class)
     public void skalFeileHvisEierErNull() {
-        tilgangskontroll.verifiserTilgangMotPep(null, "");
+        tilgangskontroll.verifiserTilgang("");
     }
 
 }
