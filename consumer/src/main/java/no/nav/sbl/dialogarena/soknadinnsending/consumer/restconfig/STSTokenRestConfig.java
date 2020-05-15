@@ -13,6 +13,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
 
 import static java.util.Collections.singletonList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
@@ -48,7 +49,7 @@ public class STSTokenRestConfig {
     private Client STSClient() {
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().put(AUTHORIZATION.toString(), singletonList(getBasicAuthentication())))
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", System.getenv(SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD)));
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, System.getenv(SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD)));
     }
 
     private String getBasicAuthentication() {
