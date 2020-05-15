@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Splitter;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -91,6 +92,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class DigisosApiImpl implements DigisosApi {
 
     private static final Logger log = getLogger(DigisosApiImpl.class);
+    private static final int MAX_MESSAGE_LENGTH = 16384;
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
     private String idPortenTokenUrl;
@@ -156,7 +158,12 @@ public class DigisosApiImpl implements DigisosApi {
             }
 
             String content = EntityUtils.toString(response.getEntity());
-            log.info("KommuneInfo: {}", content);
+            List<String> split = Splitter.fixedLength(MAX_MESSAGE_LENGTH).splitToList(content);
+            log.info("KommuneInfo: {}", split.get(0));
+            if (split.size() > 1) {
+                split.subList(1, split.size()).forEach(log::info);
+            }
+
             Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
             cacheForKommuneinfo.set(collect);
             cacheTimestamp = LocalDateTime.now();
