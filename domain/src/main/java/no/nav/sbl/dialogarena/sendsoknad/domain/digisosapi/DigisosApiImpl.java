@@ -158,8 +158,9 @@ public class DigisosApiImpl implements DigisosApi {
             }
 
             String content = EntityUtils.toString(response.getEntity());
-            List<String> split = Splitter.fixedLength(MAX_MESSAGE_LENGTH).splitToList(content);
-            log.info("KommuneInfo: {}", split.get(0));
+            String loggmelding = String.format("KommuneInfo: %s", content);
+            List<String> split = Splitter.fixedLength(MAX_MESSAGE_LENGTH).splitToList(loggmelding);
+            log.info(split.get(0));
             if (split.size() > 1) {
                 split.subList(1, split.size()).forEach(log::info);
             }
