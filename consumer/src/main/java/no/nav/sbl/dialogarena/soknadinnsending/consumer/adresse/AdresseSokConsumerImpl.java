@@ -15,6 +15,9 @@ import javax.ws.rs.core.Response;
 import java.util.function.Function;
 
 import static java.lang.System.getenv;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -66,9 +69,9 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         final Builder request = restCallContext.getClient().target(endpoint + "adressesoek")
                 .queryParam("maxretur", "PING") 
                 .request()
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
-                .header("x-nav-apiKey", apiKey);
+                .header(HEADER_CALL_ID, callId)
+                .header(HEADER_CONSUMER_ID, consumerId)
+                .header(HEADER_NAV_APIKEY, apiKey);
 
         try (Response response = request.get()) {
             final String melding = response.readEntity(String.class);
@@ -160,12 +163,12 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         */
         if (isNotEmpty(apiKey)) {
             return b.request()
-                    .header("Nav-Call-Id", callId)
-                    .header("Nav-Consumer-Id", consumerId)
-                    .header("x-nav-apiKey", apiKey);
+                    .header(HEADER_CALL_ID, callId)
+                    .header(HEADER_CONSUMER_ID, consumerId)
+                    .header(HEADER_NAV_APIKEY, apiKey);
         }
         return b.request()
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId);
+                .header(HEADER_CALL_ID, callId)
+                .header(HEADER_CONSUMER_ID, consumerId);
     }
 }

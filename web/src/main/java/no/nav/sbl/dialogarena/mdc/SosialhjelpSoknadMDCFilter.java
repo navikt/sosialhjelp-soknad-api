@@ -10,17 +10,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.generateCallId;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.putToMDC;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.remove;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
 
 public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
 
     protected static final Logger log = LoggerFactory.getLogger(SosialhjelpSoknadMDCFilter.class.getName());
 
     private static final String CALL_ID = "callId";
-    private static final String USER_ID = "userId";
     private static final String CONSUMER_ID = "consumerId";
 
     private SubjectHandler subjectHandler;
@@ -34,20 +35,17 @@ public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
     }
 
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String userId = this.subjectHandler.getUid() != null ? this.subjectHandler.getUid() : "";
         String consumerId = this.subjectHandler.getConsumerId() != null ? this.subjectHandler.getConsumerId() : "";
-        String callId = generateCallId();
+        String callId = Optional.ofNullable(httpServletRequest.getHeader(HEADER_CALL_ID))
+                .orElse(generateCallId());
         putToMDC(CALL_ID, callId);
-        putToMDC(USER_ID, userId);
         putToMDC(CONSUMER_ID, consumerId);
 
         try {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } finally {
-            remove("callId");
-            remove("userId");
-            remove("consumerId");
+            remove(CALL_ID);
+            remove(CONSUMER_ID);
         }
-
     }
 }

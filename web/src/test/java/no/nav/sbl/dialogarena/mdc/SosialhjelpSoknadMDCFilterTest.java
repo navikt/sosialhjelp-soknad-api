@@ -46,7 +46,6 @@ public class SosialhjelpSoknadMDCFilterTest {
         filter.doFilterInternal(new MockHttpServletRequest(), new MockHttpServletResponse(), chain);
 
         assertThat(contextMap, IsMapContaining.hasKey("callId"));
-        assertThat(contextMap, IsMapContaining.hasEntry("userId", "test"));
         assertThat(contextMap, IsMapContaining.hasEntry("consumerId", "srvuser"));
     }
 

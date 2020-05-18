@@ -30,12 +30,12 @@ public class UtbetalingService {
 
     @Cacheable("utbetalingCache")
     public List<Utbetaling> hentUtbetalingerForBrukerIPeriode(String brukerFnr, LocalDate fom, LocalDate tom) {
-        logger.info("Henter utbetalinger for {} i perioden {} til {}", brukerFnr, fom, tom);
+        logger.debug("Henter utbetalinger i perioden {} til {}", fom, tom);
         try {
             WSHentUtbetalingsinformasjonResponse wsUtbetalinger = utbetalingV1.hentUtbetalingsinformasjon(lagHentUtbetalingRequest(brukerFnr, fom, tom));
             return mapTilUtbetalinger(wsUtbetalinger);
         } catch (Exception e) {
-            logger.warn("Kunne ikke hente utbetalinger for {}", brukerFnr, e);
+            logger.warn("Kunne ikke hente utbetalinger", e);
             return null;
         }
 
