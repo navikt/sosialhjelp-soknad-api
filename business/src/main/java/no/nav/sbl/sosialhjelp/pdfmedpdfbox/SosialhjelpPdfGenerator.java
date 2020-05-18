@@ -885,7 +885,6 @@ public class SosialhjelpPdfGenerator {
                 pdf.addBlankLine();
                 if (utvidetSoknad) {
                     skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_info");
-                    skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.beskrivelse");
                 }
                 if (!skattetatenSamtykke.isEmpty()) {
                     skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(skattetatenSamtykke.get(0).getBekreftelsesDato()), "utbetalinger.inntekt.skattbar.tidspunkt");
@@ -996,9 +995,6 @@ public class SosialhjelpPdfGenerator {
                 pdf.addBlankLine();
                 if (utvidetSoknad) {
                     skrivInfotekst(pdf, "inntekt.bostotte.gi_samtykke.tekst");
-                }
-                if (utvidetSoknad) {
-                    skrivInfotekst(pdf, "inntekt.bostotte.infotekst.tekst");
                 }
                 if (!bostotteSamtykke.isEmpty()) {
                     skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(bostotteSamtykke.get(0).getBekreftelsesDato()), "inntekt.bostotte.tidspunkt");
