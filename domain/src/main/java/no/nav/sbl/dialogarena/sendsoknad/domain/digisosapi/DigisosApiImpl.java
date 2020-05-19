@@ -103,7 +103,7 @@ public class DigisosApiImpl implements DigisosApi {
     private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
     private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
     private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
-    byte[] fiksPublicKey = null;
+    private byte[] fiksPublicKey = null;
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
@@ -112,10 +112,11 @@ public class DigisosApiImpl implements DigisosApi {
         this.idPortenTokenUrl = System.getProperty("idporten_token_url");
         this.idPortenClientId = System.getProperty("idporten_clientid");
         this.idPortenScope = System.getProperty("idporten_scope");
+        String idPortenConfigUrl = System.getProperty("idporten_config_url");
         try {
-            idPortenOidcConfiguration = objectMapper.readValue(URI.create(System.getProperty("idporten_config_url")).toURL(), IdPortenOidcConfiguration.class);
+            idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
         } catch (IOException e) {
-            log.warn("", e);
+            log.error(String.format("Henting av idportens konfigurasjon feilet. idPortenConfigUrl=%s", idPortenConfigUrl), e);
         }
     }
 
@@ -224,7 +225,7 @@ public class DigisosApiImpl implements DigisosApi {
                 }
                 fiksPublicKey = IOUtils.toByteArray(response.getEntity().getContent());
             } catch (IOException e) {
-                log.error("", e);
+                log.error("Henting av FIKS publicKey feilet.", e);
             }
         }
     }
