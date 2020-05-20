@@ -54,14 +54,6 @@ public class KommuneTilNavEnhetMapper {
             .put("0701", "974605171")    // Horten
             .put("1247", "974600889")    // Askøy
             .put("0806", "995509970")    // Skien
-            .put("1204", "976829786")    // Arna, Bergen kommune
-            .put("1209", "976830563")    // Bergenhus, Bergen kommune
-            .put("1202", "976829948")    // Fana, Bergen kommune
-            .put("1205", "976830032")    // Fyllingsdalen, Bergen kommune
-            .put("1206", "976830121")    // Laksevåg, Bergen kommune
-            .put("1210", "976830652")    // Ytrebygda, Bergen kommune
-            .put("1208", "976830172")    // Årstad, Bergen kommune
-            .put("1203", "976830784")    // Åsane, Bergen kommune
             .put("0326", "970534644")    // Alna, Oslo kommune
             .put("0330", "974778874")    // Bjerke, Oslo kommune
             .put("0312", "874778702")    // Frogner, Oslo kommune
@@ -231,14 +223,6 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "910940066")   // Horten
-            .put("1208", "910230964")   // Årstad,          Bergen kommune
-            .put("1209", "910230158")   // Bergenhus,       Bergen kommune
-            .put("1210", "910230506")   // Ytrebygda,       Bergen kommune
-            .put("1202", "910230913")   // Fana,            Bergen kommune
-            .put("1204", "910230905")   // Arna,            Bergen kommune
-            .put("1203", "910230530")   // Åsane,           Bergen kommune
-            .put("1205", "910230948")   // Fyllingsdalen,   Bergen kommune
-            .put("1206", "910230514")   // Laksevåg,        Bergen kommune
             .put("1247", "910230182")   // Askøy
 
             .put("0312", "910229699")   // Frogner,             Oslo kommune
@@ -282,7 +266,6 @@ public class KommuneTilNavEnhetMapper {
                     "0701", // Gammel Horten (1988-2020)
                     "0703", // Gammel Horten (1858-1988)
                     "0717", // Gammel Horten (1838-1858) (Borre)
-                    "4601", // Nytt Bergen
                     "0301", // Oslo
                     "1201", // Mock-data Oslo
                     "4627", // Nytt Askøy
@@ -343,7 +326,6 @@ public class KommuneTilNavEnhetMapper {
                     "3801", // Nytt Horten
                     "4627", // Nytt Askøy
                     "3807", // Nytt Skien
-                    "4601", // Nytt Bergen
                     "1108", // Nytt Sandnes
                     "3805", // Nytt Larvik
                     "3403", // Nytt Hamar
