@@ -6,7 +6,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>1.2020.01.08-12.57-62d0c889ddb5</version>
+        <version>1.2020.03.10_16.55-ca8a7f989623</version>
     </parent>
 
     <modules>
@@ -78,7 +78,7 @@
         <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
 
         <!-- Nav felles java-bibliotek -->
-        <nav-common.version>1.2020.01.08-12.57-62d0c889ddb5</nav-common.version>
+        <nav-common.version>1.2020.03.10_16.55-ca8a7f989623</nav-common.version>
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>5.2.5.RELEASE</spring.version>
@@ -599,17 +599,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-authorization</artifactId>
-                <version>${modig-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.sf.ehcache</groupId>
-                        <artifactId>ehcache-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-filter</artifactId>
                 <version>${modig-security.version}</version>
             </dependency>
@@ -623,11 +612,6 @@
                         <artifactId>jsr305</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-ws</artifactId>
-                <version>${modig-security.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>

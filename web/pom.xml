@@ -41,10 +41,6 @@
             <artifactId>modig-security-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-authorization</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
         </dependency>
@@ -214,11 +210,6 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-filter</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-ws</artifactId>
             <scope>runtime</scope>
         </dependency>
 
