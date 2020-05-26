@@ -42,10 +42,6 @@
             <artifactId>modig-security-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-authorization</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
         </dependency>
@@ -211,11 +207,6 @@
             <artifactId>modig-security-filter</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-ws</artifactId>
-            <scope>runtime</scope>
-        </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -292,11 +283,6 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-core</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-testcertificates</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

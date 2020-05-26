@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -15,6 +16,9 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_PERSONIDENTER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class DkifConsumerImpl implements DkifConsumer {
@@ -68,9 +72,9 @@ public class DkifConsumerImpl implements DkifConsumer {
         WebTarget b = client.target(endpoint);
 
         return b.request()
-                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken())
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
-                .header("Nav-Personidenter", ident);
+                .header(HttpHeader.AUTHORIZATION.name(), BEARER + OidcFeatureToggleUtils.getToken())
+                .header(HEADER_CALL_ID, callId)
+                .header(HEADER_CONSUMER_ID, consumerId)
+                .header(HEADER_NAV_PERSONIDENTER, ident);
     }
 }
