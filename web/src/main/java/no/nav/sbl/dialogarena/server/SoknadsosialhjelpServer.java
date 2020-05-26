@@ -42,11 +42,15 @@ public class SoknadsosialhjelpServer {
             throw new Error("tillatMockRessurs har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
+        if (ServiceUtils.isRunningInProd() && MockUtils.isMockAltProfil()) {
+            throw new Error("mockAltProfil har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
+        }
+
         if (ServiceUtils.isRunningInProd() && (MockUtils.isAlltidHentKommuneInfoFraNavTestkommune() || MockUtils.isAlltidSendTilNavTestkommune())) {
             throw new Error("Alltid send eller hent fra NavTestkommune er satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
-        if (MockUtils.isTillatMockRessurs()) {
+        if (MockUtils.isTillatMockRessurs() || MockUtils.isMockAltProfil()) {
             dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
         }
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
@@ -94,6 +98,9 @@ public class SoknadsosialhjelpServer {
             if (!MockUtils.isTillatMockRessurs()) {
                 throw new Error("Mocking må være aktivert når applikasjonen skal kjøre isolert.");
             }
+        } else if (MockUtils.isMockAltProfil()) {
+            setFrom("environment/environment-mock-alt.properties");
+            System.setProperty("fiks.nokkelfil", "/svarutpublickey/svarut_public_test.pem");
         } else if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");

@@ -7,7 +7,11 @@ import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.RSAESOAEPparams;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.cms.*;
+import org.bouncycastle.cms.CMSAlgorithm;
+import org.bouncycastle.cms.CMSEnvelopedData;
+import org.bouncycastle.cms.CMSEnvelopedDataGenerator;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -78,7 +82,7 @@ public class DokumentKrypterer {
         }
 
         try {
-            InputStream publickey = getClass().getResourceAsStream("/svarutpublickey/" + nokkelFil);
+            InputStream publickey = getClass().getResourceAsStream(nokkelFil);
             return (X509Certificate) CertificateFactory.getInstance("X509")
                     .generateCertificate(publickey);
         } catch (CertificateException e) {
