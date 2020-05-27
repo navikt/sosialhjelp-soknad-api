@@ -223,6 +223,7 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701", "910940066")   // Horten
+            .put("1209", "910230158")   // Bergenhus,       Bergen kommune
             .put("1247", "910230182")   // Askøy
 
             .put("0312", "910229699")   // Frogner,             Oslo kommune
