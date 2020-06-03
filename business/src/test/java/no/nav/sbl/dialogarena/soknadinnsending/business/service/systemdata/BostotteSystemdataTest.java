@@ -1,7 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteImpl;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteMottaker;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRolle;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.VedtakDto;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -11,7 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,10 +27,10 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedtaksstatus.AVSLAG;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class BostotteSystemdataTest {
     private static final String EIER = "12345678910";
 

@@ -1,11 +1,12 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
+import com.vdurmont.emoji.EmojiParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
@@ -15,8 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import static org.apache.cxf.common.logging.LogUtils.getLogger;
 
 public class PdfGenerator {
+
+    private final Logger logger = getLogger(PdfGenerator.class);
 
     public static final int MARGIN = 40;
     public static final int INNRYKK_1 = 50;
@@ -24,19 +30,15 @@ public class PdfGenerator {
     public static final int INNRYKK_3 = 70;
     public static final int INNRYKK_4 = 80;
 
-    public static final PDFont FONT_PLAIN = PDType1Font.HELVETICA;
-    public static final PDFont FONT_KURSIV = PDType1Font.HELVETICA_OBLIQUE;
-    public static final PDFont FONT_BOLD = PDType1Font.HELVETICA_BOLD;
+    private static final String REGULAR = "/fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf";
+    private static final String KURSIV = "/fonts/Source_Sans_Pro/SourceSansPro-Italic.ttf";
+    private static final String BOLD = "/fonts/Source_Sans_Pro/SourceSansPro-Bold.ttf";
 
     public static final int FONT_PLAIN_SIZE = 12;
     public static final int FONT_H1_SIZE = 20;
     public static final int FONT_H2_SIZE = 18;
     public static final int FONT_H3_SIZE = 16;
     public static final int FONT_H4_SIZE = 14;
-    private static final int fontPLainHeight =
-            Math.round(FONT_PLAIN.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * FONT_PLAIN_SIZE);
-    private static final int fontHeadingHeight =
-            Math.round(FONT_PLAIN.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * FONT_H1_SIZE);
 
     public static final PDRectangle MEDIA_BOX = new PDPage(PDRectangle.A4).getMediaBox();
     public static final float WIDTH_OF_CONTENT_COLUMN = new PDPage(PDRectangle.A4).getMediaBox().getWidth() - MARGIN * 2;
@@ -46,6 +48,13 @@ public class PdfGenerator {
     public static final float PAGE_WIDTH = 210 * MM_TO_UNITS;
     public static final float LEADING_PERCENTAGE = 1.5f;
 
+    public static final int BASIC_LATIN_START = 0x0020;
+    public static final int BASIC_LATIN_END = 0x007E;
+
+    public static final int EXTENDED_LATIN_START = 0x00A0;
+    public static final int EXTENDED_LATIN_END = 0x0170;
+
+
 
     private PDDocument document = new PDDocument();
     private ArrayList<PDPage> completedPages;
@@ -54,10 +63,15 @@ public class PdfGenerator {
     private PDPageContentStream currentStream;
     private float y;
 
+    private final PDFont FONT_REGULAR = PDType0Font.load(document, new ClassPathResource(REGULAR).getInputStream());
+    private final PDFont FONT_BOLD = PDType0Font.load(document, new ClassPathResource(BOLD).getInputStream());
+    private final PDFont FONT_KURSIV = PDType0Font.load(document, new ClassPathResource(KURSIV).getInputStream());
+
+
     public PdfGenerator() throws IOException {
         this.currentStream = new PDPageContentStream(document, currentPage);
         this.y = calculateStartY();
-        this.addLogo();
+        // this.addLogo(); Fjerner logo midlertidig da den ikke virker for FSL
     }
 
     public byte[] finish() throws IOException {
@@ -99,7 +113,7 @@ public class PdfGenerator {
     }
 
     public void skrivTekst(String text) throws IOException {
-        this.addParagraph(text, FONT_PLAIN, FONT_PLAIN_SIZE, MARGIN);
+        this.addParagraph(text, FONT_REGULAR, FONT_PLAIN_SIZE, MARGIN);
     }
 
     public void skrivTekstKursiv(String text) throws IOException {
@@ -107,7 +121,7 @@ public class PdfGenerator {
     }
 
     public void skrivTekstMedInnrykk(String text, int innrykk) throws IOException {
-        this.addParagraph(text, FONT_PLAIN, FONT_PLAIN_SIZE, innrykk);
+        this.addParagraph(text, FONT_REGULAR, FONT_PLAIN_SIZE, innrykk);
     }
 
     public void skrivTekstBold(String tekst) throws IOException {
@@ -115,7 +129,7 @@ public class PdfGenerator {
     }
 
     public void skrivH1(String tekst) throws IOException {
-        this.addParagraph(tekst, FONT_PLAIN, FONT_H1_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H1_SIZE, MARGIN);
     }
 
     public void skrivH1Bold(String tekst) throws IOException {
@@ -123,7 +137,7 @@ public class PdfGenerator {
     }
 
     public void skrivH2(String tekst) throws IOException {
-        this.addParagraph(tekst, FONT_PLAIN, FONT_H2_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H2_SIZE, MARGIN);
     }
 
     public void skrivH2Bold(String tekst) throws IOException {
@@ -131,7 +145,7 @@ public class PdfGenerator {
     }
 
     public void skrivH3(String tekst) throws IOException {
-        this.addParagraph(tekst, FONT_PLAIN, FONT_H3_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H3_SIZE, MARGIN);
     }
 
     public void skrivH3Bold(String tekst) throws IOException {
@@ -139,7 +153,7 @@ public class PdfGenerator {
     }
 
     public void skrivH4(String tekst) throws IOException {
-        this.addParagraph(tekst, FONT_PLAIN, FONT_H4_SIZE, MARGIN);
+        this.addParagraph(tekst, FONT_REGULAR, FONT_H4_SIZE, MARGIN);
     }
 
     public void skrivH4Bold(String tekst) throws IOException {
@@ -168,26 +182,14 @@ public class PdfGenerator {
             float fontSize,
             int margin
     ) throws IOException {
-
-        boolean justify = false;
-
         List<String> lines = parseLines(text, font, fontSize);
         this.currentStream.setFont(font, fontSize);
         this.currentStream.beginText();
         this.currentStream.newLineAtOffset(margin, this.y);
 
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
+        for (String line : lines) {
             float charSpacing = 0;
-            if (justify) {
-                if (line.length() > 1) {
-                    float size = fontSize * font.getStringWidth(line) / 1000;
-                    float free = WIDTH_OF_CONTENT_COLUMN - size;
-                    if (free > 0 && !lines.get(lines.size() - 1).equals(line)) {
-                        charSpacing = free / (line.length() - 1);
-                    }
-                }
-            }
+
             this.currentStream.setCharacterSpacing(charSpacing);
             this.currentStream.showText(line);
             this.currentStream.newLineAtOffset(0, -LEADING_PERCENTAGE * fontSize);
@@ -237,31 +239,76 @@ public class PdfGenerator {
         this.y -= lines.size() * fontSize;
     }
 
-    private static List<String> parseLines(String text, PDFont font, float fontSize) throws IOException {
+    private List<String> parseLines(String text, PDFont font, float fontSize) throws IOException {
         List<String> lines = new ArrayList<>();
-        int lastSpace = -1;
-        while (text != null && text.length() > 0) {
-            int spaceIndex = text.indexOf(' ', lastSpace + 1);
-            if (spaceIndex < 0)
-                spaceIndex = text.length();
-            String subString = text.substring(0, spaceIndex);
-            float size = fontSize * font.getStringWidth(subString) / 1000;
-            if (size > PdfGenerator.WIDTH_OF_CONTENT_COLUMN) {
-                if (lastSpace < 0) {
+
+        if (text == null) {
+            return lines;
+        }
+
+        text = EmojiParser.parseToAliases(text);
+
+        for (String line : splitTextOnNewlines(text)) {
+            int lastSpace = -1;
+            while (line != null && line.length() > 0) {
+                int spaceIndex = line.indexOf(' ', lastSpace + 1);
+                if (spaceIndex < 0)
+                    spaceIndex = line.length();
+                String subString = line.substring(0, spaceIndex);
+                float size = fontSize * font.getStringWidth(subString) / 1000;
+                if (size > PdfGenerator.WIDTH_OF_CONTENT_COLUMN) {
+                    if (lastSpace < 0) {
+                        lastSpace = spaceIndex;
+                    }
+                    subString = line.substring(0, lastSpace);
+                    // One more check to see if line is too long
+                    size = fontSize * font.getStringWidth(subString) / 1000;
+                    if (size > PdfGenerator.WIDTH_OF_CONTENT_COLUMN) {
+                        lines.add(subString.substring(0, 90));
+                        lines.add(subString.substring(90));
+                    } else {
+                        lines.add(subString);
+                    }
+                    line = line.substring(lastSpace).trim();
+                    lastSpace = -1;
+                } else if (spaceIndex == line.length()) {
+                    lines.add(line);
+                    line = "";
+                } else {
                     lastSpace = spaceIndex;
                 }
-                subString = text.substring(0, lastSpace);
-                lines.add(subString);
-                text = text.substring(lastSpace).trim();
-                lastSpace = -1;
-            } else if (spaceIndex == text.length()) {
-                lines.add(text);
-                text = "";
-            } else {
-                lastSpace = spaceIndex;
             }
         }
+
         return lines;
+    }
+
+    private List<String> splitTextOnNewlines(String text) {
+        List<String> splitByNewlines = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            if (characterIsLinebreak(text.codePointAt(i))) {
+                splitByNewlines.add(stringBuilder.toString());
+                stringBuilder = new StringBuilder();
+            } else if (characterIsLegal(text.codePointAt(i))) {
+                stringBuilder.append(text.charAt(i));
+            } else {
+                logger.info("Prøver å skrive ulovlig tegn til pdf. UTF-8 codepoint: " + text.codePointAt(i));
+            }
+        }
+        splitByNewlines.add(stringBuilder.toString());
+        return splitByNewlines;
+    }
+
+    private boolean characterIsLegal(int codePoint) {
+        if ((codePoint >= BASIC_LATIN_START && codePoint <= BASIC_LATIN_END) || (codePoint >= EXTENDED_LATIN_START && codePoint <= EXTENDED_LATIN_END)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean characterIsLinebreak(int codePoint) {
+        return codePoint == 0x000A || codePoint == 0x000D;
     }
 
     public void addLogo() throws IOException {
@@ -269,6 +316,11 @@ public class PdfGenerator {
         float startX = (MEDIA_BOX.getWidth() - 99) / 2;
         float offsetTop = 40;
         this.currentStream.drawImage(ximage, 27, 765, 99, 62);
+    }
+
+    public void addLink(String uri, String text) throws IOException {
+
+        skrivTekst(text);
     }
 
     private static byte[] logo() {

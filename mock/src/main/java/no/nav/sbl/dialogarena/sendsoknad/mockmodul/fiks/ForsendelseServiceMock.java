@@ -1,13 +1,20 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.fiks;
 
-import no.ks.svarut.servicesv9.*;
+import no.ks.svarut.servicesv9.Dokument;
+import no.ks.svarut.servicesv9.Forsendelse;
+import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
+import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -21,7 +28,7 @@ public class ForsendelseServiceMock {
 
         try {
             when(amock.sendForsendelse(any())).then(invocation -> {
-                Forsendelse forsendelse = invocation.getArgumentAt(0, Forsendelse.class);
+                Forsendelse forsendelse = invocation.getArgument(0);
                 String behId = forsendelse.getEksternref();
 
                 String mottakerOrg = ((OrganisasjonDigitalAdresse) forsendelse.getMottaker().getDigitalAdresse()).getOrgnr();
@@ -51,17 +58,17 @@ public class ForsendelseServiceMock {
         mappeForForsendelse.mkdir();
         logger.info("Lagrer filer lokalt i " + mappenavn);
         for (Dokument dokument : forsendelse.getDokumenter()) {
-            OutputStream os = null;
-            InputStream is = null;
+            OutputStream os;
+            InputStream is;
             try {
                 is = dokument.getData().getInputStream();
                 os = new FileOutputStream(new File(mappenavn + "/" + dokument.getFilnavn()));
                 IOUtils.copy(is, os);
+                is.close();
+                os.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            IOUtils.closeQuietly(os);
-            IOUtils.closeQuietly(is);
         }
     }
 

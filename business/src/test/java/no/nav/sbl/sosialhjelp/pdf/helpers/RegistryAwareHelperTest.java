@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import java.time.Clock;
 import java.util.List;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)

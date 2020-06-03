@@ -9,6 +9,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Soked
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +23,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType.gateAdresse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class AdresseSokService {
+    private static final Logger log = LoggerFactory.getLogger(AdresseSokService.class);
 
     @Inject
     private AdresseSokConsumer adresseSokConsumer;
@@ -72,7 +76,7 @@ public class AdresseSokService {
     public List<Kommunesok> sokEtterNavEnheter(String kommunenr) {
         return sokEtterNavKontor(new AdresseSokConsumer.Sokedata().withKommunenummer(kommunenr))
                 .stream().map(adresseForslag -> {
-                    NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
+                    NavEnhet navEnhet = norgService.getEnhetForGt(adresseForslag.geografiskTilknytning);
                     return new Kommunesok(kommunenr, adresseForslag, navEnhet);
                 }).collect(Collectors.toList());
     }
@@ -89,7 +93,7 @@ public class AdresseSokService {
         adresse.geografiskTilknytning = data.geografiskTilknytning;
         adresse.gatekode = data.gatekode;
         adresse.bydel = data.bydel;
-        adresse.type = "gateadresse";
+        adresse.type = gateAdresse;
         return adresse;
     }
 

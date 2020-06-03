@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -13,20 +14,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SoknadsmottakerServiceTest {
     private static final String EIER = "123456789101";
 
@@ -82,9 +83,9 @@ public class SoknadsmottakerServiceTest {
 
         AdresseForslag adresseForslag = adresseForslagene.get(0);
 
-        assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
         assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
-        assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
+        assertThat(adresseForslag.type, is(AdresseForslagType.matrikkelAdresse));
+        // Får kun kommunenummer som adresseforslag. Ut fra denne finner man navenhet i den lokale lista
     }
 
     @Test

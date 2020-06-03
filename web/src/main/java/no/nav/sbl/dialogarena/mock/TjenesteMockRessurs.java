@@ -14,11 +14,11 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektConsumerMock;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -42,7 +42,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
@@ -73,8 +79,6 @@ public class TjenesteMockRessurs {
     private FiksSender fiksSender;
     @Inject
     private Adressekodeverk adressekodeverk;
-    @Inject
-    private SkattbarInntektService skattbarInntektService;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
@@ -200,7 +204,7 @@ public class TjenesteMockRessurs {
         }
 
         fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
-        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med fnr: " + fnr);
+        logger.warn("Setter telefonnummer for bruker. Dette skal aldri skje i PROD.");
         if (jsonTelefonnummer != null) {
             DkifConsumerMock.setTelefonnummer(jsonTelefonnummer.getVerdi(), fnr);
         } else {
@@ -305,7 +309,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
-        skattbarInntektService.setMockData(fnr, jsonWSSkattUtbetaling);
+        SkattbarInntektConsumerMock.setMockData(fnr, jsonWSSkattUtbetaling);
         clearCache();
     }
 
@@ -317,7 +321,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
-        skattbarInntektService.setMockSkalFeile(fnr, skalFeile);
+        SkattbarInntektConsumerMock.setMockSkalFeile(fnr, skalFeile);
         clearCache();
     }
 

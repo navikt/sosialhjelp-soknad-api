@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
@@ -25,13 +25,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.Collator;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 import static javax.xml.bind.JAXBContext.newInstance;
-import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.KOMMUNE;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.LANDKODE;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.POSTNUMMER;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static org.joda.time.DateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -69,7 +75,7 @@ public class StandardKodeverk implements Kodeverk {
             logger.info("Kodeverk-failback er ikke aktivert.");
         }
     }
-    
+
     @Override
     public String gjettKommunenummer(String kommunenavn) {
         return finnSisteKodenavnFraFoersteTermnavn(kommunenavn, KOMMUNE.toString());
@@ -97,7 +103,7 @@ public class StandardKodeverk implements Kodeverk {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         String landFraKodeverk = hentFoersteTermnavnFraKodenavnIKodeverk(landkode, LANDKODE.toString());
-        if(landFraKodeverk == null) {
+        if (landFraKodeverk == null) {
             hentKodeverk(LANDKODE.toString()).getKode()
                     .add(new XMLKode()
                             .withNavn(landkode)
@@ -106,7 +112,7 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private String formaterLand(String land) {
-        if(land == null) {
+        if (land == null) {
             return land;
         }
         String formaterMedSpace = setUpperCaseBeforeRegex(land.toLowerCase(), " ");
@@ -118,13 +124,13 @@ public class StandardKodeverk implements Kodeverk {
         String[] split = s.split(regex);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < split.length; i++) {
-            if(i > 0) {
+            if (i > 0) {
                 sb.append(regex);
             }
 
-            if(split[i].equals("og")) {
+            if (split[i].equals("og")) {
                 sb.append(split[i]);
-            }else{
+            } else {
                 sb.append(split[i].substring(0, 1).toUpperCase());
                 sb.append(split[i].substring(1));
             }
@@ -133,10 +139,10 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     @PostConstruct()
-    public  void lastKodeverkVedOppstart(){
-        try{
-        lastInnNyeKodeverk();
-        }catch(RuntimeException ex){
+    public void lastKodeverkVedOppstart() {
+        try {
+            lastInnNyeKodeverk();
+        } catch (RuntimeException ex) {
             logger.warn("Kunne ikke hente kodeverk under oppstart av applikasjon. " + ex, ex);
         }
     }
@@ -170,9 +176,9 @@ public class StandardKodeverk implements Kodeverk {
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
         DateTime now = now();
         return enkeltkodeverk.getKode().stream()
-                  .filter(kode -> kode.getGyldighetsperiode().stream()
-                          .anyMatch(periode -> now.isAfter(periode.getFom()) && now.isBefore(periode.getTom())))
-                  .collect(toList());
+                .filter(kode -> kode.getGyldighetsperiode().stream()
+                        .anyMatch(periode -> now.isAfter(periode.getFom()) && now.isBefore(periode.getTom())))
+                .collect(toList());
     }
 
     private XMLEnkeltKodeverk kodeverkMedNavn(String kodeverknavn) {
@@ -192,7 +198,7 @@ public class StandardKodeverk implements Kodeverk {
         }
         return null;
     }
-    
+
     private String finnSisteKodenavnFraFoersteTermnavn(String termnavn, String kodeverknavn) {
         String navn = null;
         for (XMLKode kode : kodeverkMedNavn(kodeverknavn).getKode()) {
@@ -209,7 +215,7 @@ public class StandardKodeverk implements Kodeverk {
         try {
             kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
         } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
-            throw new SystemException("Kodeverk '" + navn + "' (" + spraak + "): " + kodeverkIkkeFunnet.getMessage(), kodeverkIkkeFunnet);
+            throw new SosialhjelpSoknadApiException("Kodeverk '" + navn + "' (" + spraak + "): " + kodeverkIkkeFunnet.getMessage(), kodeverkIkkeFunnet);
         } catch (RuntimeException e) {
             webserviceException = Optional.of(e);
         }
@@ -252,13 +258,13 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private static String createErrorMessage(JAXBException e) {
-        return "Unable to load class " + StandardKodeverk.class.getName() +", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage();
+        return "Unable to load class " + StandardKodeverk.class.getName() + ", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage();
     }
 
     @SuppressWarnings("unchecked")
     private XMLKodeverk readFromDump(String dumpName) {
-        if(dumpDirectory.isPresent() && dumpDirectory.get().exists()){
-            File dumpFile = new File(dumpDirectory.get(),dumpName + ".xml");
+        if (dumpDirectory.isPresent() && dumpDirectory.get().exists()) {
+            File dumpFile = new File(dumpDirectory.get(), dumpName + ".xml");
             try {
                 logger.info("Leser dump fra fil '{}'", dumpFile);
                 return ((JAXBElement<XMLKodeverk>) JAXB.createUnmarshaller().unmarshal(dumpFile)).getValue();

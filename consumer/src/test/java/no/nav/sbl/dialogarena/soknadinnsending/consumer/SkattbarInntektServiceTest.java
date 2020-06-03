@@ -1,39 +1,43 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
-import org.junit.After;
-import org.junit.Before;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
+import org.apache.cxf.helpers.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SkattbarInntektServiceTest {
 
+    @Mock
+    private SkattbarInntektConsumer skattbarInntektConsumer;
+
     @InjectMocks
     private SkattbarInntektService skattbarInntektService;
 
-    @Before
-    public void setUp() throws Exception {
-        System.setProperty("tillatmock", "true");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        System.setProperty("tillatmock", "false");
-    }
-
     @Test
     public void hentSkattbarInntekt() {
-        skattbarInntektService.mockFil = "/mockdata/InntektOgSkatt.json";
-        List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt("01234567");
+        SkattbarInntekt skattbarInntekt = readResponseFromPath("/mockdata/InntektOgSkatt.json");
+        when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
+
+        List<Utbetaling> utbetalinger = skattbarInntektService.hentUtbetalinger("01234567");
         Map<String, List<Utbetaling>> utbetalingPerTittel = utbetalinger.stream().collect(Collectors.groupingBy(o -> o.tittel));
         List<Utbetaling> lonn = utbetalingPerTittel.get("Lønnsinntekt");
 
@@ -43,16 +47,34 @@ public class SkattbarInntektServiceTest {
 
     @Test
     public void hentSkattbarInntektForToMaanederIgnorererDaArbeidsgiver1IForrigeMaaned() {
-        skattbarInntektService.mockFil = "/mockdata/InntektOgSkattToMaaneder.json";
-        List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt("01234567");
+        SkattbarInntekt skattbarInntekt = readResponseFromPath("/mockdata/InntektOgSkattToMaaneder.json");
+        when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
+
+        List<Utbetaling> utbetalinger = skattbarInntektService.hentUtbetalinger("01234567");
         assertThat(utbetalinger).hasSize(2);
     }
 
     @Test
     public void hentSkattbarInntektForToMaanederIForrigeMaanedBeggeMaanedeneOgArbeidsgiverneVilVaereMed() {
-        skattbarInntektService.mockFil = "/mockdata/InntektOgSkattToMaanederToArbeidsgivere.json";
-        List<Utbetaling> utbetalinger = skattbarInntektService.hentSkattbarInntekt("01234567");
+        SkattbarInntekt skattbarInntekt = readResponseFromPath("/mockdata/InntektOgSkattToMaanederToArbeidsgivere.json");
+        when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
+
+        List<Utbetaling> utbetalinger = skattbarInntektService.hentUtbetalinger("01234567");
         assertThat(utbetalinger).hasSize(2);
         assertThat(utbetalinger.stream().collect(Collectors.groupingBy(o -> o.orgnummer)).entrySet()).hasSize(2);
+    }
+
+
+    private SkattbarInntekt readResponseFromPath(String path) {
+        try {
+            InputStream resourceAsStream = this.getClass().getResourceAsStream(path);
+            if (resourceAsStream == null) {
+                return null;
+            }
+            String json = IOUtils.toString(resourceAsStream);
+            return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, SkattbarInntekt.class);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

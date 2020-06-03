@@ -38,14 +38,20 @@ import java.util.Locale;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
 
-    public static final String TESTKOMMUNE = "2352";
+    public static final String TESTKOMMUNE = "3002";
     public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
     private String EIER;
 
@@ -200,7 +206,7 @@ public class SoknadActionsTest {
         String behandlingsId = "kommuneMedFDA";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
-        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
+        when(kommuneInfoService.kommuneInfo(any())).thenReturn(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
         System.setProperty("digisosapi.sending.enable", "true");
 
         actions.sendSoknad(behandlingsId, context, "");
@@ -213,7 +219,7 @@ public class SoknadActionsTest {
         String behandlingsId = "kommuneMedMidlertidigFeil";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
-        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
+        when(kommuneInfoService.kommuneInfo(any())).thenReturn(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
         System.setProperty("digisosapi.sending.enable", "true");
 
         actions.sendSoknad(behandlingsId, context, "");
@@ -227,7 +233,7 @@ public class SoknadActionsTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer("9999_kommune_uten_svarut");
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
-        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
+        when(kommuneInfoService.kommuneInfo(any())).thenReturn(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
         System.setProperty("digisosapi.sending.enable", "true");
 
         actions.sendSoknad(behandlingsId, context, "");

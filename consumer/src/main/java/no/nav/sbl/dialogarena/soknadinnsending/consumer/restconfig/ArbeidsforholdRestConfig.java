@@ -16,6 +16,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
@@ -50,7 +51,7 @@ public class ArbeidsforholdRestConfig {
                 arbeidsforholdConsumer().ping();
                 return lyktes(metadata);
             } catch (Exception e) {
-                return feilet(metadata,"Ping feiler: aareg.api har ikke dedikert ping-endepunkt enda.", e);
+                return feilet(metadata, e);
             }
         };
     }
@@ -58,7 +59,7 @@ public class ArbeidsforholdRestConfig {
     private Client arbeidsforholdClient() {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey))
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey))
                 .register(arbeidsforholdMapper());
     }
 }

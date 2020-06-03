@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.tidTilTimestamp;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.timestampTilTid;
 
 @Component
 public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadMetadataRepository {

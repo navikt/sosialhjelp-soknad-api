@@ -8,19 +8,27 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilg
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkontonummer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bostedsadresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Diskresjonskoder;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Matrikkeladresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Postnummer;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.xml.ws.WebServiceException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)

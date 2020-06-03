@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Splitter;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -15,13 +16,16 @@ import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -33,16 +37,43 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.MediaType;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.URI;
-import java.security.*;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -50,13 +81,18 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
+import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
+import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class DigisosApiImpl implements DigisosApi {
 
     private static final Logger log = getLogger(DigisosApiImpl.class);
+    private static final int MAX_MESSAGE_LENGTH = 16384;
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
     private String idPortenTokenUrl;
@@ -67,6 +103,7 @@ public class DigisosApiImpl implements DigisosApi {
     private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
     private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
     private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
+    private byte[] fiksPublicKey = null;
 
     public DigisosApiImpl() {
         if (MockUtils.isTillatMockRessurs()) {
@@ -75,10 +112,11 @@ public class DigisosApiImpl implements DigisosApi {
         this.idPortenTokenUrl = System.getProperty("idporten_token_url");
         this.idPortenClientId = System.getProperty("idporten_clientid");
         this.idPortenScope = System.getProperty("idporten_scope");
+        String idPortenConfigUrl = System.getProperty("idporten_config_url");
         try {
-            idPortenOidcConfiguration = objectMapper.readValue(URI.create(System.getProperty("idporten_config_url")).toURL(), IdPortenOidcConfiguration.class);
+            idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
         } catch (IOException e) {
-            log.warn("", e);
+            log.error(String.format("Henting av idportens konfigurasjon feilet. idPortenConfigUrl=%s", idPortenConfigUrl), e);
         }
     }
 
@@ -105,12 +143,12 @@ public class DigisosApiImpl implements DigisosApi {
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommuner/");
-            http.setHeader("Accept", MediaType.APPLICATION_JSON);
-            http.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
+            http.setHeader(ACCEPT.name(), MediaType.APPLICATION_JSON);
+            http.setHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"));
             String integrasjonpassord_fiks = System.getProperty("integrasjonpassord_fiks");
             Objects.requireNonNull(integrasjonpassord_fiks, "integrasjonpassord_fiks");
-            http.setHeader("IntegrasjonPassord", integrasjonpassord_fiks);
-            http.setHeader("Authorization", "Bearer " + accessToken.accessToken);
+            http.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassord_fiks);
+            http.setHeader(AUTHORIZATION.name(), "Bearer " + accessToken.accessToken);
 
             long startTime = System.currentTimeMillis();
             CloseableHttpResponse response = client.execute(http);
@@ -122,13 +160,19 @@ public class DigisosApiImpl implements DigisosApi {
             }
 
             String content = EntityUtils.toString(response.getEntity());
-            log.info("KommuneInfo: {}", content);
+            String loggmelding = String.format("KommuneInfo: %s", content);
+            List<String> split = Splitter.fixedLength(MAX_MESSAGE_LENGTH).splitToList(loggmelding);
+            log.info(split.get(0));
+            if (split.size() > 1) {
+                split.subList(1, split.size()).forEach(log::info);
+            }
+
             Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
             cacheForKommuneinfo.set(collect);
             cacheTimestamp = LocalDateTime.now();
             return collect;
         } catch (Exception e) {
-            if(cacheForKommuneinfo.get().isEmpty()) {
+            if (cacheForKommuneinfo.get().isEmpty()) {
                 log.error("Hent kommuneinfo feiler og cache er tom!", e);
                 return Collections.emptyMap();
             }
@@ -142,9 +186,9 @@ public class DigisosApiImpl implements DigisosApi {
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         String digisosId;
         try {
-            X509Certificate dokumentlagerPublicKeyX509Certificate = getDokumentlagerPublicKeyX509Certificate(token);
+            X509Certificate fiksX509Certificate = getFiksPublicKeyX509Certificate(token);
             digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
-                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, dokumentlagerPublicKeyX509Certificate)))
+                    .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, fiksX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, behandlingsId, token);
 
             waitForFutures(krypteringFutureList);
@@ -155,37 +199,49 @@ public class DigisosApiImpl implements DigisosApi {
         return digisosId;
     }
 
-    private X509Certificate getDokumentlagerPublicKeyX509Certificate(String token) {
-        byte[] publicKey = new byte[0];
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-            HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
-                    .addHeader("Accept", MediaType.WILDCARD)
-                    .addHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"))
-                    .addHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"))
-                    .addHeader("Authorization", token).build();
+    private X509Certificate getFiksPublicKeyX509Certificate(String token) {
+        fetchFiksPublicKeyIfNull(token);
+        return generateX509CertificateFromFiksPublicKey();
+    }
 
-            CloseableHttpResponse response = client.execute(request);
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode >= 300) {
-                log.warn("Statuscode ved henting av sertifikat {} token:{}", statusCode, token);
-                log.warn(response.getStatusLine().getReasonPhrase());
-                log.warn(EntityUtils.toString(response.getEntity()));
+    private void fetchFiksPublicKeyIfNull(String token) {
+        // Fiks public key skal aldri endres. Isåfall vil Fiks gi en tydelig beskjed.
+        //Denne integrasjonen kan feile så fiksPublicKey blir derfor cachet.
+        if (fiksPublicKey == null) {
+            try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
+                HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
+                        .addHeader(ACCEPT.name(), MediaType.WILDCARD)
+                        .addHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"))
+                        .addHeader(HEADER_INTEGRASJON_PASSORD, System.getProperty("integrasjonpassord_fiks"))
+                        .addHeader(AUTHORIZATION.name(), token).build();
+
+                CloseableHttpResponse response = client.execute(request);
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode >= 300) {
+                    log.error("Statuscode ved henting av sertifikat {} - {}, response:{}",
+                            statusCode,
+                            response.getStatusLine().getReasonPhrase(),
+                            EntityUtils.toString(response.getEntity()));
+                }
+                fiksPublicKey = IOUtils.toByteArray(response.getEntity().getContent());
+            } catch (IOException e) {
+                log.error("Henting av FIKS publicKey feilet.", e);
             }
-            publicKey = IOUtils.toByteArray(response.getEntity().getContent());
-        } catch (IOException e) {
-            log.error("", e);
         }
-        try {
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+    }
 
-            return (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(publicKey));
+    private X509Certificate generateX509CertificateFromFiksPublicKey() {
+        try {
+            return (X509Certificate) CertificateFactory
+                    .getInstance("X.509")
+                    .generateCertificate(new ByteArrayInputStream(fiksPublicKey));
 
         } catch (CertificateException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, X509Certificate dokumentlagerPublicKeyX509Certificate) {
+    private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, X509Certificate fiksX509Certificate) {
         CMSStreamKryptering kryptering = new CMSKrypteringImpl();
 
         PipedInputStream pipedInputStream = new PipedInputStream();
@@ -194,7 +250,7 @@ public class DigisosApiImpl implements DigisosApi {
             Future<Void> krypteringFuture =
                     executor.submit(() -> {
                         try {
-                            kryptering.krypterData(pipedOutputStream, dokumentStream, dokumentlagerPublicKeyX509Certificate, Security.getProvider("BC"));
+                            kryptering.krypterData(pipedOutputStream, dokumentStream, fiksX509Certificate, Security.getProvider("BC"));
                         } catch (Exception e) {
                             log.error("Encryption failed, setting exception on encrypted InputStream", e);
                             throw new IllegalStateException("An error occurred during encryption", e);
@@ -244,7 +300,7 @@ public class DigisosApiImpl implements DigisosApi {
                 .build()));
 
         MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
-        entitybuilder.setCharset(Charsets.UTF_8);
+        entitybuilder.setCharset(StandardCharsets.UTF_8);
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
         entitybuilder.addTextBody("soknadJson", soknadJson, ContentType.APPLICATION_JSON);
@@ -264,9 +320,9 @@ public class DigisosApiImpl implements DigisosApi {
             HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, behandlingsId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
-            post.setHeader("Authorization", token);
-            post.setHeader("IntegrasjonId", System.getProperty("integrasjonsid_fiks"));
-            post.setHeader("IntegrasjonPassord", System.getProperty("integrasjonpassord_fiks"));
+            post.setHeader(AUTHORIZATION.name(), token);
+            post.setHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"));
+            post.setHeader(HEADER_INTEGRASJON_PASSORD, System.getProperty("integrasjonpassord_fiks"));
 
             post.setEntity(entitybuilder.build());
             long startTime = System.currentTimeMillis();
@@ -276,7 +332,7 @@ public class DigisosApiImpl implements DigisosApi {
                 String errorResponse = EntityUtils.toString(response.getEntity());
                 String fiksDigisosId = getDigisosIdFromResponse(errorResponse, behandlingsId);
                 if (fiksDigisosId != null) {
-                    log.error("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
+                    log.warn("Søknad {} er allerede sendt til fiks-digisos-api med id {}. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: {} ", behandlingsId, fiksDigisosId, errorResponse);
                     return fiksDigisosId;
                 }
 
@@ -339,9 +395,9 @@ public class DigisosApiImpl implements DigisosApi {
     private String createJws() {
         try {
             String virksomhetsSertifikatPath = System.getProperty("virksomhetssertifikat_path", "/var/run/secrets/nais.io/virksomhetssertifikat");
-            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/credentials.json")), VirksertCredentials.class);
+            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/credentials.json"), StandardCharsets.UTF_8), VirksertCredentials.class);
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            String src = FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/key.p12.b64"));
+            String src = FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/key.p12.b64"), StandardCharsets.UTF_8);
             keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(src)), virksertCredentials.password.toCharArray());
 
             X509Certificate certificate = (X509Certificate) keyStore.getCertificate(virksertCredentials.alias);

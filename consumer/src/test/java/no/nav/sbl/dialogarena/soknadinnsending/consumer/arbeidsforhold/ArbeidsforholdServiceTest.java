@@ -8,18 +8,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.System.getProperties;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,7 +43,6 @@ public class ArbeidsforholdServiceTest {
 
     @Before
     public void setUp() {
-        getProperties().setProperty("aareg_api_enabled", "true");
         when(organisasjonService.hentOrgNavn(anyString())).thenReturn(orgNavn);
     }
 
@@ -50,7 +50,7 @@ public class ArbeidsforholdServiceTest {
     public void skalMappeDtoTilArbeidsforhold() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true, fom, tom)));
 
-        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr, null);
+        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
 
         assertEquals(orgNavn, arbeidsforhold.arbeidsgivernavn);
@@ -66,7 +66,7 @@ public class ArbeidsforholdServiceTest {
     public void skalSetteArbeidsgivernavnTilOrgnrHvisArbeidsgiverErOrganisasjon() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(false, fom, tom)));
 
-        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr, null);
+        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
 
         assertEquals("Privatperson", arbeidsforhold.arbeidsgivernavn);
@@ -78,7 +78,7 @@ public class ArbeidsforholdServiceTest {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr))
                 .thenReturn(singletonList(createArbeidsforholdMedFlereArbeidsavtaler(12.3, 45.6)));
 
-        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr, null);
+        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
 
         // desimaler strippes fra double til long
@@ -89,7 +89,7 @@ public class ArbeidsforholdServiceTest {
     public void ansettelsesperiodeTomKanVæreNull() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true, fom, null)));
 
-        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr, null);
+        List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
 
         assertEquals(orgNavn, arbeidsforhold.arbeidsgivernavn);

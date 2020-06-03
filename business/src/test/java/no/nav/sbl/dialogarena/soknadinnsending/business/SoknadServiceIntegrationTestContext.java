@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
@@ -35,7 +34,6 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.time.Clock;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static org.mockito.Mockito.mock;
 
 @Import(value = {DatabaseTestContext.class})

@@ -24,7 +24,7 @@ public class FiksSender {
     static final String SOKNAD_TIL_NAV = "Søknad til NAV";
     static final String ETTERSENDELSE_TIL_NAV = "Ettersendelse til NAV";
     public static String KRYPTERING_DISABLED = "feature.fiks.kryptering.disabled";
-    private boolean SKAL_KRYPTERE = !Boolean.valueOf(System.getProperty(KRYPTERING_DISABLED, "false"));
+    private boolean SKAL_KRYPTERE = !Boolean.parseBoolean(System.getProperty(KRYPTERING_DISABLED, "false"));
 
     private static final Logger log = LoggerFactory.getLogger(FiksSender.class);
 
@@ -139,7 +139,7 @@ public class FiksSender {
                 antallBrukerOpplastedeVedlegg += vedlegg.getFiler().size();
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse, soknadUnderArbeid.erEttersendelse());
+                log.warn("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse, soknadUnderArbeid.erEttersendelse());
             }
         } catch (RuntimeException e) {
             log.debug("Ignored exception");

@@ -21,7 +21,9 @@ public class IntegrationConfig {
         return beanFactory -> {
             MOCKS.clear();
             try {
-                ImmutableSet<ClassPath.ClassInfo> tjenester = ClassPath.from(IntegrationConfig.class.getClassLoader()).getTopLevelClasses("no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig");
+                ImmutableSet<ClassPath.ClassInfo> tjenester = ClassPath
+                        .from(IntegrationConfig.class.getClassLoader())
+                        .getTopLevelClasses("no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig");
                 System.out.println(tjenester);
                 for (ClassPath.ClassInfo classInfo : tjenester) {
                     for (Method method: classInfo.load().getMethods()) {

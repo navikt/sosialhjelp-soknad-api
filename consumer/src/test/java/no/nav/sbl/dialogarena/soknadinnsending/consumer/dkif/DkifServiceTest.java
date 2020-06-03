@@ -3,17 +3,16 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfo;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.Feil;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,11 +26,6 @@ public class DkifServiceTest {
 
     private String ident = "99988877777";
     private String mobiltelefonnummer = "12345678";
-
-    @Before
-    public void setUp() {
-        System.setProperty("dkif_api_enabled", "true");
-    }
 
     @Test
     public void skalHenteMobiltelefonnummer() {

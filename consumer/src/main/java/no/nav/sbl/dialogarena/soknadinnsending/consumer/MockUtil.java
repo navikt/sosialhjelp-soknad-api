@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import static java.lang.Boolean.valueOf;
 import static java.lang.System.getProperty;
 
 public class MockUtil {
@@ -14,7 +13,7 @@ public class MockUtil {
     private static final String DEFAULT_VALGTMAANED = "0";
 
     public static boolean mockSetupErTillatt() {
-        return valueOf(getProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT));
+        return Boolean.parseBoolean(getProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT));
     }
 
     public static boolean startdatoMockErTillattOgAktivert() {

@@ -9,10 +9,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.ArbeidsforholdSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BostotteSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.FamilieSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.UtbetalingerFraNavSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdTransformer;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGeneratorConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -26,7 +33,6 @@ import org.springframework.context.annotation.Import;
         ServiceConfig.class,
         ServicesApplicationConfig.class,
         ArbeidsforholdService.class,
-        ArbeidsforholdTransformer.class,
         OppgaveHandtererImpl.class,
         AvbrytAutomatiskSheduler.class,
         NullstillValgtNavenhetVedKommunesammenslaingSheduler.class,
