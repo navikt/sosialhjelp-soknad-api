@@ -69,6 +69,18 @@ public class OpplastetVedleggRepositoryJdbc extends NamedParameterJdbcDaoSupport
                         soknadId);
     }
 
+    @Override
+    public Integer hentSamletVedleggStorrelse(Long soknadId, String eier) {
+        if (getJdbcTemplate()
+                .queryForObject("select count(*) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", Integer.class, eier, soknadId) > 0) {
+            String sql = "select sum(dbms_lob.getLength(DATA)) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?";
+            Integer totalSize = getJdbcTemplate()
+                    .queryForObject(sql, Integer.class, eier, soknadId);
+            return totalSize;
+        }
+        return 0;
+    }
+
     public class OpplastetVedleggRowMapper implements RowMapper<OpplastetVedlegg> {
 
         public OpplastetVedlegg mapRow(ResultSet rs, int rowNum) throws SQLException {

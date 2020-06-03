@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 @Controller
@@ -26,7 +27,7 @@ public class InternalRessurs {
     public String version() throws IOException {
         logAccess("version");
         StringBuilder ret = new StringBuilder();
-        ret.append( IOUtils.toString(this.getClass().getResourceAsStream("/version.txt"))).append("\n");
+        ret.append( IOUtils.toString(this.getClass().getResourceAsStream("/version.txt"), StandardCharsets.UTF_8)).append("\n");
         ret.append("java.version").append("=");
         ret.append(System.getProperty("java.version")).append("-");
         ret.append(System.getProperty("java.vendor")).append("\n\n");

@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
@@ -30,8 +31,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -137,26 +138,48 @@ public class NavEnhetRessurs {
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
          * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
          */
-        return adresseForslagene.stream().map((adresseForslag) -> {
-            NavEnhet navEnhet = norgService.finnEnhetForGt(adresseForslag.geografiskTilknytning);
-            return mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtEnhetNr);
-        }).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+
+        List<NavEnhetRessurs.NavEnhetFrontend> navEnhetFrontendListe = new ArrayList<>();
+
+        for (AdresseForslag adresseForslag: adresseForslagene) {
+            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.matrikkelAdresse))
+            {
+                    List<NavEnhet> navenheter = norgService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
+                    navenheter.forEach(navEnhet ->
+                            addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr)
+                    );
+                    log.info("Matrikkeladresse ble brukt. Returnerer {} navenheter", navenheter.size());
+            } else {
+                NavEnhet navEnhet = norgService.getEnhetForGt(adresseForslag.geografiskTilknytning);
+                addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr);
+            }
+        }
+
+        return navEnhetFrontendListe.stream().distinct().collect(Collectors.toList());
+    }
+
+    private void addToNavEnhetFrontendListe(List<NavEnhetRessurs.NavEnhetFrontend> navEnhetFrontendListe, AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
+        NavEnhetFrontend navEnhetFrontend = mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtEnhetNr);
+        if (navEnhetFrontend != null) {
+            navEnhetFrontendListe.add(navEnhetFrontend);
+        }
     }
 
     private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
         if (navEnhet == null) {
-            log.warn("Kunne ikke hente NAV-enhet: " + adresseForslag.geografiskTilknytning);
+            log.warn("Kunne ikke hente NAV-enhet: {} , i kommune: {} ({})",adresseForslag.geografiskTilknytning, adresseForslag.kommunenavn, adresseForslag.kommunenummer);
             return null;
         }
 
         String kommunenummer = adresseForslag.kommunenummer;
         if (kommunenummer == null || kommunenummer.length() != 4) {
+            log.warn("Kommunenummer hadde ikke 4 tegn, var {}", kommunenummer);
             return null;
         }
 
         if (!ServiceUtils.isRunningInProd() && MockUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-            log.error("Sender til Nav-testkommune (2352). Du skal aldri se denne meldingen i PROD");
-            kommunenummer = "2352";
+            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD");
+            kommunenummer = "3002";
         }
 
         boolean digisosKommune = isDigisosKommune(kommunenummer);
@@ -166,7 +189,7 @@ public class NavEnhetRessurs {
         boolean valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
-                .withKommunenavn(adresseForslag.kommunenavn)
+                .withKommunenavn(adresseForslag.kommunenavn != null ? adresseForslag.kommunenavn : navEnhet.kommunenavn)
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
                 .withValgt(valgt)

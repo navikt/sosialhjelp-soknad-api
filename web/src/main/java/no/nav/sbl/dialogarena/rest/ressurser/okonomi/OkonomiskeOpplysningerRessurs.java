@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonOkonomiUtils;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -78,7 +79,8 @@ public class OkonomiskeOpplysningerRessurs {
 
         return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
                 .map(vedlegg -> mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()))
-                .withSlettedeVedlegg(slettedeVedlegg);
+                .withSlettedeVedlegg(slettedeVedlegg)
+                .withIsOkonomiskeOpplysningerBekreftet(JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet(jsonOkonomi));
     }
 
     @PUT
@@ -182,6 +184,7 @@ public class OkonomiskeOpplysningerRessurs {
     public static final class VedleggFrontends {
         public List<VedleggFrontend> okonomiskeOpplysninger;
         public List<VedleggFrontend> slettedeVedlegg;
+        public boolean isOkonomiskeOpplysningerBekreftet;
 
         public VedleggFrontends withOkonomiskeOpplysninger(List<VedleggFrontend> okonomiskeOpplysninger) {
             this.okonomiskeOpplysninger = okonomiskeOpplysninger;
@@ -190,6 +193,11 @@ public class OkonomiskeOpplysningerRessurs {
 
         public VedleggFrontends withSlettedeVedlegg(List<VedleggFrontend> slettedeVedlegg) {
             this.slettedeVedlegg = slettedeVedlegg;
+            return this;
+        }
+
+        public VedleggFrontends withIsOkonomiskeOpplysningerBekreftet(boolean isOkonomiskeOpplysningerBekreftet) {
+            this.isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet;
             return this;
         }
     }

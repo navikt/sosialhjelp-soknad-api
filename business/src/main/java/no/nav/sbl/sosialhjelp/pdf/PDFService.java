@@ -1,8 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
-import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -21,7 +20,7 @@ public class PDFService {
             final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/kvittering/kvittering", erEttersending, eier);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
-            throw new ApplicationException("Kunne ikke generere brukerkvittering (Brukerkvittering.pdf).", e);
+            throw new SosialhjelpSoknadApiException("Kunne ikke generere brukerkvittering (Brukerkvittering.pdf).", e);
         }
     }
     
@@ -30,7 +29,7 @@ public class PDFService {
             final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "skjema/ettersending/kvitteringUnderEttersendelse", true, eier);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
-            throw new ApplicationException("Kunne ikke lage hoveddokument for ettersendelse (ettersendelse.pdf).", e);
+            throw new SosialhjelpSoknadApiException("Kunne ikke lage hoveddokument for ettersendelse (ettersendelse.pdf).", e);
         }
     }
     
@@ -47,7 +46,7 @@ public class PDFService {
             final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, fullSoknad);
             return lagPdfFraMarkup(pdfMarkup, servletPath);
         } catch (IOException e) {
-            throw new ApplicationException("Kunne ikke lage PDF for saksbehandler/juridisk. Fullsoknad: " + fullSoknad, e);
+            throw new SosialhjelpSoknadApiException("Kunne ikke lage PDF for saksbehandler/juridisk. Fullsoknad: " + fullSoknad, e);
         }
     }
 

@@ -13,6 +13,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
@@ -49,6 +50,6 @@ public class DkifRestConfig {
     private Client dkifClient() {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_DKIFAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle("x-nav-apiKey", apiKey));
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
     }
 }

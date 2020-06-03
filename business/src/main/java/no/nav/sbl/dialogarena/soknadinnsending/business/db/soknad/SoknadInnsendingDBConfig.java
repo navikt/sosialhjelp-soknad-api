@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.types.Pingable;
-import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +12,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+
 
 @Configuration
 @EnableTransactionManagement
@@ -38,7 +39,7 @@ public class SoknadInnsendingDBConfig {
     @Bean
     public Pingable dbPing() {
         return () -> {
-            PingMetadata metadata = new PingMetadata("jdbc/SoknadInnsendingDS", "JDBC:Sendsøknad Database", true);
+            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata("jdbc/SoknadInnsendingDS", "JDBC:Sendsøknad Database", true);
             try {
                 JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
                 jdbcTemplate.queryForList("select * from dual");

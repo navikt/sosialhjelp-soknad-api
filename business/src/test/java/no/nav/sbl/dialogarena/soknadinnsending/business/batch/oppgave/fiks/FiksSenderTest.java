@@ -1,6 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
-import no.ks.svarut.servicesv9.*;
+import no.ks.svarut.servicesv9.Brevtype;
+import no.ks.svarut.servicesv9.Dokument;
+import no.ks.svarut.servicesv9.Forsendelse;
+import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
+import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
+import no.ks.svarut.servicesv9.PostAdresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
@@ -12,15 +17,20 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.domain.*;
+import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.sosialhjelp.domain.VedleggType;
+import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,12 +41,19 @@ import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender.ETTERSENDELSE_TIL_NAV;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender.SOKNAD_TIL_NAV;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";
@@ -56,6 +73,7 @@ public class FiksSenderTest {
     @Mock
     SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
+    @InjectMocks
     private FiksSender fiksSender;
 
     private static final PostAdresse FAKE_ADRESSE = new PostAdresse()
@@ -107,7 +125,7 @@ public class FiksSenderTest {
     @Test
     public void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
         fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
         SendtSoknad sendtSoknad = lagSendtSoknad();
@@ -122,7 +140,7 @@ public class FiksSenderTest {
     @Test
     public void opprettForsendelseSetterRiktigTittelForNySoknad() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
@@ -134,7 +152,8 @@ public class FiksSenderTest {
     public void opprettForsendelseSetterRiktigTittelForEttersendelse() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid()
                 .withTilknyttetBehandlingsId("12345")
-                .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
+                .withJsonInternalSoknad(lagInternalSoknadForEttersending())
+                .withEier(EIER));
         //when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
         SendtSoknad sendtSoknad = lagSendtSoknad().withTilknyttetBehandlingsId("12345");
 
@@ -146,7 +165,7 @@ public class FiksSenderTest {
     @Test(expected = IllegalStateException.class)
     public void opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withFiksforsendelseId(null));
         SendtSoknad sendtEttersendelse = lagSendtEttersendelse();
@@ -236,6 +255,7 @@ public class FiksSenderTest {
                 .withBehandlingsId(BEHANDLINGSID)
                 .withOrgnummer(ORGNUMMER)
                 .withNavEnhetsnavn(NAVENHETSNAVN)
+                .withEier(EIER)
                 .withBrukerFerdigDato(LocalDateTime.now());
     }
 

@@ -2,17 +2,48 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Foedselsdato;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Kjoenn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Kjoennstyper;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personidenter;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatus;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatuser;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstand;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstander;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.*;
-import static org.hamcrest.Matchers.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.DOED;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.KODE_6;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.KODE_6_TALLFORM;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.KODE_7_TALLFORM;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.RELASJON_BARN;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.RELASJON_EKTEFELLE;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.RELASJON_REGISTRERT_PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.erDoed;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.erMyndig;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnBarnForPerson;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnEktefelleForPerson;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnSammensattNavn;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnSivilstatus;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.mapXmlPersonTilPerson;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.xmlPersonHarDiskresjonskode;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class PersonDataMapperTest {
     private static final String SIVILSTATUS_REPA = "REPA";
@@ -109,7 +140,7 @@ public class PersonDataMapperTest {
         Ektefelle ektefelle = finnEktefelleForPerson(lagPersonMedEktefelleUtenInfo());
 
         assertThat(ektefelle.getFnr(), nullValue());
-        assertThat(ektefelle.getFornavn(), isEmptyString());
+        assertThat(ektefelle.getFornavn(), is(emptyString()));
         assertThat(ektefelle.getFodselsdato(), nullValue());
         assertThat(ektefelle.erFolkeregistrertsammen(), is(false));
         assertThat(ektefelle.harIkketilgangtilektefelle(), is(false));
@@ -316,7 +347,7 @@ public class PersonDataMapperTest {
 
         String sammensattNavn = finnSammensattNavn(person);
 
-        assertThat(sammensattNavn, isEmptyString());
+        assertThat(sammensattNavn, is(emptyString()));
     }
 
     private Person lagXmlPerson() {

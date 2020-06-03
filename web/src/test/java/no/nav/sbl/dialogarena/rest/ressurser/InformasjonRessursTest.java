@@ -2,8 +2,12 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfo;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
@@ -15,19 +19,21 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class InformasjonRessursTest {
 
     public static final String SOKNADSTYPE = "type";
@@ -40,7 +46,10 @@ public class InformasjonRessursTest {
     private PersonService personService;
     @Mock
     NavMessageSource messageSource;
-
+    @Mock
+    DigisosApi digisosApi;
+    @Mock
+    KommuneInfoService kommuneInfoService;
 
     @InjectMocks
     InformasjonRessurs ressurs;
@@ -97,5 +106,31 @@ public class InformasjonRessursTest {
     @Test(expected = IllegalArgumentException.class)
     public void kastExceptionHvisIkkeSpraakErPaaRiktigFormat() {
         ressurs.hentTekster(SOKNADSTYPE, "NORSK");
+    }
+
+    @Test
+    public void skalHenteAllePaakobledeKommuner() {
+        String manueltPaakobletKommune = "0301";
+        String digisosKommune = "asdf";
+        String deaktivertDigisosKommune = "456456";
+
+        Map<String, KommuneInfo> map = new HashMap<>();
+        map.put(manueltPaakobletKommune, null);
+        map.put(digisosKommune, null);
+        map.put(deaktivertDigisosKommune, null);
+
+        when(digisosApi.hentKommuneInfo()).thenReturn(map);
+
+        when(kommuneInfoService.kanMottaSoknader(manueltPaakobletKommune)).thenReturn(true);
+        when(kommuneInfoService.kanMottaSoknader(digisosKommune)).thenReturn(true);
+        when(kommuneInfoService.kanMottaSoknader(deaktivertDigisosKommune)).thenReturn(false);
+
+        Set<String> tilgjengeligeKommuner = ressurs.hentTilgjengeligeKommuner();
+
+        assertThat(tilgjengeligeKommuner)
+                .hasSize(KommuneTilNavEnhetMapper.getDigisoskommuner().size() + 1)
+                .contains(manueltPaakobletKommune)
+                .contains(digisosKommune)
+                .doesNotContain(deaktivertDigisosKommune);
     }
 }

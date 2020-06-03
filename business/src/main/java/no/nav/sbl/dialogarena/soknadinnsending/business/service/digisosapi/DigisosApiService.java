@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -19,6 +19,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
@@ -59,6 +60,9 @@ public class DigisosApiService {
 
     @Inject
     private HenvendelseService henvendelseService;
+
+    @Inject
+    private SoknadUnderArbeidService soknadUnderArbeidService;
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
@@ -104,7 +108,7 @@ public class DigisosApiService {
                 antallBrukerOpplastedeVedlegg += vedlegg.getFiler().size();
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.error("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse, soknadUnderArbeid.erEttersendelse());
+                log.warn("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}", antallBrukerOpplastedeVedlegg, antallVedleggForsendelse, soknadUnderArbeid.erEttersendelse());
             }
         } catch (RuntimeException e) {
             log.debug("Ignored exception");
@@ -132,19 +136,17 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
-        byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
+        String filnavn = "Soknad.pdf";
+        String mimetype = "application/pdf";
         try {
-            sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+            byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
         } catch (Exception e) {
-            log.warn("Kunne ikke generere soknad.pdf", e);
+            log.error("Kunne ikke generere Soknad.pdf. Fallback til generering med itext.", e);
+            byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
         }
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("soknad.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) soknadPdf.length),
-                new ByteArrayInputStream(soknadPdf));
     }
-
 
     private List<FilOpplasting> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
         List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
@@ -174,18 +176,16 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
-        byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+        String filnavn = "Soknad-juridisk.pdf";
+        String mimetype = "application/pdf";
         try {
-            sosialhjelpPdfGenerator.generate(internalSoknad, true);
+            byte[] pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         } catch (Exception e) {
-            log.warn("Kunne ikke generere Soknad-juridisk.pdf", e);
+            log.error("Kunne ikke generere Soknad-juridisk.pdf. Fallback til generering med itext.", e);
+            byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         }
-
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("Soknad-juridisk.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
     }
 
     private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
@@ -198,15 +198,25 @@ public class DigisosApiService {
                 new ByteArrayInputStream(pdf));
     }
 
+    private FilOpplasting opprettFilOpplastingFraByteArray(String filnavn, String mimetype, byte[] bytes) {
+        return new FilOpplasting(new FilMetadata()
+                .withFilnavn(filnavn)
+                .withMimetype(mimetype)
+                .withStorrelse((long) bytes.length), new ByteArrayInputStream(bytes)
+        );
+    }
+
     public String sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
         if (MockUtils.isTillatMockRessurs()) {
             return null;
         }
 
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
+        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid);
+
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             log.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
-            throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+            throw new SosialhjelpSoknadApiException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
         log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi", behandlingsId);
 

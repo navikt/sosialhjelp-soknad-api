@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
@@ -18,7 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
@@ -30,10 +31,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpplastetVedleggServiceTest {
@@ -43,6 +50,7 @@ public class OpplastetVedleggServiceTest {
     private static final String FILNAVN2 = "Homofil.png";
     private static final String SHA512 = "Shakk matt";
     private static final String TYPE = "hei|på deg";
+    private static final Long SOKNAD_ID = 1234L;
 
     @Mock
     private OpplastetVedleggRepository opplastetVedleggRepository;
@@ -121,6 +129,26 @@ public class OpplastetVedleggServiceTest {
         assertThat(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo(), is(TYPE));
         assertThat(jsonVedlegg.getStatus(), is("VedleggKreves"));
         assertThat(jsonVedlegg.getFiler().size(), is(0));
+    }
+
+    @Test
+    public void feilmeldingHvisSamletVedleggStorrelseOverskriderMaksgrense() throws IOException {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                new SoknadUnderArbeid()
+                        .withJsonInternalSoknad(new JsonInternalSoknad().withVedlegg(
+                                new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
+                                        new JsonVedlegg()
+                                                .withType(new VedleggType(TYPE).getType())
+                                                .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
+                                                .withStatus("VedleggKreves")
+                                ))))
+                        .withSoknadId(SOKNAD_ID));
+
+        when(opplastetVedleggRepository.hentSamletVedleggStorrelse(anyLong(), anyString())).thenReturn(MAKS_SAMLET_VEDLEGG_STORRELSE);
+
+        final byte[] imageFile = createByteArrayFromJpeg();
+
+        assertThrows(SamletVedleggStorrelseForStorException.class, () -> opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(BEHANDLINGSID, imageFile));
     }
 
     private byte[] createByteArrayFromJpeg() throws IOException {

@@ -1,7 +1,9 @@
 {
+  "applicationName": "sosialhjelp-soknad-api",
   "namespace": "q0",
   "ingresses": [
     "https://sosialhjelp-soknad-api-q0.nais.oera-q.local/",
+    "https://sosialhjelp-soknad-api-q0.dev-sbs.nais.io/",
     "https://tjenester-q0.nav.no/sosialhjelp-soknad-api",
     "https://www-q0.nav.no/sosialhjelp/soknad-api"
   ],

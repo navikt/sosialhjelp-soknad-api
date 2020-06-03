@@ -45,7 +45,7 @@ public class AvbrytAutomatiskSheduler {
 
         batchStartTime = LocalDateTime.now();
         vellykket = 0;
-        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+        if (Boolean.parseBoolean(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             logger.info("Starter avbryting av gamle søknader");
             Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt");
             batchTimer.start();

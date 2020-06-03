@@ -7,19 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkontonummer;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bostedsadresse;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Foedselsdato;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Landkoder;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personidenter;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Postnummer;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Statsborgerskap;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
@@ -27,7 +15,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.util.HashMap;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,10 +35,14 @@ public class PersonV3Mock {
             String kontonummer = node.at("/person/bankkonto/bankkonto/bankkontonummer").textValue();
             String statborgerskap = node.at("/person/statsborgerskap/landkode/value").textValue();
 
-            Bruker defaultPerson = getDefaultPerson();
-            Integer husnummer;
+            String midlertidigAdresseGnr = node.at("/person/midlertidigPostadresse/strukturertAdresse/gnr").textValue();
+            String midlertidigAdresseBnr = node.at("/person/midlertidigPostadresse/strukturertAdresse/bnr").textValue();
+            String midlertidigAdresseKommunenummer = node.at("/person/midlertidigPostadresse/strukturertAdresse/kommunenummer").textValue();
+
+            Bruker defaultPerson = getDefaultPerson(false);
+            int husnummer;
             try {
-                husnummer = Integer.valueOf(husnr);
+                husnummer = Integer.parseInt(husnr);
             } catch (NumberFormatException e) {
                 husnummer = 0;
             }
@@ -65,6 +57,13 @@ public class PersonV3Mock {
             defaultPerson.setBankkonto(new BankkontoNorge().withBankkonto(new Bankkontonummer().withBankkontonummer(kontonummer)));
             defaultPerson.setStatsborgerskap(new Statsborgerskap().withLand(new Landkoder().withValue(statborgerskap)));
 
+            Matrikkeladresse midlertidigMatrikkeladresse = (Matrikkeladresse) ((MidlertidigPostadresseNorge) defaultPerson.getMidlertidigPostadresse()).getStrukturertAdresse();
+            midlertidigMatrikkeladresse.withMatrikkelnummer(new Matrikkelnummer()
+                    .withGaardsnummer(midlertidigAdresseGnr)
+                    .withBruksnummer(midlertidigAdresseBnr));
+            midlertidigMatrikkeladresse.withKommunenummer(midlertidigAdresseKommunenummer);
+
+
             responses.put(OidcFeatureToggleUtils.getUserId(), defaultPerson);
 
         } catch (JsonProcessingException e) {
@@ -72,29 +71,31 @@ public class PersonV3Mock {
         }
     }
 
-    public PersonV3 PersonV3Mock() {
-
+    public PersonV3 personV3Mock() {
         PersonV3 mock = mock(PersonV3.class);
 
         try {
             when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(OidcFeatureToggleUtils.getUserId()));
-        } catch (HentPersonPersonIkkeFunnet hentPersonPersonIkkeFunnet) {
+        } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
-        } catch (HentPersonSikkerhetsbegrensning hentPersonSikkerhetsbegrensning) {
-            hentPersonSikkerhetsbegrensning.printStackTrace();
         }
 
         return mock;
     }
 
-
     public static HentPersonResponse createPersonV3HentPersonRequest(String userId) {
         HentPersonResponse response = new HentPersonResponse();
-        response.setPerson(responses.getOrDefault(userId, getDefaultPerson()));
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson(false)));
         return response;
     }
 
-    public static Bruker getDefaultPerson() {
+    public static HentPersonResponse createPersonV3HentPersonRequestForIntegrationTest(String userId) {
+        HentPersonResponse response = new HentPersonResponse();
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson(true)));
+        return response;
+    }
+
+    public static Bruker getDefaultPerson(boolean forIntegrationTest) {
         Bruker person = genererPersonMedGyldigIdentOgNavn("01234567890", "Donald", "D.", "Mockmann");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 
@@ -103,8 +104,51 @@ public class PersonV3Mock {
         landkoder.setValue("NOR");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
+        if (!forIntegrationTest) {
+            person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
+            person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
+        }
 
         return person;
+    }
+
+    private static Gateadresse createDobbelGateadresse() {
+        return new Gateadresse()
+                .withKommunenummer("0301")
+                .withPoststed(new Postnummer().withValue("2222"))
+                .withGatenavn("Dobbelveien")
+                .withBolignummer("2")
+                .withHusnummer(3);
+    }
+
+    private static Matrikkeladresse createOsloMatrikkelAdresse() {
+        return new Matrikkeladresse()
+                .withKommunenummer("0301")
+                .withEiendomsnavn("SLOTTSSTALLEN")
+                .withPoststed(new Postnummer().withValue("0010"))
+                .withMatrikkelnummer(new Matrikkelnummer()
+                        .withGaardsnummer("209")
+                        .withBruksnummer("25"));
+    }
+
+    private static Matrikkeladresse createSarpsborgMatrikkelAdresse() {
+        return new Matrikkeladresse()
+                .withKommunenummer("3003")
+                .withEiendomsnavn("Sarpsborg Rådhus")
+                .withPoststed(new Postnummer().withValue("1706"))
+                .withMatrikkelnummer(new Matrikkelnummer()
+                        .withGaardsnummer("1")
+                        .withBruksnummer("174"));
+    }
+
+    private static Matrikkeladresse createSandeiMoreOgRomsdalMatrikkelAdresse() {
+        return new Matrikkeladresse()
+                .withKommunenummer("1514")
+                .withEiendomsnavn("SandeHus")
+                .withPoststed(new Postnummer().withValue("1706"))
+                .withMatrikkelnummer(new Matrikkelnummer()
+                        .withGaardsnummer("555")
+                        .withBruksnummer("309"));
     }
 
 

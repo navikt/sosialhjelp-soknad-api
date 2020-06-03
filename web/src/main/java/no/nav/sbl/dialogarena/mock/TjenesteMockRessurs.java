@@ -204,7 +204,7 @@ public class TjenesteMockRessurs {
         }
 
         fnr = OidcFeatureToggleUtils.getUserId() != null ? OidcFeatureToggleUtils.getUserId() : fnr;
-        logger.warn("Setter telefonnummer: " + jsonTelefonnummer.getVerdi() + ". For bruker med fnr: " + fnr);
+        logger.warn("Setter telefonnummer for bruker. Dette skal aldri skje i PROD.");
         if (jsonTelefonnummer != null) {
             DkifConsumerMock.setTelefonnummer(jsonTelefonnummer.getVerdi(), fnr);
         } else {

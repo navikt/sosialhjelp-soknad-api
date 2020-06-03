@@ -42,7 +42,7 @@ public class NullstillValgtNavenhetVedKommunesammenslaingSheduler {
         }
 
         int vellykket = 0;
-        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+        if (Boolean.parseBoolean(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             log.info("Starter nullstilling av valgt navenhet på påbegynte søknader");
             Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.nullstill.navenhet");
             batchTimer.start();

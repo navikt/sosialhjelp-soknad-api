@@ -56,7 +56,6 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
 
         if (tekst == null) {
             LOG.debug("Fant ikke tekst til oppsummering for nokkel {} i bundelen {}", key, BUNDLE_NAME);
-            return tekst;
         } else {
 
             if (options.params.length%2 == 0) {
@@ -64,8 +63,8 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
                     tekst = erstattTekst("{" + options.param(i) + "}", tekst, options.param(i+1).toString());
                 }
             }
-            return tekst;
         }
+        return tekst;
     }
     
     private String erstattTekst(final String regex, final String input, final String replacement) {
