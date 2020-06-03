@@ -9,22 +9,22 @@ public class OidcSubjectHandlerService implements SubjectHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(OidcSubjectHandlerService.class);
 
     public String getUserIdFromToken() {
-        return getOidcValidationContext().getClaims("selvbetjening").getSubject();
+        return getTokenValidationContext().getClaims("selvbetjening").getSubject();
     }
 
     public String getToken() {
-        return getOidcValidationContext().getJwtToken("selvbetjening").getTokenAsString();
+        return getTokenValidationContext().getJwtToken("selvbetjening").getTokenAsString();
     }
 
     public String getConsumerId() {
         return System.getProperty("no.nav.modig.security.systemuser.username");
     }
 
-    private TokenValidationContext getOidcValidationContext() {
+    private TokenValidationContext getTokenValidationContext() {
         TokenValidationContext tokenValidationContext = JaxrsTokenValidationContextHolder.getHolder().getTokenValidationContext();
         if (tokenValidationContext == null) {
-            logger.error("Could not find OIDCValidationContext. Possibly no token in request and request was not captured by OIDC-validation filters.");
-            throw new RuntimeException("Could not find OIDCValidationContext. Possibly no token in request.");
+            logger.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.");
+            throw new RuntimeException("Could not find TokenValidationContext. Possibly no token in request.");
         }
         return tokenValidationContext;
     }
