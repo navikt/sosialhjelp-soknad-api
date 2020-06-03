@@ -84,7 +84,7 @@
         <spring.version>5.2.5.RELEASE</spring.version>
         <jetty.version>9.4.27.v20200227</jetty.version>
         <jersey.version>2.30.1</jersey.version>
-        <token-validation.version>1.1.5</token-validation.version> <!--nyere versjoner krever java 11-->
+        <token-validation.version>1.1.5</token-validation.version>
         <nimbus-jose-jwt.version>8.11</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <cxf.version>3.3.6</cxf.version>
