@@ -13,7 +13,7 @@ public class OidcConfig {
 
     /**
      * Overskriver måten å hente ut OIDC-metadata. Istedenfor å hente det fra en internettadresse henter man det fra filsystemet.
-     * Filene metadata.json og jwkset.json ligger i jar-pakken til maven-biblioteket oidc-test-support.
+     * Filene metadata.json og jwkset.json ligger i jar-pakken til maven-biblioteket token-validation-test-support.
      */
     @Primary
     @Bean
