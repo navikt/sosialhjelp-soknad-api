@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
@@ -32,8 +33,8 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     private static final String EIER2 = "22222222222";
     private static final String BEHANDLINGSID = "1100020";
     private static final String TILKNYTTET_BEHANDLINGSID = "4567";
-    private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50);
-    private static final LocalDateTime SIST_ENDRET_DATO = now();
+    private static final LocalDateTime OPPRETTET_DATO = now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalDateTime SIST_ENDRET_DATO = now().truncatedTo(ChronoUnit.MILLIS);
     private static final JsonInternalSoknad JSON_INTERNAL_SOKNAD = new JsonInternalSoknad();
 
     @Inject

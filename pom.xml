@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -50,9 +51,17 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <!-- repo.adeo.no har ikke dependency analyzer med støtte for Java 11 (maven-dependency-analyzer:1.11.1) -->
+            <id>maven-central</id>
+            <name>Maven central</name>
+            <url>https://repo.maven.apache.org/maven</url>
+        </repository>
     </repositories>
 
     <properties>
+        <java.jdk.version>11</java.jdk.version>
+
         <sonar.exclusions>
             **/mockmodul/**,
             **/selftest/**
@@ -119,6 +128,8 @@
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <modig-lang.version>2.0.2</modig-lang.version>
         <aspectjweaver.version>1.9.5</aspectjweaver.version>
+        <jaxb.version>2.3.1</jaxb.version>
+        <soap.version>1.4.0</soap.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -157,6 +168,7 @@
         <cryptacular.version>1.2.4</cryptacular.version>
         <stax-ex.version>1.8.3</stax-ex.version>
         <objenesis.version>2.6</objenesis.version>
+        <saaj-impl.version>1.5.1</saaj-impl.version>
     </properties>
 
     <dependencyManagement>
@@ -447,16 +459,6 @@
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
                 <artifactId>jackson-jaxrs-json-provider</artifactId>
                 <version>${jackson.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>jakarta.xml.bind</groupId>
-                        <artifactId>jakarta.xml.bind-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>jakarta.activation</groupId>
-                        <artifactId>jakarta.activation-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -474,22 +476,28 @@
                 <version>${jackson.version}</version>
             </dependency>
 
+            <!-- JAXB/SOAP-avhengigheter -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.ws</groupId>
+                <artifactId>jaxws-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.soap</groupId>
+                <artifactId>javax.xml.soap-api</artifactId>
+                <version>${soap.version}</version>
+            </dependency>
 
             <!-- CXF avhengigheter -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-core</artifactId>
                 <version>${cxf.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>jakarta.xml.bind</groupId>
-                        <artifactId>jakarta.xml.bind-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>jakarta.activation</groupId>
-                        <artifactId>jakarta.activation-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -499,10 +507,6 @@
                     <exclusion>
                         <groupId>org.apache.geronimo.specs</groupId>
                         <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-impl</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -515,10 +519,6 @@
                         <groupId>org.apache.geronimo.specs</groupId>
                         <artifactId>geronimo-javamail_1.4_spec</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-impl</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -529,10 +529,6 @@
                     <exclusion>
                         <groupId>org.apache.geronimo.specs</groupId>
                         <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-impl</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -563,10 +559,6 @@
                 <artifactId>cxf-rt-frontend-simple</artifactId>
                 <version>${cxf.version}</version>
                 <exclusions>
-                    <exclusion>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-impl</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -574,10 +566,6 @@
                 <artifactId>cxf-rt-bindings-soap</artifactId>
                 <version>${cxf.version}</version>
                 <exclusions>
-                    <exclusion>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-impl</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -1265,6 +1253,16 @@
                 <artifactId>objenesis</artifactId>
                 <version>${objenesis.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.inject</groupId>
+                <artifactId>jersey-hk2</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.messaging.saaj</groupId>
+                <artifactId>saaj-impl</artifactId>
+                <version>${saaj-impl.version}</version>
+            </dependency>
 
             <!--
                 Snyk klager på sårbarhet i snakeyaml som er en avhengighet i uap-java.
@@ -1302,9 +1300,24 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.jboss.as.plugins</groupId>
-                    <artifactId>jboss-as-maven-plugin</artifactId>
-                    <version>7.4.Final</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <release>${java.jdk.version}</release>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.shared</groupId>
+                            <artifactId>maven-dependency-analyzer</artifactId>
+                            <version>1.11.1</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>com.googlecode.flyway</groupId>
@@ -1351,12 +1364,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
                 <configuration>
 
                     <!-- Ekskluderer integrasjonstester som slutter på *IT. De kjøres av failsafe-plugin -->
                     <excludes>
                         <exclude>*IT</exclude>
                     </excludes>
+
+                    <argLine>
+                        --illegal-access=permit
+                    </argLine>
+
+                    <forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine> <!-- Gi nok minne for å unngå terminerende JVM-er -->
 
                     <systemPropertyVariables>
                         <java.awt.headless>true</java.awt.headless>
@@ -1394,14 +1416,48 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
+                    <append>true</append>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <propertyName>jacoco.agent.argLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
     </build>
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
         <url>http://stash.devillo.no/scm/sokd/sendsoknad.git</url>
-      <tag>sendsoknad-17.1.1</tag>
-  </scm>
+        <tag>sendsoknad-17.1.1</tag>
+    </scm>
 
     <profiles>
         <profile>

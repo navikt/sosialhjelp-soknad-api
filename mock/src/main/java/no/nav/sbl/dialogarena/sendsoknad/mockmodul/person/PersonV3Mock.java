@@ -39,7 +39,7 @@ public class PersonV3Mock {
             String midlertidigAdresseBnr = node.at("/person/midlertidigPostadresse/strukturertAdresse/bnr").textValue();
             String midlertidigAdresseKommunenummer = node.at("/person/midlertidigPostadresse/strukturertAdresse/kommunenummer").textValue();
 
-            Bruker defaultPerson = getDefaultPerson();
+            Bruker defaultPerson = getDefaultPerson(false);
             int husnummer;
             try {
                 husnummer = Integer.parseInt(husnr);
@@ -72,7 +72,6 @@ public class PersonV3Mock {
     }
 
     public PersonV3 personV3Mock() {
-
         PersonV3 mock = mock(PersonV3.class);
 
         try {
@@ -84,14 +83,19 @@ public class PersonV3Mock {
         return mock;
     }
 
-
     public static HentPersonResponse createPersonV3HentPersonRequest(String userId) {
         HentPersonResponse response = new HentPersonResponse();
-        response.setPerson(responses.getOrDefault(userId, getDefaultPerson()));
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson(false)));
         return response;
     }
 
-    public static Bruker getDefaultPerson() {
+    public static HentPersonResponse createPersonV3HentPersonRequestForIntegrationTest(String userId) {
+        HentPersonResponse response = new HentPersonResponse();
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson(true)));
+        return response;
+    }
+
+    public static Bruker getDefaultPerson(boolean forIntegrationTest) {
         Bruker person = genererPersonMedGyldigIdentOgNavn("01234567890", "Donald", "D.", "Mockmann");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 
@@ -100,8 +104,10 @@ public class PersonV3Mock {
         landkoder.setValue("NOR");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
-        person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
-        person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
+        if (!forIntegrationTest) {
+            person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
+            person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
+        }
 
         return person;
     }
