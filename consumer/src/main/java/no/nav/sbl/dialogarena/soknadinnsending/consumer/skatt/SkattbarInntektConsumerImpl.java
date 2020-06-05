@@ -58,7 +58,7 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
             } else {
                 String melding = response.readEntity(String.class);
                 log.error(String.format("Klarer ikke hente skatteopplysninger %s status %s ", melding, response.getStatus()));
-                return new SkattbarInntekt();
+                return null;
             }
         } catch (RuntimeException e) {
             log.error("Klarer ikke hente skatteopplysninger", e);
