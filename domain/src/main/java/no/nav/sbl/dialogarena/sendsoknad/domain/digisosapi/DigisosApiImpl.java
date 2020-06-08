@@ -174,7 +174,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
-    static void logKommuneInfoForInnsynskommuner(Map<String, KommuneInfo> kommuneInfo) {
+    private void logKommuneInfoForInnsynskommuner(Map<String, KommuneInfo> kommuneInfo) {
         Map<String, KommuneInfo> kommunerMedInnsyn = kommuneInfo.entrySet()
                 .stream()
                 .filter(kommune -> kommune.getValue().getKanOppdatereStatus())
