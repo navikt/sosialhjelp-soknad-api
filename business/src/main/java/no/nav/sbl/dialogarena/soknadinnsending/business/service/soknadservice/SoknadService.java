@@ -72,7 +72,7 @@ public class SoknadService {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private SystemdataUpdater systemdata;
+    private SystemdataUpdater systemdataUpdater;
 
     @Transactional
     public String startSoknad(String token) {
@@ -99,7 +99,7 @@ public class SoknadService {
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
 
-        systemdata.update(soknadUnderArbeid, token);
+        systemdataUpdater.update(soknadUnderArbeid, token);
 
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, aktorId);
 

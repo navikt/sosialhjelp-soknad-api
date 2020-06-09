@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import org.mockito.invocation.InvocationOnMock;
 
@@ -52,10 +52,10 @@ public class NorgConsumerMock {
 
     private static Map<String, RsNorgEnhet> getDefaultMap(){
         return new ImmutableMap.Builder<String, RsNorgEnhet>()
-                .put("120102", new RsNorgEnhet().withEnhetId(100000250)
-                        .withEnhetNr("1209")
-                        .withNavn("NAV Bergenhus")
-                        .withOrgNrTilKommunaltNavKontor("976830563"))
+                .put("030102", new RsNorgEnhet().withEnhetId(100000250)
+                        .withEnhetNr("0315")
+                        .withNavn("NAV Grünerløkka")
+                        .withOrgNrTilKommunaltNavKontor("811213322"))
                 .put("0106", getKommuneResponse("Fredrikstad", "0106"))
                 .put("0701", getKommuneResponse("Horten", "0701"))
                 .put("0101", getKommuneResponse("Halden", "0101"))
