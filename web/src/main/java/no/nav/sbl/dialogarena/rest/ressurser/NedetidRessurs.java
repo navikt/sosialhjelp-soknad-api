@@ -1,17 +1,25 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.Unprotected;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.utils.NedetidUtils.*;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.NEDETID_SLUTT;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.NEDETID_START;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsHumanReadable;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsHumanReadableEn;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsStringOrNull;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.isInnenforNedetid;
+import static no.nav.sbl.dialogarena.utils.NedetidUtils.isInnenforPlanlagtNedetid;
 
 @Controller
 @Unprotected

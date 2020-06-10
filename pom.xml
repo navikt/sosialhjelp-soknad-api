@@ -84,7 +84,7 @@
         <spring.version>5.2.5.RELEASE</spring.version>
         <jetty.version>9.4.27.v20200227</jetty.version>
         <jersey.version>2.30.1</jersey.version>
-        <oidc-support.version>0.2.18</oidc-support.version>
+        <token-validation.version>1.1.5</token-validation.version>
         <nimbus-jose-jwt.version>8.11</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <cxf.version>3.3.6</cxf.version>
@@ -827,13 +827,13 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-jersey-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-jaxrs</artifactId>
+                <version>${token-validation.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-core</artifactId>
+                <version>${token-validation.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.nimbusds</groupId>
@@ -964,8 +964,8 @@
             <!-- Avhengigheter med test scope -->
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-test-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-test-support</artifactId>
+                <version>${token-validation.version}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -1258,11 +1258,6 @@
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
                 <version>${objenesis.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.messaging.saaj</groupId>
