@@ -130,6 +130,7 @@
         <aspectjweaver.version>1.9.5</aspectjweaver.version>
         <jaxb.version>2.3.1</jaxb.version>
         <soap.version>1.4.0</soap.version>
+        <jakarta.version>2.3.3</jakarta.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -491,6 +492,11 @@
                 <groupId>javax.xml.soap</groupId>
                 <artifactId>javax.xml.soap-api</artifactId>
                 <version>${soap.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.ws</groupId>
+                <artifactId>jakarta.xml.ws-api</artifactId>
+                <version>${jakarta.version}</version>
             </dependency>
 
             <!-- CXF avhengigheter -->
