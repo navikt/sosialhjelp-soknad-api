@@ -130,7 +130,7 @@
         <aspectjweaver.version>1.9.5</aspectjweaver.version>
         <jaxb.version>2.3.1</jaxb.version>
         <soap.version>1.4.0</soap.version>
-        <jakarta.version>2.3.3</jakarta.version>
+        <jakarta.version>2.3.2</jakarta.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
