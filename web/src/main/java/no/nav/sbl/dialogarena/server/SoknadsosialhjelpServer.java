@@ -90,7 +90,7 @@ public class SoknadsosialhjelpServer {
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
         if (isRunningAsTestAppWithMockingActivated() || MockUtils.isTillatMockRessurs()){
             log.info("Running with mocking activated. Totally isolated.");
-            setFrom("environment/environment-mock.properties");
+            setFrom("environment/environment-mock.properties", false);
             if (!MockUtils.isTillatMockRessurs()) {
                 throw new Error("Mocking må være aktivert når applikasjonen skal kjøre isolert.");
             }
