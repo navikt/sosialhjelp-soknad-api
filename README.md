@@ -42,7 +42,7 @@ RUN tar xvzf m2_home.tar.gz
 RUN rm m2_home.tar.gz
 ```
 
-For å bygge imaget må `m2_home.tar.gz` lastes ned fra
+For å bygge imaget må `m2_home.tar.gz` lastes ned fra:
 [Microsoft Teams](https://navno.sharepoint.com/sites/Digisos532/Shared%20Documents/Utviklingteamet/backend%20github%20relatert/m2_home.tar.gz)
 til en lokal folder med en `Dockerfile` med innholdet over, og bygges og pushes med kommandoene:
 
