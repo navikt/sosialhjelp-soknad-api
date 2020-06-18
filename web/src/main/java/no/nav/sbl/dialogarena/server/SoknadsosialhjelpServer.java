@@ -99,6 +99,7 @@ public class SoknadsosialhjelpServer {
             setFrom("environment/environment.properties");
         } else {
             log.info("Running with DEVELOPER (local) setup.");
+            configureLocalEnvironment();
         }
 
         if (MockUtils.isTillatMockRessurs()){
@@ -205,6 +206,11 @@ public class SoknadsosialhjelpServer {
         }
         props.load(inputStream);
         return props;
+    }
+
+    private void configureLocalEnvironment() throws IOException {
+        setFrom("environment-test.properties");
+        updateJavaProperties(readProperties("oracledb.properties", false), false);
     }
 
     private static DataSource buildDataSource() {
