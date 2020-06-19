@@ -209,7 +209,7 @@ public class SoknadsosialhjelpServer {
     }
 
     private void configureLocalEnvironment() throws IOException {
-        setFrom("environment-test.properties");
+        setFrom("environment-test.properties", false);
         updateJavaProperties(readProperties("oracledb.properties", false), false);
     }
 
