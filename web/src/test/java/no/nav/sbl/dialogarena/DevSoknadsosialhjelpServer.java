@@ -18,7 +18,7 @@ public class DevSoknadsosialhjelpServer {
     public static final int PORT = 8181;
 
     public static void main(String[] args) throws Exception {
-        SoknadsosialhjelpServer.setFrom("environment-test.properties");
+        SoknadsosialhjelpServer.setFrom("environment-test.properties", false);
         DataSource dataSource = null;
 
 

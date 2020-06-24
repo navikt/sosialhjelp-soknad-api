@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.feilmeldingUtenFnr;
+
 @Component
 public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
@@ -57,8 +59,8 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
                 return new SkattbarInntekt();
             } else {
                 String melding = response.readEntity(String.class);
-                log.error(String.format("Klarer ikke hente skatteopplysninger %s status %s ", melding, response.getStatus()));
-                return new SkattbarInntekt();
+                log.error(String.format("Klarer ikke hente skatteopplysninger %s status %s ", feilmeldingUtenFnr(melding), response.getStatus()));
+                return null;
             }
         } catch (RuntimeException e) {
             log.error("Klarer ikke hente skatteopplysninger", e);

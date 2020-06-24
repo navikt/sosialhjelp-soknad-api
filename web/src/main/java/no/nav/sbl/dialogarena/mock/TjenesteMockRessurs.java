@@ -28,7 +28,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;

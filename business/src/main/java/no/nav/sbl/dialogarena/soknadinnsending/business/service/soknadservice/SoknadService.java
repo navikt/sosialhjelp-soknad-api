@@ -86,7 +86,7 @@ public class SoknadService {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private SystemdataUpdater systemdata;
+    private SystemdataUpdater systemdataUpdater;
 
     @Inject
     private BostotteSystemdata bostotteSystemdata;
@@ -122,7 +122,7 @@ public class SoknadService {
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
 
-        systemdata.update(soknadUnderArbeid, token);
+        systemdataUpdater.update(soknadUnderArbeid, token);
 
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, aktorId);
 

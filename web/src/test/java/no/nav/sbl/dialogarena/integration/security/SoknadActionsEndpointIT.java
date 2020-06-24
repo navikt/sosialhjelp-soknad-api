@@ -4,8 +4,8 @@ import com.nimbusds.jwt.SignedJWT;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.security.oidc.OIDCConstants;
-import no.nav.security.oidc.test.support.JwtTokenGenerator;
+import no.nav.security.token.support.core.JwtTokenConstants;
+import no.nav.security.token.support.test.JwtTokenGenerator;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,19 +55,18 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
         Invocation.Builder builder = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget);
 
         if(token != null) {
-            builder.header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token);
+            builder.header(JwtTokenConstants.AUTHORIZATION_HEADER, "Bearer " + token);
         }
 
         return builder.buildGet()
                 .invoke();
     }
 
-
     private Response sendPostRequest(SoknadTester soknadTester, String subUrl, Entity entity, String token, String xhrHeader){
         Invocation.Builder builder = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget);
 
         if(token != null) {
-            builder.header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token);
+            builder.header(JwtTokenConstants.AUTHORIZATION_HEADER, "Bearer " + token);
         }
         if(xhrHeader != null) {
             builder.header("X-XSRF-TOKEN", xhrHeader);

@@ -1,11 +1,16 @@
 package no.nav.sbl.dialogarena.oidc;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.security.oidc.jaxrs.servlet.JaxrsOIDCTokenValidationFilter;
+import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.inject.Inject;
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.isRunningWithOidc;
@@ -13,7 +18,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUti
 public class OidcTokenValidatorFilter implements Filter {
 
     @Inject
-    private JaxrsOIDCTokenValidationFilter jaxrsOIDCTokenValidationFilter;
+    private JaxrsJwtTokenValidationFilter jaxrsJwtTokenValidationFilter;
 
     @Override
     public void init(FilterConfig filterConfig){
@@ -25,12 +30,12 @@ public class OidcTokenValidatorFilter implements Filter {
         if (!isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            jaxrsOIDCTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain);
+            jaxrsJwtTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain);
         }
     }
 
     @Override
     public void destroy() {
-        jaxrsOIDCTokenValidationFilter.destroy();
+        jaxrsJwtTokenValidationFilter.destroy();
     }
 }

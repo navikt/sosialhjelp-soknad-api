@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.oidc;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
-import no.nav.security.oidc.jaxrs.OidcContainerRequestFilter;
+import no.nav.security.token.support.jaxrs.JwtTokenContainerRequestFilter;
 import org.glassfish.jersey.server.wadl.processor.OptionsMethodProcessor;
 import org.glassfish.jersey.server.wadl.processor.WadlModelProcessor;
 
@@ -22,7 +22,7 @@ public class OidcResourceFilteringFeature implements DynamicFeature {
         if( !OidcFeatureToggleUtils.isRunningWithOidc() || isWhitelistedInProd(resourceInfo) || isWhitelistedWhenNotRunningInProd()) {
             return;
         }
-        context.register(OidcContainerRequestFilter.class);
+        context.register(JwtTokenContainerRequestFilter.class);
     }
 
     private boolean isWhitelistedInProd(ResourceInfo resourceInfo) {
