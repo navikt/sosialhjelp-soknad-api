@@ -184,12 +184,12 @@ public class DigisosApiImpl implements DigisosApi {
     }
 
     @Override
-    public String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String behandlingsId, String token) {
+    public String krypterOgLastOppFiler(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String behandlingsId, String token) {
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         String digisosId;
         try {
             X509Certificate fiksX509Certificate = getFiksPublicKeyX509Certificate(token);
-            digisosId = lastOppFiler(soknadJson, vedleggJson, dokumenter.stream()
+            digisosId = lastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, fiksX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, behandlingsId, token);
 
@@ -287,7 +287,7 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
-    private String lastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String behandlingsId, String token) {
+    private String lastOppFiler(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenummer, String behandlingsId, String token) {
 
         List<FilForOpplasting<Object>> filer = new ArrayList<>();
 
@@ -305,6 +305,7 @@ public class DigisosApiImpl implements DigisosApi {
         entitybuilder.setCharset(StandardCharsets.UTF_8);
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
+        entitybuilder.addTextBody("tilleggsinformasjonJson", tilleggsinformasjonJson, ContentType.APPLICATION_JSON); // Må være første fil
         entitybuilder.addTextBody("soknadJson", soknadJson, ContentType.APPLICATION_JSON);
         entitybuilder.addTextBody("vedleggJson", vedleggJson, ContentType.APPLICATION_JSON);
         for (FilForOpplasting<Object> objectFilForOpplasting : filer) {
