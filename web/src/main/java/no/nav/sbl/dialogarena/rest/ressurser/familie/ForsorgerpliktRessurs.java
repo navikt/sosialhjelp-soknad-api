@@ -15,6 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBorSammenMed;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -41,7 +42,11 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.mapToJsonNavn;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addInntektIfNotPresentInOversikt;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtgiftIfNotPresentInOversikt;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeInntektIfPresentInOversikt;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOpplysninger;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOversikt;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
