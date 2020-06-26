@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
@@ -21,37 +21,49 @@ import java.util.stream.Collectors;
 import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
+import static no.nav.sbl.sosialhjelp.SoknadUnderArbeidService.naTidspunkForUtcAltidMedNano;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class SkattetatenSystemdata implements Systemdata {
+public class SkattetatenSystemdata {
     public static final Logger log = getLogger(SkattetatenSystemdata.class);
 
     @Inject
-    SkattbarInntektService skattbarInntektService;
+    private SkattbarInntektService skattbarInntektService;
 
     @Inject
-    OrganisasjonService organisasjonService;
+    private OrganisasjonService organisasjonService;
 
-    @Override
+    @Inject
+    private TextService textService;
+
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();
 
-        fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
-
-        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
-        if(soknadUnderArbeid.getHarSkattemeldingSamtykke()) {
+        if(jsonData.getOkonomi().getOpplysninger().getBekreftelse().stream().anyMatch(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN_SAMTYKKE) && bekreftelse.getVerdi())) {
             List<JsonOkonomiOpplysningUtbetaling> systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator);
             if (systemUtbetalingerSkattbar == null) {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
             } else {
+                jsonData.getOkonomi().getOpplysninger().getBekreftelse().stream()
+                        .filter(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN_SAMTYKKE))
+                        .findAny()
+                        .ifPresent(bekreftelse -> bekreftelse.withBekreftelsesDato(naTidspunkForUtcAltidMedNano()));
+                fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
                 okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar);
+                soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
             }
+        } else { // Ikke samtykke!!!
+            fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger);
+            soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(false);
         }
+        // Dette kan påvirke hvilke forventinger vi har til arbeidsforhold:
+        ArbeidsforholdSystemdata.updateVedleggForventninger(soknadUnderArbeid.getJsonInternalSoknad(), textService);
     }
 
     private void fjernGamleUtbetalinger(List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger) {

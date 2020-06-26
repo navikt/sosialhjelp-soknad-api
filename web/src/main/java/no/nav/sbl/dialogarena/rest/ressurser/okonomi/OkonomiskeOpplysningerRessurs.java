@@ -34,6 +34,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskGruppeMapper.getGruppe;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllFormuerToJsonOkonomi;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllInntekterToJsonOkonomi;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllInntekterToJsonOkonomiUtbetalinger;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllOpplysningUtgifterToJsonOkonomi;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllOversiktUtgifterToJsonOkonomi;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllUtbetalingerToJsonOkonomi;
@@ -42,6 +43,7 @@ import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.isInSoknadJson;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 
 @Controller
@@ -96,7 +98,11 @@ public class OkonomiskeOpplysningerRessurs {
 
             switch (soknadPath) {
                 case "utbetaling":
-                    addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    if(soknadType.equalsIgnoreCase(UTBETALING_HUSBANKEN)) {
+                        addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN);
+                    } else {
+                        addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    }
                     break;
                 case "opplysningerUtgift":
                     addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
@@ -180,6 +186,7 @@ public class OkonomiskeOpplysningerRessurs {
                 .setStatus(vedleggFrontend.vedleggStatus);
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class VedleggFrontends {
         public List<VedleggFrontend> okonomiskeOpplysninger;

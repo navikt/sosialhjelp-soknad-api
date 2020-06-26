@@ -10,14 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class HentOkonomiBekreftelseHelper extends RegistryAwareHelper<String> {
+public class ManglerSamtykkeEllerSantHelper extends RegistryAwareHelper<String> {
 
-    public static final String NAVN = "hentOkonomiBekreftelse";
+    public static final String NAVN = "manglerSamtykkeEllerSant";
 
     @Override
     public CharSequence apply(final String type, final Options options) throws IOException {
+        final Boolean otherBoolean = options.param(0);
+        if(otherBoolean) return createReturnVariable(options, true);
+
         if (options.context.get("bekreftelse") == null) {
-            return options.inverse(this);
+            return options.fn(this);
         }
         @SuppressWarnings("unchecked")
         final List<JsonOkonomibekreftelse> bekreftelser = (List<JsonOkonomibekreftelse>) options.context.get("bekreftelse");
@@ -26,13 +29,19 @@ public class HentOkonomiBekreftelseHelper extends RegistryAwareHelper<String> {
                 .findFirst();
         
         if (bekreftelse.isPresent()) {
-            Context.Builder contextMedVariabel = Context.newBuilder(options.context, options.context.model())
-                    .combine("verdi", bekreftelse.get().getVerdi())
-                    .combine("tidspunkt", bekreftelse.get().getBekreftelsesDato());
-            return options.fn(contextMedVariabel.build());
-        } else {
-            return options.inverse(this);
+            Boolean verdi = bekreftelse.get().getVerdi();
+            if(!verdi)
+                return options.fn(this);
+            else
+                return options.inverse(this);
         }
+        return options.fn(this);
+    }
+
+    private CharSequence createReturnVariable(Options options, Boolean verdi) throws IOException {
+        Context contextVerdi = Context.newBuilder(options.context, options.context.model())
+                .combine("verdi", verdi).build();
+        return options.fn(contextVerdi);
     }
 
     @Override
@@ -40,6 +49,6 @@ public class HentOkonomiBekreftelseHelper extends RegistryAwareHelper<String> {
 
     @Override
     public String getBeskrivelse() {
-        return "Henter alle økonomiske bekreftelser angitt av bruker";
+        return "Sjekker om vi har samtykke eller at other boolean er sann!";
     }
 }

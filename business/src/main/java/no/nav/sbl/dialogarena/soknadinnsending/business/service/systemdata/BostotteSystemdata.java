@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRolle;
@@ -23,22 +23,34 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
+import static no.nav.sbl.sosialhjelp.SoknadUnderArbeidService.naTidspunkForUtcAltidMedNano;
 
 @Component
-public class BostotteSystemdata implements Systemdata {
+public class BostotteSystemdata {
     @Inject
     private Bostotte bostotte;
 
-    @Override
+    @Inject
+    private TextService textService;
+
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
-        fjernGamleHusbankenData(okonomi.getOpplysninger());
-        if(soknadUnderArbeid.getHarBostotteSamtykke()) {
+        if(okonomi.getOpplysninger().getBekreftelse().stream().anyMatch(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE) && bekreftelse.getVerdi())) {
             String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
             BostotteDto bostotteDto = innhentBostotteFraHusbanken(personIdentifikator, token);
             if (bostotteDto != null) {
+                okonomi.getOpplysninger().getBekreftelse().stream()
+                        .filter(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE))
+                        .findAny()
+                        .ifPresent(bekreftelse -> bekreftelse.withBekreftelsesDato(naTidspunkForUtcAltidMedNano()));
+                fjernGamleHusbankenData(okonomi, false);
                 boolean trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotteDto);
                 List<JsonOkonomiOpplysningUtbetaling> jsonBostotteUtbetalinger = mapToJsonOkonomiOpplysningUtbetalinger(bostotteDto, trengerViDataFraDeSiste60Dager);
                 okonomi.getOpplysninger().getUtbetaling().addAll(jsonBostotteUtbetalinger);
@@ -49,13 +61,25 @@ public class BostotteSystemdata implements Systemdata {
                 soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
             }
         } else { // Ikke samtykke!!!
+            fjernGamleHusbankenData(okonomi, true);
             soknad.getDriftsinformasjon().setStotteFraHusbankenFeilet(false);
         }
     }
 
-    private void fjernGamleHusbankenData(JsonOkonomiopplysninger okonomiopplysninger) {
-        okonomiopplysninger.getUtbetaling().removeIf(utbetaling -> utbetaling.getType().equalsIgnoreCase(UTBETALING_HUSBANKEN));
+    private void fjernGamleHusbankenData(JsonOkonomi okonomi, boolean skalFortsattHaBrukerUtbetaling) {
+        JsonOkonomiopplysninger okonomiopplysninger = okonomi.getOpplysninger();
         okonomiopplysninger.setBostotte(new JsonBostotte());
+
+        okonomiopplysninger.getUtbetaling().removeIf(utbetaling ->
+                utbetaling.getType().equalsIgnoreCase(UTBETALING_HUSBANKEN) &&
+                        utbetaling.getKilde().equals(JsonKilde.SYSTEM)
+        );
+        if(skalFortsattHaBrukerUtbetaling) {
+            String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(BOSTOTTE));
+            addUtbetalingIfNotPresentInOpplysninger(okonomiopplysninger.getUtbetaling(), UTBETALING_HUSBANKEN, tittel);
+        } else {
+            removeUtbetalingIfPresentInOpplysninger(okonomiopplysninger.getUtbetaling(), UTBETALING_HUSBANKEN);
+        }
     }
 
     private boolean harViDataFraSiste30Dager(BostotteDto bostotteDto) {

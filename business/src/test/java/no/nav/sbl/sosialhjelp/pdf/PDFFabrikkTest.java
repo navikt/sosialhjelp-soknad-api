@@ -63,6 +63,7 @@ public class PDFFabrikkTest {
         handleBarKjoerer.registrerHelper("personnr", new PersonnrHelper());
         handleBarKjoerer.registrerHelper("hvisUtbetalingFinnes", new HvisUtbetalingFinnesHelper());
         handleBarKjoerer.registrerHelper("hentOkonomiBekreftelse", new HentOkonomiBekreftelseHelper());
+        handleBarKjoerer.registrerHelper("manglerSamtykkeEllerSant", new ManglerSamtykkeEllerSantHelper());
         handleBarKjoerer.registrerHelper("hvisSparing", new HvisSparingHelper());
         handleBarKjoerer.registrerHelper("formaterDatoKlokkeslett", new FormaterDatoKlokkeslettHelper());
         handleBarKjoerer.registrerHelper("hvisBarneutgift", new HvisBarneutgiftHelper());

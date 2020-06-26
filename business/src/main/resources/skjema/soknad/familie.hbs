@@ -15,15 +15,24 @@
                     {{/unless}}
                 {{/hvisLik}}
             {{/if}}
-            {{#if @root.utvidetSoknad}}
-                <h3>{{ hentTekst "familierelasjon.faktum.sporsmal" }}</h3>
+            <h3>{{ hentTekst "familierelasjon.faktum.sporsmal" }}</h3>
+            {{#if @root.harSystemregistrerteBarn}}
+                {{> skjema/soknad/familie_har_systemregistrerte_barn}}
+            {{else}}
+                {{{hentTekst "familierelasjon.ingen_registrerte_barn"}}}
             {{/if}}
-            {{#if forsorgerplikt.harForsorgerplikt.verdi}}
-                {{> skjema/soknad/familie_har_barn}}
+            {{#if @root.harBrukerregistrerteBarn}}
+                {{> skjema/soknad/familie_har_brukerregistrerte_barn}}
             {{else}}
                 {{#if @root.utvidetSoknad}}
-                    {{{hentTekst "familierelasjon.ingen_registrerte_barn"}}}
+                    <h3>{{hentTekst "familierelasjon.faktum.leggtil.sporsmal"}}</h3>
                 {{/if}}
+            {{/if}}
+            {{#if @root.utvidetSoknad}}
+                {{{settInnKnappTilgjengeligTekst "familie.barn.true.barn.leggtil"}}}
+            {{/if}}
+            {{#if forsorgerplikt.harForsorgerplikt.verdi}}
+                {{> skjema/soknad/familie_barnebidrag}}
             {{/if}}
         </ul>
     {{/with}}
