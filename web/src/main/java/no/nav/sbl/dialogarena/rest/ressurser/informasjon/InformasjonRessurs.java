@@ -21,13 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -162,6 +160,13 @@ public class InformasjonRessurs {
                 klientlogger.debug(logg.melding());
                 break;
         }
+    }
+
+    @GET
+    @Path("/kommunelogg")
+    public String triggeKommunelogg(@QueryParam("kommunenummer") String kommunenummer) {
+        logger.info("Kommuneinfo trigget for {}: {}", kommunenummer, kommuneInfoService.kommuneInfo(kommunenummer));
+        return kommunenummer + " er logget. Sjekk kibana";
     }
 
     @Unprotected
