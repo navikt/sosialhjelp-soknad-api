@@ -17,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseServi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
@@ -117,10 +118,10 @@ public class DigisosApiService {
 
     }
 
-    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEnhetsnavn, String behandlingsId, String token) {
+    String sendOgKrypter(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEnhetsnavn, String behandlingsId, String token) {
         Event event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn);
         try {
-            return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
+            return digisosApi.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
         } catch (Exception e) {
             event.setFailed();
             throw e;
@@ -226,11 +227,12 @@ public class DigisosApiService {
         List<FilOpplasting> filOpplastinger = lagDokumentListe(soknadUnderArbeid);
         log.info("Laster opp {}", filOpplastinger.size());
         String soknadJson = getSoknadJson(soknadUnderArbeid);
+        String tilleggsinformasjonJson = getTilleggsinformasjonJson(soknadUnderArbeid.getJsonInternalSoknad().getSoknad());
         String vedleggJson = getVedleggJson(soknadUnderArbeid);
         log.info("Starter kryptering av filer for {}, skal sende til kommune {} med enhetsnummer {} og navenhetsnavn {}", behandlingsId,  kommunenummer,
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getEnhetsnummer(),
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
-        String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
+        String digisosId = sendOgKrypter(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
@@ -245,7 +247,27 @@ public class DigisosApiService {
             ensureValidSoknad(sonadJson);
             return sonadJson;
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Klarer ikke serialisere", e);
+            throw new IllegalArgumentException("Klarer ikke serialisere sonadJson", e);
+        }
+    }
+
+    String getTilleggsinformasjonJson(JsonSoknad soknad) {
+
+        if (soknad == null || soknad.getMottaker() == null) {
+            log.error("Soknad eller soknadsmottaker er null ved sending av søknad. Dette skal ikke skje.");
+            throw new IllegalStateException("Soknad eller soknadsmottaker er null ved sending av søknad.");
+        }
+
+        String enhetsnummer = soknad.getMottaker().getEnhetsnummer();
+        if (enhetsnummer == null) {
+            log.error("Enhetsnummer er null ved sending av søknad. Den blir lagt til i tilleggsinformasjon-filen med <null> som verdi.");
+        }
+        JsonTilleggsinformasjon tilleggsinformasjonJson = new JsonTilleggsinformasjon().withEnhetsnummer(enhetsnummer);
+
+        try {
+            return objectMapper.writeValueAsString(tilleggsinformasjonJson);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Klarer ikke serialisere tilleggsinformasjonJson", e);
         }
     }
 
@@ -255,7 +277,7 @@ public class DigisosApiService {
             ensureValidVedlegg(vedleggJson);
             return vedleggJson;
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Klarer ikke serialisere", e);
+            throw new IllegalArgumentException("Klarer ikke serialisere vedleggJson", e);
         }
     }
 
