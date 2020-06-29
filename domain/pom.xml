@@ -112,6 +112,11 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>no.nav.sosialhjelp</groupId>
+            <artifactId>sosialhjelp-common-api</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

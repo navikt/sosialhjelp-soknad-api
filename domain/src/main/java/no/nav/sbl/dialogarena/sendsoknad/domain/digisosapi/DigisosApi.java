@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
 
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+
 import java.util.List;
 import java.util.Map;
 

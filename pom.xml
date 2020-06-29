@@ -57,6 +57,32 @@
             <name>Maven central</name>
             <url>https://repo.maven.apache.org/maven</url>
         </repository>
+
+        <!-- Det generelle interne Nexus-repoet til NAV (brukes kun internt) -->
+        <repository>
+            <id>nexus-internal-release</id>
+            <url>https://repo.adeo.no/repository/maven-release</url>
+        </repository>
+        <!-- Mirror foran Maven Central NAV (brukes kun internt) -->
+        <repository>
+            <id>nexus-internal-mirror</id>
+            <url>https://repo.adeo.no/repository/maven-public</url>
+        </repository>
+        <!-- Skal brukes hvis bygget kjører internt (f.eks. Jenkins, fra utviklerimage, eller via ScaleFT) -->
+        <repository>
+            <id>internal-mirror-github-navikt</id>
+            <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+        </repository>
+        <!-- Skal brukes hvis bygget kjøres fra en Github Action -->
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+        <!-- Skal brukes hvis bygget kjører utenfor NAV (f.eks. en ekstern maskin, eller Circle CI) -->
+        <repository>
+            <id>external-mirror-github-navikt</id>
+            <url>https://github-package-registry-mirror.gc.nav.no/cached/maven-release</url>
+        </repository>
     </repositories>
 
     <properties>
@@ -76,6 +102,9 @@
 
         <!-- Tjenestespesifikasjoner -->
         <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
+
+        <!-- Sosialhjelp-common -->
+        <sosialhjelp-common.version>1.a615c63</sosialhjelp-common.version>
 
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2020.03.10_16.55-ca8a7f989623</nav-common.version>
@@ -259,6 +288,12 @@
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
 
+            <!-- Sosialhjelp-common -->
+            <dependency>
+                <groupId>no.nav.sosialhjelp</groupId>
+                <artifactId>sosialhjelp-common-api</artifactId>
+                <version>${sosialhjelp-common.version}</version>
+            </dependency>
 
             <!-- NAV felles biblioteker (nytt) -->
             <dependency>
@@ -342,7 +377,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
 
             <!-- Spring avhengigheter -->
             <dependency>

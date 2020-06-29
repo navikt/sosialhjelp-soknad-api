@@ -15,6 +15,7 @@ import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;

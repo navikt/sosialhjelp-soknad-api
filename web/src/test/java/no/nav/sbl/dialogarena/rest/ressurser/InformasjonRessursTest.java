@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfo;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
@@ -12,6 +11,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonServi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

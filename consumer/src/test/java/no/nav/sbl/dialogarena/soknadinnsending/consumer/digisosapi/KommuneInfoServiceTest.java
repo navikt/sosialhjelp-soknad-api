@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfo;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -37,9 +37,7 @@ public class KommuneInfoServiceTest {
     @Test
     public void kommuneMedKonfigurasjonSkalGikanMottaSoknaderLikKonfigurasjon() {
         // True
-        KommuneInfo value = new KommuneInfo();
-        value.setKommunenummer("1111");
-        value.setKanMottaSoknader(true);
+        KommuneInfo value = new KommuneInfo("1111", true, false, false, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -48,9 +46,7 @@ public class KommuneInfoServiceTest {
         assertThat(kanMottaSoknader).isTrue();
 
         // False
-        value = new KommuneInfo();
-        value.setKommunenummer("1111");
-        value.setKanMottaSoknader(false);
+        value = new KommuneInfo("1111", false, false, false, false, null, false, null);
         kommuneInfoMap.put("1111", value);
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
 
@@ -68,9 +64,7 @@ public class KommuneInfoServiceTest {
     @Test
     public void kommuneMedKonfigurasjonSkalGiharMidlertidigDeaktivertMottakLikKonfigurasjon() {
         // True
-        KommuneInfo value = new KommuneInfo();
-        value.setKommunenummer("1111");
-        value.setHarMidlertidigDeaktivertMottak(true);
+        KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -79,9 +73,7 @@ public class KommuneInfoServiceTest {
         assertThat(kanMottaSoknader).isTrue();
 
         // False
-        value = new KommuneInfo();
-        value.setKommunenummer("1111");
-        value.setHarMidlertidigDeaktivertMottak(false);
+        value = new KommuneInfo("1111", true, false, false, false, null, false, null);
         kommuneInfoMap.put("1111", value);
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
 
@@ -103,12 +95,7 @@ public class KommuneInfoServiceTest {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Kun deaktivert mottak (permutasjon 0 = 0000)
-        KommuneInfo value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(false);
-        value.setKanOppdatereStatus(false);
-        value.setHarMidlertidigDeaktivertMottak(false);
-        value.setHarMidlertidigDeaktivertOppdateringer(false);
+        KommuneInfo value = new KommuneInfo("1234", false, false, false, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -118,12 +105,7 @@ public class KommuneInfoServiceTest {
 
 
         // Inkl. midlertidig deaktivert innsyn (permutasjon 1 = 0001)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(false);
-        value.setKanOppdatereStatus(false);
-        value.setHarMidlertidigDeaktivertMottak(false);
-        value.setHarMidlertidigDeaktivertOppdateringer(true);
+        value = new KommuneInfo("1234", false, false, false, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -133,12 +115,7 @@ public class KommuneInfoServiceTest {
 
 
         // Inkl. midlertidig deaktivert mottak (permutasjon 2 = 0010)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(false);
-        value.setKanOppdatereStatus(false);
-        value.setHarMidlertidigDeaktivertMottak(true);
-        value.setHarMidlertidigDeaktivertOppdateringer(false);
+        value = new KommuneInfo("1234", false, false, true, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -148,12 +125,7 @@ public class KommuneInfoServiceTest {
 
 
         // Inkl. midlertidig deaktivert mottak og midlertidig deaktivert innsyn (permutasjon 3 = 0011)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(false);
-        value.setKanOppdatereStatus(false);
-        value.setHarMidlertidigDeaktivertMottak(true);
-        value.setHarMidlertidigDeaktivertOppdateringer(true);
+        value = new KommuneInfo("1234", false, false, true, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -163,12 +135,7 @@ public class KommuneInfoServiceTest {
 
 
         // Inkl. deaktivert innsyn (permutasjon 4 = 0100)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(false);
-        value.setKanOppdatereStatus(true);
-        value.setHarMidlertidigDeaktivertMottak(false);
-        value.setHarMidlertidigDeaktivertOppdateringer(false);
+        value = new KommuneInfo("1234", false, true, false, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -178,12 +145,7 @@ public class KommuneInfoServiceTest {
 
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert innsyn (permutasjon 5 = 0101)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(false);
-        value.setKanOppdatereStatus(true);
-        value.setHarMidlertidigDeaktivertMottak(false);
-        value.setHarMidlertidigDeaktivertOppdateringer(true);
+        value = new KommuneInfo("1234", false, true, false, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -193,12 +155,7 @@ public class KommuneInfoServiceTest {
 
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert mottak (permutasjon 6 = 0110)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(false);
-        value.setKanOppdatereStatus(true);
-        value.setHarMidlertidigDeaktivertMottak(true);
-        value.setHarMidlertidigDeaktivertOppdateringer(false);
+        value = new KommuneInfo("1234", false, true, true, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -208,12 +165,7 @@ public class KommuneInfoServiceTest {
 
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert mottak og midlertidig deaktivert innsyn (permutasjon 7 = 0111)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(false);
-        value.setKanOppdatereStatus(true);
-        value.setHarMidlertidigDeaktivertMottak(true);
-        value.setHarMidlertidigDeaktivertOppdateringer(true);
+        value = new KommuneInfo("1234", false, true, true, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -227,12 +179,7 @@ public class KommuneInfoServiceTest {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Kun aktivert mottak (permutasjon 8 = 1000)
-        KommuneInfo value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(true);
-        value.setKanOppdatereStatus(false);
-        value.setHarMidlertidigDeaktivertMottak(false);
-        value.setHarMidlertidigDeaktivertOppdateringer(false);
+        KommuneInfo value = new KommuneInfo("1234", true, false, false, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -241,12 +188,7 @@ public class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
 
         // Inkl. deaktivert innsyn (permutasjon 9 = 1001)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(true);
-        value.setKanOppdatereStatus(false);
-        value.setHarMidlertidigDeaktivertMottak(false);
-        value.setHarMidlertidigDeaktivertOppdateringer(true);
+        value = new KommuneInfo("1234", true, false, false, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -261,12 +203,7 @@ public class KommuneInfoServiceTest {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 4 (permutasjon 12 = 1100)
-        KommuneInfo value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(true);
-        value.setKanOppdatereStatus(true);
-        value.setHarMidlertidigDeaktivertMottak(false);
-        value.setHarMidlertidigDeaktivertOppdateringer(false);
+        KommuneInfo value = new KommuneInfo("1234", true, true, false, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -275,12 +212,7 @@ public class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
 
         // Inkl. midlertidig deaktivert innsyn (permutasjon 13 = 1101)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(true);
-        value.setKanOppdatereStatus(true);
-        value.setHarMidlertidigDeaktivertMottak(false);
-        value.setHarMidlertidigDeaktivertOppdateringer(true);
+        value = new KommuneInfo("1234", true, true, false, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -294,12 +226,7 @@ public class KommuneInfoServiceTest {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 5 (permutasjon 14 = 1110)
-        KommuneInfo value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(true);
-        value.setKanOppdatereStatus(true);
-        value.setHarMidlertidigDeaktivertMottak(true);
-        value.setHarMidlertidigDeaktivertOppdateringer(false);
+        KommuneInfo value = new KommuneInfo("1234", true, true, true, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -308,12 +235,7 @@ public class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
 
         // Inkl. deaktivert mottak (permutasjon 10 = 1010)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(true);
-        value.setKanOppdatereStatus(false);
-        value.setHarMidlertidigDeaktivertMottak(true);
-        value.setHarMidlertidigDeaktivertOppdateringer(false);
+        value = new KommuneInfo("1234", true, false, true, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -322,12 +244,7 @@ public class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
 
         // Inkl. deaktivert innsyn (permutasjon 11 = 1011)
-        value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(true);
-        value.setKanOppdatereStatus(false);
-        value.setHarMidlertidigDeaktivertMottak(true);
-        value.setHarMidlertidigDeaktivertOppdateringer(true);
+        value = new KommuneInfo("1234", true, false, true, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -341,12 +258,7 @@ public class KommuneInfoServiceTest {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 6 (permutasjon 15 = 1111)
-        KommuneInfo value = new KommuneInfo();
-        value.setKommunenummer("1234");
-        value.setKanMottaSoknader(true);
-        value.setKanOppdatereStatus(true);
-        value.setHarMidlertidigDeaktivertMottak(true);
-        value.setHarMidlertidigDeaktivertOppdateringer(true);
+        KommuneInfo value = new KommuneInfo("1234", true, true, true, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
         when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
