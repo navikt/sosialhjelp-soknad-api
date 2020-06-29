@@ -145,11 +145,11 @@ public class SoknadService {
         logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
         if(!soknadUnderArbeid.erEttersendelse()) {
             if (soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()) {
-                logger.info("Nedlasing fra Husbanken har feilet for innsendtsoknad." +
+                logger.info("Nedlasting fra Husbanken har feilet for innsendtsoknad." +
                         finnAlderPaaDataFor(soknadUnderArbeid, BOSTOTTE_SAMTYKKE));
             }
             if (soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet()) {
-                logger.info("Nedlasing fra Skatteetaten har feilet for innsendtsoknad." +
+                logger.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad." +
                         finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE));
             }
         }
