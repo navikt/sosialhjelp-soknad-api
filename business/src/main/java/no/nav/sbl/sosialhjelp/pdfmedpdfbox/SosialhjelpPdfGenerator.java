@@ -703,10 +703,6 @@ public class SosialhjelpPdfGenerator {
                     String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
                     skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fodselsdato");
 
-                    // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
-                    //String personIdentifikator = barn.getPersonIdentifikator();
-                    // skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
-
                     if (barn.getKilde().equals(JsonKilde.SYSTEM)) {
                         // Samme folkeregistrerte adresse
                         JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
