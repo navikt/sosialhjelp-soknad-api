@@ -53,3 +53,14 @@ docker push docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.2-jdk-
 
 Dette krever at man er logget inn mot `docker.pkg.github.com` lokalt med et GitHub personal access token som har scopet `write:packages` og
 SSO aktivert for `navikt`-organisasjonen.
+
+### Pakker fra github package registry
+Ved bygging av docker image sendes GITHUB_TOKEN med til Dockerfile, slik at `maven-settings.xml` kan benyttes for å hente pakker fra github package registry.
+```
+docker build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t $(cat DOCKER_TAG) .
+```
+Fra Dockerfile
+```
+ARG GITHUB_TOKEN
+RUN mvn install --settings maven-settings.xml
+```
