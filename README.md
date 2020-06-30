@@ -59,8 +59,21 @@ Ved bygging av docker image sendes GITHUB_TOKEN med til Dockerfile, slik at `mav
 ```
 docker build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t $(cat DOCKER_TAG) .
 ```
-Fra Dockerfile
+Dockerfile, her tas GITHUB_TOKEN inn som ARG
 ```
 ARG GITHUB_TOKEN
 RUN mvn install --settings maven-settings.xml
+```
+maven-settings.xml
+```
+<settings>
+    <servers>
+        <!-- i tilfelle bygget kjører som en Github Action, vil tokenet automatisk injectes her -->
+        <server>
+            <id>github-package-registry-navikt</id>
+            <username>x-access-token</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+    </servers>
+</settings>
 ```
