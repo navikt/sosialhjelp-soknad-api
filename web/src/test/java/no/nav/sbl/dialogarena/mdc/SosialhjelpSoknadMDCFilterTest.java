@@ -1,8 +1,5 @@
 package no.nav.sbl.dialogarena.mdc;
 
-import no.nav.modig.core.context.ModigSecurityConstants;
-import no.nav.modig.core.context.SubjectHandler;
-import no.nav.modig.core.context.SubjectHandlerUtils;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SosialhjelpSoknadMDCFilterTest {
 
-    @BeforeClass
+    /*@BeforeClass
     public static void setUp() {
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, no.nav.modig.core.context.ThreadLocalSubjectHandler.class.getName());
         System.setProperty(ModigSecurityConstants.SYSTEMUSER_USERNAME, "srvuser");
@@ -33,11 +30,11 @@ public class SosialhjelpSoknadMDCFilterTest {
     public static void cleanUp() {
         System.clearProperty(SubjectHandler.SUBJECTHANDLER_KEY);
         System.clearProperty(ModigSecurityConstants.SYSTEMUSER_USERNAME);
-    }
+    }*/
 
     @Test
     public void shouldAddMDCkeys() throws ServletException, IOException {
-        SubjectHandlerUtils.setEksternBruker("test", 3, null);
+        //SubjectHandlerUtils.setEksternBruker("test", 3, null);
         Map<String, String> contextMap = new HashMap<>();
         FilterChain chain = (servletRequest, servletResponse) -> contextMap.putAll(MDC.getCopyOfContextMap());
 

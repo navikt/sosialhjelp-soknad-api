@@ -22,6 +22,7 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import no.nav.common.auth.SubjectHandler;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -31,7 +32,6 @@ import org.slf4j.MDC.MDCCloseable;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
@@ -43,9 +43,10 @@ public class AdresseSokConsumerImplTest {
     private static String oldSubjectHandlerImplementationClass;
 
 
-    @BeforeClass
+    /*@BeforeClass
     public static void oppsettForInnloggetBruker() {
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
+        SubjectHandler.withSubjectProvider();
         oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
     }
 
@@ -56,7 +57,7 @@ public class AdresseSokConsumerImplTest {
         } else {
             System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, oldSubjectHandlerImplementationClass);
         }
-    }
+    }*/
 
 
     @Test
@@ -277,12 +278,12 @@ public class AdresseSokConsumerImplTest {
         return new ClientMock(client, webTarget, builder, response);
     }
 
-    public static class TestSubjectHandler extends SubjectHandler {
+    /*public static class TestSubjectHandler extends SubjectHandler {
         @Override
         public Subject getSubject() {
             return null;
         }
-    }
+    }*/
 
     private static final class ClientMock {
         Client client;

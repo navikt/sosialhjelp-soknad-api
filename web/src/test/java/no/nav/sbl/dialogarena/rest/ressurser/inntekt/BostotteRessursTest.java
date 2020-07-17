@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.sbl.dialogarena.rest.ressurser.inntekt.BostotteRessurs.BostotteFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BostotteSystemdata;
@@ -71,7 +69,7 @@ public class BostotteRessursTest {
     @InjectMocks
     private BostotteRessurs bostotteRessurs;
 
-    @Before
+    /*@Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
@@ -82,7 +80,7 @@ public class BostotteRessursTest {
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }
+    }*/
 
     @Test
     public void getBostotteSkalReturnereNull(){

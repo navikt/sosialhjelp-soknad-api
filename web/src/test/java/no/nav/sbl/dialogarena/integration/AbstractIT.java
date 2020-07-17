@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.integration;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.AfterClass;
@@ -31,7 +30,7 @@ public abstract class AbstractIT {
         System.setProperty("jersey.test.host", "localhost");
         jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web-integration.xml"), "/sendsoknad", buildDataSource("hsqldb.properties"));
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
-        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // pga saksoversikt uten oidc.
+        //setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // pga saksoversikt uten oidc.
         setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
         setProperty(IS_RUNNING_WITH_OIDC, isRunningWithOidc ? "true" : "false");
         jetty.start();

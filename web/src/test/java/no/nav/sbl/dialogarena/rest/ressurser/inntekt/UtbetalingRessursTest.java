@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.sbl.dialogarena.rest.ressurser.inntekt.UtbetalingRessurs.UtbetalingerFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -53,7 +51,7 @@ public class UtbetalingRessursTest {
     @InjectMocks
     private UtbetalingRessurs utbetalingRessurs;
 
-    @Before
+    /*@Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
@@ -64,7 +62,7 @@ public class UtbetalingRessursTest {
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }
+    }*/
 
     @Test
     public void getUtbetalingerSkalReturnereBekreftelseLikNullOgAltFalse(){

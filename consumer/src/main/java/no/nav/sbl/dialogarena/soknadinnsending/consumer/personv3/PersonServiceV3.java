@@ -36,7 +36,6 @@ public class PersonServiceV3 {
     private static final Logger logger = getLogger(PersonServiceV3.class);
 
     @Inject
-    @Named("personV3Endpoint")
     private PersonV3 personV3;
 
     @Inject

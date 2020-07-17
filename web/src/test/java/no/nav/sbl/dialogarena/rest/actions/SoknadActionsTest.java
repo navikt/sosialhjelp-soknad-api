@@ -1,11 +1,12 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
@@ -87,11 +88,11 @@ public class SoknadActionsTest {
     @Before
     public void setUp() {
         System.setProperty("authentication.isRunningWithOidc", "true");
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        // SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
-        EIER = SubjectHandler.getUserIdFromToken();
+        EIER = SubjectHandler.getIdent().orElseThrow(() -> new AuthorizationException("Missing userId"));
     }
 
     @After

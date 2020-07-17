@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.filter;
 
-import no.nav.modig.core.context.SubjectHandlerUtils;
 import org.slf4j.Logger;
 
 import javax.servlet.*;
@@ -33,7 +32,7 @@ public class FakeLoginFilter implements Filter {
         }
 
         String fnr  = getFnr(req);
-        SubjectHandlerUtils.setEksternBruker(fnr, 4, null);
+        //SubjectHandlerUtils.setEksternBruker(fnr, 4, null);
 
         filterChain.doFilter(servletRequest, servletResponse);
     }

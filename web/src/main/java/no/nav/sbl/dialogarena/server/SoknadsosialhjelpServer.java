@@ -2,9 +2,11 @@ package no.nav.sbl.dialogarena.server;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import no.nav.sbl.dialogarena.mock.MockSubjectHandlerService;
+import no.nav.brukerdialog.security.domain.IdentType;
+import no.nav.common.auth.SsoToken;
+import no.nav.common.auth.Subject;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
 import org.eclipse.jetty.jaas.JAASLoginService;
@@ -22,7 +24,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.setProperty;
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 
 public class SoknadsosialhjelpServer {
 
@@ -103,10 +104,10 @@ public class SoknadsosialhjelpServer {
         }
 
         if (MockUtils.isTillatMockRessurs()){
-            SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
+            //SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
         }
 
-        System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs og applikasjon som kjører uten oidc.
+//        System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs og applikasjon som kjører uten oidc.
 
     }
 

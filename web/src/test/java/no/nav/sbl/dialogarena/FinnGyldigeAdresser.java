@@ -9,8 +9,7 @@ import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -98,7 +97,7 @@ public class FinnGyldigeAdresser {
     
     private static ApplicationContext initializeContext() throws IOException, NamingException {
         SoknadsosialhjelpServer.setFrom("environment-test.properties");
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        // SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         final DataSource dataSource = buildDataSource("hsqldb.properties");
 
         final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();

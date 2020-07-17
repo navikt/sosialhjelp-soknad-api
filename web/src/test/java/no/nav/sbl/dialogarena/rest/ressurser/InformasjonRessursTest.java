@@ -5,8 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfo;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -56,7 +54,7 @@ public class InformasjonRessursTest {
 
     Locale norskBokmaal = new Locale("nb", "NO");
 
-    @Before
+    /*@Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
@@ -68,7 +66,7 @@ public class InformasjonRessursTest {
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }
+    }*/
 
     @Test
     public void miljovariablerInneholderAlleVariableneViTrenger() {

@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.sbl.dialogarena.rest.ressurser.inntekt.SkattbarInntektRessurs.SkattbarInntektFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
@@ -55,7 +53,7 @@ public class SkattbarInntektRessursTest {
     @InjectMocks
     private SkattbarInntektRessurs skattbarInntektRessurs;
 
-    @Before
+    /*@Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
@@ -66,7 +64,7 @@ public class SkattbarInntektRessursTest {
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }
+    }*/
 
     @Test
     public void getSkattbarInntektSkalReturnereTomListe(){

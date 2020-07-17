@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser.utgifter;
 
 import no.nav.sbl.dialogarena.rest.ressurser.utgifter.BoutgiftRessurs.BoutgifterFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
@@ -57,7 +55,7 @@ public class BoutgiftRessursTest {
     @InjectMocks
     private BoutgiftRessurs boutgiftRessurs;
 
-    @Before
+    /*@Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
@@ -68,7 +66,7 @@ public class BoutgiftRessursTest {
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }
+    }*/
 
     @Test
     public void getBoutgifterSkalReturnereBekreftelseLikNullOgAlleUnderverdierLikFalse(){

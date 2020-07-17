@@ -30,7 +30,6 @@ public class NorgConsumerMock {
     }
 
     public static RsNorgEnhet getOrCreateCurrentUserResponse(InvocationOnMock invocationOnMock){
-
         Map<String, RsNorgEnhet> rsNorgEnhetMap = responses.get(OidcFeatureToggleUtils.getUserId());
         if (rsNorgEnhetMap == null){
             rsNorgEnhetMap = getDefaultMap();

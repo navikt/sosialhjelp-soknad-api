@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser.soknadoversikt;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class SoknadOversiktRessurs {
     @GET
     @Path("/soknader")
     public List<SoknadOversikt> hentInnsendteSoknaderForBruker() {
-        String fnr = SubjectHandler.getUserIdFromToken();
+        String fnr = SubjectHandler.getIdent().orElseThrow(() -> new AuthorizationException("Missing userId"));
         logger.debug("Henter alle søknader");
 
         List<SoknadOversikt> soknader = service.hentSvarUtSoknaderFor(fnr);

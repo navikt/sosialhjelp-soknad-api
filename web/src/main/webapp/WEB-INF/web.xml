@@ -52,10 +52,18 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!--<filter>
+        <filter-name>OidcTokenValidatorFilter</filter-name>
+        <filter-class>no.nav.common.oidc.auth.OidcAuthenticationFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>-->
     <filter>
         <filter-name>OidcTokenValidatorFilter</filter-name>
-        <filter-class>no.nav.sbl.dialogarena.oidc.OidcTokenValidatorFilter</filter-class>
-        <async-supported>true</async-supported>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetBeanName</param-name>
+            <param-value>sendSoknadAuthenticationFilter</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>OidcTokenValidatorFilter</filter-name>
@@ -72,7 +80,7 @@
     </filter-mapping>
 
     <!--HttpSessionSecurityIntegrationFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
-    <filter>
+    <!--<filter>
         <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
         <filter-class>no.nav.modig.security.filter.OpenAMLoginFilter</filter-class>
         <async-supported>true</async-supported>
@@ -81,7 +89,7 @@
         <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+    -->
     <filter>
         <filter-name>SosialhjelpSoknadMDCFilter</filter-name>
         <filter-class>no.nav.sbl.dialogarena.mdc.SosialhjelpSoknadMDCFilter</filter-class>

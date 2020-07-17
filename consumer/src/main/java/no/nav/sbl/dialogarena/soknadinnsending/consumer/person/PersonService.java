@@ -31,13 +31,12 @@ public class PersonService {
     private static final Logger logger = getLogger(PersonService.class);
 
     @Inject
-    @Named("personEndpoint")
     private PersonPortType personEndpoint;
 
-    @Inject
+    /*@Inject
     @Named("personSelftestEndpoint")
     private PersonPortType personSelftestEndpoint;
-
+*/
     public no.nav.sbl.dialogarena.sendsoknad.domain.Person hentPerson(String fodselsnummer) {
         Person person;
         HentKjerneinformasjonResponse response = hentKjerneinformasjon(fodselsnummer);
@@ -70,9 +69,9 @@ public class PersonService {
         return new ArrayList<>();
     }
     
-    public void ping() {
+    /*public void ping() {
         personSelftestEndpoint.ping();
-    }
+    }*/
 
     private HentKjerneinformasjonRequest lagXMLRequestKjerneinformasjon(String fodselsnummer) {
         HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();

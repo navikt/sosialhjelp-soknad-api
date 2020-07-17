@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
+import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,25 +20,27 @@ public class KodeverkWSConfig {
     @Value("${sendsoknad.webservice.kodeverk.url}")
     private String kodeverkEndPoint;
 
-    private ServiceBuilder<KodeverkPortType>.PortTypeBuilder<KodeverkPortType> factory() {
+    /*private ServiceBuilder<KodeverkPortType>.PortTypeBuilder<KodeverkPortType> factory() {
+        new CXFClient<KodeverkPortType>().address(kodeverkEndPoint).configureStsForSubject().build().
         return new ServiceBuilder<>(KodeverkPortType.class)
                 .asStandardService()
                 .withAddress(kodeverkEndPoint)
                 .withWsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl")
                 .build()
                 .withHttpsMock();
-    }
+    }*/
 
     @Bean
-    public KodeverkPortType kodeverkEndpoint() {
-        KodeverkPortType prod = factory().withSystemSecurity().get();
+    public KodeverkPortType kodeverkClient() {
+        return new CXFClient<>(KodeverkPortType.class).address(kodeverkEndPoint).configureStsForSubject().build();
+
+        /*KodeverkPortType prod = factory().withSystemSecurity().get();
         KodeverkPortType mock = new KodeverkMock().kodeverkMock();
-        return createMetricsProxyWithInstanceSwitcher("Kodeverk", prod, mock, KODEVERK_KEY, KodeverkPortType.class);
+        return createMetricsProxyWithInstanceSwitcher("Kodeverk", prod, mock, KODEVERK_KEY, KodeverkPortType.class);*/
     }
 
-    @Bean
     public KodeverkPortType kodeverkSelftestEndpoint() {
-        return factory().withSystemSecurity().get();
+        return new CXFClient<>(KodeverkPortType.class).address(kodeverkEndPoint).configureStsForSystemUser().build();
     }
 
     @Bean

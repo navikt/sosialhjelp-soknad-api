@@ -302,6 +302,16 @@
                 <artifactId>suspend</artifactId>
                 <version>${nav-common.version}</version>
             </dependency>
+            <dependency>
+                <groupId>no.nav.common</groupId>
+                <artifactId>auth</artifactId>
+                <version>${nav-common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.common</groupId>
+                <artifactId>oidc</artifactId>
+                <version>${nav-common.version}</version>
+            </dependency>
             <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
             <!--            <dependency>-->
             <!--                <groupId>no.nav.common</groupId>-->
@@ -603,7 +613,7 @@
                 <artifactId>modig-lang</artifactId>
                 <version>${modig-lang.version}</version>
             </dependency>
-            <dependency>
+            <!--<dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-filter</artifactId>
                 <version>${modig-security.version}</version>
@@ -624,6 +634,7 @@
                 <artifactId>modig-security-core</artifactId>
                 <version>${modig-security.version}</version>
             </dependency>
+            -->
 
             <!-- Database avhengigheter -->
             <dependency>
@@ -1018,13 +1029,13 @@
                 <version>${nav-common.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
+            <!--<dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-core</artifactId>
                 <version>${modig-security.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>no.digipost</groupId>
                 <artifactId>digg</artifactId>

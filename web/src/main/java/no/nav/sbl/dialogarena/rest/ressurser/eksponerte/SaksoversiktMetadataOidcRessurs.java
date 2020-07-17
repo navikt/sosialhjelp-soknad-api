@@ -1,7 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser.eksponerte;
 
+import no.nav.common.auth.SubjectHandler;
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingerRespons;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
@@ -43,7 +44,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @GET
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
-        String fnr = SubjectHandler.getUserIdFromToken();
+        String fnr = SubjectHandler.getIdent().orElseThrow(() -> new AuthorizationException("Missing userId"));
         logger.debug("Henter metadata for innsendte soknader med oidc");
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
@@ -55,7 +56,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @GET
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
-        String fnr = SubjectHandler.getUserIdFromToken();
+        String fnr = SubjectHandler.getIdent().orElseThrow(() -> new AuthorizationException("Missing userId"));
         logger.debug("Henter metadata for ettersendelse med oidc");
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
@@ -67,7 +68,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @GET
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
-        String fnr = SubjectHandler.getUserIdFromToken();
+        String fnr = SubjectHandler.getIdent().orElseThrow(() -> new AuthorizationException("Missing userId"));
         logger.debug("Henter metadata for pabegynte med oidc");
 
         try {

@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.bosituasjon;
 
 import no.nav.sbl.dialogarena.rest.ressurser.bosituasjon.BosituasjonRessurs.BosituasjonFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
@@ -44,13 +43,13 @@ public class BosituasjonRessursTest {
 
     @Before
     public void setUp() {
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        // SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
     }
 
     @After
     public void tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService();
+        // SubjectHandler.resetOidcSubjectHandlerService();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 

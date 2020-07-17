@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import no.nav.sbl.dialogarena.oidc.OidcResourceFilteringFeature;
 import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -27,9 +26,9 @@ public class SoknadApplication extends ResourceConfig {
 
         if (isTillatMockRessurs()) {
             register(TjenesteMockRessurs.class);
-        } else {
+        } /*else {
             register(OidcResourceFilteringFeature.class);
-        }
+        }*/
 
         logger.info("Starter Jersey");
     }

@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.oidc.OidcTokenValidatorConfig;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -23,7 +22,7 @@ import org.springframework.context.annotation.*;
         ContentConfig.class,
         SoknadInnsendingDBConfig.class,
         HandlebarsHelperConfig.class,
-        OidcTokenValidatorConfig.class,
+//        OidcTokenValidatorConfig.class,
         MetricsConfig.class,
         SaksoversiktMetadataService.class,
         SoknadOversiktService.class,
