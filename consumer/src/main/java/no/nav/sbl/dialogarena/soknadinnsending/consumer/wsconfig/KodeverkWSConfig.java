@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static no.nav.metrics.MetricsFactory.createTimerProxyForWebService;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
@@ -32,7 +34,12 @@ public class KodeverkWSConfig {
 
     @Bean
     public KodeverkPortType kodeverkClient() {
-        return new CXFClient<>(KodeverkPortType.class).address(kodeverkEndPoint).configureStsForSubject().build();
+        if (MockUtils.isTillatMockRessurs()) {
+            return new KodeverkMock().kodeverkMock();
+        } else {
+            KodeverkPortType prod = new CXFClient<>(KodeverkPortType.class).address(kodeverkEndPoint).configureStsForSubject().build();
+            return createTimerProxyForWebService("Kodeverk", prod, KodeverkPortType.class);
+        }
 
         /*KodeverkPortType prod = factory().withSystemSecurity().get();
         KodeverkPortType mock = new KodeverkMock().kodeverkMock();

@@ -2,12 +2,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.fiks.ForsendelseServiceMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static no.nav.metrics.MetricsFactory.createTimerProxyForWebService;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
@@ -35,9 +37,14 @@ public class FiksWSConfig {
 
     @Bean
     public ForsendelsesServiceV9 forsendelsesServiceV9() {
-        final int receiveTimeout = 10 * 60_000;
-        final int connectionTimeout = 10_000;
-        return new CXFClient<>(ForsendelsesServiceV9.class).address(fiksEndpoint).configureStsForSubject().timeout(connectionTimeout, receiveTimeout).build();
+        if (MockUtils.isTillatMockRessurs()) {
+            return new ForsendelseServiceMock().forsendelseMock();
+        } else {
+            final int receiveTimeout = 10 * 60_000;
+            final int connectionTimeout = 10_000;
+            ForsendelsesServiceV9 prod =  new CXFClient<>(ForsendelsesServiceV9.class).address(fiksEndpoint).configureStsForSubject().timeout(connectionTimeout, receiveTimeout).build();
+            return createTimerProxyForWebService("FiksForsendelse", prod, ForsendelsesServiceV9.class);
+        }
 /*
         ForsendelsesServiceV9 mock = new ForsendelseServiceMock().forsendelseMock();
         ForsendelsesServiceV9 prod = factory().withSystemSecurity().get();

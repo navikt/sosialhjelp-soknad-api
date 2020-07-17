@@ -14,7 +14,7 @@ public class OidcFeatureToggleUtils {
 
     public static String getUserId() {
         //if (isRunningWithOidc() || MockUtils.isTillatMockRessurs()) {
-            return SubjectHandler.getIdent().orElseThrow(() -> new AuthorizationException("Missing userId"));
+            return SubjectHandler.getIdent().orElse(null); //.orElseThrow(() -> new AuthorizationException("Missing userId"));
         //}
         //return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getUid();
     }

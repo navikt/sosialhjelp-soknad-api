@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.PostAdresse;
+import no.nav.brukerdialog.security.domain.IdentType;
+import no.nav.common.auth.SsoToken;
+import no.nav.common.auth.Subject;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
@@ -48,6 +52,7 @@ import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -113,6 +118,10 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
+        SsoToken token = SsoToken.oidcToken("hansolo", Collections.emptyMap());
+        Subject subject = new Subject(uid.getUid(), IdentType.EksternBruker, token);
+        SubjectHandler.withSubject(subject, () -> {});
+
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(true);
         session.setAttribute("mockRessursUid", uid.getUid());
