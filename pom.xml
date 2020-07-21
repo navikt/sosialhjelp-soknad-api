@@ -634,7 +634,7 @@
 
             <!-- Database avhengigheter -->
             <dependency>
-                <groupId>com.oracle</groupId>
+                <groupId>com.oracle.database.jdbc</groupId>
                 <artifactId>ojdbc8</artifactId>
                 <version>${ojdbc.version}</version>
             </dependency>
@@ -1364,7 +1364,7 @@
                             <version>2.3.0</version>
                         </dependency>
                         <dependency>
-                            <groupId>com.oracle</groupId>
+                            <groupId>com.oracle.database.jdbc</groupId>
                             <artifactId>ojdbc8</artifactId>
                             <version>${ojdbc.version}</version>
                         </dependency>

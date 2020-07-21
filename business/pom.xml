@@ -44,11 +44,11 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-pdf</artifactId>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
@@ -117,10 +117,10 @@
             <artifactId>commons-text</artifactId>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-detect</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>no.nav.common</groupId>
@@ -144,7 +144,7 @@
 
         <!-- Avhengigheter med runtime-scope -->
         <dependency>
-            <groupId>com.oracle</groupId>
+            <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <scope>runtime</scope>
         </dependency>
