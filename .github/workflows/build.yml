@@ -21,7 +21,7 @@ jobs:
       - name: Create artifact version
         id: artifact-version
         uses: navikt/sosialhjelp-ci/actions/create-artifact-version@master
-      - name: mvn install
+      - name: Run mvn install
         - run: mvn install
       - name: Create docker image tags
         run: |
