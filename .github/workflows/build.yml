@@ -12,6 +12,10 @@ jobs:
     name: Build and push docker image
     runs-on: ubuntu-latest
     steps:
+      - name: Setup java
+        uses: actions/setup-java@v1
+          with:
+          java-version: '11.x'
       - uses: actions/checkout@v1
       - name: Login to GitHub package registry
         run: |
