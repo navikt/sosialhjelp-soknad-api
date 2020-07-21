@@ -22,7 +22,7 @@ jobs:
         id: artifact-version
         uses: navikt/sosialhjelp-ci/actions/create-artifact-version@master
       - name: Run mvn install
-        - run: mvn install
+        run: mvn install
       - name: Create docker image tags
         run: |
           PROJECT_NAME=$(echo $GITHUB_REPOSITORY | cut -d/ -f2)
