@@ -4,6 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -70,6 +71,9 @@ public class SoknadActions {
     @Inject
     private DigisosApiService digisosApiService;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @POST
     @Path("/send")
     public SendTilUrlFrontend sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
@@ -78,7 +82,7 @@ public class SoknadActions {
         }
 
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         if (!isSendingTilFiksEnabled()

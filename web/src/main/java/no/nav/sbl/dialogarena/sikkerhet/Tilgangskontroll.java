@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -29,14 +30,18 @@ public class Tilgangskontroll {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     public void verifiserAtBrukerKanEndreSoknad(String behandlingsId) {
         final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
+        String oidcToken = subjectHandlerWrapper.getOIDCTokenAsString();
+        sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId, oidcToken);
         verifiserBrukerHarTilgangTilSoknad(behandlingsId);
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, OidcFeatureToggleUtils.getUserId());
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, subjectHandlerWrapper.getIdent());
         String aktoerId;
         if (soknadUnderArbeidOptional.isPresent()) {
             aktoerId = soknadUnderArbeidOptional.get().getEier();
@@ -62,7 +67,7 @@ public class Tilgangskontroll {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("Søknaden har ingen eier");
         }
-        String aktorId = OidcFeatureToggleUtils.getUserId();
+        String aktorId = subjectHandlerWrapper.getIdent();
         if (!Objects.equals(aktorId, eier)) {
             throw new AuthorizationException("AktørId stemmer ikke overens med eieren til søknaden");
         }

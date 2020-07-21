@@ -4,7 +4,9 @@ import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
@@ -204,5 +206,15 @@ public class SoknadActionsTestConfig {
     @Bean
     public Systemdata systemdata() {
         return mock(Systemdata.class);
+    }
+
+    @Bean
+    public SubjectHandlerWrapper subjectHandlerWrapper() {
+        return mock(SubjectHandlerWrapper.class);
+    }
+
+    @Bean
+    public XsrfGenerator xsrfGenerator() {
+        return new XsrfGenerator();
     }
 }

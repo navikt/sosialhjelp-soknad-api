@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
@@ -52,17 +52,19 @@ public class SoknadServiceTest {
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Mock
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @InjectMocks
     private SoknadService soknadService;
 
-
-    @SuppressWarnings("unchecked")
-    /*@Before
+    @Before
     public void before() {
-        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }*/
+        when(subjectHandlerWrapper.getIdent()).thenReturn("11111111111");
+        //setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        //SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        //System.setProperty(IS_RUNNING_WITH_OIDC, "false");
+    }
 
     @Test
     public void skalStarteSoknad() {
@@ -70,7 +72,7 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
         soknadService.startSoknad("");
 
-        String bruker = OidcFeatureToggleUtils.getUserId();
+        String bruker = subjectHandlerWrapper.getIdent();
         verify(henvendelsesConnector).startSoknad(eq(bruker));
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).opprettSoknad(argument.capture(), eq(bruker));

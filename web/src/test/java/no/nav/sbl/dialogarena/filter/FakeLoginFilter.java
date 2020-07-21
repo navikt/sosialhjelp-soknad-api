@@ -1,10 +1,16 @@
 package no.nav.sbl.dialogarena.filter;
 
+import no.nav.brukerdialog.security.domain.IdentType;
+import no.nav.common.auth.SsoToken;
+import no.nav.common.auth.Subject;
+import no.nav.common.auth.SubjectHandler;
 import org.slf4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -31,10 +37,21 @@ public class FakeLoginFilter implements Filter {
             req.getSession().setAttribute("fnr", req.getParameter("fnr"));
         }
 
+        String header = req.getHeader("Authorization");
         String fnr  = getFnr(req);
         //SubjectHandlerUtils.setEksternBruker(fnr, 4, null);
+        if (header != null && fnr != null) {
+            SsoToken ssoToken = SsoToken.oidcToken(header.substring(6), Collections.emptyMap());
+            Subject subject = new Subject(fnr, IdentType.EksternBruker, ssoToken);
+            SubjectHandler.withSubject(subject, () -> {
+                filterChain.doFilter(servletRequest, servletResponse);
+            });
+        } else {
+            //HttpServletResponse res = (HttpServletResponse) servletResponse;
+            //res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
 
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     /**

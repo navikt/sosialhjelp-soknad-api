@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
@@ -213,5 +214,10 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     public OrganisasjonConsumer organisasjonConsumer() {
         return mock(OrganisasjonConsumer.class);
+    }
+
+    @Bean
+    public SubjectHandlerWrapper subjectHandlerWrapper() {
+        return mock(SubjectHandlerWrapper.class);
     }
 }

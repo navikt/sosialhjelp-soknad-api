@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.familie;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -45,9 +46,12 @@ public class SivilstatusRessurs {
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @GET
     public SivilstatusFrontend hentSivilstatus(@PathParam("behandlingsId") String behandlingsId){
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonSivilstatus jsonSivilstatus = soknad.getSoknad().getData().getFamilie().getSivilstatus();
 
@@ -61,7 +65,7 @@ public class SivilstatusRessurs {
     @PUT
     public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();
 

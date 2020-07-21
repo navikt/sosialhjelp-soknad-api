@@ -34,7 +34,7 @@ public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
         String callId = Optional.ofNullable(httpServletRequest.getHeader(HEADER_CALL_ID))
                 .orElse(generateCallId());
         putToMDC(CALL_ID, callId);
-        putToMDC(CONSUMER_ID, "");
+        putToMDC(CONSUMER_ID, "srvuser");
 
         try {
             filterChain.doFilter(httpServletRequest, httpServletResponse);

@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.begrunnelse;
 
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
@@ -39,19 +40,16 @@ public class BegrunnelseRessursTest {
     @Mock
     private Tilgangskontroll tilgangskontroll;
 
+    @Mock
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @InjectMocks
     private BegrunnelseRessurs begrunnelseRessurs;
 
     @Before
     public void setUp() {
-        // SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
-    }
-
-    @After
-    public void tearDown() {
-        // SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test

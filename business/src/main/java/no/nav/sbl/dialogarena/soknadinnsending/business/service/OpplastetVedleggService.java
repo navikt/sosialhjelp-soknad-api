@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
@@ -54,6 +54,9 @@ public class OpplastetVedleggService {
     @Inject
     private VirusScanner virusScanner;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     private static Map<String, String> MIME_TIL_EXT;
 
     @PostConstruct
@@ -65,7 +68,7 @@ public class OpplastetVedleggService {
     }
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
         String contentType = Detect.CONTENT_TYPE.transform(data);
 
@@ -101,7 +104,7 @@ public class OpplastetVedleggService {
     }
 
     public void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(String behandlingsId, byte[] data) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
 
@@ -114,7 +117,7 @@ public class OpplastetVedleggService {
     }
 
     public void deleteVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         final OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
 
         if (opplastetVedlegg == null){

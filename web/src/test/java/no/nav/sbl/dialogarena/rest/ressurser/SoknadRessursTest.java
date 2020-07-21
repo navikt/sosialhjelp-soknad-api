@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -52,19 +53,15 @@ public class SoknadRessursTest {
     @Mock
     private HenvendelseService henvendelseService;
 
+    @Mock
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @InjectMocks
     SoknadRessurs ressurs;
 
     @Before
     public void setUp() {
-        // SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
-    }
-
-    @After
-    public void tearDown() {
-        // SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
+        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
     }
 
     @Test

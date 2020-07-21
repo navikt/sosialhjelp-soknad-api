@@ -1,8 +1,11 @@
 package no.nav.sbl.dialogarena.config;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.DefaultSubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
@@ -28,7 +31,9 @@ import org.springframework.context.annotation.*;
         SoknadOversiktService.class,
         VirusScanConfig.class,
         DigisosApiRestConfig.class,
-        BostotteConfig.class
+        BostotteConfig.class,
+        DefaultSubjectHandlerWrapper.class,
+        XsrfGenerator.class
 })
 @ComponentScan(basePackages = "no.nav.sbl.dialogarena.rest")
 public class SoknadinnsendingConfig {

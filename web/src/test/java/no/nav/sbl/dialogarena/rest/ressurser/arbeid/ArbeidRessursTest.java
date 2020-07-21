@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
 import no.nav.sbl.dialogarena.rest.ressurser.arbeid.ArbeidRessurs.ArbeidFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.arbeid.ArbeidRessurs.ArbeidsforholdFrontend;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.ArbeidsforholdSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
@@ -66,21 +67,17 @@ public class ArbeidRessursTest {
     @Mock
     private Tilgangskontroll tilgangskontroll;
 
+    @Mock
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @InjectMocks
     private ArbeidRessurs arbeidRessurs;
 
 
-    /*@Before
+    @Before
     public void setUp() {
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
+        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
     }
-
-    @After
-    public void tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }*/
 
     @Test
     public void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){

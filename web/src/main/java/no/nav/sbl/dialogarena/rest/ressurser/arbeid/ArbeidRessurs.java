@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
@@ -40,9 +41,12 @@ public class ArbeidRessurs {
     @Inject
     private Tilgangskontroll tilgangskontroll;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @GET
     public ArbeidFrontend hentArbeid(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
         JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
@@ -63,7 +67,7 @@ public class ArbeidRessurs {
     @PUT
     public void updateArbeid(@PathParam("behandlingsId") String behandlingsId, ArbeidFrontend arbeidFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
         if (!isBlank(arbeidFrontend.kommentarTilArbeidsforhold)){

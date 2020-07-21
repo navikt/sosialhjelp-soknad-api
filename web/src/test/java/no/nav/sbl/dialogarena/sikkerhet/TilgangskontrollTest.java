@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -27,26 +28,25 @@ public class TilgangskontrollTest {
 
     @InjectMocks
     private Tilgangskontroll tilgangskontroll;
+
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
+
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
+    @Mock
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @Before
     public void setUp() {
-        // SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
-    }
-
-    @After
-    public void tearDown() {
-        // SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test
     public void skalGiTilgangForBruker() {
-        String userId = OidcFeatureToggleUtils.getUserId();
+        String userId = subjectHandlerWrapper.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
@@ -68,7 +68,7 @@ public class TilgangskontrollTest {
     @Test
     public void skalGiTilgangForBrukerMetadata() {
         SoknadMetadata metadata = new SoknadMetadata();
-        metadata.fnr = OidcFeatureToggleUtils.getUserId();
+        metadata.fnr = subjectHandlerWrapper.getIdent();
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
         tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123");
     }

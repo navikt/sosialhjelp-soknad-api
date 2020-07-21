@@ -22,7 +22,7 @@ public class OidcConfig {
     }
 
     /** Overskriver filteret for å validere token */
-    @Primary
+    /*@Primary
     @Bean
     JaxrsJwtTokenValidationFilter FakeOidcTokenValidatorFilter(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") MultiIssuerConfiguration multiIssuerConfiguration) {
         if (isOidcMock()) {
@@ -30,7 +30,7 @@ public class OidcConfig {
         } else {
             return new JaxrsJwtTokenValidationFilter(multiIssuerConfiguration);
         }
-    }
+    }*/
 
     @Bean
     JwkGenerator jwkGenerator() {

@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.utgifter;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -60,9 +61,12 @@ public class BoutgiftRessurs {
     @Inject
     private TextService textService;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         JsonSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
@@ -82,7 +86,7 @@ public class BoutgiftRessurs {
     @PUT
     public void updateBoutgifter(@PathParam("behandlingsId") String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 

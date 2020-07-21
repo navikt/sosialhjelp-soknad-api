@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -74,12 +75,16 @@ public class SoknadRessurs {
     @Inject
     private HenvendelseService henvendelseService;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @GET
     @Path("/{behandlingsId}/xsrfCookie")
     public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+        String token = subjectHandlerWrapper.getOIDCTokenAsString();
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-        response.addCookie(xsrfCookie(behandlingsId));
-        response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId));
+        response.addCookie(xsrfCookie(behandlingsId, token));
+        response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId, token));
         henvendelseService.oppdaterSistEndretDatoPaaMetadata(behandlingsId);
         return true;
     }
@@ -88,7 +93,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
@@ -97,7 +102,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}/erSystemdataEndret")
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        final String eier = subjectHandlerWrapper.getIdent();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         systemdata.update(soknadUnderArbeid, token);
 
@@ -134,7 +139,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}/hentSamtykker")
     public List<BekreftelseRessurs> hentSamtykker(@PathParam("behandlingsId") String behandlingsId,
                                                   @HeaderParam(value = AUTHORIZATION) String token) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        final String eier = subjectHandlerWrapper.getIdent();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<>();
@@ -171,7 +176,7 @@ public class SoknadRessurs {
         if (behandlingsId == null) {
             opprettetBehandlingsId = soknadService.startSoknad(token);
         } else {
-            final String eier = OidcFeatureToggleUtils.getUserId();
+            final String eier = subjectHandlerWrapper.getIdent();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
             if (soknadUnderArbeid.isPresent()) {
                 opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();
@@ -180,8 +185,8 @@ public class SoknadRessurs {
             }
         }
         result.put("brukerBehandlingId", opprettetBehandlingsId);
-        response.addCookie(xsrfCookie(opprettetBehandlingsId));
-        response.addCookie(xsrfCookieMedBehandlingsid(opprettetBehandlingsId));
+        response.addCookie(xsrfCookie(opprettetBehandlingsId, token));
+        response.addCookie(xsrfCookieMedBehandlingsid(opprettetBehandlingsId, token));
         return result;
     }
 
@@ -192,15 +197,15 @@ public class SoknadRessurs {
         soknadService.avbrytSoknad(behandlingsId);
     }
 
-    private static Cookie xsrfCookie(String behandlingId) {
-        Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
+    private static Cookie xsrfCookie(String behandlingId, String oidcToken) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId, oidcToken));
         xsrfCookie.setPath("/");
         xsrfCookie.setSecure(true);
         return xsrfCookie;
     }
 
-    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId) {
-        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId));
+    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId, String oidcToken) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId, oidcToken));
         xsrfCookie.setPath("/");
         xsrfCookie.setSecure(true);
         return xsrfCookie;

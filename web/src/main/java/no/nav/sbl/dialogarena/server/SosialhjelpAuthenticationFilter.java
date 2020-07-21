@@ -6,7 +6,9 @@ import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -20,6 +22,10 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class SosialhjelpAuthenticationFilter extends HttpFilter {
+
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -27,7 +33,7 @@ public class SosialhjelpAuthenticationFilter extends HttpFilter {
 
     @Override
     public void doFilter(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if (MockUtils.isTillatMockRessurs()) {
+        /*if (MockUtils.isTillatMockRessurs()) {
             String mockRessursUid = (String)servletRequest.getSession().getAttribute("mockRessursUid");
             if (mockRessursUid != null) {
                 SsoToken ssoToken = SsoToken.oidcToken("token", Collections.emptyMap());
@@ -45,8 +51,8 @@ public class SosialhjelpAuthenticationFilter extends HttpFilter {
             SubjectHandler.withSubject(subject, () -> {
                 filterChain.doFilter(servletRequest, servletResponse);
             });
-        }
-        //filterChain.doFilter(servletRequest, servletResponse);
+        }*/
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override

@@ -18,12 +18,8 @@ import java.security.NoSuchAlgorithmException;
 public class XsrfGenerator {
     private static final String SECRET = "9f8c0d81-d9b3-4b70-af03-bb9375336c4f";
 
-    public static String generateXsrfToken(String behandlingsId) {
-        return generateXsrfToken(behandlingsId, new DateTime().toString("yyyyMMdd"));
-    }
-
-    public static String generateXsrfToken(String behandlingsId, String date) {
-            return generateXsrfToken(behandlingsId, date, OidcFeatureToggleUtils.getToken());
+    public static String generateXsrfToken(String behandlingsId, String oidcToken) {
+        return generateXsrfToken(behandlingsId, new DateTime().toString("yyyyMMdd"), oidcToken);
     }
 
     public static String generateXsrfToken(String behandlingsId, String date, String token) {
@@ -38,9 +34,9 @@ public class XsrfGenerator {
         }
     }
 
-    public static void sjekkXsrfToken(String givenToken, String behandlingsId) {
-        String token = generateXsrfToken(behandlingsId);
-        boolean valid = token.equals(givenToken) || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
+    public static void sjekkXsrfToken(String givenToken, String behandlingsId, String oidcToken) {
+        String xsrfToken = generateXsrfToken(behandlingsId, oidcToken);
+        boolean valid = xsrfToken.equals(givenToken) || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd"), oidcToken).equals(givenToken);
         if (!valid && !MockUtils.isTillatMockRessurs()) {
             throw new AuthorizationException("Feil token");
         }

@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
@@ -62,14 +63,16 @@ public class InformasjonRessurs {
     private final AdresseSokService adresseSokService;
     private final DigisosApi digisosApi;
     private final KommuneInfoService kommuneInfoService;
+    private final SubjectHandlerWrapper subjectHandlerWrapper;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService) {
+    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService, SubjectHandlerWrapper subjectHandlerWrapper) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.personService = personService;
         this.adresseSokService = adresseSokService;
         this.digisosApi = digisosApi;
         this.kommuneInfoService = kommuneInfoService;
+        this.subjectHandlerWrapper = subjectHandlerWrapper;
     }
 
     @GET
@@ -81,7 +84,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
-        String fnr = OidcFeatureToggleUtils.getUserId();
+        String fnr = subjectHandlerWrapper.getIdent();
         Person person = personService.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
@@ -116,7 +119,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
-        String uid = OidcFeatureToggleUtils.getUserId();
+        String uid = subjectHandlerWrapper.getIdent();
         Person person = personService.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();

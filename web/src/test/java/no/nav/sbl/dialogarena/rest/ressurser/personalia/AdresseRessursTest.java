@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -73,18 +74,20 @@ public class AdresseRessursTest {
     @Mock
     private NavEnhetRessurs navEnhetRessurs;
 
-    /*@Before
+    @Mock
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
+    @Before
     public void setUp() {
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
         System.setProperty(IS_RUNNING_WITH_OIDC, "true");
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
     }
 
     @After
     public void tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService();
         System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }*/
+    }
 
     @Test
     public void getAdresserSkalReturnereAdresserRiktigKonvertert(){

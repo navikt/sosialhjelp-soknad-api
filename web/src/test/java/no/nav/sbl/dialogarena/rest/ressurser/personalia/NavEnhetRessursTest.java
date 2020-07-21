@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs.NavEnhetFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
@@ -118,20 +119,16 @@ public class NavEnhetRessursTest {
     @Mock
     private KommuneInfoService kommuneInfoService;
 
+    @Mock
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @InjectMocks
     private NavEnhetRessurs navEnhetRessurs;
 
-    /*@Before
+    @Before
     public void setUp() {
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
+        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
     }
-
-    @After
-    public void tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }*/
 
     @Test
     public void getNavEnheterSkalReturnereEnheterRiktigKonvertert(){

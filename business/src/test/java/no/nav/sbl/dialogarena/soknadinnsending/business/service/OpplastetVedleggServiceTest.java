@@ -5,6 +5,8 @@ import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.DefaultSubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
@@ -26,6 +28,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
+import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,6 +58,9 @@ public class OpplastetVedleggServiceTest {
     private static final Long SOKNAD_ID = 1234L;
 
     @Mock
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
+    @Mock
     private OpplastetVedleggRepository opplastetVedleggRepository;
 
     @Mock
@@ -68,9 +74,10 @@ public class OpplastetVedleggServiceTest {
 
     @Before
     public void setUp() {
-        SsoToken token = SsoToken.oidcToken("hansolo", Collections.emptyMap());
-        Subject subject = new Subject("26104500284", IdentType.EksternBruker, token);
-        SubjectHandler.withSubject(subject, () -> {});
+        when(subjectHandlerWrapper.getIdent()).thenReturn("26104500284");
+        //SsoToken token = SsoToken.oidcToken("hansolo", Collections.emptyMap());
+        //Subject subject = new Subject("26104500284", IdentType.EksternBruker, token);
+        //SubjectHandler.withSubject(subject, () -> subjectHandlerWrapper.getIdent());
         //SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         opplastetVedleggService.setUp();
     }

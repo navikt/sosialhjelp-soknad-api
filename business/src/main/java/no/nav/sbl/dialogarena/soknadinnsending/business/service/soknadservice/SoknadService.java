@@ -6,7 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
@@ -97,13 +97,16 @@ public class SoknadService {
     @Inject
     private TextService textService;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     @Transactional
     public String startSoknad(String token) {
         String mainUid = randomUUID().toString();
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
 
-        String aktorId = OidcFeatureToggleUtils.getUserId();
+        String aktorId = subjectHandlerWrapper.getIdent();
         Timer henvendelseTimer = createDebugTimer("startHenvendelse", mainUid);
         String behandlingsId = henvendelseService.startSoknad(aktorId);
         henvendelseTimer.stop();
@@ -136,7 +139,7 @@ public class SoknadService {
 
     @Transactional
     public void sendSoknad(String behandlingsId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        final String eier = subjectHandlerWrapper.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
@@ -185,7 +188,7 @@ public class SoknadService {
 
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = subjectHandlerWrapper.getIdent();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
         if (soknadUnderArbeidOptional.isPresent()) {
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
@@ -196,7 +199,7 @@ public class SoknadService {
 
     @Transactional
     public void oppdaterSamtykker(String behandlingsId, boolean harBostotteSamtykke, boolean harSkatteetatenSamtykke, String token) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        final String eier = subjectHandlerWrapper.getIdent();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (harSkatteetatenSamtykke) {
             skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, token);

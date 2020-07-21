@@ -30,7 +30,7 @@ public class EndpointDataMocking {
     }
 
     static void mockPersonEndpoint() throws Exception {
-        PersonPortType personEndpoint = IntegrationConfig.getMocked("personEndpoint");
+        PersonPortType personEndpoint = IntegrationConfig.getMocked("personClient");
         HentKjerneinformasjonResponse hentKjerneinformasjonResponse = new HentKjerneinformasjonResponse();
 
         Foedselsdato foedselsdato = new Foedselsdato();
@@ -58,7 +58,7 @@ public class EndpointDataMocking {
     }
 
     static void mockPersonV3Endpoint() throws Exception {
-        PersonV3 mock = IntegrationConfig.getMocked("personV3Endpoint");
+        PersonV3 mock = IntegrationConfig.getMocked("personV3Client");
 
         try {
             when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequestForIntegrationTest("12"));

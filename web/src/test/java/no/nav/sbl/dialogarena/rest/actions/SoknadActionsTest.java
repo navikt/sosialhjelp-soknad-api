@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
@@ -83,16 +84,19 @@ public class SoknadActionsTest {
     @Inject
     SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
+    @Inject
+    private SubjectHandlerWrapper subjectHandlerWrapper;
+
     ServletContext context = mock(ServletContext.class);
 
     @Before
     public void setUp() {
         System.setProperty("authentication.isRunningWithOidc", "true");
-        // SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
         reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
-        EIER = SubjectHandler.getIdent().orElseThrow(() -> new AuthorizationException("Missing userId"));
+        EIER = subjectHandlerWrapper.getIdent();
     }
 
     @After
