@@ -590,6 +590,11 @@
                 <artifactId>cxf-rt-features-logging</artifactId>
                 <version>${cxf.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>1.24.1</version>
+            </dependency>
 
             <!-- Fiks -->
             <dependency>
