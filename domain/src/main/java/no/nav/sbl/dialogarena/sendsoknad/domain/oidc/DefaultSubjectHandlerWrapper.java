@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class DefaultSubjectHandlerWrapper implements SubjectHandlerWrapper {
 
     public String getIdent() {
-        return SubjectHandler.getIdent().orElseThrow(() -> new UnauthorizedException("Ingen innlogget bruker"));
+        return SubjectHandler.getIdent().orElse(null); //.orElseThrow(() -> new AuthorizationException("Ingen innlogget bruker"));
     }
 
     public int getSecurityLevel() {

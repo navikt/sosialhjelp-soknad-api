@@ -10,6 +10,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class SoknadTester extends JerseyTest {
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
                 .header(JwtTokenConstants.AUTHORIZATION_HEADER, "Bearer " + token)
+                .cookie(new Cookie("selvbetjening-idtoken", token))
                 .buildPost(null)
                 .invoke();
         checkResponse(response, SC_OK);
