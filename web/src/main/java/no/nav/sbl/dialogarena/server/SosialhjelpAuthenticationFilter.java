@@ -39,6 +39,7 @@ public class SosialhjelpAuthenticationFilter extends HttpFilter {
                        "^(.*internal/isAlive.*)|" +
                        "^(.*internal/metrics.*)|" +
                        "^(.*metadata/oidc/ping)|" +
+                        "^(.*metadata//ping)|" +
                        "(.*index.html)|" +
                        "(.*feil.*)|" +
                        "((.*)\\.(js|css|jpg))")) {
