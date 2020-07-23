@@ -36,9 +36,9 @@ public class SosialhjelpAuthenticationFilter extends HttpFilter {
     public void doFilter(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (servletRequest.getRequestURI().matches(
                 "^(.*internal/selftest.*)|" +
-                       "^(.*internal/isAlive.*)" +
-                       "^(.*internal/metrics.*)" +
-                       "^(.*metadata/oidc/ping)|" + 
+                       "^(.*internal/isAlive.*)|" +
+                       "^(.*internal/metrics.*)|" +
+                       "^(.*metadata/oidc/ping)|" +
                        "(.*index.html)|" +
                        "(.*feil.*)|" +
                        "((.*)\\.(js|css|jpg))")) {
