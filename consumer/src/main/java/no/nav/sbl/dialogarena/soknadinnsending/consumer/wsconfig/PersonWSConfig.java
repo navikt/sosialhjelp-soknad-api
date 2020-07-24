@@ -6,6 +6,8 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,8 @@ import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class PersonWSConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(PersonWSConfig.class);
 
     public static final String PERSON_KEY = "start.person.withmock";
 
@@ -34,6 +38,7 @@ public class PersonWSConfig {
 
     @Bean
     public PersonPortType personClient() {
+        logger.info("Using personV1 endpoint: " + personEndpoint);
         if (MockUtils.isTillatMockRessurs()) {
             return new PersonMock().personMock();
         }
