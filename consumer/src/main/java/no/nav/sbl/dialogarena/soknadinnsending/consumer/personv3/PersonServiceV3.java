@@ -104,7 +104,7 @@ public class PersonServiceV3 {
                 .withKjonn(personV3.getKjoenn().getKjoenn().getValue().toLowerCase()) // TODO verifisere
                 .withSivilstatus(personV3.getSivilstand().getSivilstand().getValue()) // TODO verifisere
                 .withStatsborgerskap(personV3.getStatsborgerskap().getLand().getValue()) // TODO verifisere
-                .withDiskresjonskode(personV3.getDiskresjonskode().getValue()) // TODO verifisere
+                //.withDiskresjonskode(personV3.getDiskresjonskode().getValue()) // TODO verifisere
                 .withEktefelle(null); // TODO
         return person;
     }
