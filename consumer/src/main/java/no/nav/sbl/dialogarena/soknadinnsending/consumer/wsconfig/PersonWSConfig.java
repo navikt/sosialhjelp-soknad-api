@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.xml.namespace.QName;
+
 import static no.nav.metrics.MetricsFactory.createTimerProxyForWebService;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
@@ -22,6 +24,9 @@ public class PersonWSConfig {
     private static final Logger logger = LoggerFactory.getLogger(PersonWSConfig.class);
 
     public static final String PERSON_KEY = "start.person.withmock";
+
+    private static final int DEFAULT_RECEIVE_TIMEOUT = 20000;
+    private static final int DEFUALT_CONNECTION_TIMEOUT = 20000;
 
     @Value("${soknad.webservice.person.personservice.url}")
     private String personEndpoint;
@@ -49,6 +54,10 @@ public class PersonWSConfig {
         client.factoryBean.getProperties().forEach((key, value) -> logger.info("property: " + key + ", " + value));
 
         PersonPortType prod = new CXFClient<>(PersonPortType.class)
+                .wsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl")
+                .timeout(DEFUALT_CONNECTION_TIMEOUT, DEFAULT_RECEIVE_TIMEOUT)
+                .serviceName(new QName("http://nav.no/tjeneste/virksomhet/person/v1/Binding", "Person_v1"))
+                .endpointName(new QName("http://nav.no/tjeneste/virksomhet/person/v1/Binding", "Person_v1Port"))
                 .address(personEndpoint)
                 .configureStsForSubject()
                 .build();
