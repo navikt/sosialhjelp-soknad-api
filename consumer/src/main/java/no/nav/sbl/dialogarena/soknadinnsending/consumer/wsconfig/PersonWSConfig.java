@@ -42,7 +42,11 @@ public class PersonWSConfig {
         if (MockUtils.isTillatMockRessurs()) {
             return new PersonMock().personMock();
         }
-        PersonPortType prod = new CXFClient<>(PersonPortType.class).address(personEndpoint).configureStsForSubject().build();
+        PersonPortType prod = new CXFClient<>(PersonPortType.class)
+                .address(personEndpoint)
+                .wsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl")
+                .configureStsForSubject()
+                .build();
         return createTimerProxyForWebService("Person", prod, PersonPortType.class);
         /*
         PersonPortType mock = new PersonMock().personMock();
