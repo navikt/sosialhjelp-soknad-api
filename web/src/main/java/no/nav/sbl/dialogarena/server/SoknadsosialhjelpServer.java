@@ -88,11 +88,6 @@ public class SoknadsosialhjelpServer {
     }
 
     private void configure() throws IOException {
-
-        System.setProperty("no.nav.modig.security.sts.url", System.getenv("SECURITYTOKENSERVICE_URL"));
-        System.setProperty("no.nav.modig.security.systemuser.username", System.getenv("SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_USERNAME"));
-        System.setProperty("no.nav.modig.security.systemuser.password", System.getenv("SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_PASSWORD"));
-
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
         if (isRunningAsTestAppWithMockingActivated() || MockUtils.isTillatMockRessurs()){
             log.info("Running with mocking activated. Totally isolated.");
@@ -103,6 +98,9 @@ public class SoknadsosialhjelpServer {
         } else if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
+            System.setProperty("no.nav.modig.security.sts.url", System.getenv("SECURITYTOKENSERVICE_URL"));
+            System.setProperty("no.nav.modig.security.systemuser.username", System.getenv("SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_USERNAME"));
+            System.setProperty("no.nav.modig.security.systemuser.password", System.getenv("SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_PASSWORD"));
         } else {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalEnvironment();
