@@ -62,6 +62,21 @@ public class PersonServiceV3 {
         }
     }
 
+    public no.nav.sbl.dialogarena.sendsoknad.domain.Person hentPerson(String fodselsnummer) {
+        try {
+            Person person = getPerson(fodselsnummer);
+            return mapTilPerson(person, fodselsnummer);
+
+        } catch (WebServiceException e) {
+            logger.warn("Ingen kontakt med TPS (Person_V3).", e);
+            throw new TjenesteUtilgjengeligException("TPS:webserviceException", e);
+        } catch (HentPersonSikkerhetsbegrensning e) {
+            throw new SikkerhetsBegrensningException(e.getMessage(), e);
+        } catch (HentPersonPersonIkkeFunnet e) {
+            throw new IkkeFunnetException(e.getMessage(), e);
+        }
+    }
+
     private Person getPerson(String fodselsnummer) throws HentPersonPersonIkkeFunnet, HentPersonSikkerhetsbegrensning {
 
         Personidenter personidenter = new Personidenter();
@@ -75,6 +90,23 @@ public class PersonServiceV3 {
         HentPersonResponse hentPersonResponse = personV3.hentPerson(request);
 
         return hentPersonResponse.getPerson();
+    }
+
+    private no.nav.sbl.dialogarena.sendsoknad.domain.Person mapTilPerson(Person personV3, String fnr) {
+        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+                .withFornavn(personV3.getPersonnavn().getFornavn())
+                .withMellomnavn(personV3.getPersonnavn().getMellomnavn())
+                .withEtternavn(personV3.getPersonnavn().getEtternavn())
+                .withSammensattNavn(personV3.getPersonnavn().getSammensattNavn())
+                .withFnr(fnr)
+                //.withFodselsdato(personV3.getFoedselsdato().getFoedselsdato()) // TODO convert to LocalDate
+                //.withAlder(personV3.getFoedselsdato()) // TODO get alder
+                .withKjonn(personV3.getKjoenn().getKjoenn().getValue().toLowerCase()) // TODO verifisere
+                .withSivilstatus(personV3.getSivilstand().getSivilstand().getValue()) // TODO verifisere
+                .withStatsborgerskap(personV3.getStatsborgerskap().getLand().getValue()) // TODO verifisere
+                .withDiskresjonskode(personV3.getDiskresjonskode().getValue()) // TODO verifisere
+                .withEktefelle(null); // TODO
+        return person;
     }
 
     private AdresserOgKontonummer mapResponsTilAdresserOgKontonummer(PersonData personData) {

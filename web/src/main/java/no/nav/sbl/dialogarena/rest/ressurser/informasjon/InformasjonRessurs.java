@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
@@ -59,20 +60,20 @@ public class InformasjonRessurs {
 
     private final InformasjonService informasjon;
     private final NavMessageSource messageSource;
-    private final PersonService personService;
     private final AdresseSokService adresseSokService;
     private final DigisosApi digisosApi;
     private final KommuneInfoService kommuneInfoService;
     private final SubjectHandlerWrapper subjectHandlerWrapper;
+    private final PersonServiceV3 personServiceV3;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService, SubjectHandlerWrapper subjectHandlerWrapper) {
+    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService, SubjectHandlerWrapper subjectHandlerWrapper, PersonServiceV3 personServiceV3) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
-        this.personService = personService;
         this.adresseSokService = adresseSokService;
         this.digisosApi = digisosApi;
         this.kommuneInfoService = kommuneInfoService;
         this.subjectHandlerWrapper = subjectHandlerWrapper;
+        this.personServiceV3 = personServiceV3;
     }
 
     @GET
@@ -85,7 +86,7 @@ public class InformasjonRessurs {
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
         String fnr = subjectHandlerWrapper.getIdent();
-        Person person = personService.hentPerson(fnr);
+        Person person = personServiceV3.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
         }
@@ -120,7 +121,7 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = subjectHandlerWrapper.getIdent();
-        Person person = personService.hentPerson(uid);
+        Person person = personServiceV3.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 

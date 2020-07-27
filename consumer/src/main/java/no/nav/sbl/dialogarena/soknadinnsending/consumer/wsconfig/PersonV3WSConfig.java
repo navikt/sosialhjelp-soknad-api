@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.xml.namespace.QName;
+
 import static no.nav.metrics.MetricsFactory.createTimerProxyForWebService;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
@@ -40,7 +42,13 @@ public class PersonV3WSConfig {
         if (MockUtils.isTillatMockRessurs()) {
             return new PersonV3Mock().personV3Mock();
         }
-        PersonV3 prod = new CXFClient<>(PersonV3.class).address(personv3EndpointUrl).configureStsForSubject().build();
+        PersonV3 prod = new CXFClient<>(PersonV3.class)
+                //.wsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v3/Binding.wsdl")
+                .address(personv3EndpointUrl)
+                //.serviceName(new QName("http://nav.no/tjeneste/virksomhet/person/v3/Binding", "Person_v3"))
+                //.endpointName(new QName("http://nav.no/tjeneste/virksomhet/person/v3/Binding", "Person_v3"))
+                .configureStsForSubject()
+                .build();
         //PersonV3 mock = new PersonV3Mock().personV3Mock();
         //PersonV3 prod = factory().withUserSecurity().get();
         return createTimerProxyForWebService("Person", prod, PersonV3.class);

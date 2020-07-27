@@ -56,8 +56,8 @@ public class PersonWSConfig {
         PersonPortType prod = new CXFClient<>(PersonPortType.class)
                 .wsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl")
                 .timeout(DEFUALT_CONNECTION_TIMEOUT, DEFAULT_RECEIVE_TIMEOUT)
-                .serviceName(new QName("http://nav.no/tjeneste/virksomhet/person/v1/Binding", "Person_v1"))
-                .endpointName(new QName("http://nav.no/tjeneste/virksomhet/person/v1/Binding", "Person_v1Port"))
+                //.serviceName(new QName("http://nav.no/tjeneste/virksomhet/person/v1", "Person_v1"))
+                //.endpointName(new QName("http://nav.no/tjeneste/virksomhet/person/v1", "Person_v1"))
                 .address(personEndpoint)
                 .configureStsForSubject()
                 .build();
