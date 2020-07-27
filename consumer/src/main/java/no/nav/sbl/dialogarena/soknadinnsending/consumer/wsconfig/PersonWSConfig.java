@@ -46,6 +46,7 @@ public class PersonWSConfig {
                 .address(personEndpoint)
                 .configureStsForSubject()
                 .build();
+        logger.info("Built PersonPortType for prod");
         return createTimerProxyForWebService("Person", prod, PersonPortType.class);
         /*
         PersonPortType mock = new PersonMock().personMock();
@@ -64,8 +65,10 @@ public class PersonWSConfig {
             PingMetadata metadata = new PingMetadata(personEndpoint,"TPS - Person", true);
             try {
                 personSelftestEndpoint().ping();
+                logger.info("Successfully ran ping to person endpoint");
                 return lyktes(metadata);
             } catch (Exception e) {
+                logger.warn("Ping to person endpoint failed", e);
                 return feilet(metadata, e);
             }
         };
