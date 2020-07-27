@@ -38,7 +38,7 @@ public class PersonWSConfig {
 
     @Bean
     public PersonPortType personClient() {
-        private String personEndpoint = serviceGateway + "tpsws/Person_v1";
+        String personEndpoint = serviceGateway + "tpsws/Person_v1";
         logger.info("Using personV1 endpoint: " + personEndpoint);
         if (MockUtils.isTillatMockRessurs()) {
             return new PersonMock().personMock();
@@ -53,13 +53,13 @@ public class PersonWSConfig {
     }
 
     public PersonPortType personSelftestEndpoint() {
-        private String personEndpoint = serviceGateway + "tpsws/Person_v1";
+        String personEndpoint = serviceGateway + "tpsws/Person_v1";
         return new CXFClient<>(PersonPortType.class).address(personEndpoint).configureStsForSystemUser().build();
     }
 
     @Bean
     public Pingable personPingable() {
-        private String personEndpoint = serviceGateway + "tpsws/Person_v1";
+        String personEndpoint = serviceGateway + "tpsws/Person_v1";
 
         return () -> {
             PingMetadata metadata = new PingMetadata(personEndpoint,"TPS - Person", true);
