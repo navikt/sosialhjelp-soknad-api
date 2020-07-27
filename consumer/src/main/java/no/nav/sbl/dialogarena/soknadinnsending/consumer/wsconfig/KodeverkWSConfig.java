@@ -37,7 +37,7 @@ public class KodeverkWSConfig {
         if (MockUtils.isTillatMockRessurs()) {
             return new KodeverkMock().kodeverkMock();
         } else {
-            KodeverkPortType prod = new CXFClient<>(KodeverkPortType.class).address(kodeverkEndPoint).configureStsForSubject().build();
+            KodeverkPortType prod = new CXFClient<>(KodeverkPortType.class).address(kodeverkEndPoint).configureStsForSystemUser().build();
             return createTimerProxyForWebService("Kodeverk", prod, KodeverkPortType.class);
         }
 
