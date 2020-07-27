@@ -44,7 +44,6 @@ public class PersonWSConfig {
         }
         PersonPortType prod = new CXFClient<>(PersonPortType.class)
                 .address(personEndpoint)
-                .wsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl")
                 .configureStsForSubject()
                 .build();
         return createTimerProxyForWebService("Person", prod, PersonPortType.class);
