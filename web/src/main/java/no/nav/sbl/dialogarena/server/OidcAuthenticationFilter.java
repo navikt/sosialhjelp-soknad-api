@@ -51,6 +51,9 @@ public class OidcAuthenticationFilter {
         } catch (ParseException /*| JOSEException | BadJOSEException*/ e) {
             logger.info("Unable to parse JWT token");
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (Exception e) {
+            logger.info("Generic exception", e);
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }

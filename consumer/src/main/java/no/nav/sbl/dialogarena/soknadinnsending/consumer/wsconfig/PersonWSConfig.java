@@ -42,6 +42,12 @@ public class PersonWSConfig {
         if (MockUtils.isTillatMockRessurs()) {
             return new PersonMock().personMock();
         }
+
+        CXFClient client = new CXFClient<>(PersonPortType.class)
+                .address(personEndpoint)
+                .configureStsForSubject();
+        client.factoryBean.getProperties().forEach((key, value) -> logger.info("property: " + key + ", " + value));
+
         PersonPortType prod = new CXFClient<>(PersonPortType.class)
                 .address(personEndpoint)
                 .configureStsForSubject()
