@@ -47,7 +47,7 @@
     "NORG2_API_V1_URL": "https://api-gw-q1.oera.no/norg2/api/v1/",
     "SCHEDULER_DISABLE": "false",
     "SECURITYTOKENSERVICE_URL": "https://sts-q1.oera-q.local/SecurityTokenServiceProvider/",
-    "SERVICEGATEWAY_URL": "https://service-gw-q0.preprod.local/",
+    "SERVICEGATEWAY_URL": "https://service-gw-q1.oera-q.local/",
     "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_q1",
     "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "true",
     "SOKNAD_BOSTOTTE_URL": "https://api-gw-q1.oera.no/ekstern/husbanken/api/nav/minbostotte",
