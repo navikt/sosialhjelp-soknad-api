@@ -21,14 +21,16 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personidenter;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
 
+import static org.joda.time.Years.yearsBetween;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -93,19 +95,23 @@ public class PersonServiceV3 {
     }
 
     private no.nav.sbl.dialogarena.sendsoknad.domain.Person mapTilPerson(Person personV3, String fnr) {
+        LocalDate fodselsdato = (personV3.getFoedselsdato() != null && personV3.getFoedselsdato().getFoedselsdato() != null) ? new DateTime(personV3.getFoedselsdato().getFoedselsdato().toGregorianCalendar().getTime()).toLocalDate() : null;
+
         no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
                 .withFornavn(personV3.getPersonnavn().getFornavn())
                 .withMellomnavn(personV3.getPersonnavn().getMellomnavn())
                 .withEtternavn(personV3.getPersonnavn().getEtternavn())
                 .withSammensattNavn(personV3.getPersonnavn().getSammensattNavn())
                 .withFnr(fnr)
-                //.withFodselsdato(personV3.getFoedselsdato().getFoedselsdato()) // TODO convert to LocalDate
-                //.withAlder(personV3.getFoedselsdato()) // TODO get alder
+                .withFodselsdato(fodselsdato)
+                .withAlder(fodselsdato != null ? String.valueOf(yearsBetween(fodselsdato, new LocalDate()).getYears()) : "0") // TODO get alder
                 .withKjonn(personV3.getKjoenn().getKjoenn().getValue().toLowerCase()) // TODO verifisere
                 .withSivilstatus(personV3.getSivilstand().getSivilstand().getValue()) // TODO verifisere
-                .withStatsborgerskap(personV3.getStatsborgerskap().getLand().getValue()) // TODO verifisere
+                .withStatsborgerskap(personV3.getStatsborgerskap() != null ? personV3.getStatsborgerskap().getLand().getValue() : null) // TODO verifisere
                 //.withDiskresjonskode(personV3.getDiskresjonskode().getValue()) // TODO verifisere
                 .withEktefelle(null); // TODO
+        logger.info("PersonV3 mapped to person: " + person.toString()
+        );
         return person;
     }
 

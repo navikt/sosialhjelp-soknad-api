@@ -55,7 +55,7 @@ public class OidcAuthenticationFilter {
             logger.info("Generic exception", e);
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        //res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     private String getIdportenToken(HttpServletRequest req) {

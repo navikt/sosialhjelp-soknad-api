@@ -48,11 +48,6 @@ public class PersonWSConfig {
             return new PersonMock().personMock();
         }
 
-        CXFClient client = new CXFClient<>(PersonPortType.class)
-                .address(personEndpoint)
-                .configureStsForSubject();
-        client.factoryBean.getProperties().forEach((key, value) -> logger.info("property: " + key + ", " + value));
-
         PersonPortType prod = new CXFClient<>(PersonPortType.class)
                 .wsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl")
                 .timeout(DEFUALT_CONNECTION_TIMEOUT, DEFAULT_RECEIVE_TIMEOUT)
@@ -61,7 +56,7 @@ public class PersonWSConfig {
                 .address(personEndpoint)
                 .configureStsForSubject()
                 .build();
-        logger.info("Built PersonPortType for prod");
+
         return createTimerProxyForWebService("Person", prod, PersonPortType.class);
         /*
         PersonPortType mock = new PersonMock().personMock();
