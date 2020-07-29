@@ -17,6 +17,8 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -51,6 +53,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Timed
 @Produces(APPLICATION_JSON)
 public class SoknadRessurs {
+
+    private static final Logger logger = LoggerFactory.getLogger(SoknadRessurs.class);
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
 
@@ -170,6 +174,10 @@ public class SoknadRessurs {
             throw new SoknadenHarNedetidException(String.format("Soknaden har nedetid fram til %s ", getNedetidAsStringOrNull(NEDETID_SLUTT)));
         }
 
+        String oidcToken = subjectHandlerWrapper.getOIDCTokenAsString();
+
+        logger.info("opprettSoknad token og oidcToken er like: " + oidcToken.equals(token));
+
         Map<String, String> result = new HashMap<>();
 
         String opprettetBehandlingsId;
@@ -185,8 +193,8 @@ public class SoknadRessurs {
             }
         }
         result.put("brukerBehandlingId", opprettetBehandlingsId);
-        response.addCookie(xsrfCookie(opprettetBehandlingsId, token));
-        response.addCookie(xsrfCookieMedBehandlingsid(opprettetBehandlingsId, token));
+        response.addCookie(xsrfCookie(opprettetBehandlingsId, oidcToken));
+        response.addCookie(xsrfCookieMedBehandlingsid(opprettetBehandlingsId, oidcToken));
         return result;
     }
 
