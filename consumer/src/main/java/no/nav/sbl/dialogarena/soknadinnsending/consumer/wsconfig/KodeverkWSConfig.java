@@ -13,6 +13,7 @@ import static no.nav.metrics.MetricsFactory.createTimerProxyForWebService;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 
 @Configuration
 public class KodeverkWSConfig {
@@ -36,10 +37,15 @@ public class KodeverkWSConfig {
     public KodeverkPortType kodeverkClient() {
         if (MockUtils.isTillatMockRessurs()) {
             return new KodeverkMock().kodeverkMock();
-        } else {
-            KodeverkPortType prod = new CXFClient<>(KodeverkPortType.class).address(kodeverkEndPoint).configureStsForSystemUser().build();
-            return createTimerProxyForWebService("Kodeverk", prod, KodeverkPortType.class);
         }
+        KodeverkPortType prod = new CXFClient<>(KodeverkPortType.class)
+                .address(kodeverkEndPoint)
+                .wsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl")
+                .configureStsForSystemUser()
+                .withProperty(MUST_UNDERSTAND, false)
+                .build();
+        return createTimerProxyForWebService("Kodeverk", prod, KodeverkPortType.class);
+
 
         /*KodeverkPortType prod = factory().withSystemSecurity().get();
         KodeverkPortType mock = new KodeverkMock().kodeverkMock();

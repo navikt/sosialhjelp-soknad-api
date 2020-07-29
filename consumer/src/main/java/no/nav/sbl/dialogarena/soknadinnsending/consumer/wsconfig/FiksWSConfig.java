@@ -42,7 +42,7 @@ public class FiksWSConfig {
         } else {
             final int receiveTimeout = 10 * 60_000;
             final int connectionTimeout = 10_000;
-            ForsendelsesServiceV9 prod =  new CXFClient<>(ForsendelsesServiceV9.class).address(fiksEndpoint).configureStsForSubject().timeout(connectionTimeout, receiveTimeout).build();
+            ForsendelsesServiceV9 prod =  new CXFClient<>(ForsendelsesServiceV9.class).address(fiksEndpoint).configureStsForSystemUser().timeout(connectionTimeout, receiveTimeout).build();
             return createTimerProxyForWebService("FiksForsendelse", prod, ForsendelsesServiceV9.class);
         }
 /*
