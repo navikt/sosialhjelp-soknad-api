@@ -7,13 +7,11 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
@@ -64,16 +62,16 @@ public class InformasjonRessurs {
     private final DigisosApi digisosApi;
     private final KommuneInfoService kommuneInfoService;
     private final SubjectHandlerWrapper subjectHandlerWrapper;
-    private final PersonServiceV3 personServiceV3;
+    private final PersonService personService;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService, SubjectHandlerWrapper subjectHandlerWrapper, PersonServiceV3 personServiceV3) {
+    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService, SubjectHandlerWrapper subjectHandlerWrapper, PersonService personService) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.adresseSokService = adresseSokService;
         this.digisosApi = digisosApi;
         this.kommuneInfoService = kommuneInfoService;
         this.subjectHandlerWrapper = subjectHandlerWrapper;
-        this.personServiceV3 = personServiceV3;
+        this.personService = personService;
     }
 
     @GET
@@ -86,7 +84,7 @@ public class InformasjonRessurs {
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
         String fnr = subjectHandlerWrapper.getIdent();
-        Person person = personServiceV3.hentPerson(fnr);
+        Person person = personService.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
         }
@@ -121,7 +119,7 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = subjectHandlerWrapper.getIdent();
-        Person person = personServiceV3.hentPerson(uid);
+        Person person = personService.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 

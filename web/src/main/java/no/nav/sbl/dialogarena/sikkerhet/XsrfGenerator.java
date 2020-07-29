@@ -6,6 +6,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -17,6 +19,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class XsrfGenerator {
     private static final String SECRET = "9f8c0d81-d9b3-4b70-af03-bb9375336c4f";
+
+    private static final Logger logger = LoggerFactory.getLogger(XsrfGenerator.class);
 
     public static String generateXsrfToken(String behandlingsId, String oidcToken) {
         return generateXsrfToken(behandlingsId, new DateTime().toString("yyyyMMdd"), oidcToken);
@@ -36,6 +40,8 @@ public class XsrfGenerator {
 
     public static void sjekkXsrfToken(String givenToken, String behandlingsId, String oidcToken) {
         String xsrfToken = generateXsrfToken(behandlingsId, oidcToken);
+        logger.info("xsrf tokens are equal: " + xsrfToken.equals(givenToken));
+        logger.info("xsrf token minus 1 day are equal: " + generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd"), oidcToken).equals(givenToken));
         boolean valid = xsrfToken.equals(givenToken) || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd"), oidcToken).equals(givenToken);
         if (!valid && !MockUtils.isTillatMockRessurs()) {
             throw new AuthorizationException("Feil token");
