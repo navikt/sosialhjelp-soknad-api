@@ -176,7 +176,12 @@ public class SoknadRessurs {
 
         String oidcToken = subjectHandlerWrapper.getOIDCTokenAsString();
 
-        logger.info("opprettSoknad token og oidcToken er like: " + oidcToken.equals(token));
+        if (oidcToken != null) {
+            logger.info("opprettSoknad token og oidcToken er like: " + oidcToken.equals(token));
+        } else {
+            logger.info("oidc token er ikke satt");
+        }
+
 
         Map<String, String> result = new HashMap<>();
 
