@@ -41,7 +41,13 @@ public class UtbetalingWSConfig {
         if (MockUtils.isTillatMockRessurs()) {
             return new UtbetalMock().utbetalMock();
         }
-        UtbetalingV1 prod = new CXFClient<>(UtbetalingV1.class).address(utbetalingEndpoint).configureStsForSubject().build();
+        UtbetalingV1 prod = new CXFClient<>(UtbetalingV1.class)
+                .address(utbetalingEndpoint)
+                .wsdl("classpath:/wsdl/utbetaling/no/nav/tjeneste/virksomhet/utbetaling/v1/Binding.wsdl")
+                .configureStsForSubject()
+                .serviceName(new QName("http://nav.no/tjeneste/virksomhet/utbetaling/v1/Binding", "Utbetaling_v1"))
+                .endpointName(new QName("http://nav.no/tjeneste/virksomhet/utbetaling/v1/Binding", "Utbetaling_v1Port"))
+                .build();
         return createTimerProxyForWebService("Utbetaling", prod, UtbetalingV1.class);
         /*UtbetalingV1 mock = new UtbetalMock().utbetalMock();
         UtbetalingV1 prod = factory().withUserSecurity().get();
