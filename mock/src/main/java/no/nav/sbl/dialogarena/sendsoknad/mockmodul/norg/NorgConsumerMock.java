@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
@@ -30,10 +31,10 @@ public class NorgConsumerMock {
     }
 
     public static RsNorgEnhet getOrCreateCurrentUserResponse(InvocationOnMock invocationOnMock){
-        Map<String, RsNorgEnhet> rsNorgEnhetMap = responses.get(OidcFeatureToggleUtils.getUserId());
+        Map<String, RsNorgEnhet> rsNorgEnhetMap = responses.get(SubjectHandler.getIdent().orElse(null));
         if (rsNorgEnhetMap == null){
             rsNorgEnhetMap = getDefaultMap();
-            responses.put(OidcFeatureToggleUtils.getUserId(), rsNorgEnhetMap);
+            responses.put(SubjectHandler.getIdent().orElse(null), rsNorgEnhetMap);
         }
 
         String argumentAt = invocationOnMock.getArgument(0);
@@ -79,11 +80,11 @@ public class NorgConsumerMock {
 
             Map<String, RsNorgEnhet> map = mapper.readValue(rsNorgEnhetMap, typeRef);
 
-            Map<String, RsNorgEnhet> response = responses.get(OidcFeatureToggleUtils.getUserId());
+            Map<String, RsNorgEnhet> response = responses.get(SubjectHandler.getIdent().orElse(null));
             if (response == null){
-                responses.put(OidcFeatureToggleUtils.getUserId(), map);
+                responses.put(SubjectHandler.getIdent().orElse(null), map);
             } else {
-                responses.replace(OidcFeatureToggleUtils.getUserId(), map);
+                responses.replace(SubjectHandler.getIdent().orElse(null), map);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,6 +92,6 @@ public class NorgConsumerMock {
     }
 
     public static void resetNorgMap(){
-        responses.replace(OidcFeatureToggleUtils.getUserId(), getDefaultMap());
+        responses.replace(SubjectHandler.getIdent().orElse(null), getDefaultMap());
     }
 }

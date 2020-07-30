@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
@@ -66,10 +67,10 @@ public class AdresseSokConsumerMock {
     }
 
     private static AdressesokRespons getOrCreateCurrentUserResponse() {
-        AdressesokRespons response = responses.get(OidcFeatureToggleUtils.getUserId());
+        AdressesokRespons response = responses.get(SubjectHandler.getIdent().orElse(null));
         if (response == null){
             response = getDefaultRespons();
-            responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            responses.put(SubjectHandler.getIdent().orElse(null), response);
         }
 
         return response;
@@ -159,10 +160,10 @@ public class AdresseSokConsumerMock {
         try {
             ObjectMapper mapper = new ObjectMapper();
             AdressesokRespons response = mapper.readValue(jsonAdressesokRespons, AdressesokRespons.class);
-            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
-                responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            if (responses.get(SubjectHandler.getIdent().orElse(null)) == null){
+                responses.put(SubjectHandler.getIdent().orElse(null), response);
             } else {
-                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
+                responses.replace(SubjectHandler.getIdent().orElse(null), response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -171,6 +172,6 @@ public class AdresseSokConsumerMock {
 
     public static void resetAdresser(){
         AdressesokRespons defaultRespons = new AdressesokRespons();
-        responses.replace(OidcFeatureToggleUtils.getUserId(), defaultRespons);
+        responses.replace(SubjectHandler.getIdent().orElse(null), defaultRespons);
     }
 }

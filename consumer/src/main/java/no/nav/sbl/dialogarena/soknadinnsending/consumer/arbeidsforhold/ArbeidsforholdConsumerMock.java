@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.*;
 import org.mockito.invocation.InvocationOnMock;
@@ -34,10 +35,10 @@ public class ArbeidsforholdConsumerMock {
     }
 
     public static List<ArbeidsforholdDto> getOrCreateCurrentUserResponse(InvocationOnMock invocationOnMock) {
-        List<ArbeidsforholdDto> response = responses.get(OidcFeatureToggleUtils.getUserId());
+        List<ArbeidsforholdDto> response = responses.get(SubjectHandler.getIdent().orElse(null));
         if (response == null) {
             response = singletonList(defaultArbeidsforhold());
-            responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            responses.put(SubjectHandler.getIdent().orElse(null), response);
         }
 
         return response;
@@ -52,10 +53,10 @@ public class ArbeidsforholdConsumerMock {
             List<ArbeidsforholdDto> response = mapper.readValue(arbeidsforholdData, new TypeReference<List<ArbeidsforholdDto>>() {
             });
 
-            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null) {
-                responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            if (responses.get(SubjectHandler.getIdent().orElse(null)) == null) {
+                responses.put(SubjectHandler.getIdent().orElse(null), response);
             } else {
-                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
+                responses.replace(SubjectHandler.getIdent().orElse(null), response);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

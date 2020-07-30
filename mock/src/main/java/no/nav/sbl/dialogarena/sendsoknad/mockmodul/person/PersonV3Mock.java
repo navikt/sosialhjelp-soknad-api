@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
@@ -64,7 +65,7 @@ public class PersonV3Mock {
             midlertidigMatrikkeladresse.withKommunenummer(midlertidigAdresseKommunenummer);
 
 
-            responses.put(OidcFeatureToggleUtils.getUserId(), defaultPerson);
+            responses.put(SubjectHandler.getIdent().orElse(null), defaultPerson);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -75,7 +76,7 @@ public class PersonV3Mock {
         PersonV3 mock = mock(PersonV3.class);
 
         try {
-            when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(OidcFeatureToggleUtils.getUserId()));
+            when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(SubjectHandler.getIdent().orElse(null)));
         } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
         }
@@ -108,6 +109,7 @@ public class PersonV3Mock {
             person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
             person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
         }
+        person.withKjoenn(new Kjoenn().withKjoenn(new Kjoennstyper().withValue("m")));
 
         return person;
     }

@@ -8,7 +8,7 @@ public class OidcFeatureToggleUtils {
 
     public final static String IS_RUNNING_WITH_OIDC = "authentication.isRunningWithOidc";
 
-    public static boolean isRunningWithOidc(){
+    /*public static boolean isRunningWithOidc(){
         return Boolean.parseBoolean(System.getProperty(IS_RUNNING_WITH_OIDC,"true"));
     }
 
@@ -17,7 +17,7 @@ public class OidcFeatureToggleUtils {
             return SubjectHandler.getIdent().orElse(null); //.orElseThrow(() -> new AuthorizationException("Missing userId"));
         //}
         //return no.nav.modig.core.context.SubjectHandler.getSubjectHandler().getUid();
-    }
+    }*/
 
     public static String getToken() {
         return SubjectHandler.getSsoToken().orElseThrow(() -> new AuthorizationException("Missing token")).getToken();

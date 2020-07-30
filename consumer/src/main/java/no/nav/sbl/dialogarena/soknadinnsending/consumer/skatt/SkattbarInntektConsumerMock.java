@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
 import org.apache.cxf.helpers.IOUtils;
@@ -31,7 +32,7 @@ public class SkattbarInntektConsumerMock {
         SkattbarInntektConsumer mock = mock(SkattbarInntektConsumer.class);
 
         when(mock.hentSkattbarInntekt(anyString()))
-                .thenAnswer((invocationOnMock) -> getOrDefaultResponse(OidcFeatureToggleUtils.getUserId()));
+                .thenAnswer((invocationOnMock) -> getOrDefaultResponse(SubjectHandler.getIdent().orElse(null)));
 
         return mock;
     }

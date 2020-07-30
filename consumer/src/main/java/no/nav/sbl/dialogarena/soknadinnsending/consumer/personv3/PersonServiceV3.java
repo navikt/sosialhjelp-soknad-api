@@ -105,9 +105,9 @@ public class PersonServiceV3 {
                 .withFnr(fnr)
                 .withFodselsdato(fodselsdato)
                 .withAlder(fodselsdato != null ? String.valueOf(yearsBetween(fodselsdato, new LocalDate()).getYears()) : "0") // TODO get alder
-                .withKjonn(personV3.getKjoenn().getKjoenn().getValue().toLowerCase()) // TODO verifisere
-                .withSivilstatus(personV3.getSivilstand().getSivilstand().getValue()) // TODO verifisere
-                .withStatsborgerskap(personV3.getStatsborgerskap() != null ? personV3.getStatsborgerskap().getLand().getValue() : null) // TODO verifisere
+                .withKjonn((personV3.getKjoenn() != null && personV3.getKjoenn().getKjoenn() != null) ? personV3.getKjoenn().getKjoenn().getValue().toLowerCase() : null) // TODO verifisere
+                .withSivilstatus((personV3.getSivilstand() != null && personV3.getSivilstand().getSivilstand() != null) ? personV3.getSivilstand().getSivilstand().getValue() : null) // TODO verifisere
+                .withStatsborgerskap((personV3.getStatsborgerskap() != null && personV3.getStatsborgerskap().getLand() != null) ? personV3.getStatsborgerskap().getLand().getValue() : null) // TODO verifisere
                 .withDiskresjonskode(personV3.getDiskresjonskode() != null ? personV3.getDiskresjonskode().getValue() : null) // TODO verifisere
                 .withEktefelle(null); // TODO
         logger.info("PersonV3 mapped to person: " + person.toString()
