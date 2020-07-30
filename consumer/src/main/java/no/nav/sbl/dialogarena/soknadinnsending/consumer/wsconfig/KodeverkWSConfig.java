@@ -18,20 +18,8 @@ import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 @Configuration
 public class KodeverkWSConfig {
 
-    public static final String KODEVERK_KEY = "start.kodeverk.withmock";
-
     @Value("${sendsoknad.webservice.kodeverk.url}")
     private String kodeverkEndPoint;
-
-    /*private ServiceBuilder<KodeverkPortType>.PortTypeBuilder<KodeverkPortType> factory() {
-        new CXFClient<KodeverkPortType>().address(kodeverkEndPoint).configureStsForSubject().build().
-        return new ServiceBuilder<>(KodeverkPortType.class)
-                .asStandardService()
-                .withAddress(kodeverkEndPoint)
-                .withWsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl")
-                .build()
-                .withHttpsMock();
-    }*/
 
     @Bean
     public KodeverkPortType kodeverkClient() {

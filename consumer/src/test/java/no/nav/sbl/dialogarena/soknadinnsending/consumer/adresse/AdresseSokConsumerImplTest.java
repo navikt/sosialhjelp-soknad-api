@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -16,13 +15,11 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
-import javax.security.auth.Subject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import no.nav.common.auth.SubjectHandler;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -39,26 +36,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.LoggingTestUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 
 public class AdresseSokConsumerImplTest {
-
-    private static String oldSubjectHandlerImplementationClass;
-
-
-    /*@BeforeClass
-    public static void oppsettForInnloggetBruker() {
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-        SubjectHandler.withSubjectProvider();
-        oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
-    }
-
-    @AfterClass
-    public static void fjernOppsettForInnloggetBruker() {
-        if (oldSubjectHandlerImplementationClass == null) {
-            System.clearProperty(SubjectHandler.SUBJECTHANDLER_KEY);
-        } else {
-            System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, oldSubjectHandlerImplementationClass);
-        }
-    }*/
-
 
     @Test
     public void simpleRestCallWith404() {

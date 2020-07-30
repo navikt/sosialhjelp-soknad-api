@@ -11,7 +11,7 @@ import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;

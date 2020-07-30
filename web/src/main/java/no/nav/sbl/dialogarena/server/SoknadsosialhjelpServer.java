@@ -105,13 +105,6 @@ public class SoknadsosialhjelpServer {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalEnvironment();
         }
-
-        if (MockUtils.isTillatMockRessurs()){
-            //SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
-        }
-
-//        System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs og applikasjon som kjører uten oidc.
-
     }
 
     private boolean isRunningAsTestAppWithMockingActivated() {

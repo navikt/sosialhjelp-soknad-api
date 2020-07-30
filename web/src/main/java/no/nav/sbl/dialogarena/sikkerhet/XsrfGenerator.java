@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

@@ -123,22 +123,4 @@ public class Person {
         this.ektefelle = ektefelle;
         return this;
     }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "fornavn='" + fornavn + '\'' +
-                ", mellomnavn='" + mellomnavn + '\'' +
-                ", etternavn='" + etternavn + '\'' +
-                ", sammensattNavn='" + sammensattNavn + '\'' +
-                ", fodselsdato=" + fodselsdato +
-                ", fnr='" + fnr + '\'' +
-                ", alder='" + alder + '\'' +
-                ", kjonn='" + kjonn + '\'' +
-                ", sivilstatus='" + sivilstatus + '\'' +
-                ", diskresjonskode='" + diskresjonskode + '\'' +
-                ", statsborgerskap='" + statsborgerskap + '\'' +
-                ", ektefelle=" + ektefelle +
-                '}';
-    }
 }

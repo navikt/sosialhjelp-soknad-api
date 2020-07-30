@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 import org.mockito.invocation.InvocationOnMock;
 
 import java.io.IOException;

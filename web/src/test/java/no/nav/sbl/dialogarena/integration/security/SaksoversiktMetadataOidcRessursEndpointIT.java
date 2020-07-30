@@ -22,7 +22,6 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityIT {
@@ -30,12 +29,8 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
     public static final String ANNEN_BRUKER = "12345679811";
     private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
-    @Mock
-    private SubjectHandlerWrapper subjectHandlerWrapper;
-
     @Before
     public void setup() throws Exception {
-        //when(subjectHandlerWrapper.getIdent()).thenReturn(BRUKER);
         EndpointDataMocking.setupMockWsEndpointData();
     }
 

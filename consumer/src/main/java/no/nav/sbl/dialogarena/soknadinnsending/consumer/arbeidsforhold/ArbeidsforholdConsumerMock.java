@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.common.auth.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.*;
 import org.mockito.invocation.InvocationOnMock;
 

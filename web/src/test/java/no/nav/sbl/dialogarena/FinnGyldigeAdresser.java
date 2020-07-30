@@ -97,7 +97,6 @@ public class FinnGyldigeAdresser {
     
     private static ApplicationContext initializeContext() throws IOException, NamingException {
         SoknadsosialhjelpServer.setFrom("environment-test.properties");
-        // SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         final DataSource dataSource = buildDataSource("hsqldb.properties");
 
         final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();

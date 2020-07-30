@@ -1,11 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.brukerdialog.security.domain.IdentType;
-import no.nav.common.auth.SsoToken;
-import no.nav.common.auth.Subject;
-import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.DefaultSubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -75,10 +70,6 @@ public class OpplastetVedleggServiceTest {
     @Before
     public void setUp() {
         when(subjectHandlerWrapper.getIdent()).thenReturn("26104500284");
-        //SsoToken token = SsoToken.oidcToken("hansolo", Collections.emptyMap());
-        //Subject subject = new Subject("26104500284", IdentType.EksternBruker, token);
-        //SubjectHandler.withSubject(subject, () -> subjectHandlerWrapper.getIdent());
-        //SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         opplastetVedleggService.setUp();
     }
 

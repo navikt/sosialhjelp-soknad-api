@@ -23,11 +23,13 @@ public class OidcAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcAuthenticationFilter.class);
 
+    private static final String ID_TOKEN_COOKIE_NAME = System.getProperty("oidc.issuer.selvbetjening.cookie_name");
+
     public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         OidcAuthenticatorConfig authenticatorConfig = new OidcAuthenticatorConfig();
         authenticatorConfig.clientId = System.getProperty("idporten_clientid");
         authenticatorConfig.discoveryUrl = System.getProperty("idporten_config_url");
-        authenticatorConfig.idTokenCookieName = System.getProperty("oidc.issuer.selvbetjening.cookie_name");
+        authenticatorConfig.idTokenCookieName = ID_TOKEN_COOKIE_NAME;
         authenticatorConfig.identType = IdentType.EksternBruker;
 
         // Todo: Fiks config and check if token is present
@@ -67,7 +69,7 @@ public class OidcAuthenticationFilter {
             return headerToken.substring(6);
         }
         for (Cookie cookie : req.getCookies()) {
-            if (cookie.getName().equals("selvbetjening-idtoken")) {
+            if (cookie.getName().equals(ID_TOKEN_COOKIE_NAME)) {
                 return cookie.getValue();
             }
         }

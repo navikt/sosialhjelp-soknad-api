@@ -26,9 +26,7 @@ public class SoknadApplication extends ResourceConfig {
 
         if (isTillatMockRessurs()) {
             register(TjenesteMockRessurs.class);
-        } /*else {
-            register(OidcResourceFilteringFeature.class);
-        }*/
+        }
 
         logger.info("Starter Jersey");
     }

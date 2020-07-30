@@ -39,7 +39,6 @@ public class FakeLoginFilter implements Filter {
 
         String header = req.getHeader("Authorization");
         String fnr  = getFnr(req);
-        //SubjectHandlerUtils.setEksternBruker(fnr, 4, null);
         if (header != null && fnr != null) {
             SsoToken ssoToken = SsoToken.oidcToken(header.substring(6), Collections.emptyMap());
             Subject subject = new Subject(fnr, IdentType.EksternBruker, ssoToken);
@@ -47,8 +46,6 @@ public class FakeLoginFilter implements Filter {
                 filterChain.doFilter(servletRequest, servletResponse);
             });
         } else {
-            //HttpServletResponse res = (HttpServletResponse) servletResponse;
-            //res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             filterChain.doFilter(servletRequest, servletResponse);
         }
 

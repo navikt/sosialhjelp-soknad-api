@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;

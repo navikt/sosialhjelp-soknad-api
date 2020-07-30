@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -16,9 +15,6 @@ public class BasisPersonaliaSystemdata implements Systemdata {
 
     @Inject
     private PersonService personService;
-
-    @Inject
-    private PersonServiceV3 personServiceV3;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {

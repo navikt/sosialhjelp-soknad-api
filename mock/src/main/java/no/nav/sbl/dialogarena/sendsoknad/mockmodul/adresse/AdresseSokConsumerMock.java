@@ -6,7 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 
 import java.io.IOException;
 import java.util.Collections;

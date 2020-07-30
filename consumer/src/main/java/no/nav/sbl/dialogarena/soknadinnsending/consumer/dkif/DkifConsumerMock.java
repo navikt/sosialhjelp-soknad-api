@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
 import no.nav.common.auth.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfo;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 

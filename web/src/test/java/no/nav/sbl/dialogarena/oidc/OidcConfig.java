@@ -21,25 +21,8 @@ public class OidcConfig {
         return new FileResourceRetriever("/metadata.json",  "/jwkset.json");
     }
 
-    /** Overskriver filteret for å validere token */
-    /*@Primary
-    @Bean
-    JaxrsJwtTokenValidationFilter FakeOidcTokenValidatorFilter(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") MultiIssuerConfiguration multiIssuerConfiguration) {
-        if (isOidcMock()) {
-            return new FakeOidcTokenValidatorFilter(multiIssuerConfiguration);
-        } else {
-            return new JaxrsJwtTokenValidationFilter(multiIssuerConfiguration);
-        }
-    }*/
-
     @Bean
     JwkGenerator jwkGenerator() {
         return new JwkGenerator();
     }
-
-    public static boolean isOidcMock() {
-        return "true".equalsIgnoreCase(System.getProperty("tillatmock")) &&
-                "true".equalsIgnoreCase(System.getProperty("start.oidc.withmock"));
-    }
-
 }

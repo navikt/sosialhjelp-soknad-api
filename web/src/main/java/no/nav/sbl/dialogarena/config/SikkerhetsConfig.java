@@ -21,8 +21,6 @@ public class SikkerhetsConfig {
 
     @Bean("sendSoknadAuthenticationFilter")
     public SosialhjelpAuthenticationFilter authenticationFilter() {
-        //OidcAuthenticationFilter filter = new OidcAuthenticationFilter(Collections.emptyList(), publicPath);
-        //return filter;
         return new SosialhjelpAuthenticationFilter();
     }
 

@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;

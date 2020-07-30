@@ -7,7 +7,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sbl.dialogarena.rest.ressurser.begrunnelse.BegrunnelseRessurs.BegrunnelseFrontend;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -49,7 +47,6 @@ public class BegrunnelseRessursTest {
     @Before
     public void setUp() {
         when(subjectHandlerWrapper.getIdent()).thenReturn("123");
-        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
     }
 
     @Test

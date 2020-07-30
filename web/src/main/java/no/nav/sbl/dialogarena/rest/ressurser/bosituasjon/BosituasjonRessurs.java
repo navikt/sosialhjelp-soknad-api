@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.bosituasjon;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;

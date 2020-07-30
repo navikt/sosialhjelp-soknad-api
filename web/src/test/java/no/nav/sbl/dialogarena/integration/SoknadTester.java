@@ -24,6 +24,8 @@ import static javax.ws.rs.core.MediaType.WILDCARD_TYPE;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class SoknadTester extends JerseyTest {
+
+    private final String COOKIE_NAME = System.getProperty("oidc.issuer.selvbetjening.cookie_name");
     private String user;
     private String token;
 
@@ -52,7 +54,7 @@ public class SoknadTester extends JerseyTest {
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
                 .header(JwtTokenConstants.AUTHORIZATION_HEADER, "Bearer " + token)
-                .cookie(new Cookie("selvbetjening-idtoken", token))
+                .cookie(new Cookie(COOKIE_NAME, token))
                 .buildPost(null)
                 .invoke();
         checkResponse(response, SC_OK);

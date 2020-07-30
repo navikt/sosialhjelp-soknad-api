@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfo;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
@@ -10,8 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonServi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import org.junit.After;
-import org.junit.Before;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,9 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,20 +49,6 @@ public class InformasjonRessursTest {
     InformasjonRessurs ressurs;
 
     Locale norskBokmaal = new Locale("nb", "NO");
-
-    /*@Before
-    public void setUp() {
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
-
-        when(personService.hentPerson(anyString())).thenReturn(new Person().withFnr("12312312345"));
-    }
-
-    @After
-    public void tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-    }*/
 
     @Test
     public void miljovariablerInneholderAlleVariableneViTrenger() {

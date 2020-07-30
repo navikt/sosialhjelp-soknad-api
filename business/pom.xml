@@ -44,11 +44,6 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-pdf</artifactId>
-            <scope>runtime</scope>
-        </dependency>-->
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
@@ -117,11 +112,6 @@
             <artifactId>commons-text</artifactId>
         </dependency>
 
-        <!--<dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-detect</artifactId>
-        </dependency>-->
-
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>types</artifactId>
@@ -160,12 +150,7 @@
             <artifactId>activation</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-core</artifactId>
-            <scope>test</scope>
-            <type>test-jar</type>
-        </dependency>-->
+
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>

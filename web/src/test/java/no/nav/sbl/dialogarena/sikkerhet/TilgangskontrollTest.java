@@ -1,14 +1,13 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -41,7 +39,6 @@ public class TilgangskontrollTest {
     @Before
     public void setUp() {
         when(subjectHandlerWrapper.getIdent()).thenReturn("123");
-        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
     }
 
     @Test

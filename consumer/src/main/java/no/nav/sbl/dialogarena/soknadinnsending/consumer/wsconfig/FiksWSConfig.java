@@ -10,45 +10,30 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.metrics.MetricsFactory.createTimerProxyForWebService;
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class FiksWSConfig {
 
-    public static final String FIKS_KEY = "start.fiks.withmock";
-
     @Value("${fiks.svarut.url}")
     private String fiksEndpoint;
 
-    /*private ServiceBuilder<ForsendelsesServiceV9>.PortTypeBuilder<ForsendelsesServiceV9> factory() {
-        final int receiveTimeout = 10 * 60_000;
-        final int connectionTimeout = 10_000;
-
-        return new ServiceBuilder<>(ForsendelsesServiceV9.class)
-                .asStandardService()
-                .withTimeout(receiveTimeout, connectionTimeout)
-                .withAddress(fiksEndpoint)
-                .withWsdl("classpath:/wsdl/svarUt.wsdl")
-                .build()
-                .withHttpsMock();
-    }*/
+    final int receiveTimeout = 10 * 60_000;
+    final int connectionTimeout = 10_000;
 
     @Bean
     public ForsendelsesServiceV9 forsendelsesServiceV9() {
         if (MockUtils.isTillatMockRessurs()) {
             return new ForsendelseServiceMock().forsendelseMock();
-        } else {
-            final int receiveTimeout = 10 * 60_000;
-            final int connectionTimeout = 10_000;
-            ForsendelsesServiceV9 prod =  new CXFClient<>(ForsendelsesServiceV9.class).address(fiksEndpoint).configureStsForSystemUser().timeout(connectionTimeout, receiveTimeout).build();
-            return createTimerProxyForWebService("FiksForsendelse", prod, ForsendelsesServiceV9.class);
         }
-/*
-        ForsendelsesServiceV9 mock = new ForsendelseServiceMock().forsendelseMock();
-        ForsendelsesServiceV9 prod = factory().withSystemSecurity().get();
-        return createMetricsProxyWithInstanceSwitcher("FiksForsendelse", prod, mock, FIKS_KEY, ForsendelsesServiceV9.class);*/
+
+        ForsendelsesServiceV9 prod =  new CXFClient<>(ForsendelsesServiceV9.class)
+                .address(fiksEndpoint)
+                .configureStsForSystemUser()
+                .timeout(connectionTimeout, receiveTimeout)
+                .build();
+        return createTimerProxyForWebService("FiksForsendelse", prod, ForsendelsesServiceV9.class);
     }
 
     @Bean
@@ -56,7 +41,11 @@ public class FiksWSConfig {
         final int receiveTimeout = 10 * 60_000;
         final int connectionTimeout = 10_000;
 
-        ForsendelsesServiceV9 selftestClient = new CXFClient<>(ForsendelsesServiceV9.class).address(fiksEndpoint).configureStsForSystemUser().timeout(connectionTimeout, receiveTimeout).build();
+        ForsendelsesServiceV9 selftestClient = new CXFClient<>(ForsendelsesServiceV9.class)
+                .address(fiksEndpoint)
+                .configureStsForSystemUser()
+                .timeout(connectionTimeout, receiveTimeout)
+                .build();
 
         return new Pingable() {
             Ping.PingMetadata metadata = new Ping.PingMetadata(fiksEndpoint,"Fiks_v9", false);

@@ -61,9 +61,6 @@ public class SoknadServiceTest {
     @Before
     public void before() {
         when(subjectHandlerWrapper.getIdent()).thenReturn("11111111111");
-        //setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        //SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        //System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test

@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonOkonomiUtils;
