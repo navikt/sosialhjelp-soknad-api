@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
+import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -72,7 +74,7 @@ public class DkifConsumerImpl implements DkifConsumer {
         WebTarget b = client.target(endpoint);
 
         return b.request()
-                .header(HttpHeader.AUTHORIZATION.name(), BEARER + OidcFeatureToggleUtils.getToken())
+                .header(HttpHeader.AUTHORIZATION.name(), BEARER + SubjectHandler.getSsoToken().orElseThrow(() -> new AuthorizationException("Missing token")).getToken())
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId)
                 .header(HEADER_NAV_PERSONIDENTER, ident);
