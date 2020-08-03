@@ -29,7 +29,7 @@ Ved innsending vil søknadsdata låses ned slik at man ikke kan endre dem mer (d
 
 ### Bygging
 
-Applikasjonen bruker Oracle JDBC-driver og enkelte interne avhengigheter som ikke er tilgjengelige fra byggserver. Den benytter seg derfor av
+Applikasjonen bruker Oracle JDBC-driver og enkelte interne avhengigheter (feks: modig) som ikke er tilgjengelige fra byggserver. Den benytter seg derfor av
 et bygg-image som inneholder alle avhengighetene, og kan hentes fra GitHub package registry i bygg-pipeline etter Docker login:
 
 ```
