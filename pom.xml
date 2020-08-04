@@ -77,7 +77,7 @@
         <cxf.version>3.3.6</cxf.version>
         <modig-security.version>3.0.6</modig-security.version>
         <wss4j.version>2.2.5</wss4j.version>
-        <ojdbc.version>19.3.0.0</ojdbc.version>
+        <ojdbc.version>19.7.0.0</ojdbc.version>
         <flyway-core.version>5.0.7</flyway-core.version>
         <flying.saucer.version>9.1.20</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
@@ -614,8 +614,8 @@
 
             <!-- Database avhengigheter -->
             <dependency>
-                <groupId>com.oracle.ojdbc</groupId>
-                <artifactId>ojdbc8</artifactId>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc10</artifactId>
                 <version>${ojdbc.version}</version>
             </dependency>
             <dependency>
@@ -1344,8 +1344,8 @@
                             <version>2.3.0</version>
                         </dependency>
                         <dependency>
-                            <groupId>com.oracle.ojdbc</groupId>
-                            <artifactId>ojdbc8</artifactId>
+                            <groupId>com.oracle.database.jdbc</groupId>
+                            <artifactId>ojdbc10</artifactId>
                             <version>${ojdbc.version}</version>
                         </dependency>
                     </dependencies>
