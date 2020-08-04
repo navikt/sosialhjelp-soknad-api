@@ -47,9 +47,12 @@ For å bygge imaget må `m2_home.tar.gz` lastes ned fra
 til en lokal folder med en `Dockerfile` med innholdet over, og bygges og pushes med kommandoene:
 
 ```
-docker build -t docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.2-jdk-11 .
-docker push docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.2-jdk-11
+docker build -t docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.3-jdk-11 .
+docker push docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.3-jdk-11
 ```
 
 Dette krever at man er logget inn mot `docker.pkg.github.com` lokalt med et GitHub personal access token som har scopet `write:packages` og
 SSO aktivert for `navikt`-organisasjonen.
+```
+docker login docker.pkg.github.com -u <brukernavn>
+```
