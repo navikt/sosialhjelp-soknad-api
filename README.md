@@ -33,16 +33,16 @@ Applikasjonen bruker Oracle JDBC-driver og enkelte interne avhengigheter (feks: 
 et builder-image som inneholder alle avhengighetene, og kan hentes fra GitHub package registry i bygg-pipeline etter Docker login. Dette gjøre slik: 
 
 Last ned `m2_home.tar.gz` fra
-[Microsoft Teams](https://navno.sharepoint.com/sites/Digisos532/Shared%20Documents/Utviklingteamet/backend%20github%20relatert/m2_home.tar.gz)
+[Microsoft Teams](https://navno.sharepoint.com/sites/Digisos532/Shared%20Documents/Utviklingteamet/backend%20github%20relatert/.m2.tar.gz)
 til en lokal folder. Legg til en `Dockerfile` med følgende innhold: 
 ```
 FROM maven:3.6.2-jdk-11
 
 WORKDIR /root
 
-COPY m2_home.tar.gz .
-RUN tar xvzf m2_home.tar.gz
-RUN rm m2_home.tar.gz
+COPY .m2.tar.gz .
+RUN tar xvzf .m2.tar.gz
+RUN rm .m2.tar.gz
 ```
 
 Neste sted krever at man er logget inn mot `docker.pkg.github.com` lokalt med et GitHub personal access token som har scopet `write:packages` og
