@@ -26,19 +26,6 @@
     <version>18.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <distributionManagement>
-        <repository>
-            <id>maven-releases</id>
-            <name>NAV Internal Repository</name>
-            <url>https://repo.adeo.no/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven-snapshots</id>
-            <name>NAV Snapshot Repository</name>
-            <url>https://repo.adeo.no/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <repositories>
         <repository>
             <id>maven-snapshots</id>
@@ -90,7 +77,7 @@
         <activation.version>1.1.1</activation.version>
         <cxf.version>3.3.6</cxf.version>
         <wss4j.version>2.2.5</wss4j.version>
-        <ojdbc.version>19.3.0.0</ojdbc.version>
+        <ojdbc.version>19.7.0.0</ojdbc.version>
         <flyway-core.version>5.0.7</flyway-core.version>
         <flying.saucer.version>9.1.20</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
@@ -588,8 +575,8 @@
 
             <!-- Database avhengigheter -->
             <dependency>
-                <groupId>com.oracle.ojdbc</groupId>
-                <artifactId>ojdbc8</artifactId>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc10</artifactId>
                 <version>${ojdbc.version}</version>
             </dependency>
             <dependency>
@@ -1311,8 +1298,8 @@
                             <version>2.3.0</version>
                         </dependency>
                         <dependency>
-                            <groupId>com.oracle.ojdbc</groupId>
-                            <artifactId>ojdbc8</artifactId>
+                            <groupId>com.oracle.database.jdbc</groupId>
+                            <artifactId>ojdbc10</artifactId>
                             <version>${ojdbc.version}</version>
                         </dependency>
                     </dependencies>
