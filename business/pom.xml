@@ -144,7 +144,7 @@
 
         <!-- Avhengigheter med runtime-scope -->
         <dependency>
-            <groupId>com.oracle</groupId>
+            <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <scope>runtime</scope>
         </dependency>
