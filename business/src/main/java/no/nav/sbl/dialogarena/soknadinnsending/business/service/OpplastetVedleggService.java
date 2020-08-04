@@ -198,6 +198,7 @@ public class OpplastetVedleggService {
         PDDocument document;
         try {
             document = PDDocument.load(new ByteArrayInputStream(data));
+
         } catch (InvalidPasswordException e) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være krypert.", null,
