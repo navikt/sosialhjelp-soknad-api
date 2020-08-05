@@ -1,13 +1,13 @@
 package no.nav.sbl.dialogarena.rest.ressurser.vedlegg;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
@@ -69,7 +69,7 @@ public class OpplastetVedleggRessurs {
         } else {
             return Response.noContent().build();
         }
-        String mimetype = Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData());
+        String mimetype = FileDetectionUtils.getMimeType(opplastetVedlegg.getData());
         return Response.ok(opplastetVedlegg.getData()).type(mimetype).build();
     }
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import no.ks.svarut.servicesv9.Dokument;
-import no.nav.sbl.dialogarena.detect.Detect;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -144,7 +144,7 @@ public class FiksDokumentHelper {
         final String filnavn = opplastetVedlegg.getFilnavn();
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
+                .withMimetype(FileDetectionUtils.getMimeType(opplastetVedlegg.getData()))
                 .withEkskluderesFraPrint(true)
                 .withData(new DataHandler(krypterOgOpprettByteDatasource(filnavn, opplastetVedlegg.getData())));
     }
