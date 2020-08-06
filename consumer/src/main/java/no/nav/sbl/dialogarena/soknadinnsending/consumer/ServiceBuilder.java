@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 import no.nav.sbl.dialogarena.mdc.MDCOutHandler;
 import no.nav.sbl.dialogarena.common.cxf.LoggingFeatureUtenBinaryOgUtenSamlTokenLogging;
 import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -125,11 +124,7 @@ public final class ServiceBuilder<T> {
         }
 
         public PortTypeBuilder<U> withUserSecurity() {
-            if (OidcFeatureToggleUtils.isRunningWithOidc()) {
-                configureStsForOnBehalfOfWithJWT(ClientProxy.getClient(portType));
-            } else {
-                configureStsForExternalSSO(ClientProxy.getClient(portType));
-            }
+            configureStsForOnBehalfOfWithJWT(ClientProxy.getClient(portType));
             return this;
         }
 

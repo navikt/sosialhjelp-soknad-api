@@ -86,12 +86,11 @@ public class SoknadActionsTest {
 
     @Before
     public void setUp() {
-        System.setProperty("authentication.isRunningWithOidc", "true");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
-        EIER = SubjectHandler.getUserIdFromToken();
+        EIER = SubjectHandler.getUserId();
     }
 
     @After

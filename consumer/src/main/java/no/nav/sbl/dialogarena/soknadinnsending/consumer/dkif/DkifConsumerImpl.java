@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.eclipse.jetty.http.HttpHeader;
@@ -66,13 +66,13 @@ public class DkifConsumerImpl implements DkifConsumer {
     }
 
     private Invocation.Builder lagRequest(String endpoint, String ident) {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
         WebTarget b = client.target(endpoint);
 
         return b.request()
-                .header(HttpHeader.AUTHORIZATION.name(), BEARER + OidcFeatureToggleUtils.getToken())
+                .header(HttpHeader.AUTHORIZATION.name(), BEARER + SubjectHandler.getToken())
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId)
                 .header(HEADER_NAV_PERSONIDENTER, ident);

@@ -10,7 +10,7 @@ public class SubjectHandler {
     private static SubjectHandlerService subjectHandlerService = new OidcSubjectHandlerService();
 
 
-    public static String getUserIdFromToken() {
+    public static String getUserId() {
         return subjectHandlerService.getUserIdFromToken();
     }
 

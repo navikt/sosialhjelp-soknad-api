@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.security.token.support.core.JwtTokenConstants;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.ws.rs.client.Entity;
@@ -19,11 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     private static final String DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN = "04031659235"; // Ikke ekteperson
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        beforeClass(true);
-    }
 
     @Before
     public void setup() throws Exception {

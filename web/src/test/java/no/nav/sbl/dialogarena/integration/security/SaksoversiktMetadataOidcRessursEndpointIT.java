@@ -10,7 +10,6 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespo
 import no.nav.security.token.support.core.JwtTokenConstants;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.ws.rs.client.Invocation;
@@ -22,12 +21,6 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
     public static final String BRUKER = "11111111111";
     public static final String ANNEN_BRUKER = "12345679811";
     private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
-
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        beforeClass(true);
-    }
 
     @Before
     public void setup() throws Exception {
