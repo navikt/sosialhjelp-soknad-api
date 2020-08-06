@@ -52,7 +52,7 @@ public class StudielanRessurs {
 
     @GET
     public StudielanFrontend hentStudielanBekreftelse(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
         JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
@@ -76,7 +76,7 @@ public class StudielanRessurs {
     @PUT
     public void updateStudielan(@PathParam("behandlingsId") String behandlingsId, StudielanFrontend studielanFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
         List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();

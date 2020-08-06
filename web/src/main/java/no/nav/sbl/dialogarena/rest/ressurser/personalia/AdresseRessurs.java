@@ -50,7 +50,7 @@ public class AdresseRessurs {
 
     @GET
     public AdresserFrontend hentAdresser(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         String personIdentifikator = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();
         JsonAdresse jsonOppholdsadresse = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -67,7 +67,7 @@ public class AdresseRessurs {
     @PUT
     public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresserFrontend adresserFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 

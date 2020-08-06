@@ -37,7 +37,7 @@ public class SystemregistrertInntektRessurs {
 
     @GET
     public SysteminntekterFrontend hentSystemregistrerteInntekter(@PathParam("behandlingsId") String behandlingsId){
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
 

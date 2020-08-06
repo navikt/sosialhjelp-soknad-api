@@ -40,7 +40,7 @@ public class BasisPersonaliaRessurs {
 
     @GET
     public BasisPersonaliaFrontend hentBasisPersonalia(@PathParam("behandlingsId") String behandlingsId) {
-        final String eier = subjectHandler.getIdent();
+        final String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
 
         return mapToBasisPersonaliaFrontend(soknad.getSoknad().getData().getPersonalia());

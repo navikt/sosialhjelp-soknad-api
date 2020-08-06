@@ -45,7 +45,7 @@ public class ArbeidRessurs {
 
     @GET
     public ArbeidFrontend hentArbeid(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();
         JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknad.getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
@@ -66,7 +66,7 @@ public class ArbeidRessurs {
     @PUT
     public void updateArbeid(@PathParam("behandlingsId") String behandlingsId, ArbeidFrontend arbeidFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonArbeid arbeid = soknad.getJsonInternalSoknad().getSoknad().getData().getArbeid();
         if (!isBlank(arbeidFrontend.kommentarTilArbeidsforhold)){

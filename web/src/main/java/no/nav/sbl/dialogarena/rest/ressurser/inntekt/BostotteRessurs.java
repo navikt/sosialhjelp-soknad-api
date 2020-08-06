@@ -65,7 +65,7 @@ public class BostotteRessurs {
 
     @GET
     public BostotteFrontend hentBostotte(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
         BostotteFrontend bostotteFrontend = new BostotteFrontend();
@@ -85,7 +85,7 @@ public class BostotteRessurs {
     public void updateBostotte(@PathParam("behandlingsId") String behandlingsId, BostotteFrontend bostotteFrontend,
                                @HeaderParam(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 
@@ -112,7 +112,7 @@ public class BostotteRessurs {
     public void updateSamtykke(@PathParam("behandlingsId") String behandlingsId, boolean samtykke,
                                @HeaderParam(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 

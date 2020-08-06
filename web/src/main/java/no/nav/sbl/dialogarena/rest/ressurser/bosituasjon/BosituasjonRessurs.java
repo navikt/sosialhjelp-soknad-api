@@ -41,7 +41,7 @@ public class BosituasjonRessurs {
 
     @GET
     public BosituasjonFrontend hentBosituasjon(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonBosituasjon bosituasjon = soknad.getSoknad().getData().getBosituasjon();
 
@@ -53,7 +53,7 @@ public class BosituasjonRessurs {
     @PUT
     public void updateBosituasjon(@PathParam("behandlingsId") String behandlingsId, BosituasjonFrontend bosituasjonFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonBosituasjon bosituasjon = soknad.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
         bosituasjon.setKilde(JsonKildeBruker.BRUKER);

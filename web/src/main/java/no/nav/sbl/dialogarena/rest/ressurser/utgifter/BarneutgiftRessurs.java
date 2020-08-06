@@ -60,7 +60,7 @@ public class BarneutgiftRessurs {
 
     @GET
     public BarneutgifterFrontend hentBarneutgifter(@PathParam("behandlingsId") String behandlingsId){
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
 
         JsonHarForsorgerplikt harForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt().getHarForsorgerplikt();
@@ -84,7 +84,7 @@ public class BarneutgiftRessurs {
     @PUT
     public void updateBarneutgifter(@PathParam("behandlingsId") String behandlingsId, BarneutgifterFrontend barneutgifterFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 

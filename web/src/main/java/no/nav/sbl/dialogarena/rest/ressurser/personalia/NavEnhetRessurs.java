@@ -67,7 +67,7 @@ public class NavEnhetRessurs {
     @GET
     @Path("/navEnheter")
     public List<NavEnhetFrontend> hentNavEnheter(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad();
         String valgtEnhetNr = soknad.getMottaker().getEnhetsnummer();
 
@@ -82,7 +82,7 @@ public class NavEnhetRessurs {
     @GET
     @Path("/navEnhet")
     public NavEnhetFrontend hentValgtNavEnhet(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonSoknadsmottaker soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad().getMottaker();
         String kommunenummer = soknadsmottaker.getKommunenummer();
 
@@ -106,7 +106,7 @@ public class NavEnhetRessurs {
     @Path("/navEnheter")
     public void updateNavEnhet(@PathParam("behandlingsId") String behandlingsId, NavEnhetFrontend navEnhetFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         soknad.getJsonInternalSoknad().setMottaker(new no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()

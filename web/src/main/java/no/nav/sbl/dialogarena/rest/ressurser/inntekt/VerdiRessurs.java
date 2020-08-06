@@ -60,7 +60,7 @@ public class VerdiRessurs {
 
     @GET
     public VerdierFrontend hentVerdier(@PathParam("behandlingsId") String behandlingsId){
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         VerdierFrontend verdierFrontend = new VerdierFrontend();
@@ -82,7 +82,7 @@ public class VerdiRessurs {
     @PUT
     public void updateVerdier(@PathParam("behandlingsId") String behandlingsId, VerdierFrontend verdierFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 

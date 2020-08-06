@@ -106,7 +106,7 @@ public class SoknadService {
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
 
-        String aktorId = subjectHandler.getIdent();
+        String aktorId = subjectHandler.getUserId();
         Timer henvendelseTimer = createDebugTimer("startHenvendelse", mainUid);
         String behandlingsId = henvendelseService.startSoknad(aktorId);
         henvendelseTimer.stop();
@@ -139,7 +139,7 @@ public class SoknadService {
 
     @Transactional
     public void sendSoknad(String behandlingsId) {
-        final String eier = subjectHandler.getIdent();
+        final String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
@@ -188,7 +188,7 @@ public class SoknadService {
 
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
         if (soknadUnderArbeidOptional.isPresent()) {
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
@@ -199,7 +199,7 @@ public class SoknadService {
 
     @Transactional
     public void oppdaterSamtykker(String behandlingsId, boolean harBostotteSamtykke, boolean harSkatteetatenSamtykke, String token) {
-        final String eier = subjectHandler.getIdent();
+        final String eier = subjectHandler.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (harSkatteetatenSamtykke) {
             skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, token);

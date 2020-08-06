@@ -83,7 +83,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
-        String fnr = subjectHandler.getIdent();
+        String fnr = subjectHandler.getUserId();
         Person person = personServiceV3.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
@@ -118,7 +118,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
-        String uid = subjectHandler.getIdent();
+        String uid = subjectHandler.getUserId();
         Person person = personServiceV3.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();

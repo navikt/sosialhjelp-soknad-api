@@ -239,7 +239,7 @@ public class DigisosApiService {
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
-            logAlderTilKibana(subjectHandler.getIdent());
+            logAlderTilKibana(subjectHandler.getUserId());
         }
         return digisosId;
     }

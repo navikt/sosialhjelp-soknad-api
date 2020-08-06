@@ -38,12 +38,12 @@ public class TilgangskontrollTest {
 
     @Before
     public void setUp() {
-        when(subjectHandler.getIdent()).thenReturn("123");
+        when(subjectHandler.getUserId()).thenReturn("123");
     }
 
     @Test
     public void skalGiTilgangForBruker() {
-        String userId = subjectHandler.getIdent();
+        String userId = subjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
@@ -65,7 +65,7 @@ public class TilgangskontrollTest {
     @Test
     public void skalGiTilgangForBrukerMetadata() {
         SoknadMetadata metadata = new SoknadMetadata();
-        metadata.fnr = subjectHandler.getIdent();
+        metadata.fnr = subjectHandler.getUserId();
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
         tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123");
     }

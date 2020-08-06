@@ -60,7 +60,7 @@ public class SoknadServiceTest {
 
     @Before
     public void before() {
-        when(subjectHandler.getIdent()).thenReturn("11111111111");
+        when(subjectHandler.getUserId()).thenReturn("11111111111");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
         soknadService.startSoknad("");
 
-        String bruker = subjectHandler.getIdent();
+        String bruker = subjectHandler.getUserId();
         verify(henvendelsesConnector).startSoknad(eq(bruker));
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).opprettSoknad(argument.capture(), eq(bruker));

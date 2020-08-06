@@ -40,7 +40,7 @@ public class BegrunnelseRessurs {
 
     @GET
     public BegrunnelseFrontend hentBegrunnelse(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
 
@@ -52,7 +52,7 @@ public class BegrunnelseRessurs {
     @PUT
     public void updateBegrunnelse(@PathParam("behandlingsId") String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
         begrunnelse.setKilde(JsonKildeBruker.BRUKER);

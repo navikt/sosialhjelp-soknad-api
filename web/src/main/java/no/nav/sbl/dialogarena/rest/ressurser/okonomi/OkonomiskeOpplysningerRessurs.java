@@ -70,7 +70,7 @@ public class OkonomiskeOpplysningerRessurs {
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
 
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknad);
@@ -92,7 +92,7 @@ public class OkonomiskeOpplysningerRessurs {
     @PUT
     public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = subjectHandler.getIdent();
+        final String eier = subjectHandler.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 

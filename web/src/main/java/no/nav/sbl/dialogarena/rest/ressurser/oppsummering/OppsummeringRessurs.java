@@ -37,7 +37,7 @@ public class OppsummeringRessurs {
 
     @GET
     public Oppsummering getOppsummering(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         return new Oppsummering().withSteg(new ArrayList<>(Arrays.asList(

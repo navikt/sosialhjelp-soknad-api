@@ -68,7 +68,7 @@ public class OpplastetVedleggService {
     }
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
         String mimeType = FileDetectionUtils.getMimeType(data);
 
@@ -104,7 +104,7 @@ public class OpplastetVedleggService {
     }
 
     public void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(String behandlingsId, byte[] data) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
 
@@ -117,7 +117,7 @@ public class OpplastetVedleggService {
     }
 
     public void deleteVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         final OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
 
         if (opplastetVedlegg == null){

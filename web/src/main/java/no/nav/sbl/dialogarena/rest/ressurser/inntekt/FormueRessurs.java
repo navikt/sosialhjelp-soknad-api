@@ -61,7 +61,7 @@ public class FormueRessurs {
 
     @GET
     public FormueFrontend hentFormue(@PathParam("behandlingsId") String behandlingsId){
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonOkonomi okonomi = soknad.getSoknad().getData().getOkonomi();
         FormueFrontend formueFrontend = new FormueFrontend();
@@ -82,7 +82,7 @@ public class FormueRessurs {
     @PUT
     public void updateFormue(@PathParam("behandlingsId") String behandlingsId, FormueFrontend formueFrontend){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 

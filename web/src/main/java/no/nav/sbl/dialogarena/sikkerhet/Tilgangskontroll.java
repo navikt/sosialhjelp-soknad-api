@@ -41,7 +41,7 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, subjectHandler.getIdent());
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, subjectHandler.getUserId());
         String aktoerId;
         if (soknadUnderArbeidOptional.isPresent()) {
             aktoerId = soknadUnderArbeidOptional.get().getEier();
@@ -67,7 +67,7 @@ public class Tilgangskontroll {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("Søknaden har ingen eier");
         }
-        String aktorId = subjectHandler.getIdent();
+        String aktorId = subjectHandler.getUserId();
         if (!Objects.equals(aktorId, eier)) {
             throw new AuthorizationException("AktørId stemmer ikke overens med eieren til søknaden");
         }

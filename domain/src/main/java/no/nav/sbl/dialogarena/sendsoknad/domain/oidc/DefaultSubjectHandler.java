@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultSubjectHandler implements SubjectHandler {
 
-    public String getIdent() {
+    public String getUserId() {
         return no.nav.common.auth.SubjectHandler.getIdent().orElse(null); //.orElseThrow(() -> new AuthorizationException("Ingen innlogget bruker"));
     }
 

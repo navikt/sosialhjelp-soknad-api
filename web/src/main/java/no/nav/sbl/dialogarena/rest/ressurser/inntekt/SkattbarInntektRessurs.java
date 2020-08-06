@@ -59,7 +59,7 @@ public class SkattbarInntektRessurs {
 
     @GET
     public SkattbarInntektFrontend hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
 
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
@@ -82,7 +82,7 @@ public class SkattbarInntektRessurs {
     public void updateSamtykke(@PathParam("behandlingsId") String behandlingsId, boolean samtykke,
                                @HeaderParam(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 

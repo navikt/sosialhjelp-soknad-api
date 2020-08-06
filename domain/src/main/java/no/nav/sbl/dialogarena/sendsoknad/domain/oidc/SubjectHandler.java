@@ -4,7 +4,7 @@ import no.nav.common.auth.SsoToken;
 
 public interface SubjectHandler {
 
-    String getIdent();
+    String getUserId();
 
     int getSecurityLevel();
 

@@ -52,7 +52,7 @@ public class KontonummerRessursTest {
 
     @Before
     public void setUp() {
-        when(subjectHandler.getIdent()).thenReturn("123");
+        when(subjectHandler.getUserId()).thenReturn("123");
         doCallRealMethod().when(kontonummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class), any());
     }
 

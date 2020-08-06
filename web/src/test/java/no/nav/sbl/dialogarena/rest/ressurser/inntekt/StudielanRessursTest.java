@@ -58,7 +58,7 @@ public class StudielanRessursTest {
 
     @Before
     public void setUp() {
-        when(subjectHandler.getIdent()).thenReturn("123");
+        when(subjectHandler.getUserId()).thenReturn("123");
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 

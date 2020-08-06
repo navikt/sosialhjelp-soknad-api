@@ -96,7 +96,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
@@ -105,7 +105,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}/erSystemdataEndret")
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
-        final String eier = subjectHandler.getIdent();
+        final String eier = subjectHandler.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         systemdata.update(soknadUnderArbeid, token);
 
@@ -142,7 +142,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}/hentSamtykker")
     public List<BekreftelseRessurs> hentSamtykker(@PathParam("behandlingsId") String behandlingsId,
                                                   @HeaderParam(value = AUTHORIZATION) String token) {
-        final String eier = subjectHandler.getIdent();
+        final String eier = subjectHandler.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<>();
@@ -188,7 +188,7 @@ public class SoknadRessurs {
         if (behandlingsId == null) {
             opprettetBehandlingsId = soknadService.startSoknad(token);
         } else {
-            final String eier = subjectHandler.getIdent();
+            final String eier = subjectHandler.getUserId();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
             if (soknadUnderArbeid.isPresent()) {
                 opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();

@@ -62,7 +62,7 @@ public class EttersendingRessurs {
     @GET
     @Path("/ettersendteVedlegg/{behandlingsId}")
     public List<EttersendtVedlegg> hentVedlegg(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), eier);
         List<JsonVedlegg> originaleVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg();

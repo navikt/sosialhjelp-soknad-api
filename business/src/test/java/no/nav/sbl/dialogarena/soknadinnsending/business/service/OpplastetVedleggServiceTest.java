@@ -68,7 +68,7 @@ public class OpplastetVedleggServiceTest {
 
     @Before
     public void setUp() {
-        when(subjectHandler.getIdent()).thenReturn("26104500284");
+        when(subjectHandler.getUserId()).thenReturn("26104500284");
         opplastetVedleggService.setUp();
     }
 

@@ -74,7 +74,7 @@ public class ArbeidRessursTest {
 
     @Before
     public void setUp() {
-        when(subjectHandler.getIdent()).thenReturn("123");
+        when(subjectHandler.getUserId()).thenReturn("123");
     }
 
     @Test

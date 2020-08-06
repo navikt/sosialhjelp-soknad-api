@@ -77,7 +77,7 @@ public class AdresseRessursTest {
 
     @Before
     public void setUp() {
-        when(subjectHandler.getIdent()).thenReturn("123");
+        when(subjectHandler.getUserId()).thenReturn("123");
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
     }
 

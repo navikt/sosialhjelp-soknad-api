@@ -51,7 +51,7 @@ public class SivilstatusRessurs {
 
     @GET
     public SivilstatusFrontend hentSivilstatus(@PathParam("behandlingsId") String behandlingsId){
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonSivilstatus jsonSivilstatus = soknad.getSoknad().getData().getFamilie().getSivilstatus();
 
@@ -65,7 +65,7 @@ public class SivilstatusRessurs {
     @PUT
     public void updateSivilstatus(@PathParam("behandlingsId") String behandlingsId, SivilstatusFrontend sivilstatusFrontend) throws ParseException {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonFamilie familie = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie();
 

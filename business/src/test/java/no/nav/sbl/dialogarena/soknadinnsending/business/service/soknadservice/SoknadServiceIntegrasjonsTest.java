@@ -51,7 +51,7 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Before
     public void setUp() {
-        when(subjectHandler.getIdent()).thenReturn("123");
+        when(subjectHandler.getUserId()).thenReturn("123");
         when(soknadMetadataRepository.hent(anyString())).thenReturn(new SoknadMetadata());
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withBehandlingsId(EN_BEHANDLINGSID).withVersjon(0L)));
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});

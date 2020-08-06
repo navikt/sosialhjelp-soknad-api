@@ -66,7 +66,7 @@ public class BoutgiftRessurs {
 
     @GET
     public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         JsonSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
@@ -86,7 +86,7 @@ public class BoutgiftRessurs {
     @PUT
     public void updateBoutgifter(@PathParam("behandlingsId") String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandler.getIdent();
+        String eier = subjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
