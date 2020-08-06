@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 
@@ -23,7 +23,7 @@ public class XsrfGenerator {
     }
 
     public static String generateXsrfToken(String behandlingsId, String date) {
-            return generateXsrfToken(behandlingsId, date, OidcFeatureToggleUtils.getToken());
+            return generateXsrfToken(behandlingsId, date, SubjectHandler.getToken());
     }
 
     public static String generateXsrfToken(String behandlingsId, String date, String token) {

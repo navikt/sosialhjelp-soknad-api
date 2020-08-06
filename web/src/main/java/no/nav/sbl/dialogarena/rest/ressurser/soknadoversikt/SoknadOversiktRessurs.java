@@ -35,7 +35,7 @@ public class SoknadOversiktRessurs {
     @GET
     @Path("/soknader")
     public List<SoknadOversikt> hentInnsendteSoknaderForBruker() {
-        String fnr = SubjectHandler.getUserIdFromToken();
+        String fnr = SubjectHandler.getUserId();
         logger.debug("Henter alle søknader");
 
         List<SoknadOversikt> soknader = service.hentSvarUtSoknaderFor(fnr);

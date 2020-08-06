@@ -20,7 +20,6 @@
     "GCP": "true",
     "PORT": "8080",
     "AAREG_API_BASEURL": "https://api-gw-q0.oera.no/aareg-services/api/",
-    "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DITTNAV_LINK_URL": "https://tjenester-q0.nav.no/dittnav/",
     "DKIF_API_BASEURL": "https://api-gw-q0.oera.no/dkif/api/",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "https://api-gw-q0.oera.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/",
