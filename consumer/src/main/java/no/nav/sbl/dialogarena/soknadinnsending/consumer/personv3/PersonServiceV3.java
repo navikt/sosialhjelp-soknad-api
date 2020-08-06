@@ -26,7 +26,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,7 +35,6 @@ public class PersonServiceV3 {
     private static final Logger logger = getLogger(PersonServiceV3.class);
 
     @Inject
-    @Named("personV3Endpoint")
     private PersonV3 personV3;
 
     @Inject

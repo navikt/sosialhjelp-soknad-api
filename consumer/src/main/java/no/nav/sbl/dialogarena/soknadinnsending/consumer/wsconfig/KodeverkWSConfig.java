@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
+import no.nav.sbl.dialogarena.common.cxf.CXFClient;
+import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
@@ -8,9 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import java.util.UUID;
+
+import static no.nav.metrics.MetricsFactory.createTimerProxyForWebService;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+
+import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 
 @Configuration
 public class KodeverkWSConfig {
@@ -29,24 +35,29 @@ public class KodeverkWSConfig {
                 .withHttpsMock();
     }
 
-    @Bean
-    public KodeverkPortType kodeverkEndpoint() {
-        KodeverkPortType prod = factory().withSystemSecurity().get();
-        KodeverkPortType mock = new KodeverkMock().kodeverkMock();
-        return createMetricsProxyWithInstanceSwitcher("Kodeverk", prod, mock, KODEVERK_KEY, KodeverkPortType.class);
+    private KodeverkPortType kodeverkClient() {
+        return new CXFClient<>(KodeverkPortType.class)
+                .address(kodeverkEndPoint)
+                .wsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl")
+                .configureStsForSystemUser()
+                .withProperty(MUST_UNDERSTAND, false)
+                .build();
     }
 
     @Bean
-    public KodeverkPortType kodeverkSelftestEndpoint() {
-        return factory().withSystemSecurity().get();
+    public KodeverkPortType kodeverkEndpoint() {
+        if (MockUtils.isTillatMockRessurs()) {
+            return new KodeverkMock().kodeverkMock();
+        }
+        return createTimerProxyForWebService("Kodeverk", kodeverkClient(), KodeverkPortType.class);
     }
 
     @Bean
     Pingable kodeverkPing() {
         return () -> {
-            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(kodeverkEndPoint,"Kodeverk v2 ", false);
+            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(UUID.randomUUID().toString(), kodeverkEndPoint,"Kodeverk v2 ", false);
             try {
-                kodeverkSelftestEndpoint().ping();
+                kodeverkClient().ping();
                 return lyktes(metadata);
             } catch (Exception e) {
                 return feilet(metadata, e);
