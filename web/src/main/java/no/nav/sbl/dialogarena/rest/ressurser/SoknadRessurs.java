@@ -8,28 +8,39 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 import static no.nav.sbl.dialogarena.utils.NedetidUtils.NEDETID_SLUTT;
 import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsStringOrNull;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
@@ -107,9 +118,48 @@ public class SoknadRessurs {
     }
 
     @POST
+    @Path("/{behandlingsId}/oppdaterSamtykker")
+    public void oppdaterSamtykker(@PathParam("behandlingsId") String behandlingsId,
+                                  @RequestBody List<BekreftelseRessurs> samtykker,
+                                  @HeaderParam(value = AUTHORIZATION) String token) {
+        boolean harBostotteSamtykke = samtykker.stream()
+                .anyMatch(bekreftelse -> bekreftelse.type.equalsIgnoreCase(BOSTOTTE_SAMTYKKE) && bekreftelse.verdi);
+        boolean harSkatteetatenSamtykke = samtykker.stream()
+                .anyMatch(bekreftelse -> bekreftelse.type.equalsIgnoreCase(UTBETALING_SKATTEETATEN_SAMTYKKE) && bekreftelse.verdi);
+        soknadService.oppdaterSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token);
+    }
+
+    @GET
+    @Path("/{behandlingsId}/hentSamtykker")
+    public List<BekreftelseRessurs> hentSamtykker(@PathParam("behandlingsId") String behandlingsId,
+                                                  @HeaderParam(value = AUTHORIZATION) String token) {
+        final String eier = OidcFeatureToggleUtils.getUserId();
+        final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+
+        List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<>();
+        hentBekreftelse(soknadUnderArbeid, BOSTOTTE_SAMTYKKE).ifPresent(bekreftelser::add);
+        hentBekreftelse(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE).ifPresent(bekreftelser::add);
+
+        return bekreftelser.stream()
+                .filter(JsonOkonomibekreftelse::getVerdi)
+                .map(BekreftelseRessurs::new)
+                .collect(Collectors.toList());
+    }
+
+    private Optional<JsonOkonomibekreftelse> hentBekreftelse(SoknadUnderArbeid soknadUnderArbeid, String samtykke) {
+        List<JsonOkonomibekreftelse> bekreftelser = soknadUnderArbeid.getJsonInternalSoknad()
+                .getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
+        return bekreftelser.stream()
+                .filter(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(samtykke))
+                .findFirst();
+    }
+
+    @POST
     @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @HeaderParam(value = AUTHORIZATION) String token) {
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId,
+                                             @Context HttpServletResponse response,
+                                             @HeaderParam(value = AUTHORIZATION) String token) {
         if (NedetidUtils.isInnenforNedetid()) {
             throw new SoknadenHarNedetidException(String.format("Soknaden har nedetid fram til %s ", getNedetidAsStringOrNull(NEDETID_SLUTT)));
         }

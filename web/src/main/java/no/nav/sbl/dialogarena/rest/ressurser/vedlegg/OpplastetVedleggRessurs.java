@@ -1,23 +1,29 @@
 package no.nav.sbl.dialogarena.rest.ressurser.vedlegg;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.File;
@@ -63,7 +69,7 @@ public class OpplastetVedleggRessurs {
         } else {
             return Response.noContent().build();
         }
-        String mimetype = Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData());
+        String mimetype = FileDetectionUtils.getMimeType(opplastetVedlegg.getData());
         return Response.ok(opplastetVedlegg.getData()).type(mimetype).build();
     }
 

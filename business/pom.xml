@@ -45,11 +45,6 @@
             <artifactId>pdfbox</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-pdf</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
         </dependency>
@@ -118,11 +113,6 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-detect</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>types</artifactId>
         </dependency>
@@ -144,8 +134,8 @@
 
         <!-- Avhengigheter med runtime-scope -->
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc8</artifactId>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc10</artifactId>
             <scope>runtime</scope>
         </dependency>
 
@@ -226,6 +216,10 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.verapdf</groupId>

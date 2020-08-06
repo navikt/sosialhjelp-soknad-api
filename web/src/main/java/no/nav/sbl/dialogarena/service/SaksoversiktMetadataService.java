@@ -132,7 +132,7 @@ public class SaksoversiktMetadataService {
     }
 
     private String lagFortsettSoknadLenke(String behandlingsId) {
-        return lagContextLenke() + "skjema/" + behandlingsId + "/1";
+        return lagContextLenke() + "skjema/" + behandlingsId + "/0";
     }
 
     private static String lagContextLenke() {

@@ -77,15 +77,20 @@
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
-            <artifactId>oidc-support</artifactId>
+            <artifactId>token-validation-core</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
-            <artifactId>oidc-jersey-support</artifactId>
+            <artifactId>token-validation-jaxrs</artifactId>
         </dependency>
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.security</groupId>
+            <artifactId>token-validation-test-support</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.ks.fiks</groupId>

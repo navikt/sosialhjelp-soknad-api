@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
-import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
@@ -15,8 +14,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
@@ -85,14 +86,14 @@ public class DigisosApiService {
 
         if (soknadUnderArbeid.erEttersendelse()) {
             filOpplastinger.add(lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, true, soknadUnderArbeid.getEier()));
+            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf());
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
             filOpplastinger.addAll(dokumenterForVedlegg);
         } else {
             filOpplastinger.add(lagDokumentForSaksbehandlerPdf(soknadUnderArbeid));
             filOpplastinger.add(lagDokumentForJuridiskPdf(internalSoknad));
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf(internalSoknad, false, soknadUnderArbeid.getEier()));
+            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf());
             List<FilOpplasting> dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
             filOpplastinger.addAll(dokumenterForVedlegg);
@@ -117,10 +118,10 @@ public class DigisosApiService {
 
     }
 
-    String sendOgKrypter(String soknadJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEnhetsnavn, String behandlingsId, String token) {
+    String sendOgKrypter(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEnhetsnavn, String behandlingsId, String token) {
         Event event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn);
         try {
-            return digisosApi.krypterOgLastOppFiler(soknadJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
+            return digisosApi.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
         } catch (Exception e) {
             event.setFailed();
             throw e;
@@ -156,23 +157,23 @@ public class DigisosApiService {
     }
 
     private FilOpplasting lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
-        byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
-
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("ettersendelse.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
+        String filnavn = "ettersendelse.pdf";
+        String mimetype = "application/pdf";
+        try {
+            byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        } catch (Exception e) {
+            byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
+            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        }
     }
 
-    private FilOpplasting lagDokumentForBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, boolean erEttersendelse, String eier) {
-        byte[] pdf = pdfService.genererBrukerkvitteringPdf(internalSoknad, "/", erEttersendelse, eier);
+    private FilOpplasting lagDokumentForBrukerkvitteringPdf() {
+        String filnavn = "Brukerkvittering.pdf";
+        String mimetype = "application/pdf";
+        byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
 
-        return new FilOpplasting(new FilMetadata()
-                .withFilnavn("Brukerkvittering.pdf")
-                .withMimetype("application/pdf")
-                .withStorrelse((long) pdf.length),
-                new ByteArrayInputStream(pdf));
+        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
@@ -193,7 +194,7 @@ public class DigisosApiService {
 
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn(opplastetVedlegg.getFilnavn())
-                .withMimetype(Detect.CONTENT_TYPE.transform(opplastetVedlegg.getData()))
+                .withMimetype(FileDetectionUtils.getMimeType(opplastetVedlegg.getData()))
                 .withStorrelse((long) pdf.length),
                 new ByteArrayInputStream(pdf));
     }
@@ -226,11 +227,12 @@ public class DigisosApiService {
         List<FilOpplasting> filOpplastinger = lagDokumentListe(soknadUnderArbeid);
         log.info("Laster opp {}", filOpplastinger.size());
         String soknadJson = getSoknadJson(soknadUnderArbeid);
+        String tilleggsinformasjonJson = getTilleggsinformasjonJson(soknadUnderArbeid.getJsonInternalSoknad().getSoknad());
         String vedleggJson = getVedleggJson(soknadUnderArbeid);
         log.info("Starter kryptering av filer for {}, skal sende til kommune {} med enhetsnummer {} og navenhetsnavn {}", behandlingsId,  kommunenummer,
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getEnhetsnummer(),
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
-        String digisosId = sendOgKrypter(soknadJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
+        String digisosId = sendOgKrypter(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
@@ -245,7 +247,27 @@ public class DigisosApiService {
             ensureValidSoknad(sonadJson);
             return sonadJson;
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Klarer ikke serialisere", e);
+            throw new IllegalArgumentException("Klarer ikke serialisere sonadJson", e);
+        }
+    }
+
+    String getTilleggsinformasjonJson(JsonSoknad soknad) {
+
+        if (soknad == null || soknad.getMottaker() == null) {
+            log.error("Soknad eller soknadsmottaker er null ved sending av søknad. Dette skal ikke skje.");
+            throw new IllegalStateException("Soknad eller soknadsmottaker er null ved sending av søknad.");
+        }
+
+        String enhetsnummer = soknad.getMottaker().getEnhetsnummer();
+        if (enhetsnummer == null) {
+            log.error("Enhetsnummer er null ved sending av søknad. Den blir lagt til i tilleggsinformasjon-filen med <null> som verdi.");
+        }
+        JsonTilleggsinformasjon tilleggsinformasjonJson = new JsonTilleggsinformasjon().withEnhetsnummer(enhetsnummer);
+
+        try {
+            return objectMapper.writeValueAsString(tilleggsinformasjonJson);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Klarer ikke serialisere tilleggsinformasjonJson", e);
         }
     }
 
@@ -255,7 +277,7 @@ public class DigisosApiService {
             ensureValidVedlegg(vedleggJson);
             return vedleggJson;
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Klarer ikke serialisere", e);
+            throw new IllegalArgumentException("Klarer ikke serialisere vedleggJson", e);
         }
     }
 

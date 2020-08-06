@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.oidc;
 
 import com.nimbusds.jwt.SignedJWT;
-import no.nav.security.oidc.api.Unprotected;
-import no.nav.security.oidc.test.support.JwtTokenGenerator;
+import no.nav.security.token.support.core.api.Unprotected;
+import no.nav.security.token.support.test.JwtTokenGenerator;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DefaultValue;

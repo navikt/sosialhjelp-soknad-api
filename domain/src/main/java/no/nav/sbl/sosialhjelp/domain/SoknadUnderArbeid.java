@@ -17,8 +17,6 @@ public class SoknadUnderArbeid {
     private SoknadInnsendingStatus innsendingStatus;
     private LocalDateTime opprettetDato;
     private LocalDateTime sistEndretDato;
-    private boolean harBostotteSamtykke = true;
-    private boolean harSkattemeldingSamtykke = true;
 
     public boolean erEttersendelse() {
         return !isEmpty(tilknyttetBehandlingsId);
@@ -117,23 +115,5 @@ public class SoknadUnderArbeid {
     public SoknadUnderArbeid withJsonInternalSoknad(JsonInternalSoknad jsonInternalSoknad) {
         this.jsonInternalSoknad = jsonInternalSoknad;
         return this;
-    }
-
-    public SoknadUnderArbeid withBostotteSamtykke(boolean harBostotteSamtykke) {
-        this.harBostotteSamtykke = harBostotteSamtykke;
-        return this;
-    }
-
-    public boolean getHarBostotteSamtykke() {
-        return harBostotteSamtykke;
-    }
-
-    public SoknadUnderArbeid withSkattemeldingSamtykke(boolean harSkattemeldingSamtykke) {
-        this.harSkattemeldingSamtykke = harSkattemeldingSamtykke;
-        return this;
-    }
-
-    public boolean getHarSkattemeldingSamtykke() {
-        return harSkattemeldingSamtykke;
     }
 }

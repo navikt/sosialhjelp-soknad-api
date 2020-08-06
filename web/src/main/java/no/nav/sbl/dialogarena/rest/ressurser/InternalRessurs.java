@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.Unprotected;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

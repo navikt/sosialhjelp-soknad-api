@@ -29,38 +29,37 @@ public class FamilieSystemdata implements Systemdata {
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
-        final JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
-        final String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
-        final JsonFamilie familie = jsonData.getFamilie();
-        if (familie.getSivilstatus() == null || familie.getSivilstatus().getKilde() == JsonKilde.SYSTEM) {
-            final JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
+        JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
+        String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
+        JsonFamilie familie = jsonData.getFamilie();
+        JsonSivilstatus systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator);
+
+        if (systemverdiSivilstatus != null || familie.getSivilstatus() == null || familie.getSivilstatus().getKilde().equals(JsonKilde.SYSTEM)) {
             familie.setSivilstatus(systemverdiSivilstatus);
         }
 
         JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
         JsonHarForsorgerplikt harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt();
-        if (harForsorgerplikt == null || harForsorgerplikt.getKilde() == null ||
-                harForsorgerplikt.getKilde() == JsonKilde.SYSTEM) {
-            JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
+        JsonForsorgerplikt systemverdiForsorgerplikt = innhentSystemverdiForsorgerplikt(personIdentifikator);
 
-            if (systemverdiForsorgerplikt.getHarForsorgerplikt().getVerdi()) {
-                forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
+        if (systemverdiForsorgerplikt.getHarForsorgerplikt().getVerdi()) {
+            forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
 
-                List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
-                if (ansvarList != null && !ansvarList.isEmpty()) {
-                    ansvarList.removeIf(jsonAnsvar -> isNotInList(jsonAnsvar, systemverdiForsorgerplikt.getAnsvar()));
-                    ansvarList.addAll(systemverdiForsorgerplikt.getAnsvar().stream()
-                            .filter(sysAnsvar -> isNotInList(sysAnsvar, forsorgerplikt.getAnsvar()))
-                            .collect(Collectors.toList()));
-                } else {
-                    forsorgerplikt.setAnsvar(systemverdiForsorgerplikt.getAnsvar());
-                }
-
+            List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
+            if (ansvarList != null && !ansvarList.isEmpty()) {
+                ansvarList.removeIf(jsonAnsvar -> jsonAnsvar.getBarn().getKilde().equals(JsonKilde.SYSTEM) &&
+                        isNotInList(jsonAnsvar, systemverdiForsorgerplikt.getAnsvar()));
+                ansvarList.addAll(systemverdiForsorgerplikt.getAnsvar().stream()
+                        .filter(sysAnsvar -> isNotInList(sysAnsvar, forsorgerplikt.getAnsvar()))
+                        .collect(Collectors.toList()));
             } else {
-                forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
-                forsorgerplikt.setBarnebidrag(null);
-                forsorgerplikt.setAnsvar(new ArrayList<>());
+                forsorgerplikt.setAnsvar(systemverdiForsorgerplikt.getAnsvar());
             }
+
+        } else if (harForsorgerplikt == null || harForsorgerplikt.getKilde().equals(JsonKilde.SYSTEM) || !harForsorgerplikt.getVerdi()) {
+            forsorgerplikt.setHarForsorgerplikt(systemverdiForsorgerplikt.getHarForsorgerplikt());
+            forsorgerplikt.setBarnebidrag(null);
+            forsorgerplikt.setAnsvar(new ArrayList<>());
         }
     }
 
@@ -87,7 +86,7 @@ public class FamilieSystemdata implements Systemdata {
 
         Ektefelle ektefelle = person.getEktefelle();
         JsonSivilstatus.Status status = JsonSivilstatus.Status.fromValue(person.getSivilstatus());
-        if (!GIFT.equals(status) || ektefelle == null){
+        if (!GIFT.equals(status) || ektefelle == null) {
             return null;
         }
 

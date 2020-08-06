@@ -12,11 +12,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.text.DateFormat;
@@ -26,6 +30,7 @@ import java.util.Date;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.getPersonnummerFromFnr;
+import static no.nav.sbl.dialogarena.rest.mappers.PersonMapper.mapToJsonNavn;
 
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -109,16 +114,6 @@ public class SivilstatusRessurs {
                 .withHarDiskresjonskode(jsonSivilstatus.getEktefelleHarDiskresjonskode())
                 .withBorSammenMed(jsonSivilstatus.getBorSammenMed())
                 .withErFolkeregistrertSammen(jsonSivilstatus.getFolkeregistrertMedEktefelle());
-    }
-
-    private JsonNavn mapToJsonNavn(NavnFrontend navn) {
-        if (navn == null){
-            return null;
-        }
-        return new JsonNavn()
-                .withFornavn(navn.fornavn != null ? navn.fornavn : "")
-                .withMellomnavn(navn.mellomnavn != null ? navn.mellomnavn : "")
-                .withEtternavn(navn.etternavn != null ? navn.etternavn : "");
     }
 
     private Boolean mapToSystemBoolean(JsonKilde kilde) {

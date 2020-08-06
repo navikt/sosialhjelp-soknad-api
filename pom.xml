@@ -26,19 +26,6 @@
     <version>18.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <distributionManagement>
-        <repository>
-            <id>maven-releases</id>
-            <name>NAV Internal Repository</name>
-            <url>https://repo.adeo.no/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven-snapshots</id>
-            <name>NAV Snapshot Repository</name>
-            <url>https://repo.adeo.no/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <repositories>
         <repository>
             <id>maven-snapshots</id>
@@ -84,19 +71,19 @@
         <spring.version>5.2.5.RELEASE</spring.version>
         <jetty.version>9.4.27.v20200227</jetty.version>
         <jersey.version>2.30.1</jersey.version>
-        <oidc-support.version>0.2.18</oidc-support.version>
+        <token-validation.version>1.1.5</token-validation.version>
         <nimbus-jose-jwt.version>8.11</nimbus-jose-jwt.version>
         <activation.version>1.1.1</activation.version>
         <cxf.version>3.3.6</cxf.version>
         <modig-security.version>3.0.6</modig-security.version>
         <wss4j.version>2.2.5</wss4j.version>
-        <ojdbc.version>12.2.0.1</ojdbc.version>
+        <ojdbc.version>19.7.0.0</ojdbc.version>
         <flyway-core.version>5.0.7</flyway-core.version>
         <flying.saucer.version>9.1.20</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.10.3</jackson.version>
         <jackson-databind.version>2.10.3</jackson-databind.version>
-        <filformat.version>1.2019.11.27-10.45-cf682907bdc8</filformat.version>
+        <filformat.version>1.2020.06.25-09.12-23b98d57ab78</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>2.0.19</pdfbox.version>
         <bouncycastle.version>1.64</bouncycastle.version>
@@ -106,6 +93,7 @@
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
         <verapdf.version>1.14.105</verapdf.version>
+        <tika.version>1.24.1</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.3.2</hsqldb.version>
         <hikaricp.version>3.4.2</hikaricp.version>
@@ -130,6 +118,7 @@
         <aspectjweaver.version>1.9.5</aspectjweaver.version>
         <jaxb.version>2.3.1</jaxb.version>
         <soap.version>1.4.0</soap.version>
+        <jakarta.version>2.3.2</jakarta.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -318,31 +307,6 @@
                 <version>${nav-common.version}</version>
             </dependency>
 
-
-            <!-- NAV felles biblioteker (gammelt) -->
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-detect</artifactId>
-                <version>2.2.2</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-pdf</artifactId>
-                <version>2.0.3</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <!-- common-pdf er ikke overført - så ekskluderer avhengighet til gamle common-bibliotek -->
-                    <exclusion>
-                        <groupId>no.nav.sbl.dialogarena</groupId>
-                        <artifactId>common-test</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-
             <!-- Spring avhengigheter -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -492,6 +456,11 @@
                 <artifactId>javax.xml.soap-api</artifactId>
                 <version>${soap.version}</version>
             </dependency>
+            <dependency>
+                <groupId>jakarta.xml.ws</groupId>
+                <artifactId>jakarta.xml.ws-api</artifactId>
+                <version>${jakarta.version}</version>
+            </dependency>
 
             <!-- CXF avhengigheter -->
             <dependency>
@@ -621,8 +590,8 @@
 
             <!-- Database avhengigheter -->
             <dependency>
-                <groupId>com.oracle</groupId>
-                <artifactId>ojdbc8</artifactId>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc10</artifactId>
                 <version>${ojdbc.version}</version>
             </dependency>
             <dependency>
@@ -827,13 +796,13 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-jersey-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-jaxrs</artifactId>
+                <version>${token-validation.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-core</artifactId>
+                <version>${token-validation.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.nimbusds</groupId>
@@ -866,6 +835,11 @@
                 <groupId>org.verapdf</groupId>
                 <artifactId>core</artifactId>
                 <version>${verapdf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${tika.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -964,8 +938,8 @@
             <!-- Avhengigheter med test scope -->
             <dependency>
                 <groupId>no.nav.security</groupId>
-                <artifactId>oidc-test-support</artifactId>
-                <version>${oidc-support.version}</version>
+                <artifactId>token-validation-test-support</artifactId>
+                <version>${token-validation.version}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -1260,11 +1234,6 @@
                 <version>${objenesis.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.sun.xml.messaging.saaj</groupId>
                 <artifactId>saaj-impl</artifactId>
                 <version>${saaj-impl.version}</version>
@@ -1356,8 +1325,8 @@
                             <version>2.3.0</version>
                         </dependency>
                         <dependency>
-                            <groupId>com.oracle</groupId>
-                            <artifactId>ojdbc8</artifactId>
+                            <groupId>com.oracle.database.jdbc</groupId>
+                            <artifactId>ojdbc10</artifactId>
                             <version>${ojdbc.version}</version>
                         </dependency>
                     </dependencies>

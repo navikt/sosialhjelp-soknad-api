@@ -8,26 +8,44 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addutgiftIfCheckedElseDeleteInOpplysninger;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
-import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANNET_BO;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_RENTER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_HUSLEIE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_KOMMUNAL_AVGIFT;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_OPPVARMING;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/utgifter/boutgifter")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -43,7 +61,7 @@ public class BoutgiftRessurs {
     private TextService textService;
 
     @GET
-    public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId){
+    public BoutgifterFrontend hentBoutgifter(@PathParam("behandlingsId") String behandlingsId) {
         String eier = OidcFeatureToggleUtils.getUserId();
         JsonSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
@@ -51,7 +69,7 @@ public class BoutgiftRessurs {
 
         setSkalViseInfoVedBekreftelseOnBoutgifterFrontend(soknad, okonomi, boutgifterFrontend);
 
-        if (okonomi.getOpplysninger().getBekreftelse() == null){
+        if (okonomi.getOpplysninger().getBekreftelse() == null) {
             return boutgifterFrontend;
         }
 
@@ -62,13 +80,13 @@ public class BoutgiftRessurs {
     }
 
     @PUT
-    public void updateBoutgifter(@PathParam("behandlingsId") String behandlingsId, BoutgifterFrontend boutgifterFrontend){
+    public void updateBoutgifter(@PathParam("behandlingsId") String behandlingsId, BoutgifterFrontend boutgifterFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = OidcFeatureToggleUtils.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi okonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
-        if (okonomi.getOpplysninger().getBekreftelse() == null){
+        if (okonomi.getOpplysninger().getBekreftelse() == null) {
             okonomi.getOpplysninger().setBekreftelse(new ArrayList<>());
         }
 
@@ -112,7 +130,7 @@ public class BoutgiftRessurs {
 
     private void setUtgiftstyperOnBoutgifterFrontend(JsonOkonomi okonomi, BoutgifterFrontend boutgifterFrontend) {
         okonomi.getOpplysninger().getUtgift().forEach(utgift -> {
-            switch(utgift.getType()){
+            switch (utgift.getType()) {
                 case UTGIFTER_STROM:
                     boutgifterFrontend.setStrom(true);
                     break;
@@ -129,7 +147,7 @@ public class BoutgiftRessurs {
         });
         okonomi.getOversikt().getUtgift().forEach(
                 utgift -> {
-                    switch(utgift.getType()){
+                    switch (utgift.getType()) {
                         case UTGIFTER_HUSLEIE:
                             boutgifterFrontend.setHusleie(true);
                             break;
@@ -141,19 +159,32 @@ public class BoutgiftRessurs {
     }
 
     private void setSkalViseInfoVedBekreftelseOnBoutgifterFrontend(JsonSoknad soknad, JsonOkonomi okonomi, BoutgifterFrontend boutgifterFrontend) {
-        if (soknad.getDriftsinformasjon().getStotteFraHusbankenFeilet()) {
+        if (bostotteFeiletEllerManglerSamtykke(soknad)) {
             if (okonomi.getOpplysninger().getBekreftelse() != null) {
-                okonomi.getOpplysninger().getBekreftelse().stream()
+                Optional<JsonOkonomibekreftelse> bekreftelseOptional = okonomi.getOpplysninger().getBekreftelse().stream()
                         .filter(bekreftelse -> bekreftelse.getType().equals(BOSTOTTE))
-                        .findFirst()
-                        .ifPresent(jsonOkonomibekreftelse -> boutgifterFrontend.setSkalViseInfoVedBekreftelse(
-                                jsonOkonomibekreftelse.getVerdi() != null && !jsonOkonomibekreftelse.getVerdi()));
+                        .findFirst();
+                if (bekreftelseOptional.isPresent()) {
+                    JsonOkonomibekreftelse jsonOkonomibekreftelse = bekreftelseOptional.get();
+                    boutgifterFrontend.setSkalViseInfoVedBekreftelse(
+                            jsonOkonomibekreftelse.getVerdi() != null && !jsonOkonomibekreftelse.getVerdi());
+                } else {
+                    boutgifterFrontend.setSkalViseInfoVedBekreftelse(true);
+                }
             }
         } else {
             if (!isAnyHusbankenSaker(soknad) && !isAnyHusbankenUtbetalinger(soknad)) {
                 boutgifterFrontend.setSkalViseInfoVedBekreftelse(true);
             }
         }
+    }
+
+    private boolean bostotteFeiletEllerManglerSamtykke(JsonSoknad soknad) {
+        return soknad.getDriftsinformasjon().getStotteFraHusbankenFeilet() ||
+                soknad.getData().getOkonomi().getOpplysninger().getBekreftelse().stream()
+                        .noneMatch(bekreftelse ->
+                                bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE) &&
+                                        bekreftelse.getVerdi());
     }
 
     private boolean isAnyHusbankenUtbetalinger(JsonSoknad soknad) {
@@ -166,6 +197,7 @@ public class BoutgiftRessurs {
                 .anyMatch(sak -> sak.getType().equals(UTBETALING_HUSBANKEN));
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class BoutgifterFrontend {
         public Boolean bekreftelse;

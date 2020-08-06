@@ -94,7 +94,7 @@ public class SoknadsosialhjelpServer {
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
         if (isRunningAsTestAppWithMockingActivated() || MockUtils.isTillatMockRessurs()){
             log.info("Running with mocking activated. Totally isolated.");
-            setFrom("environment/environment-mock.properties");
+            setFrom("environment/environment-mock.properties", false);
             if (!MockUtils.isTillatMockRessurs()) {
                 throw new Error("Mocking må være aktivert når applikasjonen skal kjøre isolert.");
             }
@@ -127,7 +127,7 @@ public class SoknadsosialhjelpServer {
 
         for (String env : props.stringPropertyNames()) {
             final String interntNavn = props.getProperty(env);
-            final String value = findVariableValue(env);
+            final String value = findVariableValue(env, true);
             if (value != null) {
                 System.setProperty(interntNavn, value);
             }
@@ -156,28 +156,31 @@ public class SoknadsosialhjelpServer {
 
     public static void setFrom(String resource, boolean required) throws IOException {
         final Properties props = readProperties(resource, required);
-
-        updateJavaProperties(props);
+        updateJavaProperties(props, required);
     }
 
-    private static void updateJavaProperties(final Properties props) {
+    private static void updateJavaProperties(final Properties props, boolean required) {
         for (String entry : props.stringPropertyNames()) {
-            final String value = withEnvironmentVariableExpansion(props.getProperty(entry));
+            final String value = withEnvironmentVariableExpansion(props.getProperty(entry), required);
             System.setProperty(entry, value);
         }
     }
 
-    static String withEnvironmentVariableExpansion(String value) {
+    static String withEnvironmentVariableExpansion(String value, boolean required) {
         if (value == null) {
             return null;
         }
 
-        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}");
+        final Pattern p = Pattern.compile("\\$\\{([^}:]*):*([^}]*)\\}"); // Matches and groups properties on this form ${ENV_VAR:https://env.var}. To simulate same logic as in spring boot.
         final Matcher m = p.matcher(value);
         final StringBuffer sb = new StringBuffer();
         while (m.find()) {
             final String variableName = m.group(1);
-            final String replacement = Matcher.quoteReplacement(findVariableValue(variableName));
+            String replacement = m.group(2);
+            String variableValue = findVariableValue(variableName, required);
+            if (variableValue != null) {
+                replacement = Matcher.quoteReplacement(variableValue);
+            }
             m.appendReplacement(sb, replacement);
         }
         m.appendTail(sb);
@@ -185,7 +188,7 @@ public class SoknadsosialhjelpServer {
         return sb.toString();
     }
 
-    private static String findVariableValue(final String variableName) {
+    private static String findVariableValue(final String variableName, boolean required) {
         final String envValue = System.getenv(variableName);
         if (envValue != null) {
             return envValue;
@@ -194,8 +197,8 @@ public class SoknadsosialhjelpServer {
         if (propValue != null) {
             return propValue;
         }
-        
-        throw new IllegalStateException("Kunne ikke finne referert variabel med navn: " + variableName);
+        if (required) throw new IllegalStateException("Kunne ikke finne referert variabel med navn: " + variableName);
+        return null;
     }
 
     private static Properties readProperties(String resource, boolean required) throws IOException {
@@ -213,8 +216,8 @@ public class SoknadsosialhjelpServer {
     }
 
     private void configureLocalEnvironment() throws IOException {
-        setFrom("environment-test.properties");
-        updateJavaProperties(readProperties("oracledb.properties", false));
+        setFrom("environment-test.properties", false);
+        updateJavaProperties(readProperties("oracledb.properties", false), false);
     }
 
     private static DataSource buildDataSource() {

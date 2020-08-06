@@ -4,6 +4,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
@@ -63,9 +65,10 @@ public class DigisosApiServiceTest {
     public void setUpBefore() throws Exception {
         when(pdfService.genererSaksbehandlerPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererJuridiskPdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
-        when(pdfService.genererBrukerkvitteringPdf(any(JsonInternalSoknad.class), anyString(), anyBoolean(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
     }
 
@@ -103,6 +106,28 @@ public class DigisosApiServiceTest {
         assertThat(fiksDokumenter.get(1).metadata.filnavn).isEqualTo("Brukerkvittering.pdf");
         assertThat(fiksDokumenter.get(2).metadata.filnavn).isEqualTo("FILNAVN");
     }
+
+    @Test
+    public void getTilleggsinformasjonJson() {
+        JsonSoknad soknad = new JsonSoknad().withMottaker(new JsonSoknadsmottaker().withEnhetsnummer("1234"));
+        String tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad);
+        assertThat(tilleggsinformasjonJson).isEqualTo("{\"enhetsnummer\":\"1234\"}");
+    }
+
+    @Test
+    public void getTilleggsinformasjonJson_withNoEnhetsnummer_shouldSetEnhetsnummerToNull() {
+        JsonSoknad soknad = new JsonSoknad().withMottaker(new JsonSoknadsmottaker());
+        String tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad);
+        assertThat(tilleggsinformasjonJson).isEqualTo("{}");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void getTilleggsinformasjonJson_withNoMottaker_shouldThrowException() {
+        JsonSoknad soknad = new JsonSoknad();
+        String tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad);
+        assertThat(tilleggsinformasjonJson).isEqualTo("hei");
+    }
+
 
     private JsonInternalSoknad lagInternalSoknadForEttersending() {
         List<JsonFiler> jsonFiler = new ArrayList<>();

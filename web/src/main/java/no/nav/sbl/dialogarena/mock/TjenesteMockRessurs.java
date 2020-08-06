@@ -28,7 +28,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -42,13 +42,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
@@ -285,8 +279,10 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
-        clearCache();
+        if(jsonWSUtbetaling != null && !jsonWSUtbetaling.isEmpty()){
+            UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
+            clearCache();
+        }
     }
 
     @POST
