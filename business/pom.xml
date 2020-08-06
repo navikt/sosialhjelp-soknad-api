@@ -218,6 +218,10 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.verapdf</groupId>
             <artifactId>core</artifactId>
             <exclusions>
