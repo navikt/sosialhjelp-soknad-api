@@ -132,11 +132,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-        </dependency>
-
         <!-- Avhengigheter med runtime-scope -->
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
