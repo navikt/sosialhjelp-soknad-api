@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.oppsummering;
 
 import no.nav.metrics.aspects.Timed;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
@@ -33,11 +33,11 @@ public class OppsummeringRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @GET
     public Oppsummering getOppsummering(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         return new Oppsummering().withSteg(new ArrayList<>(Arrays.asList(

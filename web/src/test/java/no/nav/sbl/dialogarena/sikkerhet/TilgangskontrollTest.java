@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -34,16 +34,16 @@ public class TilgangskontrollTest {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @Before
     public void setUp() {
-        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
+        when(subjectHandler.getIdent()).thenReturn("123");
     }
 
     @Test
     public void skalGiTilgangForBruker() {
-        String userId = subjectHandlerWrapper.getIdent();
+        String userId = subjectHandler.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
@@ -65,7 +65,7 @@ public class TilgangskontrollTest {
     @Test
     public void skalGiTilgangForBrukerMetadata() {
         SoknadMetadata metadata = new SoknadMetadata();
-        metadata.fnr = subjectHandlerWrapper.getIdent();
+        metadata.fnr = subjectHandler.getIdent();
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
         tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123");
     }

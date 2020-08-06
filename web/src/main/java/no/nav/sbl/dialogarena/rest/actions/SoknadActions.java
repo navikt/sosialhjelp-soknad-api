@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -71,7 +71,7 @@ public class SoknadActions {
     private DigisosApiService digisosApiService;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @POST
     @Path("/send")
@@ -81,7 +81,7 @@ public class SoknadActions {
         }
 
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         if (!isSendingTilFiksEnabled()

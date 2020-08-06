@@ -1,13 +1,11 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
-import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
@@ -85,18 +83,18 @@ public class SoknadActionsTest {
     SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     ServletContext context = mock(ServletContext.class);
 
     @Before
     public void setUp() {
         System.setProperty("authentication.isRunningWithOidc", "true");
-        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
+        when(subjectHandler.getIdent()).thenReturn("123");
         reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
-        EIER = subjectHandlerWrapper.getIdent();
+        EIER = subjectHandler.getIdent();
     }
 
     @After

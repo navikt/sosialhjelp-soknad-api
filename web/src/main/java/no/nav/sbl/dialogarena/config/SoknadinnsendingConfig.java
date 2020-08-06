@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.DefaultSubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.DefaultSubjectHandler;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -30,7 +30,7 @@ import org.springframework.context.annotation.*;
         VirusScanConfig.class,
         DigisosApiRestConfig.class,
         BostotteConfig.class,
-        DefaultSubjectHandlerWrapper.class,
+        DefaultSubjectHandler.class,
         XsrfGenerator.class
 })
 @ComponentScan(basePackages = "no.nav.sbl.dialogarena.rest")

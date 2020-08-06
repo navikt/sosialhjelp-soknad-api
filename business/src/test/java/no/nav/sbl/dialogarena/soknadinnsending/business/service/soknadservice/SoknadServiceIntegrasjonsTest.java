@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -42,7 +42,7 @@ public class SoknadServiceIntegrasjonsTest {
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @BeforeClass
     public static void beforeClass() {
@@ -51,7 +51,7 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Before
     public void setUp() {
-        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
+        when(subjectHandler.getIdent()).thenReturn("123");
         when(soknadMetadataRepository.hent(anyString())).thenReturn(new SoknadMetadata());
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withBehandlingsId(EN_BEHANDLINGSID).withVersjon(0L)));
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});

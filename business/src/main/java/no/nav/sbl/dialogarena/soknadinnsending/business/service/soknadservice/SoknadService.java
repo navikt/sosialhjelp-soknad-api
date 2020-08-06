@@ -6,7 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
@@ -98,7 +98,7 @@ public class SoknadService {
     private TextService textService;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @Transactional
     public String startSoknad(String token) {
@@ -106,7 +106,7 @@ public class SoknadService {
 
         Timer startTimer = createDebugTimer("startTimer", mainUid);
 
-        String aktorId = subjectHandlerWrapper.getIdent();
+        String aktorId = subjectHandler.getIdent();
         Timer henvendelseTimer = createDebugTimer("startHenvendelse", mainUid);
         String behandlingsId = henvendelseService.startSoknad(aktorId);
         henvendelseTimer.stop();
@@ -139,7 +139,7 @@ public class SoknadService {
 
     @Transactional
     public void sendSoknad(String behandlingsId) {
-        final String eier = subjectHandlerWrapper.getIdent();
+        final String eier = subjectHandler.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
@@ -188,7 +188,7 @@ public class SoknadService {
 
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
         if (soknadUnderArbeidOptional.isPresent()) {
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
@@ -199,7 +199,7 @@ public class SoknadService {
 
     @Transactional
     public void oppdaterSamtykker(String behandlingsId, boolean harBostotteSamtykke, boolean harSkatteetatenSamtykke, String token) {
-        final String eier = subjectHandlerWrapper.getIdent();
+        final String eier = subjectHandler.getIdent();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (harSkatteetatenSamtykke) {
             skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, token);

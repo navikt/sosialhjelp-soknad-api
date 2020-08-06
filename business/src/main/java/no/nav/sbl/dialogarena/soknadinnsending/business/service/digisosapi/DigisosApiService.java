@@ -10,7 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
@@ -69,7 +69,7 @@ public class DigisosApiService {
     private SoknadMetricsService soknadMetricsService;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
 
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
@@ -239,7 +239,7 @@ public class DigisosApiService {
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
-            logAlderTilKibana(subjectHandlerWrapper.getIdent());
+            logAlderTilKibana(subjectHandler.getIdent());
         }
         return digisosId;
     }

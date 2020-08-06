@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.PdfValidator;
@@ -55,7 +55,7 @@ public class OpplastetVedleggService {
     private VirusScanner virusScanner;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     private static Map<String, String> MIME_TIL_EXT;
 
@@ -68,7 +68,7 @@ public class OpplastetVedleggService {
     }
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
         String mimeType = FileDetectionUtils.getMimeType(data);
 
@@ -104,7 +104,7 @@ public class OpplastetVedleggService {
     }
 
     public void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(String behandlingsId, byte[] data) {
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
 
@@ -117,7 +117,7 @@ public class OpplastetVedleggService {
     }
 
     public void deleteVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggId) {
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         final OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
 
         if (opplastetVedlegg == null){

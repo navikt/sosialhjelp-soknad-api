@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.bosituasjon;
 
 import no.nav.sbl.dialogarena.rest.ressurser.bosituasjon.BosituasjonRessurs.BosituasjonFrontend;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
@@ -39,14 +39,14 @@ public class BosituasjonRessursTest {
     private Tilgangskontroll tilgangskontroll;
 
     @Mock
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @InjectMocks
     private BosituasjonRessurs bosituasjonRessurs;
 
     @Before
     public void setUp() {
-        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
+        when(subjectHandler.getIdent()).thenReturn("123");
     }
 
     @Test

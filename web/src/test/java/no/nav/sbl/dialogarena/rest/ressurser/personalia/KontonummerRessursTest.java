@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.KontonummerRessurs.KontonummerFrontend;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.KontonummerSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -45,14 +45,14 @@ public class KontonummerRessursTest {
     private Tilgangskontroll tilgangskontroll;
 
     @Mock
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @InjectMocks
     private KontonummerRessurs kontonummerRessurs;
 
     @Before
     public void setUp() {
-        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
+        when(subjectHandler.getIdent()).thenReturn("123");
         doCallRealMethod().when(kontonummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class), any());
     }
 

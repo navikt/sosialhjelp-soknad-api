@@ -4,7 +4,7 @@ import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.familie.SivilstatusRessurs.EktefelleFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.familie.SivilstatusRessurs.SivilstatusFrontend;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
@@ -63,11 +63,11 @@ public class SivilstatusRessursTest {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @Before
     public void setUp() {
-        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
+        when(subjectHandler.getIdent()).thenReturn("123");
     }
 
     @Test

@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.eksponerte;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingerRespons;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
@@ -41,12 +41,12 @@ public class SaksoversiktMetadataOidcRessurs {
     private SaksoversiktMetadataService saksoversiktMetadataService;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @GET
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
-        String fnr = subjectHandlerWrapper.getIdent();
+        String fnr = subjectHandler.getIdent();
         logger.debug("Henter metadata for innsendte soknader med oidc");
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
@@ -58,7 +58,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @GET
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
-        String fnr = subjectHandlerWrapper.getIdent();
+        String fnr = subjectHandler.getIdent();
         logger.debug("Henter metadata for ettersendelse med oidc");
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
@@ -70,7 +70,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @GET
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
-        String fnr = subjectHandlerWrapper.getIdent();
+        String fnr = subjectHandler.getIdent();
         logger.debug("Henter metadata for pabegynte med oidc");
 
         try {

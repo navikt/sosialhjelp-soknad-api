@@ -1,9 +1,8 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.common.auth.SubjectHandler;
 import no.nav.metrics.aspects.Timed;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -80,12 +79,12 @@ public class SoknadRessurs {
     private HenvendelseService henvendelseService;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @GET
     @Path("/{behandlingsId}/xsrfCookie")
     public boolean hentXsrfCookie(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
-        String token = subjectHandlerWrapper.getOIDCTokenAsString();
+        String token = subjectHandler.getOIDCTokenAsString();
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
         response.addCookie(xsrfCookie(behandlingsId, token));
         response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId, token));
@@ -97,7 +96,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
@@ -106,7 +105,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}/erSystemdataEndret")
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
-        final String eier = subjectHandlerWrapper.getIdent();
+        final String eier = subjectHandler.getIdent();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         systemdata.update(soknadUnderArbeid, token);
 
@@ -143,7 +142,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}/hentSamtykker")
     public List<BekreftelseRessurs> hentSamtykker(@PathParam("behandlingsId") String behandlingsId,
                                                   @HeaderParam(value = AUTHORIZATION) String token) {
-        final String eier = subjectHandlerWrapper.getIdent();
+        final String eier = subjectHandler.getIdent();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<>();
@@ -174,7 +173,7 @@ public class SoknadRessurs {
             throw new SoknadenHarNedetidException(String.format("Soknaden har nedetid fram til %s ", getNedetidAsStringOrNull(NEDETID_SLUTT)));
         }
 
-        String oidcToken = subjectHandlerWrapper.getOIDCTokenAsString();
+        String oidcToken = subjectHandler.getOIDCTokenAsString();
 
         if (oidcToken != null) {
             logger.info("opprettSoknad token og oidcToken er like: " + oidcToken.equals(token));
@@ -189,7 +188,7 @@ public class SoknadRessurs {
         if (behandlingsId == null) {
             opprettetBehandlingsId = soknadService.startSoknad(token);
         } else {
-            final String eier = subjectHandlerWrapper.getIdent();
+            final String eier = subjectHandler.getIdent();
             Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier);
             if (soknadUnderArbeid.isPresent()) {
                 opprettetBehandlingsId = soknadUnderArbeid.get().getBehandlingsId();

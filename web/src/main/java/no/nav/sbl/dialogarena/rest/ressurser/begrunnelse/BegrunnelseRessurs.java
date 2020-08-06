@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.begrunnelse;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
@@ -36,11 +36,11 @@ public class BegrunnelseRessurs {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @GET
     public BegrunnelseFrontend hentBegrunnelse(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();
 
@@ -52,7 +52,7 @@ public class BegrunnelseRessurs {
     @PUT
     public void updateBegrunnelse(@PathParam("behandlingsId") String behandlingsId, BegrunnelseFrontend begrunnelseFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonBegrunnelse begrunnelse = soknad.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
         begrunnelse.setKilde(JsonKildeBruker.BRUKER);

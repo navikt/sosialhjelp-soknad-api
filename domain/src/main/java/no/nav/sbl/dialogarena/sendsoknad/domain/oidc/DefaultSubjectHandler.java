@@ -1,16 +1,14 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
 import no.nav.common.auth.SsoToken;
-import no.nav.common.auth.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DefaultSubjectHandlerWrapper implements SubjectHandlerWrapper {
+public class DefaultSubjectHandler implements SubjectHandler {
 
     public String getIdent() {
-        return SubjectHandler.getIdent().orElse(null); //.orElseThrow(() -> new AuthorizationException("Ingen innlogget bruker"));
+        return no.nav.common.auth.SubjectHandler.getIdent().orElse(null); //.orElseThrow(() -> new AuthorizationException("Ingen innlogget bruker"));
     }
 
     public int getSecurityLevel() {
@@ -22,14 +20,14 @@ public class DefaultSubjectHandlerWrapper implements SubjectHandlerWrapper {
     }
 
     public boolean subjectIsPresent() {
-        return SubjectHandler.getSubject().isPresent();    }
+        return no.nav.common.auth.SubjectHandler.getSubject().isPresent();    }
 
     public boolean isOidcTokenPresent() {
         return false;
     }
 
     public String getOIDCTokenAsString() {
-        return SubjectHandler.getSsoToken()
+        return no.nav.common.auth.SubjectHandler.getSsoToken()
                 .filter(t -> t.getType().equals(SsoToken.Type.OIDC))
                 .orElseThrow(() -> new UnauthorizedException("Fant ikke token for bruker"))
                 .getToken();

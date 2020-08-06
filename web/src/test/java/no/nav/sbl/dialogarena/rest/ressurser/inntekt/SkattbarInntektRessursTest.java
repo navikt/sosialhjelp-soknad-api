@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.sbl.dialogarena.rest.ressurser.inntekt.SkattbarInntektRessurs.SkattbarInntektFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
@@ -52,14 +52,14 @@ public class SkattbarInntektRessursTest {
     private TextService textService;
 
     @Mock
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @InjectMocks
     private SkattbarInntektRessurs skattbarInntektRessurs;
 
     @Before
     public void setUp() {
-        when(subjectHandlerWrapper.getIdent()).thenReturn("123");
+        when(subjectHandler.getIdent()).thenReturn("123");
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 

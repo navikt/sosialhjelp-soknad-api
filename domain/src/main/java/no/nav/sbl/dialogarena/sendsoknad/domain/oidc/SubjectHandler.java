@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.oidc;
 
 import no.nav.common.auth.SsoToken;
 
-public interface SubjectHandlerWrapper {
+public interface SubjectHandler {
 
     String getIdent();
 

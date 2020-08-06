@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.inntekt;
 
 import no.nav.metrics.aspects.Timed;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
@@ -55,11 +55,11 @@ public class SkattbarInntektRessurs {
     private TextService textService;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @GET
     public SkattbarInntektFrontend hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
 
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
@@ -82,7 +82,7 @@ public class SkattbarInntektRessurs {
     public void updateSamtykke(@PathParam("behandlingsId") String behandlingsId, boolean samtykke,
                                @HeaderParam(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
 

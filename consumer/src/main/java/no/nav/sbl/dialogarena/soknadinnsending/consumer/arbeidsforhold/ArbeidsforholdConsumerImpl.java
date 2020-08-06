@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
@@ -44,7 +44,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     private STSConsumer stsConsumer;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     public ArbeidsforholdConsumerImpl(Client client, String endpoint) {
         this.client = client;
@@ -106,7 +106,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
                 .queryParam("ansettelsesperiodeFom", sokeperiode.fom.format(ISO_LOCAL_DATE))
                 .queryParam("ansettelsesperiodeTom", sokeperiode.tom.format(ISO_LOCAL_DATE))
                 .request()
-                .header(AUTHORIZATION.name(), BEARER + subjectHandlerWrapper.getOIDCTokenAsString()) // brukers token
+                .header(AUTHORIZATION.name(), BEARER + subjectHandler.getOIDCTokenAsString()) // brukers token
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId)
                 .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccessToken())

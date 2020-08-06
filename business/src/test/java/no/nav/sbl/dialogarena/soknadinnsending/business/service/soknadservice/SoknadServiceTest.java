@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
@@ -53,14 +53,14 @@ public class SoknadServiceTest {
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Mock
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @InjectMocks
     private SoknadService soknadService;
 
     @Before
     public void before() {
-        when(subjectHandlerWrapper.getIdent()).thenReturn("11111111111");
+        when(subjectHandler.getIdent()).thenReturn("11111111111");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
         soknadService.startSoknad("");
 
-        String bruker = subjectHandlerWrapper.getIdent();
+        String bruker = subjectHandler.getIdent();
         verify(henvendelsesConnector).startSoknad(eq(bruker));
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).opprettSoknad(argument.capture(), eq(bruker));

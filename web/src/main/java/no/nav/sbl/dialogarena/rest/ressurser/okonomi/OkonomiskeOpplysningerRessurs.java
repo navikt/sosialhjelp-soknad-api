@@ -4,7 +4,7 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonOkonomiUtils;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
@@ -64,13 +64,13 @@ public class OkonomiskeOpplysningerRessurs {
     private OpplastetVedleggRepository opplastetVedleggRepository;
 
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     @GET
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
 
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknad);
@@ -92,7 +92,7 @@ public class OkonomiskeOpplysningerRessurs {
     @PUT
     public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = subjectHandlerWrapper.getIdent();
+        final String eier = subjectHandler.getIdent();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 

@@ -8,11 +8,10 @@ import no.ks.svarut.servicesv9.PostAdresse;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
-import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
@@ -80,7 +79,7 @@ public class TjenesteMockRessurs {
     @Inject
     private Adressekodeverk adressekodeverk;
     @Inject
-    private SubjectHandlerWrapper subjectHandlerWrapper;
+    private SubjectHandler subjectHandler;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
@@ -123,7 +122,7 @@ public class TjenesteMockRessurs {
         }
         SsoToken token = SsoToken.oidcToken("hansolo", Collections.emptyMap());
         Subject subject = new Subject(uid.getUid(), IdentType.EksternBruker, token);
-        SubjectHandler.withSubject(subject, () -> {});
+        no.nav.common.auth.SubjectHandler.withSubject(subject, () -> {});
 
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(true);
@@ -152,7 +151,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        String eier = subjectHandlerWrapper.getIdent();
+        String eier = subjectHandler.getIdent();
         SendtSoknad sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier);
         PostAdresse fakeAdresse = new PostAdresse()
                 .withNavn(sendtSoknad.getNavEnhetsnavn())
@@ -198,7 +197,7 @@ public class TjenesteMockRessurs {
     @GET
     @Path("/session")
     public Response getSession() {
-        return Response.ok(new SessionResponse(subjectHandlerWrapper.getIdent())).build();
+        return Response.ok(new SessionResponse(subjectHandler.getIdent())).build();
     }
 
     @POST
@@ -209,7 +208,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        fnr = subjectHandlerWrapper.getIdent() != null ? subjectHandlerWrapper.getIdent() : fnr;
+        fnr = subjectHandler.getIdent() != null ? subjectHandler.getIdent() : fnr;
         logger.warn("Setter telefonnummer for bruker. Dette skal aldri skje i PROD.");
         if (jsonTelefonnummer != null) {
             DkifConsumerMock.setTelefonnummer(jsonTelefonnummer.getVerdi(), fnr);
@@ -304,7 +303,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = subjectHandlerWrapper.getIdent() != null ? subjectHandlerWrapper.getIdent() : fnr;
+        fnr = subjectHandler.getIdent() != null ? subjectHandler.getIdent() : fnr;
         UtbetalMock.setMockSkalFeile(fnr, skalFeile);
         clearCache();
     }
@@ -316,7 +315,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = subjectHandlerWrapper.getIdent() != null ? subjectHandlerWrapper.getIdent() : fnr;
+        fnr = subjectHandler.getIdent() != null ? subjectHandler.getIdent() : fnr;
         SkattbarInntektConsumerMock.setMockData(fnr, jsonWSSkattUtbetaling);
         clearCache();
     }
@@ -328,7 +327,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = subjectHandlerWrapper.getIdent() != null ? subjectHandlerWrapper.getIdent() : fnr;
+        fnr = subjectHandler.getIdent() != null ? subjectHandler.getIdent() : fnr;
         SkattbarInntektConsumerMock.setMockSkalFeile(fnr, skalFeile);
         clearCache();
     }
@@ -351,7 +350,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = subjectHandlerWrapper.getIdent() != null ? subjectHandlerWrapper.getIdent() : fnr;
+        fnr = subjectHandler.getIdent() != null ? subjectHandler.getIdent() : fnr;
         MockBostotteImpl.setBostotteData(fnr, bostotteJson);
     }
 
@@ -363,7 +362,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         if(skalFeile != null) {
-            fnr = subjectHandlerWrapper.getIdent() != null ? subjectHandlerWrapper.getIdent() : fnr;
+            fnr = subjectHandler.getIdent() != null ? subjectHandler.getIdent() : fnr;
             MockBostotteImpl.settPersonnummerSomSkalFeile(fnr, skalFeile);
         }
     }

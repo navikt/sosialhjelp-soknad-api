@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.DefaultSubjectHandlerWrapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerWrapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.DefaultSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.digisosapi.DigisosApiService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
@@ -25,7 +24,7 @@ import org.springframework.context.annotation.Import;
         SoknadUnderArbeidService.class,
         TextService.class,
         OpplastetVedleggService.class,
-        DefaultSubjectHandlerWrapper.class
+        DefaultSubjectHandler.class
 })
 public class ServiceConfig {
 }
