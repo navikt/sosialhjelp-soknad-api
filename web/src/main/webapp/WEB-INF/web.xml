@@ -166,17 +166,5 @@
         <servlet-name>debug</servlet-name>
         <url-pattern>/internal/debug</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>suspend</servlet-name>
-        <servlet-class>no.nav.sbl.dialogarena.common.suspend.SuspendServlet</servlet-class>
-        <init-param>
-            <param-name>shutdownTimeMs</param-name>
-            <param-value>25000</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>suspend</servlet-name>
-        <url-pattern>/management/suspend</url-pattern>
-    </servlet-mapping>
 
 </web-app>
