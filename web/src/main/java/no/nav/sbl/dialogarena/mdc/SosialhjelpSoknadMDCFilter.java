@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.mdc;
 
-import no.nav.modig.core.context.SubjectHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,6 +14,7 @@ import java.util.Optional;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.generateCallId;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.putToMDC;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.remove;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
 
 public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
@@ -24,22 +24,18 @@ public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
     private static final String CALL_ID = "callId";
     private static final String CONSUMER_ID = "consumerId";
 
-    private SubjectHandler subjectHandler;
-
     public SosialhjelpSoknadMDCFilter() {
     }
 
     protected void initFilterBean() throws ServletException {
         super.initFilterBean();
-        this.subjectHandler = SubjectHandler.getSubjectHandler();
     }
 
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String consumerId = this.subjectHandler.getConsumerId() != null ? this.subjectHandler.getConsumerId() : "";
         String callId = Optional.ofNullable(httpServletRequest.getHeader(HEADER_CALL_ID))
                 .orElse(generateCallId());
         putToMDC(CALL_ID, callId);
-        putToMDC(CONSUMER_ID, consumerId);
+        putToMDC(CONSUMER_ID, getConsumerId());
 
         try {
             filterChain.doFilter(httpServletRequest, httpServletResponse);

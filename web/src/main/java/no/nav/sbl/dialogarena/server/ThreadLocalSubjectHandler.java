@@ -18,13 +18,19 @@ public class ThreadLocalSubjectHandler extends SubjectHandler {
     @Override
     public Subject getSubject() {
         final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        log.info("DEBUG ThreadLocalSubjectHandler.getSubject: 1");
         if (servletRequestAttributes == null) {
+            log.info("DEBUG ThreadLocalSubjectHandler.getSubject: 1 er null");
             return null;
         }
         final Request request = (Request) servletRequestAttributes.getRequest();
+        log.info("DEBUG ThreadLocalSubjectHandler.getSubject: 3 request " + request);
+
         final Authentication authentication = request.getAuthentication();
+        log.info("DEBUG ThreadLocalSubjectHandler.getSubject: 4 authentication " + authentication);
 
         if (authentication instanceof Authentication.User) {
+            log.info("DEBUG ThreadLocalSubjectHandler.getSubject: 5 authentication er Authentication.User. Useridentity: " + ((Authentication.User) authentication).getUserIdentity());
             return ((Authentication.User) authentication).getUserIdentity().getSubject();
         } else {
             return null;
