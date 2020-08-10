@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
@@ -58,7 +58,7 @@ public class NorgConsumerImpl implements NorgConsumer {
          * urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
          * at vi når tjenesten).
          */
-        final String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        final String consumerId = SubjectHandler.getConsumerId();
         final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_NORG_2_API_V_1_APIKEY_PASSWORD);
 
@@ -75,7 +75,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     }
 
     private Invocation.Builder lagRequest(String endpoint) {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_NORG_2_API_V_1_APIKEY_PASSWORD);
 

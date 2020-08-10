@@ -285,11 +285,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>no.nav.common</groupId>
-                <artifactId>suspend</artifactId>
-                <version>${nav-common.version}</version>
-            </dependency>
             <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
             <!--            <dependency>-->
             <!--                <groupId>no.nav.common</groupId>-->
