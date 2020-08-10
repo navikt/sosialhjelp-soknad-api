@@ -150,21 +150,4 @@
         <res-auth>Container</res-auth>
     </resource-ref>
 
-    <servlet>
-        <servlet-name>isAlive</servlet-name>
-        <servlet-class>no.nav.sbl.dialogarena.common.suspend.IsAliveServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>isAlive</servlet-name>
-        <url-pattern>/internal/isAlive</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>debug</servlet-name>
-        <servlet-class>no.nav.sbl.dialogarena.selftest.DebugServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>debug</servlet-name>
-        <url-pattern>/internal/debug</url-pattern>
-    </servlet-mapping>
-
 </web-app>
