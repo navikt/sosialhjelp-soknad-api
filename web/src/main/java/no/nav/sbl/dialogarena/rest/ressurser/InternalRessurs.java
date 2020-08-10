@@ -38,6 +38,14 @@ public class InternalRessurs {
         return ret.toString();
     }
 
+    @GET
+    @Path(value = "/isAlive")
+    @Produces({ MediaType.TEXT_PLAIN })
+    public String isAlive() {
+
+        return "{status : \"ok\", message: \"Appen fungerer\"}";
+    }
+
     private void logAccess(String metode) {
         LOG.warn("InternalRessurs metode {} ble aksessert", metode);
     }
