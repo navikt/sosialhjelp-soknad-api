@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -57,7 +57,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     
     @Override
     public void ping() {
-        final String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        final String consumerId = SubjectHandler.getConsumerId();
         final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD);
         
@@ -137,7 +137,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     }
 
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata, String soketype) {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD);
         

@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
 import org.mockito.invocation.InvocationOnMock;
@@ -30,10 +30,10 @@ public class OrganisasjonConsumerMock {
     }
 
     private static OrganisasjonNoekkelinfoDto getFromMapOrDefaultOrganisasjonNoekkelinfo(InvocationOnMock invocationOnMock) {
-        OrganisasjonNoekkelinfoDto response = responses.get(OidcFeatureToggleUtils.getUserId());
+        OrganisasjonNoekkelinfoDto response = responses.get(SubjectHandler.getUserId());
         if (response == null) {
             response = getDefaultOrganisasjonNoekkelinfo();
-            responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            responses.put(SubjectHandler.getUserId(), response);
         }
         return response;
     }
@@ -49,10 +49,10 @@ public class OrganisasjonConsumerMock {
             ObjectMapper mapper = new ObjectMapper();
             OrganisasjonNoekkelinfoDto response = mapper.readValue(jsonOrganisasjon, OrganisasjonNoekkelinfoDto.class);
 
-            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
-                responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            if (responses.get(SubjectHandler.getUserId()) == null){
+                responses.put(SubjectHandler.getUserId(), response);
             } else {
-                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
+                responses.replace(SubjectHandler.getUserId(), response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,6 +60,6 @@ public class OrganisasjonConsumerMock {
     }
 
     public static void resetOrganisasjon() {
-        responses.replace(OidcFeatureToggleUtils.getUserId(), getDefaultOrganisasjonNoekkelinfo());
+        responses.replace(SubjectHandler.getUserId(), getDefaultOrganisasjonNoekkelinfo());
     }
 }

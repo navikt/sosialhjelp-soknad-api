@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
@@ -81,7 +81,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
-        String fnr = OidcFeatureToggleUtils.getUserId();
+        String fnr = SubjectHandler.getUserId();
         Person person = personService.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
@@ -116,7 +116,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
-        String uid = OidcFeatureToggleUtils.getUserId();
+        String uid = SubjectHandler.getUserId();
         Person person = personService.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();

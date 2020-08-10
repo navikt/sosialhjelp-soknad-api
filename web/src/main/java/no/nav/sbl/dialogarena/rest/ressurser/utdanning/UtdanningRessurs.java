@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.utdanning;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -42,7 +42,7 @@ public class UtdanningRessurs {
 
     @GET
     public UtdanningFrontend hentUtdanning(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonUtdanning utdanning = soknad.getSoknad().getData().getUtdanning();
 
@@ -54,7 +54,7 @@ public class UtdanningRessurs {
     @PUT
     public void updateUtdanning(@PathParam("behandlingsId") String behandlingsId, UtdanningFrontend utdanningFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonUtdanning utdanning = soknad.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
         List<JsonOkonomioversiktInntekt> inntekter = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();

@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
     }
 
     private Invocation.Builder lagRequest(String endpoint) {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
         WebTarget b = client.target(endpoint);
