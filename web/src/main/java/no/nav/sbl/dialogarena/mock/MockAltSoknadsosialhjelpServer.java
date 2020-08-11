@@ -20,6 +20,7 @@ public class MockAltSoknadsosialhjelpServer {
         if (!isRunningOnGCP()) {
             System.setProperty("sendsoknad.datadir", System.getProperty("user.home") + "/kodeverk/sendsoknad");
         }
+        System.setProperty("NAIS_NAMESPACE", "sosialhjelp-soknad-api-mock-alt");
 
         server.start();
     }
