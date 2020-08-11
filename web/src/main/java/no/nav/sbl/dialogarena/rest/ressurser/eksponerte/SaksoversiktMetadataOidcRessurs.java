@@ -44,7 +44,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
         String fnr = SubjectHandler.getUserId();
-        logger.debug("Henter metadata for innsendte soknader med oidc");
+        logger.info("Henter metadata for innsendte soknader med oidc");
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
 
@@ -56,7 +56,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
         String fnr = SubjectHandler.getUserId();
-        logger.debug("Henter metadata for ettersendelse med oidc");
+        logger.info("Henter metadata for ettersendelse med oidc");
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
 
@@ -68,7 +68,7 @@ public class SaksoversiktMetadataOidcRessurs {
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
         String fnr = SubjectHandler.getUserId();
-        logger.debug("Henter metadata for pabegynte med oidc");
+        logger.info("Henter metadata for pabegynte med oidc");
 
         try {
             List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);

@@ -50,7 +50,7 @@ public class SaksoversiktMetadataRessurs {
 
 
 
-        logger.debug("Henter metadata for innsendte soknader uten oidc");
+        logger.info("Henter metadata for innsendte soknader uten oidc");
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
 
@@ -67,7 +67,7 @@ public class SaksoversiktMetadataRessurs {
         logger.info("DEBUG - fnr fra modig-Subjecthandler er: " + fnr);
 
 
-        logger.debug("Henter metadata for ettersendelse uten oidc");
+        logger.info("Henter metadata for ettersendelse uten oidc");
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
 
@@ -80,10 +80,12 @@ public class SaksoversiktMetadataRessurs {
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
         String fnr = SamlSubjectHandler.getUid();
         logger.info("DEBUG - fnr fra ny SAMLSubjecthandler er: " + fnr);
+//        Optional<String> ident = no.nav.common.auth.SubjectHandler.getIdent();
+//        logger.info("DEBUG - fnr fra common-java-module subjecthandler er: " + ident);
         fnr = SubjectHandler.getSubjectHandler().getUid();
         logger.info("DEBUG - fnr fra modig-Subjecthandler er: " + fnr);
 
-        logger.debug("Henter metadata for pabegynte uten oidc");
+        logger.info("Henter metadata for pabegynte uten oidc");
 
         List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
 

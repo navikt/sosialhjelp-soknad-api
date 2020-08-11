@@ -33,6 +33,7 @@ public class ThreadLocalSubjectHandler extends SubjectHandler {
             log.info("DEBUG ThreadLocalSubjectHandler.getSubject: 5 authentication er Authentication.User. Useridentity: " + ((Authentication.User) authentication).getUserIdentity());
             return ((Authentication.User) authentication).getUserIdentity().getSubject();
         } else {
+            log.info("DEBUG ThreadLocalSubjectHandler.getSubject: 6 returns null");
             return null;
         }
     }

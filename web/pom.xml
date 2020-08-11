@@ -250,6 +250,10 @@
             <artifactId>util</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>auth</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
