@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.server;
+package no.nav.sbl.dialogarena.saml;
 
 public enum IdentType {
     Systemressurs,

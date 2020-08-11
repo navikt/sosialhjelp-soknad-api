@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.server;
+package no.nav.sbl.dialogarena.saml;
 
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;

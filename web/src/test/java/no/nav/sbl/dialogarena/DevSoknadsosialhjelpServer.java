@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.oidc.OidcConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
-import no.nav.sbl.dialogarena.server.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.saml.ThreadLocalSubjectHandler;
 
 import javax.sql.DataSource;
 import java.io.File;

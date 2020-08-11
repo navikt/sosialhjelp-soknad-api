@@ -44,7 +44,7 @@
     </servlet-mapping>
 
     <filter>
-        <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
+        <filter-name>OpenAmLoginFilter</filter-name>
         <filter-class>no.nav.sbl.dialogarena.filter.FakeLoginFilter</filter-class>
         <init-param>
             <param-name>defaultFnr</param-name>
@@ -52,8 +52,8 @@
         </init-param>
     </filter>
     <filter-mapping>
-        <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <filter-name>OpenAmLoginFilter</filter-name>
+        <url-pattern>/metadata/*</url-pattern>
     </filter-mapping>
 
 </web-app>
