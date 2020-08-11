@@ -53,14 +53,20 @@ public class SamlSubjectHandler {
     }
 
     private static <T> T getTheOnlyOneInSet(Set<T> set) {
+        log.info("DEBUG SAML SubjectHandler.getTheOnlyOneInSet set " + set);
         if (set.isEmpty()) {
+            log.info("DEBUG SAML SubjectHandler.getTheOnlyOneInSet set isEmpty() true");
             return null;
         }
 
         T first = set.iterator().next();
+        log.info("DEBUG SAML SubjectHandler.getTheOnlyOneInSet first " + first);
         if (set.size() == 1) {
+            log.info("DEBUG SAML SubjectHandler.getTheOnlyOneInSet set.size=1 og first " + first);
             return first;
         }
+
+        log.info("DEBUG SAML SubjectHandler.getTheOnlyOneInSet set.size>1 ");
 
         log.error("expected 1 (or zero) items, got "+set.size()+", listing them:");
         for(T item : set){
