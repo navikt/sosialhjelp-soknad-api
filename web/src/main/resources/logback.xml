@@ -34,8 +34,6 @@
 
     <logger name="no.nav.sbl.rest.ClientLogFilter" level="WARN"></logger>
 
-    <logger name="no.nav.modig.security.filter.OpenAMLoginFilter" level="DEBUG"></logger>
-
     <root level="${ROOT_LOG_LEVEL:-INFO}">
         <appender-ref ref="stdout_json"/>
     </root>

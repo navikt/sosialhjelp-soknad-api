@@ -74,7 +74,7 @@
     <!--OpenAmLoginFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
     <filter>
         <filter-name>OpenAmLoginFilter</filter-name>
-        <filter-class>no.nav.sbl.dialogarena.saml.LoginFilter</filter-class>
+        <filter-class>no.nav.sbl.dialogarena.saml.OpenAmLoginFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
