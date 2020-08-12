@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.saml;
 
 import javax.security.auth.Subject;
 
+import no.nav.common.auth.SubjectHandler;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.server.Request;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class SamlSubjectHandler {
@@ -16,6 +18,9 @@ public class SamlSubjectHandler {
     private static final Logger log = LoggerFactory.getLogger(SamlSubjectHandler.class);
 
     public static Subject getSubject() {
+        Optional<String> ident = SubjectHandler.getIdent();
+        log.info("DEBUG SAML SubjectHandler.getSubject: 0 no.nav.common.auth.SubjectHandler.ident = " + ident);
+
         final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         log.info("DEBUG SAML SubjectHandler.getSubject: 1");
         if (servletRequestAttributes == null) {
