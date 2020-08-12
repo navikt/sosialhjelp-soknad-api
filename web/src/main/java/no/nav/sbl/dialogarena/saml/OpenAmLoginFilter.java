@@ -12,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -23,6 +24,7 @@ public class OpenAmLoginFilter implements Filter {
     private final OpenAMUserInfoService userInfoService;
 
     public static final String NAV_ESSO_COOKIE_NAVN = "nav-esso";
+    public static final List<String> UNPROTECDED_BASE_PATHS = List.of("/sosialhjelp/soknad-api/metadata/ping", "/sosialhjelp/soknad-api/metadata/oidc/");
 
     public OpenAmLoginFilter() {
         this.userInfoService = new OpenAMUserInfoService();
@@ -37,13 +39,20 @@ public class OpenAmLoginFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        Subject subject = authenticate(httpServletRequest, httpServletResponse);
-        if (subject == null) {
-            unAuthenticated(httpServletRequest, httpServletResponse);
-        } else {
-            log.info("DEBUG - LoginFilter subject:  " + subject);
-            SubjectHandler.withSubject(subject, () -> chain.doFilter(request, response));
+        if (isPathProtectedBySAML(httpServletRequest.getRequestURI())) {
+            Subject subject = authenticate(httpServletRequest, httpServletResponse);
+            if (subject == null) {
+                unAuthenticated(httpServletRequest, httpServletResponse);
+            } else {
+                log.info("DEBUG - LoginFilter subject:  " + subject);
+                SubjectHandler.withSubject(subject, () -> chain.doFilter(request, response));
+            }
         }
+        chain.doFilter(request, response);
+    }
+
+    static boolean isPathProtectedBySAML(String requestPath) {
+        return UNPROTECDED_BASE_PATHS.stream().noneMatch(requestPath::startsWith);
     }
 
     private void unAuthenticated(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
