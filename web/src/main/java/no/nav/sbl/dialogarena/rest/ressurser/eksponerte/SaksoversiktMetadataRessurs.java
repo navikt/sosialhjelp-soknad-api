@@ -43,10 +43,8 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
-        String fnr = SamlSubjectHandler.getUid();
+        String fnr = SamlSubjectHandler.getUserId();
         logger.info("DEBUG - fnr fra ny SAMLSubjecthandler er: " + fnr);
-        fnr = SubjectHandler.getSubjectHandler().getUid();
-        logger.info("DEBUG - fnr fra modig-Subjecthandler er: " + fnr);
 
 
 
@@ -61,11 +59,8 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
-        String fnr = SamlSubjectHandler.getUid();
+        String fnr = SamlSubjectHandler.getUserId();
         logger.info("DEBUG - fnr fra ny SAMLSubjecthandler er: " + fnr);
-        fnr = SubjectHandler.getSubjectHandler().getUid();
-        logger.info("DEBUG - fnr fra modig-Subjecthandler er: " + fnr);
-
 
         logger.info("Henter metadata for ettersendelse uten oidc");
 
@@ -78,12 +73,8 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
-        String fnr = SamlSubjectHandler.getUid();
+        String fnr = SamlSubjectHandler.getUserId();
         logger.info("DEBUG - fnr fra ny SAMLSubjecthandler er: " + fnr);
-//        Optional<String> ident = no.nav.common.auth.SubjectHandler.getIdent();
-//        logger.info("DEBUG - fnr fra common-java-module subjecthandler er: " + ident);
-        fnr = SubjectHandler.getSubjectHandler().getUid();
-        logger.info("DEBUG - fnr fra modig-Subjecthandler er: " + fnr);
 
         logger.info("Henter metadata for pabegynte uten oidc");
 
