@@ -5,6 +5,8 @@ import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sbl.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
@@ -17,12 +19,12 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.rest.RestUtils.DEFAULT_CONFIG;
 import static no.nav.sbl.util.StringUtils.of;
 
 public class OpenAMUserInfoService {
+    private static final Logger log = LoggerFactory.getLogger(OpenAMUserInfoService.class);
 
     public static final String PARAMETER_UID = "uid";
     public static final String PARAMETER_SECURITY_LEVEL = "SecurityLevel";
@@ -66,10 +68,6 @@ public class OpenAMUserInfoService {
         return of(token).flatMap(t -> checkResponse(requestUserAttributes(t, attributes), token).map(this::attributesToMap));
     }
 
-    public Response requestUserAttributes(String token) {
-        return requestUserAttributes(token, subjectAttributes);
-    }
-
     public Response requestUserAttributes(String token, List<String> attributes) {
         return client.target(getUrl(token, attributes)).request().get();
     }
@@ -101,8 +99,15 @@ public class OpenAMUserInfoService {
 
     public String getUrl(String token, List<String> attributes) {
         UriBuilder uriBuilder = UriBuilder.fromUri(endpointURL).path(BASE_PATH).queryParam("subjectid", token);
-        attributes.forEach(a -> uriBuilder.queryParam("attributenames", a));
-        return uriBuilder.toString();
+        attributes.forEach(a ->
+        {
+            log.info("DEBUG - OpenAMUserInfoService getUrl attribute: " + a);
+            uriBuilder.queryParam("attributenames", a);
+        });
+        String url = uriBuilder.toString();
+
+        log.info("DEBUG - OpenAMUserInfoService getUrl url: " + url);
+        return url;
     }
 
     private Map<String, String> attributesToMap(OpenAMAttributes openAMAttributes) {

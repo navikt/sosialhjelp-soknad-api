@@ -27,22 +27,20 @@ public class OpenAMLoginFilter implements LoginProvider {
     }
 
     @Override
-    public Optional<Subject> authenticate(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public Subject authenticate(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest);
-        log.info("DEBUG - OpenAMLoginFilter authenticate requestEksternSsoToken: " + requestEksternSsoToken);
         if (StringUtils.nullOrEmpty(requestEksternSsoToken)) {
-            log.info("DEBUG - OpenAMLoginFilter authenticate requestEksternSsoToken er null");
-            return Optional.empty();
+            log.info("Ingen Ekstern sso-token (SAML) i request");
+            return null;
         } else {
             Optional<Subject> userInfo = userInfoService.convertTokenToSubject(requestEksternSsoToken);
             log.info("DEBUG - OpenAMLoginFilter authenticate userInfo.isPresent() " + userInfo.isPresent());
             if (userInfo.isEmpty()) {
                 log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is empty");
                 removeSsoToken(httpServletRequest, httpServletResponse);
-            } else {
-                log.info("DEBUG - OpenAMLoginFilter authenticate userInfo " + userInfo.get());
             }
-            return userInfo;
+
+            return userInfo.get();
         }
     }
 
@@ -55,7 +53,6 @@ public class OpenAMLoginFilter implements LoginProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                log.info("DEBUG - OpenAMLoginFilter getRequestEksternSsoToken cookie: " + cookie);
                 if (cookie.getName().equals(NAV_ESSO_COOKIE_NAVN)) {
                     return cookie.getValue();
                 }
