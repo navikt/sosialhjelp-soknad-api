@@ -64,6 +64,7 @@ public class LoginFilter implements Filter {
 
         Optional<Subject> optionalSubject = resolveSubject(httpServletRequest, httpServletResponse);
         if (optionalSubject.isPresent()) {
+            log.info("DEBUG - LoginFilter subject:  " + optionalSubject.get());
             SubjectHandler.withSubject(optionalSubject.get(), () -> chain.doFilter(request, response));
         } else if (isPublic(httpServletRequest)) {
             chain.doFilter(request, response);

@@ -31,7 +31,7 @@ public class DevSoknadsosialhjelpServer {
         if (OidcConfig.isOidcMock()) {
             SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         }
-        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName()); // Er med pga SaksoversiktMetadataRessurs.
+        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // Er med pga SaksoversiktMetadataRessurs.
         if ("Mac OS X".equals(System.getProperty("os.name")) || "Linux".equals(System.getProperty("os.name"))) {
             System.setProperty("sendsoknad.datadir", System.getProperty("user.home")+"/kodeverk/sendsoknad");
         }

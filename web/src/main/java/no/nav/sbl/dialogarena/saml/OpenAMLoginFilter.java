@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.saml;
 
 import no.nav.common.auth.Subject;
 import no.nav.sbl.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import java.util.Optional;
 
 
 public class OpenAMLoginFilter implements LoginProvider {
+    private static final Logger log = LoggerFactory.getLogger(LoginProvider.class);
 
     public static final String NAV_ESSO_COOKIE_NAVN = "nav-esso";
 
@@ -26,12 +29,18 @@ public class OpenAMLoginFilter implements LoginProvider {
     @Override
     public Optional<Subject> authenticate(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest);
+        log.info("DEBUG - OpenAMLoginFilter authenticate requestEksternSsoToken: " + requestEksternSsoToken);
         if (StringUtils.nullOrEmpty(requestEksternSsoToken)) {
+            log.info("DEBUG - OpenAMLoginFilter authenticate requestEksternSsoToken er null");
             return Optional.empty();
         } else {
             Optional<Subject> userInfo = userInfoService.convertTokenToSubject(requestEksternSsoToken);
-            if (!userInfo.isPresent()) {
+            log.info("DEBUG - OpenAMLoginFilter authenticate userInfo.isPresent() " + userInfo.isPresent());
+            if (userInfo.isEmpty()) {
+                log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is empty");
                 removeSsoToken(httpServletRequest, httpServletResponse);
+            } else {
+                log.info("DEBUG - OpenAMLoginFilter authenticate userInfo " + userInfo.get());
             }
             return userInfo;
         }
@@ -46,6 +55,7 @@ public class OpenAMLoginFilter implements LoginProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
+                log.info("DEBUG - OpenAMLoginFilter getRequestEksternSsoToken cookie: " + cookie);
                 if (cookie.getName().equals(NAV_ESSO_COOKIE_NAVN)) {
                     return cookie.getValue();
                 }
