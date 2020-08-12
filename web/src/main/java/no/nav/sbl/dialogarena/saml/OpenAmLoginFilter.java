@@ -47,7 +47,7 @@ public class OpenAmLoginFilter implements Filter {
                 httpServletResponse.sendError(SC_UNAUTHORIZED);
             } else {
                 log.info("DEBUG - LoginFilter subject:  " + subject);
-                SubjectHandler.withSubject(subject, () -> chain.doFilter(request, response));
+//                SubjectHandler.withSubject(subject, () -> chain.doFilter(request, response));
 
                 //Kun en test av saksoversikt. Denne skal ikke være her:
                 httpServletResponse.sendError(SC_UNAUTHORIZED);
