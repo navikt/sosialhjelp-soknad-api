@@ -30,18 +30,19 @@ public class OpenAMLoginFilter implements LoginProvider {
     public Subject authenticate(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest);
         if (StringUtils.nullOrEmpty(requestEksternSsoToken)) {
-            log.info("Ingen Ekstern sso-token (SAML) i request");
+            log.info("Ingen Ekstern sso-token (SAML) i request mot " + httpServletRequest.getRequestURI());
             return null;
-        } else {
-            Optional<Subject> userInfo = userInfoService.convertTokenToSubject(requestEksternSsoToken);
-            log.info("DEBUG - OpenAMLoginFilter authenticate userInfo.isPresent() " + userInfo.isPresent());
-            if (userInfo.isEmpty()) {
-                log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is empty");
-                removeSsoToken(httpServletRequest, httpServletResponse);
-            }
-
-            return userInfo.get();
         }
+
+        Optional<Subject> userInfo = userInfoService.convertTokenToSubject(requestEksternSsoToken);
+        if (userInfo.isEmpty()) {
+            log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is empty");
+            removeSsoToken(httpServletRequest, httpServletResponse);
+            return null;
+        }
+
+        log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is present" + userInfo.get());
+        return userInfo.get();
     }
 
     @Override
