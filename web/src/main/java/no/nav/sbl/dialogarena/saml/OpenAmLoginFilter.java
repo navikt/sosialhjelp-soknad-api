@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.saml;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
-import no.nav.sbl.util.StringUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamlUnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,19 +41,18 @@ public class OpenAmLoginFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        if (isPathProtectedBySAML(httpServletRequest.getRequestURI())) {
-            Subject subject = authenticate(httpServletRequest, httpServletResponse);
-            if (subject == null) {
-                httpServletResponse.sendError(SC_UNAUTHORIZED);
-            } else {
-                log.info("DEBUG - LoginFilter subject:  " + subject);
-//                SubjectHandler.withSubject(subject, () -> chain.doFilter(request, response));
+        Subject subject = null;
 
-                //Kun en test av saksoversikt. Denne skal ikke være her:
+        if (isPathProtectedBySAML(httpServletRequest.getRequestURI())) {
+            try {
+                subject = authenticate(httpServletRequest, httpServletResponse);
+            } catch (SamlUnauthorizedException e) {
+                log.warn(e.getMessage());
+                removeSsoToken(httpServletRequest, httpServletResponse);
                 httpServletResponse.sendError(SC_UNAUTHORIZED);
             }
         }
-        chain.doFilter(request, response);
+        SubjectHandler.withSubject(subject, () -> chain.doFilter(request, response));
     }
 
     static boolean isPathProtectedBySAML(String requestPath) {
@@ -61,32 +60,28 @@ public class OpenAmLoginFilter implements Filter {
     }
 
     public Subject authenticate(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest.getCookies());
-        if (StringUtils.nullOrEmpty(requestEksternSsoToken)) {
-            log.info("Ingen Ekstern sso-token (SAML) i request");
-            return null;
-        }
+        throw new SamlUnauthorizedException("test"); // KUN FOR TEST - teste hva som skjer når subject er null.
 
-        Subject subject = userInfoService.convertTokenToSubject(requestEksternSsoToken);
-        if (subject == null) {
-            log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is empty");
-            removeSsoToken(httpServletRequest, httpServletResponse);
-            return null;
-        }
-
-        log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is present " + subject);
-        return subject;
+//        try {
+//            String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest.getCookies());
+//            return userInfoService.convertTokenToSubject(requestEksternSsoToken);
+//        } catch (SamlUnauthorizedException e) {
+//            removeSsoToken(httpServletRequest, httpServletResponse);
+//            throw e;
+//        }
     }
 
-    private String getRequestEksternSsoToken(Cookie[] cookies) {
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(NAV_ESSO_COOKIE_NAVN)) {
-                    return cookie.getValue();
-                }
+    private String getRequestEksternSsoToken(Cookie[] cookies) throws SamlUnauthorizedException {
+        if (cookies == null) {
+            throw new SamlUnauthorizedException("Ingen SAML-token funnet i request, da requesten ikke inneholder noen cookies. ");
+        }
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(NAV_ESSO_COOKIE_NAVN) && cookie.getValue() != null) {
+                return cookie.getValue();
             }
         }
-        return null;
+        throw new SamlUnauthorizedException(String.format("Ingen SAML-token funnet i request, da requesten ikke inneholder cookie med navn:  %s", NAV_ESSO_COOKIE_NAVN));
     }
 
     private void removeSsoToken(HttpServletRequest request, HttpServletResponse response) {

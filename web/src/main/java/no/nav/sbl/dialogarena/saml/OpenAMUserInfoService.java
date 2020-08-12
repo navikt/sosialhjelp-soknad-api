@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.saml;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamlUnauthorizedException;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sbl.util.StringUtils;
 import org.slf4j.Logger;
@@ -51,17 +52,12 @@ public class OpenAMUserInfoService {
         return uri;
     }
 
-    public Subject convertTokenToSubject(String token) {
+    public Subject convertTokenToSubject(String token) throws SamlUnauthorizedException {
         Map<String, String> attributeMap = getUserAttributes(token);
-        if (attributeMap == null || !attributeMap.containsKey(PARAMETER_UID)) {
-            log.error("OpenAm response manglet attributten {}. Får ikke hentet ut userId", PARAMETER_UID);
-            return null;
-        }
-
         return createSubject(attributeMap, token);
     }
 
-    public Map<String, String> getUserAttributes(String token) {
+    public Map<String, String> getUserAttributes(String token) throws SamlUnauthorizedException{
         Response userAttributesResponse = requestUserAttributes(token, subjectAttributes());
         OpenAMAttributes openAMAttributes = checkResponse(userAttributesResponse, token);
         return openAmAttributesToMap(openAMAttributes);
@@ -71,15 +67,14 @@ public class OpenAMUserInfoService {
         return client.target(getUrl(token, attributes)).request().get();
     }
 
-    private OpenAMAttributes checkResponse(Response response, String sessionId) {
+    private OpenAMAttributes checkResponse(Response response, String sessionId) throws SamlUnauthorizedException {
         int status = response.getStatus();
         if (status < 399) {
             return response.readEntity(OpenAMAttributes.class);
         } else {
             String payload = response.readEntity(String.class);
             String phrase = response.getStatusInfo().getReasonPhrase();
-            log.error("Klarte ikke hente userAttributes fra openAM. Status: {}, phrase: {}, payload: {}", status, phrase, sanitize(payload, sessionId));
-            return null;
+            throw new SamlUnauthorizedException(String.format("Klarte ikke hente userAttributes fra openAM. Status: %d, phrase: %s, payload: %s", status, phrase, sanitize(payload, sessionId)));
         }
     }
 
@@ -96,23 +91,28 @@ public class OpenAMUserInfoService {
         return uriBuilder.toString();
     }
 
-    private Map<String, String> openAmAttributesToMap(OpenAMAttributes openAMAttributes) {
-        if (openAMAttributes == null) return null;
+    static Map<String, String> openAmAttributesToMap(OpenAMAttributes openAMAttributes) throws SamlUnauthorizedException{
+        if (openAMAttributes == null || openAMAttributes.attributes == null) {
+            throw new SamlUnauthorizedException("Saml-bruker ikke funnet. OpenAMAttributes var null og inneholdt derfor ingen userId");
+        }
 
         return openAMAttributes.attributes.stream()
-                .filter(a -> !a.values.isEmpty())
+                .filter(a -> a.values != null && !a.values.isEmpty())
                 .collect(toMap(
                         attribute -> attribute.name,
                         attribute -> attribute.values.get(0)
                 ));
     }
 
-    private Subject createSubject(Map<String, String> attributeMap, String token) {
-        String uid = attributeMap.get(PARAMETER_UID);
-        return new Subject(
-                uid,
-                IdentType.EksternBruker,
-                SsoToken.eksternOpenAM(token, attributeMap));
+    private Subject createSubject(Map<String, String> attributeMap, String token) throws SamlUnauthorizedException {
+        if (attributeMap.containsKey(PARAMETER_UID)) {
+            String uid = attributeMap.get(PARAMETER_UID);
+            return new Subject(
+                    uid,
+                    IdentType.EksternBruker,
+                    SsoToken.eksternOpenAM(token, attributeMap));
+        }
+        throw new SamlUnauthorizedException(String.format("OpenAm response manglet attributten %s. Får ikke hentet ut userId", PARAMETER_UID));
     }
 
     @SuppressWarnings("unused")
