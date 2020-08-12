@@ -15,13 +15,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.rest.RestUtils.DEFAULT_CONFIG;
-import static no.nav.sbl.util.StringUtils.of;
 
 public class OpenAMUserInfoService {
     private static final Logger log = LoggerFactory.getLogger(OpenAMUserInfoService.class);
@@ -33,20 +29,15 @@ public class OpenAMUserInfoService {
 
     private final URI endpointURL;
     private final Client client = RestUtils.createClient(DEFAULT_CONFIG.withDisableParameterLogging(true));
-    private final List<String> subjectAttributes;
-    private final OpenAMEventListener openAMEventListener;
 
     public OpenAMUserInfoService() {
-        this.openAMEventListener = new OpenAMEventListener.DefaultOpenAMEventListener();
         this.endpointURL = resolveEndpointURL();
-        this.subjectAttributes = subjectAttributes();
     }
 
     private static List<String> subjectAttributes() {
         List<String> attributes = new ArrayList<>();
         attributes.add(PARAMETER_UID);
         attributes.add(PARAMETER_SECURITY_LEVEL);
-//        ofNullable(openAmConfig.additionalAttributes).ifPresent(attributes::addAll);
         return attributes;
     }
 
@@ -60,32 +51,35 @@ public class OpenAMUserInfoService {
         return uri;
     }
 
-    public Optional<Subject> convertTokenToSubject(String token) {
-        return getUserInfo(token, subjectAttributes).flatMap(openAMAttributes -> createUserInfo(openAMAttributes, token));
+    public Subject convertTokenToSubject(String token) {
+        Map<String, String> attributeMap = getUserAttributes(token);
+        if (attributeMap == null || !attributeMap.containsKey(PARAMETER_UID)) {
+            log.error("OpenAm response manglet attributten {}. Får ikke hentet ut userId", PARAMETER_UID);
+            return null;
+        }
+
+        return createSubject(attributeMap, token);
     }
 
-    public Optional<Map<String, String>> getUserInfo(String token, List<String> attributes) {
-        return of(token).flatMap(t -> checkResponse(requestUserAttributes(t, attributes), token).map(this::attributesToMap));
+    public Map<String, String> getUserAttributes(String token) {
+        Response userAttributesResponse = requestUserAttributes(token, subjectAttributes());
+        OpenAMAttributes openAMAttributes = checkResponse(userAttributesResponse, token);
+        return openAmAttributesToMap(openAMAttributes);
     }
 
     public Response requestUserAttributes(String token, List<String> attributes) {
         return client.target(getUrl(token, attributes)).request().get();
     }
 
-    private Optional<OpenAMAttributes> checkResponse(Response response, String sessionId) {
+    private OpenAMAttributes checkResponse(Response response, String sessionId) {
         int status = response.getStatus();
         if (status < 399) {
-            return of(response.readEntity(OpenAMAttributes.class));
+            return response.readEntity(OpenAMAttributes.class);
         } else {
             String payload = response.readEntity(String.class);
             String phrase = response.getStatusInfo().getReasonPhrase();
-            openAMEventListener.fetchingUserAttributesFailed(
-                    new OpenAMEventListener.OpenAmResponse()
-                            .withStatus(status)
-                            .withPhrase(phrase)
-                            .withContent(sanitize(payload, sessionId))
-            );
-            return empty();
+            log.error("Klarte ikke hente userAttributes fra openAM. Status: {}, phrase: {}, payload: {}", status, phrase, sanitize(payload, sessionId));
+            return null;
         }
     }
 
@@ -93,24 +87,18 @@ public class OpenAMUserInfoService {
         return payload.replaceAll(sessionId, "<session id removed>");
     }
 
-    public String getUrl(String token) {
-        return getUrl(token, subjectAttributes);
-    }
-
     public String getUrl(String token, List<String> attributes) {
         UriBuilder uriBuilder = UriBuilder.fromUri(endpointURL).path(BASE_PATH).queryParam("subjectid", token);
         attributes.forEach(a ->
         {
-            log.info("DEBUG - OpenAMUserInfoService getUrl attribute: " + a);
             uriBuilder.queryParam("attributenames", a);
         });
-        String url = uriBuilder.toString();
-
-        log.info("DEBUG - OpenAMUserInfoService getUrl url: " + url);
-        return url;
+        return uriBuilder.toString();
     }
 
-    private Map<String, String> attributesToMap(OpenAMAttributes openAMAttributes) {
+    private Map<String, String> openAmAttributesToMap(OpenAMAttributes openAMAttributes) {
+        if (openAMAttributes == null) return null;
+
         return openAMAttributes.attributes.stream()
                 .filter(a -> !a.values.isEmpty())
                 .collect(toMap(
@@ -119,14 +107,12 @@ public class OpenAMUserInfoService {
                 ));
     }
 
-    private Optional<Subject> createUserInfo(Map<String, String> attributeMap, String token) {
-        if (attributeMap.containsKey(PARAMETER_UID)) {
-            String uid = attributeMap.get(PARAMETER_UID);
-            return of(new Subject(uid, IdentType.EksternBruker, SsoToken.eksternOpenAM(token, attributeMap)));
-        } else {
-            openAMEventListener.missingUserAttribute(PARAMETER_UID);
-            return empty();
-        }
+    private Subject createSubject(Map<String, String> attributeMap, String token) {
+        String uid = attributeMap.get(PARAMETER_UID);
+        return new Subject(
+                uid,
+                IdentType.EksternBruker,
+                SsoToken.eksternOpenAM(token, attributeMap));
     }
 
     @SuppressWarnings("unused")

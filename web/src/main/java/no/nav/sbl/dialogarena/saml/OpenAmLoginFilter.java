@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
@@ -24,7 +23,10 @@ public class OpenAmLoginFilter implements Filter {
     private final OpenAMUserInfoService userInfoService;
 
     public static final String NAV_ESSO_COOKIE_NAVN = "nav-esso";
-    public static final List<String> UNPROTECDED_BASE_PATHS = List.of("/sosialhjelp/soknad-api/metadata/ping", "/sosialhjelp/soknad-api/metadata/oidc/");
+    public static final List<String> UNPROTECDED_BASE_PATHS = List.of(
+            "/sosialhjelp/soknad-api/metadata/ping",
+            "/sosialhjelp/soknad-api/metadata/oidc/"
+    );
 
     public OpenAmLoginFilter() {
         this.userInfoService = new OpenAMUserInfoService();
@@ -42,7 +44,7 @@ public class OpenAmLoginFilter implements Filter {
         if (isPathProtectedBySAML(httpServletRequest.getRequestURI())) {
             Subject subject = authenticate(httpServletRequest, httpServletResponse);
             if (subject == null) {
-                unAuthenticated(httpServletRequest, httpServletResponse);
+                httpServletResponse.sendError(SC_UNAUTHORIZED);
             } else {
                 log.info("DEBUG - LoginFilter subject:  " + subject);
                 SubjectHandler.withSubject(subject, () -> chain.doFilter(request, response));
@@ -55,35 +57,25 @@ public class OpenAmLoginFilter implements Filter {
         return UNPROTECDED_BASE_PATHS.stream().noneMatch(requestPath::startsWith);
     }
 
-    private void unAuthenticated(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-        Optional<String> optionalRedirectUrl = Optional.empty();
-        if ("application/json".equals(httpServletRequest.getHeader("Accept")) || optionalRedirectUrl.isEmpty()) {
-            httpServletResponse.sendError(SC_UNAUTHORIZED);
-        } else {
-            httpServletResponse.sendRedirect(optionalRedirectUrl.get());
-        }
-    }
-
     public Subject authenticate(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest);
+        String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest.getCookies());
         if (StringUtils.nullOrEmpty(requestEksternSsoToken)) {
-            log.info("Ingen Ekstern sso-token (SAML) i request mot " + httpServletRequest.getRequestURI());
+            log.info("Ingen Ekstern sso-token (SAML) i request");
             return null;
         }
 
-        Optional<Subject> userInfo = userInfoService.convertTokenToSubject(requestEksternSsoToken);
-        if (userInfo.isEmpty()) {
+        Subject subject = userInfoService.convertTokenToSubject(requestEksternSsoToken);
+        if (subject == null) {
             log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is empty");
             removeSsoToken(httpServletRequest, httpServletResponse);
             return null;
         }
 
-        log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is present" + userInfo.get());
-        return userInfo.get();
+        log.info("DEBUG - OpenAMLoginFilter authenticate userInfo is present " + subject);
+        return subject;
     }
 
-    private String getRequestEksternSsoToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
+    private String getRequestEksternSsoToken(Cookie[] cookies) {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(NAV_ESSO_COOKIE_NAVN)) {
