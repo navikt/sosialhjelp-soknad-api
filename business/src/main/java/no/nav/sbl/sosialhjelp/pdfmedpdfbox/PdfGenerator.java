@@ -1,17 +1,24 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
 import com.vdurmont.emoji.EmojiParser;
+import org.apache.jempbox.xmp.XMPMetadata;
+import org.apache.jempbox.xmp.pdfa.XMPSchemaPDFAId;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
+
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -54,8 +61,6 @@ public class PdfGenerator {
     public static final int EXTENDED_LATIN_START = 0x00A0;
     public static final int EXTENDED_LATIN_END = 0x0170;
 
-
-
     private PDDocument document = new PDDocument();
     private ArrayList<PDPage> completedPages;
     private PDPage currentPage = new PDPage(PDRectangle.A4);
@@ -67,14 +72,41 @@ public class PdfGenerator {
     private final PDFont FONT_BOLD = PDType0Font.load(document, new ClassPathResource(BOLD).getInputStream());
     private final PDFont FONT_KURSIV = PDType0Font.load(document, new ClassPathResource(KURSIV).getInputStream());
 
+    private XMPMetadata xmp  = new XMPMetadata();
+    private XMPSchemaPDFAId pdfaid  = new XMPSchemaPDFAId(xmp);
+
+    private InputStream colorProfile = new ClassPathResource("sRGB.icc").getInputStream();
+    private PDOutputIntent oi = new PDOutputIntent(document, colorProfile);
+
+    private PDDocumentCatalog cat  = document.getDocumentCatalog();
+    private PDMetadata metadata  = new PDMetadata(document);
+
 
     public PdfGenerator() throws IOException {
         this.currentStream = new PDPageContentStream(document, currentPage);
         this.y = calculateStartY();
-        // this.addLogo(); Fjerner logo midlertidig da den ikke virker for FSL
+        this.addLogo(); //Fjerner logo midlertidig da den ikke virker for FSL
     }
 
     public byte[] finish() throws IOException {
+        this.cat.setMetadata(metadata);
+
+        this.xmp.addSchema(pdfaid);
+        this.pdfaid.setConformance("B");
+        this.pdfaid.setPart(1);
+        this.pdfaid.setAbout("");
+        try {
+            this.metadata.importXMPMetadata(xmp.asByteArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        this.oi.setInfo("sRGB IEC61966-2.1");
+        this.oi.setOutputCondition("sRGB IEC61966-2.1");
+        this.oi.setOutputConditionIdentifier("sRGB IEC61966-2.1");
+        this.oi.setRegistryName("http://www.color.org");
+        this.cat.addOutputIntent(oi);
+
         // Add current page to document
         this.document.addPage(this.currentPage);
         // Close remaining streams
@@ -325,7 +357,7 @@ public class PdfGenerator {
 
     private static byte[] logo() {
         try {
-            ClassPathResource classPathResource = new ClassPathResource("/pdf/nav-logo_alphaless.png");
+            ClassPathResource classPathResource = new ClassPathResource("/pdf/nav-logo_alphaless.jpg");
             InputStream inputStream = classPathResource.getInputStream();
             byte[] bytes = StreamUtils.copyToByteArray(inputStream);
             return bytes;
