@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.mdc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,7 +15,6 @@ import java.util.Optional;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.generateCallId;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.putToMDC;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.remove;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
 
 public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
@@ -35,7 +35,7 @@ public class SosialhjelpSoknadMDCFilter extends OncePerRequestFilter {
         String callId = Optional.ofNullable(httpServletRequest.getHeader(HEADER_CALL_ID))
                 .orElse(generateCallId());
         putToMDC(CALL_ID, callId);
-        putToMDC(CONSUMER_ID, getConsumerId());
+        putToMDC(CONSUMER_ID, SubjectHandler.getConsumerId());
 
         try {
             filterChain.doFilter(httpServletRequest, httpServletResponse);

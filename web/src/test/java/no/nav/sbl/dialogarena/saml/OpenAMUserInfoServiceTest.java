@@ -14,5 +14,4 @@ public class OpenAMUserInfoServiceTest {
     public void openAmAttributesToMap_withEmptyOpenAmAttribute_shouldThrowException() {
         OpenAMUserInfoService.openAmAttributesToMap(new OpenAMUserInfoService.OpenAMAttributes());
     }
-
 }
