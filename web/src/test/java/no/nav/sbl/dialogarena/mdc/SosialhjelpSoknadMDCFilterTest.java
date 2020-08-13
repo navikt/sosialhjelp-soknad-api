@@ -19,14 +19,11 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 public class SosialhjelpSoknadMDCFilterTest {
 
     @BeforeClass
     public static void setUp() {
-        System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, no.nav.modig.core.context.ThreadLocalSubjectHandler.class.getName());
         System.setProperty(ModigSecurityConstants.SYSTEMUSER_USERNAME, "srvuser");
-
     }
 
     @AfterClass
@@ -48,5 +45,4 @@ public class SosialhjelpSoknadMDCFilterTest {
         assertThat(contextMap, IsMapContaining.hasKey("callId"));
         assertThat(contextMap, IsMapContaining.hasEntry("consumerId", "srvuser"));
     }
-
 }

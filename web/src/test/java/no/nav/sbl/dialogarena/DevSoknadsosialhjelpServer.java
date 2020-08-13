@@ -1,16 +1,13 @@
 package no.nav.sbl.dialogarena;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.oidc.OidcConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
-import no.nav.sbl.dialogarena.saml.ThreadLocalSubjectHandler;
 
 import javax.sql.DataSource;
 import java.io.File;
 
-import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 
@@ -31,7 +28,6 @@ public class DevSoknadsosialhjelpServer {
         if (OidcConfig.isOidcMock()) {
             SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         }
-        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName()); // Er med pga SaksoversiktMetadataRessurs.
         if ("Mac OS X".equals(System.getProperty("os.name")) || "Linux".equals(System.getProperty("os.name"))) {
             System.setProperty("sendsoknad.datadir", System.getProperty("user.home")+"/kodeverk/sendsoknad");
         }
