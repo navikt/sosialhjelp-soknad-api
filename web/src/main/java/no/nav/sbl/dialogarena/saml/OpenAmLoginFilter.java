@@ -45,7 +45,7 @@ public class OpenAmLoginFilter implements Filter {
 
         if (isPathProtectedBySAML(httpServletRequest.getRequestURI())) {
             try {
-                subject = authenticate(httpServletRequest, httpServletResponse);
+                subject = authenticate(httpServletRequest);
             } catch (SamlUnauthorizedException e) {
                 log.warn(e.getMessage());
                 removeSsoToken(httpServletRequest, httpServletResponse);
@@ -59,16 +59,9 @@ public class OpenAmLoginFilter implements Filter {
         return UNPROTECDED_BASE_PATHS.stream().noneMatch(requestPath::startsWith);
     }
 
-    public Subject authenticate(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        throw new SamlUnauthorizedException("test"); // KUN FOR TEST - teste hva som skjer når subject er null.
-
-//        try {
-//            String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest.getCookies());
-//            return userInfoService.convertTokenToSubject(requestEksternSsoToken);
-//        } catch (SamlUnauthorizedException e) {
-//            removeSsoToken(httpServletRequest, httpServletResponse);
-//            throw e;
-//        }
+    public Subject authenticate(HttpServletRequest httpServletRequest) {
+        String requestEksternSsoToken = getRequestEksternSsoToken(httpServletRequest.getCookies());
+        return userInfoService.convertTokenToSubject(requestEksternSsoToken);
     }
 
     private String getRequestEksternSsoToken(Cookie[] cookies) throws SamlUnauthorizedException {

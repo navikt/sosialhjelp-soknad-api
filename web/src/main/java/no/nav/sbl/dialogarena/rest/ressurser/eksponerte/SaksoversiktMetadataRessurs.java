@@ -44,11 +44,7 @@ public class SaksoversiktMetadataRessurs {
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
         String fnr = SamlSubjectHandler.getUserId();
-        logger.info("DEBUG - fnr fra ny SAMLSubjecthandler er: " + fnr);
-
-
-
-        logger.info("Henter metadata for innsendte soknader uten oidc");
+        logger.debug("Henter metadata for innsendte soknader uten oidc");
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
 
@@ -60,9 +56,7 @@ public class SaksoversiktMetadataRessurs {
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
         String fnr = SamlSubjectHandler.getUserId();
-        logger.info("DEBUG - fnr fra ny SAMLSubjecthandler er: " + fnr);
-
-        logger.info("Henter metadata for ettersendelse uten oidc");
+        logger.debug("Henter metadata for ettersendelse uten oidc");
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
 
@@ -74,9 +68,7 @@ public class SaksoversiktMetadataRessurs {
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
         String fnr = SamlSubjectHandler.getUserId();
-        logger.info("DEBUG - fnr fra ny SAMLSubjecthandler er: " + fnr);
-
-        logger.info("Henter metadata for pabegynte uten oidc");
+        logger.debug("Henter metadata for pabegynte uten oidc");
 
         List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
 
