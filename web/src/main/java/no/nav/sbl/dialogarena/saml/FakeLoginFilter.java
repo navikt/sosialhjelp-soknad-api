@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.HashMap;
 
 import static org.slf4j.LoggerFactory.getLogger;
