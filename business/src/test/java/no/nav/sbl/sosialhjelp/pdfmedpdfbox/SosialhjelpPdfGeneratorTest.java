@@ -816,7 +816,6 @@ public class SosialhjelpPdfGeneratorTest {
         }
     }
 
-
     @Test
     public void skalGenererePdfA() throws Exception {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest");
@@ -843,14 +842,12 @@ public class SosialhjelpPdfGeneratorTest {
             else {
                 document.close();
                 System.out.println("The file " + file + " is not valid");
-                //for( ValidationResult.ValidationError error : result.getErrorsList() )
-                //    System.out.println(error.getErrorCode() + " : " + error.getDetails());
+                for( ValidationResult.ValidationError error : result.getErrorsList() )
+                    System.out.println(error.getErrorCode() + " : " + error.getDetails());
 
             }
         } catch (SyntaxValidationException e) {
-            //result = e.getResult();
             System.out.println("Exception when checking validity of pdf/a. Exception message: " + e.getMessage());
-
         }
         finally {
             file.deleteOnExit();
@@ -882,12 +879,10 @@ public class SosialhjelpPdfGeneratorTest {
             else {
                 document.close();
                 System.out.println("The file " + file + " is not valid");
-                //for( ValidationResult.ValidationError error : result.getErrorsList() )
-                //    System.out.println(error.getErrorCode() + " : " + error.getDetails());
-
+                for( ValidationResult.ValidationError error : result.getErrorsList() )
+                    System.out.println(error.getErrorCode() + " : " + error.getDetails());
             }
         } catch (SyntaxValidationException e) {
-            //result = e.getResult();
             System.out.println("Exception when checking validity of pdf/a. Exception message: " + e.getMessage());
 
         }
