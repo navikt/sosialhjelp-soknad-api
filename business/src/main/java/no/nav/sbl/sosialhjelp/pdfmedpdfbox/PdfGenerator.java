@@ -85,7 +85,7 @@ public class PdfGenerator {
     public PdfGenerator() throws IOException {
         this.currentStream = new PDPageContentStream(document, currentPage);
         this.y = calculateStartY();
-        this.addLogo(); //Fjerner logo midlertidig da den ikke virker for FSL
+        this.addLogo();
     }
 
     public byte[] finish() throws IOException {
