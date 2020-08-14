@@ -1,12 +1,14 @@
-package no.nav.sbl.dialogarena.filter;
+package no.nav.sbl.dialogarena.saml;
 
-import no.nav.modig.core.context.SubjectHandlerUtils;
+import no.nav.brukerdialog.security.domain.IdentType;
+import no.nav.common.auth.SsoToken;
+import no.nav.common.auth.Subject;
+import no.nav.common.auth.SubjectHandler;
 import org.slf4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -21,16 +23,18 @@ public class FakeLoginFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        if (isPathProtectedBySAML(request.getRequestURI())) {
+
+        Subject subject = null;
+        if (OpenAmLoginFilter.isPathProtectedBySAML(request.getRequestURI())) {
             if (request.getParameter("fnr") != null) {
                 request.getSession().setAttribute("fnr", request.getParameter("fnr"));
             }
             String fnr = getFnr(request);
-            SubjectHandlerUtils.setEksternBruker(fnr, 4, null);
+            subject = new Subject(fnr, IdentType.EksternBruker, SsoToken.eksternOpenAM("fakeLoginFilter-Token", new HashMap<String, String>()));
         }
-        filterChain.doFilter(servletRequest, servletResponse);
+        SubjectHandler.withSubject(subject, () -> filterChain.doFilter(servletRequest, servletResponse));
     }
 
     /**
@@ -49,16 +53,6 @@ public class FakeLoginFilter implements Filter {
         }
 
         return fnr;
-    }
-
-    public static final List<String> UNPROTECDED_BASE_PATHS = List.of(
-            "/sosialhjelp/soknad-api/metadata/ping",
-            "/sosialhjelp/soknad-api/metadata/oidc/",
-            "/sendsoknad/metadata/oidc/" // For integration-tests (vil bli fjernet med ny saml i PR #421 )
-    );
-
-    static boolean isPathProtectedBySAML(String requestPath) {
-        return UNPROTECDED_BASE_PATHS.stream().noneMatch(requestPath::startsWith);
     }
 
     @Override
