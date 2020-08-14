@@ -934,12 +934,6 @@
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>jempbox</artifactId>
                 <version>${jempbox.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
 
