@@ -57,4 +57,3 @@ Deretter bygg og push til Github Package Repository med kommandoene:
 docker build -t docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.3-jdk-11 .
 docker push docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.3-jdk-11
 ```
-

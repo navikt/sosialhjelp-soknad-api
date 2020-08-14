@@ -15,24 +15,22 @@ public class FakeLoginFilter implements Filter {
     private FilterConfig filterConfig;
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
     }
 
-    // Checkstyle tror det er redundante Exceptions
-    // CHECKSTYLE:OFF
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) servletRequest;
-        if (req.getRequestURI().matches("^(.*internal/selftest.*)|(.*index.html)|(.*feil.*)|((.*)\\.(js|css|jpg))")) {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        if (request.getRequestURI().matches("^(.*internal/selftest.*)|(.*index.html)|(.*feil.*)|((.*)\\.(js|css|jpg))")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
-        if (req.getParameter("fnr") != null) {
-            req.getSession().setAttribute("fnr", req.getParameter("fnr"));
+        if (request.getParameter("fnr") != null) {
+            request.getSession().setAttribute("fnr", request.getParameter("fnr"));
         }
 
-        String fnr  = getFnr(req);
+        String fnr  = getFnr(request);
         SubjectHandlerUtils.setEksternBruker(fnr, 4, null);
 
         filterChain.doFilter(servletRequest, servletResponse);

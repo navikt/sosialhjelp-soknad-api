@@ -63,7 +63,6 @@ public class SoknadsosialhjelpServer {
                 .at(contextPath)
                 .withLoginService(jaasLoginService)
                 .overrideWebXml(overrideWebXmlFile)
-                //.sslPort(PORT + 100)
                 .addDatasource(ds, "jdbc/SoknadInnsendingDS")
                 .port(listenPort)
                 .buildJetty();
