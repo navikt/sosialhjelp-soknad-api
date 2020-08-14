@@ -3,6 +3,11 @@ package no.nav.sbl.dialogarena.saml;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamlUnauthorizedException;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+
 public class OpenAMUserInfoServiceTest {
 
     @Test(expected = SamlUnauthorizedException.class)
@@ -11,7 +16,8 @@ public class OpenAMUserInfoServiceTest {
     }
 
     @Test
-    public void openAmAttributesToMap_withEmptyOpenAmAttribute_shouldThrowException() {
-        OpenAMUserInfoService.openAmAttributesToMap(new OpenAMUserInfoService.OpenAMAttributes());
+    public void openAmAttributesToMap_withEmptyOpenAmAttribute_shouldNotThrowException() {
+        Map<String, String> attributeMap = OpenAMUserInfoService.openAmAttributesToMap(new OpenAMUserInfoService.OpenAMAttributes());
+        assertEquals(attributeMap, new HashMap<>());
     }
 }
