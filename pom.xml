@@ -120,6 +120,7 @@
         <jaxb.version>2.3.1</jaxb.version>
         <soap.version>1.4.0</soap.version>
         <jakarta.version>2.3.2</jakarta.version>
+        <commons-logging>1.2</commons-logging>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -935,6 +936,13 @@
                 <artifactId>jempbox</artifactId>
                 <version>${jempbox.version}</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons-logging}</version>
+            </dependency>
+
 
 
             <!-- Avhengigheter med test scope -->
