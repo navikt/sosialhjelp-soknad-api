@@ -1012,12 +1012,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-jaas</artifactId>
-                <scope>test</scope>
-                <version>${jetty.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>

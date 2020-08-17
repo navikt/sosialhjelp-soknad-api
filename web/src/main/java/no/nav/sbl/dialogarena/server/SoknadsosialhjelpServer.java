@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
-//import org.eclipse.jetty.jaas.JAASLoginService;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +53,8 @@ public class SoknadsosialhjelpServer {
             databaseSchemaMigration(ds);
         }
 
-//        final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
-//        jaasLoginService.setLoginModuleName("openam");
         jetty = new Jetty.JettyBuilder()
                 .at(contextPath)
-//                .withLoginService(jaasLoginService)
                 .overrideWebXml(overrideWebXmlFile)
                 .addDatasource(ds, "jdbc/SoknadInnsendingDS")
                 .port(listenPort)
