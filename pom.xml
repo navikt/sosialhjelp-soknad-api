@@ -568,17 +568,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-loginmodule</artifactId>
-                <version>${modig-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.google.code.findbugs</groupId>
-                        <artifactId>jsr305</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-core</artifactId>
                 <version>${modig-security.version}</version>
             </dependency>
@@ -1021,12 +1010,6 @@
                 <artifactId>spring-test</artifactId>
                 <version>${spring.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-jaas</artifactId>
-                <scope>test</scope>
-                <version>${jetty.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
