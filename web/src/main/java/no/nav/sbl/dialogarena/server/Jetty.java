@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.server;
 
 import io.prometheus.client.exporter.MetricsServlet;
-import org.eclipse.jetty.jaas.JAASLoginService;
+//import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.plus.webapp.PlusConfiguration;
-import org.eclipse.jetty.security.SecurityHandler;
+//import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -62,7 +62,7 @@ public final class Jetty {
         private Optional<Integer> sslPort = Optional.empty();
         private WebAppContext context;
         private File overridewebXmlFile;
-        private JAASLoginService loginService;
+//        private JAASLoginService loginService;
         private Map<String, DataSource> dataSources = new HashMap<>();
 
 
@@ -91,10 +91,10 @@ public final class Jetty {
             return this;
         }
 
-        public final JettyBuilder withLoginService(JAASLoginService loginService) {
-            this.loginService = loginService;
-            return this;
-        }
+//        public final JettyBuilder withLoginService(JAASLoginService loginService) {
+//            this.loginService = loginService;
+//            return this;
+//        }
 
 
         public final JettyBuilder addDatasource(DataSource dataSource, String jndiName) {
@@ -156,7 +156,7 @@ public final class Jetty {
     private final File overrideWebXmlFile;
     private final String warPath;
     private final String contextPath;
-    private final JAASLoginService loginService;
+//    private final JAASLoginService loginService;
     public final Server server;
     public final WebAppContext context;
     private final Map<String, DataSource> dataSources;
@@ -192,7 +192,7 @@ public final class Jetty {
         this.port = builder.port;
         this.sslPort = builder.sslPort;
         this.contextPath = (builder.contextPath.startsWith("/") ? "" : "/") + builder.contextPath;
-        this.loginService = builder.loginService;
+//        this.loginService = builder.loginService;
 
         this.context = setupWebapp(builder.context);
         this.server = setupJetty(new Server());
@@ -209,11 +209,11 @@ public final class Jetty {
             webAppContext.setOverrideDescriptor(overrideWebXmlFile.getAbsolutePath());
         }
 
-        if (loginService != null) {
-            SecurityHandler securityHandler = webAppContext.getSecurityHandler();
-            securityHandler.setLoginService(loginService);
-            securityHandler.setRealmName(loginService.getName());
-        }
+//        if (loginService != null) {
+//            SecurityHandler securityHandler = webAppContext.getSecurityHandler();
+//            securityHandler.setLoginService(loginService);
+//            securityHandler.setRealmName(loginService.getName());
+//        }
 
         webAppContext.setConfigurationClasses(CONFIGURATION_CLASSES);
         Map<String, String> initParams = webAppContext.getInitParams();
