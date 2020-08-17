@@ -71,15 +71,15 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!--HttpSessionSecurityIntegrationFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
+    <!--OpenAmLoginFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
     <filter>
-        <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
-        <filter-class>no.nav.modig.security.filter.OpenAMLoginFilter</filter-class>
+        <filter-name>OpenAmLoginFilter</filter-name>
+        <filter-class>no.nav.sbl.dialogarena.saml.OpenAmLoginFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
-        <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <filter-name>OpenAmLoginFilter</filter-name>
+        <url-pattern>/metadata/*</url-pattern>
     </filter-mapping>
 
     <filter>

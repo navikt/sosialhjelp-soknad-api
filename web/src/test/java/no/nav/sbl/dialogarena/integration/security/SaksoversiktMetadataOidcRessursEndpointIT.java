@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityIT {
     public static final String BRUKER = "11111111111";
-    public static final String ANNEN_BRUKER = "12345679811";
+    public static final String ANNEN_BRUKER = "22222222222";
     private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @Before

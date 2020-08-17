@@ -2,7 +2,7 @@
   "applicationName": "sosialhjelp-soknad-api",
   "namespace": "teamdigisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api.dev-nav.no/sosialhjelp/soknad-api"
+    "https://sosialhjelp-soknad-api.dev.nav.no/sosialhjelp/soknad-api"
   ],
   "vaultKvPath": "/kv/preprod/sbs/sosialhjelp-soknad-api/q0",
   "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
