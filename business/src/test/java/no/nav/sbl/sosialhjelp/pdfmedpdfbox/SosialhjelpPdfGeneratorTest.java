@@ -155,6 +155,14 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
+    public void generatePdfWithVeryLongWords() {
+        JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
+        internalSoknad.getSoknad().getData().getBegrunnelse().withHvaSokesOm("a".repeat(1000));
+
+        sosialhjelpPdfGenerator.generate(internalSoknad, false);
+    }
+
+    @Test
     public void generatePdfWithEmoticons() {
         StringBuilder text = new StringBuilder();
 

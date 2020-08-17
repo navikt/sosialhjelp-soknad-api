@@ -287,6 +287,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>no.nav.common</groupId>
+                <artifactId>auth</artifactId>
+                <version>${nav-common.version}</version>
+            </dependency>
             <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
             <!--            <dependency>-->
             <!--                <groupId>no.nav.common</groupId>-->
@@ -562,11 +567,6 @@
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-lang</artifactId>
                 <version>${modig-lang.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-filter</artifactId>
-                <version>${modig-security.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>

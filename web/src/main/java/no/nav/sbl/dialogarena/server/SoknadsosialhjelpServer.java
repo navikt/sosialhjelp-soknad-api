@@ -22,7 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.setProperty;
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 
 public class SoknadsosialhjelpServer {
 
@@ -63,7 +62,6 @@ public class SoknadsosialhjelpServer {
                 .at(contextPath)
                 .withLoginService(jaasLoginService)
                 .overrideWebXml(overrideWebXmlFile)
-                //.sslPort(PORT + 100)
                 .addDatasource(ds, "jdbc/SoknadInnsendingDS")
                 .port(listenPort)
                 .buildJetty();
@@ -105,9 +103,6 @@ public class SoknadsosialhjelpServer {
         if (MockUtils.isTillatMockRessurs()){
             SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
         }
-
-        System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs og applikasjon som kjører uten oidc.
-
     }
 
     private boolean isRunningAsTestAppWithMockingActivated() {
