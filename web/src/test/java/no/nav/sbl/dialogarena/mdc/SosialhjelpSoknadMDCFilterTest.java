@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.mdc;
 
+import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,16 +18,15 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SosialhjelpSoknadMDCFilterTest {
-    static String SYSTEMUSER_USERNAME_KEY = "no.nav.modig.security.systemuser.username";
 
     @BeforeClass
     public static void setUp() {
-        System.setProperty(SYSTEMUSER_USERNAME_KEY, "srvuser");
+        System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, "srvuser");
     }
 
     @AfterClass
     public static void cleanUp() {
-        System.clearProperty(SYSTEMUSER_USERNAME_KEY);
+        System.clearProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
     }
 
     @Test
