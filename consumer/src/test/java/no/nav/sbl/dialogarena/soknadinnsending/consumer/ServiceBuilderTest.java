@@ -6,7 +6,7 @@ import org.junit.Test;
 public class ServiceBuilderTest {
     @Test
     public void skalByggeTjeneste(){
-        new ServiceBuilder<>(ServiceBuilderTest.class)
+        new ServiceBuilder<>(ServiceBuilderTestInterface.class)
                 .asStandardService()
                 .withTimeout()
                 .withAddressing()
