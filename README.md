@@ -27,34 +27,7 @@ Backenden kommer til å lagre hele søknaden som en json-fil (internalsoknad), o
 
 Ved innsending vil søknadsdata låses ned slik at man ikke kan endre dem mer (dette er for å unngå at det gjøres endringer etter at brukeren har trykket på send).
 
-### Bygging
-
-Applikasjonen bruker Oracle JDBC-driver og enkelte interne avhengigheter (feks: modig) som ikke er tilgjengelige fra byggserver. Den benytter seg derfor av
-et builder-image som inneholder alle avhengighetene, og kan hentes fra GitHub package registry i bygg-pipeline etter Docker login. Dette gjøre slik: 
-
-Last ned `m2_home.tar.gz` fra
-[Microsoft Teams](https://navno.sharepoint.com/sites/Digisos532/Shared%20Documents/Utviklingteamet/backend%20github%20relatert/.m2.tar.gz)
-til en lokal folder. Legg til en `Dockerfile` med følgende innhold: 
-```
-FROM maven:3.6.2-jdk-11
-
-WORKDIR /root
-
-COPY .m2.tar.gz .
-RUN tar xvzf .m2.tar.gz
-RUN rm .m2.tar.gz
-```
-
-Neste sted krever at man er logget inn mot `docker.pkg.github.com` lokalt med et GitHub personal access token som har scopet `write:packages` og
-SSO aktivert for `navikt`-organisasjonen:
-```
-docker login docker.pkg.github.com -u <brukernavn>
-```
-
-Deretter bygg og push til Github Package Repository med kommandoene:
-
-```
-docker build -t docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.3-jdk-11 .
-docker push docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.3-jdk-11
-```
-
+### Autentisering 
+Alle endepunkt er autentisering `Azure AD B2C` cookie validert via `token-support`, unntatt endepunktene i `SaksoversiktMetadataRessurs` som er validert med `EksternSSO` `SAML` token fra `OpenAM`. 
+Dette fordi `Saksoversikt-api` fortsatt er på SAML. 
+I tillegg krever noen endepunkter et `access-token` fra `idporten`, som brukeren får via `sosialhjelp-login-api`. Dette brukes mot `FIKS` og mot `Husbanken`.   

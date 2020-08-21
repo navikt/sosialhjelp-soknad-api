@@ -17,7 +17,7 @@ public class OidcSubjectHandlerService implements SubjectHandlerService {
     }
 
     public String getConsumerId() {
-        String consumerId = System.getProperty("no.nav.modig.security.systemuser.username");
+        String consumerId = System.getProperty("systemuser.username");
         return consumerId != null ? consumerId : "srvsoknadsosialhje";
     }
 
