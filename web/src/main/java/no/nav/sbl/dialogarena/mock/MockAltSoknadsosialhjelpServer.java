@@ -14,7 +14,7 @@ public class MockAltSoknadsosialhjelpServer {
         System.setProperty("mockAltProfil", "true");
         System.setProperty("logback.configurationFile", "logback-mock.xml");
 
-        File override = new File(Objects.requireNonNull(MockAltSoknadsosialhjelpServer.class.getClassLoader().getResource("override-web-mock.xml")).getFile());
+        File override = new File(Objects.requireNonNull(MockAltSoknadsosialhjelpServer.class.getClassLoader().getResource("override-web-mock-alt.xml")).getFile());
         SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, override, "/sosialhjelp/soknad-api", null);
 
         if (!isRunningOnGCP()) {
