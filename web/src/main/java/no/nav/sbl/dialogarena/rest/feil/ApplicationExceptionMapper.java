@@ -1,10 +1,11 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
-import no.nav.modig.core.exception.AuthorizationException;
-import no.nav.modig.core.exception.ModigException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -24,13 +25,14 @@ import static javax.ws.rs.core.Response.Status.*;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
 import static no.nav.sbl.dialogarena.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB;
 
 @Provider
-public class ApplicationExceptionMapper implements ExceptionMapper<ModigException> {
+public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSoknadApiException> {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationExceptionMapper.class);
 
     @Override
-    public Response toResponse(ModigException e) {
+    public Response toResponse(SosialhjelpSoknadApiException e) {
         Response.ResponseBuilder response;
         if (e instanceof UgyldigOpplastingTypeException) {
             response = status(UNSUPPORTED_MEDIA_TYPE);
@@ -38,6 +40,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
         } else if (e instanceof OpplastingException) {
             response = status(REQUEST_ENTITY_TOO_LARGE);
             logger.warn("Feilet opplasting", e);
+        } else if (e instanceof SamletVedleggStorrelseForStorException) {
+            response = status(REQUEST_ENTITY_TOO_LARGE);
+            logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på " + MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB + "MB overskrides.", e);
         } else if (e instanceof AuthorizationException) {
             response = status(FORBIDDEN);
             logger.warn("Ikke tilgang til ressurs", e);

@@ -29,7 +29,7 @@ public class InnsendtSoknadService {
     private Predicate<VedleggMetadata> lastetOpp = v -> v.status.er(Vedleggstatus.LastetOpp);
     private Predicate<VedleggMetadata> ikkeLastetOpp = lastetOpp.negate();
 
-    private DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy");
     private DateTimeFormatter tidFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public BehandlingsKjede hentBehandlingskjede(String behandlingsId) {

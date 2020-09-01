@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
@@ -35,8 +35,8 @@ public class SoknadOversiktRessurs {
     @GET
     @Path("/soknader")
     public List<SoknadOversikt> hentInnsendteSoknaderForBruker() {
-        String fnr = SubjectHandler.getUserIdFromToken();
-        logger.debug("Henter alle søknader for fnr {}", fnr);
+        String fnr = SubjectHandler.getUserId();
+        logger.debug("Henter alle søknader");
 
         List<SoknadOversikt> soknader = service.hentSvarUtSoknaderFor(fnr);
         logger.debug("Hentet {} søknader for bruker", soknader.size());

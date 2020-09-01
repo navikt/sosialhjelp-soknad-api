@@ -7,15 +7,15 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
-import no.nav.security.oidc.api.ProtectedWithClaims;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.Unprotected;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +27,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -81,7 +81,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
-        String fnr = OidcFeatureToggleUtils.getUserId();
+        String fnr = SubjectHandler.getUserId();
         Person person = personService.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
@@ -116,7 +116,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
-        String uid = OidcFeatureToggleUtils.getUserId();
+        String uid = SubjectHandler.getUserId();
         Person person = personService.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();
@@ -160,6 +160,13 @@ public class InformasjonRessurs {
                 klientlogger.debug(logg.melding());
                 break;
         }
+    }
+
+    @GET
+    @Path("/kommunelogg")
+    public String triggeKommunelogg(@QueryParam("kommunenummer") String kommunenummer) {
+        logger.info("Kommuneinfo trigget for {}: {}", kommunenummer, kommuneInfoService.kommuneInfo(kommunenummer));
+        return kommunenummer + " er logget. Sjekk kibana";
     }
 
     @Unprotected

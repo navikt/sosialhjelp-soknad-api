@@ -7,9 +7,8 @@
     </appender>
 
     <logger name="org.springframework" level="warn" />
-    <logger name="no.nav.modig.lang.reflect" level="warn" />
     <logger name="no.nav.sbl" level="debug" />
-    <logger name="no.nav.sbl.dialogarena.filter.FakeLoginFilter" level="info" />
+    <logger name="no.nav.sbl.dialogarena.saml.FakeLoginFilter" level="info" />
     <logger name="org.apache.cxf" level="info" />
     <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="info" />
     <logger name="org.apache.http.impl.client" level="info" />

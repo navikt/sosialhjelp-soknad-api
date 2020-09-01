@@ -1,22 +1,21 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AdresseSokConsumerMock {
 
@@ -67,10 +66,10 @@ public class AdresseSokConsumerMock {
     }
 
     private static AdressesokRespons getOrCreateCurrentUserResponse() {
-        AdressesokRespons response = responses.get(OidcFeatureToggleUtils.getUserId());
+        AdressesokRespons response = responses.get(SubjectHandler.getUserId());
         if (response == null){
             response = getDefaultRespons();
-            responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            responses.put(SubjectHandler.getUserId(), response);
         }
 
         return response;
@@ -80,16 +79,16 @@ public class AdresseSokConsumerMock {
         AdressesokRespons response = new AdressesokRespons();
 
         final AdresseData a1 = new AdresseData();
-        a1.kommunenummer = "1201";
-        a1.kommunenavn = "Bergen";
+        a1.kommunenummer = "0301";
+        a1.kommunenavn = "Oslo";
         a1.adressenavn = "SANNERGATA";
         a1.husnummerFra = "0001";
         a1.husnummerTil = "0010";
         a1.postnummer = "1337";
         a1.poststed = "Leet";
-        a1.geografiskTilknytning = "120102";
+        a1.geografiskTilknytning = "030102";
         a1.gatekode = "02081";
-        a1.bydel = "120102";
+        a1.bydel = "030102";
 
         response.adresseDataList = Collections.singletonList(a1);
 
@@ -160,10 +159,10 @@ public class AdresseSokConsumerMock {
         try {
             ObjectMapper mapper = new ObjectMapper();
             AdressesokRespons response = mapper.readValue(jsonAdressesokRespons, AdressesokRespons.class);
-            if (responses.get(OidcFeatureToggleUtils.getUserId()) == null){
-                responses.put(OidcFeatureToggleUtils.getUserId(), response);
+            if (responses.get(SubjectHandler.getUserId()) == null){
+                responses.put(SubjectHandler.getUserId(), response);
             } else {
-                responses.replace(OidcFeatureToggleUtils.getUserId(), response);
+                responses.replace(SubjectHandler.getUserId(), response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -172,6 +171,6 @@ public class AdresseSokConsumerMock {
 
     public static void resetAdresser(){
         AdressesokRespons defaultRespons = new AdressesokRespons();
-        responses.replace(OidcFeatureToggleUtils.getUserId(), defaultRespons);
+        responses.replace(SubjectHandler.getUserId(), defaultRespons);
     }
 }

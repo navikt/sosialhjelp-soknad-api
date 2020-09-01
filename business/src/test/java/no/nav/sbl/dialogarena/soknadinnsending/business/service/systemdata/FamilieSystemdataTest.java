@@ -13,16 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstand;
@@ -32,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,16 +33,11 @@ import java.util.List;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnSivilstatus;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
-import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.ENKE;
-import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
-import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SAMBOER;
-import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SEPARERT;
-import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SKILT;
-import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.UGIFT;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -87,6 +73,12 @@ public class FamilieSystemdataTest {
     private static final String FNR_BARN_2 = "33333333333";
     private static final boolean ER_FOLKEREGISTRERT_SAMMEN_BARN_2 = false;
     private static final Integer SAMVARSGRAD_BARN_2 = 25;
+
+    private static final String FORNAVN_BARN_3 = "Jula";
+    private static final String MELLOMNAVN_BARN_3 = "Varer Helt Til";
+    private static final String ETTERNAVN_BARN_3= "Påske";
+    private static final LocalDate FODSELSDATO_BARN_3 = LocalDate.parse("2003-02-05");
+    private static final Integer SAMVARSGRAD_BARN_3 = 30;
 
     private static final Barn BARN = new Barn()
             .withFornavn(FORNAVN_BARN)
@@ -137,6 +129,21 @@ public class FamilieSystemdataTest {
             .withSamvarsgrad(new JsonSamvarsgrad()
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(SAMVARSGRAD_BARN_2));
+
+    private static final JsonAnsvar JSON_ANSVAR_3_BRUKERREGISTRERT = new JsonAnsvar()
+            .withBarn(new JsonBarn()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withNavn(new JsonNavn()
+                            .withFornavn(FORNAVN_BARN_3)
+                            .withMellomnavn(MELLOMNAVN_BARN_3)
+                            .withEtternavn(ETTERNAVN_BARN_3))
+                    .withFodselsdato(FODSELSDATO_BARN_3.toString()))
+            .withBorSammenMed(new JsonBorSammenMed()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(false))
+            .withSamvarsgrad(new JsonSamvarsgrad()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(SAMVARSGRAD_BARN_3));
 
     private final ObjectWriter writer;
     {
@@ -284,9 +291,73 @@ public class FamilieSystemdataTest {
     }
 
     @Test
+    public void skalIkkeOverskriveBrukerregistrerteBarnNaarDetFinnesSystemBarn() throws JsonProcessingException {
+        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
+        jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
+                .withHarForsorgerplikt(new JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(true))
+                .withAnsvar(Arrays.asList(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT));
+        when(personService.hentBarn(anyString())).thenReturn(Arrays.asList(BARN, BARN_2));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(jsonInternalSoknad);
+
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "token");
+
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        ensureValidInternalSoknad(internalSoknad);
+
+        JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
+        JsonAnsvar ansvar = ansvarList.get(0);
+        JsonAnsvar ansvar_2 = ansvarList.get(1);
+        JsonAnsvar ansvar_3 = ansvarList.get(2);
+        assertThat(ansvar.getBarn().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(ansvar_2.getBarn().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(ansvar_3.getBarn().getKilde(), is(JsonKilde.BRUKER));
+        assertThatAnsvarIsCorrectlyConverted(BARN, JSON_ANSVAR);
+        assertThatAnsvarIsCorrectlyConverted(BARN_2, JSON_ANSVAR_2);
+        JsonBarn jsonBarn = ansvar_3.getBarn();
+        assertThat("fornavn", FORNAVN_BARN_3, is(jsonBarn.getNavn().getFornavn()));
+        assertThat("mellomnavn", MELLOMNAVN_BARN_3, is(jsonBarn.getNavn().getMellomnavn()));
+        assertThat("etternavn", ETTERNAVN_BARN_3, is(jsonBarn.getNavn().getEtternavn()));
+    }
+
+    @Test
+    public void skalIkkeOverskriveBrukerregistrerteBarnEllerForsorgerpliktVerdiNaarDetIkkeFinnesSystemBarn() throws JsonProcessingException {
+        when(personService.hentBarn(anyString())).thenReturn(Collections.emptyList());
+        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
+        jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
+                .withHarForsorgerplikt(new JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.BRUKER)
+                        .withVerdi(true))
+                .withAnsvar(Arrays.asList(JSON_ANSVAR_3_BRUKERREGISTRERT));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
+                .withJsonInternalSoknad(jsonInternalSoknad);
+
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "token");
+
+        String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
+        ensureValidInternalSoknad(internalSoknad);
+
+        JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.BRUKER));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
+        JsonAnsvar ansvar = ansvarList.get(0);
+        assertThat(ansvar.getBarn().getKilde(), is(JsonKilde.BRUKER));
+        JsonBarn jsonBarn = ansvar.getBarn();
+        assertThat("fornavn", FORNAVN_BARN_3, is(jsonBarn.getNavn().getFornavn()));
+        assertThat("mellomnavn", MELLOMNAVN_BARN_3, is(jsonBarn.getNavn().getMellomnavn()));
+        assertThat("etternavn", ETTERNAVN_BARN_3, is(jsonBarn.getNavn().getEtternavn()));
+    }
+
+    @Test
     public void skalIkkeOverskriveSamvaersgradOgHarDeltBostedOgBarnebidrag() throws JsonProcessingException {
         when(personService.hentBarn(anyString())).thenReturn(Arrays.asList(BARN, BARN_2));
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithBarnWithUserFilledInfo());
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn());
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -324,7 +395,7 @@ public class FamilieSystemdataTest {
         assertThat(sivilstatus, nullValue());
     }
 
-    private JsonInternalSoknad createJsonInternalSoknadWithBarnWithUserFilledInfo() {
+    private JsonInternalSoknad createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn() {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
                 .withHarForsorgerplikt(new JsonHarForsorgerplikt()
@@ -334,6 +405,16 @@ public class FamilieSystemdataTest {
                 .withBarnebidrag(new JsonBarnebidrag()
                         .withKilde(JsonKildeBruker.BRUKER)
                         .withVerdi(JsonBarnebidrag.Verdi.BEGGE));
+        return jsonInternalSoknad;
+    }
+
+    private JsonInternalSoknad createJsonInternalSoknadWithBarn(List<JsonAnsvar> ansvar) {
+        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
+        jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
+                .withHarForsorgerplikt(new JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(true))
+                .withAnsvar(ansvar);
         return jsonInternalSoknad;
     }
 

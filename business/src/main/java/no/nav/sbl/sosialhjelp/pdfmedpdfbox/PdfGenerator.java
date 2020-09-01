@@ -71,7 +71,7 @@ public class PdfGenerator {
     public PdfGenerator() throws IOException {
         this.currentStream = new PDPageContentStream(document, currentPage);
         this.y = calculateStartY();
-        this.addLogo();
+        // this.addLogo(); Fjerner logo midlertidig da den ikke virker for FSL
     }
 
     public byte[] finish() throws IOException {
@@ -261,11 +261,20 @@ public class PdfGenerator {
                         lastSpace = spaceIndex;
                     }
                     subString = line.substring(0, lastSpace);
-                    // One more check to see if line is too long
                     size = fontSize * font.getStringWidth(subString) / 1000;
+                    // Noen ord, eks en del URLer, er for lange til å kunne passe på en enkelt linje. Vi deler de opp slik at mest mulig av ordet får plass på en linje. "enkel" kode over lesbarhet.
                     if (size > PdfGenerator.WIDTH_OF_CONTENT_COLUMN) {
-                        lines.add(subString.substring(0, 90));
-                        lines.add(subString.substring(90));
+                        String word = subString;
+                        int lastSplit = 0;
+                        for (int i = 0; i < word.length()-1; i++) {
+                            // Check if next character will make line too long
+                            if ((fontSize * font.getStringWidth(word.substring(lastSplit, i+1) ) / 1000) > PdfGenerator.WIDTH_OF_CONTENT_COLUMN) {
+                                lines.add(word.substring(lastSplit, i));
+                                lastSplit = i;
+                            }
+                        }
+                        lines.add(word.substring(lastSplit));
+
                     } else {
                         lines.add(subString);
                     }

@@ -3,8 +3,9 @@ package no.nav.sbl.dialogarena.rest.ressurser.okonomi;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.VedleggFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonOkonomiUtils;
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -13,11 +14,15 @@ import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
@@ -27,10 +32,18 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskGruppeMapper.getGruppe;
-import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.*;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllFormuerToJsonOkonomi;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllInntekterToJsonOkonomi;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllInntekterToJsonOkonomiUtbetalinger;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllOpplysningUtgifterToJsonOkonomi;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllOversiktUtgifterToJsonOkonomi;
+import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskeOpplysningerMapper.addAllUtbetalingerToJsonOkonomi;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggMapper.mapToVedleggFrontend;
-import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.*;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.isInSoknadJson;
+import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 
 @Controller
@@ -53,7 +66,7 @@ public class OkonomiskeOpplysningerRessurs {
     public VedleggFrontends hentOkonomiskeOpplysninger(@PathParam("behandlingsId") String behandlingsId){
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
 
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         List<JsonVedlegg> jsonVedleggs = getVedleggFromInternalSoknad(soknad);
@@ -68,13 +81,14 @@ public class OkonomiskeOpplysningerRessurs {
 
         return new VedleggFrontends().withOkonomiskeOpplysninger(jsonVedleggs.stream()
                 .map(vedlegg -> mapToVedleggFrontend(vedlegg, jsonOkonomi, opplastedeVedlegg)).collect(Collectors.toList()))
-                .withSlettedeVedlegg(slettedeVedlegg);
+                .withSlettedeVedlegg(slettedeVedlegg)
+                .withIsOkonomiskeOpplysningerBekreftet(JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet(jsonOkonomi));
     }
 
     @PUT
     public void updateOkonomiskOpplysning(@PathParam("behandlingsId") String behandlingsId, VedleggFrontend vedleggFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        final String eier = SubjectHandler.getUserId();
         final SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         final JsonOkonomi jsonOkonomi = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi();
 
@@ -84,7 +98,11 @@ public class OkonomiskeOpplysningerRessurs {
 
             switch (soknadPath) {
                 case "utbetaling":
-                    addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    if(soknadType.equalsIgnoreCase(UTBETALING_HUSBANKEN)) {
+                        addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN);
+                    } else {
+                        addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
+                    }
                     break;
                 case "opplysningerUtgift":
                     addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType);
@@ -168,10 +186,12 @@ public class OkonomiskeOpplysningerRessurs {
                 .setStatus(vedleggFrontend.vedleggStatus);
     }
 
+    @SuppressWarnings("WeakerAccess")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class VedleggFrontends {
         public List<VedleggFrontend> okonomiskeOpplysninger;
         public List<VedleggFrontend> slettedeVedlegg;
+        public boolean isOkonomiskeOpplysningerBekreftet;
 
         public VedleggFrontends withOkonomiskeOpplysninger(List<VedleggFrontend> okonomiskeOpplysninger) {
             this.okonomiskeOpplysninger = okonomiskeOpplysninger;
@@ -180,6 +200,11 @@ public class OkonomiskeOpplysningerRessurs {
 
         public VedleggFrontends withSlettedeVedlegg(List<VedleggFrontend> slettedeVedlegg) {
             this.slettedeVedlegg = slettedeVedlegg;
+            return this;
+        }
+
+        public VedleggFrontends withIsOkonomiskeOpplysningerBekreftet(boolean isOkonomiskeOpplysningerBekreftet) {
+            this.isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet;
             return this;
         }
     }

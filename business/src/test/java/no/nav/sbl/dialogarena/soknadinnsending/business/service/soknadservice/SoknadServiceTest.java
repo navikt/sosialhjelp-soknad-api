@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
@@ -20,18 +20,16 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,9 +45,11 @@ public class SoknadServiceTest {
     @Mock
     private SystemdataUpdater systemdataUpdater;
     @Mock
-    SoknadMetricsService soknadMetricsService;
+    private SoknadMetricsService soknadMetricsService;
     @Mock
-    InnsendingService innsendingService;
+    private InnsendingService innsendingService;
+    @Mock
+    private TextService textService;
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
@@ -60,9 +60,7 @@ public class SoknadServiceTest {
     @SuppressWarnings("unchecked")
     @Before
     public void before() {
-        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test
@@ -71,10 +69,18 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
         soknadService.startSoknad("");
 
-        String bruker = OidcFeatureToggleUtils.getUserId();
+        String bruker = SubjectHandler.getUserId();
         verify(henvendelsesConnector).startSoknad(eq(bruker));
-        verify(soknadUnderArbeidRepository).opprettSoknad(any(SoknadUnderArbeid.class), eq(bruker));
+        ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
+        verify(soknadUnderArbeidRepository).opprettSoknad(argument.capture(), eq(bruker));
+        List<JsonOkonomibekreftelse> bekreftelser = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
+        assertThat(bekreftelser.stream().anyMatch(bekreftelse -> harBekreftelseFor(bekreftelse, UTBETALING_SKATTEETATEN_SAMTYKKE))).isFalse();
+        assertThat(bekreftelser.stream().anyMatch(bekreftelse -> harBekreftelseFor(bekreftelse, BOSTOTTE_SAMTYKKE))).isFalse();
         DateTimeUtils.setCurrentMillisSystem();
+    }
+
+    private boolean harBekreftelseFor(JsonOkonomibekreftelse bekreftelse, String bekreftelsesType) {
+        return bekreftelse.getVerdi() && bekreftelse.getType().equalsIgnoreCase(bekreftelsesType);
     }
 
     @Test

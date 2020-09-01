@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
-import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -69,11 +68,6 @@ public class LagringsScheduler {
                 if (harGaattForLangTid()) {
                     logger.warn("Jobben har kjørt i mer enn {} ms. Den blir derfor terminert", SCHEDULE_INTERRUPT_MS);
                     metrikk.addFieldToReport("avbruttPgaTid", true);
-                    return;
-                }
-                if (!SuspendServlet.isRunning()) {
-                    logger.warn("Avbryter jobben da appen skal suspendes");
-                    metrikk.addFieldToReport("avbruttPgaAppErSuspendert", true);
                     return;
                 }
             } else {

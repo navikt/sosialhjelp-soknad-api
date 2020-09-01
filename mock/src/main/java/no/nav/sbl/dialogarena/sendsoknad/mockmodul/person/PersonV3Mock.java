@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
@@ -15,7 +15,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.util.HashMap;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +39,7 @@ public class PersonV3Mock {
             String midlertidigAdresseBnr = node.at("/person/midlertidigPostadresse/strukturertAdresse/bnr").textValue();
             String midlertidigAdresseKommunenummer = node.at("/person/midlertidigPostadresse/strukturertAdresse/kommunenummer").textValue();
 
-            Bruker defaultPerson = getDefaultPerson();
+            Bruker defaultPerson = getDefaultPerson(false);
             int husnummer;
             try {
                 husnummer = Integer.parseInt(husnr);
@@ -64,7 +64,7 @@ public class PersonV3Mock {
             midlertidigMatrikkeladresse.withKommunenummer(midlertidigAdresseKommunenummer);
 
 
-            responses.put(OidcFeatureToggleUtils.getUserId(), defaultPerson);
+            responses.put(SubjectHandler.getUserId(), defaultPerson);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -72,11 +72,10 @@ public class PersonV3Mock {
     }
 
     public PersonV3 personV3Mock() {
-
         PersonV3 mock = mock(PersonV3.class);
 
         try {
-            when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(OidcFeatureToggleUtils.getUserId()));
+            when(mock.hentPerson(any(HentPersonRequest.class))).thenAnswer((invocationOnMock) -> createPersonV3HentPersonRequest(SubjectHandler.getUserId()));
         } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
         }
@@ -84,14 +83,19 @@ public class PersonV3Mock {
         return mock;
     }
 
-
     public static HentPersonResponse createPersonV3HentPersonRequest(String userId) {
         HentPersonResponse response = new HentPersonResponse();
-        response.setPerson(responses.getOrDefault(userId, getDefaultPerson()));
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson(false)));
         return response;
     }
 
-    public static Bruker getDefaultPerson() {
+    public static HentPersonResponse createPersonV3HentPersonRequestForIntegrationTest(String userId) {
+        HentPersonResponse response = new HentPersonResponse();
+        response.setPerson(responses.getOrDefault(userId, getDefaultPerson(true)));
+        return response;
+    }
+
+    public static Bruker getDefaultPerson(boolean forIntegrationTest) {
         Bruker person = genererPersonMedGyldigIdentOgNavn("01234567890", "Donald", "D.", "Mockmann");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 
@@ -100,8 +104,10 @@ public class PersonV3Mock {
         landkoder.setValue("NOR");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
-        person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
-        person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
+        if (!forIntegrationTest) {
+            person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
+            person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
+        }
 
         return person;
     }

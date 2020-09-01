@@ -1,10 +1,16 @@
 package no.nav.sbl.dialogarena.rest.ressurser.eksponerte;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.saml.SamlSubjectHandler;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
-import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingerRespons;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendteSoknaderRespons;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegyntSoknad;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespons;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PingRespons;
+import no.nav.security.token.support.core.api.Unprotected;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
@@ -36,7 +42,7 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        String fnr = SamlSubjectHandler.getUserId();
         logger.debug("Henter metadata for innsendte soknader uten oidc");
 
         List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
@@ -48,7 +54,7 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/ettersendelse")
     public EttersendingerRespons hentSoknaderBrukerKanEttersendePa() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        String fnr = SamlSubjectHandler.getUserId();
         logger.debug("Henter metadata for ettersendelse uten oidc");
 
         List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
@@ -60,7 +66,7 @@ public class SaksoversiktMetadataRessurs {
     @GET
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        String fnr = SamlSubjectHandler.getUserId();
         logger.debug("Henter metadata for pabegynte uten oidc");
 
         List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);

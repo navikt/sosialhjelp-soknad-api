@@ -1,9 +1,8 @@
 package no.nav.sbl.dialogarena.oidc;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
-import no.nav.security.oidc.jaxrs.OidcContainerRequestFilter;
+import no.nav.security.token.support.jaxrs.JwtTokenContainerRequestFilter;
 import org.glassfish.jersey.server.wadl.processor.OptionsMethodProcessor;
 import org.glassfish.jersey.server.wadl.processor.WadlModelProcessor;
 
@@ -14,23 +13,23 @@ import java.util.Collections;
 import java.util.List;
 
 public class OidcResourceFilteringFeature implements DynamicFeature {
-    private static final List<Class> WHITELISTED_CLASSES = Collections.singletonList(WadlModelProcessor.OptionsHandler.class); // Add Resource-classes from external libraries we need to use but can't annotate with @unprotected.
-    private static final List<Class> WHITELISTED_PARENT_CLASSES = Collections.singletonList(OptionsMethodProcessor.class);
+    private static final List<Class> ALLOWED_CLASSES = Collections.singletonList(WadlModelProcessor.OptionsHandler.class); // Add Resource-classes from external libraries we need to use but can't annotate with @unprotected.
+    private static final List<Class> ALLOWED_PARENT_CLASSES = Collections.singletonList(OptionsMethodProcessor.class);
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-        if( !OidcFeatureToggleUtils.isRunningWithOidc() || isWhitelistedInProd(resourceInfo) || isWhitelistedWhenNotRunningInProd()) {
+        if(isClassAllowedInProd(resourceInfo) || isAllowedWhenNotRunningInProd()) {
             return;
         }
-        context.register(OidcContainerRequestFilter.class);
+        context.register(JwtTokenContainerRequestFilter.class);
     }
 
-    private boolean isWhitelistedInProd(ResourceInfo resourceInfo) {
-        return WHITELISTED_CLASSES.contains(resourceInfo.getResourceClass())
-                || WHITELISTED_PARENT_CLASSES.contains(resourceInfo.getResourceClass().getEnclosingClass());
+    private boolean isClassAllowedInProd(ResourceInfo resourceInfo) {
+        return ALLOWED_CLASSES.contains(resourceInfo.getResourceClass())
+                || ALLOWED_PARENT_CLASSES.contains(resourceInfo.getResourceClass().getEnclosingClass());
     }
 
-    private boolean isWhitelistedWhenNotRunningInProd() {
+    private boolean isAllowedWhenNotRunningInProd() {
         return !ServiceUtils.isRunningInProd() && (isOidcMock() || MockUtils.isTillatMockRessurs());
     }
 

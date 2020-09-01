@@ -7,10 +7,9 @@ import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespons;
-import no.nav.security.oidc.OIDCConstants;
-import no.nav.security.oidc.test.support.JwtTokenGenerator;
+import no.nav.security.token.support.core.JwtTokenConstants;
+import no.nav.security.token.support.test.JwtTokenGenerator;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.ws.rs.client.Invocation;
@@ -20,14 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityIT {
     public static final String BRUKER = "11111111111";
-    public static final String ANNEN_BRUKER = "12345679811";
+    public static final String ANNEN_BRUKER = "22222222222";
     private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
-
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        beforeClass(true);
-    }
 
     @Before
     public void setup() throws Exception {
@@ -91,7 +84,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
         Invocation.Builder builder = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget);
 
         if(signedJWT != null) {
-            builder.header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize());
+            builder.header(JwtTokenConstants.AUTHORIZATION_HEADER, "Bearer " + signedJWT.serialize());
         }
 
         return builder.buildGet()

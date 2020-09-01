@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 @Configuration
 public class IntegrationConfig {
@@ -21,7 +22,9 @@ public class IntegrationConfig {
         return beanFactory -> {
             MOCKS.clear();
             try {
-                ImmutableSet<ClassPath.ClassInfo> tjenester = ClassPath.from(IntegrationConfig.class.getClassLoader()).getTopLevelClasses("no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig");
+                ImmutableSet<ClassPath.ClassInfo> tjenester = ClassPath
+                        .from(IntegrationConfig.class.getClassLoader())
+                        .getTopLevelClasses("no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig");
                 System.out.println(tjenester);
                 for (ClassPath.ClassInfo classInfo : tjenester) {
                     for (Method method: classInfo.load().getMethods()) {
@@ -41,6 +44,9 @@ public class IntegrationConfig {
             NavMessageSource mock = Mockito.mock(NavMessageSource.class);
             String name = "navMessageSource";
             MOCKS.put(name, mock);
+            Properties properties = Mockito.mock(Properties.class);
+            Mockito.when(properties.getProperty(Mockito.anyString())).thenReturn("mock");
+            Mockito.when(mock.getBundleFor(Mockito.anyString(), Mockito.any())).thenReturn(properties);
             beanFactory.registerSingleton(name, mock);
         };
     }

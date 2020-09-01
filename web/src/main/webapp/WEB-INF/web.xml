@@ -71,24 +71,24 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!--HttpSessionSecurityIntegrationFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
+    <!--OpenAmLoginFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
     <filter>
-        <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
-        <filter-class>no.nav.modig.security.filter.OpenAMLoginFilter</filter-class>
+        <filter-name>OpenAmLoginFilter</filter-name>
+        <filter-class>no.nav.sbl.dialogarena.saml.OpenAmLoginFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
-        <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <filter-name>OpenAmLoginFilter</filter-name>
+        <url-pattern>/metadata/*</url-pattern>
     </filter-mapping>
 
     <filter>
-        <filter-name>MDCFilter</filter-name>
-        <filter-class>no.nav.modig.presentation.logging.session.MDCFilter</filter-class>
+        <filter-name>SosialhjelpSoknadMDCFilter</filter-name>
+        <filter-class>no.nav.sbl.dialogarena.mdc.SosialhjelpSoknadMDCFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
-        <filter-name>MDCFilter</filter-name>
+        <filter-name>SosialhjelpSoknadMDCFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
@@ -149,42 +149,5 @@
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
-
-    <filter>
-        <filter-name>basicAuthenticationFilter</filter-name>
-        <filter-class>no.nav.sbl.dialogarena.common.suspend.BasicAuthenticationFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>basicAuthenticationFilter</filter-name>
-        <url-pattern>/management/suspend</url-pattern>
-    </filter-mapping>
-    <servlet>
-        <servlet-name>isAlive</servlet-name>
-        <servlet-class>no.nav.sbl.dialogarena.common.suspend.IsAliveServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>isAlive</servlet-name>
-        <url-pattern>/internal/isAlive</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>debug</servlet-name>
-        <servlet-class>no.nav.sbl.dialogarena.selftest.DebugServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>debug</servlet-name>
-        <url-pattern>/internal/debug</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>suspend</servlet-name>
-        <servlet-class>no.nav.sbl.dialogarena.common.suspend.SuspendServlet</servlet-class>
-        <init-param>
-            <param-name>shutdownTimeMs</param-name>
-            <param-value>25000</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>suspend</servlet-name>
-        <url-pattern>/management/suspend</url-pattern>
-    </servlet-mapping>
 
 </web-app>

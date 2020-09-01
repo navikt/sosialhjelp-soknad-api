@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 
@@ -23,7 +23,7 @@ public class XsrfGenerator {
     }
 
     public static String generateXsrfToken(String behandlingsId, String date) {
-            return generateXsrfToken(behandlingsId, date, OidcFeatureToggleUtils.getToken());
+            return generateXsrfToken(behandlingsId, date, SubjectHandler.getToken());
     }
 
     public static String generateXsrfToken(String behandlingsId, String date, String token) {
@@ -34,7 +34,7 @@ public class XsrfGenerator {
             hmac.init(secretKey);
             return Base64.encodeBase64URLSafeString(hmac.doFinal(signKey.getBytes()));
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
-            throw new ApplicationException("Kunne ikke generere token: ", e);
+            throw new SosialhjelpSoknadApiException("Kunne ikke generere token: ", e);
         }
     }
 

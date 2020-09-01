@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
 import org.slf4j.Logger;
@@ -14,6 +14,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
@@ -60,13 +62,13 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
     }
 
     private Invocation.Builder lagRequest(String endpoint) {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
         WebTarget b = client.target(endpoint);
 
         return b.request()
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId);
+                .header(HEADER_CALL_ID, callId)
+                .header(HEADER_CONSUMER_ID, consumerId);
     }
 }

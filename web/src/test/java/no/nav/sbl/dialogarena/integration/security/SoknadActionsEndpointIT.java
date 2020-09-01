@@ -4,10 +4,9 @@ import com.nimbusds.jwt.SignedJWT;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.security.oidc.OIDCConstants;
-import no.nav.security.oidc.test.support.JwtTokenGenerator;
+import no.nav.security.token.support.core.JwtTokenConstants;
+import no.nav.security.token.support.test.JwtTokenGenerator;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.ws.rs.client.Entity;
@@ -18,12 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
-    private static final String DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN = "04031659235"; // Ikke ekteperson
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        beforeClass(true);
-    }
+    private static final String DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN = "22222222222";
 
     @Before
     public void setup() throws Exception {
@@ -55,19 +49,18 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
         Invocation.Builder builder = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget);
 
         if(token != null) {
-            builder.header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token);
+            builder.header(JwtTokenConstants.AUTHORIZATION_HEADER, "Bearer " + token);
         }
 
         return builder.buildGet()
                 .invoke();
     }
 
-
     private Response sendPostRequest(SoknadTester soknadTester, String subUrl, Entity entity, String token, String xhrHeader){
         Invocation.Builder builder = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget);
 
         if(token != null) {
-            builder.header(OIDCConstants.AUTHORIZATION_HEADER, "Bearer " + token);
+            builder.header(JwtTokenConstants.AUTHORIZATION_HEADER, "Bearer " + token);
         }
         if(xhrHeader != null) {
             builder.header("X-XSRF-TOKEN", xhrHeader);

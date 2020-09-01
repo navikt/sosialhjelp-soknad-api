@@ -3,6 +3,7 @@ package no.nav.sbl.sosialhjelp.pdf;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
@@ -60,7 +61,21 @@ public final class HandlebarContext {
         return erEttersending;
     }
 
-    public String getEier() { return eier; }
+    public boolean getHarSystemregistrerteBarn() {
+        return internalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt().getAnsvar().stream()
+                .anyMatch(ansvar -> ansvar.getBarn().getKilde().equals(JsonKilde.SYSTEM));
+    }
+
+    public long getAntallSystemregistrerteBarn() {
+        return internalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt().getAnsvar().stream()
+                .filter(ansvar -> ansvar.getBarn().getKilde().equals(JsonKilde.SYSTEM))
+                .count();
+    }
+
+    public boolean getHarBrukerregistrerteBarn() {
+        return internalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt().getAnsvar().stream()
+                .anyMatch(ansvar -> ansvar.getBarn().getKilde().equals(JsonKilde.BRUKER));
+    }
 
     public Collection<InntektEllerUtgiftType> getFormuetyper() {
         final List<JsonOkonomioversiktFormue> formue = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getFormue();

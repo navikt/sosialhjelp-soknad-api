@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
 import org.apache.cxf.helpers.IOUtils;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +31,7 @@ public class SkattbarInntektConsumerMock {
         SkattbarInntektConsumer mock = mock(SkattbarInntektConsumer.class);
 
         when(mock.hentSkattbarInntekt(anyString()))
-                .thenAnswer((invocationOnMock) -> getOrDefaultResponse(OidcFeatureToggleUtils.getUserId()));
+                .thenAnswer((invocationOnMock) -> getOrDefaultResponse(SubjectHandler.getUserId()));
 
         return mock;
     }

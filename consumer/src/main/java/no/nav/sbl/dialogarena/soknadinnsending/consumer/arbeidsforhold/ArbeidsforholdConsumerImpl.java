@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
@@ -23,6 +23,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_TOKEN;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_PERSONIDENT;
+import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
@@ -44,12 +49,12 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
     @Override
     public void ping() {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
         Invocation.Builder request = client.target(endpoint + "ping").request()
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId);
+                .header(HEADER_CALL_ID, callId)
+                .header(HEADER_CONSUMER_ID, consumerId);
 
         try (Response response = request.options()) {
             if (response.getStatus() != 200) {
@@ -86,7 +91,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     }
 
     private Invocation.Builder lagRequest(String endpoint, String fodselsnummer) {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         FssToken fssToken = stsConsumer.getFSSToken();
         Sokeperiode sokeperiode = lagSokePeriode();
@@ -97,11 +102,11 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
                 .queryParam("ansettelsesperiodeFom", sokeperiode.fom.format(ISO_LOCAL_DATE))
                 .queryParam("ansettelsesperiodeTom", sokeperiode.tom.format(ISO_LOCAL_DATE))
                 .request()
-                .header("Authorization", BEARER + OidcFeatureToggleUtils.getToken()) // brukers token
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
-                .header("Nav-Consumer-Token", BEARER + fssToken.getAccessToken())
-                .header("Nav-Personident", fodselsnummer);
+                .header(AUTHORIZATION.name(), BEARER + SubjectHandler.getToken()) // brukers token
+                .header(HEADER_CALL_ID, callId)
+                .header(HEADER_CONSUMER_ID, consumerId)
+                .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccessToken())
+                .header(HEADER_NAV_PERSONIDENT, fodselsnummer);
     }
 
     private Sokeperiode lagSokePeriode(){

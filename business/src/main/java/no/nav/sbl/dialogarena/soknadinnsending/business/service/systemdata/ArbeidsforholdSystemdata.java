@@ -42,10 +42,10 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         internalSoknad.getSoknad().getData().getArbeid().setForhold(innhentSystemArbeidsforhold(eier));
 
-        updateVedleggForventninger(internalSoknad);
+        updateVedleggForventninger(internalSoknad, textService);
     }
 
-    private void updateVedleggForventninger(JsonInternalSoknad internalSoknad) {
+    public static void updateVedleggForventninger(JsonInternalSoknad internalSoknad, TextService textService) {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         List<JsonOkonomioversiktInntekt> inntekter = internalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         List<JsonVedlegg> jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad);
@@ -65,7 +65,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         }
     }
 
-    private boolean typeIsInList(List<JsonVedlegg> jsonVedleggs, String vedleggstype) {
+    private static boolean typeIsInList(List<JsonVedlegg> jsonVedleggs, String vedleggstype) {
         return jsonVedleggs.stream().anyMatch(jsonVedlegg -> jsonVedlegg.getType().equals(vedleggstype));
     }
 

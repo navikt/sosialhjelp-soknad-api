@@ -14,8 +14,6 @@
 
     <logger name="org.springframework" level="warn"></logger>
 
-    <logger name="no.nav.modig.lang.reflect" level="warn"></logger>
-
     <logger name="no.nav.sbl.dialogarena.config" level="info"></logger>
 
     <logger name="org.apache.pdfbox" level="error"></logger>
@@ -25,8 +23,6 @@
     <logger name="klientlogger" level="debug"></logger>
 
     <logger name="org.apache.http.impl.client" level="info"></logger>
-
-    <logger name="no.nav.modig.security.sts.client.NAVSTSClient" level="OFF"></logger>
 
     <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="OFF"></logger>
 

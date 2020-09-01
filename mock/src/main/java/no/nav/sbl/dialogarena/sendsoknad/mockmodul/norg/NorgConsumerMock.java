@@ -4,15 +4,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.mockito.invocation.InvocationOnMock;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,13 +31,13 @@ public class NorgConsumerMock {
 
     public static RsNorgEnhet getOrCreateCurrentUserResponse(InvocationOnMock invocationOnMock){
 
-        Map<String, RsNorgEnhet> rsNorgEnhetMap = responses.get(OidcFeatureToggleUtils.getUserId());
+        Map<String, RsNorgEnhet> rsNorgEnhetMap = responses.get(SubjectHandler.getUserId());
         if (rsNorgEnhetMap == null){
             rsNorgEnhetMap = getDefaultMap();
-            responses.put(OidcFeatureToggleUtils.getUserId(), rsNorgEnhetMap);
+            responses.put(SubjectHandler.getUserId(), rsNorgEnhetMap);
         }
 
-        String argumentAt = invocationOnMock.getArgumentAt(0, String.class);
+        String argumentAt = invocationOnMock.getArgument(0);
         return rsNorgEnhetMap.get(argumentAt);
     }
 
@@ -52,10 +52,10 @@ public class NorgConsumerMock {
 
     private static Map<String, RsNorgEnhet> getDefaultMap(){
         return new ImmutableMap.Builder<String, RsNorgEnhet>()
-                .put("120102", new RsNorgEnhet().withEnhetId(100000250)
-                        .withEnhetNr("1209")
-                        .withNavn("NAV Bergenhus")
-                        .withOrgNrTilKommunaltNavKontor("976830563"))
+                .put("030102", new RsNorgEnhet().withEnhetId(100000250)
+                        .withEnhetNr("0315")
+                        .withNavn("NAV Grünerløkka")
+                        .withOrgNrTilKommunaltNavKontor("811213322"))
                 .put("0106", getKommuneResponse("Fredrikstad", "0106"))
                 .put("0701", getKommuneResponse("Horten", "0701"))
                 .put("0101", getKommuneResponse("Halden", "0101"))
@@ -80,11 +80,11 @@ public class NorgConsumerMock {
 
             Map<String, RsNorgEnhet> map = mapper.readValue(rsNorgEnhetMap, typeRef);
 
-            Map<String, RsNorgEnhet> response = responses.get(OidcFeatureToggleUtils.getUserId());
+            Map<String, RsNorgEnhet> response = responses.get(SubjectHandler.getUserId());
             if (response == null){
-                responses.put(OidcFeatureToggleUtils.getUserId(), map);
+                responses.put(SubjectHandler.getUserId(), map);
             } else {
-                responses.replace(OidcFeatureToggleUtils.getUserId(), map);
+                responses.replace(SubjectHandler.getUserId(), map);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -92,6 +92,6 @@ public class NorgConsumerMock {
     }
 
     public static void resetNorgMap(){
-        responses.replace(OidcFeatureToggleUtils.getUserId(), getDefaultMap());
+        responses.replace(SubjectHandler.getUserId(), getDefaultMap());
     }
 }

@@ -9,13 +9,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,12 +28,13 @@ import java.util.List;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ArbeidsforholdSystemdataTest {
 
     private static final String EIER = "12345678901";
@@ -76,7 +78,7 @@ public class ArbeidsforholdSystemdataTest {
 
     @Test
     public void skalOppdatereArbeidsforhold() {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER);
         List<Arbeidsforhold> arbeidsforholdList = Arrays.asList(ARBEIDSFORHOLD_LONNSLIPP, ARBEIDSFORHOLD_SLUTTOPPGJOR);
         when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(arbeidsforholdList);
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
@@ -97,7 +99,8 @@ public class ArbeidsforholdSystemdataTest {
     public void skalLeggeTilInntektForLonnslipp() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withSkattemeldingSamtykke(true);
+                .withEier(EIER);
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
         List<Arbeidsforhold> arbeidsforholdList = Collections.singletonList(ARBEIDSFORHOLD_LONNSLIPP);
         when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(arbeidsforholdList);
@@ -119,7 +122,8 @@ public class ArbeidsforholdSystemdataTest {
     public void skalLeggeTilUtbetalingForSluttoppgjor() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withSkattemeldingSamtykke(true);
+                .withEier(EIER);
+        setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setInntektFraSkatteetatenFeilet(true);
         List<Arbeidsforhold> arbeidsforholdList = Collections.singletonList(ARBEIDSFORHOLD_SLUTTOPPGJOR);
         when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(arbeidsforholdList);
@@ -163,6 +167,17 @@ public class ArbeidsforholdSystemdataTest {
         jsonInternalSoknad.getSoknad().getData().getOkonomi().getOversikt().getInntekt().add(new JsonOkonomioversiktInntekt().withType(JOBB));
         return jsonInternalSoknad;
     }
+
+    private void setSamtykke(JsonInternalSoknad jsonInternalSoknad, boolean harSamtykke) {
+        List<JsonOkonomibekreftelse> bekreftelser = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
+        bekreftelser.removeIf(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(UTBETALING_SKATTEETATEN_SAMTYKKE));
+        bekreftelser
+                .add(new JsonOkonomibekreftelse().withKilde(JsonKilde.SYSTEM)
+                        .withType(UTBETALING_SKATTEETATEN_SAMTYKKE)
+                        .withVerdi(harSamtykke)
+                        .withTittel("beskrivelse"));
+    }
+
 
     private void assertThatArbeidsforholdIsCorrectlyConverted(Arbeidsforhold arbeidsforhold, JsonArbeidsforhold jsonArbeidsforhold) {
         assertThat("arbeidsgivernavn", jsonArbeidsforhold.getArbeidsgivernavn(), is(arbeidsforhold.arbeidsgivernavn));

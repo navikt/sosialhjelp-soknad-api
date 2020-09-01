@@ -55,4 +55,11 @@ public class ServiceUtils {
     public static String stripVekkFnutter(String tekstMedFnutt) {
         return tekstMedFnutt.replace("\"", "");
     }
+
+    public static String feilmeldingUtenFnr(String feilmelding) {
+        if (feilmelding == null) return null;
+
+        return feilmelding.replaceAll("\\b[0-9]{11}\\b", "[FNR]");
+    }
+
 }

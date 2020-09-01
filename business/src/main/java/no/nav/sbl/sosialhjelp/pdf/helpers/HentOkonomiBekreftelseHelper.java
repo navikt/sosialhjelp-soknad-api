@@ -1,15 +1,13 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.stereotype.Component;
-
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Options;
-
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 
 @Component
 public class HentOkonomiBekreftelseHelper extends RegistryAwareHelper<String> {
@@ -29,7 +27,8 @@ public class HentOkonomiBekreftelseHelper extends RegistryAwareHelper<String> {
         
         if (bekreftelse.isPresent()) {
             Context.Builder contextMedVariabel = Context.newBuilder(options.context, options.context.model())
-                    .combine("verdi", bekreftelse.get().getVerdi());
+                    .combine("verdi", bekreftelse.get().getVerdi())
+                    .combine("tidspunkt", bekreftelse.get().getBekreftelsesDato());
             return options.fn(contextMedVariabel.build());
         } else {
             return options.inverse(this);

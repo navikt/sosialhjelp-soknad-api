@@ -25,8 +25,8 @@
             <artifactId>soknadsosialhjelp-tekster</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-core</artifactId>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -45,12 +45,13 @@
             <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-core</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -72,15 +73,20 @@
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
-            <artifactId>oidc-support</artifactId>
+            <artifactId>token-validation-core</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
-            <artifactId>oidc-jersey-support</artifactId>
+            <artifactId>token-validation-jaxrs</artifactId>
         </dependency>
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.security</groupId>
+            <artifactId>token-validation-test-support</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.ks.fiks</groupId>
