@@ -52,6 +52,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.preflight.PreflightDocument;
+import org.apache.pdfbox.preflight.ValidationResult;
+import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
+import org.apache.pdfbox.preflight.parser.PreflightParser;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -59,6 +64,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +72,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
 import static org.mockito.Mockito.mock;
@@ -814,6 +821,81 @@ public class SosialhjelpPdfGeneratorTest {
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void skalGenererePdfA() throws Exception {
+        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest");
+        jsonInternalSoknad.getSoknad();
+
+        byte[] bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad,true);
+        File file = new File("pdfaTest.pdf");
+
+        FileUtils.writeByteArrayToFile(file, bytes);
+
+        ValidationResult result = null;
+        PreflightParser parser = new PreflightParser(file);
+
+        try {
+            parser.parse();
+            PreflightDocument document = parser.getPreflightDocument();
+            document.validate();
+            result = document.getResult();
+
+            if( result.isValid() ) {
+                document.close();
+                System.out.println("The file " + file + " is a valid PDF/A-1b file");
+            }
+            else {
+                document.close();
+                System.out.println("The file " + file + " is not valid");
+                for( ValidationResult.ValidationError error : result.getErrorsList() )
+                    System.out.println(error.getErrorCode() + " : " + error.getDetails());
+
+            }
+        } catch (SyntaxValidationException e) {
+            System.out.println("Exception when checking validity of pdf/a. Exception message: " + e.getMessage());
+        }
+        finally {
+            file.deleteOnExit();
+        }
+    }
+    @Test
+    public void skalGenerereEttersendelsePdfA() throws Exception {
+        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest");
+        jsonInternalSoknad.getSoknad();
+
+        byte[] bytes = sosialhjelpPdfGenerator.generateEttersendelsePdf(jsonInternalSoknad,"pdfaTest");
+        File file = new File("pdfaTest.pdf");
+
+        FileUtils.writeByteArrayToFile(file, bytes);
+
+        ValidationResult result = null;
+        PreflightParser parser = new PreflightParser(file);
+
+        try {
+            parser.parse();
+            PreflightDocument document = parser.getPreflightDocument();
+            document.validate();
+            result = document.getResult();
+
+            if( result.isValid() ) {
+                document.close();
+                System.out.println("The file " + file + " is a valid PDF/A-1b file");
+            }
+            else {
+                document.close();
+                System.out.println("The file " + file + " is not valid");
+                for( ValidationResult.ValidationError error : result.getErrorsList() )
+                    System.out.println(error.getErrorCode() + " : " + error.getDetails());
+            }
+        } catch (SyntaxValidationException e) {
+            System.out.println("Exception when checking validity of pdf/a. Exception message: " + e.getMessage());
+
+        }
+        finally {
+            file.deleteOnExit();
         }
     }
 }
