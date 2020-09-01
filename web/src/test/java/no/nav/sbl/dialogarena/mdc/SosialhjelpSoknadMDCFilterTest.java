@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.mdc;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.AfterClass;
@@ -21,6 +23,7 @@ public class SosialhjelpSoknadMDCFilterTest {
 
     @BeforeClass
     public static void setUp() {
+        SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
         System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, "srvuser");
     }
 
