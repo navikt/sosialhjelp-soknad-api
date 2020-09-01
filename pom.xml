@@ -91,7 +91,7 @@
         <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
 
         <!-- Sosialhjelp-common -->
-        <sosialhjelp-common.version>1.a615c63</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.2d56711</sosialhjelp-common.version>
 
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2020.03.10_16.55-ca8a7f989623</nav-common.version>
