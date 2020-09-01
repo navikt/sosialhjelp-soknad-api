@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonIkkeTilgang;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPeriodeIkkeGyldig;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPersonIkkeFunnet;
@@ -52,10 +52,10 @@ public class UtbetalMock {
     }
 
     public static WSHentUtbetalingsinformasjonResponse getOrCreateCurrentUserResponse(){
-        if(feilListe.get(OidcFeatureToggleUtils.getUserId())) {
+        if(feilListe.get(SubjectHandler.getUserId())) {
             throw new RuntimeException("Mock kall til NAV er satt til å feile!");
         }
-        return responses.computeIfAbsent(OidcFeatureToggleUtils.getUserId(), k -> getDefaultResponse());
+        return responses.computeIfAbsent(SubjectHandler.getUserId(), k -> getDefaultResponse());
     }
 
     public static WSHentUtbetalingsinformasjonResponse getDefaultResponse(){
@@ -85,7 +85,7 @@ public class UtbetalMock {
         }
 
         logger.info("Setter utbetalingsresponse: " + jsonWSUtbetaling);
-        String fnr = OidcFeatureToggleUtils.getUserId();
+        String fnr = SubjectHandler.getUserId();
         responses.remove(fnr);
         responses.put(fnr, newResponse);
     }

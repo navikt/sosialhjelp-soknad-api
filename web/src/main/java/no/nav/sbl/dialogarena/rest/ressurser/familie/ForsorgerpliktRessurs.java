@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.familie;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -66,7 +66,7 @@ public class ForsorgerpliktRessurs {
 
     @GET
     public ForsorgerpliktFrontend hentForsorgerplikt(@PathParam("behandlingsId") String behandlingsId){
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonForsorgerplikt jsonForsorgerplikt = soknad.getSoknad().getData().getFamilie().getForsorgerplikt();
 
@@ -76,7 +76,7 @@ public class ForsorgerpliktRessurs {
     @PUT
     public void updateForsorgerplikt(@PathParam("behandlingsId") String behandlingsId, ForsorgerpliktFrontend forsorgerpliktFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonForsorgerplikt forsorgerplikt = soknad.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
 

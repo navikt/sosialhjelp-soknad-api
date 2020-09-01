@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
-import org.eclipse.jetty.jaas.JAASLoginService;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.setProperty;
-import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 
 public class SoknadsosialhjelpServer {
 
@@ -55,15 +53,9 @@ public class SoknadsosialhjelpServer {
             databaseSchemaMigration(ds);
         }
 
-        final String loginConfFile = SoknadsosialhjelpServer.class.getClassLoader().getResource("login.conf").getFile();
-        setProperty("java.security.auth.login.config", loginConfFile);
-        final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
-        jaasLoginService.setLoginModuleName("openam");
         jetty = new Jetty.JettyBuilder()
                 .at(contextPath)
-                .withLoginService(jaasLoginService)
                 .overrideWebXml(overrideWebXmlFile)
-                //.sslPort(PORT + 100)
                 .addDatasource(ds, "jdbc/SoknadInnsendingDS")
                 .port(listenPort)
                 .buildJetty();
@@ -105,9 +97,6 @@ public class SoknadsosialhjelpServer {
         if (MockUtils.isTillatMockRessurs()){
             SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
         }
-
-        System.setProperty(SUBJECTHANDLER_KEY, ThreadLocalSubjectHandler.class.getName()); // pga SaksoversiktMetadataRessurs og applikasjon som kjører uten oidc.
-
     }
 
     private boolean isRunningAsTestAppWithMockingActivated() {

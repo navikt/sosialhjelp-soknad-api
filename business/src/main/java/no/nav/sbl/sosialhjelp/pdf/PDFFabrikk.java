@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -49,7 +50,7 @@ public class PDFFabrikk {
             renderer.layout();
             renderer.setPDFVersion(PdfWriter.VERSION_1_4);
             renderer.createPDF(os, false, 0);
-            InputStream resourceAsStream = PDFFabrikk.class.getClassLoader().getResourceAsStream("AdobeRGB1998.icc");
+            InputStream resourceAsStream = new ClassPathResource("AdobeRGB1998.icc").getInputStream();
             byte[] byteArray = IOUtils.toByteArray(resourceAsStream);
             renderer.getWriter().setOutputIntents(
                     "Custom",

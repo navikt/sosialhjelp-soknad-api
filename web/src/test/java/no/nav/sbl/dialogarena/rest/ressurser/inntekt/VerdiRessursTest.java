@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -56,14 +55,12 @@ public class VerdiRessursTest {
     @Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        System.setProperty(IS_RUNNING_WITH_OIDC, "true");
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
     }
 
     @Test

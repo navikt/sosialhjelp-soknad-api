@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
-import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
@@ -91,10 +90,6 @@ public class SlettLoggScheduler {
 
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn {} s. Den blir derfor terminert", SCHEDULE_INTERRUPT_S);
-                return;
-            }
-            if (!SuspendServlet.isRunning()) {
-                logger.warn("Avbryter jobben da appen skal suspendes");
                 return;
             }
             soknad = soknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);

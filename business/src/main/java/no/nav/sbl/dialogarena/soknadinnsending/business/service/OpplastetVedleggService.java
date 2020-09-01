@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.detect.Detect;
-import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.PdfValidator;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -65,9 +65,9 @@ public class OpplastetVedleggService {
     }
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
-        String contentType = Detect.CONTENT_TYPE.transform(data);
+        String mimeType = FileDetectionUtils.getMimeType(data);
 
         validerFil(data);
         virusScanner.scan(filnavn, data);
@@ -82,7 +82,7 @@ public class OpplastetVedleggService {
                 .withSoknadId(soknadId)
                 .withSha512(sha512);
 
-        filnavn = lagFilnavn(filnavn, contentType, opplastetVedlegg.getUuid());
+        filnavn = lagFilnavn(filnavn, mimeType, opplastetVedlegg.getUuid());
 
         opplastetVedlegg.withFilnavn(filnavn);
 
@@ -101,7 +101,7 @@ public class OpplastetVedleggService {
     }
 
     public void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(String behandlingsId, byte[] data) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
 
@@ -114,7 +114,7 @@ public class OpplastetVedleggService {
     }
 
     public void deleteVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        final String eier = SubjectHandler.getUserId();
         final OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
 
         if (opplastetVedlegg == null){
@@ -184,12 +184,13 @@ public class OpplastetVedleggService {
     }
 
     private void validerFil(byte[] data) {
-        if (!(Detect.isImage(data) || Detect.isPdf(data))) {
+        if (!(FileDetectionUtils.isImage(data) || FileDetectionUtils.isPdf(data))) {
             throw new UgyldigOpplastingTypeException(
-                    "Ugyldig filtype for opplasting", null,
+                    String.format("Ugyldig filtype for opplasting. Mimetype var %s", FileDetectionUtils.getMimeType(data)),
+                    null,
                     "opplasting.feilmelding.feiltype");
         }
-        if (Detect.isPdf(data)) {
+        if (FileDetectionUtils.isPdf(data)) {
             sjekkOmPdfErGyldig(data);
         }
     }
@@ -197,8 +198,8 @@ public class OpplastetVedleggService {
     private static void sjekkOmPdfErGyldig(byte[] data) {
         PDDocument document;
         try {
-            document = PDDocument.load(new ByteArrayInputStream(
-                    data));
+            document = PDDocument.load(new ByteArrayInputStream(data));
+
         } catch (InvalidPasswordException e) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være krypert.", null,
@@ -207,12 +208,12 @@ public class OpplastetVedleggService {
             throw new OpplastingException("Kunne ikke lagre fil", e,
                     "vedlegg.opplasting.feil.generell");
         }
-        PdfDetector detector = new PdfDetector(document);
-        if (detector.pdfIsSigned()) {
+        PdfValidator validator = new PdfValidator(document);
+        if (validator.isSigned()) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være signert.", null,
                     "opplasting.feilmelding.pdf.signert");
-        } else if (detector.pdfIsEncrypted()) {
+        } else if (validator.isEncrypted()) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være signert.", null,
                     "opplasting.feilmelding.pdf.signert");

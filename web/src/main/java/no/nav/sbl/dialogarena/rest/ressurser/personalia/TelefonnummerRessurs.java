@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -42,7 +42,7 @@ public class TelefonnummerRessurs {
 
     @GET
     public TelefonnummerFrontend hentTelefonnummer(@PathParam("behandlingsId") String behandlingsId) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
         String systemverdi;
@@ -64,7 +64,7 @@ public class TelefonnummerRessurs {
         if ("".equals(telefonnummerFrontend.brukerutfyltVerdi)) {
             telefonnummerFrontend.brukerutfyltVerdi = null;
         }
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonPersonalia personalia = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         JsonTelefonnummer jsonTelefonnummer = personalia.getTelefonnummer() != null ? personalia.getTelefonnummer() :

@@ -5,7 +5,6 @@ import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 class CreateSslConnector {
 
@@ -18,11 +17,6 @@ class CreateSslConnector {
     }
 
     public ServerConnector transform(Integer sslPort) {
-
-        SslContextFactory factory = new SslContextFactory.Client.Client(true);
-        factory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
-        factory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
-
         HttpConfiguration httpsConfiguration = new HttpConfiguration(baseConfiguration);
         httpsConfiguration.setSecureScheme("https");
         httpsConfiguration.setSecurePort(sslPort);

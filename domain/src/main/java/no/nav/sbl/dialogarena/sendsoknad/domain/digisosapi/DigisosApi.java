@@ -10,5 +10,5 @@ public interface DigisosApi {
 
     Map<String, KommuneInfo> hentKommuneInfo();
 
-    String krypterOgLastOppFiler(String soknadJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
+    String krypterOgLastOppFiler(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
 }

@@ -703,10 +703,6 @@ public class SosialhjelpPdfGenerator {
                     String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
                     skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fodselsdato");
 
-                    // Personnummer TODO: Finnes ikke i søknad eller handlebarkode?
-                    //String personIdentifikator = barn.getPersonIdentifikator();
-                    // skrivTekstMedGuard(pdf, personIdentifikator, "kontakt.system.personalia.fnr");
-
                     if (barn.getKilde().equals(JsonKilde.SYSTEM)) {
                         // Samme folkeregistrerte adresse
                         JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
@@ -1423,7 +1419,7 @@ public class SosialhjelpPdfGenerator {
         for (JsonOkonomiOpplysningUtbetaling husbankenUtbetaling : husbankenUtbetalinger) {
             if (husbankenUtbetaling.getKilde().equals(JsonKilde.BRUKER)) {
                 pdf.skrivTekst(husbankenUtbetaling.getTittel());
-                skrivTekstMedGuardOgIkkeUtfylt(pdf, husbankenUtbetaling.getNetto().intValue(), "opplysninger.inntekt.bostotte.utbetaling.label");
+                skrivTekstMedGuardOgIkkeUtfylt(pdf, husbankenUtbetaling.getNetto(), "opplysninger.inntekt.bostotte.utbetaling.label");
                 pdf.addBlankLine();
             }
         }
@@ -1685,6 +1681,14 @@ public class SosialhjelpPdfGenerator {
     private void skrivTekstMedGuardOgIkkeUtfylt(PdfGenerator pdf, Integer verdi, String key) throws IOException {
         if (verdi != null) {
             pdf.skrivTekst(getTekst(key) + ": " + verdi);
+        } else {
+            pdf.skrivTekst(getTekst(key) + ": " + getTekst("oppsummering.ikkeutfylt"));
+        }
+    }
+
+    private void skrivTekstMedGuardOgIkkeUtfylt(PdfGenerator pdf, Double verdi, String key) throws IOException {
+        if (verdi != null) {
+            pdf.skrivTekst(getTekst(key) + ": " + String.format("%.2f", verdi));
         } else {
             pdf.skrivTekst(getTekst(key) + ": " + getTekst("oppsummering.ikkeutfylt"));
         }

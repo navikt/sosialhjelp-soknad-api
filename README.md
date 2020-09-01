@@ -27,53 +27,7 @@ Backenden kommer til å lagre hele søknaden som en json-fil (internalsoknad), o
 
 Ved innsending vil søknadsdata låses ned slik at man ikke kan endre dem mer (dette er for å unngå at det gjøres endringer etter at brukeren har trykket på send).
 
-### Bygging
-
-Applikasjonen bruker Oracle JDBC-driver og enkelte interne avhengigheter som ikke er tilgjengelige fra byggserver. Den benytter seg derfor av
-et bygg-image som inneholder alle avhengighetene, og kan hentes fra GitHub package registry i bygg-pipeline etter Docker login:
-
-```
-FROM maven:3.6.2-jdk-11
-
-WORKDIR /root
-
-COPY m2_home.tar.gz .
-RUN tar xvzf m2_home.tar.gz
-RUN rm m2_home.tar.gz
-```
-
-For å bygge imaget må `m2_home.tar.gz` lastes ned fra
-[Microsoft Teams](https://navno.sharepoint.com/sites/Digisos532/Shared%20Documents/Utviklingteamet/backend%20github%20relatert/m2_home.tar.gz)
-til en lokal folder med en `Dockerfile` med innholdet over, og bygges og pushes med kommandoene:
-
-```
-docker build -t docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.2-jdk-11 .
-docker push docker.pkg.github.com/navikt/sosialhjelp-soknad-api/builder:0.2-jdk-11
-```
-
-Dette krever at man er logget inn mot `docker.pkg.github.com` lokalt med et GitHub personal access token som har scopet `write:packages` og
-SSO aktivert for `navikt`-organisasjonen.
-
-### Pakker fra github package registry
-Ved bygging av docker image sendes GITHUB_TOKEN med til Dockerfile, slik at `maven-settings.xml` kan benyttes for å hente pakker fra github package registry.
-```
-docker build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t $(cat DOCKER_TAG) .
-```
-Dockerfile, her tas GITHUB_TOKEN inn som ARG
-```
-ARG GITHUB_TOKEN
-RUN mvn install --settings maven-settings.xml
-```
-maven-settings.xml
-```
-<settings>
-    <servers>
-        <!-- i tilfelle bygget kjører som en Github Action, vil tokenet automatisk injectes her -->
-        <server>
-            <id>github-package-registry-navikt</id>
-            <username>x-access-token</username>
-            <password>${env.GITHUB_TOKEN}</password>
-        </server>
-    </servers>
-</settings>
-```
+### Autentisering 
+Alle endepunkt er autentisering `Azure AD B2C` cookie validert via `token-support`, unntatt endepunktene i `SaksoversiktMetadataRessurs` som er validert med `EksternSSO` `SAML` token fra `OpenAM`. 
+Dette fordi `Saksoversikt-api` fortsatt er på SAML. 
+I tillegg krever noen endepunkter et `access-token` fra `idporten`, som brukeren får via `sosialhjelp-login-api`. Dette brukes mot `FIKS` og mot `Husbanken`.   

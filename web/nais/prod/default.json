@@ -29,7 +29,6 @@
   "prometheusEnabled": true,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
-    "AUTHENTICATION_ISRUNNINGWITHOIDC": "true",
     "DITTNAV_LINK_URL": "https://tjenester.nav.no/dittnav/",
     "DKIF_API_BASEURL": "https://api-gw.oera.no/dkif/api/",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "https://api-gw.oera.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/",
