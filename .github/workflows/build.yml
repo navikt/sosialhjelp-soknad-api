@@ -33,7 +33,6 @@ jobs:
         uses: navikt/sosialhjelp-ci/actions/create-artifact-version@master
       - name: Run mvn install
         env:
-          GITHUB_USERNAME: x-access-token
           GITHUB_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
         run: mvn install --settings maven-settings.xml
       - name: Create docker image tags
