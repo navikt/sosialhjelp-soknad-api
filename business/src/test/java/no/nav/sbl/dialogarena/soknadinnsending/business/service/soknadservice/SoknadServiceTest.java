@@ -14,6 +14,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTimeUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +62,11 @@ public class SoknadServiceTest {
     @Before
     public void before() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+    }
+
+    @After
+    public void tearDown() {
+        SubjectHandler.resetOidcSubjectHandlerService();
     }
 
     @Test
