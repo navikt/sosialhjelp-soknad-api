@@ -108,8 +108,7 @@
         <flyway-core.version>5.0.7</flyway-core.version>
         <flying.saucer.version>9.1.20</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
-        <jackson.version>2.10.3</jackson.version>
-        <jackson-databind.version>2.10.3</jackson-databind.version>
+        <jackson.version>2.11.0</jackson.version>
         <filformat.version>1.2020.06.25-09.12-23b98d57ab78</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>2.0.19</pdfbox.version>
@@ -184,6 +183,7 @@
         <stax-ex.version>1.8.3</stax-ex.version>
         <objenesis.version>2.6</objenesis.version>
         <saaj-impl.version>1.5.1</saaj-impl.version>
+        <kotlin.version>1.3.72</kotlin.version>
     </properties>
 
     <dependencyManagement>
@@ -449,7 +449,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson-databind.version}</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -469,6 +469,11 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
 
@@ -1041,6 +1046,13 @@
                 <artifactId>jersey-test-framework-provider-external</artifactId>
                 <scope>test</scope>
                 <version>${jersey.version}</version>
+            </dependency>
+
+            <!-- Kotlin -->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
+                <version>${kotlin.version}</version>
             </dependency>
 
             <!-- Dependencies identifisert av maven-enforcer-plugin -->
