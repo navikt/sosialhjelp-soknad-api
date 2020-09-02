@@ -93,7 +93,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class DigisosApiImpl implements DigisosApi {
 
     private static final Logger log = getLogger(DigisosApiImpl.class);
-    private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
+    private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper
+            .createObjectMapper()
+            .registerModule(new KotlinModule());
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
     private String idPortenTokenUrl;
     private String idPortenClientId;
@@ -113,7 +115,6 @@ public class DigisosApiImpl implements DigisosApi {
         this.idPortenClientId = System.getProperty("idporten_clientid");
         this.idPortenScope = System.getProperty("idporten_scope");
         String idPortenConfigUrl = System.getProperty("idporten_config_url");
-        objectMapper.registerModule(new KotlinModule());
         try {
             idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
         } catch (IOException e) {
