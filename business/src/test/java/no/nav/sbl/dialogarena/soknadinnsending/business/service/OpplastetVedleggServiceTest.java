@@ -13,6 +13,7 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +69,11 @@ public class OpplastetVedleggServiceTest {
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         opplastetVedleggService.setUp();
+    }
+
+    @After
+    public void tearDown() {
+        SubjectHandler.resetOidcSubjectHandlerService();
     }
 
     @Test
