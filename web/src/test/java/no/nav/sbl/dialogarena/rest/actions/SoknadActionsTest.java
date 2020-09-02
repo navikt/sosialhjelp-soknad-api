@@ -99,7 +99,7 @@ public class SoknadActionsTest {
         System.clearProperty("digisosapi.sending.enable");
         System.clearProperty(NedetidUtils.NEDETID_START);
         System.clearProperty(NedetidUtils.NEDETID_SLUTT);
-
+        SubjectHandler.resetOidcSubjectHandlerService();
     }
 
     @Test(expected = SoknadenHarNedetidException.class)
