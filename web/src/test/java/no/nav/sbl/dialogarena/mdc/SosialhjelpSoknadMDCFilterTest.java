@@ -23,7 +23,6 @@ public class SosialhjelpSoknadMDCFilterTest {
 
     @BeforeClass
     public static void setUp() {
-        SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
         System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, "srvuser");
         SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
     }
