@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11.x'
-      - name: Cache Depdendencies
+      - name: Cache Dependencies
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
