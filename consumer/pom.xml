@@ -43,6 +43,12 @@
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>no.nav.sosialhjelp</groupId>
+            <artifactId>sosialhjelp-common-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>rest</artifactId>
