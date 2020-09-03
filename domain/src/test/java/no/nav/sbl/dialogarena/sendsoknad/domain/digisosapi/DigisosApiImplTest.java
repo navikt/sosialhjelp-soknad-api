@@ -36,7 +36,7 @@ public class DigisosApiImplTest {
     }
 
     @Test
-    public void kommuneInfo_() throws JsonProcessingException {
+    public void kommuneInfo_deserializationWorksWithKotlinModuleRegistered() throws JsonProcessingException {
         String response = "{\n" +
                 "    \"kommunenummer\": \"4699\",\n" +
                 "    \"kanMottaSoknader\": true,\n" +
@@ -55,9 +55,7 @@ public class DigisosApiImplTest {
                 "    \"behandlingsansvarlig\": \"Test kommune\"\n" +
                 "  }";
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new KotlinModule());
-
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new KotlinModule());
         KommuneInfo kommuneInfo = objectMapper.readValue(response, KommuneInfo.class);
 
         assertThat(kommuneInfo.getKommunenummer(), is("4699"));
