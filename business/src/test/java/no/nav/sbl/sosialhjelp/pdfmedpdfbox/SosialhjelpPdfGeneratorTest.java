@@ -63,6 +63,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -834,7 +835,7 @@ public class SosialhjelpPdfGeneratorTest {
 
         FileUtils.writeByteArrayToFile(file, bytes);
 
-        ValidationResult result = null;
+        ValidationResult result;
         PreflightParser parser = new PreflightParser(file);
 
         try {
@@ -842,20 +843,10 @@ public class SosialhjelpPdfGeneratorTest {
             PreflightDocument document = parser.getPreflightDocument();
             document.validate();
             result = document.getResult();
-
-            if( result.isValid() ) {
-                document.close();
-                System.out.println("The file " + file + " is a valid PDF/A-1b file");
-            }
-            else {
-                document.close();
-                System.out.println("The file " + file + " is not valid");
-                for( ValidationResult.ValidationError error : result.getErrorsList() )
-                    System.out.println(error.getErrorCode() + " : " + error.getDetails());
-
-            }
+            assertThat(result.isValid()).isEqualTo(true);
+            document.close();
         } catch (SyntaxValidationException e) {
-            System.out.println("Exception when checking validity of pdf/a. Exception message: " + e.getMessage());
+            e.printStackTrace();
         }
         finally {
             file.deleteOnExit();
@@ -871,7 +862,7 @@ public class SosialhjelpPdfGeneratorTest {
 
         FileUtils.writeByteArrayToFile(file, bytes);
 
-        ValidationResult result = null;
+        ValidationResult result;
         PreflightParser parser = new PreflightParser(file);
 
         try {
@@ -879,20 +870,10 @@ public class SosialhjelpPdfGeneratorTest {
             PreflightDocument document = parser.getPreflightDocument();
             document.validate();
             result = document.getResult();
-
-            if( result.isValid() ) {
-                document.close();
-                System.out.println("The file " + file + " is a valid PDF/A-1b file");
-            }
-            else {
-                document.close();
-                System.out.println("The file " + file + " is not valid");
-                for( ValidationResult.ValidationError error : result.getErrorsList() )
-                    System.out.println(error.getErrorCode() + " : " + error.getDetails());
-            }
+            assertThat(result.isValid()).isEqualTo(true);
+            document.close();
         } catch (SyntaxValidationException e) {
-            System.out.println("Exception when checking validity of pdf/a. Exception message: " + e.getMessage());
-
+            e.printStackTrace();
         }
         finally {
             file.deleteOnExit();
