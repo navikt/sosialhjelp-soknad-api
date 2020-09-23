@@ -26,6 +26,7 @@ public class BehandlingsKjede {
         public String behandlingsId;
         public String innsendtDato;
         public String innsendtTidspunkt;
+        public long soknadsalderIMinutter;
         public List<Vedlegg> innsendteVedlegg;
         public List<Vedlegg> ikkeInnsendteVedlegg;
         public String navenhet;
@@ -43,6 +44,11 @@ public class BehandlingsKjede {
 
         public InnsendtSoknad medInnsendtTidspunkt(String innsendtTidspunkt) {
             this.innsendtTidspunkt = innsendtTidspunkt;
+            return this;
+        }
+
+        public InnsendtSoknad medSoknadsalderIMinutter(long soknadsalderIMinutter) {
+            this.soknadsalderIMinutter = soknadsalderIMinutter;
             return this;
         }
 
