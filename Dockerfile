@@ -1,4 +1,4 @@
-FROM navikt/java:11
+FROM navikt/java:11-appdynamics
 COPY /web/target/soknadsosialhjelp-server /app
 COPY /web/nais/scripts /init-scripts
 ENV JAVA_OPTS="-XX:MaxRAMFraction=2"
