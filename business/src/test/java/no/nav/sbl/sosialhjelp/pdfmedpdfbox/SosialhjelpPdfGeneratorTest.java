@@ -64,6 +64,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -76,6 +77,8 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sos
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -843,10 +846,10 @@ public class SosialhjelpPdfGeneratorTest {
             PreflightDocument document = parser.getPreflightDocument();
             document.validate();
             result = document.getResult();
-            assertThat(result.isValid()).isEqualTo(true);
+            assertTrue(result.isValid());
             document.close();
         } catch (SyntaxValidationException e) {
-            e.printStackTrace();
+            fail("Exception when checking validity of pdf/a. ", e);
         }
         finally {
             file.deleteOnExit();
@@ -870,10 +873,10 @@ public class SosialhjelpPdfGeneratorTest {
             PreflightDocument document = parser.getPreflightDocument();
             document.validate();
             result = document.getResult();
-            assertThat(result.isValid()).isEqualTo(true);
+            assertTrue(result.isValid());
             document.close();
         } catch (SyntaxValidationException e) {
-            e.printStackTrace();
+            fail("Exception when checking validity of pdf/a. ", e);
         }
         finally {
             file.deleteOnExit();
