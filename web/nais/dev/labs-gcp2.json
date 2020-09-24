@@ -4,10 +4,6 @@
   "ingresses": [
     "https://sosialhjelp-soknad-api2.labs.nais.io/sosialhjelp/soknad-api"
   ],
-  "vaultKvPath": "/kv/preprod/sbs/sosialhjelp-soknad-api/q0",
-  "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
-  "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
-  "secretKvPaths": {},
   "minReplicas": "1",
   "maxReplicas": "1",
   "memoryLimit": "2Gi",
