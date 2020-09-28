@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeE
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.PdfValidator;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -208,15 +207,10 @@ public class OpplastetVedleggService {
             throw new OpplastingException("Kunne ikke lagre fil", e,
                     "vedlegg.opplasting.feil.generell");
         }
-        PdfValidator validator = new PdfValidator(document);
-        if (validator.isSigned()) {
+        if (document.isEncrypted()) {
             throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være signert.", null,
-                    "opplasting.feilmelding.pdf.signert");
-        } else if (validator.isEncrypted()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være signert.", null,
-                    "opplasting.feilmelding.pdf.signert");
+                    "PDF kan ikke være kryptert.", null,
+                    "opplasting.feilmelding.pdf.kryptert");
         }
     }
 }
