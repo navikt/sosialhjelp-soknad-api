@@ -30,6 +30,12 @@ public class KommuneInfoService {
                 .getHarMidlertidigDeaktivertMottak();
     }
 
+    public String behandlingsansvarlig(String kommunenummer) {
+        return digisosApi.hentKommuneInfo()
+                .getOrDefault(kommunenummer, new KommuneInfo())
+                .getBehandlingsansvarlig();
+    }
+
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     public KommuneStatus kommuneInfo(String kommunenummer) {
         KommuneInfo kommuneInfo = digisosApi.hentKommuneInfo().getOrDefault(kommunenummer, null);

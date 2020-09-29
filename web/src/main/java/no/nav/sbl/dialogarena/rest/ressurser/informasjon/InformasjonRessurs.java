@@ -207,6 +207,7 @@ public class InformasjonRessurs {
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(kommunesok.navEnhet.navn)
                 .withKommunenavn(kommunenavn)
+                .withBehandlingsansvarlig(kommuneInfoService.behandlingsansvarlig(kommunesok.kommunenr))
                 .withOrgnr((digisosKommune) ? kommunesok.navEnhet.sosialOrgnr : null);
     }
 
