@@ -43,6 +43,12 @@
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>no.nav.sosialhjelp</groupId>
+            <artifactId>sosialhjelp-common-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>rest</artifactId>
@@ -175,8 +181,8 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
         </dependency>
 
         <dependency>
