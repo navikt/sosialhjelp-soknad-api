@@ -25,24 +25,25 @@ public class DigisosApiMock {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         //Fredrikstad(0106) og Horten(0701) skal ikke ha kommuneinfo (test-case der digisos-conf er null)
-        kommuneInfoMap.put("0101", getKommuneInfo("0101", false, false)); // Halden
-        kommuneInfoMap.put("1247", getKommuneInfo("1247", false, false)); // Askøy
-        kommuneInfoMap.put("0105", getKommuneInfo("0105", true, false)); // Sarpsborg
-        kommuneInfoMap.put("0219", getKommuneInfo("0219", true, false)); // Bærum
-        kommuneInfoMap.put("0111", getKommuneInfo("0111", false, true)); // Hvaler
-        kommuneInfoMap.put("5001", getKommuneInfo("5001", false, true)); // Moss
-        kommuneInfoMap.put("0136", getKommuneInfo("0136", true, true)); // Rygge
-        kommuneInfoMap.put("0403", getKommuneInfo("0403", true, true)); // Hamar
-        kommuneInfoMap.put("2222", getKommuneInfo("2222", true, false)); // Dobbelby
+        kommuneInfoMap.put("0101", getKommuneInfo("0101", false, false, null)); // Halden
+        kommuneInfoMap.put("1247", getKommuneInfo("1247", false, false, null)); // Askøy
+        kommuneInfoMap.put("0105", getKommuneInfo("0105", true, false, "Halden ")); // Sarpsborg
+        kommuneInfoMap.put("0219", getKommuneInfo("0219", true, false, null)); // Bærum
+        kommuneInfoMap.put("0111", getKommuneInfo("0111", false, true, null)); // Hvaler
+        kommuneInfoMap.put("5001", getKommuneInfo("5001", false, true, null)); // Moss
+        kommuneInfoMap.put("0136", getKommuneInfo("0136", true, true, null)); // Rygge
+        kommuneInfoMap.put("0403", getKommuneInfo("0403", true, true, null)); // Hamar
+        kommuneInfoMap.put("2222", getKommuneInfo("2222", true, false, "Annenby")); // Dobbelby
 
         return kommuneInfoMap;
     }
 
-    private static KommuneInfo getKommuneInfo(String kommunenummer, boolean isMottakAktivert, boolean isMottakMidlertidigDeaktivert){
+    private static KommuneInfo getKommuneInfo(String kommunenummer, boolean isMottakAktivert, boolean isMottakMidlertidigDeaktivert, String behandlingsansvarlig){
         KommuneInfo kommuneInfo = new KommuneInfo();
         kommuneInfo.setKommunenummer(kommunenummer);
         kommuneInfo.setKanMottaSoknader(isMottakAktivert);
         kommuneInfo.setHarMidlertidigDeaktivertMottak(isMottakMidlertidigDeaktivert);
+        kommuneInfo.setBehandlingsansvarlig(behandlingsansvarlig);
         return kommuneInfo;
     }
 }
