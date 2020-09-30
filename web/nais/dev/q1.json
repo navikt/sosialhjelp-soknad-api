@@ -68,7 +68,7 @@
     "VIRKSOMHET_PERSON_V3_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "true",
-    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
+    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "true",
     "NEDETID_START": "17.12.2019 00:00:00",
     "NEDETID_SLUTT": "01.01.2020 09:00:00",
     "FASIT_ENVIRONMENT_NAME": "q1",
