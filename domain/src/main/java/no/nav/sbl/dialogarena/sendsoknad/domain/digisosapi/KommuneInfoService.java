@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
 
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,19 +21,19 @@ public class KommuneInfoService {
 
     public boolean kanMottaSoknader(String kommunenummer) {
         return digisosApi.hentKommuneInfo()
-                .getOrDefault(kommunenummer, new KommuneInfo())
+                .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getKanMottaSoknader();
     }
 
     public boolean harMidlertidigDeaktivertMottak(String kommunenummer) {
         return digisosApi.hentKommuneInfo()
-                .getOrDefault(kommunenummer, new KommuneInfo())
+                .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getHarMidlertidigDeaktivertMottak();
     }
 
     public String behandlingsansvarlig(String kommunenummer) {
         return digisosApi.hentKommuneInfo()
-                .getOrDefault(kommunenummer, new KommuneInfo())
+                .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getBehandlingsansvarlig();
     }
 

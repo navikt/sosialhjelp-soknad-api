@@ -186,7 +186,8 @@ public class OpplastetVedleggService {
     private void validerFil(byte[] data) {
         if (!(FileDetectionUtils.isImage(data) || FileDetectionUtils.isPdf(data))) {
             throw new UgyldigOpplastingTypeException(
-                    "Ugyldig filtype for opplasting", null,
+                    String.format("Ugyldig filtype for opplasting. Mimetype var %s", FileDetectionUtils.getMimeType(data)),
+                    null,
                     "opplasting.feilmelding.feiltype");
         }
         if (FileDetectionUtils.isPdf(data)) {

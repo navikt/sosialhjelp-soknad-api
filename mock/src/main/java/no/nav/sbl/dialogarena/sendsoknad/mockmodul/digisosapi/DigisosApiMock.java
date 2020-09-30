@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.digisosapi;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfo;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,11 +40,6 @@ public class DigisosApiMock {
     }
 
     private static KommuneInfo getKommuneInfo(String kommunenummer, boolean isMottakAktivert, boolean isMottakMidlertidigDeaktivert, String behandlingsansvarlig){
-        KommuneInfo kommuneInfo = new KommuneInfo();
-        kommuneInfo.setKommunenummer(kommunenummer);
-        kommuneInfo.setKanMottaSoknader(isMottakAktivert);
-        kommuneInfo.setHarMidlertidigDeaktivertMottak(isMottakMidlertidigDeaktivert);
-        kommuneInfo.setBehandlingsansvarlig(behandlingsansvarlig);
-        return kommuneInfo;
+        return new KommuneInfo(kommunenummer, isMottakAktivert, true, isMottakMidlertidigDeaktivert, false, null, false, behandlingsansvarlig);
     }
 }
