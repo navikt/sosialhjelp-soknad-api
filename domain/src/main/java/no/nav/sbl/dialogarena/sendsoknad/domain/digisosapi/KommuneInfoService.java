@@ -35,7 +35,7 @@ public class KommuneInfoService {
     public String getBehandlingskommune(String kommunenr, String kommunenavnFraAdresseforslag) {
         String kommunenavn = behandlingsansvarlig(kommunenr);
         if (kommunenavn != null) {
-            return kommunenavn.endsWith("kommune") ? kommunenavn.replace(" kommune", "") : kommunenavn;
+            return kommunenavn.endsWith(" kommune") ? kommunenavn.replace(" kommune", "") : kommunenavn;
         }
         return KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenr, kommunenavnFraAdresseforslag);
     }
