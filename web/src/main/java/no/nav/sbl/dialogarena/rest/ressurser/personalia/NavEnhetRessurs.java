@@ -93,7 +93,6 @@ public class NavEnhetRessurs {
                 .withEnhetsnavn(getEnhetsnavnFromNavEnhetsnavn(soknadsmottaker.getNavEnhetsnavn()))
                 .withKommunenavn(getKommunenavnFromNavEnhetsnavn(soknadsmottaker.getNavEnhetsnavn()))
                 .withKommuneNr(kommunenummer)
-                .withBehandlingsansvarlig(getBehandlingsansvarlig(kommunenummer))
                 .withIsMottakDeaktivert(!isDigisosKommune(kommunenummer))
                 .withIsMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer))
                 .withOrgnr(KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.getEnhetsnummer())) // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
@@ -108,11 +107,10 @@ public class NavEnhetRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         soknad.getJsonInternalSoknad().setMottaker(new no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
-                .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
+                .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
-        String behandlendeKommune = navEnhetFrontend.behandlingsansvarlig != null ?  navEnhetFrontend.behandlingsansvarlig : navEnhetFrontend.kommunenavn;
         soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
-                .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, behandlendeKommune))
+                .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
                 .withEnhetsnummer(navEnhetFrontend.enhetsnr)
                 .withKommunenummer(navEnhetFrontend.kommuneNr));
 
@@ -189,20 +187,16 @@ public class NavEnhetRessurs {
         String enhetNr = digisosKommune ? navEnhet.enhetNr : null;
 
         boolean valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
+        String kommunenavnFraAdresseforslag = adresseForslag.kommunenavn != null ? adresseForslag.kommunenavn : navEnhet.kommunenavn;
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
-                .withKommunenavn(adresseForslag.kommunenavn != null ? adresseForslag.kommunenavn : navEnhet.kommunenavn)
+                .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavnFraAdresseforslag))
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
                 .withValgt(valgt)
                 .withKommuneNr(kommunenummer)
-                .withBehandlingsansvarlig(getBehandlingsansvarlig(adresseForslag.kommunenummer))
                 .withIsMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer))
                 .withIsMottakDeaktivert(!digisosKommune);
-    }
-
-    private String getBehandlingsansvarlig(String kommunenummer) {
-        return kommuneInfoService.behandlingsansvarlig(kommunenummer);
     }
 
     private boolean isDigisosKommune(String kommunenummer){
@@ -250,11 +244,6 @@ public class NavEnhetRessurs {
 
         public NavEnhetFrontend withKommuneNr(String kommuneNr) {
             this.kommuneNr = kommuneNr;
-            return this;
-        }
-
-        public NavEnhetFrontend withBehandlingsansvarlig(String behandlingsansvarlig) {
-            this.behandlingsansvarlig = behandlingsansvarlig;
             return this;
         }
 
