@@ -6,10 +6,11 @@
     "https://www-q0.dev.nav.no/sosialhjelp/soknad-api",
     "https://www-q0.nav.no/sosialhjelp/soknad-api"
   ],
-  "vaultKvPath": "/kv/preprod/sbs/sosialhjelp-soknad-api/q0",
-  "datasourceKvPath": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
-  "virksomhetssertifikatKvPath": "/secret/virksomhetssertifikat/preprod/shared",
-  "secretKvPaths": {
+  "kvPaths": {
+    "/var/run/secrets/nais.io/vault": "/kv/preprod/sbs/sosialhjelp-soknad-api/q0",
+    "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
+    "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
+    "/var/run/secrets/nais.io/appdynamics": "/apikey/appdynamics/dev",
     "/apigw/tpswsapi": "/apikey/apigw/dev/tpsws.api.v1/soknadsosialhjelp-server_q0",
     "/apigw/norg2api": "/apikey/apigw/dev/norg2.api.v1/soknadsosialhjelp-server_q0",
     "/apigw/husbankenapi": "/apikey/apigw/dev/ekstern.husbanken.bostotte/sosialhjelp-soknad-api_q0",
