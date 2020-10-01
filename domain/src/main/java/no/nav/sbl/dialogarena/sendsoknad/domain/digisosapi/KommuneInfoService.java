@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,14 @@ public class KommuneInfoService {
                 .getHarMidlertidigDeaktivertMottak();
     }
 
+    public String getBehandlingskommune(String kommunenr, String kommunenavnFraAdresseforslag) {
+        String kommunenavn = behandlingsansvarlig(kommunenr);
+        if (kommunenavn != null) {
+            return kommunenavn.endsWith(" kommune") ? kommunenavn.replace(" kommune", "") : kommunenavn;
+        }
+        return KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenr, kommunenavnFraAdresseforslag);
+    }
+
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     public KommuneStatus kommuneInfo(String kommunenummer) {
         KommuneInfo kommuneInfo = digisosApi.hentKommuneInfo().getOrDefault(kommunenummer, null);
@@ -49,4 +58,9 @@ public class KommuneInfoService {
         return SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
     }
 
+    private String behandlingsansvarlig(String kommunenummer) {
+        return digisosApi.hentKommuneInfo()
+                .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
+                .getBehandlingsansvarlig();
+    }
 }

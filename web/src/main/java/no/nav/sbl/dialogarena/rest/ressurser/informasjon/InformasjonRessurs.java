@@ -203,10 +203,10 @@ public class InformasjonRessurs {
             return null;
         }
         boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunesok.kommunenr);
-        String kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunesok.kommunenr, kommunesok.adresseForslag.kommunenavn);
+
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(kommunesok.navEnhet.navn)
-                .withKommunenavn(kommunenavn)
+                .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunesok.kommunenr, kommunesok.adresseForslag.kommunenavn))
                 .withOrgnr((digisosKommune) ? kommunesok.navEnhet.sosialOrgnr : null);
     }
 
