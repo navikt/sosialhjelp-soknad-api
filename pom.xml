@@ -81,7 +81,7 @@
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2020.03.10_16.55-ca8a7f989623</nav-common.version>
 
-        <spring.version>5.2.8.RELEASE</spring.version>
+        <spring.version>5.2.9.RELEASE</spring.version>
         <jetty.version>9.4.31.v20200723</jetty.version>
         <jersey.version>2.31</jersey.version>
         <token-validation.version>1.1.5</token-validation.version>
