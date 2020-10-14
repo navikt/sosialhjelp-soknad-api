@@ -198,23 +198,11 @@ public class InformasjonRessurs {
         if (NedetidUtils.isInnenforNedetid()) {
             return new HashMap<>();
         }
-        Map<String, KommuneInfoFrontend> manueltPakobledeKommuner = KommuneTilNavEnhetMapper.getDigisoskommuner().stream()
-                .map(kommunenr -> new KommuneInfoFrontend()
-                        .withKommunenummer(kommunenr)
-                        .withKanMottaSoknader(true)
-                        .withKanOppdatereStatus(false))
-                .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
+        Map<String, KommuneInfoFrontend> manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.getDigisoskommuner());
 
-        Map<String, KommuneInfoFrontend> digisosKommuner = digisosApi.hentKommuneInfo().values().stream()
-                .filter(KommuneInfo::getKanMottaSoknader)
-                .map(KommuneInfo -> new KommuneInfoFrontend()
-                        .withKommunenummer(KommuneInfo.getKommunenummer())
-                        .withKanMottaSoknader(KommuneInfo.getKanMottaSoknader())
-                        .withKanOppdatereStatus(KommuneInfo.getKanOppdatereStatus()))
-                .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
+        Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(digisosApi.hentKommuneInfo());
 
-        digisosKommuner.putAll(manueltPakobledeKommuner);
-        return digisosKommuner;
+        return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner);
     }
 
     @Unprotected
@@ -237,6 +225,30 @@ public class InformasjonRessurs {
                 .withEnhetsnavn(kommunesok.navEnhet.navn)
                 .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunesok.kommunenr, kommunesok.adresseForslag.kommunenavn))
                 .withOrgnr((digisosKommune) ? kommunesok.navEnhet.sosialOrgnr : null);
+    }
+
+    public Map<String, KommuneInfoFrontend> mapManueltPakobledeKommuner(List<String> manuelleKommuner) {
+        return manuelleKommuner.stream()
+                .map(kommunenr -> new KommuneInfoFrontend()
+                        .withKommunenummer(kommunenr)
+                        .withKanMottaSoknader(true)
+                        .withKanOppdatereStatus(false))
+                .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
+    }
+
+    public Map<String, KommuneInfoFrontend> mapDigisosKommuner(Map<String, KommuneInfo> digisosKommuner) {
+        return digisosKommuner.values().stream()
+                .filter(KommuneInfo::getKanMottaSoknader)
+                .map(KommuneInfo -> new KommuneInfoFrontend()
+                        .withKommunenummer(KommuneInfo.getKommunenummer())
+                        .withKanMottaSoknader(KommuneInfo.getKanMottaSoknader())
+                        .withKanOppdatereStatus(KommuneInfo.getKanOppdatereStatus()))
+                .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
+    }
+
+    public Map<String, KommuneInfoFrontend> mergeManuelleKommunerMedDigisosKommuner(Map<String, KommuneInfoFrontend> manuelleKommuner, Map<String, KommuneInfoFrontend> digisosKommuner) {
+        manuelleKommuner.forEach(digisosKommuner::putIfAbsent);
+        return digisosKommuner;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
