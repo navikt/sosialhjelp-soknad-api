@@ -6,7 +6,7 @@ metadata:
   name: sosialhjelp-soknad-api-redis
   namespace: teamdigisos
 spec:
-  image: bitnami/redis:6.0.9
+  image: bitnami/redis:6.0.8
   port: 6379
   replicas: # A single Redis-app doesn't scale
     min: 1
