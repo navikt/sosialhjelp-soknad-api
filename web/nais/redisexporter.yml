@@ -28,4 +28,4 @@ spec:
     - name: REDIS_EXPORTER_LOG_FORMAT
       value: json
   envFrom:
-    - secret: redis-password-modia-api
+    - secret: redis-password-soknad-api
