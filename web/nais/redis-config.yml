@@ -6,7 +6,7 @@ metadata:
   name: sosialhjelp-soknad-api-redis
   namespace: teamdigisos
 spec:
-  image: bitnami/redis:6.0.9
+  image: navikt/secure-redis:5.0.3-alpine-2
   port: 6379
   replicas: # A single Redis-app doesn't scale
     min: 1
@@ -20,5 +20,5 @@ spec:
       memory: 128Mi
   service:
     port: 6379
-  envFrom:
-    - secret: redis-password-soknad-api
+  vault:
+    enabled: true

@@ -6,7 +6,7 @@ metadata:
   name: sosialhjelp-soknad-api-redisexporter
   namespace: teamdigisos
 spec:
-  image: oliver006/redis_exporter:v1.11.1
+  image: navikt/secure-redisexporter:v0.29.0-alpine-3
   port: 9121
   prometheus:
     enabled: true
@@ -20,12 +20,8 @@ spec:
     requests:
       cpu: 100m
       memory: 100Mi
-  liveness:
-    path: /health
+  vault:
+    enabled: true
   env:
     - name: REDIS_ADDR
       value: sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local:6379
-    - name: REDIS_EXPORTER_LOG_FORMAT
-      value: json
-  envFrom:
-    - secret: redis-password-soknad-api
