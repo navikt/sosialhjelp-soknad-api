@@ -38,6 +38,10 @@ spec:
 {{#each ingresses}}
     - "{{this}}"
 {{/each}}
+{{#unless isGcp}}
+  envFrom:
+    - secret: redis-password-soknad-api
+{{/unless}}
   resources:
     limits:
       cpu: 3000m

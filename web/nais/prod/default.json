@@ -27,6 +27,7 @@
   "memoryRequest": "4Gi",
   "vaultEnabled": true,
   "prometheusEnabled": true,
+  "isGcp": false,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
     "DITTNAV_LINK_URL": "https://tjenester.nav.no/dittnav/",
@@ -73,6 +74,7 @@
     "NEDETID_SLUTT": "01.01.2020 09:00:00",
     "FASIT_ENVIRONMENT_NAME": "p",
     "TILLATMOCK": "false",
-    "START_NORG_WITHMOCK": "false"
+    "START_NORG_WITHMOCK": "false",
+    "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local"
   }
 }
