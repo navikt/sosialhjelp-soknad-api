@@ -70,7 +70,7 @@ public class OpplastetVedleggService {
         String mimeType = FileDetectionUtils.getMimeType(data);
 
         validerFil(data);
-        virusScanner.scan(filnavn, data);
+        virusScanner.scan(filnavn, data, behandlingsId);
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
