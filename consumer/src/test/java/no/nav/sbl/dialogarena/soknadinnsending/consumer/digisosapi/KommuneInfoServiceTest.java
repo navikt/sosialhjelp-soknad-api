@@ -267,4 +267,26 @@ public class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
     }
 
+
+    @Test
+    public void behandlingsansvarligKommuneSkalReturneresUtenKommuneINavnet() {
+        KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, "nabokommunenavn kommune");
+        Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
+        kommuneInfoMap.put("1111", value);
+        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+
+        String kommunenavn = kommuneInfoService.getBehandlingskommune("1111", "kommunenavn");
+        assertThat(kommunenavn).isEqualTo("nabokommunenavn");
+    }
+
+    @Test
+    public void behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarlig() {
+        KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, null);
+        Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
+        kommuneInfoMap.put("1111", value);
+        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+
+        String kommunenavn = kommuneInfoService.getBehandlingskommune("1111", "kommunenavn");
+        assertThat(kommunenavn).isEqualTo("kommunenavn");
+    }
 }

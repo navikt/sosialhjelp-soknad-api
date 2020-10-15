@@ -20,9 +20,9 @@ public class ClamAvVirusScanner implements VirusScanner {
     }
 
     @Override
-    public void scan(String filnavn, byte[] data) throws OpplastingException {
-        if (connection.isEnabled() && connection.isInfected(filnavn, data)) {
-            throw new OpplastingException("Fant virus i " + filnavn, null, "vedlegg.opplasting.feil.muligVirus");
+    public void scan(String filnavn, byte[] data, String behandlingsId) throws OpplastingException {
+        if (connection.isEnabled() && connection.isInfected(filnavn, data, behandlingsId)) {
+            throw new OpplastingException(String.format("Fant virus i fil for behandlingsId %s", behandlingsId), null, "vedlegg.opplasting.feil.muligVirus");
         } else if (!connection.isEnabled()) {
             logger.info("Virusscanning er ikke aktivert");
         }
