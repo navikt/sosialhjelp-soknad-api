@@ -37,7 +37,7 @@ public class RedisConfig {
         RedisURI redisURI = RedisURI.builder()
                 .withHost(host)
                 .withPort(port)
-                .withPassword("wrong-password-test")
+                .withPassword(password)
                 .build();
 
         return RedisClient.create(redisURI);
