@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
@@ -24,7 +24,7 @@ public class DigisosApiRestConfig {
     public DigisosApi digisosApi() {
         DigisosApi mock = new DigisosApiMock().digisosApiMock();
         DigisosApi prod = new DigisosApiImpl();
-        return createSwitcher(prod, mock, DIGISOSAPI_WITHMOCK, DigisosApi.class);
+        return createMetricsProxyWithInstanceSwitcher("DigisosApi", prod, mock, DIGISOSAPI_WITHMOCK, DigisosApi.class);
     }
 
     @Bean
