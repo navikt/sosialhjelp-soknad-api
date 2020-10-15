@@ -32,7 +32,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SkattbarInntektRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -41,7 +41,6 @@ public class SkattbarInntektRessursTest {
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @SuppressWarnings("unused")
     @Mock
     private Tilgangskontroll tilgangskontroll;
 
@@ -58,6 +57,7 @@ public class SkattbarInntektRessursTest {
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(any());
     }
 
     @After
