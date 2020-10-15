@@ -1,5 +1,6 @@
-package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 
 import java.util.List;
