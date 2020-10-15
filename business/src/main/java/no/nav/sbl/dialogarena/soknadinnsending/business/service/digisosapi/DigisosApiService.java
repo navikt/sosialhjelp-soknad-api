@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;

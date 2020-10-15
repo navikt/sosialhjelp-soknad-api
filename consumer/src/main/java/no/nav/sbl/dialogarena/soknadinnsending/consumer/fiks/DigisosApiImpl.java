@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,6 +14,8 @@ import com.nimbusds.jwt.SignedJWT;
 import no.ks.fiks.streaming.klient.FilForOpplasting;
 import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;

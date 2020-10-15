@@ -1,7 +1,5 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.digisosapi;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.junit.Test;

@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
