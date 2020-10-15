@@ -9,11 +9,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public final class RedisMockUtil {
 
-    private RedisMockUtil() {
-    }
-
     private static final Logger log = getLogger(RedisMockUtil.class);
     private static RedisServer mockedRedisServer;
+
+    private RedisMockUtil() {
+    }
 
     public static void startRedisMocked(int port) {
         log.warn("Starter MOCKET in-memory redis. Denne meldingen skal aldri vises i prod.");
