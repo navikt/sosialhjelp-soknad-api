@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.sbl.dialogarena.redis.RedisConfig;
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
@@ -22,7 +24,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.KodeverkWSConfi
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonV3WSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.UtbetalingWSConfig;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -30,7 +31,6 @@ import org.springframework.context.annotation.Profile;
 import static java.lang.System.setProperty;
 
 @Configuration
-@EnableCaching
 @Import({
         PersonService.class,
         PersonServiceV3.class,
@@ -41,7 +41,8 @@ import static java.lang.System.setProperty;
         UtbetalingService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
-        DkifService.class
+        DkifService.class,
+        RedisService.class
 })
 
 public class ConsumerConfig {
@@ -66,7 +67,8 @@ public class ConsumerConfig {
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             DkifRestConfig.class,
-            SkattbarInntektRestConfig.class
+            SkattbarInntektRestConfig.class,
+            RedisConfig.class
     })
     public static class WsServices {
     }
