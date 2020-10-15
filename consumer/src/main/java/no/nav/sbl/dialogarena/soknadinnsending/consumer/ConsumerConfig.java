@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.Organisasjo
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.ArbeidsforholdRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig;
@@ -15,7 +16,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.SkattbarInnte
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.AdresseSokRestConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.FiksWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.KodeverkWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.NorgRestConfig;

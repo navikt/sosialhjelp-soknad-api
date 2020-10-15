@@ -1,6 +1,5 @@
-package no.nav.sbl.dialogarena.sendsoknad.mockmodul.digisosapi;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 

@@ -1,9 +1,9 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApiImpl;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.digisosapi.DigisosApiMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApiImpl;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApiMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
