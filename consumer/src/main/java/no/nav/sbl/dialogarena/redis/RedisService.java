@@ -3,11 +3,17 @@ package no.nav.sbl.dialogarena.redis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -24,6 +30,17 @@ public class RedisService {
         this.redisStore = redisStore;
     }
 
+    public static Map<String, KommuneInfo> toKommuneInfoMap(byte[] value) {
+        try {
+            return Arrays
+                    .stream(objectMapper.readValue(value, KommuneInfo[].class))
+                    .collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
+        } catch (IOException e) {
+            log.warn("noe feilet ved deserialisering av kommuneInfoMap", e);
+            return Collections.emptyMap();
+        }
+    }
+
     public Object get(String key, Class requestedClass) {
         byte[] value = redisStore.get(key);
 
@@ -37,6 +54,11 @@ public class RedisService {
         } else {
             return null;
         }
+    }
+
+    public Map<String, KommuneInfo> getKommuneInfos(String key) {
+        byte[] value = redisStore.get(key);
+        return toKommuneInfoMap(value);
     }
 
     public void put(String key, byte[] value, long timeToLiveSeconds) {

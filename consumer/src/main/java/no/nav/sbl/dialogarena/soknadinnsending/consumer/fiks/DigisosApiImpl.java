@@ -14,9 +14,9 @@ import com.nimbusds.jwt.SignedJWT;
 import no.ks.fiks.streaming.klient.FilForOpplasting;
 import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.apache.commons.io.FileUtils;
@@ -37,8 +37,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -60,17 +58,13 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -79,13 +73,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sbl.dialogarena.redis.RedisService.toKommuneInfoMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
@@ -93,74 +85,60 @@ import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Component
 public class DigisosApiImpl implements DigisosApi {
 
     private static final Logger log = getLogger(DigisosApiImpl.class);
+    private static final String KOMMUNEINFO_CACHE_KEY = "alle_kommuneinfo_key";
+    private static final long KOMMUNEINFO_CACHE_SECONDS = 10 * 60; // 10 minutter
+    private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
+
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper
             .createObjectMapper()
             .registerModule(new KotlinModule());
+
+    private final RedisService redisService;
+    private final String endpoint;
+    private final String idPortenTokenUrl;
+    private final String idPortenClientId;
+    private final String idPortenScope;
+    private final String integrasjonsidFiks;
+    private final String integrasjonpassordFiks;
+
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
-
-    @Value("${idporten_token_url}")
-    private String idPortenTokenUrl;
-
-    @Value("${idporten_clientid}")
-    private String idPortenClientId;
-
-    @Value("${idporten_scope}")
-    private String idPortenScope;
-
-    @Value("${idporten_config_url}")
-    private String idPortenConfigUrl;
-
-    @Value("${integrasjonsid_fiks}")
-    private String integrasjonsidFiks;
-
-    @Value("${integrasjonpassord_fiks}")
-    private String integrasjonpassordFiks;
-
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
-    private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
-    private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
-    private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
-    private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
     private byte[] fiksPublicKey = null;
 
-    private String endpoint;
-
     @Inject
-    public DigisosApiImpl(String endpoint) {
-        if (MockUtils.isTillatMockRessurs()) {
-            return;
-        }
+    public DigisosApiImpl(DigisosApiProperties properties, RedisService redisService) {
+        this.redisService = redisService;
+        this.endpoint = properties.getDigisosApiEndpoint();
+        this.idPortenTokenUrl = properties.getIdPortenTokenUrl();
+        this.idPortenClientId = properties.getIdPortenClientId();
+        this.idPortenScope = properties.getIdPortenScope();
+        this.integrasjonsidFiks = properties.getIntegrasjonsidFiks();
+        this.integrasjonpassordFiks = properties.getIntegrasjonpassordFiks();
 
+        String idPortenConfigUrl = properties.getIdPortenConfigUrl();
         try {
             idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
         } catch (IOException e) {
             log.error(String.format("Henting av idportens konfigurasjon feilet. idPortenConfigUrl=%s", idPortenConfigUrl), e);
         }
-        this.endpoint = endpoint;
     }
 
     @Override
     public void ping() {
-        Map<String, KommuneInfo> kommuneInfo = hentKommuneInfo();
+        Map<String, KommuneInfo> kommuneInfo = hentAlleKommuneInfo();
         if (kommuneInfo.isEmpty()) {
             throw new IllegalStateException("Fikk ikke kontakt med digisosapi");
         }
     }
 
-    // @Cacheable("kommuneinfoCache")
-    // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
     @Override
     public Map<String, KommuneInfo> hentAlleKommuneInfo() {
-        if (isTillatMockRessurs()) {
-            return Collections.emptyMap();
-        }
-
-        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(KOMMUNEINFO_CACHE_IN_MINUTES)))) {
-            return cacheForKommuneinfo.get();
+        Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos(KOMMUNEINFO_CACHE_KEY);
+        if (cachedMap != null && !cachedMap.isEmpty()) {
+            return cachedMap;
         }
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
@@ -168,7 +146,6 @@ public class DigisosApiImpl implements DigisosApi {
             HttpGet http = new HttpGet(endpoint + "digisos/api/v1/nav/kommuner/");
             http.setHeader(ACCEPT.name(), MediaType.APPLICATION_JSON);
             http.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks);
-            Objects.requireNonNull(integrasjonpassordFiks, "integrasjonpassordFiks");
             http.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks);
             http.setHeader(AUTHORIZATION.name(), "Bearer " + accessToken.accessToken);
 
@@ -181,30 +158,16 @@ public class DigisosApiImpl implements DigisosApi {
                 log.warn("Timer: Sende fiks-request: {} ms", endTime - startTime);
             }
 
-            String content = EntityUtils.toString(response.getEntity());
+            byte[] content = EntityUtils.toByteArray(response.getEntity());
 
-            Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
-            cacheForKommuneinfo.set(collect);
-            logKommuneInfoForInnsynskommuner(collect);
-            cacheTimestamp = LocalDateTime.now();
-            return collect;
+            Map<String, KommuneInfo> kommuneInfoMap = toKommuneInfoMap(content);
+            redisService.put(KOMMUNEINFO_CACHE_KEY, content, KOMMUNEINFO_CACHE_SECONDS);
+
+            return kommuneInfoMap;
         } catch (Exception e) {
-            if (cacheForKommuneinfo.get().isEmpty()) {
-                log.error("Hent kommuneinfo feiler og cache er tom!", e);
-                return Collections.emptyMap();
-            }
-            log.error("Hent kommuneinfo feiler og cache er gammel.", e);
-            return cacheForKommuneinfo.get();
+            log.warn("Noe feil skjedde ved henting av KommuneInfo fra Fiks", e);
+            return Collections.emptyMap();
         }
-    }
-
-    private void logKommuneInfoForInnsynskommuner(Map<String, KommuneInfo> kommuneInfo) {
-        Map<String, KommuneInfo> kommunerMedInnsyn = kommuneInfo.entrySet()
-                .stream()
-                .filter(kommune -> kommune.getValue().getKanOppdatereStatus())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        log.info("KommuneInfo for kommuner med innsyn aktivert: {}", kommunerMedInnsyn.toString());
     }
 
     @Override

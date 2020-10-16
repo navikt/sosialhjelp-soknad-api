@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.sbl.dialogarena.redis.RedisConfig;
-import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
@@ -43,8 +42,7 @@ import static java.lang.System.setProperty;
         UtbetalingService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
-        DkifService.class,
-        RedisService.class
+        DkifService.class
 })
 
 public class ConsumerConfig {
@@ -57,6 +55,7 @@ public class ConsumerConfig {
     @Configuration
     @Profile("!integration")
     @Import({
+            RedisConfig.class,
             DigisosApiRestConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class,
@@ -69,8 +68,7 @@ public class ConsumerConfig {
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             DkifRestConfig.class,
-            SkattbarInntektRestConfig.class,
-            RedisConfig.class
+            SkattbarInntektRestConfig.class
     })
     public static class WsServices {
     }
