@@ -352,7 +352,7 @@ public class DigisosApiImpl implements DigisosApi {
                         errorResponse));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
-            log.info("Sendte inn søknad {} og fikk digisosid: {}", behandlingsId, digisosId);
+            log.info("Sendte inn søknad {} til kommune {} og fikk digisosid: {}", behandlingsId,  kommunenummer, digisosId);
             return digisosId;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet", behandlingsId), e);
