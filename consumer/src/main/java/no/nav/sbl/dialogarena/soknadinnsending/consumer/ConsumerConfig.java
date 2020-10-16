@@ -24,6 +24,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.KodeverkWSConfi
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonV3WSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.UtbetalingWSConfig;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -31,6 +32,7 @@ import org.springframework.context.annotation.Profile;
 import static java.lang.System.setProperty;
 
 @Configuration
+@EnableCaching
 @Import({
         PersonService.class,
         PersonServiceV3.class,
