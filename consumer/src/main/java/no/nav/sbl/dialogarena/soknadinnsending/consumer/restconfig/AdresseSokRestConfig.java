@@ -1,14 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
-
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
-
-import java.util.function.Function;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
@@ -19,6 +9,15 @@ import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sbl.rest.RestUtils.RestConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.function.Function;
+
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 
 @Configuration
@@ -28,22 +27,22 @@ public class AdresseSokRestConfig {
 
     @Value("${tps.adresse.url}")
     private String endpoint;
-    
-    
+
+
     private final RestCallContext medPostnummerExecutionContext = new RestCallContext.Builder()
             .withClient(RestUtils.createClient(RestConfig.builder().readTimeout(30000).build()))
             .withConcurrentRequests(3)
             .withMaximumQueueSize(9)
             .withExecutorTimeoutInMilliseconds(30000)
             .build();
-    
+
     private final RestCallContext utenPostnummerExecutionContext = new RestCallContext.Builder()
             .withClient(RestUtils.createClient(RestConfig.builder().readTimeout(30000).build()))
             .withConcurrentRequests(2)
             .withMaximumQueueSize(6)
             .withExecutorTimeoutInMilliseconds(30000)
             .build();
-    
+
     private final Function<Sokedata, RestCallContext> restCallContextSelector = (sokedata) -> (sokedata != null && sokedata.postnummer != null) ? medPostnummerExecutionContext : utenPostnummerExecutionContext;
 
     @Bean
@@ -52,7 +51,7 @@ public class AdresseSokRestConfig {
         AdresseSokConsumer mock = new AdresseSokConsumerMock().adresseRestService();
         return createSwitcher(prod, mock, ADRESSE_KEY, AdresseSokConsumer.class);
     }
-    
+
     @Bean
     public Pingable adressesokPing() {
         return () -> {

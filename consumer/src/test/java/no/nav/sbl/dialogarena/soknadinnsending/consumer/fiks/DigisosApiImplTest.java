@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.junit.Test;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApiImpl.getDigisosIdFromResponse;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApiImpl.getDigisosIdFromResponse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;

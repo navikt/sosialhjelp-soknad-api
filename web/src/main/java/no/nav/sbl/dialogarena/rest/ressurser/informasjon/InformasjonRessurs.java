@@ -5,8 +5,8 @@ import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
@@ -16,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -190,6 +193,20 @@ public class InformasjonRessurs {
 
     @Unprotected
     @GET
+    @Path("/kommuneinfo")
+    public Map<String, KommuneInfoFrontend> hentKommuneinfo() {
+        if (NedetidUtils.isInnenforNedetid()) {
+            return new HashMap<>();
+        }
+        Map<String, KommuneInfoFrontend> manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.getDigisoskommuner());
+
+        Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(digisosApi.hentKommuneInfo());
+
+        return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner);
+    }
+
+    @Unprotected
+    @GET
     @Path("/kommunesok")
     public List<NavEnhetRessurs.NavEnhetFrontend> sokEtterNavEnheter(@QueryParam("kommunenr") String kommunenr) {
         return adresseSokService.sokEtterNavEnheter(kommunenr).stream()
@@ -210,4 +227,53 @@ public class InformasjonRessurs {
                 .withOrgnr((digisosKommune) ? kommunesok.navEnhet.sosialOrgnr : null);
     }
 
+    public Map<String, KommuneInfoFrontend> mapManueltPakobledeKommuner(List<String> manuelleKommuner) {
+        return manuelleKommuner.stream()
+                .map(kommunenr -> new KommuneInfoFrontend()
+                        .withKommunenummer(kommunenr)
+                        .withKanMottaSoknader(true)
+                        .withKanOppdatereStatus(false))
+                .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
+    }
+
+    public Map<String, KommuneInfoFrontend> mapDigisosKommuner(Map<String, KommuneInfo> digisosKommuner) {
+        return digisosKommuner.values().stream()
+                .filter(KommuneInfo::getKanMottaSoknader)
+                .map(KommuneInfo -> new KommuneInfoFrontend()
+                        .withKommunenummer(KommuneInfo.getKommunenummer())
+                        .withKanMottaSoknader(KommuneInfo.getKanMottaSoknader())
+                        .withKanOppdatereStatus(KommuneInfo.getKanOppdatereStatus()))
+                .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
+    }
+
+    public Map<String, KommuneInfoFrontend> mergeManuelleKommunerMedDigisosKommuner(Map<String, KommuneInfoFrontend> manuelleKommuner, Map<String, KommuneInfoFrontend> digisosKommuner) {
+        manuelleKommuner.forEach(digisosKommuner::putIfAbsent);
+        return digisosKommuner;
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class KommuneInfoFrontend {
+        public String kommunenummer;
+        public boolean kanMottaSoknader;
+        public boolean kanOppdatereStatus;
+
+        public String getKommunenummer() {
+            return kommunenummer;
+        }
+
+        public KommuneInfoFrontend withKommunenummer(String kommunenummer) {
+           this.kommunenummer = kommunenummer;
+           return this;
+        }
+
+        public KommuneInfoFrontend withKanMottaSoknader(boolean kanMottaSoknader) {
+            this.kanMottaSoknader = kanMottaSoknader;
+            return this;
+        }
+
+        public KommuneInfoFrontend withKanOppdatereStatus(boolean kanOppdatereStatus) {
+            this.kanOppdatereStatus = kanOppdatereStatus;
+            return this;
+        }
+    }
 }

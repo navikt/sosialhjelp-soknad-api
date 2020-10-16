@@ -8,7 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DigisosApiRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.virusscan.VirusScanConfig;
 import org.springframework.context.annotation.*;
 

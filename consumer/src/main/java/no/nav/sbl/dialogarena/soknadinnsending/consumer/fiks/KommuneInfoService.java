@@ -1,5 +1,6 @@
-package no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.slf4j.Logger;

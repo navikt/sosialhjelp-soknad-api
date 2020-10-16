@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.sbl.dialogarena.redis.RedisConfig;
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
@@ -7,18 +9,18 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.AdresseSokRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.ArbeidsforholdRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.NorgRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.SkattbarInntektRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.AdresseSokRestConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.FiksWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.KodeverkWSConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.NorgRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonV3WSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.UtbetalingWSConfig;
@@ -41,7 +43,8 @@ import static java.lang.System.setProperty;
         UtbetalingService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
-        DkifService.class
+        DkifService.class,
+        RedisService.class
 })
 
 public class ConsumerConfig {
@@ -66,7 +69,8 @@ public class ConsumerConfig {
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             DkifRestConfig.class,
-            SkattbarInntektRestConfig.class
+            SkattbarInntektRestConfig.class,
+            RedisConfig.class
     })
     public static class WsServices {
     }
