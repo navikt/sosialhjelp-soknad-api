@@ -31,14 +31,16 @@ public class RedisService {
     }
 
     public static Map<String, KommuneInfo> toKommuneInfoMap(byte[] value) {
-        try {
-            return Arrays
-                    .stream(objectMapper.readValue(value, KommuneInfo[].class))
-                    .collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
-        } catch (IOException e) {
-            log.warn("noe feilet ved deserialisering av kommuneInfoMap", e);
-            return Collections.emptyMap();
+        if (value != null) {
+            try {
+                return Arrays
+                        .stream(objectMapper.readValue(value, KommuneInfo[].class))
+                        .collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
+            } catch (IOException e) {
+                log.warn("noe feilet ved deserialisering til kommuneInfoMap", e);
+            }
         }
+        return null;
     }
 
     public Object get(String key, Class requestedClass) {
