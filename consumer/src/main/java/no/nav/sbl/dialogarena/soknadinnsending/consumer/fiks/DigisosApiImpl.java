@@ -37,8 +37,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -99,9 +101,25 @@ public class DigisosApiImpl implements DigisosApi {
             .createObjectMapper()
             .registerModule(new KotlinModule());
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
+
+    @Value("${idporten_token_url}")
     private String idPortenTokenUrl;
+
+    @Value("${idporten_clientid}")
     private String idPortenClientId;
+
+    @Value("${idporten_scope}")
     private String idPortenScope;
+
+    @Value("${idporten_config_url}")
+    private String idPortenConfigUrl;
+
+    @Value("${integrasjonsid_fiks}")
+    private String integrasjonsidFiks;
+
+    @Value("${integrasjonpassord_fiks}")
+    private String integrasjonpassordFiks;
+
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
     private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
@@ -109,19 +127,20 @@ public class DigisosApiImpl implements DigisosApi {
     private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
     private byte[] fiksPublicKey = null;
 
-    public DigisosApiImpl() {
+    private String endpoint;
+
+    @Inject
+    public DigisosApiImpl(String endpoint) {
         if (MockUtils.isTillatMockRessurs()) {
             return;
         }
-        this.idPortenTokenUrl = System.getProperty("idporten_token_url");
-        this.idPortenClientId = System.getProperty("idporten_clientid");
-        this.idPortenScope = System.getProperty("idporten_scope");
-        String idPortenConfigUrl = System.getProperty("idporten_config_url");
+
         try {
             idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
         } catch (IOException e) {
             log.error(String.format("Henting av idportens konfigurasjon feilet. idPortenConfigUrl=%s", idPortenConfigUrl), e);
         }
+        this.endpoint = endpoint;
     }
 
     @Override
@@ -146,12 +165,11 @@ public class DigisosApiImpl implements DigisosApi {
 
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-            HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommuner/");
+            HttpGet http = new HttpGet(endpoint + "digisos/api/v1/nav/kommuner/");
             http.setHeader(ACCEPT.name(), MediaType.APPLICATION_JSON);
-            http.setHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"));
-            String integrasjonpassord_fiks = System.getProperty("integrasjonpassord_fiks");
-            Objects.requireNonNull(integrasjonpassord_fiks, "integrasjonpassord_fiks");
-            http.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassord_fiks);
+            http.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks);
+            Objects.requireNonNull(integrasjonpassordFiks, "integrasjonpassordFiks");
+            http.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks);
             http.setHeader(AUTHORIZATION.name(), "Bearer " + accessToken.accessToken);
 
             long startTime = System.currentTimeMillis();
@@ -217,10 +235,10 @@ public class DigisosApiImpl implements DigisosApi {
         //Denne integrasjonen kan feile så fiksPublicKey blir derfor cachet.
         if (fiksPublicKey == null) {
             try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-                HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
+                HttpUriRequest request = RequestBuilder.get().setUri(endpoint + "/digisos/api/v1/dokumentlager-public-key")
                         .addHeader(ACCEPT.name(), MediaType.WILDCARD)
-                        .addHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"))
-                        .addHeader(HEADER_INTEGRASJON_PASSORD, System.getProperty("integrasjonpassord_fiks"))
+                        .addHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+                        .addHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
                         .addHeader(AUTHORIZATION.name(), token).build();
 
                 CloseableHttpResponse response = client.execute(request);
@@ -326,12 +344,12 @@ public class DigisosApiImpl implements DigisosApi {
                 .build();
 
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().setDefaultRequestConfig(requestConfig).build()) {
-            HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, behandlingsId));
+            HttpPost post = new HttpPost(endpoint + getLastOppFilerPath(kommunenummer, behandlingsId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
             post.setHeader(AUTHORIZATION.name(), token);
-            post.setHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"));
-            post.setHeader(HEADER_INTEGRASJON_PASSORD, System.getProperty("integrasjonpassord_fiks"));
+            post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks);
+            post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks);
 
             post.setEntity(entitybuilder.build());
             long startTime = System.currentTimeMillis();

@@ -23,7 +23,7 @@ public class DigisosApiRestConfig {
     @Bean
     public DigisosApi digisosApi() {
         DigisosApi mock = new DigisosApiMock().digisosApiMock();
-        DigisosApi prod = new DigisosApiImpl();
+        DigisosApi prod = new DigisosApiImpl(digisosApiEndpoint);
         return createMetricsProxyWithInstanceSwitcher("DigisosApi", prod, mock, DIGISOSAPI_WITHMOCK, DigisosApi.class);
     }
 
