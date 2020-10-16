@@ -115,7 +115,7 @@ public class InformasjonRessursTest {
         map.put(digisosKommune, null);
         map.put(deaktivertDigisosKommune, null);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(map);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(map);
 
         when(kommuneInfoService.kanMottaSoknader(manueltPaakobletKommune)).thenReturn(true);
         when(kommuneInfoService.kanMottaSoknader(digisosKommune)).thenReturn(true);

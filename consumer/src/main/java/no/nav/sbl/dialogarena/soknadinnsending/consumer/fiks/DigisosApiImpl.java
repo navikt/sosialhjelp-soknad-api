@@ -154,7 +154,7 @@ public class DigisosApiImpl implements DigisosApi {
     // @Cacheable("kommuneinfoCache")
     // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
     @Override
-    public Map<String, KommuneInfo> hentKommuneInfo() {
+    public Map<String, KommuneInfo> hentAlleKommuneInfo() {
         if (isTillatMockRessurs()) {
             return Collections.emptyMap();
         }

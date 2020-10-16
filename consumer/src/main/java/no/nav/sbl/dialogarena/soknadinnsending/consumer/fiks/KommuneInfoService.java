@@ -22,13 +22,13 @@ public class KommuneInfoService {
     private DigisosApi digisosApi;
 
     public boolean kanMottaSoknader(String kommunenummer) {
-        return digisosApi.hentKommuneInfo()
+        return digisosApi.hentAlleKommuneInfo()
                 .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getKanMottaSoknader();
     }
 
     public boolean harMidlertidigDeaktivertMottak(String kommunenummer) {
-        return digisosApi.hentKommuneInfo()
+        return digisosApi.hentAlleKommuneInfo()
                 .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getHarMidlertidigDeaktivertMottak();
     }
@@ -43,7 +43,7 @@ public class KommuneInfoService {
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     public KommuneStatus kommuneInfo(String kommunenummer) {
-        KommuneInfo kommuneInfo = digisosApi.hentKommuneInfo().getOrDefault(kommunenummer, null);
+        KommuneInfo kommuneInfo = digisosApi.hentAlleKommuneInfo().getOrDefault(kommunenummer, null);
         log.info("Kommuneinfo for {}: {}", kommunenummer, kommuneInfo);
 
         if (kommuneInfo == null) {
@@ -60,7 +60,7 @@ public class KommuneInfoService {
     }
 
     private String behandlingsansvarlig(String kommunenummer) {
-        return digisosApi.hentKommuneInfo()
+        return digisosApi.hentAlleKommuneInfo()
                 .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getBehandlingsansvarlig();
     }

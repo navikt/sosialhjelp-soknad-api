@@ -26,7 +26,7 @@ public class KommuneInfoServiceTest {
 
     @Test
     public void kommuneUtenKonfigurasjonSkalGikanMottaSoknaderFalse() {
-        when(digisosApi.hentKommuneInfo()).thenReturn(new HashMap<>());
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(new HashMap<>());
 
         boolean kanMottaSoknader = kommuneInfoService.kanMottaSoknader("1111");
         assertThat(kanMottaSoknader).isFalse();
@@ -38,7 +38,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1111", true, false, false, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         boolean kanMottaSoknader = kommuneInfoService.kanMottaSoknader("1111");
         assertThat(kanMottaSoknader).isTrue();
@@ -46,7 +46,7 @@ public class KommuneInfoServiceTest {
         // False
         value = new KommuneInfo("1111", false, false, false, false, null, false, null);
         kommuneInfoMap.put("1111", value);
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kanMottaSoknader = kommuneInfoService.kanMottaSoknader("1111");
         assertThat(kanMottaSoknader).isFalse();
@@ -54,7 +54,7 @@ public class KommuneInfoServiceTest {
 
     @Test
     public void kommuneUtenKonfigurasjonSkalGiharMidlertidigDeaktivertMottakFalse() {
-        when(digisosApi.hentKommuneInfo()).thenReturn(new HashMap<>());
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(new HashMap<>());
         boolean harMidlertidigDeaktivertMottak = kommuneInfoService.harMidlertidigDeaktivertMottak("1111");
         assertThat(harMidlertidigDeaktivertMottak).isFalse();
     }
@@ -65,7 +65,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         boolean kanMottaSoknader = kommuneInfoService.harMidlertidigDeaktivertMottak("1111");
         assertThat(kanMottaSoknader).isTrue();
@@ -73,7 +73,7 @@ public class KommuneInfoServiceTest {
         // False
         value = new KommuneInfo("1111", true, false, false, false, null, false, null);
         kommuneInfoMap.put("1111", value);
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kanMottaSoknader = kommuneInfoService.harMidlertidigDeaktivertMottak("1111");
         assertThat(kanMottaSoknader).isFalse();
@@ -82,7 +82,7 @@ public class KommuneInfoServiceTest {
     @Test
     public void kommuneInfo_case1_ingen_konfigurasjon() {
         // Case 1
-        when(digisosApi.hentKommuneInfo()).thenReturn(new HashMap<>());
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(new HashMap<>());
 
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.MANGLER_KONFIGURASJON);
@@ -96,7 +96,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1234", false, false, false, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
@@ -106,7 +106,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", false, false, false, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
@@ -116,7 +116,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", false, false, true, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
@@ -126,7 +126,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", false, false, true, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
@@ -136,7 +136,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", false, true, false, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
@@ -146,7 +146,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", false, true, false, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
@@ -156,7 +156,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", false, true, true, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
@@ -166,7 +166,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", false, true, true, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
@@ -180,7 +180,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1234", true, false, false, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
@@ -189,7 +189,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", true, false, false, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
@@ -204,7 +204,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1234", true, true, false, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
@@ -213,7 +213,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", true, true, false, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA);
@@ -227,7 +227,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1234", true, true, true, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
@@ -236,7 +236,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", true, false, true, false, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
@@ -245,7 +245,7 @@ public class KommuneInfoServiceTest {
         value = new KommuneInfo("1234", true, false, true, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
@@ -259,7 +259,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1234", true, true, true, true, null, false, null);
         kommuneInfoMap.put("1234", value);
 
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         KommuneStatus kommuneStatus = kommuneInfoService.kommuneInfo("1234");
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
@@ -271,7 +271,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, "nabokommunenavn kommune");
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         String kommunenavn = kommuneInfoService.getBehandlingskommune("1111", "kommunenavn");
         assertThat(kommunenavn).isEqualTo("nabokommunenavn");
@@ -282,7 +282,7 @@ public class KommuneInfoServiceTest {
         KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
-        when(digisosApi.hentKommuneInfo()).thenReturn(kommuneInfoMap);
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         String kommunenavn = kommuneInfoService.getBehandlingskommune("1111", "kommunenavn");
         assertThat(kommunenavn).isEqualTo("kommunenavn");
