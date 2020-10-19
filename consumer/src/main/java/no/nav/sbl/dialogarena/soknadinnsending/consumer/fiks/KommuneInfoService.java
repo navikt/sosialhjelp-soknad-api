@@ -83,7 +83,7 @@ public class KommuneInfoService {
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     public KommuneStatus kommuneInfo(String kommunenummer) {
-        KommuneInfo kommuneInfo = digisosApi.hentAlleKommuneInfo().getOrDefault(kommunenummer, null);
+        KommuneInfo kommuneInfo = hentAlleKommuneInfo().getOrDefault(kommunenummer, null);
         log.info("Kommuneinfo for {}: {}", kommunenummer, kommuneInfo);
 
         if (kommuneInfo == null) {
@@ -100,7 +100,7 @@ public class KommuneInfoService {
     }
 
     private String behandlingsansvarlig(String kommunenummer) {
-        return digisosApi.hentAlleKommuneInfo()
+        return hentAlleKommuneInfo()
                 .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getBehandlingsansvarlig();
     }
