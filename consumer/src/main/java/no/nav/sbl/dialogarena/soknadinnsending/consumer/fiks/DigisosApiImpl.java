@@ -155,7 +155,7 @@ public class DigisosApiImpl implements DigisosApi {
             Map<String, KommuneInfo> kommuneInfoMap = toKommuneInfoMap(content);
             // Oppdater kommuneInfoCache
             redisService.setex(KOMMUNEINFO_CACHE_KEY, content, KOMMUNEINFO_CACHE_SECONDS);
-            redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes());
+            redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
 
             return kommuneInfoMap;
         } catch (Exception e) {

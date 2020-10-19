@@ -69,7 +69,7 @@ public class KommuneInfoService {
     }
 
     private boolean skalBrukeCache() {
-        String timeString = (String) redisService.get(KOMMUNEINFO_LAST_POLL_TIME_KEY, String.class);
+        String timeString = redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY);
         if (timeString == null) {
             return false;
         }

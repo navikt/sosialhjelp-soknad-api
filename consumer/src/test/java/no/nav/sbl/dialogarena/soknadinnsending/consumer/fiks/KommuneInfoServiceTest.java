@@ -38,7 +38,7 @@ public class KommuneInfoServiceTest {
 
     @Before
     public void setUp() {
-        when(redisService.get(any(), eq(String.class))).thenReturn(null);
+        when(redisService.getString(any())).thenReturn(null);
     }
 
     @Test
@@ -311,12 +311,12 @@ public class KommuneInfoServiceTest {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
 
-        when(redisService.get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class))).thenReturn(LocalDateTime.now().minusMinutes(2).format(ISO_LOCAL_DATE_TIME));
+        when(redisService.getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY))).thenReturn(LocalDateTime.now().minusMinutes(2).format(ISO_LOCAL_DATE_TIME));
         when(redisService.getKommuneInfos()).thenReturn(kommuneInfoMap);
 
         kommuneInfoService.kanMottaSoknader("1111");
 
-        verify(redisService, times(1)).get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class));
+        verify(redisService, times(1)).getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY));
         verify(redisService, times(1)).getKommuneInfos();
     }
 
@@ -326,12 +326,12 @@ public class KommuneInfoServiceTest {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
 
-        when(redisService.get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
+        when(redisService.getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
         when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
 
         kommuneInfoService.kanMottaSoknader("1111");
 
-        verify(redisService, times(1)).get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class));
+        verify(redisService, times(1)).getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY));
         verify(redisService, times(0)).getKommuneInfos();
     }
 
@@ -341,7 +341,7 @@ public class KommuneInfoServiceTest {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put("1111", value);
 
-        when(redisService.get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
+        when(redisService.getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
         when(digisosApi.hentAlleKommuneInfo()).thenReturn(Collections.emptyMap());
         when(redisService.getKommuneInfos()).thenReturn(kommuneInfoMap);
 
@@ -349,13 +349,13 @@ public class KommuneInfoServiceTest {
 
         assertThat(kanMottaSoknader).isTrue();
 
-        verify(redisService, times(1)).get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class));
+        verify(redisService, times(1)).getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY));
         verify(redisService, times(1)).getKommuneInfos();
     }
 
     @Test
     public void hentKommuneInfoFraFiksFeiler_cacheErTom() {
-        when(redisService.get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
+        when(redisService.getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
         when(digisosApi.hentAlleKommuneInfo()).thenReturn(Collections.emptyMap());
         when(redisService.getKommuneInfos()).thenReturn(null);
 
@@ -363,7 +363,7 @@ public class KommuneInfoServiceTest {
 
         assertThat(kanMottaSoknader).isFalse();
 
-        verify(redisService, times(1)).get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class));
+        verify(redisService, times(1)).getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY));
         verify(redisService, times(1)).getKommuneInfos();
     }
 }

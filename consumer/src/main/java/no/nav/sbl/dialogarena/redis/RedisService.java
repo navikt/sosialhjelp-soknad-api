@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
@@ -56,6 +57,15 @@ public class RedisService {
         } else {
             return null;
         }
+    }
+
+    public String getString(String key) {
+        byte[] value = redisStore.get(key);
+
+        if (value == null) {
+            return null;
+        }
+        return new String(value, StandardCharsets.UTF_8);
     }
 
     public Map<String, KommuneInfo> getKommuneInfos() {
