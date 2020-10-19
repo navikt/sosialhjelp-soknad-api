@@ -101,12 +101,7 @@ public class DigisosApiImpl implements DigisosApi {
             .registerModule(new KotlinModule());
 
     private RedisService redisService;
-    private String endpoint;
-    private String idPortenTokenUrl;
-    private String idPortenClientId;
-    private String idPortenScope;
-    private String integrasjonsidFiks;
-    private String integrasjonpassordFiks;
+    private DigisosApiProperties properties;
 
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
@@ -118,12 +113,7 @@ public class DigisosApiImpl implements DigisosApi {
             return;
         }
         this.redisService = redisService;
-        this.endpoint = properties.getDigisosApiEndpoint();
-        this.idPortenTokenUrl = properties.getIdPortenTokenUrl();
-        this.idPortenClientId = properties.getIdPortenClientId();
-        this.idPortenScope = properties.getIdPortenScope();
-        this.integrasjonsidFiks = properties.getIntegrasjonsidFiks();
-        this.integrasjonpassordFiks = properties.getIntegrasjonpassordFiks();
+        this.properties = properties;
 
         String idPortenConfigUrl = properties.getIdPortenConfigUrl();
         try {
@@ -145,10 +135,10 @@ public class DigisosApiImpl implements DigisosApi {
     public Map<String, KommuneInfo> hentAlleKommuneInfo() {
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-            HttpGet http = new HttpGet(endpoint + "digisos/api/v1/nav/kommuner/");
+            HttpGet http = new HttpGet(properties.getDigisosApiEndpoint() + "digisos/api/v1/nav/kommuner/");
             http.setHeader(ACCEPT.name(), MediaType.APPLICATION_JSON);
-            http.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks);
-            http.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks);
+            http.setHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks());
+            http.setHeader(HEADER_INTEGRASJON_PASSORD, properties.getIntegrasjonpassordFiks());
             http.setHeader(AUTHORIZATION.name(), "Bearer " + accessToken.accessToken);
 
             long startTime = System.currentTimeMillis();
@@ -202,10 +192,10 @@ public class DigisosApiImpl implements DigisosApi {
         //Denne integrasjonen kan feile så fiksPublicKey blir derfor cachet.
         if (fiksPublicKey == null) {
             try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-                HttpUriRequest request = RequestBuilder.get().setUri(endpoint + "/digisos/api/v1/dokumentlager-public-key")
+                HttpUriRequest request = RequestBuilder.get().setUri(properties.getDigisosApiEndpoint() + "/digisos/api/v1/dokumentlager-public-key")
                         .addHeader(ACCEPT.name(), MediaType.WILDCARD)
-                        .addHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-                        .addHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+                        .addHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks())
+                        .addHeader(HEADER_INTEGRASJON_PASSORD, properties.getIntegrasjonpassordFiks())
                         .addHeader(AUTHORIZATION.name(), token).build();
 
                 CloseableHttpResponse response = client.execute(request);
@@ -311,12 +301,12 @@ public class DigisosApiImpl implements DigisosApi {
                 .build();
 
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().setDefaultRequestConfig(requestConfig).build()) {
-            HttpPost post = new HttpPost(endpoint + getLastOppFilerPath(kommunenummer, behandlingsId));
+            HttpPost post = new HttpPost(properties.getDigisosApiEndpoint() + getLastOppFilerPath(kommunenummer, behandlingsId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
             post.setHeader(AUTHORIZATION.name(), token);
-            post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks);
-            post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks);
+            post.setHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks());
+            post.setHeader(HEADER_INTEGRASJON_PASSORD, properties.getIntegrasjonpassordFiks());
 
             post.setEntity(entitybuilder.build());
             long startTime = System.currentTimeMillis();
@@ -369,7 +359,7 @@ public class DigisosApiImpl implements DigisosApi {
 
     private IdPortenAccessTokenResponse getVirksertAccessToken() {
         String jws = createJws();
-        HttpPost httpPost = new HttpPost(idPortenTokenUrl);
+        HttpPost httpPost = new HttpPost(properties.getIdPortenTokenUrl());
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer"));
@@ -408,11 +398,11 @@ public class DigisosApiImpl implements DigisosApi {
                     new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(Collections.singletonList((com.nimbusds.jose.util.Base64.encode(certificate.getEncoded())))).build(),
                     new JWTClaimsSet.Builder()
                             .audience(idPortenOidcConfiguration.issuer)
-                            .issuer(idPortenClientId)
+                            .issuer(properties.getIdPortenClientId())
                             .issueTime(date)
                             .jwtID(UUID.randomUUID().toString())
                             .expirationTime(expDate)
-                            .claim("scope", idPortenScope)
+                            .claim("scope", properties.getIdPortenScope())
                             .build());
             signedJWT.sign(new RSASSASigner(keyPair.getPrivate()));
             return signedJWT.serialize();
