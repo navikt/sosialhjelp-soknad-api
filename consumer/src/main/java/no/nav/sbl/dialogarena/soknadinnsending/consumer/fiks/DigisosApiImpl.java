@@ -83,6 +83,7 @@ import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static no.nav.sbl.dialogarena.redis.RedisService.toKommuneInfoMap;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
@@ -99,13 +100,13 @@ public class DigisosApiImpl implements DigisosApi {
             .createObjectMapper()
             .registerModule(new KotlinModule());
 
-    private final RedisService redisService;
-    private final String endpoint;
-    private final String idPortenTokenUrl;
-    private final String idPortenClientId;
-    private final String idPortenScope;
-    private final String integrasjonsidFiks;
-    private final String integrasjonpassordFiks;
+    private RedisService redisService;
+    private String endpoint;
+    private String idPortenTokenUrl;
+    private String idPortenClientId;
+    private String idPortenScope;
+    private String integrasjonsidFiks;
+    private String integrasjonpassordFiks;
 
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
@@ -113,6 +114,9 @@ public class DigisosApiImpl implements DigisosApi {
 
     @Inject
     public DigisosApiImpl(DigisosApiProperties properties, RedisService redisService) {
+        if (isTillatMockRessurs()){
+            return;
+        }
         this.redisService = redisService;
         this.endpoint = properties.getDigisosApiEndpoint();
         this.idPortenTokenUrl = properties.getIdPortenTokenUrl();
