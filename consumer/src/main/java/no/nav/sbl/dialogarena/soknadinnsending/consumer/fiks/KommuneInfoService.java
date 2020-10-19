@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
@@ -8,7 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.Map;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.MANGLER_KONFIGURASJON;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
@@ -17,20 +22,55 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.
 @Component
 public class KommuneInfoService {
     private static final Logger log = LoggerFactory.getLogger(KommuneInfoService.class);
+    private static final long MINUTES_TO_PASS_BETWEEN_POLL = 10;
+
+    private final DigisosApi digisosApi;
+    private final RedisService redisService;
 
     @Inject
-    private DigisosApi digisosApi;
+    public KommuneInfoService(DigisosApi digisosApi, RedisService redisService) {
+        this.digisosApi = digisosApi;
+        this.redisService = redisService;
+    }
 
     public boolean kanMottaSoknader(String kommunenummer) {
-        return digisosApi.hentAlleKommuneInfo()
+        return hentAlleKommuneInfo()
                 .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getKanMottaSoknader();
     }
 
     public boolean harMidlertidigDeaktivertMottak(String kommunenummer) {
-        return digisosApi.hentAlleKommuneInfo()
+        return hentAlleKommuneInfo()
                 .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getHarMidlertidigDeaktivertMottak();
+    }
+
+    private Map<String, KommuneInfo> hentAlleKommuneInfo() {
+        if (skalBrukeCache()) {
+            Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos();
+            if (cachedMap != null && !cachedMap.isEmpty()) {
+                return cachedMap;
+            }
+        }
+
+        Map<String, KommuneInfo> kommuneInfoMap = digisosApi.hentAlleKommuneInfo();
+        if (kommuneInfoMap.isEmpty()) {
+            // noe feil skjedde mot Fiks --> prøv å bruke cache:
+            Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos();
+            if (cachedMap != null && !cachedMap.isEmpty()) {
+                return cachedMap;
+            }
+        }
+        return kommuneInfoMap;
+    }
+
+    private boolean skalBrukeCache() {
+        String timeString = (String) redisService.get(KOMMUNEINFO_LAST_POLL_TIME_KEY, String.class);
+        if (timeString == null) {
+            return false;
+        }
+        LocalDateTime lastPollTime = LocalDateTime.parse(timeString, ISO_LOCAL_DATE_TIME);
+        return lastPollTime.plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now());
     }
 
     public String getBehandlingskommune(String kommunenr, String kommunenavnFraAdresseforslag) {

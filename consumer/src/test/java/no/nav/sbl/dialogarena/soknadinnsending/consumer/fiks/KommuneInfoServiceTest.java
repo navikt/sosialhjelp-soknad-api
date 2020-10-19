@@ -1,28 +1,45 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KommuneInfoServiceTest {
 
     @Mock
-    DigisosApi digisosApi;
+    private DigisosApi digisosApi;
+
+    @Mock
+    private RedisService redisService;
 
     @InjectMocks
     private KommuneInfoService kommuneInfoService;
 
+    @Before
+    public void setUp() {
+        when(redisService.get(any(), eq(String.class))).thenReturn(null);
+    }
 
     @Test
     public void kommuneUtenKonfigurasjonSkalGikanMottaSoknaderFalse() {
@@ -286,5 +303,67 @@ public class KommuneInfoServiceTest {
 
         String kommunenavn = kommuneInfoService.getBehandlingskommune("1111", "kommunenavn");
         assertThat(kommunenavn).isEqualTo("kommunenavn");
+    }
+
+    @Test
+    public void skalHenteKommuneInfoFraCache_hvisLastTimePollErInnenfor() {
+        KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, null);
+        Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
+        kommuneInfoMap.put("1111", value);
+
+        when(redisService.get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class))).thenReturn(LocalDateTime.now().minusMinutes(2).format(ISO_LOCAL_DATE_TIME));
+        when(redisService.getKommuneInfos()).thenReturn(kommuneInfoMap);
+
+        kommuneInfoService.kanMottaSoknader("1111");
+
+        verify(redisService, times(1)).get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class));
+        verify(redisService, times(1)).getKommuneInfos();
+    }
+
+    @Test
+    public void skalHenteKommuneInfoFraFiks_hvisLastPollTimeOverskriderGrense() {
+        KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, null);
+        Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
+        kommuneInfoMap.put("1111", value);
+
+        when(redisService.get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
+
+        kommuneInfoService.kanMottaSoknader("1111");
+
+        verify(redisService, times(1)).get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class));
+        verify(redisService, times(0)).getKommuneInfos();
+    }
+
+    @Test
+    public void hentKommuneInfoFraFiksFeiler_brukCache() {
+        KommuneInfo value = new KommuneInfo("1111", true, false, true, false, null, false, null);
+        Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
+        kommuneInfoMap.put("1111", value);
+
+        when(redisService.get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(Collections.emptyMap());
+        when(redisService.getKommuneInfos()).thenReturn(kommuneInfoMap);
+
+        boolean kanMottaSoknader = kommuneInfoService.kanMottaSoknader("1111");
+
+        assertThat(kanMottaSoknader).isTrue();
+
+        verify(redisService, times(1)).get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class));
+        verify(redisService, times(1)).getKommuneInfos();
+    }
+
+    @Test
+    public void hentKommuneInfoFraFiksFeiler_cacheErTom() {
+        when(redisService.get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class))).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(Collections.emptyMap());
+        when(redisService.getKommuneInfos()).thenReturn(null);
+
+        boolean kanMottaSoknader = kommuneInfoService.kanMottaSoknader("1111");
+
+        assertThat(kanMottaSoknader).isFalse();
+
+        verify(redisService, times(1)).get(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY), eq(String.class));
+        verify(redisService, times(1)).getKommuneInfos();
     }
 }

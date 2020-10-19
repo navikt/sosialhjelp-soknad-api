@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -58,18 +58,26 @@ public class RedisService {
         }
     }
 
-    public Map<String, KommuneInfo> getKommuneInfos(String key) {
-        byte[] value = redisStore.get(key);
+    public Map<String, KommuneInfo> getKommuneInfos() {
+        byte[] value = redisStore.get(KOMMUNEINFO_CACHE_KEY);
         return toKommuneInfoMap(value);
     }
 
-    public void put(String key, byte[] value, long timeToLiveSeconds) {
-        String set = redisStore.set(key, value, timeToLiveSeconds);
-        if (set.equalsIgnoreCase("OK")) {
-            log.debug("Cache put OK, key={}", key);
-        } else {
-            log.warn("Cache put feilet eller fikk timeout, key={}", key);
-        }
+    public void setex(String key, byte[] value, long timeToLiveSeconds) {
+        String set = redisStore.setex(key, value, timeToLiveSeconds);
+        handleResponse(key, set);
     }
 
+    public void set(String key, byte[] value) {
+        String set = redisStore.set(key, value);
+        handleResponse(key, set);
+    }
+
+    private void handleResponse(String key, String set) {
+        if (set.equalsIgnoreCase("OK")) {
+            log.debug("Redis put OK, key={}", key);
+        } else {
+            log.warn("Redis put feilet eller fikk timeout, key={}", key);
+        }
+    }
 }

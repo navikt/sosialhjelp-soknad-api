@@ -43,8 +43,8 @@ public class DigisosApiRestConfig {
     }
 
     @Bean
-    public KommuneInfoService kommuneInfoService() {
-        return new KommuneInfoService();
+    public KommuneInfoService kommuneInfoService(DigisosApi digisosapi, RedisService redisService) {
+        return new KommuneInfoService(digisosapi, redisService);
     }
 
     @Bean

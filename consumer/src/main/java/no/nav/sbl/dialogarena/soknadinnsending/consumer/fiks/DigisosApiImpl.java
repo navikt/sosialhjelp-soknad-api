@@ -58,6 +58,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
@@ -77,6 +78,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static no.nav.sbl.dialogarena.redis.RedisService.toKommuneInfoMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
@@ -88,8 +93,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class DigisosApiImpl implements DigisosApi {
 
     private static final Logger log = getLogger(DigisosApiImpl.class);
-    private static final String KOMMUNEINFO_CACHE_KEY = "alle_kommuneinfo_key";
-    private static final long KOMMUNEINFO_CACHE_SECONDS = 10 * 60; // 10 minutter
     private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
 
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper
@@ -136,11 +139,6 @@ public class DigisosApiImpl implements DigisosApi {
 
     @Override
     public Map<String, KommuneInfo> hentAlleKommuneInfo() {
-        Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos(KOMMUNEINFO_CACHE_KEY);
-        if (cachedMap != null && !cachedMap.isEmpty()) {
-            return cachedMap;
-        }
-
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
             HttpGet http = new HttpGet(endpoint + "digisos/api/v1/nav/kommuner/");
@@ -161,7 +159,9 @@ public class DigisosApiImpl implements DigisosApi {
             byte[] content = EntityUtils.toByteArray(response.getEntity());
 
             Map<String, KommuneInfo> kommuneInfoMap = toKommuneInfoMap(content);
-            redisService.put(KOMMUNEINFO_CACHE_KEY, content, KOMMUNEINFO_CACHE_SECONDS);
+            // Oppdater kommuneInfoCache
+            redisService.setex(KOMMUNEINFO_CACHE_KEY, content, KOMMUNEINFO_CACHE_SECONDS);
+            redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes());
 
             return kommuneInfoMap;
         } catch (Exception e) {
