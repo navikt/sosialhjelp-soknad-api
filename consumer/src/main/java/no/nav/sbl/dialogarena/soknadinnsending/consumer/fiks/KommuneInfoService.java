@@ -47,14 +47,18 @@ public class KommuneInfoService {
 
     private Map<String, KommuneInfo> hentAlleKommuneInfo() {
         if (skalBrukeCache()) {
+            log.info("hentAlleKommuneInfo - prøver å ta i bruk cache");
             Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos();
             if (cachedMap != null && !cachedMap.isEmpty()) {
                 return cachedMap;
             }
         }
 
+        log.info("hentAlleKommuneInfo - henter fra Fiks");
+
         Map<String, KommuneInfo> kommuneInfoMap = digisosApi.hentAlleKommuneInfo();
         if (kommuneInfoMap.isEmpty()) {
+            log.warn("hentAlleKommuneInfo - feil i fiks, prøver å bruk cache");
             // noe feil skjedde mot Fiks --> prøv å bruke cache:
             Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos();
             if (cachedMap != null && !cachedMap.isEmpty()) {
