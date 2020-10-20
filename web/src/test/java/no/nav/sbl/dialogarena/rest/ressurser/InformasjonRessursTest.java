@@ -46,8 +46,6 @@ public class InformasjonRessursTest {
     @Mock
     NavMessageSource messageSource;
     @Mock
-    DigisosApi digisosApi;
-    @Mock
     KommuneInfoService kommuneInfoService;
 
     @InjectMocks
@@ -115,7 +113,7 @@ public class InformasjonRessursTest {
         map.put(digisosKommune, null);
         map.put(deaktivertDigisosKommune, null);
 
-        when(digisosApi.hentAlleKommuneInfo()).thenReturn(map);
+        when(kommuneInfoService.hentAlleKommuneInfo()).thenReturn(map);
 
         when(kommuneInfoService.kanMottaSoknader(manueltPaakobletKommune)).thenReturn(true);
         when(kommuneInfoService.kanMottaSoknader(digisosKommune)).thenReturn(true);

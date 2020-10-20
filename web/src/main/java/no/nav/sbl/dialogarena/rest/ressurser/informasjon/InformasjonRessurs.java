@@ -63,15 +63,13 @@ public class InformasjonRessurs {
     private final NavMessageSource messageSource;
     private final PersonService personService;
     private final AdresseSokService adresseSokService;
-    private final DigisosApi digisosApi;
     private final KommuneInfoService kommuneInfoService;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService) {
+    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.personService = personService;
         this.adresseSokService = adresseSokService;
-        this.digisosApi = digisosApi;
         this.kommuneInfoService = kommuneInfoService;
     }
 
@@ -181,7 +179,7 @@ public class InformasjonRessurs {
         }
         List<String> manueltPaakobledeKommuner = KommuneTilNavEnhetMapper.getDigisoskommuner();
 
-        Set<String> digisosApiKommuner = digisosApi.hentAlleKommuneInfo().keySet().stream()
+        Set<String> digisosApiKommuner = kommuneInfoService.hentAlleKommuneInfo().keySet().stream()
                 .filter(kommuneInfoService::kanMottaSoknader)
                 .collect(Collectors.toSet());
 
@@ -200,7 +198,7 @@ public class InformasjonRessurs {
         }
         Map<String, KommuneInfoFrontend> manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.getDigisoskommuner());
 
-        Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(digisosApi.hentAlleKommuneInfo());
+        Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo());
 
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner);
     }
