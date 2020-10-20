@@ -45,7 +45,7 @@ public class KommuneInfoService {
                 .getHarMidlertidigDeaktivertMottak();
     }
 
-    private Map<String, KommuneInfo> hentAlleKommuneInfo() {
+    public Map<String, KommuneInfo> hentAlleKommuneInfo() {
         if (skalBrukeCache()) {
             Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos();
             if (cachedMap != null && !cachedMap.isEmpty()) {
