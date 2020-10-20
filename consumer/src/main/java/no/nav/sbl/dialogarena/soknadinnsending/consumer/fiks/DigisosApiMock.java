@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 
 import java.util.HashMap;
@@ -11,12 +10,10 @@ import static org.mockito.Mockito.when;
 
 public class DigisosApiMock {
 
-    private static Map<String, Map<String, RsNorgEnhet>> responses = new HashMap<>();
-
     public DigisosApi digisosApiMock(){
         DigisosApi mock = mock(DigisosApi.class);
 
-        when(mock.hentKommuneInfo()).thenAnswer(invocationOnMock -> getKommuneInfoResponse());
+        when(mock.hentAlleKommuneInfo()).thenAnswer(invocationOnMock -> getKommuneInfoResponse());
 
         return mock;
     }

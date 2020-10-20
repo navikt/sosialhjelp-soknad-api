@@ -25,7 +25,11 @@ public class RedisStore {
         return commands.get(key);
     }
 
-    public String set(String key, byte[] value, long timeToLiveSeconds) {
+    public String setex(String key, byte[] value, long timeToLiveSeconds) {
         return commands.setex(key, timeToLiveSeconds, value);
+    }
+
+    public String set(String key, byte[] value) {
+        return commands.set(key, value);
     }
 }

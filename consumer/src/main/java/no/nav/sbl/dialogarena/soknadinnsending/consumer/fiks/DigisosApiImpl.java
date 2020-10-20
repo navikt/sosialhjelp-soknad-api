@@ -14,9 +14,9 @@ import com.nimbusds.jwt.SignedJWT;
 import no.ks.fiks.streaming.klient.FilForOpplasting;
 import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.apache.commons.io.FileUtils;
@@ -37,8 +37,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -58,17 +58,14 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -77,12 +74,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
+import static no.nav.sbl.dialogarena.redis.RedisService.toKommuneInfoMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
@@ -91,32 +91,31 @@ import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Component
 public class DigisosApiImpl implements DigisosApi {
 
     private static final Logger log = getLogger(DigisosApiImpl.class);
+    private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
+
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper
             .createObjectMapper()
             .registerModule(new KotlinModule());
+
+    private RedisService redisService;
+    private DigisosApiProperties properties;
+
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
-    private String idPortenTokenUrl;
-    private String idPortenClientId;
-    private String idPortenScope;
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
-    private AtomicReference<Map<String, KommuneInfo>> cacheForKommuneinfo = new AtomicReference<>(Collections.emptyMap());
-    private LocalDateTime cacheTimestamp = LocalDateTime.MIN;
-    private static final long KOMMUNEINFO_CACHE_IN_MINUTES = 1;
-    private static final int SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000; // 5 minutter
     private byte[] fiksPublicKey = null;
 
-    public DigisosApiImpl() {
-        if (MockUtils.isTillatMockRessurs()) {
+    @Inject
+    public DigisosApiImpl(DigisosApiProperties properties, RedisService redisService) {
+        if (isTillatMockRessurs()){
             return;
         }
-        this.idPortenTokenUrl = System.getProperty("idporten_token_url");
-        this.idPortenClientId = System.getProperty("idporten_clientid");
-        this.idPortenScope = System.getProperty("idporten_scope");
-        String idPortenConfigUrl = System.getProperty("idporten_config_url");
+        this.redisService = redisService;
+        this.properties = properties;
+
+        String idPortenConfigUrl = properties.getIdPortenConfigUrl();
         try {
             idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
         } catch (IOException e) {
@@ -126,32 +125,20 @@ public class DigisosApiImpl implements DigisosApi {
 
     @Override
     public void ping() {
-        Map<String, KommuneInfo> kommuneInfo = hentKommuneInfo();
+        Map<String, KommuneInfo> kommuneInfo = hentAlleKommuneInfo();
         if (kommuneInfo.isEmpty()) {
             throw new IllegalStateException("Fikk ikke kontakt med digisosapi");
         }
     }
 
-    // @Cacheable("kommuneinfoCache")
-    // todo: får ikke cache til å virke, legger inn manuelt enn så lenge
     @Override
-    public Map<String, KommuneInfo> hentKommuneInfo() {
-        if (isTillatMockRessurs()) {
-            return Collections.emptyMap();
-        }
-
-        if (cacheTimestamp.isAfter(LocalDateTime.now().minus(Duration.ofMinutes(KOMMUNEINFO_CACHE_IN_MINUTES)))) {
-            return cacheForKommuneinfo.get();
-        }
-
+    public Map<String, KommuneInfo> hentAlleKommuneInfo() {
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-            HttpGet http = new HttpGet(System.getProperty("digisos_api_baseurl") + "digisos/api/v1/nav/kommuner/");
+            HttpGet http = new HttpGet(properties.getDigisosApiEndpoint() + "digisos/api/v1/nav/kommuner/");
             http.setHeader(ACCEPT.name(), MediaType.APPLICATION_JSON);
-            http.setHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"));
-            String integrasjonpassord_fiks = System.getProperty("integrasjonpassord_fiks");
-            Objects.requireNonNull(integrasjonpassord_fiks, "integrasjonpassord_fiks");
-            http.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassord_fiks);
+            http.setHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks());
+            http.setHeader(HEADER_INTEGRASJON_PASSORD, properties.getIntegrasjonpassordFiks());
             http.setHeader(AUTHORIZATION.name(), "Bearer " + accessToken.accessToken);
 
             long startTime = System.currentTimeMillis();
@@ -163,30 +150,18 @@ public class DigisosApiImpl implements DigisosApi {
                 log.warn("Timer: Sende fiks-request: {} ms", endTime - startTime);
             }
 
-            String content = EntityUtils.toString(response.getEntity());
+            byte[] content = EntityUtils.toByteArray(response.getEntity());
 
-            Map<String, KommuneInfo> collect = Arrays.stream(objectMapper.readValue(content, KommuneInfo[].class)).collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
-            cacheForKommuneinfo.set(collect);
-            logKommuneInfoForInnsynskommuner(collect);
-            cacheTimestamp = LocalDateTime.now();
-            return collect;
+            Map<String, KommuneInfo> kommuneInfoMap = toKommuneInfoMap(content);
+            // Oppdater kommuneInfoCache
+            redisService.setex(KOMMUNEINFO_CACHE_KEY, content, KOMMUNEINFO_CACHE_SECONDS);
+            redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
+
+            return kommuneInfoMap;
         } catch (Exception e) {
-            if (cacheForKommuneinfo.get().isEmpty()) {
-                log.error("Hent kommuneinfo feiler og cache er tom!", e);
-                return Collections.emptyMap();
-            }
-            log.error("Hent kommuneinfo feiler og cache er gammel.", e);
-            return cacheForKommuneinfo.get();
+            log.warn("Noe feil skjedde ved henting av KommuneInfo fra Fiks", e);
+            return Collections.emptyMap();
         }
-    }
-
-    private void logKommuneInfoForInnsynskommuner(Map<String, KommuneInfo> kommuneInfo) {
-        Map<String, KommuneInfo> kommunerMedInnsyn = kommuneInfo.entrySet()
-                .stream()
-                .filter(kommune -> kommune.getValue().getKanOppdatereStatus())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        log.info("KommuneInfo for kommuner med innsyn aktivert: {}", kommunerMedInnsyn.toString());
     }
 
     @Override
@@ -217,10 +192,10 @@ public class DigisosApiImpl implements DigisosApi {
         //Denne integrasjonen kan feile så fiksPublicKey blir derfor cachet.
         if (fiksPublicKey == null) {
             try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
-                HttpUriRequest request = RequestBuilder.get().setUri(System.getProperty("digisos_api_baseurl") + "/digisos/api/v1/dokumentlager-public-key")
+                HttpUriRequest request = RequestBuilder.get().setUri(properties.getDigisosApiEndpoint() + "/digisos/api/v1/dokumentlager-public-key")
                         .addHeader(ACCEPT.name(), MediaType.WILDCARD)
-                        .addHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"))
-                        .addHeader(HEADER_INTEGRASJON_PASSORD, System.getProperty("integrasjonpassord_fiks"))
+                        .addHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks())
+                        .addHeader(HEADER_INTEGRASJON_PASSORD, properties.getIntegrasjonpassordFiks())
                         .addHeader(AUTHORIZATION.name(), token).build();
 
                 CloseableHttpResponse response = client.execute(request);
@@ -326,12 +301,12 @@ public class DigisosApiImpl implements DigisosApi {
                 .build();
 
         try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().setDefaultRequestConfig(requestConfig).build()) {
-            HttpPost post = new HttpPost(System.getProperty("digisos_api_baseurl") + getLastOppFilerPath(kommunenummer, behandlingsId));
+            HttpPost post = new HttpPost(properties.getDigisosApiEndpoint() + getLastOppFilerPath(kommunenummer, behandlingsId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
             post.setHeader(AUTHORIZATION.name(), token);
-            post.setHeader(HEADER_INTEGRASJON_ID, System.getProperty("integrasjonsid_fiks"));
-            post.setHeader(HEADER_INTEGRASJON_PASSORD, System.getProperty("integrasjonpassord_fiks"));
+            post.setHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks());
+            post.setHeader(HEADER_INTEGRASJON_PASSORD, properties.getIntegrasjonpassordFiks());
 
             post.setEntity(entitybuilder.build());
             long startTime = System.currentTimeMillis();
@@ -384,7 +359,7 @@ public class DigisosApiImpl implements DigisosApi {
 
     private IdPortenAccessTokenResponse getVirksertAccessToken() {
         String jws = createJws();
-        HttpPost httpPost = new HttpPost(idPortenTokenUrl);
+        HttpPost httpPost = new HttpPost(properties.getIdPortenTokenUrl());
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer"));
@@ -423,11 +398,11 @@ public class DigisosApiImpl implements DigisosApi {
                     new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(Collections.singletonList((com.nimbusds.jose.util.Base64.encode(certificate.getEncoded())))).build(),
                     new JWTClaimsSet.Builder()
                             .audience(idPortenOidcConfiguration.issuer)
-                            .issuer(idPortenClientId)
+                            .issuer(properties.getIdPortenClientId())
                             .issueTime(date)
                             .jwtID(UUID.randomUUID().toString())
                             .expirationTime(expDate)
-                            .claim("scope", idPortenScope)
+                            .claim("scope", properties.getIdPortenScope())
                             .build());
             signedJWT.sign(new RSASSASigner(keyPair.getPrivate()));
             return signedJWT.serialize();

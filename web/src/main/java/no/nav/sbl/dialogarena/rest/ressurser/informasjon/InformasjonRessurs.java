@@ -181,7 +181,7 @@ public class InformasjonRessurs {
         }
         List<String> manueltPaakobledeKommuner = KommuneTilNavEnhetMapper.getDigisoskommuner();
 
-        Set<String> digisosApiKommuner = digisosApi.hentKommuneInfo().keySet().stream()
+        Set<String> digisosApiKommuner = digisosApi.hentAlleKommuneInfo().keySet().stream()
                 .filter(kommuneInfoService::kanMottaSoknader)
                 .collect(Collectors.toSet());
 
@@ -200,7 +200,7 @@ public class InformasjonRessurs {
         }
         Map<String, KommuneInfoFrontend> manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.getDigisoskommuner());
 
-        Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(digisosApi.hentKommuneInfo());
+        Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(digisosApi.hentAlleKommuneInfo());
 
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner);
     }

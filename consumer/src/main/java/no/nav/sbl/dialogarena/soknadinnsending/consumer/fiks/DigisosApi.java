@@ -9,7 +9,7 @@ import java.util.Map;
 public interface DigisosApi {
     void ping();
 
-    Map<String, KommuneInfo> hentKommuneInfo();
+    Map<String, KommuneInfo> hentAlleKommuneInfo();
 
     String krypterOgLastOppFiler(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
 }
