@@ -51,15 +51,17 @@ public class KommuneInfoService {
             if (cachedMap != null && !cachedMap.isEmpty()) {
                 return cachedMap;
             }
+            log.info("hentAlleKommuneInfo - cache er tom.");
         }
 
         Map<String, KommuneInfo> kommuneInfoMap = digisosApi.hentAlleKommuneInfo();
         if (kommuneInfoMap.isEmpty()) {
-            log.info("hentAlleKommuneInfo - Feil mot Fiks. Forsøker å bruke cache mens Fiks er nede.");
             Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos();
             if (cachedMap != null && !cachedMap.isEmpty()) {
+                log.info("hentAlleKommuneInfo - feiler mot Fiks. Bruker cache mens Fiks er nede.");
                 return cachedMap;
             }
+            log.error("hentAlleKommuneInfo - feiler mot Fiks og cache er tom.");
         }
         return kommuneInfoMap;
     }
