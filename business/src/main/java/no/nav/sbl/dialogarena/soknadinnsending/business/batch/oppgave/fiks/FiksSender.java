@@ -7,7 +7,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +33,10 @@ public class FiksSender {
 
     @Inject
     public FiksSender(ForsendelsesServiceV9 forsendelsesService, DokumentKrypterer dokumentKrypterer,
-                      InnsendingService innsendingService, PDFService pdfService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
+                      InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
         this.forsendelsesService = forsendelsesService;
         this.innsendingService = innsendingService;
-        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
+        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
     }
 
     private final Printkonfigurasjon fakePrintConfig = new Printkonfigurasjon()
