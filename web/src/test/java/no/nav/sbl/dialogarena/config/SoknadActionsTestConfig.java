@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;

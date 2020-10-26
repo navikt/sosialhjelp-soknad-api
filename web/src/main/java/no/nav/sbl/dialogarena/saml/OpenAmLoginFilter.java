@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.saml;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamlUnauthorizedException;
@@ -16,7 +15,6 @@ import java.util.List;
 
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
-@Slf4j
 public class OpenAmLoginFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(OpenAmLoginFilter.class);
 

@@ -5,8 +5,8 @@ import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
@@ -16,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -60,15 +63,13 @@ public class InformasjonRessurs {
     private final NavMessageSource messageSource;
     private final PersonService personService;
     private final AdresseSokService adresseSokService;
-    private final DigisosApi digisosApi;
     private final KommuneInfoService kommuneInfoService;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, DigisosApi digisosApi, KommuneInfoService kommuneInfoService) {
+    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.personService = personService;
         this.adresseSokService = adresseSokService;
-        this.digisosApi = digisosApi;
         this.kommuneInfoService = kommuneInfoService;
     }
 
@@ -178,7 +179,7 @@ public class InformasjonRessurs {
         }
         List<String> manueltPaakobledeKommuner = KommuneTilNavEnhetMapper.getDigisoskommuner();
 
-        Set<String> digisosApiKommuner = digisosApi.hentKommuneInfo().keySet().stream()
+        Set<String> digisosApiKommuner = kommuneInfoService.hentAlleKommuneInfo().keySet().stream()
                 .filter(kommuneInfoService::kanMottaSoknader)
                 .collect(Collectors.toSet());
 
@@ -186,6 +187,20 @@ public class InformasjonRessurs {
         union.addAll(digisosApiKommuner);
 
         return union;
+    }
+
+    @Unprotected
+    @GET
+    @Path("/kommuneinfo")
+    public Map<String, KommuneInfoFrontend> hentKommuneinfo() {
+        if (NedetidUtils.isInnenforNedetid()) {
+            return new HashMap<>();
+        }
+        Map<String, KommuneInfoFrontend> manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.getDigisoskommuner());
+
+        Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo());
+
+        return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner);
     }
 
     @Unprotected
@@ -203,11 +218,60 @@ public class InformasjonRessurs {
             return null;
         }
         boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunesok.kommunenr);
-        String kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunesok.kommunenr, kommunesok.adresseForslag.kommunenavn);
+
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(kommunesok.navEnhet.navn)
-                .withKommunenavn(kommunenavn)
+                .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunesok.kommunenr, kommunesok.adresseForslag.kommunenavn))
                 .withOrgnr((digisosKommune) ? kommunesok.navEnhet.sosialOrgnr : null);
     }
 
+    public Map<String, KommuneInfoFrontend> mapManueltPakobledeKommuner(List<String> manuelleKommuner) {
+        return manuelleKommuner.stream()
+                .map(kommunenr -> new KommuneInfoFrontend()
+                        .withKommunenummer(kommunenr)
+                        .withKanMottaSoknader(true)
+                        .withKanOppdatereStatus(false))
+                .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
+    }
+
+    public Map<String, KommuneInfoFrontend> mapDigisosKommuner(Map<String, KommuneInfo> digisosKommuner) {
+        return digisosKommuner.values().stream()
+                .filter(KommuneInfo::getKanMottaSoknader)
+                .map(KommuneInfo -> new KommuneInfoFrontend()
+                        .withKommunenummer(KommuneInfo.getKommunenummer())
+                        .withKanMottaSoknader(KommuneInfo.getKanMottaSoknader())
+                        .withKanOppdatereStatus(KommuneInfo.getKanOppdatereStatus()))
+                .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
+    }
+
+    public Map<String, KommuneInfoFrontend> mergeManuelleKommunerMedDigisosKommuner(Map<String, KommuneInfoFrontend> manuelleKommuner, Map<String, KommuneInfoFrontend> digisosKommuner) {
+        manuelleKommuner.forEach(digisosKommuner::putIfAbsent);
+        return digisosKommuner;
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class KommuneInfoFrontend {
+        public String kommunenummer;
+        public boolean kanMottaSoknader;
+        public boolean kanOppdatereStatus;
+
+        public String getKommunenummer() {
+            return kommunenummer;
+        }
+
+        public KommuneInfoFrontend withKommunenummer(String kommunenummer) {
+           this.kommunenummer = kommunenummer;
+           return this;
+        }
+
+        public KommuneInfoFrontend withKanMottaSoknader(boolean kanMottaSoknader) {
+            this.kanMottaSoknader = kanMottaSoknader;
+            return this;
+        }
+
+        public KommuneInfoFrontend withKanOppdatereStatus(boolean kanOppdatereStatus) {
+            this.kanOppdatereStatus = kanOppdatereStatus;
+            return this;
+        }
+    }
 }

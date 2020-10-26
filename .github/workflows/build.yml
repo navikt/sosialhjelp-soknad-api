@@ -38,12 +38,7 @@ jobs:
       - name: Create docker image tags
         run: |
           PROJECT_NAME=$(echo $GITHUB_REPOSITORY | cut -d/ -f2)
-          echo "docker.pkg.github.com/$GITHUB_REPOSITORY/$PROJECT_NAME:$VERSION" > DOCKER_TAG
-
-          echo ::set-env name=TAG::$(echo $VERSION)
-          echo ::set-env name=IMAGE::$(echo "docker.pkg.github.com/${{ github.repository }}/$PROJECT_NAME:$VERSION")
-        env:
-          VERSION: ${{ steps.artifact-version.outputs.version }}
+          echo "docker.pkg.github.com/$GITHUB_REPOSITORY/$PROJECT_NAME:${{ steps.artifact-version.outputs.version }}" > DOCKER_TAG
       - name: Build docker image
         run: docker build -t $(cat DOCKER_TAG) .
       - name: Create tag and release
@@ -58,15 +53,3 @@ jobs:
       - name: Push docker image
         run: |
           docker push $(cat DOCKER_TAG)
-
-# For testing kan denne brukes med ønsket cluster/namespace:
-#      - name: autodeploy til namespace
-#        uses: nais/deploy/actions/deploy@v1
-#        env:
-#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-#          RESOURCE: web/nais.yaml
-#          CLUSTER: dev-sbs
-#          VARS: web/nais/dev/q1.json
-#          REF: ${{ env.TAG }}
-#          IMAGE: ${{ env.IMAGE }}
-#          PRINT_PAYLOAD: true

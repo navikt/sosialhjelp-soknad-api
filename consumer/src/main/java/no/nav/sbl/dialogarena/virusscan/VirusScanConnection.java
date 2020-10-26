@@ -26,7 +26,7 @@ class VirusScanConnection {
         return config.isEnabled();
     }
 
-    boolean isInfected(String filnavn, byte[] data) {
+    boolean isInfected(String filnavn, byte[] data, String behandlingsId) {
         try {
             if (!ServiceUtils.isRunningInProd() && filnavn.startsWith("virustest")) {
                 return true;
@@ -42,10 +42,10 @@ class VirusScanConnection {
                 logger.info("Ingen virus i fil");
                 return false;
             }
-            logger.warn("Fant virus i {}, status {}", filnavn, scanResult.getResult());
+            logger.warn("Fant virus i fil for behandlingsId {}, status {}", behandlingsId, scanResult.getResult());
             return true;
         } catch (Exception e) {
-            logger.warn("Kunne ikke scanne {}", filnavn, e);
+            logger.warn("Kunne ikke scanne fil for behandlingsId {}", behandlingsId, e);
             return false;
         }
     }

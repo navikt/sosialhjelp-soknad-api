@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
@@ -107,7 +107,7 @@ public class NavEnhetRessurs {
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         soknad.getJsonInternalSoknad().setMottaker(new no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
-                .withNavEnhetsnavn(navEnhetFrontend.enhetsnavn + ", " + navEnhetFrontend.kommunenavn)
+                .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr));
         soknad.getJsonInternalSoknad().getSoknad().setMottaker(new JsonSoknadsmottaker()
                 .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
@@ -187,9 +187,10 @@ public class NavEnhetRessurs {
         String enhetNr = digisosKommune ? navEnhet.enhetNr : null;
 
         boolean valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
+        String kommunenavnFraAdresseforslag = adresseForslag.kommunenavn != null ? adresseForslag.kommunenavn : navEnhet.kommunenavn;
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
-                .withKommunenavn(adresseForslag.kommunenavn != null ? adresseForslag.kommunenavn : navEnhet.kommunenavn)
+                .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavnFraAdresseforslag))
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
                 .withValgt(valgt)
@@ -211,6 +212,7 @@ public class NavEnhetRessurs {
         public String enhetsnavn;
         public String kommunenavn;
         public String kommuneNr;
+        public String behandlingsansvarlig;
         public boolean valgt;
         public boolean isMottakMidlertidigDeaktivert;
         public boolean isMottakDeaktivert;
