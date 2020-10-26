@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.AdresseSokRestConfig;
@@ -14,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRes
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.NorgRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.PdlRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.SkattbarInntektRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
@@ -33,6 +35,7 @@ import static java.lang.System.setProperty;
 @Configuration
 @EnableCaching
 @Import({
+        PdlService.class,
         PersonService.class,
         PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
@@ -56,6 +59,7 @@ public class ConsumerConfig {
     @Profile("!integration")
     @Import({
             RedisConfig.class,
+            PdlRestConfig.class,
             DigisosApiRestConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class,
