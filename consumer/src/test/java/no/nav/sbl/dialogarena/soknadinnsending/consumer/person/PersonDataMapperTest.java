@@ -328,8 +328,6 @@ public class PersonDataMapperTest {
 
         xmlPerson.setFoedselsdato(fodseldato(FODSELSAR, FODSELSMANED, FODSELSDAG));
 
-        xmlPerson.setKjoenn(null);
-
         xmlPerson.setSivilstand(lagSivilstand(SIVILSTATUS_ENKE));
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
