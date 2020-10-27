@@ -193,7 +193,6 @@ public class PersonDataMapperTest {
         assertThat(barn.getFodselsdato().getMonthOfYear(), is(FODSELSMANED_BARN));
         assertThat(barn.getFodselsdato().getDayOfMonth(), is(FODSELSDAG_BARN));
         assertThat(barn.erFolkeregistrertsammen(), is(true));
-        assertThat(barn.harIkkeTilgang(), is(false));
 
         assertThat(barn2.getFnr(), is(FNR_BARN2));
         assertThat(barn2.getFornavn(), is(FORNAVN_BARN2));
@@ -203,7 +202,6 @@ public class PersonDataMapperTest {
         assertThat(barn2.getFodselsdato().getMonthOfYear(), is(FODSELSMANED_BARN2));
         assertThat(barn2.getFodselsdato().getDayOfMonth(), is(FODSELSDAG_BARN2));
         assertThat(barn2.erFolkeregistrertsammen(), is(false));
-        assertThat(barn2.harIkkeTilgang(), is(false));
     }
 
     @Test

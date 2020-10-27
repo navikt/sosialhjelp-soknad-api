@@ -118,8 +118,7 @@ public class PersonMapper {
                     .withEtternavn(finnEtternavn(xmlBarn))
                     .withFnr(finnFnr(xmlBarn))
                     .withFodselsdato(finnFodselsdatoFraFnr(xmlBarn))
-                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
-                    .withIkkeTilgang(false);
+                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false);
         } else {
             return null;
         }
