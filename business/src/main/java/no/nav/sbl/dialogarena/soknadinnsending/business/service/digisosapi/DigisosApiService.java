@@ -163,6 +163,7 @@ public class DigisosApiService {
             byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
             return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         } catch (Exception e) {
+            log.error("Kunne ikke generere ettersendelse.pdf. Fallback til generering med itext.", e);
             byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
             return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         }
