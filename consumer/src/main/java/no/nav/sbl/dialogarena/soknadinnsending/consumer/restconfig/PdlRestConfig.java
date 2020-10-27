@@ -1,5 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumerMock;
@@ -49,6 +54,14 @@ public class PdlRestConfig {
     private Client pdlClient() {
         final String apiKey = getenv(PDLAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey))
+                .register(pdlResponseMapper());
+    }
+
+    private ObjectMapper pdlResponseMapper() {
+        return new ObjectMapper()
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .registerModule(new JavaTimeModule())
+                .registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
     }
 }
