@@ -6,7 +6,6 @@ public class Person {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
-    private String sammensattNavn;
     private LocalDate fodselsdato;
     private String fnr;
     private String alder;
@@ -34,10 +33,6 @@ public class Person {
 
     public String getFnr() {
         return fnr;
-    }
-
-    public String getSammensattNavn() {
-        return sammensattNavn;
     }
 
     public String getAlder() {
@@ -76,11 +71,6 @@ public class Person {
 
     public Person withEtternavn(String etternavn) {
         this.etternavn = etternavn;
-        return this;
-    }
-
-    public Person withSammensattNavn(String sammensattNavn) {
-        this.sammensattNavn = sammensattNavn;
         return this;
     }
 

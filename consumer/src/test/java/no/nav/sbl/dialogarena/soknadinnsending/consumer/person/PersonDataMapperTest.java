@@ -35,7 +35,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapp
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.erMyndig;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnBarnForPerson;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnEktefelleForPerson;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnSammensattNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnSivilstatus;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.mapXmlPersonTilPerson;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.xmlPersonHarDiskresjonskode;
@@ -55,8 +54,6 @@ public class PersonDataMapperTest {
     private static final String FORNAVN = "Fornavn";
     private static final String MELLOMNAVN = "Mellomnavn";
     private static final String ETTERNAVN = "Etternavn";
-    private static final String SAMMENSATT_NAVN = "Fornavn Mellomnavn Etternavn";
-    private static final String SAMMENSATT_NAVN_UTEN_MELLOMNAVN = "Fornavn Etternavn";
     private static final String FNR = "21098691736"; // Ikke ekte person
     private static final int FODSELSAR = 1986;
     private static final int FODSELSMANED = 9;
@@ -84,7 +81,6 @@ public class PersonDataMapperTest {
         assertThat(person.getFornavn(), is(FORNAVN));
         assertThat(person.getMellomnavn(), is(MELLOMNAVN));
         assertThat(person.getEtternavn(), is(ETTERNAVN));
-        assertThat(person.getSammensattNavn(), is(SAMMENSATT_NAVN));
         assertThat(person.getFnr(), is(FNR));
         assertThat(person.getFodselsdato().getYear(), is(FODSELSAR));
         assertThat(person.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
@@ -324,30 +320,6 @@ public class PersonDataMapperTest {
         boolean erMyndig = erMyndig(new LocalDate(1984, 1, 1));
 
         assertThat(erMyndig, is(true));
-    }
-
-    @Test
-    public void finnSammensattNavnSetterSammenNavnRiktig() {
-        String sammensattNavn = finnSammensattNavn(lagXmlPersonMedNavn());
-
-        assertThat(sammensattNavn, is(SAMMENSATT_NAVN));
-    }
-
-    @Test
-    public void finnSammensattNavnSetterSammenNavnUtenMellomnavnRiktig() {
-        String sammensattNavn = finnSammensattNavn(lagXmlPersonMedNavn(FORNAVN, null, ETTERNAVN));
-
-        assertThat(sammensattNavn, is(SAMMENSATT_NAVN_UTEN_MELLOMNAVN));
-    }
-
-    @Test
-    public void mapXmlPersonTilPersonTaklerPersonUtenNavn() {
-        Person person = new Person();
-        person.setPersonnavn(new Personnavn());
-
-        String sammensattNavn = finnSammensattNavn(person);
-
-        assertThat(sammensattNavn, is(emptyString()));
     }
 
     private Person lagXmlPerson() {

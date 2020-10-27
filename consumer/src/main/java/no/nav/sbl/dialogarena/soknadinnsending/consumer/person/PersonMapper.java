@@ -47,7 +47,6 @@ public class PersonMapper {
                 .withFornavn(finnFornavn(xmlPerson))
                 .withMellomnavn(finnMellomnavn(xmlPerson))
                 .withEtternavn(finnEtternavn(xmlPerson))
-                .withSammensattNavn(finnSammensattNavn(xmlPerson))
                 .withFnr(finnFnr(xmlPerson))
                 .withFodselsdato(finnFodselsdato(xmlPerson))
                 .withAlder(String.valueOf(finnAlder(finnFodselsdato(xmlPerson))))
@@ -221,16 +220,6 @@ public class PersonMapper {
 
     private static boolean etternavnExists(Person xmlPerson) {
         return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getEtternavn() != null;
-    }
-
-    static String finnSammensattNavn(Person xmlPerson) {
-        if (fornavnExists(xmlPerson) && mellomnavnExists(xmlPerson)) {
-            return finnFornavn(xmlPerson) + " " + finnMellomnavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
-        } else if (fornavnExists(xmlPerson)) {
-            return finnFornavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
-        } else {
-            return finnEtternavn(xmlPerson);
-        }
     }
 
     private static String finnFnr(Person xmlPerson) {
