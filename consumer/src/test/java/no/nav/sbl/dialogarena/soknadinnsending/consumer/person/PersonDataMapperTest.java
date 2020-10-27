@@ -6,8 +6,6 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Foedselsdato;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Kjoenn;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Kjoennstyper;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
@@ -86,7 +84,6 @@ public class PersonDataMapperTest {
         assertThat(person.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
         assertThat(person.getFodselsdato().getDayOfMonth(), is(FODSELSDAG));
         assertThat(person.getAlder(), notNullValue());
-        assertThat(person.getKjonn(), is("k"));
         assertThat(person.getSivilstatus(), is("enke"));
         assertThat(person.getStatsborgerskap(), is(LANDKODE));
         assertThat(person.getDiskresjonskode(), is(DISKRESJONSKODE_UFB));
@@ -333,11 +330,7 @@ public class PersonDataMapperTest {
 
         xmlPerson.setFoedselsdato(fodseldato(FODSELSAR, FODSELSMANED, FODSELSDAG));
 
-        Kjoennstyper kjoennstyper = new Kjoennstyper();
-        kjoennstyper.setValue("K");
-        Kjoenn kjoenn = new Kjoenn();
-        kjoenn.setKjoenn(kjoennstyper);
-        xmlPerson.setKjoenn(kjoenn);
+        xmlPerson.setKjoenn(null);
 
         xmlPerson.setSivilstand(lagSivilstand(SIVILSTATUS_ENKE));
 

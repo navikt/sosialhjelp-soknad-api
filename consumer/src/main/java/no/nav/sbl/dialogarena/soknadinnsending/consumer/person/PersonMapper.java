@@ -50,7 +50,6 @@ public class PersonMapper {
                 .withFnr(finnFnr(xmlPerson))
                 .withFodselsdato(finnFodselsdato(xmlPerson))
                 .withAlder(String.valueOf(finnAlder(finnFodselsdato(xmlPerson))))
-                .withKjonn(finnKjonn(xmlPerson).toLowerCase())
                 .withSivilstatus(finnSivilstatus(xmlPerson))
                 .withStatsborgerskap(finnStatsborgerskap(xmlPerson))
                 .withDiskresjonskode(finnDiskresjonskode(xmlPerson))
@@ -148,14 +147,6 @@ public class PersonMapper {
         Personstatus personstatus = xmlPerson.getPersonstatus();
         if (personstatus != null && personstatus.getPersonstatus() != null) {
             return personstatus.getPersonstatus().getValue();
-        }
-        return "";
-    }
-
-    private static String finnKjonn(Person xmlPerson) {
-        Kjoenn kjoenn = xmlPerson.getKjoenn();
-        if (kjoenn != null && kjoenn.getKjoenn() != null) {
-            return kjoenn.getKjoenn().getValue();
         }
         return "";
     }

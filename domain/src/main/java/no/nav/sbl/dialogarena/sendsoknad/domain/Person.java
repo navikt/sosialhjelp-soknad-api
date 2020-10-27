@@ -9,7 +9,6 @@ public class Person {
     private LocalDate fodselsdato;
     private String fnr;
     private String alder;
-    private String kjonn;
     private String sivilstatus;
     private String diskresjonskode;
     private String statsborgerskap;
@@ -37,10 +36,6 @@ public class Person {
 
     public String getAlder() {
         return alder;
-    }
-
-    public String getKjonn() {
-        return kjonn;
     }
 
     public String getSivilstatus() {
@@ -86,11 +81,6 @@ public class Person {
 
     public Person withAlder(String alder) {
         this.alder = alder;
-        return this;
-    }
-
-    public Person withKjonn(String kjonn) {
-        this.kjonn = kjonn;
         return this;
     }
 
