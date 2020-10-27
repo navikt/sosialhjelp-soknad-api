@@ -18,7 +18,6 @@ query($ident: ID!, $historikk: Boolean!) {
             fornavn
             mellomnavn
             etternavn
-            forkortetNavn
         }
         sivilstand(historikk: $historikk) {
             type

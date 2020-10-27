@@ -40,7 +40,7 @@ public class PdlConsumerMock {
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 emptyList(), // ingen familierelasjoner
                 singletonList(new FoedselDto(LocalDate.of(1970, 1, 1))),
-                singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn", "kortnavn")),
+                singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn")),
                 singletonList(new KjoennDto(KjoennDto.Kjoenn.KVINNE)),
                 singletonList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "annenFnr")),
                 singletonList(new StatsborgerskapDto("NOR"))

@@ -5,13 +5,11 @@ public class NavnDto {
     private final String fornavn;
     private final String mellomnavn;
     private final String etternavn;
-    private final String forkortetNavn;
 
-    public NavnDto(String fornavn, String mellomnavn, String etternavn, String forkortetNavn) {
+    public NavnDto(String fornavn, String mellomnavn, String etternavn) {
         this.fornavn = fornavn;
         this.mellomnavn = mellomnavn;
         this.etternavn = etternavn;
-        this.forkortetNavn = forkortetNavn;
     }
 
     public String getFornavn() {
@@ -24,9 +22,5 @@ public class NavnDto {
 
     public String getEtternavn() {
         return etternavn;
-    }
-
-    public String getForkortetNavn() {
-        return forkortetNavn;
     }
 }
