@@ -47,11 +47,9 @@ public class PersonMapper {
                 .withFornavn(finnFornavn(xmlPerson))
                 .withMellomnavn(finnMellomnavn(xmlPerson))
                 .withEtternavn(finnEtternavn(xmlPerson))
-                .withSammensattNavn(finnSammensattNavn(xmlPerson))
                 .withFnr(finnFnr(xmlPerson))
                 .withFodselsdato(finnFodselsdato(xmlPerson))
                 .withAlder(String.valueOf(finnAlder(finnFodselsdato(xmlPerson))))
-                .withKjonn(finnKjonn(xmlPerson).toLowerCase())
                 .withSivilstatus(finnSivilstatus(xmlPerson))
                 .withStatsborgerskap(finnStatsborgerskap(xmlPerson))
                 .withDiskresjonskode(finnDiskresjonskode(xmlPerson))
@@ -120,8 +118,7 @@ public class PersonMapper {
                     .withEtternavn(finnEtternavn(xmlBarn))
                     .withFnr(finnFnr(xmlBarn))
                     .withFodselsdato(finnFodselsdatoFraFnr(xmlBarn))
-                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false)
-                    .withIkkeTilgang(false);
+                    .withFolkeregistrertsammen(familierelasjon.isHarSammeBosted() != null ? familierelasjon.isHarSammeBosted() : false);
         } else {
             return null;
         }
@@ -149,14 +146,6 @@ public class PersonMapper {
         Personstatus personstatus = xmlPerson.getPersonstatus();
         if (personstatus != null && personstatus.getPersonstatus() != null) {
             return personstatus.getPersonstatus().getValue();
-        }
-        return "";
-    }
-
-    private static String finnKjonn(Person xmlPerson) {
-        Kjoenn kjoenn = xmlPerson.getKjoenn();
-        if (kjoenn != null && kjoenn.getKjoenn() != null) {
-            return kjoenn.getKjoenn().getValue();
         }
         return "";
     }
@@ -221,16 +210,6 @@ public class PersonMapper {
 
     private static boolean etternavnExists(Person xmlPerson) {
         return xmlPerson.getPersonnavn() != null && xmlPerson.getPersonnavn().getEtternavn() != null;
-    }
-
-    static String finnSammensattNavn(Person xmlPerson) {
-        if (fornavnExists(xmlPerson) && mellomnavnExists(xmlPerson)) {
-            return finnFornavn(xmlPerson) + " " + finnMellomnavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
-        } else if (fornavnExists(xmlPerson)) {
-            return finnFornavn(xmlPerson) + " " + finnEtternavn(xmlPerson);
-        } else {
-            return finnEtternavn(xmlPerson);
-        }
     }
 
     private static String finnFnr(Person xmlPerson) {

@@ -6,11 +6,9 @@ public class Person {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
-    private String sammensattNavn;
     private LocalDate fodselsdato;
     private String fnr;
     private String alder;
-    private String kjonn;
     private String sivilstatus;
     private String diskresjonskode;
     private String statsborgerskap;
@@ -36,16 +34,8 @@ public class Person {
         return fnr;
     }
 
-    public String getSammensattNavn() {
-        return sammensattNavn;
-    }
-
     public String getAlder() {
         return alder;
-    }
-
-    public String getKjonn() {
-        return kjonn;
     }
 
     public String getSivilstatus() {
@@ -79,11 +69,6 @@ public class Person {
         return this;
     }
 
-    public Person withSammensattNavn(String sammensattNavn) {
-        this.sammensattNavn = sammensattNavn;
-        return this;
-    }
-
     public Person withFodselsdato(LocalDate fodselsdato) {
         this.fodselsdato = fodselsdato;
         return this;
@@ -96,11 +81,6 @@ public class Person {
 
     public Person withAlder(String alder) {
         this.alder = alder;
-        return this;
-    }
-
-    public Person withKjonn(String kjonn) {
-        this.kjonn = kjonn;
         return this;
     }
 

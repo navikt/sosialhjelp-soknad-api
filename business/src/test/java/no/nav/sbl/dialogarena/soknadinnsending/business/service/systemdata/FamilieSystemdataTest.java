@@ -86,8 +86,7 @@ public class FamilieSystemdataTest {
             .withEtternavn(ETTERNAVN_BARN)
             .withFodselsdato(FODSELSDATO_BARN)
             .withFnr(FNR_BARN)
-            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN)
-            .withIkkeTilgang(false);
+            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN);
 
     private static final Barn BARN_2 = new Barn()
             .withFornavn(FORNAVN_BARN_2)
@@ -95,8 +94,7 @@ public class FamilieSystemdataTest {
             .withEtternavn(ETTERNAVN_BARN_2)
             .withFodselsdato(FODSELSDATO_BARN_2)
             .withFnr(FNR_BARN_2)
-            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN_2)
-            .withIkkeTilgang(false);
+            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN_2);
 
     private static final JsonAnsvar JSON_ANSVAR = new JsonAnsvar()
             .withBarn(new JsonBarn()
