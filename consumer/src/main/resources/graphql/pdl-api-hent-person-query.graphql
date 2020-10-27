@@ -4,7 +4,6 @@ query($ident: ID!, $historikk: Boolean!) {
             gradering
         }
         foedsel {
-            foedselsaar
             foedselsdato
         }
         kjoenn(historikk: $historikk) {

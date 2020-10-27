@@ -4,16 +4,10 @@ import java.time.LocalDate;
 
 public class FoedselDto {
 
-    private final Integer foedselsaar;
     private final LocalDate foedselsdato;
 
-    public FoedselDto(Integer foedselsaar, LocalDate foedselsdato) {
-        this.foedselsaar = foedselsaar;
+    public FoedselDto(LocalDate foedselsdato) {
         this.foedselsdato = foedselsdato;
-    }
-
-    public Integer getFoedselsaar() {
-        return foedselsaar;
     }
 
     public LocalDate getFoedselsdato() {

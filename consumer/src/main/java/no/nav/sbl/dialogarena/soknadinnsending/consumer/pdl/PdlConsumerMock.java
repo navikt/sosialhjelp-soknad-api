@@ -47,7 +47,7 @@ public class PdlConsumerMock {
     private static PdlPerson defaultPerson() {
         PdlPerson person = new PdlPerson(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                singletonList(new FoedselDto(1970, LocalDate.of(1970,1,1))),
+                singletonList(new FoedselDto(LocalDate.of(1970,1,1))),
                 singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn", "kortnavn")),
                 singletonList(new KjoennDto(KjoennDto.Kjoenn.KVINNE)),
                 singletonList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "annenFnr")),
