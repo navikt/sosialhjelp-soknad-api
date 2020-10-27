@@ -4,7 +4,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.FoedselDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.KjoennDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.SivilstandDto;
@@ -41,7 +40,6 @@ public class PdlConsumerMock {
                 emptyList(), // ingen familierelasjoner
                 singletonList(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn")),
-                singletonList(new KjoennDto(KjoennDto.Kjoenn.KVINNE)),
                 singletonList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "annenFnr")),
                 singletonList(new StatsborgerskapDto("NOR"))
         );

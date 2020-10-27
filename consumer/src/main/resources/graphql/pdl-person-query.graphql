@@ -11,9 +11,6 @@ query($ident: ID!, $historikk: Boolean!) {
         foedsel {
             foedselsdato
         }
-        kjoenn(historikk: $historikk) {
-            kjoenn
-        }
         navn(historikk: $historikk) {
             fornavn
             mellomnavn
