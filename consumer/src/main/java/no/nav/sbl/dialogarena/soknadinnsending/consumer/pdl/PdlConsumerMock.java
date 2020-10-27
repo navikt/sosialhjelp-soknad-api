@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -23,16 +24,6 @@ import static org.mockito.Mockito.when;
 public class PdlConsumerMock {
 
     private static Map<String, PdlPerson> responses = new HashMap<>();
-
-    public PdlConsumer pdlConsumerMock() {
-
-        PdlConsumer mock = mock(PdlConsumer.class);
-
-        when(mock.hentPerson(anyString()))
-                .thenAnswer(PdlConsumerMock::getOrCreateCurrentUserResponse);
-
-        return mock;
-    }
 
     public static PdlPerson getOrCreateCurrentUserResponse(InvocationOnMock invocationOnMock) {
         PdlPerson response = responses.get(SubjectHandler.getUserId());
@@ -47,12 +38,23 @@ public class PdlConsumerMock {
     private static PdlPerson defaultPerson() {
         PdlPerson person = new PdlPerson(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                singletonList(new FoedselDto(LocalDate.of(1970,1,1))),
+                emptyList(), // ingen familierelasjoner
+                singletonList(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn", "kortnavn")),
                 singletonList(new KjoennDto(KjoennDto.Kjoenn.KVINNE)),
                 singletonList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "annenFnr")),
                 singletonList(new StatsborgerskapDto("NOR"))
         );
         return person;
+    }
+
+    public PdlConsumer pdlConsumerMock() {
+
+        PdlConsumer mock = mock(PdlConsumer.class);
+
+        when(mock.hentPerson(anyString()))
+                .thenAnswer(PdlConsumerMock::getOrCreateCurrentUserResponse);
+
+        return mock;
     }
 }

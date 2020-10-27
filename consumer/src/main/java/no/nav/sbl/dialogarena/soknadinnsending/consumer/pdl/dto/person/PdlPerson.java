@@ -6,7 +6,7 @@ public class PdlPerson {
 
     private final List<AdressebeskyttelseDto> adressebeskyttelse;
 
-//    List<FamilierelasjonDto> familierelasjoner;
+    private final List<FamilierelasjonDto> familierelasjoner;
 
     private final List<FoedselDto> foedsel;
 
@@ -18,22 +18,9 @@ public class PdlPerson {
 
     private final List<StatsborgerskapDto> statsborgerskap;
 
-//    private String fornavn;
-//    private String mellomnavn;
-//    private String etternavn;
-//    private String sammensattNavn;
-//    private LocalDate fodselsdato; // brukes ikke
-//    private String fnr;
-//    private String alder;
-//    private String kjonn;
-//    private String sivilstatus;
-//    private String diskresjonskode;
-//    private String statsborgerskap;
-//    private Ektefelle ektefelle;
-
-
-    public PdlPerson(List<AdressebeskyttelseDto> adressebeskyttelse, List<FoedselDto> foedsel, List<NavnDto> navn, List<KjoennDto> kjoenn, List<SivilstandDto> sivilstand, List<StatsborgerskapDto> statsborgerskap) {
+    public PdlPerson(List<AdressebeskyttelseDto> adressebeskyttelse, List<FamilierelasjonDto> familierelasjoner, List<FoedselDto> foedsel, List<NavnDto> navn, List<KjoennDto> kjoenn, List<SivilstandDto> sivilstand, List<StatsborgerskapDto> statsborgerskap) {
         this.adressebeskyttelse = adressebeskyttelse;
+        this.familierelasjoner = familierelasjoner;
         this.foedsel = foedsel;
         this.navn = navn;
         this.kjoenn = kjoenn;
@@ -43,6 +30,10 @@ public class PdlPerson {
 
     public List<AdressebeskyttelseDto> getAdressebeskyttelse() {
         return adressebeskyttelse;
+    }
+
+    public List<FamilierelasjonDto> getFamilierelasjoner() {
+        return familierelasjoner;
     }
 
     public List<FoedselDto> getFoedsel() {
