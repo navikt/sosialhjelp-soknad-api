@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
@@ -36,6 +37,7 @@ import static java.lang.System.setProperty;
 @EnableCaching
 @Import({
         PdlService.class,
+        PdlPersonMapper.class,
         PersonService.class,
         PersonServiceV3.class,
         ConsumerConfig.WsServices.class,

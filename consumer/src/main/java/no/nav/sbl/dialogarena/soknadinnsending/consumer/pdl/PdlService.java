@@ -13,9 +13,11 @@ public class PdlService {
     private static final Logger log = getLogger(PdlService.class);
 
     private final PdlConsumer pdlConsumer;
+    private final PdlPersonMapper pdlPersonMapper;
 
-    public PdlService(PdlConsumer pdlConsumer) {
+    public PdlService(PdlConsumer pdlConsumer, PdlPersonMapper pdlPersonMapper) {
         this.pdlConsumer = pdlConsumer;
+        this.pdlPersonMapper = pdlPersonMapper;
     }
 
     public Person hentPerson(String ident) {
@@ -23,14 +25,7 @@ public class PdlService {
         if (pdlPerson != null) {
             log.info("Hentet PdlPerson");
         }
-        return mapToDomain(pdlPerson);
+        return pdlPersonMapper.mapTilPerson(pdlPerson, ident);
     }
 
-    private Person mapToDomain(PdlPerson pdlPerson) {
-        if (pdlPerson == null) {
-            return null;
-        }
-        return null;
-//      todo: map to domain
-    }
 }

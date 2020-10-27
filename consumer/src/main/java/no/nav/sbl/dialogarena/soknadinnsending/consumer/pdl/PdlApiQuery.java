@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class PdlApiQuery {
-    public static final String HENT_PERSON = readGraphQLQueryFromFile("graphql/pdl-api-hent-person-query.graphql");
+    public static final String HENT_PERSON = readGraphQLQueryFromFile("graphql/pdl-person-query.graphql");
     // flere queries?
 
     private static String readGraphQLQueryFromFile(String file) {
