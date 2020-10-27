@@ -9,7 +9,6 @@ public class Barn {
     private String etternavn;
     private LocalDate fodselsdato;
     private Boolean folkeregistrertsammen;
-    private Boolean ikkeTilgang;
 
     public String getFnr() {
         return fnr;
@@ -33,10 +32,6 @@ public class Barn {
 
     public Boolean erFolkeregistrertsammen() {
         return folkeregistrertsammen;
-    }
-
-    public Boolean harIkkeTilgang() {
-        return ikkeTilgang;
     }
 
     public Barn withFnr(String fnr) {
@@ -66,11 +61,6 @@ public class Barn {
 
     public Barn withFolkeregistrertsammen(Boolean folkeregistrertsammen) {
         this.folkeregistrertsammen = folkeregistrertsammen;
-        return this;
-    }
-
-    public Barn withIkkeTilgang(Boolean ikkeTilgang) {
-        this.ikkeTilgang = ikkeTilgang;
         return this;
     }
 }
