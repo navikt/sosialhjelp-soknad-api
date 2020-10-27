@@ -3,7 +3,7 @@ query($ident: ID!, $historikk: Boolean!) {
         adressebeskyttelse(historikk: $historikk) {
             gradering
         }
-        familierelasjoner(historikk: $historikk) {
+        familierelasjoner {
             relatertPersonsIdent
             relatertPersonsRolle
             minRolleForPerson
