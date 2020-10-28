@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.StatsborgerskapDto;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PdlPersonMapper {
+
+    private static final String KODE_6 = "SPSF";
+    private static final String KODE_7 = "SPFO";
 
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
@@ -72,8 +76,20 @@ public class PdlPersonMapper {
 
     private String finnAdressebeskyttelse(PdlPerson pdlPerson) {
         return pdlPerson.getAdressebeskyttelse().stream().findFirst()
-                .map(dto -> dto.getGradering().name())
+                .map(dto -> mapTilDiskresjonskode(dto.getGradering()))
                 .orElse(null);
+    }
+
+    private String mapTilDiskresjonskode(AdressebeskyttelseDto.Gradering gradering) {
+        if (gradering == AdressebeskyttelseDto.Gradering.UGRADERT) {
+            return null;
+        } else if (gradering == AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG || gradering == AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG_UTLAND) {
+            return KODE_6;
+        } else if (gradering == AdressebeskyttelseDto.Gradering.FORTROLIG) {
+            return KODE_7;
+        } else {
+            return null;
+        }
     }
 
     private Ektefelle finnEktefelle(PdlPerson pdlPerson) {
