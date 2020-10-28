@@ -28,25 +28,25 @@ public class PersonSammenligner {
         if (!person.getFodselsdato().equals(pdlPerson.getFodselsdato())){
             ulikeFelter.add("Fodselsdato");
         }
-        if (!person.getFnr().equalsIgnoreCase(pdlPerson.getFnr())){
+        if (person.getFnr() != null && !person.getFnr().equalsIgnoreCase(pdlPerson.getFnr())) {
             ulikeFelter.add("Fnr");
         }
         if (!person.getAlder().equalsIgnoreCase(pdlPerson.getAlder())){
             ulikeFelter.add("Alder");
         }
-        if (!person.getSivilstatus().equalsIgnoreCase(pdlPerson.getSivilstatus())){
+        if (person.getSivilstatus() != null && !person.getSivilstatus().equalsIgnoreCase(pdlPerson.getSivilstatus())){
             ulikeFelter.add("Sivilstatus");
         }
-        if (!person.getDiskresjonskode().equalsIgnoreCase(pdlPerson.getDiskresjonskode())) {
+        if (person.getDiskresjonskode() != null && pdlPerson.getDiskresjonskode() != null && !person.getDiskresjonskode().equalsIgnoreCase(pdlPerson.getDiskresjonskode())) {
             ulikeFelter.add("Diskresjonskode");
         }
         if (!person.getStatsborgerskap().equalsIgnoreCase(pdlPerson.getStatsborgerskap())){
             ulikeFelter.add("Statsborgerskap");
         }
         // ektefelle:
-        if (!person.getEktefelle().getFnr().equalsIgnoreCase(pdlPerson.getEktefelle().getFnr())){
-            ulikeFelter.add("Ektefelle.fnr");
-        }
+//        if (person.getEktefelle() != null && pdlPerson.getEktefelle() != null && !person.getEktefelle().getFnr().equalsIgnoreCase(pdlPerson.getEktefelle().getFnr())){
+//            ulikeFelter.add("Ektefelle.fnr");
+//        }
 
         if (ulikeFelter.size() > 0) {
             log.info("Ulike felter i response fra Person_V1 vs PDL: {}", String.join(",", ulikeFelter));
