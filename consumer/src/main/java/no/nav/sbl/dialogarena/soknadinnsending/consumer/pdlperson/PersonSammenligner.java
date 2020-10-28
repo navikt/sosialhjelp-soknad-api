@@ -37,10 +37,7 @@ public class PersonSammenligner {
         if (!person.getSivilstatus().equalsIgnoreCase(pdlPerson.getSivilstatus())){
             ulikeFelter.add("Sivilstatus");
         }
-        if (!person.getDiskresjonskode().equalsIgnoreCase(pdlPerson.getDiskresjonskode())){
-            ulikeFelter.add("Diskresjonskode");
-        }
-        if (!person.getDiskresjonskode().equalsIgnoreCase(pdlPerson.getDiskresjonskode())){
+        if (!person.getDiskresjonskode().equalsIgnoreCase(pdlPerson.getDiskresjonskode())) {
             ulikeFelter.add("Diskresjonskode");
         }
         if (!person.getStatsborgerskap().equalsIgnoreCase(pdlPerson.getStatsborgerskap())){
