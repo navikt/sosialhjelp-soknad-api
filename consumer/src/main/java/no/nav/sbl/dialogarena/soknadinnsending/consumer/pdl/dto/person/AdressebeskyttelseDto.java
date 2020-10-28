@@ -1,13 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AdressebeskyttelseDto {
 
     private final Gradering gradering;
 
     @JsonCreator
-    public AdressebeskyttelseDto(Gradering gradering) {
+    public AdressebeskyttelseDto(
+            @JsonProperty("gradering") Gradering gradering
+    ) {
         this.gradering = gradering;
     }
 

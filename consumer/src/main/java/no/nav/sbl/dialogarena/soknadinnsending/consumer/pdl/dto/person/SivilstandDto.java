@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SivilstandDto {
 
@@ -8,7 +9,10 @@ public class SivilstandDto {
     private final String relatertVedSivilstand;
 
     @JsonCreator
-    public SivilstandDto(SivilstandType type, String relatertVedSivilstand) {
+    public SivilstandDto(
+            @JsonProperty("type") SivilstandType type,
+            @JsonProperty("relatertVedSivilstand") String relatertVedSivilstand
+    ) {
         this.type = type;
         this.relatertVedSivilstand = relatertVedSivilstand;
     }
