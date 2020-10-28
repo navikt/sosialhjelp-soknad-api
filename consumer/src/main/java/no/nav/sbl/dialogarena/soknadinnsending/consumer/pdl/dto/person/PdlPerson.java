@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.List;
 
 public class PdlPerson {
@@ -16,6 +18,7 @@ public class PdlPerson {
 
     private final List<StatsborgerskapDto> statsborgerskap;
 
+    @JsonCreator
     public PdlPerson(List<AdressebeskyttelseDto> adressebeskyttelse, List<FamilierelasjonDto> familierelasjoner, List<FoedselDto> foedsel, List<NavnDto> navn, List<SivilstandDto> sivilstand, List<StatsborgerskapDto> statsborgerskap) {
         this.adressebeskyttelse = adressebeskyttelse;
         this.familierelasjoner = familierelasjoner;

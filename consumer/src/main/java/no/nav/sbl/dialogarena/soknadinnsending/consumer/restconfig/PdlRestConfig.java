@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.fasterxml.jackson.module.paranamer.ParanamerModule;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumerMock;
@@ -62,6 +61,6 @@ public class PdlRestConfig {
         return new ObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                 .registerModule(new JavaTimeModule())
-                .registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
+                .registerModule(new ParanamerModule());
     }
 }

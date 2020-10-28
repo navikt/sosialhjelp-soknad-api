@@ -1,10 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class SivilstandDto {
 
     private final SivilstandType type;
     private final String relatertVedSivilstand;
 
+    @JsonCreator
     public SivilstandDto(SivilstandType type, String relatertVedSivilstand) {
         this.type = type;
         this.relatertVedSivilstand = relatertVedSivilstand;
