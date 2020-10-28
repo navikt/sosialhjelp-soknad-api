@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
+import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -28,12 +29,15 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEAD
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_TEMA;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.TEMA_KOM;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class PdlConsumerImpl implements PdlConsumer {
 
-    private Client client;
-    private String endpoint;
-    private STSConsumer stsConsumer;
+    private static final Logger log = getLogger(PdlConsumerImpl.class);
+
+    private final Client client;
+    private final String endpoint;
+    private final STSConsumer stsConsumer;
 
     public PdlConsumerImpl(Client client, String endpoint, STSConsumer stsConsumer) {
         this.client = client;
@@ -53,7 +57,7 @@ public class PdlConsumerImpl implements PdlConsumer {
 
         try {
             PdlResponse pdlResponse = builder.post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE), PdlResponse.class);
-
+            log.info("hentet pdlResponse: {} {}", pdlResponse.getData().getHentPerson().getNavn().get(0).getFornavn(), pdlResponse.getData().getHentPerson().getNavn().get(0).getEtternavn());
             checkForPdlApiErrors(pdlResponse);
 
             return pdlResponse.getData().getHentPerson();
