@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.AdressebeskyttelseDto;
@@ -25,12 +26,20 @@ public class PdlPersonMapper {
                 .withMellomnavn(finnMellomnavn(pdlPerson))
                 .withEtternavn(finnEtternavn(pdlPerson))
                 .withFnr(ident)
-                .withFodselsdato(finnFodselsdato(pdlPerson))
-                .withAlder(String.valueOf(finnAlder(pdlPerson)))
                 .withSivilstatus(finnSivilstatus(pdlPerson))
                 .withStatsborgerskap(finnStatsborgerskap(pdlPerson))
                 .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson))
                 .withEktefelle(finnEktefelle(pdlPerson));
+    }
+
+    public Barn mapTilBarn(PdlPerson pdlPerson, String ident) {
+        //TODO
+        return null;
+    }
+
+    public Ektefelle mapTilEktefelle(PdlPerson pdlPerson, String ident) {
+        //TODO
+        return null;
     }
 
     private String finnFornavn(PdlPerson pdlPerson) {

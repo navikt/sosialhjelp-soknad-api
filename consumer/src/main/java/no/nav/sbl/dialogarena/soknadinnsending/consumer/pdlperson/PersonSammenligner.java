@@ -28,9 +28,6 @@ public class PersonSammenligner {
         if (person.getFnr() != null && !person.getFnr().equalsIgnoreCase(pdlPerson.getFnr())) {
             ulikeFelter.add("Fnr");
         }
-        if (!person.getAlder().equalsIgnoreCase(pdlPerson.getAlder())){
-            ulikeFelter.add("Alder");
-        }
         if (person.getSivilstatus() != null && !person.getSivilstatus().equalsIgnoreCase(pdlPerson.getSivilstatus())){
             ulikeFelter.add("Sivilstatus");
         }

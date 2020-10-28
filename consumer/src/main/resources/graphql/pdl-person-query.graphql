@@ -8,9 +8,6 @@ query($ident: ID!, $historikk: Boolean!) {
             relatertPersonsRolle
             minRolleForPerson
         }
-        foedsel {
-            foedselsdato
-        }
         navn(historikk: $historikk) {
             fornavn
             mellomnavn
