@@ -25,9 +25,6 @@ public class PersonSammenligner {
         if (!person.getEtternavn().equalsIgnoreCase(pdlPerson.getEtternavn())){
             ulikeFelter.add("Ettenavn");
         }
-        if (!person.getFodselsdato().equals(pdlPerson.getFodselsdato())){
-            ulikeFelter.add("Fodselsdato");
-        }
         if (person.getFnr() != null && !person.getFnr().equalsIgnoreCase(pdlPerson.getFnr())) {
             ulikeFelter.add("Fnr");
         }
