@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
@@ -36,6 +37,9 @@ public class BasisPersonaliaSystemdataTest {
 
     @Mock
     private PdlService pdlService;
+
+    @Mock
+    private PersonSammenligner personSammenligner;
 
     @InjectMocks
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;

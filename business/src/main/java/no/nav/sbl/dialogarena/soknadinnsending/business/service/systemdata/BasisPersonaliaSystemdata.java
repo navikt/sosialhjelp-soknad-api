@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
@@ -19,6 +20,9 @@ public class BasisPersonaliaSystemdata implements Systemdata {
 
     @Inject
     private PdlService pdlService;
+
+    @Inject
+    PersonSammenligner personSammenligner;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -40,6 +44,9 @@ public class BasisPersonaliaSystemdata implements Systemdata {
         Person pdlPerson = pdlService.hentPerson(personIdentifikator);
         if (person == null){
             return null;
+        }
+        if (pdlPerson != null) {
+            personSammenligner.sammenlign(person, pdlPerson);
         }
 
         return mapToJsonPersonalia(person);
