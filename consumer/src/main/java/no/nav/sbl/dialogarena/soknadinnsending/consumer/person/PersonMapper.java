@@ -48,8 +48,6 @@ public class PersonMapper {
                 .withMellomnavn(finnMellomnavn(xmlPerson))
                 .withEtternavn(finnEtternavn(xmlPerson))
                 .withFnr(finnFnr(xmlPerson))
-                .withFodselsdato(finnFodselsdato(xmlPerson))
-                .withAlder(String.valueOf(finnAlder(finnFodselsdato(xmlPerson))))
                 .withSivilstatus(finnSivilstatus(xmlPerson))
                 .withStatsborgerskap(finnStatsborgerskap(xmlPerson))
                 .withDiskresjonskode(finnDiskresjonskode(xmlPerson))
@@ -159,13 +157,6 @@ public class PersonMapper {
             return yearsBetween(fodselsdato, new LocalDate()).getYears();
         }
         return 0;
-    }
-
-    private static LocalDate finnFodselsdato(Person xmlPerson) {
-        if (xmlPerson.getFoedselsdato() == null || xmlPerson.getFoedselsdato().getFoedselsdato() == null) {
-            return null;
-        }
-        return new LocalDate(xmlPerson.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
     }
 
     private static LocalDate finnFodselsdatoFraFnr(Person xmlPerson) {

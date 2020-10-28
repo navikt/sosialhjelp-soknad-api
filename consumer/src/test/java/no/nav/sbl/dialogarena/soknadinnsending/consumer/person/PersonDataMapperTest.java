@@ -80,10 +80,6 @@ public class PersonDataMapperTest {
         assertThat(person.getMellomnavn(), is(MELLOMNAVN));
         assertThat(person.getEtternavn(), is(ETTERNAVN));
         assertThat(person.getFnr(), is(FNR));
-        assertThat(person.getFodselsdato().getYear(), is(FODSELSAR));
-        assertThat(person.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
-        assertThat(person.getFodselsdato().getDayOfMonth(), is(FODSELSDAG));
-        assertThat(person.getAlder(), notNullValue());
         assertThat(person.getSivilstatus(), is("enke"));
         assertThat(person.getStatsborgerskap(), is(LANDKODE));
         assertThat(person.getDiskresjonskode(), is(DISKRESJONSKODE_UFB));

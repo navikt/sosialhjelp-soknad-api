@@ -1,14 +1,10 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import org.joda.time.LocalDate;
-
 public class Person {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
-    private LocalDate fodselsdato;
     private String fnr;
-    private String alder;
     private String sivilstatus;
     private String diskresjonskode;
     private String statsborgerskap;
@@ -26,16 +22,8 @@ public class Person {
         return etternavn;
     }
 
-    public LocalDate getFodselsdato() {
-        return fodselsdato;
-    }
-
     public String getFnr() {
         return fnr;
-    }
-
-    public String getAlder() {
-        return alder;
     }
 
     public String getSivilstatus() {
@@ -69,18 +57,8 @@ public class Person {
         return this;
     }
 
-    public Person withFodselsdato(LocalDate fodselsdato) {
-        this.fodselsdato = fodselsdato;
-        return this;
-    }
-
     public Person withFnr(String fnr) {
         this.fnr = fnr;
-        return this;
-    }
-
-    public Person withAlder(String alder) {
-        this.alder = alder;
         return this;
     }
 
