@@ -48,6 +48,9 @@ public class PdlPersonMapper {
     }
 
     public Ektefelle mapTilEktefelle(PdlPerson pdlEktefelle, String ektefelleIdent, PdlPerson pdlPerson) {
+        if (pdlEktefelle == null) {
+            return null;
+        }
         if (pdlEktefelle.harAdressebeskyttelse()) {
             return new Ektefelle()
                     .withIkketilgangtilektefelle(true);
