@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
@@ -36,15 +35,14 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     private static final String A_ORDNINGEN = "A_ORDNINGEN";
     private static final String BEARER = "Bearer ";
 
-    private Client client;
-    private String endpoint;
+    private final Client client;
+    private final String endpoint;
+    private final STSConsumer stsConsumer;
 
-    @Inject
-    private STSConsumer stsConsumer;
-
-    public ArbeidsforholdConsumerImpl(Client client, String endpoint) {
+    public ArbeidsforholdConsumerImpl(Client client, String endpoint, STSConsumer stsConsumer) {
         this.client = client;
         this.endpoint = endpoint;
+        this.stsConsumer = stsConsumer;
     }
 
     @Override
