@@ -38,7 +38,8 @@ public class PdlConsumerMock {
         PdlPerson person = new PdlPerson(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 emptyList(), // ingen familierelasjoner
-                singletonList(new FoedselDto(LocalDate.of(1970, 1, 1))),
+                emptyList(), // ingen folkeregisterstatus
+                emptyList(), // ingen foedsel
                 singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn")),
                 singletonList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "annenFnr")),
                 singletonList(new StatsborgerskapDto("NOR"))
@@ -47,11 +48,11 @@ public class PdlConsumerMock {
     }
 
     public PdlConsumer pdlConsumerMock() {
-
         PdlConsumer mock = mock(PdlConsumer.class);
 
         when(mock.hentPerson(anyString()))
                 .thenAnswer(PdlConsumerMock::getOrCreateCurrentUserResponse);
+        // default responser for Ektefelle og Barn?
 
         return mock;
     }

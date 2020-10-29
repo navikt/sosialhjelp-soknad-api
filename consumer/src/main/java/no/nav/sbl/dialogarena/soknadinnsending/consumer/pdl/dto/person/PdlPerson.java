@@ -11,6 +11,8 @@ public class PdlPerson {
 
     private final List<FamilierelasjonDto> familierelasjoner;
 
+    private final List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus;
+
     private final List<FoedselDto> foedsel;
 
     private final List<NavnDto> navn;
@@ -23,6 +25,7 @@ public class PdlPerson {
     public PdlPerson(
             @JsonProperty("adressebeskyttelse") List<AdressebeskyttelseDto> adressebeskyttelse,
             @JsonProperty("familierelasjoner") List<FamilierelasjonDto> familierelasjoner,
+            @JsonProperty("folkeregisterpersonstatus") List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus,
             @JsonProperty("foedsel") List<FoedselDto> foedsel,
             @JsonProperty("navn") List<NavnDto> navn,
             @JsonProperty("sivilstand") List<SivilstandDto> sivilstand,
@@ -30,6 +33,7 @@ public class PdlPerson {
     ) {
         this.adressebeskyttelse = adressebeskyttelse;
         this.familierelasjoner = familierelasjoner;
+        this.folkeregisterpersonstatus = folkeregisterpersonstatus;
         this.foedsel = foedsel;
         this.navn = navn;
         this.sivilstand = sivilstand;
@@ -42,6 +46,10 @@ public class PdlPerson {
 
     public List<FamilierelasjonDto> getFamilierelasjoner() {
         return familierelasjoner;
+    }
+
+    public List<FolkeregisterpersonstatusDto> getFolkeregisterpersonstatus() {
+        return folkeregisterpersonstatus;
     }
 
     public List<FoedselDto> getFoedsel() {
