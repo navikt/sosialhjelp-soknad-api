@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.AdressebeskyttelseDto.Gradering.UGRADERT;
+
 public class PdlPerson {
 
     private final List<AdressebeskyttelseDto> adressebeskyttelse;
@@ -66,5 +68,11 @@ public class PdlPerson {
 
     public List<StatsborgerskapDto> getStatsborgerskap() {
         return statsborgerskap;
+    }
+
+    public boolean harAdressebeskyttelse() {
+        return this.adressebeskyttelse != null
+                && !this.adressebeskyttelse.isEmpty()
+                && !this.adressebeskyttelse.stream().allMatch(adressebeskyttelseDto -> UGRADERT.equals(adressebeskyttelseDto.getGradering()));
     }
 }
