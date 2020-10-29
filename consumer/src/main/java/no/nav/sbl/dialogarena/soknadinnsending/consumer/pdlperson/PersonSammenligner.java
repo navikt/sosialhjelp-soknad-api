@@ -18,25 +18,25 @@ public class PersonSammenligner {
 
     public void sammenlign(Person person, Person pdlPerson) {
         List<String> ulikeFelter = new ArrayList<>();
-        if (!person.getFornavn().equalsIgnoreCase(pdlPerson.getFornavn())){
+        if (!person.getFornavn().equalsIgnoreCase(pdlPerson.getFornavn())) {
             ulikeFelter.add("Fornavn");
         }
-        if (!person.getMellomnavn().equalsIgnoreCase(pdlPerson.getMellomnavn())){
+        if (!person.getMellomnavn().equalsIgnoreCase(pdlPerson.getMellomnavn())) {
             ulikeFelter.add("Mellomnavn");
         }
-        if (!person.getEtternavn().equalsIgnoreCase(pdlPerson.getEtternavn())){
+        if (!person.getEtternavn().equalsIgnoreCase(pdlPerson.getEtternavn())) {
             ulikeFelter.add("Ettenavn");
         }
         if (person.getFnr() != null && !person.getFnr().equalsIgnoreCase(pdlPerson.getFnr())) {
             ulikeFelter.add("Fnr");
         }
-        if (person.getSivilstatus() != null && !person.getSivilstatus().equalsIgnoreCase(pdlPerson.getSivilstatus())){
+        if (person.getSivilstatus() != null && !person.getSivilstatus().equalsIgnoreCase(pdlPerson.getSivilstatus())) {
             ulikeFelter.add("Sivilstatus");
         }
         if (person.getDiskresjonskode() != null && pdlPerson.getDiskresjonskode() != null && !person.getDiskresjonskode().equalsIgnoreCase(pdlPerson.getDiskresjonskode())) {
             ulikeFelter.add("Diskresjonskode");
         }
-        if (!person.getStatsborgerskap().equalsIgnoreCase(pdlPerson.getStatsborgerskap())){
+        if (!person.getStatsborgerskap().equalsIgnoreCase(pdlPerson.getStatsborgerskap())) {
             ulikeFelter.add("Statsborgerskap");
         }
         if (ulikeFelter.size() > 0) {
@@ -75,7 +75,40 @@ public class PersonSammenligner {
         }
     }
 
-    public void sammenlignBarn(Barn barn, Barn pdlBarn) {
+    public void sammenlignBarn(List<Barn> alleBarn, List<Barn> allePdlBarn) {
+        if (alleBarn.size() != allePdlBarn.size()) {
+            log.info("Ulikt antall Barn i Person_v1 og PDL");
+        }
+        for (Barn barn : alleBarn) {
+            allePdlBarn.stream()
+                    .filter(pdlBarn -> pdlBarn.getFnr().equals(barn.getFnr()))
+                    .forEach(pdlBarn -> sammenlignBarn(barn, pdlBarn));
+        }
+    }
 
+    private void sammenlignBarn(Barn barn, Barn pdlBarn) {
+        if (barn != null && pdlBarn != null) {
+            // barn har ikke adressebeskyttelse, er myndig og lever
+            List<String> ulikeFelter = new ArrayList<>();
+            if (!barn.getFornavn().equalsIgnoreCase(pdlBarn.getFornavn())) {
+                ulikeFelter.add("Fornavn");
+            }
+            if (!barn.getMellomnavn().equalsIgnoreCase(pdlBarn.getMellomnavn())) {
+                ulikeFelter.add("Mellomnavn");
+            }
+            if (!barn.getEtternavn().equalsIgnoreCase(pdlBarn.getEtternavn())) {
+                ulikeFelter.add("Ettenavn");
+            }
+            if (barn.getFodselsdato() != null && !barn.getFodselsdato().isEqual(pdlBarn.getFodselsdato())) {
+                ulikeFelter.add("Fodselsdato");
+            }
+            if (barn.getFnr() != null && !barn.getFnr().equalsIgnoreCase(pdlBarn.getFnr())) {
+                ulikeFelter.add("Fnr");
+            }
+            // todo: folkeregistrertsammen
+            if (ulikeFelter.size() > 0) {
+                log.info("Ulike felter i Barn fra Person_V1 og PDL: {}", String.join(",", ulikeFelter));
+            }
+        }
     }
 }
