@@ -100,7 +100,7 @@
         <bouncycastle.version>1.64</bouncycastle.version>
         <httpclient.version>4.5.13</httpclient.version>
         <guava.version>30.0-jre</guava.version>
-        <stax2-api.version>3.1.4</stax2-api.version>
+        <stax2-api.version>4.2.1</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
         <verapdf.version>1.14.105</verapdf.version>
@@ -109,7 +109,7 @@
         <hsqldb.version>2.3.2</hsqldb.version>
         <hikaricp.version>3.4.2</hikaricp.version>
         <ehcache.version>2.10.6</ehcache.version>
-<!--        <woodstox-core-asl.version>4.4.1</woodstox-core-asl.version>-->
+<!--        <woodstox-core-asl.version>4.4.1</woodstox-core-asl.version> (cxf-core vil ha 6.2.1 , neethi:3.1.1 vil ha 4.4.1)-->
         <woodstox-core.version>6.2.1</woodstox-core.version> <!-- cxf-core vil ha: 6.2.1, cxf-rt-ws-security (wss4j:2.3.0->xmlsec:2.2.0) vil ha 5.2.1-->
         <joda-time.version>2.10.5</joda-time.version>
         <slf4j.version>1.7.30</slf4j.version>
