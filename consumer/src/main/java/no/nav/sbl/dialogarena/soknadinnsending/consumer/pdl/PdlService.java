@@ -21,6 +21,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class PdlService {
 
     private static final Logger log = getLogger(PdlService.class);
+    private static final String BARN = "BARN";
 
     private final PdlConsumer pdlConsumer;
     private final PdlPersonMapper pdlPersonMapper;
@@ -43,7 +44,7 @@ public class PdlService {
         PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
 
         List<Barn> alleBarn = pdlPerson.getFamilierelasjoner().stream()
-                .filter(it -> it.getRelatertPersonsRolle().equalsIgnoreCase("BARN"))
+                .filter(it -> it.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
                 .map(it -> {
                     PdlPerson pdlBarn = pdlConsumer.hentBarn(it.getRelatertPersonsIdent());
                     return pdlPersonMapper.mapTilBarn(pdlBarn, it.getRelatertPersonsIdent(), pdlPerson);
