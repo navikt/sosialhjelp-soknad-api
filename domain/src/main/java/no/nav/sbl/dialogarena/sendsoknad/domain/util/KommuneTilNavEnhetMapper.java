@@ -281,8 +281,6 @@ public class KommuneTilNavEnhetMapper {
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(
             asList(
-
-                    "0703",
                     "0301",
                     "5001",
                     "1103",
@@ -294,7 +292,6 @@ public class KommuneTilNavEnhetMapper {
                     "1135",
                     "1130",
                     "1134",
-                    "5030",
                     "1824",
                     "1127",
                     "1144",
