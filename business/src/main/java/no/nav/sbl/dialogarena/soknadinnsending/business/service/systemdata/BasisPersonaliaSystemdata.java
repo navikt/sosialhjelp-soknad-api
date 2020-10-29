@@ -2,18 +2,25 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Component
 public class BasisPersonaliaSystemdata implements Systemdata {
+
+    private static final Logger log = getLogger(BasisPersonaliaSystemdata.class);
 
     @Inject
     private PersonService personService;
@@ -41,14 +48,17 @@ public class BasisPersonaliaSystemdata implements Systemdata {
 
     public JsonPersonalia innhentSystemBasisPersonalia(final String personIdentifikator) {
         Person person = personService.hentPerson(personIdentifikator);
-        Person pdlPerson = pdlService.hentPerson(personIdentifikator);
         if (person == null){
             return null;
         }
-        if (pdlPerson != null) {
-            personSammenligner.sammenlign(person, pdlPerson);
+        try {
+            Person pdlPerson = pdlService.hentPerson(personIdentifikator);
+            if (pdlPerson != null) {
+                personSammenligner.sammenlign(person, pdlPerson);
+            }
+        } catch (PdlApiException | TjenesteUtilgjengeligException e) {
+            log.warn("PDL kaster feil (responsen brukes ikke, men sjekker om kallet fungerer)", e);
         }
-
         return mapToJsonPersonalia(person);
     }
 
