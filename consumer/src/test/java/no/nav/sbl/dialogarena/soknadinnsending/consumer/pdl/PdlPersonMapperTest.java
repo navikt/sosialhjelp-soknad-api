@@ -19,11 +19,11 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.common.utils.CollectionUtils.listOf;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_6;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_7;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -69,6 +69,42 @@ public class PdlPersonMapperTest {
         assertThat(person.getFnr(), is(IDENT));
         assertThat(person.getSivilstatus(), is(SivilstandDto.SivilstandType.GIFT.name()));
         assertThat(person.getStatsborgerskap(), is(LAND));
+    }
+
+    @Test
+    public void pdlPersonNull() {
+        Person person = mapper.mapTilPerson(null, IDENT);
+
+        assertNull(person);
+    }
+
+    @Test
+    public void personMedAdressebeskyttelse() {
+        PdlPerson kode6 = createPerson(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG)),
+                listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new StatsborgerskapDto(LAND))
+        );
+
+        PdlPerson kode7 = createPerson(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)),
+                listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new StatsborgerskapDto(LAND))
+        );
+
+        Person kode6Person = mapper.mapTilPerson(kode6, IDENT);
+        Person kode7Person = mapper.mapTilPerson(kode7, IDENT);
+
+
+        assertNotNull(kode6Person);
+        assertThat(kode6Person.getDiskresjonskode(), is(KODE_6));
+
+        assertNotNull(kode7Person);
+        assertThat(kode7Person.getDiskresjonskode(), is(KODE_7));
     }
 
     @Test
@@ -127,6 +163,21 @@ public class PdlPersonMapperTest {
         assertNull(ektefelle.getFnr());
         assertNull(ektefelle.getFodselsdato());
         assertFalse(ektefelle.erFolkeregistrertsammen()); // TODO fix
+    }
+
+    @Test
+    public void pdlEktefelleNull() {
+        PdlPerson pdlPerson = createPerson(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new StatsborgerskapDto(LAND))
+        );
+
+        Ektefelle ektefelle = mapper.mapTilEktefelle(null, EKTEFELLEIDENT, pdlPerson);
+
+        assertNull(ektefelle);
     }
 
     @Test
@@ -192,7 +243,7 @@ public class PdlPersonMapperTest {
         );
 
         PdlPerson pdlBarn = createBarn(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)),
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new FamilierelasjonDto(IDENT, MOR_ROLLE, BARN_ROLLE)), //fjern?
                 listOf(new FolkeregisterpersonstatusDto("doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
@@ -215,7 +266,7 @@ public class PdlPersonMapperTest {
         );
 
         PdlPerson pdlBarn = createBarn(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)),
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new FamilierelasjonDto(IDENT, MOR_ROLLE, BARN_ROLLE)), //fjern?
                 listOf(new FolkeregisterpersonstatusDto("ikke-doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN.minusYears(20))),

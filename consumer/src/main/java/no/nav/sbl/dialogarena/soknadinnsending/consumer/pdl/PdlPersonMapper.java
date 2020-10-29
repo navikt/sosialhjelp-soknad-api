@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PdlPersonMapper {
 
-    private static final String KODE_6 = "SPSF";
-    private static final String KODE_7 = "SPFO";
+    static final String KODE_6 = "SPSF";
+    static final String KODE_7 = "SPFO";
 
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
