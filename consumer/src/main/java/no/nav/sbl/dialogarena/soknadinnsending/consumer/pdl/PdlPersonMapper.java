@@ -67,17 +67,20 @@ public class PdlPersonMapper {
 
     private String finnFornavn(PdlPerson pdlPerson) {
         return pdlPerson.getNavn().stream()
-                .findFirst().map(NavnDto::getFornavn).orElse("");
+                .findFirst().map(NavnDto::getFornavn)
+                .orElse("");
     }
 
     private String finnMellomnavn(PdlPerson pdlPerson) {
         return pdlPerson.getNavn().stream()
-                .findFirst().map(NavnDto::getMellomnavn).orElse("");
+                .findFirst().map(NavnDto::getMellomnavn)
+                .orElse("");
     }
 
     private String finnEtternavn(PdlPerson pdlPerson) {
         return pdlPerson.getNavn().stream()
-                .findFirst().map(NavnDto::getEtternavn).orElse("");
+                .findFirst().map(NavnDto::getEtternavn)
+                .orElse("");
     }
 
     private LocalDate finnFodselsdato(PdlPerson pdlPerson) {
