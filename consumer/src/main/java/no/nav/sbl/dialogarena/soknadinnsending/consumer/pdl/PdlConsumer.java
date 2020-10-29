@@ -6,5 +6,9 @@ public interface PdlConsumer {
 
     PdlPerson hentPerson(String ident);
 
+    PdlPerson hentBarn(String ident);
+
+    PdlPerson hentEktefelle(String ident);
+
     void ping();
 }

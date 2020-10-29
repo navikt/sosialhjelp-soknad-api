@@ -28,18 +28,38 @@ public class PdlPersonMapper {
                 .withFnr(ident)
                 .withSivilstatus(finnSivilstatus(pdlPerson))
                 .withStatsborgerskap(finnStatsborgerskap(pdlPerson))
-                .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson))
-                .withEktefelle(finnEktefelle(pdlPerson));
+                .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson));
     }
 
-    public Barn mapTilBarn(PdlPerson pdlPerson, String ident) {
-        //TODO
-        return null;
+    public Barn mapTilBarn(PdlPerson pdlBarn, String barnIdent, PdlPerson pdlPerson) {
+        if (pdlBarn.harAdressebeskyttelse()) {
+            return null;
+        }
+        if (erMyndig(pdlBarn) || erDoed(pdlBarn)) {
+            return null;
+        }
+        return new Barn()
+                .withFornavn(finnFornavn(pdlBarn))
+                .withMellomnavn(finnMellomnavn(pdlBarn))
+                .withEtternavn(finnEtternavn(pdlBarn))
+                .withFnr(barnIdent)
+                .withFodselsdato(finnFodselsdato(pdlBarn))
+                .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson, pdlBarn));
     }
 
-    public Ektefelle mapTilEktefelle(PdlPerson pdlPerson, String ident) {
-        //TODO
-        return null;
+    public Ektefelle mapTilEktefelle(PdlPerson pdlEktefelle, String ektefelleIdent, PdlPerson pdlPerson) {
+        if (pdlEktefelle.harAdressebeskyttelse()) {
+            return new Ektefelle()
+                    .withIkketilgangtilektefelle(true);
+        }
+        return new Ektefelle()
+                .withFornavn(finnFornavn(pdlEktefelle))
+                .withMellomnavn(finnMellomnavn(pdlEktefelle))
+                .withEtternavn(finnEtternavn(pdlEktefelle))
+                .withFnr(ektefelleIdent)
+                .withFodselsdato(finnFodselsdato(pdlEktefelle))
+                .withIkketilgangtilektefelle(false)
+                .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson, pdlEktefelle));
     }
 
     private String finnFornavn(PdlPerson pdlPerson) {
@@ -63,12 +83,22 @@ public class PdlPersonMapper {
                 .orElse(null);
     }
 
+    private boolean erMyndig(PdlPerson pdlPerson) {
+        return finnAlder(pdlPerson) >= 18;
+    }
+
     private int finnAlder(PdlPerson pdlPerson) {
         LocalDate foedselsdato = finnFodselsdato(pdlPerson);
         if (foedselsdato == null) {
             return 0;
         }
         return Years.yearsBetween(foedselsdato, LocalDate.now()).getYears();
+    }
+
+    private boolean erDoed(PdlPerson pdlPerson) {
+        return pdlPerson.getFolkeregisterpersonstatus().stream().findFirst()
+                .map(it -> "DOED".equalsIgnoreCase(it.getStatus()))
+                .orElse(false);
     }
 
     private String finnSivilstatus(PdlPerson pdlPerson) {
@@ -101,8 +131,8 @@ public class PdlPersonMapper {
         }
     }
 
-    private Ektefelle finnEktefelle(PdlPerson pdlPerson) {
-        return null;
+    private boolean erFolkeregistrertSammen(PdlPerson pdlPerson, PdlPerson pdlBarnEllerEktefelle){
+        //todo fix - sjekke om person og barnEllerEktefelle har samme adresse.
+        return true;
     }
-
 }

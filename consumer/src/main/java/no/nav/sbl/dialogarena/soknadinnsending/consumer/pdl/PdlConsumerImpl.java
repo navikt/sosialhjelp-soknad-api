@@ -43,9 +43,23 @@ public class PdlConsumerImpl implements PdlConsumer {
 
     @Override
     public PdlPerson hentPerson(String ident) {
+        return hentPerson(ident, PdlApiQuery.HENT_PERSON);
+    }
+
+    @Override
+    public PdlPerson hentBarn(String ident) {
+        return hentPerson(ident, PdlApiQuery.HENT_BARN);
+    }
+
+    @Override
+    public PdlPerson hentEktefelle(String ident) {
+        return hentPerson(ident, PdlApiQuery.HENT_EKTEFELLE);
+    }
+
+    private PdlPerson hentPerson(String ident, String query) {
         Invocation.Builder builder = lagRequest(endpoint);
         PdlRequest request = new PdlRequest(
-                PdlApiQuery.HENT_PERSON,
+                query,
                 Map.of(
                         "historikk", false,
                         "ident", ident)
