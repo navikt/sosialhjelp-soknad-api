@@ -7,4 +7,8 @@ public class PdlApiException extends SosialhjelpSoknadApiException {
     public PdlApiException(String message) {
         super(message);
     }
+
+    public PdlApiException(String message, Throwable t) {
+        super(message, t);
+    }
 }

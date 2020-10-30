@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
@@ -21,7 +21,7 @@ public class PdlApiQuery {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(classPathResource.getInputStream(), UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
-            throw new SosialhjelpSoknadApiException("Failed to read file: " + file, e);
+            throw new PdlApiException("Failed to read graphql-file: " + file, e);
         }
     }
 }
