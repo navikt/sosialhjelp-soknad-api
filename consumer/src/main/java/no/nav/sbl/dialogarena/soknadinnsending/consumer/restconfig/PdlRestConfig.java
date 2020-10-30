@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.sbl.rest.RestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +40,7 @@ public class PdlRestConfig {
     @Bean
     public Pingable pdlRestPing(PdlConsumer pdlConsumer) {
         return () -> {
-            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Pdl", false);
+            PingMetadata metadata = new PingMetadata(endpoint, "Pdl", false);
             try {
                 pdlConsumer.ping();
                 return lyktes(metadata);
