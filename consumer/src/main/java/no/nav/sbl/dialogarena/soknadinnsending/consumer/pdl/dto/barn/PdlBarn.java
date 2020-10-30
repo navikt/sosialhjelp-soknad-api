@@ -9,8 +9,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
-
 public class PdlBarn {
 
     private final List<AdressebeskyttelseDto> adressebeskyttelse;
@@ -50,9 +48,4 @@ public class PdlBarn {
         return navn;
     }
 
-    public boolean harAdressebeskyttelse() {
-        return this.adressebeskyttelse != null
-                && !this.adressebeskyttelse.isEmpty()
-                && !this.adressebeskyttelse.stream().allMatch(adressebeskyttelseDto -> UGRADERT.equals(adressebeskyttelseDto.getGradering()));
-    }
 }
