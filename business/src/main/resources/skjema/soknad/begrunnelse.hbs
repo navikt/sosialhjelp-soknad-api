@@ -3,6 +3,9 @@
         <h2 class="bolk__tittel">{{ hentTekst "begrunnelsebolk.tittel" }}</h2>
         <ul class="fakta-liste">
             <h3>{{ hentTekst "begrunnelse.hva.sporsmal" }}</h3>
+            {{#if @root.utvidetSoknad}}
+                {{{settInnInfotekst "begrunnelse.hva.infotekst"}}}
+            {{/if}}
             <li>
                 <ul class="svar-liste">
                     <li>
