@@ -120,8 +120,7 @@ public class PdlPersonMapperTest {
         PdlPerson pdlEktefelle = createEktefelle(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new FoedselDto(LocalDate.of(1970,1,1))),
-                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, IDENT))
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN))
         );
 
         Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
@@ -149,8 +148,7 @@ public class PdlPersonMapperTest {
         PdlPerson pdlEktefelle = createEktefelle(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG)),
                 listOf(new FoedselDto(LocalDate.of(1970,1,1))),
-                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, IDENT))
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN))
         );
 
         Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
@@ -192,7 +190,6 @@ public class PdlPersonMapperTest {
 
         PdlPerson pdlBarn = createBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                listOf(new FamilierelasjonDto(IDENT, MOR_ROLLE, BARN_ROLLE)), //fjern?
                 listOf(new FolkeregisterpersonstatusDto("ikke-doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
@@ -221,7 +218,6 @@ public class PdlPersonMapperTest {
 
         PdlPerson pdlBarn = createBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)),
-                listOf(new FamilierelasjonDto(IDENT, MOR_ROLLE, BARN_ROLLE)), //fjern?
                 listOf(new FolkeregisterpersonstatusDto("ikke-doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
@@ -244,7 +240,6 @@ public class PdlPersonMapperTest {
 
         PdlPerson pdlBarn = createBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                listOf(new FamilierelasjonDto(IDENT, MOR_ROLLE, BARN_ROLLE)), //fjern?
                 listOf(new FolkeregisterpersonstatusDto("doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
@@ -267,7 +262,6 @@ public class PdlPersonMapperTest {
 
         PdlPerson pdlBarn = createBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                listOf(new FamilierelasjonDto(IDENT, MOR_ROLLE, BARN_ROLLE)), //fjern?
                 listOf(new FolkeregisterpersonstatusDto("ikke-doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN.minusYears(20))),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
@@ -290,22 +284,22 @@ public class PdlPersonMapperTest {
         );
     }
 
-    private PdlPerson createEktefelle(List<AdressebeskyttelseDto> adressebeskyttelse, List<FoedselDto> foedselsdato, List<NavnDto> navn, List<SivilstandDto> sivilstand) {
+    private PdlPerson createEktefelle(List<AdressebeskyttelseDto> adressebeskyttelse, List<FoedselDto> foedselsdato, List<NavnDto> navn) {
         return new PdlPerson(
                 adressebeskyttelse,
                 Collections.emptyList(), // ingen familierelasjoner for Ektefelle
                 Collections.emptyList(), // ingen folkeregisterstatus for Ektefelle
                 foedselsdato,
                 navn,
-                sivilstand, // fjern?
+                Collections.emptyList(), // ingen sivilstand for Ektefelle
                 Collections.emptyList()  // ingen statsborgerskap for Ektefelle
         );
     }
 
-    private PdlPerson createBarn(List<AdressebeskyttelseDto> adressebeskyttelse, List<FamilierelasjonDto> familierelasjoner, List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus, List<FoedselDto> foedselsdato, List<NavnDto> navn) {
+    private PdlPerson createBarn(List<AdressebeskyttelseDto> adressebeskyttelse, List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus, List<FoedselDto> foedselsdato, List<NavnDto> navn) {
         return new PdlPerson(
                 adressebeskyttelse,
-                familierelasjoner, // fjern?
+                Collections.emptyList(), // ingen familierelasjoner for Barn
                 folkeregisterpersonstatus,
                 foedselsdato,
                 navn,

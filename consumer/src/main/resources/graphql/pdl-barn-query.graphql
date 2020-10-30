@@ -3,11 +3,6 @@ query($ident: ID!, $historikk: Boolean!) {
         adressebeskyttelse(historikk: $historikk) {
             gradering
         }
-        familierelasjoner {
-            relatertPersonsIdent
-            relatertPersonsRolle
-            minRolleForPerson
-        }
         folkeregisterpersonstatus(historikk: $historikk) {
             status
         }

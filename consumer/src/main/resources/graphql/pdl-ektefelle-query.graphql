@@ -11,9 +11,5 @@ query($ident: ID!, $historikk: Boolean!) {
             mellomnavn
             etternavn
         }
-        sivilstand(historikk: $historikk) {
-            type
-            relatertVedSivilstand
-        }
     }
 }
