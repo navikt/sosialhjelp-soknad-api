@@ -6,18 +6,17 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlRequest;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarnResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelleResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPersonResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -50,7 +49,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlPerson hentPerson(String ident) {
         String query = PdlApiQuery.HENT_PERSON;
         try {
-            PdlPersonResponse pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), PdlPersonResponse.class);
+            PdlResponse<PdlPerson> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlPerson>>(PdlPerson.class));
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -64,7 +63,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlBarn hentBarn(String ident) {
         String query = PdlApiQuery.HENT_BARN;
         try {
-            PdlBarnResponse pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), PdlBarnResponse.class);
+            PdlResponse<PdlBarn> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlBarn>>(PdlBarn.class));
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -78,7 +77,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlEktefelle hentEktefelle(String ident) {
         String query = PdlApiQuery.HENT_EKTEFELLE;
         try {
-            PdlEktefelleResponse pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), PdlEktefelleResponse.class);
+            PdlResponse<PdlEktefelle> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlEktefelle>>(PdlEktefelle.class));
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -128,21 +127,9 @@ public class PdlConsumerImpl implements PdlConsumer {
                 .header(HEADER_TEMA, TEMA_KOM);
     }
 
-    private void checkForPdlApiErrors(PdlPersonResponse response) {
+    private void checkForPdlApiErrors(PdlResponse response) {
         Optional.ofNullable(response)
-                .map(PdlPersonResponse::getErrors)
-                .ifPresent(this::handleErrors);
-    }
-
-    private void checkForPdlApiErrors(PdlEktefelleResponse response) {
-        Optional.ofNullable(response)
-                .map(PdlEktefelleResponse::getErrors)
-                .ifPresent(this::handleErrors);
-    }
-
-    private void checkForPdlApiErrors(PdlBarnResponse response) {
-        Optional.ofNullable(response)
-                .map(PdlBarnResponse::getErrors)
+                .map(PdlResponse::getErrors)
                 .ifPresent(this::handleErrors);
     }
 
