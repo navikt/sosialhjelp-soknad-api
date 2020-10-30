@@ -41,6 +41,8 @@ public class PersonSammenligner {
         }
         if (ulikeFelter.size() > 0) {
             log.info("Ulike felter i Person fra Person_V1 vs PDL: {}", String.join(",", ulikeFelter));
+        } else {
+            log.info("Person fra Person_v1 og PDL er like");
         }
 
         sammenlignEktefelle(person.getEktefelle(), pdlPerson.getEktefelle());
@@ -71,6 +73,8 @@ public class PersonSammenligner {
             // todo: folkeregistrertsammen
             if (ulikeFelter.size() > 0) {
                 log.info("Ulike felter i Ektefelle fra Person_V1 vs PDL: {}", String.join(",", ulikeFelter));
+            } else {
+                log.info("Ektefelle fra Person_v1 og PDL er like");
             }
         }
     }
@@ -108,6 +112,8 @@ public class PersonSammenligner {
             // todo: folkeregistrertsammen
             if (ulikeFelter.size() > 0) {
                 log.info("Ulike felter i Barn fra Person_V1 og PDL: {}", String.join(",", ulikeFelter));
+            } else {
+                log.info("Barn fra Person_v1 og Barn fra PDL er like");
             }
         }
     }
