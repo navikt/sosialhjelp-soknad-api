@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,21 +6,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
-public class PdlResponse {
+public class PdlPersonResponse {
 
-    private final PdlData data;
+    private final PdlPersonData data;
     private final List<JsonNode> errors;
 
     @JsonCreator
-    public PdlResponse(
-            @JsonProperty("data") PdlData data,
+    public PdlPersonResponse(
+            @JsonProperty("data") PdlPersonData data,
             @JsonProperty("errors") List<JsonNode> errors
     ) {
         this.data = data;
         this.errors = errors;
     }
 
-    public PdlData getData() {
+    public PdlPersonData getData() {
         return data;
     }
 

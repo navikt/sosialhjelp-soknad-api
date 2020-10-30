@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -29,6 +30,6 @@ public class PdlPersonTest {
     }
 
     private PdlPerson personMedAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
-        return new PdlPerson(adressebeskyttelse, null, null, null, null, null, null);
+        return new PdlPerson(adressebeskyttelse, null, null, null, null);
     }
 }
