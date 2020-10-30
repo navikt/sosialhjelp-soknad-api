@@ -49,7 +49,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlPerson hentPerson(String ident) {
         String query = PdlApiQuery.HENT_PERSON;
         try {
-            PdlResponse<PdlPerson> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlPerson>>(PdlPerson.class));
+            PdlResponse<PdlPerson> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlPerson>>(){});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -63,7 +63,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlBarn hentBarn(String ident) {
         String query = PdlApiQuery.HENT_BARN;
         try {
-            PdlResponse<PdlBarn> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlBarn>>(PdlBarn.class));
+            PdlResponse<PdlBarn> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlBarn>>(){});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -77,7 +77,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlEktefelle hentEktefelle(String ident) {
         String query = PdlApiQuery.HENT_EKTEFELLE;
         try {
-            PdlResponse<PdlEktefelle> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlEktefelle>>(PdlEktefelle.class));
+            PdlResponse<PdlEktefelle> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlResponse<PdlEktefelle>>(){});
 
             checkForPdlApiErrors(pdlResponse);
 
