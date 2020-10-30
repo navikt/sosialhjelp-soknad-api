@@ -189,10 +189,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>woodstox-core-asl</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>runtime</scope>
@@ -498,7 +494,7 @@
                     <dependency>
                         <groupId>org.glassfish.jaxb</groupId>
                         <artifactId>jaxb-runtime</artifactId>
-                        <version>${jaxb.version}</version>
+                        <version>${jaxb-runtime.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
