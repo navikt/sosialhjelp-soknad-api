@@ -2,20 +2,19 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
 
 import java.util.List;
-
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.AdressebeskyttelseDto.Gradering.UGRADERT;
 
 public class PdlPerson {
 
     private final List<AdressebeskyttelseDto> adressebeskyttelse;
 
     private final List<FamilierelasjonDto> familierelasjoner;
-
-    private final List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus;
-
-    private final List<FoedselDto> foedsel;
 
     private final List<NavnDto> navn;
 
@@ -27,16 +26,12 @@ public class PdlPerson {
     public PdlPerson(
             @JsonProperty("adressebeskyttelse") List<AdressebeskyttelseDto> adressebeskyttelse,
             @JsonProperty("familierelasjoner") List<FamilierelasjonDto> familierelasjoner,
-            @JsonProperty("folkeregisterpersonstatus") List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus,
-            @JsonProperty("foedsel") List<FoedselDto> foedsel,
             @JsonProperty("navn") List<NavnDto> navn,
             @JsonProperty("sivilstand") List<SivilstandDto> sivilstand,
             @JsonProperty("statsborgerskap") List<StatsborgerskapDto> statsborgerskap
     ) {
         this.adressebeskyttelse = adressebeskyttelse;
         this.familierelasjoner = familierelasjoner;
-        this.folkeregisterpersonstatus = folkeregisterpersonstatus;
-        this.foedsel = foedsel;
         this.navn = navn;
         this.sivilstand = sivilstand;
         this.statsborgerskap = statsborgerskap;
@@ -48,14 +43,6 @@ public class PdlPerson {
 
     public List<FamilierelasjonDto> getFamilierelasjoner() {
         return familierelasjoner;
-    }
-
-    public List<FolkeregisterpersonstatusDto> getFolkeregisterpersonstatus() {
-        return folkeregisterpersonstatus;
-    }
-
-    public List<FoedselDto> getFoedsel() {
-        return foedsel;
     }
 
     public List<NavnDto> getNavn() {
@@ -70,9 +57,4 @@ public class PdlPerson {
         return statsborgerskap;
     }
 
-    public boolean harAdressebeskyttelse() {
-        return this.adressebeskyttelse != null
-                && !this.adressebeskyttelse.isEmpty()
-                && !this.adressebeskyttelse.stream().allMatch(adressebeskyttelseDto -> UGRADERT.equals(adressebeskyttelseDto.getGradering()));
-    }
 }

@@ -13,11 +13,6 @@
           "minRolleForPerson": "MOR"
         }
       ],
-      "foedsel": [
-        {
-          "foedselsdato": "1970-01-01"
-        }
-      ],
       "navn": [
         {
           "fornavn": "TEST",

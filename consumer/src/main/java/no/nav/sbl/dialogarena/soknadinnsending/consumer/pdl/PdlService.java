@@ -3,8 +3,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.SivilstandDto;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +15,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.SivilstandDto.SivilstandType.GIFT;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.SivilstandDto.SivilstandType.PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.GIFT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.PARTNER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -46,7 +48,7 @@ public class PdlService {
         List<Barn> alleBarn = pdlPerson.getFamilierelasjoner().stream()
                 .filter(it -> it.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
                 .map(it -> {
-                    PdlPerson pdlBarn = pdlConsumer.hentBarn(it.getRelatertPersonsIdent());
+                    PdlBarn pdlBarn = pdlConsumer.hentBarn(it.getRelatertPersonsIdent());
                     return pdlPersonMapper.mapTilBarn(pdlBarn, it.getRelatertPersonsIdent(), pdlPerson);
                 })
                 .collect(Collectors.toList());
@@ -61,7 +63,7 @@ public class PdlService {
                     .findFirst();
             if (ektefelle.isPresent()) {
                 String ektefelleIdent = ektefelle.get().getRelatertVedSivilstand();
-                PdlPerson pdlEktefelle = pdlConsumer.hentEktefelle(ektefelleIdent);
+                PdlEktefelle pdlEktefelle = pdlConsumer.hentEktefelle(ektefelleIdent);
                 return pdlPersonMapper.mapTilEktefelle(pdlEktefelle, ektefelleIdent, pdlPerson);
             }
         }

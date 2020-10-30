@@ -1,7 +1,9 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
 
 public class AdressebeskyttelseDto {
 

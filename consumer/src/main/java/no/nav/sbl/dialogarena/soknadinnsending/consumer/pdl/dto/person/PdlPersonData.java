@@ -1,15 +1,14 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 
-public class PdlData {
+public class PdlPersonData {
 
     private final PdlPerson hentPerson;
 
     @JsonCreator
-    public PdlData(
+    public PdlPersonData(
             @JsonProperty("hentPerson") PdlPerson hentPerson
     ) {
         this.hentPerson = hentPerson;

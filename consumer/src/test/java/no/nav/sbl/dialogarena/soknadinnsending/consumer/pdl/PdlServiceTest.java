@@ -3,9 +3,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.FamilierelasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.SivilstandDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -37,8 +39,8 @@ public class PdlServiceTest {
     private PdlService pdlService;
 
     private PdlPerson mockPdlPerson = mock(PdlPerson.class);
-    private PdlPerson mockPdlEktefelle = mock(PdlPerson.class);
-    private PdlPerson mockPdlBarn = mock(PdlPerson.class);
+    private PdlEktefelle mockPdlEktefelle = mock(PdlEktefelle.class);
+    private PdlBarn mockPdlBarn = mock(PdlBarn.class);
 
     private Person person = new Person();
     private Ektefelle ektefelle = new Ektefelle();

@@ -1,12 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlRequest;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlResponse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarnResponse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelleResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPersonResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 
@@ -43,30 +48,9 @@ public class PdlConsumerImpl implements PdlConsumer {
 
     @Override
     public PdlPerson hentPerson(String ident) {
-        return hentPerson(ident, PdlApiQuery.HENT_PERSON);
-    }
-
-    @Override
-    public PdlPerson hentBarn(String ident) {
-        return hentPerson(ident, PdlApiQuery.HENT_BARN);
-    }
-
-    @Override
-    public PdlPerson hentEktefelle(String ident) {
-        return hentPerson(ident, PdlApiQuery.HENT_EKTEFELLE);
-    }
-
-    private PdlPerson hentPerson(String ident, String query) {
-        Invocation.Builder builder = lagRequest(endpoint);
-        PdlRequest request = new PdlRequest(
-                query,
-                Map.of(
-                        "historikk", false,
-                        "ident", ident)
-        );
-
+        String query = PdlApiQuery.HENT_PERSON;
         try {
-            PdlResponse pdlResponse = builder.post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE), PdlResponse.class);
+            PdlPersonResponse pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), PdlPersonResponse.class);
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -74,6 +58,44 @@ public class PdlConsumerImpl implements PdlConsumer {
         } catch (Exception e) {
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
+    }
+
+    @Override
+    public PdlBarn hentBarn(String ident) {
+        String query = PdlApiQuery.HENT_BARN;
+        try {
+            PdlBarnResponse pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), PdlBarnResponse.class);
+
+            checkForPdlApiErrors(pdlResponse);
+
+            return pdlResponse.getData().getHentPerson();
+        } catch (Exception e) {
+            throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
+        }
+    }
+
+    @Override
+    public PdlEktefelle hentEktefelle(String ident) {
+        String query = PdlApiQuery.HENT_EKTEFELLE;
+        try {
+            PdlEktefelleResponse pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), PdlEktefelleResponse.class);
+
+            checkForPdlApiErrors(pdlResponse);
+
+            return pdlResponse.getData().getHentPerson();
+        } catch (Exception e) {
+            throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
+        }
+    }
+
+    private Entity<PdlRequest> requestEntity(String ident, String query) {
+        PdlRequest request = new PdlRequest(
+                query,
+                Map.of(
+                        "historikk", false,
+                        "ident", ident)
+        );
+        return Entity.entity(request, MediaType.APPLICATION_JSON_TYPE);
     }
 
     @Override
@@ -106,16 +128,29 @@ public class PdlConsumerImpl implements PdlConsumer {
                 .header(HEADER_TEMA, TEMA_KOM);
     }
 
-    private void checkForPdlApiErrors(PdlResponse response) {
+    private void checkForPdlApiErrors(PdlPersonResponse response) {
         Optional.ofNullable(response)
-                .map(PdlResponse::getErrors)
-                .ifPresent(errorJsonNodes -> {
-                            List<String> errors = errorJsonNodes.stream()
-                                    .map(jsonNode -> jsonNode.get("message") + "(feilkode: " + jsonNode.path("extensions").path("code") + ")")
-                                    .collect(Collectors.toList());
-                            throw new PdlApiException(errorMessage(errors));
-                        }
-                );
+                .map(PdlPersonResponse::getErrors)
+                .ifPresent(this::handleErrors);
+    }
+
+    private void checkForPdlApiErrors(PdlEktefelleResponse response) {
+        Optional.ofNullable(response)
+                .map(PdlEktefelleResponse::getErrors)
+                .ifPresent(this::handleErrors);
+    }
+
+    private void checkForPdlApiErrors(PdlBarnResponse response) {
+        Optional.ofNullable(response)
+                .map(PdlBarnResponse::getErrors)
+                .ifPresent(this::handleErrors);
+    }
+
+    private void handleErrors(List<JsonNode> errorJsonNodes) {
+        List<String> errors = errorJsonNodes.stream()
+                .map(jsonNode -> jsonNode.get("message") + "(feilkode: " + jsonNode.path("extensions").path("code") + ")")
+                .collect(Collectors.toList());
+        throw new PdlApiException(errorMessage(errors));
     }
 
     private String errorMessage(List<String> errors) {

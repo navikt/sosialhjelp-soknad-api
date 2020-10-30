@@ -1,15 +1,25 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.AdressebeskyttelseDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.StatsborgerskapDto;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
 
 @Component
 public class PdlPersonMapper {
@@ -22,107 +32,118 @@ public class PdlPersonMapper {
             return null;
         }
         return new Person()
-                .withFornavn(finnFornavn(pdlPerson))
-                .withMellomnavn(finnMellomnavn(pdlPerson))
-                .withEtternavn(finnEtternavn(pdlPerson))
+                .withFornavn(finnFornavn(pdlPerson.getNavn()))
+                .withMellomnavn(finnMellomnavn(pdlPerson.getNavn()))
+                .withEtternavn(finnEtternavn(pdlPerson.getNavn()))
                 .withFnr(ident)
-                .withSivilstatus(finnSivilstatus(pdlPerson))
-                .withStatsborgerskap(finnStatsborgerskap(pdlPerson))
-                .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson));
+                .withSivilstatus(finnSivilstatus(pdlPerson.getSivilstand()))
+                .withStatsborgerskap(finnStatsborgerskap(pdlPerson.getStatsborgerskap()))
+                .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()));
     }
 
-    public Barn mapTilBarn(PdlPerson pdlBarn, String barnIdent, PdlPerson pdlPerson) {
-        if (pdlBarn.harAdressebeskyttelse()) {
+    public Barn mapTilBarn(PdlBarn pdlBarn, String barnIdent, PdlPerson pdlPerson) {
+        if (harAdressebeskyttelse(pdlBarn.getAdressebeskyttelse())) {
             return null;
         }
-        if (erMyndig(pdlBarn) || erDoed(pdlBarn)) {
+        if (erMyndig(pdlBarn.getFoedsel()) || erDoed(pdlBarn.getFolkeregisterpersonstatus())) {
             return null;
         }
         return new Barn()
-                .withFornavn(finnFornavn(pdlBarn))
-                .withMellomnavn(finnMellomnavn(pdlBarn))
-                .withEtternavn(finnEtternavn(pdlBarn))
+                .withFornavn(finnFornavn(pdlBarn.getNavn()))
+                .withMellomnavn(finnMellomnavn(pdlBarn.getNavn()))
+                .withEtternavn(finnEtternavn(pdlBarn.getNavn()))
                 .withFnr(barnIdent)
-                .withFodselsdato(finnFodselsdato(pdlBarn))
+                .withFodselsdato(finnFodselsdato(pdlBarn.getFoedsel()))
                 .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson, pdlBarn));
     }
 
-    public Ektefelle mapTilEktefelle(PdlPerson pdlEktefelle, String ektefelleIdent, PdlPerson pdlPerson) {
+    public Ektefelle mapTilEktefelle(PdlEktefelle pdlEktefelle, String ektefelleIdent, PdlPerson pdlPerson) {
         if (pdlEktefelle == null) {
             return null;
         }
-        if (pdlEktefelle.harAdressebeskyttelse()) {
+        if (harAdressebeskyttelse(pdlEktefelle.getAdressebeskyttelse())) {
             return new Ektefelle()
                     .withIkketilgangtilektefelle(true);
         }
         return new Ektefelle()
-                .withFornavn(finnFornavn(pdlEktefelle))
-                .withMellomnavn(finnMellomnavn(pdlEktefelle))
-                .withEtternavn(finnEtternavn(pdlEktefelle))
+                .withFornavn(finnFornavn(pdlEktefelle.getNavn()))
+                .withMellomnavn(finnMellomnavn(pdlEktefelle.getNavn()))
+                .withEtternavn(finnEtternavn(pdlEktefelle.getNavn()))
                 .withFnr(ektefelleIdent)
-                .withFodselsdato(finnFodselsdato(pdlEktefelle))
+                .withFodselsdato(finnFodselsdato(pdlEktefelle.getFoedsel()))
                 .withIkketilgangtilektefelle(false)
                 .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson, pdlEktefelle));
     }
 
-    private String finnFornavn(PdlPerson pdlPerson) {
-        return pdlPerson.getNavn().stream()
+    private String finnFornavn(List<NavnDto> navn) {
+        return navn.stream()
                 .findFirst().map(NavnDto::getFornavn)
                 .orElse("");
     }
 
-    private String finnMellomnavn(PdlPerson pdlPerson) {
-        return pdlPerson.getNavn().stream()
+    private String finnMellomnavn(List<NavnDto> navn) {
+        return navn.stream()
                 .findFirst().map(NavnDto::getMellomnavn)
                 .orElse("");
     }
 
-    private String finnEtternavn(PdlPerson pdlPerson) {
-        return pdlPerson.getNavn().stream()
+    private String finnEtternavn(List<NavnDto> navn) {
+        return navn.stream()
                 .findFirst().map(NavnDto::getEtternavn)
                 .orElse("");
     }
 
-    private LocalDate finnFodselsdato(PdlPerson pdlPerson) {
-        return pdlPerson.getFoedsel().stream().findFirst()
+    private LocalDate finnFodselsdato(List<FoedselDto> foedsel) {
+        return foedsel.stream().findFirst()
                 .map(foedselDto -> new LocalDate(foedselDto.getFoedselsdato().getYear(), foedselDto.getFoedselsdato().getMonthValue(), foedselDto.getFoedselsdato().getDayOfMonth()))
                 .orElse(null);
     }
 
-    private boolean erMyndig(PdlPerson pdlPerson) {
-        return finnAlder(pdlPerson) >= 18;
+    private boolean erMyndig(List<FoedselDto> foedsel) {
+        return finnAlder(foedsel) >= 18;
     }
 
-    private int finnAlder(PdlPerson pdlPerson) {
-        LocalDate foedselsdato = finnFodselsdato(pdlPerson);
+    private int finnAlder(List<FoedselDto> foedsel) {
+        LocalDate foedselsdato = finnFodselsdato(foedsel);
         if (foedselsdato == null) {
             return 0;
         }
         return Years.yearsBetween(foedselsdato, LocalDate.now()).getYears();
     }
 
-    private boolean erDoed(PdlPerson pdlPerson) {
-        return pdlPerson.getFolkeregisterpersonstatus().stream().findFirst()
+    private boolean erDoed(List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus) {
+        return folkeregisterpersonstatus.stream().findFirst()
                 .map(it -> "DOED".equalsIgnoreCase(it.getStatus()))
                 .orElse(false);
     }
 
-    private String finnSivilstatus(PdlPerson pdlPerson) {
-        return pdlPerson.getSivilstand().stream().findFirst()
+    private String finnSivilstatus(List<SivilstandDto> sivilstand) {
+        return sivilstand.stream().findFirst()
                 .map(dto -> dto.getType().name())
                 .orElse("");
     }
 
-    private String finnStatsborgerskap(PdlPerson pdlPerson) {
-        return pdlPerson.getStatsborgerskap().stream().findFirst()
+    private String finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
+        return statsborgerskap.stream().findFirst()
                 .map(StatsborgerskapDto::getLand)
                 .orElse("NOR");
     }
 
-    private String finnAdressebeskyttelse(PdlPerson pdlPerson) {
-        return pdlPerson.getAdressebeskyttelse().stream().findFirst()
+    private String finnAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
+        if (adressebeskyttelse == null) {
+            return null;
+        }
+        return adressebeskyttelse.stream()
+                .filter(dto -> dto.getGradering() != UGRADERT)
+                .findFirst()
                 .map(dto -> mapTilDiskresjonskode(dto.getGradering()))
                 .orElse(null);
+    }
+
+    private boolean harAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
+        return adressebeskyttelse != null
+                && !adressebeskyttelse.isEmpty()
+                && !adressebeskyttelse.stream().allMatch(adressebeskyttelseDto -> UGRADERT.equals(adressebeskyttelseDto.getGradering()));
     }
 
     private String mapTilDiskresjonskode(AdressebeskyttelseDto.Gradering gradering) {
@@ -137,8 +158,13 @@ public class PdlPersonMapper {
         }
     }
 
-    private boolean erFolkeregistrertSammen(PdlPerson pdlPerson, PdlPerson pdlBarnEllerEktefelle){
-        //todo fix - sjekke om person og barnEllerEktefelle har samme adresse.
+    private boolean erFolkeregistrertSammen(PdlPerson pdlPerson, PdlBarn pdlBarn) {
+        //todo fix - sjekke om person og barn har samme adresse.
+        return true;
+    }
+
+    private boolean erFolkeregistrertSammen(PdlPerson pdlPerson, PdlEktefelle pdlEktefelle) {
+        //todo fix - sjekke om person og ektefelle har samme adresse.
         return true;
     }
 }
