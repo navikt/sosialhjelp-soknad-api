@@ -99,7 +99,7 @@
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.64</bouncycastle.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <guava.version>28.2-jre</guava.version>
+        <guava.version>30.0-jre</guava.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
@@ -423,11 +423,6 @@
                 <artifactId>jakarta.ws.rs-api</artifactId>
                 <version>${jakarta.ws.version}</version>
             </dependency>
-            <dependency>
-                <groupId>jakarta.annotation</groupId>
-                <artifactId>jakarta.annotation-api</artifactId>
-                <version>${jakarta.annotation-api.version}</version>
-            </dependency>
 
 
             <!-- Jackson avhengigheter -->
@@ -476,11 +471,6 @@
             <dependency>
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>
-                <version>${jakarta.xml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.xml.ws</groupId>
-                <artifactId>jakarta.xml.ws-api</artifactId>
                 <version>${jakarta.xml.version}</version>
             </dependency>
             <dependency>
