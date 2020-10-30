@@ -4,15 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
 
 import java.util.List;
-
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
 
 public class PdlPerson {
 
@@ -61,9 +57,4 @@ public class PdlPerson {
         return statsborgerskap;
     }
 
-    public boolean harAdressebeskyttelse() {
-        return this.adressebeskyttelse != null
-                && !this.adressebeskyttelse.isEmpty()
-                && !this.adressebeskyttelse.stream().allMatch(adressebeskyttelseDto -> UGRADERT.equals(adressebeskyttelseDto.getGradering()));
-    }
 }

@@ -14,6 +14,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRes
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.NorgRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.PdlRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.SkattbarInntektRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
@@ -56,6 +57,7 @@ public class ConsumerConfig {
     @Profile("!integration")
     @Import({
             RedisConfig.class,
+            PdlRestConfig.class,
             DigisosApiRestConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class,
