@@ -1,0 +1,24 @@
+query($ident: ID!, $historikk: Boolean!) {
+    hentPerson(ident: $ident) {
+        adressebeskyttelse(historikk: $historikk) {
+            gradering
+        }
+        familierelasjoner {
+            relatertPersonsIdent
+            relatertPersonsRolle
+            minRolleForPerson
+        }
+        navn(historikk: $historikk) {
+            fornavn
+            mellomnavn
+            etternavn
+        }
+        sivilstand(historikk: $historikk) {
+            type
+            relatertVedSivilstand
+        }
+        statsborgerskap(historikk: $historikk) {
+            land
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+  "data": {
+    "hentPerson": {
+      "adressebeskyttelse": [
+        {
+          "gradering": "UGRADERT"
+        }
+      ],
+      "familierelasjoner": [
+        {
+          "relatertPersonsIdent": "33333333333",
+          "relatertPersonsRolle": "BARN",
+          "minRolleForPerson": "MOR"
+        }
+      ],
+      "navn": [
+        {
+          "fornavn": "TEST",
+          "mellomnavn": null,
+          "etternavn": "PERSON"
+        }
+      ],
+      "sivilstand": [
+        {
+          "type": "GIFT",
+          "relatertVedSivilstand": "55555555555"
+        }
+      ],
+      "statsborgerskap": [
+        {
+          "land": "DEU"
+        }
+      ]
+    }
+  }
+}
