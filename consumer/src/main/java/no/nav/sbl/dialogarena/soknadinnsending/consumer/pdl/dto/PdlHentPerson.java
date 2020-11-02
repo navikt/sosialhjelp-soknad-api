@@ -3,12 +3,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PdlData<T> {
+public class PdlHentPerson<T> {
 
     private final T hentPerson;
 
     @JsonCreator
-    public PdlData(
+    public PdlHentPerson(
             @JsonProperty("hentPerson") T hentPerson
     ) {
         this.hentPerson = hentPerson;

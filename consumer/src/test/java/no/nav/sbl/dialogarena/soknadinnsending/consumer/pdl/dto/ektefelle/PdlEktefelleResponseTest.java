@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlResponse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlHentPersonResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import org.apache.cxf.helpers.IOUtils;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class PdlEktefelleResponseTest {
         assertThat(resourceAsStream).isNotNull();
         String jsonString = IOUtils.toString(resourceAsStream);
 
-        PdlResponse<PdlEktefelle> pdlEktefelleResponse = mapper.readValue(jsonString, new TypeReference<PdlResponse<PdlEktefelle>>() {});
+        PdlHentPersonResponse<PdlEktefelle> pdlEktefelleResponse = mapper.readValue(jsonString, new TypeReference<PdlHentPersonResponse<PdlEktefelle>>() {});
 
         assertNotNull(pdlEktefelleResponse);
         assertEquals(AdressebeskyttelseDto.Gradering.UGRADERT, pdlEktefelleResponse.getData().getHentPerson().getAdressebeskyttelse().get(0).getGradering());
