@@ -6,21 +6,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
-public class PdlResponse<T> {
+public class PdlHentPersonResponse<T> {
 
-    private final PdlData<T> data;
+    private final PdlHentPerson<T> data;
     private final List<JsonNode> errors;
 
     @JsonCreator
-    public PdlResponse(
-            @JsonProperty("data") PdlData<T> data,
+    public PdlHentPersonResponse(
+            @JsonProperty("data") PdlHentPerson<T> data,
             @JsonProperty("errors") List<JsonNode> errors
     ) {
         this.data = data;
         this.errors = errors;
     }
 
-    public PdlData<T> getData() {
+    public PdlHentPerson<T> getData() {
         return data;
     }
 
