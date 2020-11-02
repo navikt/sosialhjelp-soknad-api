@@ -6,6 +6,22 @@
           "gradering": "UGRADERT"
         }
       ],
+      "bostedsadresse": [
+        {
+          "vegadresse": {
+            "matrikkelId": null,
+            "adressenavn": "GATEVEIEN",
+            "husnummer": "1",
+            "husbokstav": null,
+            "tilleggsnavn": null,
+            "postnummer": "0690",
+            "kommunenummer": "0301",
+            "bruksenhetsnummer": null
+          },
+          "matrikkeladresse": null,
+          "ukjentBosted": null
+        }
+      ],
       "familierelasjoner": [
         {
           "relatertPersonsIdent": "33333333333",
