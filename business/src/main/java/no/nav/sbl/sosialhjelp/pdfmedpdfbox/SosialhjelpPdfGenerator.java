@@ -105,7 +105,7 @@ public class SosialhjelpPdfGenerator {
             leggTilHeading(pdf, heading, navn, fnr);
 
             leggTilPersonalia(pdf, data.getPersonalia(), jsonInternalSoknad.getMidlertidigAdresse(), utvidetSoknad);
-            leggTilBegrunnelse(pdf, data.getBegrunnelse());
+            leggTilBegrunnelse(pdf, data.getBegrunnelse(), utvidetSoknad);
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning(), utvidetSoknad);
             leggTilFamilie(pdf, data.getFamilie(), utvidetSoknad);
             leggTilBosituasjon(pdf, data.getBosituasjon(), utvidetSoknad);
@@ -412,11 +412,15 @@ public class SosialhjelpPdfGenerator {
         return adresse.toString();
     }
 
-    private void leggTilBegrunnelse(PdfGenerator pdf, JsonBegrunnelse jsonBegrunnelse) throws IOException {
+    private void leggTilBegrunnelse(PdfGenerator pdf, JsonBegrunnelse jsonBegrunnelse, boolean utvidetSoknad) throws IOException {
         pdf.skrivH4Bold(getTekst("begrunnelsebolk.tittel"));
         pdf.addBlankLine();
 
         pdf.skrivTekstBold(getTekst("begrunnelse.hva.sporsmal"));
+
+        if (utvidetSoknad) {
+            skrivInfotekst(pdf, "begrunnelse.hva.infotekst.tekst");
+        }
         if (jsonBegrunnelse.getHvaSokesOm() == null || jsonBegrunnelse.getHvaSokesOm().isEmpty()) {
             skrivIkkeUtfylt(pdf);
         } else {

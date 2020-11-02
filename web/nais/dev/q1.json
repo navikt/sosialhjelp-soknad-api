@@ -19,6 +19,7 @@
     "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1",
     "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1",
     "/apigw/dkifapi": "apikey/apigw/dev/dkif.api/sosialhjelp-soknad-api_q1",
+    "/apigw/pdlapi": "apikey/apigw/dev/pdl-api/sosialhjelp-soknad-api_q1",
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/dev/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/dev/srvsoknadsosialhjelp-server-sbs"
   },
@@ -44,6 +45,7 @@
     "IDPORTEN_CONFIG_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
     "NORG2_API_V1_URL": "https://api-gw-q1.oera.no/norg2/api/v1/",
+    "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
     "SCHEDULER_DISABLE": "false",
     "SECURITYTOKENSERVICE_URL": "https://sts-q1.oera-q.local/SecurityTokenServiceProvider/",
     "SERVICEGATEWAY_URL": "https://service-gw-q1.oera-q.local/",

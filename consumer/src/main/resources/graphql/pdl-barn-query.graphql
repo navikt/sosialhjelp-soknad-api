@@ -1,0 +1,18 @@
+query($ident: ID!, $historikk: Boolean!) {
+    hentPerson(ident: $ident) {
+        adressebeskyttelse(historikk: $historikk) {
+            gradering
+        }
+        folkeregisterpersonstatus(historikk: $historikk) {
+            status
+        }
+        foedsel {
+            foedselsdato
+        }
+        navn(historikk: $historikk) {
+            fornavn
+            mellomnavn
+            etternavn
+        }
+    }
+}
