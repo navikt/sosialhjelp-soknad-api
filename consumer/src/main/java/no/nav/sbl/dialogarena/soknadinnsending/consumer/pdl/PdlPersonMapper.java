@@ -159,12 +159,16 @@ public class PdlPersonMapper {
     }
 
     private boolean erFolkeregistrertSammen(PdlPerson pdlPerson, PdlBarn pdlBarn) {
-        //todo fix - sjekke om person og barn har samme adresse.
-        return true;
+        if (pdlPerson.getBostedsadresse() != null && pdlBarn.getBostedsadresse() != null) {
+            return pdlPerson.getBostedsadresse().equals(pdlBarn.getBostedsadresse());
+        }
+        return false;
     }
 
     private boolean erFolkeregistrertSammen(PdlPerson pdlPerson, PdlEktefelle pdlEktefelle) {
-        //todo fix - sjekke om person og ektefelle har samme adresse.
-        return true;
+        if (pdlPerson.getBostedsadresse() != null && pdlEktefelle.getBostedsadresse() != null) {
+            return pdlPerson.getBostedsadresse().equals(pdlEktefelle.getBostedsadresse());
+        }
+        return false;
     }
 }
