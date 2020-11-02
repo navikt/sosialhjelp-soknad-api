@@ -5,12 +5,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.VegadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import org.junit.Test;
@@ -53,6 +55,7 @@ public class PdlPersonMapperTest {
     public void fulltUtfyltPdlPerson() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
@@ -80,12 +83,12 @@ public class PdlPersonMapperTest {
 
     @Test
     public void personMedAdressebeskyttelse() {
-        PdlPerson nullAdressebeskyttelse = new PdlPerson(null, emptyList(), emptyList(), emptyList(), emptyList());
-        PdlPerson tomAdressebeskyttelse = new PdlPerson(emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
-        PdlPerson ugradert = new PdlPerson(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)), emptyList(), emptyList(), emptyList(), emptyList());
-        PdlPerson kode6 = new PdlPerson(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG)), emptyList(), emptyList(), emptyList(), emptyList());
-        PdlPerson kode7 = new PdlPerson(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)), emptyList(), emptyList(), emptyList(), emptyList());
-        PdlPerson listeMedUgradertOgkode7 = new PdlPerson(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT), new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)), emptyList(), emptyList(), emptyList(), emptyList());
+        PdlPerson nullAdressebeskyttelse = new PdlPerson(null, emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
+        PdlPerson tomAdressebeskyttelse = new PdlPerson(emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
+        PdlPerson ugradert = new PdlPerson(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
+        PdlPerson kode6 = new PdlPerson(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG)), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
+        PdlPerson kode7 = new PdlPerson(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
+        PdlPerson listeMedUgradertOgkode7 = new PdlPerson(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT), new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
 
         Person nullAdressebeskyttelsePerson = mapper.mapTilPerson(nullAdressebeskyttelse, IDENT);
         Person tomAdressebeskyttelsePerson = mapper.mapTilPerson(tomAdressebeskyttelse, IDENT);
@@ -106,6 +109,7 @@ public class PdlPersonMapperTest {
     public void fulltUtfyltPdlEktefelle() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
@@ -114,6 +118,7 @@ public class PdlPersonMapperTest {
 
         PdlEktefelle pdlEktefelle = new PdlEktefelle(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN))
         );
@@ -127,13 +132,38 @@ public class PdlPersonMapperTest {
         assertThat(ektefelle.getEtternavn(), is(ETTERNAVN));
         assertThat(ektefelle.getFnr(), is(EKTEFELLEIDENT));
         assertThat(ektefelle.getFodselsdato().toString(), is("1970-01-01"));
-        assertTrue(ektefelle.erFolkeregistrertsammen()); // TODO fix
+        assertTrue(ektefelle.erFolkeregistrertsammen());
+    }
+
+    @Test
+    public void ektefelleMedAnnenBostedsadresse() {
+        PdlPerson pdlPerson = new PdlPerson(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new StatsborgerskapDto(LAND))
+        );
+
+        PdlEktefelle pdlEktefelle = new PdlEktefelle(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("annen_", "gårdsplassen", 42, "B", null, "9999", "8888", null), null, null)),
+                listOf(new FoedselDto(LocalDate.of(1970, 1, 1))),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN))
+        );
+
+        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+
+        assertNotNull(ektefelle);
+        assertFalse(ektefelle.erFolkeregistrertsammen());
     }
 
     @Test
     public void ektefelleMedAdressebeskyttelse() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
@@ -142,6 +172,7 @@ public class PdlPersonMapperTest {
 
         PdlEktefelle pdlEktefelle = new PdlEktefelle(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG)),
+                listOf(new BostedsadresseDto(null, null, null)),
                 listOf(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN))
         );
@@ -155,13 +186,14 @@ public class PdlPersonMapperTest {
         assertNull(ektefelle.getEtternavn());
         assertNull(ektefelle.getFnr());
         assertNull(ektefelle.getFodselsdato());
-        assertFalse(ektefelle.erFolkeregistrertsammen()); // TODO fix
+        assertFalse(ektefelle.erFolkeregistrertsammen());
     }
 
     @Test
     public void pdlEktefelleNull() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
@@ -177,6 +209,7 @@ public class PdlPersonMapperTest {
     public void fulltUtfyltBarn() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
@@ -185,6 +218,7 @@ public class PdlPersonMapperTest {
 
         PdlBarn pdlBarn = new PdlBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FolkeregisterpersonstatusDto("ikke-doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
@@ -198,13 +232,14 @@ public class PdlPersonMapperTest {
         assertThat(barn.getEtternavn(), is(ETTERNAVN));
         assertThat(barn.getFnr(), is(BARNIDENT));
         assertThat(barn.getFodselsdato().toString(), is(new org.joda.time.LocalDate(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()).toString()));
-        assertTrue(barn.erFolkeregistrertsammen()); // TODO fix
+        assertTrue(barn.erFolkeregistrertsammen());
     }
 
     @Test
     public void barnMedAdressebeskyttelse() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
@@ -213,6 +248,7 @@ public class PdlPersonMapperTest {
 
         PdlBarn pdlBarn = new PdlBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)),
+                listOf(new BostedsadresseDto(null, null, null)),
                 listOf(new FolkeregisterpersonstatusDto("ikke-doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
@@ -227,6 +263,7 @@ public class PdlPersonMapperTest {
     public void barnDoed() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
@@ -235,6 +272,7 @@ public class PdlPersonMapperTest {
 
         PdlBarn pdlBarn = new PdlBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FolkeregisterpersonstatusDto("doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
@@ -249,6 +287,7 @@ public class PdlPersonMapperTest {
     public void barnMyndig() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
@@ -257,6 +296,7 @@ public class PdlPersonMapperTest {
 
         PdlBarn pdlBarn = new PdlBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FolkeregisterpersonstatusDto("ikke-doed")),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN.minusYears(20))),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
