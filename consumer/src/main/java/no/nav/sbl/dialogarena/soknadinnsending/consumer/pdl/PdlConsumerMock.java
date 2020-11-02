@@ -4,11 +4,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.VegadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import org.mockito.invocation.InvocationOnMock;
@@ -62,6 +64,7 @@ public class PdlConsumerMock {
     private static PdlPerson defaultPerson() {
         return new PdlPerson(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                singletonList(new BostedsadresseDto(new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 emptyList(), // ingen familierelasjoner for mockperson
                 singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn")),
                 singletonList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "annenFnr")),
@@ -72,6 +75,7 @@ public class PdlConsumerMock {
     private static PdlEktefelle defaultEktefelle() {
         return new PdlEktefelle(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                singletonList(new BostedsadresseDto(new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 singletonList(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn"))
         );
@@ -80,6 +84,7 @@ public class PdlConsumerMock {
     private static PdlBarn defaultBarn() {
         return new PdlBarn(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                singletonList(new BostedsadresseDto(new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 singletonList(new FolkeregisterpersonstatusDto("bosatt")),
                 singletonList(new FoedselDto(LocalDate.of(LocalDate.now().getYear() - 10, 1, 1))),
                 singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn"))

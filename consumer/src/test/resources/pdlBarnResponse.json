@@ -6,6 +6,30 @@
           "gradering": "UGRADERT"
         }
       ],
+      "bostedsadresse": [
+        {
+          "vegadresse": {
+            "matrikkelId": null,
+            "adressenavn": "GATEVEIEN",
+            "husnummer": "1",
+            "husbokstav": null,
+            "tilleggsnavn": null,
+            "postnummer": "0690",
+            "kommunenummer": "0301",
+            "bruksenhetsnummer": null
+          },
+          "matrikkeladresse": {
+            "matrikkelId": "12345678",
+            "postnummer": "0123",
+            "tilleggsnavn": "tilleggsnavn",
+            "kommunenummer": "0301",
+            "bruksenhetsnummer": "H123"
+          },
+          "ukjentBosted": {
+            "bostedskommune": "0303"
+          }
+        }
+      ],
       "folkeregisterpersonstatus": [
         {
           "status": "bosatt"

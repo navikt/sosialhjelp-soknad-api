@@ -3,6 +3,28 @@ query($ident: ID!, $historikk: Boolean!) {
         adressebeskyttelse(historikk: $historikk) {
             gradering
         }
+        bostedsadresse(historikk: $historikk) {
+            vegadresse {
+                matrikkelId
+                adressenavn
+                husnummer
+                husbokstav
+                tilleggsnavn
+                postnummer
+                kommunenummer
+                bruksenhetsnummer
+            }
+            matrikkeladresse {
+                matrikkelId
+                postnummer
+                tilleggsnavn
+                kommunenummer
+                bruksenhetsnummer
+            }
+            ukjentBosted {
+                bostedskommune
+            }
+        }
         folkeregisterpersonstatus(historikk: $historikk) {
             status
         }
