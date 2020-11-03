@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
@@ -18,6 +18,7 @@ import org.joda.time.Years;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
 
@@ -54,7 +55,7 @@ public class PdlPersonMapper {
                 .withEtternavn(finnEtternavn(pdlBarn.getNavn()))
                 .withFnr(barnIdent)
                 .withFodselsdato(finnFodselsdato(pdlBarn.getFoedsel()))
-                .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson, pdlBarn));
+                .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlBarn.getBostedsadresse()));
     }
 
     public Ektefelle mapTilEktefelle(PdlEktefelle pdlEktefelle, String ektefelleIdent, PdlPerson pdlPerson) {
@@ -72,7 +73,7 @@ public class PdlPersonMapper {
                 .withFnr(ektefelleIdent)
                 .withFodselsdato(finnFodselsdato(pdlEktefelle.getFoedsel()))
                 .withIkketilgangtilektefelle(false)
-                .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson, pdlEktefelle));
+                .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlEktefelle.getBostedsadresse()));
     }
 
     private String finnFornavn(List<NavnDto> navn) {
@@ -158,17 +159,22 @@ public class PdlPersonMapper {
         }
     }
 
-    private boolean erFolkeregistrertSammen(PdlPerson pdlPerson, PdlBarn pdlBarn) {
-        if (pdlPerson.getBostedsadresse() != null && pdlBarn.getBostedsadresse() != null) {
-            return pdlPerson.getBostedsadresse().equals(pdlBarn.getBostedsadresse());
+    private boolean erFolkeregistrertSammen(List<BostedsadresseDto> personBostedsadresse, List<BostedsadresseDto> barnEllerEktefelleBostedsadresse) {
+        BostedsadresseDto bostedsadressePerson = finnBostedsadresse(personBostedsadresse);
+        BostedsadresseDto bostedsadresseBarnEllerEktefelle = finnBostedsadresse(barnEllerEktefelleBostedsadresse);
+        if (bostedsadressePerson == null && bostedsadresseBarnEllerEktefelle == null) {
+            return false;
         }
-        return false;
+        return Objects.equals(bostedsadressePerson, bostedsadresseBarnEllerEktefelle);
     }
 
-    private boolean erFolkeregistrertSammen(PdlPerson pdlPerson, PdlEktefelle pdlEktefelle) {
-        if (pdlPerson.getBostedsadresse() != null && pdlEktefelle.getBostedsadresse() != null) {
-            return pdlPerson.getBostedsadresse().equals(pdlEktefelle.getBostedsadresse());
+    private BostedsadresseDto finnBostedsadresse(List<BostedsadresseDto> bostedsadresse) {
+        if (bostedsadresse == null || bostedsadresse.isEmpty()) {
+            return null;
         }
-        return false;
+        return bostedsadresse.stream()
+                .filter(dto -> dto.getUkjentBosted() == null && (dto.getVegadresse() != null || dto.getMatrikkeladresse() != null))
+                .findFirst()
+                .orElse(null);
     }
 }
