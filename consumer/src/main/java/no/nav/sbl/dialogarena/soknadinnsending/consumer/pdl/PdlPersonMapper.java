@@ -27,6 +27,8 @@ public class PdlPersonMapper {
 
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
+    public static final String NOR = "NOR";
+    public static final String DOED = "DOED";
 
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
@@ -114,7 +116,7 @@ public class PdlPersonMapper {
 
     private boolean erDoed(List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus) {
         return folkeregisterpersonstatus.stream().findFirst()
-                .map(it -> "DOED".equalsIgnoreCase(it.getStatus()))
+                .map(it -> DOED.equalsIgnoreCase(it.getStatus()))
                 .orElse(false);
     }
 
@@ -127,7 +129,7 @@ public class PdlPersonMapper {
     private String finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
         return statsborgerskap.stream().findFirst()
                 .map(StatsborgerskapDto::getLand)
-                .orElse("NOR");
+                .orElse(NOR);
     }
 
     private String finnAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {

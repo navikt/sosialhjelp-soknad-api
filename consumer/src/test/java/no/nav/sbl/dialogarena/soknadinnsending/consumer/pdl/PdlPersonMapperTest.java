@@ -22,6 +22,7 @@ import java.time.LocalDate;
 
 import static java.util.Collections.emptyList;
 import static no.nav.common.utils.CollectionUtils.listOf;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.DOED;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_6;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_7;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -344,7 +345,7 @@ public class PdlPersonMapperTest {
         PdlBarn pdlBarn = new PdlBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
-                listOf(new FolkeregisterpersonstatusDto("doed")),
+                listOf(new FolkeregisterpersonstatusDto(DOED)),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
         );
