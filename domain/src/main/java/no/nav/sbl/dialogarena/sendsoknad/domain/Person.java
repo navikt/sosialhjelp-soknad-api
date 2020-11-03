@@ -82,7 +82,4 @@ public class Person {
         return this;
     }
 
-    public void setEktefelle(Ektefelle ektefelle) {
-        this.ektefelle = ektefelle;
-    }
 }
