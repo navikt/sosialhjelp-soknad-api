@@ -84,4 +84,8 @@ public class VegadresseDto {
                 Objects.equals(bruksenhetsnummer, that.bruksenhetsnummer);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(matrikkelId, adressenavn, husnummer, husbokstav, tilleggsnavn, postnummer, kommunenummer, bruksenhetsnummer);
+    }
 }

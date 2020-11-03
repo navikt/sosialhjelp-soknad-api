@@ -59,4 +59,8 @@ public class MatrikkeladresseDto {
                 Objects.equals(bruksenhetsnummer, that.bruksenhetsnummer);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(matrikkelId, postnummer, tilleggsnavn, kommunenummer, bruksenhetsnummer);
+    }
 }

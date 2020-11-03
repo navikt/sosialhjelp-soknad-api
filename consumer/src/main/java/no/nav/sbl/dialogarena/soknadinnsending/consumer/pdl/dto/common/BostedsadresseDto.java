@@ -43,4 +43,8 @@ public class BostedsadresseDto {
                 Objects.equals(ukjentBosted, that.ukjentBosted);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(vegadresse, matrikkeladresse, ukjentBosted);
+    }
 }

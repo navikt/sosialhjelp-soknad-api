@@ -28,4 +28,8 @@ public class UkjentBostedDto {
         return Objects.equals(bostedskommune, that.bostedskommune);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(bostedskommune);
+    }
 }
