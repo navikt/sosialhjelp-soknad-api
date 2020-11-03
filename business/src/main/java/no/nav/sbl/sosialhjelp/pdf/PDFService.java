@@ -14,15 +14,6 @@ public class PDFService {
 
     @Inject
     private HtmlGenerator pdfTemplate;
-
-    public byte[] genererBrukerkvitteringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean erEttersending, String eier) {
-        try {
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, "/skjema/kvittering/kvittering", erEttersending, eier);
-            return lagPdfFraMarkup(pdfMarkup, servletPath);
-        } catch (IOException e) {
-            throw new SosialhjelpSoknadApiException("Kunne ikke generere brukerkvittering (Brukerkvittering.pdf).", e);
-        }
-    }
     
     public byte[] genererEttersendelsePdf(JsonInternalSoknad internalSoknad, String servletPath, String eier) {
         try {
@@ -32,28 +23,10 @@ public class PDFService {
             throw new SosialhjelpSoknadApiException("Kunne ikke lage hoveddokument for ettersendelse (ettersendelse.pdf).", e);
         }
     }
-    
-    public byte[] genererSaksbehandlerPdf(JsonInternalSoknad internalSoknad, String servletPath) {
-        return genererOppsummeringPdf(internalSoknad, servletPath, false);
-    }
-    
-    public byte[] genererJuridiskPdf(JsonInternalSoknad internalSoknad, String servletPath) {
-        return genererOppsummeringPdf(internalSoknad, servletPath, true);
-    }
-    
-    private byte[] genererOppsummeringPdf(JsonInternalSoknad internalSoknad, String servletPath, boolean fullSoknad) {
-        try {
-            final String pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(internalSoknad, fullSoknad);
-            return lagPdfFraMarkup(pdfMarkup, servletPath);
-        } catch (IOException e) {
-            throw new SosialhjelpSoknadApiException("Kunne ikke lage PDF for saksbehandler/juridisk. Fullsoknad: " + fullSoknad, e);
-        }
-    }
 
     private byte[] lagPdfFraMarkup(String pdfMarkup, String servletPath) {
         final byte[] pdf = lagPdfFil(pdfMarkup, servletPath);
         PdfValidator.softAssertValidPdfA(pdf);
         return pdf;
     }
-
 }
