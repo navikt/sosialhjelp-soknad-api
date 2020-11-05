@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
@@ -163,6 +163,7 @@ public class DigisosApiService {
             byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
             return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         } catch (Exception e) {
+            log.error("Kunne ikke generere ettersendelse.pdf. Fallback til generering med itext.", e);
             byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
             return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         }

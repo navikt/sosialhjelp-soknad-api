@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 public class SoknadActionsTest {
 
     public static final String TESTKOMMUNE = "3002";
-    public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
+    public static final String KOMMUNE_I_SVARUT_LISTEN = "0301";
     private String EIER;
 
     @Inject

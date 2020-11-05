@@ -20,13 +20,14 @@ public class ClamAvVirusScannerTest {
     private ClamAvVirusScanner virusScanner;
 
     private String filnavn = "virustest";
+    private String behandlingsId = "1100001";
     private byte[] data = new byte[]{};
 
     @Test
     public void scanFile_scanningIsEnabled_throwsException() {
         when(config.isEnabled()).thenReturn(true);
         assertThatExceptionOfType(OpplastingException.class).isThrownBy(
-            () -> virusScanner.scan(filnavn, data)
+            () -> virusScanner.scan(filnavn, data, behandlingsId)
         ).withMessageStartingWith("Fant virus");
     }
 
@@ -34,7 +35,7 @@ public class ClamAvVirusScannerTest {
     public void scanFile_scanningIsNotEnabled_doesNotThrowException() {
         when(config.isEnabled()).thenReturn(false);
         assertThatCode(
-            () -> virusScanner.scan(filnavn, data)
+            () -> virusScanner.scan(filnavn, data, behandlingsId)
         ).doesNotThrowAnyException();
     }
 }
