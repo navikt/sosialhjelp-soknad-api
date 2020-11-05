@@ -2,7 +2,7 @@
   "applicationName": "sosialhjelp-soknad-api-intern",
   "namespace": "teamdigisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api-intern.dev-sbs.nais.io/sosialhjelp/soknad-api"
+    "https://sosialhjelp-soknad-api-intern.dev.nav.no/sosialhjelp/soknad-api"
   ],
   "kvPaths": {
     "/var/run/secrets/nais.io/vault": "/kv/preprod/sbs/sosialhjelp-soknad-api-intern/teamdigisos",
