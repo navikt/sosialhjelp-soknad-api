@@ -17,6 +17,15 @@ Husk å kjøre mvn clean install (evt process-resources) før du kjører lokalt 
 For å se json-representasjon av søknaden: 
 `http://localhost:8181/sosialhjelp/soknad-api/representasjon/json/110000001`
 
+### Manuell deploy:
+Ved bruk av [cli](https://github.com/navikt/sosialhjelp-ci):
+- `deploy labs-gcp` (`labs-gcp2`, `labs-gcp3`)
+- `deploy dev-gcp`
+- `deploy q0`
+- `deploy q1`
+- `deploy dev-sbs-intern`
+- `deploy prod`
+
 ### Tekster
 
 Sjekk ut det aktuelle tekstprosjektet og se README der. 
