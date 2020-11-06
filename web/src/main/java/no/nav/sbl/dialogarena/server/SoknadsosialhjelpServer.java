@@ -138,7 +138,7 @@ public class SoknadsosialhjelpServer {
         }
         return env;
     }
-    
+
     public static void setFrom(String resource) throws IOException {
         setFrom(resource, true);
     }
@@ -166,14 +166,14 @@ public class SoknadsosialhjelpServer {
         while (m.find()) {
             final String variableName = m.group(1);
             String replacement = m.group(2);
-            String variableValue = findVariableValue(variableName, required);
+            String variableValue = findVariableValue(variableName, required && replacement.isEmpty());
             if (variableValue != null) {
                 replacement = Matcher.quoteReplacement(variableValue);
             }
             m.appendReplacement(sb, replacement);
         }
         m.appendTail(sb);
-        
+
         return sb.toString();
     }
 
