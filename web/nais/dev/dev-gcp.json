@@ -2,7 +2,7 @@
   "applicationName": "sosialhjelp-soknad-api",
   "namespace": "teamdigisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api.dev.nav.no/sosialhjelp/soknad-api"
+    "https://sosialhjelp-soknad-api-gcp.dev.nav.no/sosialhjelp/soknad-api"
   ],
   "minReplicas": "1",
   "maxReplicas": "1",
