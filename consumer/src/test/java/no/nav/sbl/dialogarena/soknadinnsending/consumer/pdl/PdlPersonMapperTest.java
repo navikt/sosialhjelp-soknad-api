@@ -72,7 +72,7 @@ public class PdlPersonMapperTest {
         assertThat(person.getMellomnavn(), is(MELLOMNAVN));
         assertThat(person.getEtternavn(), is(ETTERNAVN));
         assertThat(person.getFnr(), is(IDENT));
-        assertThat(person.getSivilstatus(), is(SivilstandDto.SivilstandType.GIFT.name()));
+        assertThat(person.getSivilstatus(), is("gift"));
         assertThat(person.getStatsborgerskap(), is(LAND));
     }
 
