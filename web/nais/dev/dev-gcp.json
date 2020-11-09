@@ -27,7 +27,7 @@
     "IDPORTEN_CLIENTID": "id2",
     "IDPORTEN_CONFIG_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/idporten/idporten-oidc-provider/.well-known/openid-configuration",
     "LOGINSERVICE_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/login/cookie",
-    "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "http://localhost:8989/sosialhjelp/mock-alt-api/login/metadata",
+    "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/login/metadata",
     "NORG_REST_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/norg/",
     "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
     "SCHEDULER_DISABLE": "false",
