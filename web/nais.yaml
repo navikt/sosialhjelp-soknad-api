@@ -27,6 +27,12 @@ spec:
   webproxy: true
   vault:
     enabled: {{vaultEnabled}}
+{{#if isGcp}}
+  accessPolicy:
+    outbound:
+      rules:
+        - application: sosialhjelp-mock-alt-api
+{{/if}}
 {{#if vaultEnabled}}
     paths:
 {{#each kvPaths}}
