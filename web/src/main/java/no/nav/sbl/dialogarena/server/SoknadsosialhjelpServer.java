@@ -53,7 +53,7 @@ public class SoknadsosialhjelpServer {
         }
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
 
-        if (isRunningOnNais() && !MockUtils.isTillatMockRessurs()) {
+        if (isRunningOnNais() && !MockUtils.isTillatMockRessurs() && !MockUtils.isMockAltProfil()) {
             databaseSchemaMigration(ds);
         }
 
