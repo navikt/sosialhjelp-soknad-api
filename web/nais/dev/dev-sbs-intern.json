@@ -1,11 +1,13 @@
 {
-  "applicationName": "sosialhjelp-soknad-api",
-  "namespace": "q1",
+  "applicationName": "sosialhjelp-soknad-api-intern",
+  "namespace": "teamdigisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api-q1.dev-sbs.nais.io/"
+    "https://sosialhjelp-soknad-api-intern.dev.nav.no/sosialhjelp/soknad-api",
+    "https://www-q1.dev.nav.no/sosialhjelp/soknad-api",
+    "https://www-q1.nav.no/sosialhjelp/soknad-api"
   ],
   "kvPaths": {
-    "/var/run/secrets/nais.io/vault": "/kv/preprod/sbs/sosialhjelp-soknad-api/q1",
+    "/var/run/secrets/nais.io/vault": "/kv/preprod/sbs/sosialhjelp-soknad-api-intern/teamdigisos",
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
     "/var/run/secrets/nais.io/appdynamics": "/apikey/appdynamics/dev",
