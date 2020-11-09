@@ -29,6 +29,7 @@
   "memoryRequest": "2Gi",
   "vaultEnabled": true,
   "prometheusEnabled": true,
+  "webProxyEnabled": true,
   "isGcp": false,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw-q0.oera.no/aareg-services/api/",

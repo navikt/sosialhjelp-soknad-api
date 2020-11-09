@@ -24,7 +24,7 @@ spec:
   replicas:
     min: {{minReplicas}}
     max: {{maxReplicas}}
-  webproxy: true
+  webproxy: {{webProxyEnabled}}
   vault:
     enabled: {{vaultEnabled}}
 {{#if isGcp}}
