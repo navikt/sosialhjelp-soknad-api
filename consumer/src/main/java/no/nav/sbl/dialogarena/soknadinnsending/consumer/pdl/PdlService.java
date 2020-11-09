@@ -44,10 +44,10 @@ public class PdlService {
         PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
 
         List<Barn> alleBarn = pdlPerson.getFamilierelasjoner().stream()
-                .filter(it -> it.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
-                .map(it -> {
-                    PdlBarn pdlBarn = pdlConsumer.hentBarn(it.getRelatertPersonsIdent());
-                    return pdlPersonMapper.mapTilBarn(pdlBarn, it.getRelatertPersonsIdent(), pdlPerson);
+                .filter(familierelasjonDto -> familierelasjonDto.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
+                .map(familierelasjonDto -> {
+                    PdlBarn pdlBarn = pdlConsumer.hentBarn(familierelasjonDto.getRelatertPersonsIdent());
+                    return pdlPersonMapper.mapTilBarn(pdlBarn, familierelasjonDto.getRelatertPersonsIdent(), pdlPerson);
                 })
                 .collect(Collectors.toList());
         alleBarn.removeIf(Objects::isNull);

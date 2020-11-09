@@ -38,13 +38,13 @@ public class PdlServiceTest {
     @InjectMocks
     private PdlService pdlService;
 
-    private PdlPerson mockPdlPerson = mock(PdlPerson.class);
-    private PdlEktefelle mockPdlEktefelle = mock(PdlEktefelle.class);
-    private PdlBarn mockPdlBarn = mock(PdlBarn.class);
+    private final PdlPerson mockPdlPerson = mock(PdlPerson.class);
+    private final PdlEktefelle mockPdlEktefelle = mock(PdlEktefelle.class);
+    private final PdlBarn mockPdlBarn = mock(PdlBarn.class);
 
-    private Person person = new Person();
-    private Ektefelle ektefelle = new Ektefelle();
-    private Barn barn = new Barn();
+    private final Person person = new Person();
+    private final Ektefelle ektefelle = new Ektefelle();
+    private final Barn barn = new Barn();
 
     @Test
     public void skalHentePersonMedEktefelle() {

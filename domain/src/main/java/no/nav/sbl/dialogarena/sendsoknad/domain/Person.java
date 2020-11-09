@@ -81,5 +81,4 @@ public class Person {
         this.ektefelle = ektefelle;
         return this;
     }
-
 }

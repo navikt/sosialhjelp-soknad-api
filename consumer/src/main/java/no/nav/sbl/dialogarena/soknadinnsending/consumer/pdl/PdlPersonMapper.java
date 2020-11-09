@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
+import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
@@ -18,9 +19,20 @@ import org.joda.time.Years;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.ENKE_ELLER_ENKEMANN;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.GIFT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.GJENLEVENDE_PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.SEPARERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.SEPARERT_PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.SKILT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.SKILT_PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.UGIFT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.UOPPGITT;
 
 @Component
 public class PdlPersonMapper {
@@ -29,6 +41,19 @@ public class PdlPersonMapper {
     static final String KODE_7 = "SPFO";
     public static final String NOR = "NOR";
     public static final String DOED = "DOED";
+
+    private static final Map<SivilstandDto.SivilstandType, String> MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<SivilstandDto.SivilstandType, String>()
+            .put(UOPPGITT, "")
+            .put(UGIFT, "ugift")
+            .put(GIFT, "gift")
+            .put(ENKE_ELLER_ENKEMANN, "enke")
+            .put(SKILT, "skilt")
+            .put(SEPARERT, "separert")
+            .put(PARTNER, "gift")
+            .put(SEPARERT_PARTNER, "separert")
+            .put(SKILT_PARTNER, "skilt")
+            .put(GJENLEVENDE_PARTNER, "enke")
+            .build();
 
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
@@ -122,7 +147,7 @@ public class PdlPersonMapper {
 
     private String finnSivilstatus(List<SivilstandDto> sivilstand) {
         return sivilstand.stream().findFirst()
-                .map(dto -> dto.getType().name())
+                .map(dto -> MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(dto.getType()))
                 .orElse("");
     }
 
