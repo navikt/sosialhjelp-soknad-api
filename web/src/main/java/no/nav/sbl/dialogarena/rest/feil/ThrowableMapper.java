@@ -52,7 +52,6 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
 
     private Response createUnauthorizedWithLoginLocationResponse(String message) {
         URI loginUrl = URI.create(System.getProperty("loginservice.url"));
-        logger.debug("Redirecting to loginservice: " + loginUrl);
         return status(UNAUTHORIZED.getStatusCode())
                 .location(loginUrl)
                 .type(APPLICATION_JSON)
