@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 public class BostedsadresseDto {
 
     private final VegadresseDto vegadresse;
@@ -33,18 +31,4 @@ public class BostedsadresseDto {
         return ukjentBosted;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BostedsadresseDto that = (BostedsadresseDto) o;
-        return Objects.equals(vegadresse, that.vegadresse) &&
-                Objects.equals(matrikkeladresse, that.matrikkeladresse) &&
-                Objects.equals(ukjentBosted, that.ukjentBosted);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(vegadresse, matrikkeladresse, ukjentBosted);
-    }
 }

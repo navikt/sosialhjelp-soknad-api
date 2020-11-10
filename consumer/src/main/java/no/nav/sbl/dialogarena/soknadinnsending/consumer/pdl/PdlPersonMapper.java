@@ -192,7 +192,23 @@ public class PdlPersonMapper {
         if (bostedsadressePerson == null && bostedsadresseBarnEllerEktefelle == null) {
             return false;
         }
-        return Objects.equals(bostedsadressePerson, bostedsadresseBarnEllerEktefelle);
+        // Hvis person og barnEllerEktefelle har bostedsadresse med lik matrikkelId - betyr det at de er registrert som bosatt på samme adresse.
+        if (harVegadresseMatrikkelId(bostedsadressePerson) && harVegadresseMatrikkelId(bostedsadresseBarnEllerEktefelle)) {
+            return bostedsadressePerson.getVegadresse().getMatrikkelId().equals(bostedsadresseBarnEllerEktefelle.getVegadresse().getMatrikkelId());
+        }
+        if (harMatrikkeladresseMatrikkelId(bostedsadressePerson) && harMatrikkeladresseMatrikkelId(bostedsadresseBarnEllerEktefelle)) {
+            return bostedsadressePerson.getMatrikkeladresse().getMatrikkelId().equals(bostedsadresseBarnEllerEktefelle.getMatrikkeladresse().getMatrikkelId());
+        }
+
+        return false;
+    }
+
+    private boolean harVegadresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+        return bostedsadresseDto != null && bostedsadresseDto.getVegadresse() != null && bostedsadresseDto.getVegadresse().getMatrikkelId() != null;
+    }
+
+    private boolean harMatrikkeladresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+        return bostedsadresseDto != null && bostedsadresseDto.getMatrikkeladresse() != null && bostedsadresseDto.getMatrikkeladresse().getMatrikkelId() != null;
     }
 
     private BostedsadresseDto finnBostedsadresse(List<BostedsadresseDto> bostedsadresse) {

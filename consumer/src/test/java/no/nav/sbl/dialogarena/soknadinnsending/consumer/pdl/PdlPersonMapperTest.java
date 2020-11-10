@@ -151,7 +151,7 @@ public class PdlPersonMapperTest {
 
         PdlEktefelle pdlEktefelle = new PdlEktefelle(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                listOf(new BostedsadresseDto(new VegadresseDto("annen_", "gårdsplassen", 42, "B", null, "9999", "8888", null), null, null)),
+                listOf(new BostedsadresseDto(new VegadresseDto("2matrikkelId", "gateveien", 1, "B", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN))
         );

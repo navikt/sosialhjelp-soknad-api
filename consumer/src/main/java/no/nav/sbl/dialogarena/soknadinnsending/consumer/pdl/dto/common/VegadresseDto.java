@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 public class VegadresseDto {
 
     private final String matrikkelId;
@@ -69,23 +67,4 @@ public class VegadresseDto {
         return bruksenhetsnummer;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        VegadresseDto that = (VegadresseDto) o;
-        return Objects.equals(matrikkelId, that.matrikkelId) &&
-                Objects.equals(adressenavn, that.adressenavn) &&
-                Objects.equals(husnummer, that.husnummer) &&
-                Objects.equals(husbokstav, that.husbokstav) &&
-                Objects.equals(tilleggsnavn, that.tilleggsnavn) &&
-                Objects.equals(postnummer, that.postnummer) &&
-                Objects.equals(kommunenummer, that.kommunenummer) &&
-                Objects.equals(bruksenhetsnummer, that.bruksenhetsnummer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(matrikkelId, adressenavn, husnummer, husbokstav, tilleggsnavn, postnummer, kommunenummer, bruksenhetsnummer);
-    }
 }
