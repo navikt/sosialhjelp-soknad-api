@@ -2,9 +2,7 @@
   "applicationName": "sosialhjelp-soknad-api",
   "namespace": "teamdigisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api.nais.oera.no/",
-    "https://sosialhjelp-soknad-api.prod-sbs.nais.io/",
-    "https://www.nav.no/sosialhjelp/soknad-api"
+    "https://sosialhjelp-soknad-api-ny.nais.oera.no/"
   ],
   "kvPaths": {
     "/var/run/secrets/nais.io/vault": "/kv/prod/sbs/sosialhjelp-soknad-api/teamdigisos",
