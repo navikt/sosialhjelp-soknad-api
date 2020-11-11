@@ -57,7 +57,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
                 personSammenligner.sammenlign(person, pdlPerson);
             }
         } catch (PdlApiException | TjenesteUtilgjengeligException e) {
-            log.warn("PDL kaster feil (responsen brukes ikke, men sjekker om kallet fungerer)", e);
+            log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
         }
         return mapToJsonPersonalia(person);
     }
