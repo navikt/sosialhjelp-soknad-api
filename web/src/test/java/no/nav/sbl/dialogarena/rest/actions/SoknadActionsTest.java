@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 public class SoknadActionsTest {
 
     public static final String TESTKOMMUNE = "3002";
-    public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
+    public static final String KOMMUNE_I_SVARUT_LISTEN = "0301";
     private String EIER;
 
     @Inject

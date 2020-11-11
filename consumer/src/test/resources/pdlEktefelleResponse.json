@@ -1,0 +1,39 @@
+{
+  "data": {
+    "hentPerson": {
+      "adressebeskyttelse": [
+        {
+          "gradering": "UGRADERT"
+        }
+      ],
+      "bostedsadresse": [
+        {
+          "vegadresse": {
+            "matrikkelId": "99999999",
+            "adressenavn": "GATEVEIEN",
+            "husnummer": "1",
+            "husbokstav": "A",
+            "tilleggsnavn": "tillegg",
+            "postnummer": "0690",
+            "kommunenummer": "0301",
+            "bruksenhetsnummer": "U98999"
+          },
+          "matrikkeladresse": null,
+          "ukjentBosted": null
+        }
+      ],
+      "foedsel": [
+        {
+          "foedselsdato": "1970-01-01"
+        }
+      ],
+      "navn": [
+        {
+          "fornavn": "TEST",
+          "mellomnavn": null,
+          "etternavn": "PERSON"
+        }
+      ]
+    }
+  }
+}
