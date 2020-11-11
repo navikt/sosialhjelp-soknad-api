@@ -39,8 +39,8 @@ public class PdlPersonMapper {
 
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
-    public static final String NOR = "NOR";
-    public static final String DOED = "DOED";
+    static final String NOR = "NOR";
+    static final String DOED = "DOED";
 
     private static final Map<SivilstandDto.SivilstandType, String> MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<SivilstandDto.SivilstandType, String>()
             .put(UOPPGITT, "")
