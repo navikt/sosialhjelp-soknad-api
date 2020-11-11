@@ -11,6 +11,11 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,10 +24,12 @@ import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.Writer;
 import java.text.Collator;
 import java.util.HashMap;
@@ -230,6 +237,8 @@ public class StandardKodeverk implements Kodeverk {
             try {
                 if (MockUtils.isTillatMockRessurs()) {
                     kodeverket = new XMLEnkeltKodeverk();
+                } else if (MockUtils.isMockAltProfil()) {
+                    kodeverket = lesFraMockAlt(navn);
                 } else {
                     kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
                 }
@@ -245,6 +254,29 @@ public class StandardKodeverk implements Kodeverk {
             kodeverket.getKode().sort(comparing(o -> o.getTerm().get(0).getNavn(), Collator.getInstance(Locale.forLanguageTag("NO"))));
         }
         return kodeverket;
+    }
+
+    private XMLEnkeltKodeverk lesFraMockAlt(String navn) {
+        logger.warn("Prøver å hente kodeverk fra mock-alt.");
+        final String mock_alt_kodeverk_url = System.getProperty("mock_alt_kodeverk_url",
+                "http://localhost:8989/sosialhjelp/mock-alt-api/kodeverk");
+        HttpGet httpRequest = new HttpGet(mock_alt_kodeverk_url + "?kodeverknavn=" + navn);
+
+        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
+
+            CloseableHttpResponse response = client.execute(httpRequest);
+
+            String content = EntityUtils.toString(response.getEntity());
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLEnkeltKodeverk.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            StringReader reader = new StringReader(content);
+            Object unmarshal = unmarshaller.unmarshal(reader);
+            return ((JAXBElement<XMLEnkeltKodeverk>) unmarshal).getValue();
+        } catch (IOException e) {
+            throw new IllegalStateException("Far ikke tak i kodeverk fra mock-alt med navn: " + navn, e);
+        } catch (JAXBException e) {
+            throw new IllegalStateException("Far ikke tak i kodeverk fra mock-alt med navn: " + navn, e);
+        }
     }
 
     private static final JAXBContext JAXB;
