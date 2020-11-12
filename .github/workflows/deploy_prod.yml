@@ -37,7 +37,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           RESOURCE: web/nais.yaml
           CLUSTER: prod-sbs
-          VARS: web/nais/prod/default.json
+          VARS: web/nais/prod/prod-sbs.json
           REF: ${{ github.event.client_payload.TAG }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.IMAGE }}
