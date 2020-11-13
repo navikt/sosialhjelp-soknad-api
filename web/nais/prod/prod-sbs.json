@@ -27,6 +27,7 @@
   "memoryRequest": "4Gi",
   "vaultEnabled": true,
   "prometheusEnabled": true,
+  "isRedisMocked": false,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
     "DITTNAV_LINK_URL": "https://tjenester.nav.no/dittnav/",
