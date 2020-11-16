@@ -10,6 +10,7 @@
   "memoryRequest": "2Gi",
   "vaultEnabled": false,
   "prometheusEnabled": false,
+  "isRedisMocked": true,
   "env": {
     "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockSoknadsosialhjelpServer",
     "dockerWithDefaultMockActivated": "true",
