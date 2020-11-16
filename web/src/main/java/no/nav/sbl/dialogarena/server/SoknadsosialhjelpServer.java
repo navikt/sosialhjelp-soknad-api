@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.output.MigrateResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,12 +68,10 @@ public class SoknadsosialhjelpServer {
 
     private void databaseSchemaMigration(final DataSource ds) {
         log.debug("Running Flyway migration.");
-        final Flyway flyway = new Flyway();
-        flyway.setDataSource(ds);
-        final int migrations = flyway.migrate();
-        log.info("Flyway migration successfully executed. Number of new applied migrations: " + migrations);
+        final Flyway flyway = Flyway.configure().dataSource(ds).load();
+        MigrateResult migrateResult = flyway.migrate();
+        log.info("Flyway migration successfully executed. Number of new applied migrations: " + migrateResult.migrationsExecuted);
     }
-
 
     public void start() {
         jetty.start();
