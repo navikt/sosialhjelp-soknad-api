@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilg
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenereringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +70,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
         } else if (e instanceof SoknadenHarNedetidException) {
             logger.warn(e.getMessage(), e);
             return status(SERVICE_UNAVAILABLE).type(APPLICATION_JSON).entity(new Feilmelding("nedetid", "Søknaden har planlagt nedetid nå")).build();
+        } else if (e instanceof PdfGenereringException) {
+            logger.error(e.getMessage(), e);
+            return status(INTERNAL_SERVER_ERROR).type(APPLICATION_JSON).entity(new Feilmelding("pdf_generering", "Innsending av søknad eller ettersendelse feilet")).build();
         } else if (e instanceof PdlApiException){
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.warn("Kall til PDL feilet", e);
