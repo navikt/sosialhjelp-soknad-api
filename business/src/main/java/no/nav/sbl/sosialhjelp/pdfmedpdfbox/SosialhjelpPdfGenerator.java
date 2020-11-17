@@ -88,6 +88,7 @@ public class SosialhjelpPdfGenerator {
 
     public byte[] generate(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) {
         try {
+
             PdfGenerator pdf = new PdfGenerator();
 
             JsonData data = jsonInternalSoknad.getSoknad().getData();
@@ -117,8 +118,11 @@ public class SosialhjelpPdfGenerator {
             leggTilMetainformasjon(pdf, jsonInternalSoknad.getSoknad());
 
             return pdf.finish();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while creating pdf", e);
+        } catch (Exception e) {
+            if (utvidetSoknad) {
+                throw new PdfGenereringException("Kunne ikke generere Soknad-juridisk.pdf", e);
+            }
+            throw new PdfGenereringException("Kunne ikke generere Soknad.pdf", e);
         }
     }
 
@@ -139,7 +143,7 @@ public class SosialhjelpPdfGenerator {
 
             if (jsonInternalSoknad.getVedlegg() != null && jsonInternalSoknad.getVedlegg().getVedlegg() != null) {
                 for (JsonVedlegg jsonVedlegg : jsonInternalSoknad.getVedlegg().getVedlegg()) {
-                    if (jsonVedlegg.getStatus().equals("LastetOpp")) {
+                    if (jsonVedlegg.getStatus() != null && jsonVedlegg.getStatus().equals("LastetOpp")) {
                         pdf.skrivTekst(getTekst("vedlegg." + jsonVedlegg.getType() + "." + jsonVedlegg.getTilleggsinfo() + ".tittel"));
                         pdf.skrivTekst("Filer:");
                         for (JsonFiler jsonFiler : jsonVedlegg.getFiler()) {
@@ -150,8 +154,8 @@ public class SosialhjelpPdfGenerator {
             }
 
             return pdf.finish();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while creating pdf", e);
+        } catch (Exception e) {
+            throw new PdfGenereringException("Kunne ikke generere ettersendelse.pdf", e);
         }
     }
 
@@ -164,8 +168,8 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekst("Fil ikke i bruk, generert for bakoverkompatibilitet med filformat / File not in use, generated for backward compatibility with fileformat");
 
             return pdf.finish();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while creating pdf", e);
+        } catch (Exception e) {
+            throw new PdfGenereringException("Kunne ikke generere Brukerkvittering.pdf", e);
         }
     }
 
