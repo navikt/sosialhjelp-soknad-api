@@ -117,10 +117,6 @@ public class SosialhjelpPdfGenerator {
             leggTilJuridiskInformasjon(pdf, jsonInternalSoknad.getSoknad(), utvidetSoknad);
             leggTilMetainformasjon(pdf, jsonInternalSoknad.getSoknad());
 
-            if (data.getBegrunnelse().getHvaSokesOm().equals("PDF_TEST")) {
-                throw new Exception();
-            }
-
             return pdf.finish();
         } catch (Exception e) {
             if (utvidetSoknad) {
