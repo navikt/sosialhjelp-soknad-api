@@ -68,7 +68,7 @@ public class OpplastetVedleggService {
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
         String mimeType = FileDetectionUtils.getMimeType(data);
 
-        validerFil(data);
+        validerFil(data, filnavn);
         virusScanner.scan(filnavn, data, behandlingsId);
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -182,7 +182,8 @@ public class OpplastetVedleggService {
         return filnavn;
     }
 
-    private void validerFil(byte[] data) {
+    private void validerFil(byte[] data, String filnavn) {
+        validerFilnavn(filnavn);
         if (!(FileDetectionUtils.isImage(data) || FileDetectionUtils.isPdf(data))) {
             throw new UgyldigOpplastingTypeException(
                     String.format("Ugyldig filtype for opplasting. Mimetype var %s", FileDetectionUtils.getMimeType(data)),
@@ -191,6 +192,15 @@ public class OpplastetVedleggService {
         }
         if (FileDetectionUtils.isPdf(data)) {
             sjekkOmPdfErGyldig(data);
+        }
+    }
+
+    private void validerFilnavn(String filnavn) {
+        if (!(filnavn.endsWith(".jpeg") || filnavn.endsWith(".jpg") || filnavn.endsWith(".png") || filnavn.endsWith(".pdf"))) {
+            throw new UgyldigOpplastingTypeException(
+                    String.format("Ugyldig filtype for opplasting. Filtype var %s", filnavn.substring(filnavn.lastIndexOf("."))),
+                    null,
+                    "opplasting.feilmelding.feiltype");
         }
     }
 
