@@ -31,7 +31,10 @@ public class PersonSammenligner {
             ulikeFelter.add("Fnr");
         }
         if (person.getSivilstatus() != null && !person.getSivilstatus().equalsIgnoreCase(pdlPerson.getSivilstatus())) {
-            ulikeFelter.add("Sivilstatus");
+            if (!person.getSivilstatus().equalsIgnoreCase("samboer")) {
+                // sivilstand samboer er ikke videreført i PDL
+                ulikeFelter.add("Sivilstatus");
+            }
         }
         if (person.getDiskresjonskode() != null && pdlPerson.getDiskresjonskode() != null && !person.getDiskresjonskode().equalsIgnoreCase(pdlPerson.getDiskresjonskode())) {
             ulikeFelter.add("Diskresjonskode");
