@@ -139,14 +139,9 @@ public class DigisosApiService {
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
         String filnavn = "Soknad.pdf";
         String mimetype = "application/pdf";
-        try {
-            byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
-        } catch (Exception e) {
-            log.error("Kunne ikke generere Soknad.pdf. Fallback til generering med itext.", e);
-            byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
-        }
+
+        byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+        return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
     }
 
     private List<FilOpplasting> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
@@ -180,14 +175,9 @@ public class DigisosApiService {
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         String filnavn = "Soknad-juridisk.pdf";
         String mimetype = "application/pdf";
-        try {
-            byte[] pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
-        } catch (Exception e) {
-            log.error("Kunne ikke generere Soknad-juridisk.pdf. Fallback til generering med itext.", e);
-            byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
-        }
+
+        byte[] pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
     }
 
     private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
