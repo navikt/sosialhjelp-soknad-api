@@ -1545,6 +1545,8 @@ public class SosialhjelpPdfGenerator {
             pdf.addBlankLine();
             pdf.skrivTekst("Du må i utgangspunktet ha lovlig opphold og fast bopel i Norge for å ha rett til økonomisk sosialhjelp. Hvis du oppholder deg i utlandet, har du ikke rett til økonomisk sosialhjelp.");
             pdf.addBlankLine();
+            pdf.skrivTekst("Søknaden skal bare brukes til å søke om økonomisk sosialhjelp. Skal du søke om andre sosiale tjenester, som for eksempel kvalifiseringsprogram, må du ta kontakt med NAV-kontoret ditt");
+            pdf.addBlankLine();
             pdf.skrivTekstBold(getTekst("informasjon.nodsituasjon.undertittel"));
             pdf.skrivTekst("Hvis du ikke har penger til det aller mest nødvendige, som mat, bør du kontakte NAV-kontoret ditt før du sender inn søknaden eller så snart som mulig etter du har søkt. NAV skal også hjelpe deg med å finne et midlertidig botilbud hvis du ikke har et sted å sove eller oppholde deg det nærmeste døgnet.");
             pdf.addBlankLine();
@@ -1565,6 +1567,7 @@ public class SosialhjelpPdfGenerator {
 
             Map<String, String> urisOnPage = new HashMap<>();
             urisOnPage.put("Les mer om andre muligheter", "https://www.nav.no/sosialhjelp/");
+            urisOnPage.put("NAV-kontoret ditt", "https://www.nav.no/no/nav-og-samfunn/kontakt-nav/relatert-informasjon/finn-ditt-nav-kontor");
             urisOnPage.put("kontakte NAV-kontoret", "https://www.nav.no/person/personopplysninger/#ditt-nav-kontor");
             addLinks(pdf, urisOnPage);
         }
