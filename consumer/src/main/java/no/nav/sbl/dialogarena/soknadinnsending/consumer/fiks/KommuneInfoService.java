@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.MANGLER_KONFIGURASJON;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
@@ -34,13 +35,21 @@ public class KommuneInfoService {
     }
 
     public boolean kanMottaSoknader(String kommunenummer) {
-        return hentAlleKommuneInfo()
+        Map<String, KommuneInfo> kommuneInfoMap = hentAlleKommuneInfo();
+        if (kommuneInfoMap == null) {
+            return false;
+        }
+        return kommuneInfoMap
                 .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getKanMottaSoknader();
     }
 
     public boolean harMidlertidigDeaktivertMottak(String kommunenummer) {
-        return hentAlleKommuneInfo()
+        Map<String, KommuneInfo> kommuneInfoMap = hentAlleKommuneInfo();
+        if (kommuneInfoMap == null) {
+            return false;
+        }
+        return kommuneInfoMap
                 .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
                 .getHarMidlertidigDeaktivertMottak();
     }
@@ -62,6 +71,7 @@ public class KommuneInfoService {
                 return cachedMap;
             }
             log.error("hentAlleKommuneInfo - feiler mot Fiks og cache er tom.");
+            return null;
         }
         return kommuneInfoMap;
     }
@@ -85,7 +95,11 @@ public class KommuneInfoService {
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     public KommuneStatus kommuneInfo(String kommunenummer) {
-        KommuneInfo kommuneInfo = hentAlleKommuneInfo().getOrDefault(kommunenummer, null);
+        Map<String, KommuneInfo> kommuneInfoMap = hentAlleKommuneInfo();
+        if (kommuneInfoMap == null) {
+            return FIKS_NEDETID_OG_TOM_CACHE;
+        }
+        KommuneInfo kommuneInfo = kommuneInfoMap.getOrDefault(kommunenummer, null);
         log.info("Kommuneinfo for {}: {}", kommunenummer, kommuneInfo);
 
         if (kommuneInfo == null) {
