@@ -50,6 +50,9 @@ public class PersonSammenligner {
 
     private void sammenlignEktefelle(Ektefelle ektefelle, Ektefelle pdlEktefelle) {
         if (ektefelle != null && pdlEktefelle != null) {
+            if (ektefelle.harIkketilgangtilektefelle() && pdlEktefelle.harIkketilgangtilektefelle()) {
+                return;
+            }
             List<String> ulikeFelter = new ArrayList<>();
             if (ektefelle.harIkketilgangtilektefelle() != pdlEktefelle.harIkketilgangtilektefelle()) {
                 log.info("Ulik Ektefelle.adressebeskyttelse i Person_v1 og PDL");
