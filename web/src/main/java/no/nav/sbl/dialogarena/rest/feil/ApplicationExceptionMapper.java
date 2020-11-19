@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBeg
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenereringException;
 import org.slf4j.Logger;
@@ -67,6 +68,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
         } else if (e instanceof SendingTilKommuneErIkkeAktivertException) {
             logger.error(e.getMessage(), e);
             return status(SERVICE_UNAVAILABLE).type(APPLICATION_JSON).entity(new Feilmelding("innsending_ikke_aktivert", "Tjenesten er ikke aktivert hos kommunen")).build();
+        } else if (e instanceof SendingTilKommuneUtilgjengeligException) {
+            logger.error(e.getMessage(), e);
+            return status(INTERNAL_SERVER_ERROR).type(APPLICATION_JSON).entity(new Feilmelding("innsending_ikke_tilgjengelig", "Tjenesten er midlertidig ikke tilgjengelig")).build();
         } else if (e instanceof SoknadenHarNedetidException) {
             logger.warn(e.getMessage(), e);
             return status(SERVICE_UNAVAILABLE).type(APPLICATION_JSON).entity(new Feilmelding("nedetid", "Søknaden har planlagt nedetid nå")).build();
