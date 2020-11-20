@@ -76,7 +76,9 @@ public class PersonSammenligner {
             if (ektefelle.getFnr() != null && !ektefelle.getFnr().equalsIgnoreCase(pdlEktefelle.getFnr())) {
                 ulikeFelter.add("Fnr");
             }
-            // todo: folkeregistrertsammen
+            if (ektefelle.erFolkeregistrertsammen() != pdlEktefelle.erFolkeregistrertsammen()) {
+                ulikeFelter.add("ErFolkeregistrertSammen");
+            }
             if (ulikeFelter.size() > 0) {
                 log.info("Ulike felter i Ektefelle fra Person_V1 vs PDL: {}", String.join(",", ulikeFelter));
             } else {
@@ -115,7 +117,9 @@ public class PersonSammenligner {
             if (barn.getFnr() != null && !barn.getFnr().equalsIgnoreCase(pdlBarn.getFnr())) {
                 ulikeFelter.add("Fnr");
             }
-            // todo: folkeregistrertsammen
+            if (barn.erFolkeregistrertsammen() != pdlBarn.erFolkeregistrertsammen()) {
+                ulikeFelter.add("ErFolkeregistrertSammen");
+            }
             if (ulikeFelter.size() > 0) {
                 log.info("Ulike felter i Barn fra Person_V1 og PDL: {}", String.join(",", ulikeFelter));
             } else {

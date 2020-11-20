@@ -149,6 +149,8 @@ public class FamilieSystemdata implements Systemdata {
             }
         } catch (PdlApiException | TjenesteUtilgjengeligException e) {
             log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
+        } catch (Exception e) {
+            log.warn("PDL-feil eller feil ved sammenligning av data fra TPS/PDL", e);
         }
         jsonForsorgerplikt.getHarForsorgerplikt()
                 .withKilde(JsonKilde.SYSTEM)
