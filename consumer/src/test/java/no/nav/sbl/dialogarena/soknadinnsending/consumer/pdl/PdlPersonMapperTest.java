@@ -69,9 +69,9 @@ public class PdlPersonMapperTest {
 
         assertNotNull(person);
         assertThat(person.getDiskresjonskode(), is(nullValue()));
-        assertThat(person.getFornavn(), is(FORNAVN));
-        assertThat(person.getMellomnavn(), is(MELLOMNAVN));
-        assertThat(person.getEtternavn(), is(ETTERNAVN));
+        assertThat(person.getFornavn(), is(FORNAVN.toUpperCase()));
+        assertThat(person.getMellomnavn(), is(MELLOMNAVN.toUpperCase()));
+        assertThat(person.getEtternavn(), is(ETTERNAVN.toUpperCase()));
         assertThat(person.getFnr(), is(IDENT));
         assertThat(person.getSivilstatus(), is("gift"));
         assertThat(person.getStatsborgerskap(), is(LAND));
@@ -130,9 +130,9 @@ public class PdlPersonMapperTest {
 
         assertNotNull(ektefelle);
         assertFalse(ektefelle.harIkketilgangtilektefelle());
-        assertThat(ektefelle.getFornavn(), is(FORNAVN));
-        assertThat(ektefelle.getMellomnavn(), is(MELLOMNAVN));
-        assertThat(ektefelle.getEtternavn(), is(ETTERNAVN));
+        assertThat(ektefelle.getFornavn(), is(FORNAVN.toUpperCase()));
+        assertThat(ektefelle.getMellomnavn(), is(MELLOMNAVN.toUpperCase()));
+        assertThat(ektefelle.getEtternavn(), is(ETTERNAVN.toUpperCase()));
         assertThat(ektefelle.getFnr(), is(EKTEFELLEIDENT));
         assertThat(ektefelle.getFodselsdato().toString(), is("1970-01-01"));
         assertTrue(ektefelle.erFolkeregistrertsammen());
@@ -299,9 +299,9 @@ public class PdlPersonMapperTest {
         Barn barn = mapper.mapTilBarn(pdlBarn, BARNIDENT, pdlPerson);
 
         assertNotNull(barn);
-        assertThat(barn.getFornavn(), is(FORNAVN));
+        assertThat(barn.getFornavn(), is(FORNAVN.toUpperCase()));
         assertThat(barn.getMellomnavn(), is(emptyString()));
-        assertThat(barn.getEtternavn(), is(ETTERNAVN));
+        assertThat(barn.getEtternavn(), is(ETTERNAVN.toUpperCase()));
         assertThat(barn.getFnr(), is(BARNIDENT));
         assertThat(barn.getFodselsdato().toString(), is(new org.joda.time.LocalDate(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()).toString()));
         assertTrue(barn.erFolkeregistrertsammen());

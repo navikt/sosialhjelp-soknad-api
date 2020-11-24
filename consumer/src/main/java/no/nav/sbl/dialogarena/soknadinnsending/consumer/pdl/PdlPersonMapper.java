@@ -106,19 +106,19 @@ public class PdlPersonMapper {
     private String finnFornavn(List<NavnDto> navn) {
         return navn.stream()
                 .findFirst().map(NavnDto::getFornavn)
-                .orElse("");
+                .orElse("").toUpperCase();
     }
 
     private String finnMellomnavn(List<NavnDto> navn) {
         return navn.stream()
                 .findFirst().map(NavnDto::getMellomnavn)
-                .orElse("");
+                .orElse("").toUpperCase();
     }
 
     private String finnEtternavn(List<NavnDto> navn) {
         return navn.stream()
                 .findFirst().map(NavnDto::getEtternavn)
-                .orElse("");
+                .orElse("").toUpperCase();
     }
 
     private LocalDate finnFodselsdato(List<FoedselDto> foedsel) {
