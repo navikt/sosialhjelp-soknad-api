@@ -52,7 +52,11 @@ public class PersonSammenligner {
     }
 
     private void sammenlignEktefelle(Ektefelle ektefelle, Ektefelle pdlEktefelle) {
-        if (ektefelle != null && pdlEktefelle != null) {
+        if (ektefelle == null && pdlEktefelle != null) {
+            log.info("Ektefelle er null i TPS, men ikke i PDL");
+        } else if (ektefelle != null && pdlEktefelle == null) {
+            log.info("Ektefelle er null i PDL, men ikke i TPS");
+        } else if (ektefelle != null && pdlEktefelle != null) {
             if (ektefelle.harIkketilgangtilektefelle() && pdlEktefelle.harIkketilgangtilektefelle()) {
                 return;
             }
