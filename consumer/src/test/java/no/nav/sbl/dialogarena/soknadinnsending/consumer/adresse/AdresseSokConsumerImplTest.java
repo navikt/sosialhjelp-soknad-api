@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils.IS_RUNNING_WITH_OIDC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -31,7 +30,6 @@ import org.slf4j.MDC.MDCCloseable;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
@@ -39,25 +37,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.LoggingTestUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 
 public class AdresseSokConsumerImplTest {
-
-    private static String oldSubjectHandlerImplementationClass;
-
-
-    @BeforeClass
-    public static void oppsettForInnloggetBruker() {
-        System.setProperty(IS_RUNNING_WITH_OIDC, "false");
-        oldSubjectHandlerImplementationClass = System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, TestSubjectHandler.class.getName());
-    }
-
-    @AfterClass
-    public static void fjernOppsettForInnloggetBruker() {
-        if (oldSubjectHandlerImplementationClass == null) {
-            System.clearProperty(SubjectHandler.SUBJECTHANDLER_KEY);
-        } else {
-            System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, oldSubjectHandlerImplementationClass);
-        }
-    }
-
 
     @Test
     public void simpleRestCallWith404() {
@@ -275,13 +254,6 @@ public class AdresseSokConsumerImplTest {
         when(builder.get()).thenReturn(response);
 
         return new ClientMock(client, webTarget, builder, response);
-    }
-
-    public static class TestSubjectHandler extends SubjectHandler {
-        @Override
-        public Subject getSubject() {
-            return null;
-        }
     }
 
     private static final class ClientMock {

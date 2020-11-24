@@ -44,6 +44,17 @@
             <name>Maven central</name>
             <url>https://repo.maven.apache.org/maven</url>
         </repository>
+
+        <!-- Skal brukes hvis bygget kjøres fra en Github Action -->
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+        <!-- Skal brukes hvis bygget kjører utenfor NAV (f.eks. en ekstern maskin, eller Circle CI) -->
+        <repository>
+            <id>external-mirror-github-navikt</id>
+            <url>https://github-package-registry-mirror.gc.nav.no/cached/maven-release</url>
+        </repository>
     </repositories>
 
     <properties>
@@ -64,42 +75,42 @@
         <!-- Tjenestespesifikasjoner -->
         <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
 
+        <!-- Sosialhjelp-common -->
+        <sosialhjelp-common.version>1.2d56711</sosialhjelp-common.version>
+
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2020.03.10_16.55-ca8a7f989623</nav-common.version>
 
-        <modig.frontend>1.1.96</modig.frontend>
-        <spring.version>5.2.5.RELEASE</spring.version>
-        <jetty.version>9.4.27.v20200227</jetty.version>
-        <jersey.version>2.30.1</jersey.version>
+        <spring.version>5.2.9.RELEASE</spring.version>
+        <jetty.version>9.4.33.v20201020</jetty.version>
+        <jersey.version>2.31</jersey.version>
         <token-validation.version>1.1.5</token-validation.version>
         <nimbus-jose-jwt.version>8.11</nimbus-jose-jwt.version>
-        <activation.version>1.1.1</activation.version>
-        <cxf.version>3.3.6</cxf.version>
-        <modig-security.version>3.0.6</modig-security.version>
-        <wss4j.version>2.2.5</wss4j.version>
-        <ojdbc.version>19.7.0.0</ojdbc.version>
-        <flyway-core.version>5.0.7</flyway-core.version>
+        <cxf.version>3.4.1</cxf.version>
+        <wss4j.version>2.3.0</wss4j.version>
+        <ojdbc.version>19.8.0.0</ojdbc.version>
+        <flyway-core.version>7.2.0</flyway-core.version>
+        <flyway-maven-plugin.version>7.2.0</flyway-maven-plugin.version>
         <flying.saucer.version>9.1.20</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
-        <jackson.version>2.10.3</jackson.version>
-        <jackson-databind.version>2.10.3</jackson-databind.version>
-        <filformat.version>1.2020.06.25-09.12-23b98d57ab78</filformat.version>
+        <jackson.version>2.11.0</jackson.version>
+        <filformat.version>1.2020.11.05-09.32-14af05dea965</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>2.0.19</pdfbox.version>
+        <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.64</bouncycastle.version>
-        <httpclient.version>4.5.12</httpclient.version>
-        <guava.version>28.2-jre</guava.version>
-        <stax2-api.version>3.1.4</stax2-api.version>
+        <httpclient.version>4.5.13</httpclient.version>
+        <guava.version>30.0-jre</guava.version>
+        <stax2-api.version>4.2.1</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
         <verapdf.version>1.14.105</verapdf.version>
         <tika.version>1.24.1</tika.version>
         <logback.version>1.2.3</logback.version>
-        <hsqldb.version>2.3.2</hsqldb.version>
+        <hsqldb.version>2.5.1</hsqldb.version>
         <hikaricp.version>3.4.2</hikaricp.version>
-        <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <ehcache.version>2.10.6</ehcache.version>
-        <woodstox-core-asl.version>4.4.1</woodstox-core-asl.version>
+        <woodstox-core.version>6.2.1</woodstox-core.version>
         <joda-time.version>2.10.5</joda-time.version>
         <slf4j.version>1.7.30</slf4j.version>
         <gson.version>2.8.6</gson.version>
@@ -109,20 +120,28 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-text.version>1.8</commons-text.version>
         <httpcore.version>4.4.13</httpcore.version>
-        <httpmime.version>4.5.12</httpmime.version>
+        <httpmime.version>4.5.13</httpmime.version>
         <json-smart.version>2.3</json-smart.version>
         <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
-        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
-        <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
-        <modig-lang.version>2.0.2</modig-lang.version>
         <aspectjweaver.version>1.9.5</aspectjweaver.version>
-        <jaxb.version>2.3.1</jaxb.version>
-        <soap.version>1.4.0</soap.version>
-        <jakarta.version>2.3.2</jakarta.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
+        <lettuce.version>5.3.4.RELEASE</lettuce.version>
+        <jedis-mock.version>0.1.16</jedis-mock.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
+
+        <jakarta.activation-api.version>1.2.2</jakarta.activation-api.version>
+        <jakarta.annotation-api.version>1.3.5</jakarta.annotation-api.version>
+        <jakarta.inject-api.version>1.0.2</jakarta.inject-api.version>
+        <jakarta.servlet-api.version>4.0.4</jakarta.servlet-api.version>
+        <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
+        <jakarta.websocket-api.version>1.1.2</jakarta.websocket-api.version>
+        <jakarta.ws.version>2.1.6</jakarta.ws.version>
+        <jakarta.xml.version>2.3.3</jakarta.xml.version>
+        <jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
 
         <kryptering.version>1.0.8</kryptering.version>
         <streaming-klient.version>1.0.12</streaming-klient.version>
@@ -138,26 +157,25 @@
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>8.0</asm.version>
         <neethi.version>3.1.1</neethi.version>
-        <xmlsec.version>2.1.5</xmlsec.version>
+        <xmlsec.version>2.2.0</xmlsec.version>
         <nav-sbl-util.version>2018.05.15.11.54</nav-sbl-util.version>
         <rhino.version>1.7.12</rhino.version>
         <opensaml.version>3.4.5</opensaml.version>
-        <validation-api.version>2.0.1.Final</validation-api.version>
         <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
         <prometheus.version>0.8.1</prometheus.version>
-        <javax.websocket-api.version>1.1</javax.websocket-api.version>
         <jsoup.version>1.13.1</jsoup.version>
         <oauth2-oidc-sdk.version>7.3</oauth2-oidc-sdk.version>
         <lang-tag.version>1.4.4</lang-tag.version>
-        <uap-java.version>1.4.3</uap-java.version>
+        <uap-java.version>1.4.4</uap-java.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <java-support.version>7.5.1</java-support.version>
-        <jakarta.annotation-api.version>1.3.5</jakarta.annotation-api.version>
         <cryptacular.version>1.2.4</cryptacular.version>
         <stax-ex.version>1.8.3</stax-ex.version>
         <objenesis.version>2.6</objenesis.version>
         <saaj-impl.version>1.5.1</saaj-impl.version>
+        <mimepull.version>1.9.13</mimepull.version>
+        <kotlin.version>1.3.72</kotlin.version>
     </properties>
 
     <dependencyManagement>
@@ -247,6 +265,12 @@
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
 
+            <!-- Sosialhjelp-common -->
+            <dependency>
+                <groupId>no.nav.sosialhjelp</groupId>
+                <artifactId>sosialhjelp-common-api</artifactId>
+                <version>${sosialhjelp-common.version}</version>
+            </dependency>
 
             <!-- NAV felles biblioteker (nytt) -->
             <dependency>
@@ -287,7 +311,7 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.common</groupId>
-                <artifactId>suspend</artifactId>
+                <artifactId>auth</artifactId>
                 <version>${nav-common.version}</version>
             </dependency>
             <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
@@ -397,14 +421,9 @@
                 <version>${jersey.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>${javax.ws.rs-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>${javax.annotation-api.version}</version>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${jakarta.ws.version}</version>
             </dependency>
 
 
@@ -417,7 +436,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson-databind.version}</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -439,27 +458,47 @@
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
-            <!-- JAXB/SOAP-avhengigheter -->
+            <!-- jakarta-avhengigheter -->
             <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb.version}</version>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-api</artifactId>
+                <version>${jakarta.inject-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.xml.ws</groupId>
-                <artifactId>jaxws-api</artifactId>
-                <version>${jaxb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.soap</groupId>
-                <artifactId>javax.xml.soap-api</artifactId>
-                <version>${soap.version}</version>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jakarta.xml.version}</version>
             </dependency>
             <dependency>
                 <groupId>jakarta.xml.ws</groupId>
                 <artifactId>jakarta.xml.ws-api</artifactId>
-                <version>${jakarta.version}</version>
+                <version>${jakarta.xml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.soap</groupId>
+                <artifactId>jakarta.xml.soap-api</artifactId>
+                <version>${jakarta.xml.soap-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${jakarta.activation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${jakarta.validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.websocket</groupId>
+                <artifactId>jakarta.websocket-api</artifactId>
+                <version>${jakarta.websocket-api.version}</version>
             </dependency>
 
             <!-- CXF avhengigheter -->
@@ -521,6 +560,10 @@
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -560,34 +603,6 @@
                 <version>${lang-tag.version}</version>
             </dependency>
 
-            <!-- Modig avhengigheter -->
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-lang</artifactId>
-                <version>${modig-lang.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-filter</artifactId>
-                <version>${modig-security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-loginmodule</artifactId>
-                <version>${modig-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.google.code.findbugs</groupId>
-                        <artifactId>jsr305</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-core</artifactId>
-                <version>${modig-security.version}</version>
-            </dependency>
-
             <!-- Database avhengigheter -->
             <dependency>
                 <groupId>com.oracle.database.jdbc</groupId>
@@ -603,6 +618,18 @@
                 <groupId>org.hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
                 <version>${hsqldb.version}</version>
+            </dependency>
+
+            <!-- Redis -->
+            <dependency>
+                <groupId>io.lettuce</groupId>
+                <artifactId>lettuce-core</artifactId>
+                <version>${lettuce.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.fppt</groupId>
+                <artifactId>jedis-mock</artifactId>
+                <version>${jedis-mock.version}</version>
             </dependency>
 
             <!-- diverse avhengigheter -->
@@ -726,12 +753,6 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>1</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.wss4j</groupId>
                 <artifactId>wss4j-ws-security-common</artifactId>
                 <version>${wss4j.version}</version>
@@ -810,11 +831,6 @@
                 <version>${nimbus-jose-jwt.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
-                <version>${activation.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${hikaricp.version}</version>
@@ -845,6 +861,16 @@
                 <groupId>org.jvnet.jaxb2_commons</groupId>
                 <artifactId>jaxb2-basics-runtime</artifactId>
                 <version>${jaxb2-basics-runtime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb-runtime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
             </dependency>
 
             <!-- Prometheus -->
@@ -900,10 +926,9 @@
                 <scope>runtime</scope>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.woodstox</groupId>
-                <artifactId>woodstox-core-asl</artifactId>
-                <version>${woodstox-core-asl.version}</version>
-                <scope>runtime</scope>
+                <groupId>com.fasterxml.woodstox</groupId>
+                <artifactId>woodstox-core</artifactId>
+                <version>${woodstox-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
@@ -921,9 +946,9 @@
 
             <!-- Avhengigheter med provided scope -->
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax.servlet-api.version}</version>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
@@ -933,6 +958,13 @@
                 <version>${pdfbox.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/jempbox -->
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>jempbox</artifactId>
+                <version>${jempbox.version}</version>
+            </dependency>
+
 
 
             <!-- Avhengigheter med test scope -->
@@ -987,13 +1019,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-core</artifactId>
-                <version>${modig-security.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>no.digipost</groupId>
                 <artifactId>digg</artifactId>
                 <version>${digipost.digg.version}</version>
@@ -1028,12 +1053,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-jaas</artifactId>
-                <scope>test</scope>
-                <version>${jetty.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
@@ -1050,6 +1069,13 @@
                 <artifactId>jersey-test-framework-provider-external</artifactId>
                 <scope>test</scope>
                 <version>${jersey.version}</version>
+            </dependency>
+
+            <!-- Kotlin -->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
+                <version>${kotlin.version}</version>
             </dependency>
 
             <!-- Dependencies identifisert av maven-enforcer-plugin -->
@@ -1097,11 +1123,6 @@
                 <groupId>org.opensaml</groupId>
                 <artifactId>opensaml-security-api</artifactId>
                 <version>${opensaml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${validation-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
@@ -1184,11 +1205,6 @@
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.websocket</groupId>
-                <artifactId>javax.websocket-api</artifactId>
-                <version>${javax.websocket-api.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
@@ -1238,6 +1254,11 @@
                 <artifactId>saaj-impl</artifactId>
                 <version>${saaj-impl.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jvnet.mimepull</groupId>
+                <artifactId>mimepull</artifactId>
+                <version>${mimepull.version}</version>
+            </dependency>
 
             <!--
                 Snyk klager på sårbarhet i snakeyaml som er en avhengighet i uap-java.
@@ -1249,7 +1270,6 @@
                 <groupId>com.github.ua-parser</groupId>
                 <artifactId>uap-java</artifactId>
                 <version>${uap-java.version}</version>
-
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -1295,9 +1315,9 @@
                     </dependencies>
                 </plugin>
                 <plugin>
-                    <groupId>com.googlecode.flyway</groupId>
+                    <groupId>com.flywaydb</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
-                    <version>2.3.1</version>
+                    <version>${flyway-maven-plugin.version}</version>
                     <configuration>
                         <driver>${flyway.placeholders.driver}</driver>
                         <url>${flyway.placeholders.url}</url>
@@ -1313,23 +1333,6 @@
                             </goals>
                         </execution>
                     </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.googlecode.flyway</groupId>
-                            <artifactId>flyway-core</artifactId>
-                            <version>2.0.3</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.hsqldb</groupId>
-                            <artifactId>hsqldb</artifactId>
-                            <version>2.3.0</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.oracle.database.jdbc</groupId>
-                            <artifactId>ojdbc10</artifactId>
-                            <version>${ojdbc.version}</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>

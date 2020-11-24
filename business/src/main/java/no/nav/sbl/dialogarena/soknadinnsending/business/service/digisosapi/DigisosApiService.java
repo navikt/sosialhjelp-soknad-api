@@ -5,12 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
@@ -139,14 +139,9 @@ public class DigisosApiService {
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
         String filnavn = "Soknad.pdf";
         String mimetype = "application/pdf";
-        try {
-            byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
-        } catch (Exception e) {
-            log.error("Kunne ikke generere Soknad.pdf. Fallback til generering med itext.", e);
-            byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(soknadUnderArbeid.getJsonInternalSoknad(), "/");
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
-        }
+
+        byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
+        return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
     }
 
     private List<FilOpplasting> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
@@ -163,6 +158,7 @@ public class DigisosApiService {
             byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
             return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         } catch (Exception e) {
+            log.error("Kunne ikke generere ettersendelse.pdf. Fallback til generering med itext.", e);
             byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
             return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
         }
@@ -179,14 +175,9 @@ public class DigisosApiService {
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         String filnavn = "Soknad-juridisk.pdf";
         String mimetype = "application/pdf";
-        try {
-            byte[] pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
-        } catch (Exception e) {
-            log.error("Kunne ikke generere Soknad-juridisk.pdf. Fallback til generering med itext.", e);
-            byte[] pdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
-        }
+
+        byte[] pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
     }
 
     private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
@@ -236,7 +227,7 @@ public class DigisosApiService {
 
         soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
-            logAlderTilKibana(OidcFeatureToggleUtils.getUserId());
+            logAlderTilKibana(SubjectHandler.getUserId());
         }
         return digisosId;
     }

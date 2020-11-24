@@ -10,7 +10,9 @@ import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -64,10 +66,16 @@ public class InnsendtSoknadService {
                 .medBehandlingId(metadata.behandlingsId)
                 .medInnsendtDato(metadata.innsendtDato.format(datoFormatter))
                 .medInnsendtTidspunkt(metadata.innsendtDato.format(tidFormatter))
+                .medSoknadsalderIMinutter(soknadsalderIMinutter(metadata.innsendtDato))
                 .medNavenhet(metadata.navEnhet)
                 .medOrgnummer(metadata.orgnr)
                 .medInnsendteVedlegg(tilVedlegg(metadata.vedlegg.vedleggListe, lastetOpp))
                 .medIkkeInnsendteVedlegg(tilVedlegg(metadata.vedlegg.vedleggListe, ikkeLastetOpp));
+    }
+
+    static long soknadsalderIMinutter(LocalDateTime tidspunktSendt) {
+        if (tidspunktSendt == null) return -1;
+        return tidspunktSendt.until(LocalDateTime.now(), ChronoUnit.MINUTES);
     }
 
     private List<InnsendtSoknad.Vedlegg> tilVedlegg(List<VedleggMetadata> vedlegg, Predicate<VedleggMetadata> status) {

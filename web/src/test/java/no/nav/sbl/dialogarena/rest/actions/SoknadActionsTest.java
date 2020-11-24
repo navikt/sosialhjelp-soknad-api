@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneInfoService;
+import no.nav.sbl.dialogarena.redis.RedisService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
@@ -18,6 +19,7 @@ import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
@@ -52,7 +54,7 @@ import static org.mockito.Mockito.when;
 public class SoknadActionsTest {
 
     public static final String TESTKOMMUNE = "3002";
-    public static final String KOMMUNE_I_SVARUT_LISTEN = "0703";
+    public static final String KOMMUNE_I_SVARUT_LISTEN = "0301";
     private String EIER;
 
     @Inject
@@ -86,12 +88,11 @@ public class SoknadActionsTest {
 
     @Before
     public void setUp() {
-        System.setProperty("authentication.isRunningWithOidc", "true");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
-        EIER = SubjectHandler.getUserIdFromToken();
+        EIER = SubjectHandler.getUserId();
     }
 
     @After
@@ -100,7 +101,7 @@ public class SoknadActionsTest {
         System.clearProperty("digisosapi.sending.enable");
         System.clearProperty(NedetidUtils.NEDETID_START);
         System.clearProperty(NedetidUtils.NEDETID_SLUTT);
-
+        SubjectHandler.resetOidcSubjectHandlerService();
     }
 
     @Test(expected = SoknadenHarNedetidException.class)
@@ -171,6 +172,20 @@ public class SoknadActionsTest {
         System.setProperty("digisosapi.sending.enable", "true");
 
         actions.sendSoknad(behandlingsId, context, "");
+    }
+
+    @Test(expected = SendingTilKommuneUtilgjengeligException.class)
+    public void sendSoknadMedFiksNedetidOgTomCacheSkalKasteException() {
+        String behandlingsId = "fiksNedetidOgTomCache";
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer(KOMMUNE_I_SVARUT_LISTEN);
+        when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
+        when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE);
+        System.setProperty("digisosapi.sending.enable", "true");
+
+        actions.sendSoknad(behandlingsId, context, "");
+
+        verify(soknadService, times(1)).sendSoknad(eq(behandlingsId));
     }
 
     @Test

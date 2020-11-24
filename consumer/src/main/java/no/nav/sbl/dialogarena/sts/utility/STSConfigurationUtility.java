@@ -4,9 +4,7 @@ package no.nav.sbl.dialogarena.sts.utility;
 
 import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
 import no.nav.sbl.dialogarena.sts.StsType;
-import no.nav.sbl.dialogarena.sts.client.ModigClaimsCallbackHandler;
 import no.nav.sbl.dialogarena.sts.client.NAVOidcSTSClient;
-import no.nav.sbl.dialogarena.sts.client.NAVSTSClient;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusException;
 import org.apache.cxf.endpoint.Client;
@@ -29,7 +27,6 @@ import org.apache.neethi.Policy;
 import javax.xml.namespace.QName;
 import java.util.HashMap;
 
-import static no.nav.sbl.dialogarena.sts.StsType.EXTERNAL_SSO_SAML;
 import static no.nav.sbl.dialogarena.sts.StsType.ON_BEHALF_OF_WITH_JWT;
 import static no.nav.sbl.dialogarena.sts.StsType.SYSTEM_USER_IN_FSS;
 
@@ -74,13 +71,6 @@ public class STSConfigurationUtility {
         setEndpointPolicyReference(client, "classpath:JwtSTSPolicy.xml");
     }
 
-    /* From modig (no.nav.modig.security.sts.)
-    Should be removed when the application is running with OIDC */
-    public static void configureStsForExternalSSO(Client client) {
-        configureStsClient(client, EXTERNAL_SSO_SAML);
-        setEndpointPolicyReference(client, "classpath:stspolicy.xml");
-    }
-
     private static void configureStsClient(Client client, StsType stsType) {
         final String location = requireProperty(StsSecurityConstants.STS_URL_KEY);
         final String username = requireProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
@@ -94,13 +84,7 @@ public class STSConfigurationUtility {
     }
 
     private static STSClient createBasicSTSClient(Bus bus, String location, String username, String password, StsType stsType) {
-        STSClient stsClient;
-        if (stsType == EXTERNAL_SSO_SAML) {
-            stsClient = new NAVSTSClient(bus);
-            stsClient.setClaimsCallbackHandler(new ModigClaimsCallbackHandler());
-        } else {
-            stsClient = new NAVOidcSTSClient(bus, stsType);
-        }
+        STSClient stsClient = new NAVOidcSTSClient(bus, stsType);
 
         stsClient.setWsdlLocation("/wsdl/ws-trust-1.4-service.wsdl");
         stsClient.setServiceQName(new QName("http://docs.oasis-open.org/ws-sx/ws-trust/200512/wsdl", "SecurityTokenServiceProvider"));

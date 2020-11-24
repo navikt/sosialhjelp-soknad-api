@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
 
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
@@ -49,7 +49,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
 
     @Override
     public void ping() {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
         Invocation.Builder request = client.target(endpoint + "ping").request()
@@ -91,7 +91,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     }
 
     private Invocation.Builder lagRequest(String endpoint, String fodselsnummer) {
-        String consumerId = OidcFeatureToggleUtils.getConsumerId();
+        String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         FssToken fssToken = stsConsumer.getFSSToken();
         Sokeperiode sokeperiode = lagSokePeriode();
@@ -102,7 +102,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
                 .queryParam("ansettelsesperiodeFom", sokeperiode.fom.format(ISO_LOCAL_DATE))
                 .queryParam("ansettelsesperiodeTom", sokeperiode.tom.format(ISO_LOCAL_DATE))
                 .request()
-                .header(AUTHORIZATION.name(), BEARER + OidcFeatureToggleUtils.getToken()) // brukers token
+                .header(AUTHORIZATION.name(), BEARER + SubjectHandler.getToken()) // brukers token
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId)
                 .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccessToken())

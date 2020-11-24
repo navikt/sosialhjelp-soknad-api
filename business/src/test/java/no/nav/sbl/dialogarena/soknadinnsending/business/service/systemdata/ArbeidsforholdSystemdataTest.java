@@ -183,7 +183,7 @@ public class ArbeidsforholdSystemdataTest {
         assertThat("arbeidsgivernavn", jsonArbeidsforhold.getArbeidsgivernavn(), is(arbeidsforhold.arbeidsgivernavn));
         assertThat("fom", jsonArbeidsforhold.getFom(), is(arbeidsforhold.fom));
         assertThat("tom", jsonArbeidsforhold.getTom(), is(arbeidsforhold.tom));
-        assertThat("stillingsprosent", new Long(jsonArbeidsforhold.getStillingsprosent()), is(arbeidsforhold.fastStillingsprosent));
+        assertThat("stillingsprosent", Long.valueOf(jsonArbeidsforhold.getStillingsprosent()), is(arbeidsforhold.fastStillingsprosent));
         if (arbeidsforhold.harFastStilling) {
             assertThat("harFastStilling", jsonArbeidsforhold.getStillingstype(), is(JsonArbeidsforhold.Stillingstype.FAST));
         } else {

@@ -3,10 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcFeatureToggleUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.PdfValidator;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -65,12 +64,12 @@ public class OpplastetVedleggService {
     }
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
         String mimeType = FileDetectionUtils.getMimeType(data);
 
-        validerFil(data);
-        virusScanner.scan(filnavn, data);
+        validerFil(data, filnavn);
+        virusScanner.scan(filnavn, data, behandlingsId);
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
@@ -101,7 +100,7 @@ public class OpplastetVedleggService {
     }
 
     public void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(String behandlingsId, byte[] data) {
-        String eier = OidcFeatureToggleUtils.getUserId();
+        String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
 
@@ -114,7 +113,7 @@ public class OpplastetVedleggService {
     }
 
     public void deleteVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggId) {
-        final String eier = OidcFeatureToggleUtils.getUserId();
+        final String eier = SubjectHandler.getUserId();
         final OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
 
         if (opplastetVedlegg == null){
@@ -183,14 +182,38 @@ public class OpplastetVedleggService {
         return filnavn;
     }
 
-    private void validerFil(byte[] data) {
-        if (!(FileDetectionUtils.isImage(data) || FileDetectionUtils.isPdf(data))) {
+    private void validerFil(byte[] data, String filnavn) {
+        var isImage = FileDetectionUtils.isImage(data);
+        var isPdf = FileDetectionUtils.isPdf(data);
+
+        if (!(isImage || isPdf)) {
             throw new UgyldigOpplastingTypeException(
-                    "Ugyldig filtype for opplasting", null,
+                    String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s", FileDetectionUtils.getMimeType(data), filnavn.substring(filnavn.lastIndexOf("."))),
+                    null,
                     "opplasting.feilmelding.feiltype");
         }
-        if (FileDetectionUtils.isPdf(data)) {
+        if (isImage) {
+            validerFiltypeForBilde(filnavn);
+        }
+        if (isPdf) {
             sjekkOmPdfErGyldig(data);
+        }
+    }
+
+    private void validerFiltypeForBilde(String filnavn) {
+        var sisteIndexForPunktum = filnavn.lastIndexOf(".");
+        if (sisteIndexForPunktum < 0) {
+            throw new UgyldigOpplastingTypeException(
+                    "Ugyldig filtype for opplasting. Kunne ikke finne filtype for fil.",
+                    null,
+                    "opplasting.feilmelding.feiltype");
+        }
+
+        if (filnavn.endsWith(".jfif") || filnavn.endsWith(".pjpeg") || filnavn.endsWith(".pjp")) {
+            throw new UgyldigOpplastingTypeException(
+                    String.format("Ugyldig filtype for opplasting. Filtype var %s", filnavn.substring(sisteIndexForPunktum)),
+                    null,
+                    "opplasting.feilmelding.feiltype");
         }
     }
 
@@ -207,15 +230,10 @@ public class OpplastetVedleggService {
             throw new OpplastingException("Kunne ikke lagre fil", e,
                     "vedlegg.opplasting.feil.generell");
         }
-        PdfValidator validator = new PdfValidator(document);
-        if (validator.isSigned()) {
+        if (document.isEncrypted()) {
             throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være signert.", null,
-                    "opplasting.feilmelding.pdf.signert");
-        } else if (validator.isEncrypted()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være signert.", null,
-                    "opplasting.feilmelding.pdf.signert");
+                    "PDF kan ikke være kryptert.", null,
+                    "opplasting.feilmelding.pdf.kryptert");
         }
     }
 }

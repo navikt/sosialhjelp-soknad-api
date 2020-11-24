@@ -7,6 +7,7 @@ export SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD=$(cat /apigw/eregapi/x-nav
 export SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD=$(cat /apigw/aaregapi/x-nav-apiKey)
 export SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD=$(cat /apigw/securitytokenservicetoken/x-nav-apiKey)
 export SOSIALHJELP_SOKNAD_API_DKIFAPI_APIKEY_PASSWORD=$(cat /apigw/dkifapi/x-nav-apiKey)
+export SOSIALHJELP_SOKNAD_API_PDLAPI_APIKEY_PASSWORD=$(cat /apigw/pdlapi/x-nav-apiKey)
 
 echo "Export serviceuser credentials"
 export SRVSOKNADSOSIALHJELP_SERVER_USERNAME=$(cat /serviceuser/srvsoknadsosialhjelp-server/username)
