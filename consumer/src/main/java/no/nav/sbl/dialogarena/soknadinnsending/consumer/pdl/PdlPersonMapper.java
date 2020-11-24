@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.ENKE_ELLER_ENKEMANN;
@@ -193,14 +194,23 @@ public class PdlPersonMapper {
             return false;
         }
         // Hvis person og barnEllerEktefelle har bostedsadresse med lik matrikkelId - betyr det at de er registrert som bosatt på samme adresse.
-        if (harVegadresseMatrikkelId(bostedsadressePerson) && harVegadresseMatrikkelId(bostedsadresseBarnEllerEktefelle)) {
-            return bostedsadressePerson.getVegadresse().getMatrikkelId().equals(bostedsadresseBarnEllerEktefelle.getVegadresse().getMatrikkelId());
-        }
-        if (harMatrikkeladresseMatrikkelId(bostedsadressePerson) && harMatrikkeladresseMatrikkelId(bostedsadresseBarnEllerEktefelle)) {
-            return bostedsadressePerson.getMatrikkeladresse().getMatrikkelId().equals(bostedsadresseBarnEllerEktefelle.getMatrikkeladresse().getMatrikkelId());
+        Optional<String> matrikkelIdPerson = hentMatrikkelId(bostedsadressePerson);
+        Optional<String> matrikkelIdBarnEllerEktefelle = hentMatrikkelId(bostedsadresseBarnEllerEktefelle);
+        if (matrikkelIdPerson.isPresent() && matrikkelIdBarnEllerEktefelle.isPresent()) {
+            return matrikkelIdPerson.get().equals(matrikkelIdBarnEllerEktefelle.get());
         }
 
         return false;
+    }
+
+    private Optional<String> hentMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+        if (harVegadresseMatrikkelId(bostedsadresseDto)) {
+            return Optional.of(bostedsadresseDto.getVegadresse().getMatrikkelId());
+        }
+        if (harMatrikkeladresseMatrikkelId(bostedsadresseDto)) {
+            return Optional.of(bostedsadresseDto.getMatrikkeladresse().getMatrikkelId());
+        }
+        return Optional.empty();
     }
 
     private boolean harVegadresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
