@@ -26,7 +26,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapp
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_6;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_7;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
@@ -74,7 +76,8 @@ public class PdlPersonMapperTest {
         assertThat(person.getEtternavn(), is(ETTERNAVN.toUpperCase()));
         assertThat(person.getFnr(), is(IDENT));
         assertThat(person.getSivilstatus(), is("gift"));
-        assertThat(person.getStatsborgerskap(), is(LAND));
+        assertThat(person.getStatsborgerskap(), hasSize(1));
+        assertThat(person.getStatsborgerskap().get(0), is(LAND));
     }
 
     @Test

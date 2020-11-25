@@ -49,7 +49,7 @@ public class PersonMapper {
                 .withEtternavn(finnEtternavn(xmlPerson))
                 .withFnr(finnFnr(xmlPerson))
                 .withSivilstatus(finnSivilstatus(xmlPerson))
-                .withStatsborgerskap(finnStatsborgerskap(xmlPerson))
+                .withStatsborgerskap(List.of(finnStatsborgerskap(xmlPerson)))
                 .withDiskresjonskode(finnDiskresjonskode(xmlPerson))
                 .withEktefelle(finnEktefelleForPerson(xmlPerson));
     }

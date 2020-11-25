@@ -22,6 +22,15 @@ public class BasisPersonaliaSystemdata implements Systemdata {
 
     private static final Logger log = getLogger(BasisPersonaliaSystemdata.class);
 
+    private static final String NOR = "NOR";
+    private static final String SWE = "SWE";
+    private static final String FRO = "FRO";
+    private static final String ISL = "ISL";
+    private static final String DNK = "DNK";
+    private static final String FIN = "FIN";
+    private static final String PDL_UKJENT_STATSBORGERSKAP = "XUK";
+    private static final String PDL_STATSLOS = "XXX";
+
     @Inject
     private PersonService personService;
 
@@ -87,8 +96,8 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     private JsonStatsborgerskap mapToJsonStatsborgerskap(Person person) {
-        String statsborgerskap = person.getStatsborgerskap();
-        if (statsborgerskap == null || statsborgerskap.equals("???")){
+        String statsborgerskap = prioritertStatsborgerskap(person);
+        if (statsborgerskap == null || statsborgerskap.equals("???") || statsborgerskap.equals(PDL_UKJENT_STATSBORGERSKAP) || statsborgerskap.equals(PDL_STATSLOS)){
             return null;
         }
 
@@ -98,7 +107,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     private JsonNordiskBorger mapToJsonNordiskBorger(Person person) {
-        Boolean nordiskBorger = erNordiskBorger(person.getStatsborgerskap());
+        Boolean nordiskBorger = erNordiskBorger(prioritertStatsborgerskap(person));
         if (nordiskBorger == null){
             return null;
         }
@@ -108,19 +117,47 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     static Boolean erNordiskBorger(String statsborgerskap) {
-        if (statsborgerskap == null || statsborgerskap.equals("???")){
+        if (statsborgerskap == null || statsborgerskap.equals("???") || statsborgerskap.equals(PDL_UKJENT_STATSBORGERSKAP) || statsborgerskap.equals(PDL_STATSLOS)){
             return null;
         }
         switch (statsborgerskap) {
-            case "NOR":
-            case "SWE":
-            case "FRO":
-            case "ISL":
-            case "DNK":
-            case "FIN":
+            case NOR:
+            case SWE:
+            case FRO:
+            case ISL:
+            case DNK:
+            case FIN:
                 return true;
             default:
                 return false;
         }
+    }
+
+    private String prioritertStatsborgerskap(Person person) {
+        var list = person.getStatsborgerskap();
+
+        if (list.isEmpty()) {
+            return null;
+        }
+        if (list.contains(NOR)) {
+            return NOR;
+        }
+        if (list.contains(SWE)) {
+            return SWE;
+        }
+        if (list.contains(FRO)) {
+            return FRO;
+        }
+        if (list.contains(ISL)) {
+            return ISL;
+        }
+        if (list.contains(DNK)) {
+            return DNK;
+        }
+        if (list.contains(FIN)) {
+            return FIN;
+        }
+
+        return list.get(0);
     }
 }
