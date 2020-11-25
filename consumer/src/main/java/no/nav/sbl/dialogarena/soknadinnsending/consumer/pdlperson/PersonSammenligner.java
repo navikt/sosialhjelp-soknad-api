@@ -31,16 +31,16 @@ public class PersonSammenligner {
             ulikeFelter.add("Fnr");
         }
         if (person.getSivilstatus() != null && !person.getSivilstatus().equalsIgnoreCase(pdlPerson.getSivilstatus())) {
-            if (!person.getSivilstatus().equals("samboer")) {
+//            if (!person.getSivilstatus().equals("samboer")) {
                 // sivilstand samboer er ikke videreført i PDL
-                ulikeFelter.add("Sivilstatus");
-            }
+                ulikeFelter.add(String.format("Sivilstatus [%s] vs [%s]", person.getSivilstatus(), pdlPerson.getSivilstatus()));
+//            }
         }
         if (person.getDiskresjonskode() != null && pdlPerson.getDiskresjonskode() != null && !person.getDiskresjonskode().equals(pdlPerson.getDiskresjonskode())) {
             ulikeFelter.add("Diskresjonskode");
         }
         if (!person.getStatsborgerskap().equals(pdlPerson.getStatsborgerskap())) {
-            ulikeFelter.add("Statsborgerskap");
+            ulikeFelter.add(String.format("Statsborgerskap [%s] vs [%s]", person.getStatsborgerskap(), pdlPerson.getStatsborgerskap()));
         }
         if (ulikeFelter.size() > 0) {
             log.info("Ulike felter i Person fra Person_V1 vs PDL: {}", String.join(",", ulikeFelter));
