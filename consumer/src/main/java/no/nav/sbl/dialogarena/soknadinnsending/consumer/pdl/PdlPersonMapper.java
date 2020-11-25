@@ -16,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEkt
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,9 +35,12 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Si
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.SKILT_PARTNER;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.UGIFT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.UOPPGITT;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class PdlPersonMapper {
+
+    private static Logger log = getLogger(PdlPersonMapper.class);
 
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
@@ -148,7 +152,10 @@ public class PdlPersonMapper {
 
     private String finnSivilstatus(List<SivilstandDto> sivilstand) {
         return sivilstand.stream().findFirst()
-                .map(dto -> MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(dto.getType()))
+                .map(dto -> {
+                    log.info("sivilstatus: {}", dto.getType());
+                    return MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(dto.getType());
+                })
                 .orElse("");
     }
 
